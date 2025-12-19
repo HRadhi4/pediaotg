@@ -1,0 +1,202 @@
+{
+  "design_system": {
+    "identity": {
+      "name": "FluidCal",
+      "archetype": "Clinical Warmth",
+      "principles": [
+        "Precision is beautiful",
+        "Clarity over decoration",
+        "Warmth in details",
+        "Immediate feedback"
+      ]
+    },
+    "typography": {
+      "fonts": {
+        "heading": {
+          "family": "Manrope",
+          "weights": ["600", "700", "800"],
+          "usage": "Page titles, Section headers, Key metrics"
+        },
+        "body": {
+          "family": "Inter",
+          "weights": ["400", "500"],
+          "usage": "Labels, Instructions, General text"
+        },
+        "mono": {
+          "family": "JetBrains Mono",
+          "weights": ["500"],
+          "usage": "Input values, Calculated results, Constants"
+        }
+      },
+      "scale": {
+        "h1": "text-4xl md:text-5xl font-bold tracking-tight",
+        "h2": "text-2xl md:text-3xl font-semibold tracking-tight",
+        "h3": "text-xl font-semibold",
+        "label": "text-sm font-medium text-muted-foreground uppercase tracking-wider",
+        "input": "text-lg md:text-xl font-mono",
+        "metric_big": "text-5xl md:text-6xl font-mono font-bold tracking-tighter",
+        "metric_label": "text-sm font-medium text-muted-foreground"
+      }
+    },
+    "colors": {
+      "palette": {
+        "primary": {
+          "light": "#0F766E",
+          "dark": "#2DD4BF",
+          "name": "Surgical Teal"
+        },
+        "secondary": {
+          "light": "#64748B",
+          "dark": "#94A3B8",
+          "name": "Instrument Slate"
+        },
+        "accent": {
+          "light": "#F59E0B",
+          "dark": "#FBBF24",
+          "name": "Alert Amber"
+        },
+        "background": {
+          "light": "#F8FAFC",
+          "dark": "#0F172A"
+        },
+        "surface": {
+          "light": "#FFFFFF",
+          "dark": "#1E293B"
+        }
+      },
+      "usage_rules": [
+        "Use Primary for main actions and active states",
+        "Use Accent ONLY for warnings or critical alerts (e.g., high fluid volume)",
+        "Backgrounds must be tinted, never pure black/white",
+        "Inputs must have high contrast borders"
+      ]
+    },
+    "spacing": {
+      "base_unit": "4px",
+      "container_padding": "p-6 md:p-8 lg:p-12",
+      "section_gap": "gap-8",
+      "component_gap": "gap-4",
+      "radius": {
+        "default": "rounded-lg",
+        "card": "rounded-xl",
+        "input": "rounded-md"
+      }
+    },
+    "visual_enhancers": {
+      "shadows": {
+        "card": "shadow-[0_2px_8px_rgba(0,0,0,0.08)] dark:shadow-none",
+        "floating": "shadow-[0_8px_30px_rgba(0,0,0,0.12)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.4)]"
+      },
+      "borders": {
+        "default": "border border-border",
+        "active": "border-primary ring-2 ring-primary/20"
+      },
+      "glassmorphism": {
+        "header": "bg-background/80 backdrop-blur-md border-b border-border/50"
+      }
+    }
+  },
+  "pages": {
+    "landing": {
+      "layout": "Split Screen (50/50)",
+      "structure": [
+        {
+          "section": "NICU Choice",
+          "style": "bg-teal-50 dark:bg-teal-950/30 relative overflow-hidden group cursor-pointer transition-all hover:flex-[1.1]",
+          "content": {
+            "title": "NICU",
+            "subtitle": "Neonatal Intensive Care Unit",
+            "image_url": "https://images.unsplash.com/photo-1740853265752-fb0c80daed78?crop=entropy&cs=srgb&fm=jpg&q=85",
+            "image_style": "absolute inset-0 w-full h-full object-cover opacity-40 mix-blend-overlay transition-transform duration-700 group-hover:scale-105"
+          }
+        },
+        {
+          "section": "Children Choice",
+          "style": "bg-indigo-50 dark:bg-indigo-950/30 relative overflow-hidden group cursor-pointer transition-all hover:flex-[1.1]",
+          "content": {
+            "title": "Children",
+            "subtitle": "Pediatric Ward (Coming Soon)",
+            "image_url": "https://images.unsplash.com/photo-1757737488436-503bd810646d?crop=entropy&cs=srgb&fm=jpg&q=85",
+            "image_style": "absolute inset-0 w-full h-full object-cover opacity-40 mix-blend-overlay transition-transform duration-700 group-hover:scale-105 grayscale group-hover:grayscale-0"
+          }
+        }
+      ]
+    },
+    "calculator": {
+      "layout": "Control Room Grid (Mode B)",
+      "grid_config": "grid grid-cols-1 lg:grid-cols-12 gap-6",
+      "sections": [
+        {
+          "name": "Patient Header",
+          "location": "col-span-full sticky top-0 z-10",
+          "style": "bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b py-4"
+        },
+        {
+          "name": "Fluid Inputs",
+          "location": "col-span-1 lg:col-span-4 space-y-6",
+          "components": ["TFI Input", "Fluid Type Select", "NaCl Checkbox"]
+        },
+        {
+          "name": "Deductions",
+          "location": "col-span-1 lg:col-span-4 space-y-6",
+          "components": ["Feed Volume", "TPN Volume"]
+        },
+        {
+          "name": "Results Panel",
+          "location": "col-span-1 lg:col-span-4",
+          "style": "bg-primary/5 dark:bg-primary/10 border border-primary/20 rounded-xl p-6 sticky top-24"
+        }
+      ]
+    }
+  },
+  "components": {
+    "inputs": {
+      "base": "h-12 text-lg font-mono",
+      "label_style": "mb-2 block text-sm font-medium text-muted-foreground"
+    },
+    "cards": {
+      "base": "bg-card text-card-foreground rounded-xl border shadow-sm p-6"
+    },
+    "buttons": {
+      "primary": "bg-primary text-primary-foreground hover:bg-primary/90 h-12 px-6 rounded-full font-semibold shadow-md transition-transform active:scale-95",
+      "ghost": "hover:bg-accent hover:text-accent-foreground"
+    }
+  },
+  "assets": {
+    "images": [
+      {
+        "category": "landing_nicu",
+        "url": "https://images.unsplash.com/photo-1740853265752-fb0c80daed78?crop=entropy&cs=srgb&fm=jpg&q=85",
+        "alt": "Mother holding newborn hand"
+      },
+      {
+        "category": "landing_children",
+        "url": "https://images.unsplash.com/photo-1757737488436-503bd810646d?crop=entropy&cs=srgb&fm=jpg&q=85",
+        "alt": "Abstract playful geometric shapes"
+      }
+    ],
+    "icons": {
+      "library": "lucide-react",
+      "required": ["Calculator", "Baby", "Droplets", "AlertTriangle", "Moon", "Sun", "ArrowRight", "Syringe"]
+    }
+  },
+  "instructions_to_main_agent": [
+    "1. SETUP: Install 'lucide-react' and 'clsx' 'tailwind-merge' if not present.",
+    "2. THEME: Update 'tailwind.config.js' to include the custom colors (surgical-teal, instrument-slate) and fonts.",
+    "3. FONTS: Import 'Manrope', 'Inter', and 'JetBrains Mono' from Google Fonts in 'index.css'.",
+    "4. LAYOUT: Implement the Landing Page as a full-screen split layout. The 'Children' side should be visually disabled/muted.",
+    "5. CALCULATOR: Build the calculator as a single view. Use 'useState' for all inputs. Calculations must happen in real-time (useEffect or derived state).",
+    "6. LOGIC: TFI (Total Fluid Intake) is the base. Deduct Feeds and TPN from it to get the IV Fluid rate.",
+    "7. NACL LOGIC: If 3% NaCl is checked, ask for amount (ml/kg/day) and deduct that volume as well.",
+    "8. FLUID TYPE: If 'D10% + D50%' is selected, show the mixing ratio calculation.",
+    "9. DARK MODE: Implement a toggle in the top-right corner that switches the 'dark' class on the HTML element.",
+    "10. ACCESSIBILITY: Ensure all inputs have associated labels. Use 'aria-live' for the result region."
+  ],
+  "universal_guidelines": [
+    "Do not use gradients for backgrounds, use solid colors or subtle noise textures.",
+    "Ensure 4.5:1 contrast ratio for all text.",
+    "Use 'data-testid' for all interactive elements.",
+    "Do not center-align the main app container.",
+    "Use 'sonner' for any error toasts."
+  ]
+}
