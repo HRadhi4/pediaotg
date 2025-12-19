@@ -1,34 +1,35 @@
-.App-logo {
-    height: 40vmin;
-    pointer-events: none;
+/* FluidCal App Styles */
+
+.landing-section {
+  transition: flex 0.5s ease;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-    .App-logo {
-        animation: App-logo-spin infinite 20s linear;
-    }
+.landing-section:hover {
+  flex: 1.1;
 }
 
-.App-header {
-    background-color: #0f0f10;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    font-size: calc(10px + 2vmin);
-    color: white;
+.input-highlight:focus-within {
+  @apply ring-2 ring-primary/20 border-primary;
 }
 
-.App-link {
-    color: #61dafb;
+.result-panel {
+  @apply bg-primary/5 dark:bg-primary/10 border border-primary/20 rounded-xl p-6;
 }
 
-@keyframes App-logo-spin {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
-    }
+.metric-value {
+  @apply text-4xl md:text-5xl font-mono font-bold tracking-tighter;
+}
+
+.metric-label {
+  @apply text-sm font-medium text-muted-foreground;
+}
+
+/* Smooth transitions for theme changes */
+* {
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+/* Remove transition from inputs to avoid lag */
+input, select, textarea {
+  transition: none;
 }
