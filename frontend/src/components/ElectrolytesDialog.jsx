@@ -331,43 +331,63 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
 
   const calculatePhosphate = () => {
     const w = parseFloat(weight);
-    const feed = parseFloat(feedVolume);
+    const phos = parseFloat(phosphateLevel);
     
     if (!w) return;
     
-    const resultData = {
-      title: "Phosphate Replacement",
-      sections: [],
-      notes: [
-        "Keep phosphate ≥2 in Neonate"
-      ]
+    // Determine severity from level or selection
+    let severity = phosphateSeverity;
+    if (phos && phos < 1) {
+      severity = "severe";
+    } else if (phos && phos >= 1 && phos <= 2) {
+      severity = "moderate";
+    }
+    
+    // Dose ranges based on severity (mmol/kg)
+    const doseRanges = {
+      moderate: { min: 0.08, max: 0.16, label: "Low/Moderate (P 1-2 mg/dL)" },
+      severe: { min: 0.25, max: 0.5, label: "Severe (P < 1 mg/dL)" }
     };
     
-    // Addphos (Neonate)
-    resultData.sections.push({
-      subtitle: "Addphos (Neonate)",
-      value: `${(w * 1).toFixed(1)} mmol`,
-      detail: "1 mmol/kg"
-    });
+    const range = doseRanges[severity];
+    const minDose = w * range.min;
+    const maxDose = w * range.max;
     
-    // Phosphate Sandose
-    const minDose = w * 30;
-    const maxDose = w * 70;
-    const minMl = minDose / 25; // 250mg/10ml = 25mg/ml
-    const maxMl = maxDose / 25;
+    // Maximum single dose: 15 mmol or 0.5 mmol/kg, whichever is less
+    const maxSingleDose = Math.min(15, w * 0.5);
+    const actualMaxDose = Math.min(maxDose, maxSingleDose);
     
-    resultData.sections.push({
-      subtitle: "Phosphate Sandose",
-      value: `${minDose.toFixed(0)} - ${maxDose.toFixed(0)} mg`,
-      detail: `Volume: ${minMl.toFixed(1)} - ${maxMl.toFixed(1)} ml (250mg/10ml)`
-    });
-    
-    if (feed && !isNaN(feed)) {
-      resultData.sections.push({
-        subtitle: "Divided over feeds",
-        value: `Divide ${maxMl.toFixed(1)} ml over ${feed} ml total feeds`
-      });
-    }
+    const resultData = {
+      title: "Phosphate Replacement (IV)",
+      sections: [
+        {
+          subtitle: "Severity",
+          value: range.label
+        },
+        {
+          subtitle: "Recommended Dose",
+          value: `${minDose.toFixed(2)} - ${actualMaxDose.toFixed(2)} mmol`,
+          detail: `${range.min} - ${range.max} mmol/kg`
+        },
+        {
+          subtitle: "Maximum Single Dose",
+          value: `${maxSingleDose.toFixed(1)} mmol`,
+          detail: "15 mmol or 0.5 mmol/kg (whichever is less)"
+        },
+        {
+          subtitle: "Infusion Rate",
+          value: "Over 4-6 hours",
+          detail: "Slow infusion required"
+        }
+      ],
+      notes: [
+        "Symptomatic/Severe: Serum P < 1-2 mg/dL",
+        "Rapid infusion can cause life-threatening hypocalcemia",
+        "Monitor calcium levels during infusion",
+        "Keep phosphate ≥2 in Neonate"
+      ],
+      warning: "Slow IV infusion over 4-6 hours. Rapid infusion can cause severe hypocalcemia!"
+    };
     
     setResults(resultData);
   };
