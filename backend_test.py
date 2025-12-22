@@ -92,6 +92,7 @@ class NICUBackendTester:
                 print(f"Primary Disorder: {response.get('primary_disorder')}")
                 print(f"Lactic Acidosis: {response.get('lactic_acidosis')}")
                 print(f"Anion Gap: {response.get('anion_gap')}")
+                print(f"Hb Analysis: {response.get('hb_analysis')}")
             
         return success, response
 
