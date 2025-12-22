@@ -5,52 +5,48 @@ Build an app with two choices: NICU and Children
 - NICU section includes fluid calculations
 - Children section: placeholder (coming soon)
 
-## Phase 2 Requirements (Implemented)
-1. Title changed to "Pediatrics to Go"
-2. NICU/Children as rounded corner cards
-3. Bottom Navigation Bar with:
-   - Blood Gas Analysis (AI + Manual)
-   - Electrolytes Replacement Calculator
-   - 2 future feature placeholders
-   - Neonatal Jaundice Calculator
+## UI Design
+**Nightingale-inspired Medical App UI** (based on Dribbble reference)
+- Floating pill-shaped tab bar with teal accent (#00d9c5)
+- Gradient backgrounds (teal→white light, deep teal dark)
+- Rounded cards (2rem radius) with soft shadows
+- Active tab indicator (teal underline)
+- Glass header with backdrop blur
+- Manrope font throughout
 
-## Phase 3 Updates (Current)
-1. **Electrolytes Updates:**
-   - Removed phosphate binder calculation
-   - Removed patient type selector
-   - Calcium shows dose in mg AND ml
-   - Magnesium shows NICU + General Ward doses in mg AND ml
-   - Potassium bolus: 0.5-1 mEq/kg over 1-2 hrs (preferably 2 hrs)
-   - NaHCO3: Choose calculation method (HCO3, BE, or Both)
-   - Added Sodium tab with Hyponatremia/Hypernatremia
-     - Severe hyponatremia: 3-5 ml/kg 3%NaCl over 15-30 mins
-     - Hypernatremia: FWD calculation with correction time based on Na level
+## Features Implemented
 
-2. **Blood Gas Updates:**
-   - Removed albumin field
-   - Shows Expected pCO2/HCO3 in compensation analysis
+### Navigation (Bottom Tab Bar)
+1. Home - Landing page
+2. Blood Gas - Blood Gas Analysis dialog
+3. Electrolytes - Electrolytes Calculator dialog
+4. Coming Soon - Placeholder
+5. Jaundice - Neonatal Jaundice Calculator (amber accent)
 
-3. **Neonatal Jaundice Calculator:**
-   - Weight, GA, Postnatal Age inputs
-   - Bilirubin with unit toggle (mg/dL ↔ µmol/L)
-   - Risk factors selection
-   - PT and EX thresholds based on AAP/NICE guidelines
-   - Color-coded recommendations
+### NICU Fluid Calculator
+- Patient info: Weight, Age, Gestational Age
+- TFI with age-based suggestions
+- Fluid type: D10% / D10%+D50%
+- Deductions: 3% NaCl, Feed, TPN
+- Real-time calculations with breakdown
 
-## Architecture
+### Blood Gas Analysis
+- AI Analysis (Gemini OCR) + Manual entry
+- Diagnosis: Respiratory/Metabolic Acidosis/Alkalosis
+- Expected pCO2/HCO3 for compensation
+- Anion Gap, Cl:Na ratio, Lactic acidosis
 
-### Frontend (React)
-- **Landing Page** (`/`): Card layout with NICU/Children + bottom nav (5 icons)
-- **NICU Calculator** (`/nicu`): Fluid calculation interface
-- **Blood Gas Dialog**: AI OCR + Manual entry, acid-base analysis with expected values
-- **Electrolytes Dialog**: Ca, Mg, K, NaHCO3, Na, Phosphate + Drug Infusions
-- **Jaundice Dialog**: PT/EX threshold calculator
+### Electrolytes Calculator
+- Calcium (mg + ml), Magnesium (mg + ml)
+- Potassium (bolus: 0.5-1 mEq/kg over 1-2 hrs)
+- NaHCO3 (HCO3, BE, or Both methods)
+- Sodium (Hyponatremia + Hypernatremia)
+- Phosphate, Drug Infusions Reference
 
-### Backend (FastAPI)
-- `/api/blood-gas/analyze-image` - Gemini AI OCR
-- `/api/blood-gas/analyze` - Blood gas analysis with expected compensation values
+### Neonatal Jaundice Calculator
+- Bilirubin with unit toggle (mg/dL ↔ µmol/L)
+- PT/EX thresholds by weight, GA, age, risk factors
 
 ## Next Tasks
-1. Implement Children section functionality
-2. Add remaining 2 nav bar features
-3. Add print/export feature for calculations
+1. Implement Children section
+2. Add remaining Coming Soon features
