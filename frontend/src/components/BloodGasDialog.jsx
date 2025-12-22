@@ -13,7 +13,7 @@ const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
 const BloodGasDialog = ({ open, onOpenChange }) => {
-  const [activeTab, setActiveTab] = useState("ai");
+  const [activeTab, setActiveTab] = useState("auto");
   const [isLoading, setIsLoading] = useState(false);
   const [extractedValues, setExtractedValues] = useState(null);
   const [analysis, setAnalysis] = useState(null);
@@ -26,7 +26,8 @@ const BloodGasDialog = ({ open, onOpenChange }) => {
     Na: "",
     K: "",
     Cl: "",
-    lactate: ""
+    lactate: "",
+    Hb: ""
   });
   
   const fileInputRef = useRef(null);
@@ -57,7 +58,8 @@ const BloodGasDialog = ({ open, onOpenChange }) => {
               Na: response.data.values.Na?.toString() || "",
               K: response.data.values.K?.toString() || "",
               Cl: response.data.values.Cl?.toString() || "",
-              lactate: response.data.values.lactate?.toString() || ""
+              lactate: response.data.values.lactate?.toString() || "",
+              Hb: response.data.values.Hb?.toString() || ""
             });
             toast.success("Values extracted! Please verify and edit if needed.");
           } else {
@@ -109,7 +111,7 @@ const BloodGasDialog = ({ open, onOpenChange }) => {
     setAnalysis(null);
     setManualValues({
       pH: "", pCO2: "", pO2: "", HCO3: "", BE: "",
-      Na: "", K: "", Cl: "", lactate: ""
+      Na: "", K: "", Cl: "", lactate: "", Hb: ""
     });
   };
 
@@ -124,12 +126,12 @@ const BloodGasDialog = ({ open, onOpenChange }) => {
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="ai" data-testid="ai-tab">AI Analysis</TabsTrigger>
+            <TabsTrigger value="auto" data-testid="auto-tab">Auto-Analysis</TabsTrigger>
             <TabsTrigger value="manual" data-testid="manual-tab">Manual Entry</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="ai" className="space-y-4">
-            <Card>
+          <TabsContent value="auto" className="space-y-4">
+            <Card className="nightingale-card">
               <CardHeader className="pb-3">
                 <CardTitle className="text-base">Upload Blood Gas Image</CardTitle>
               </CardHeader>
@@ -153,7 +155,7 @@ const BloodGasDialog = ({ open, onOpenChange }) => {
                   <Button
                     onClick={() => cameraInputRef.current?.click()}
                     disabled={isLoading}
-                    className="flex-1"
+                    className="flex-1 nightingale-btn-primary"
                     data-testid="camera-btn"
                   >
                     <Camera className="h-4 w-4 mr-2" />
@@ -163,7 +165,7 @@ const BloodGasDialog = ({ open, onOpenChange }) => {
                     onClick={() => fileInputRef.current?.click()}
                     disabled={isLoading}
                     variant="outline"
-                    className="flex-1"
+                    className="flex-1 rounded-2xl"
                     data-testid="gallery-btn"
                   >
                     <Upload className="h-4 w-4 mr-2" />
@@ -173,14 +175,14 @@ const BloodGasDialog = ({ open, onOpenChange }) => {
                 
                 {isLoading && (
                   <div className="flex items-center justify-center py-8">
-                    <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                    <Loader2 className="h-8 w-8 animate-spin text-[#00d9c5]" />
                     <span className="ml-2">Analyzing image...</span>
                   </div>
                 )}
 
                 {extractedValues && (
-                  <div className="p-3 bg-green-50 dark:bg-green-950/30 rounded-lg border border-green-200 dark:border-green-800">
-                    <p className="text-sm font-medium text-green-700 dark:text-green-300 mb-2">
+                  <div className="p-3 bg-[#00d9c5]/10 rounded-xl border border-[#00d9c5]/30">
+                    <p className="text-sm font-medium text-[#00d9c5] mb-2">
                       ✓ Values extracted - Edit if needed:
                     </p>
                   </div>
@@ -199,13 +201,13 @@ const BloodGasDialog = ({ open, onOpenChange }) => {
         </Tabs>
 
         <div className="flex gap-3 pt-4">
-          <Button variant="outline" onClick={resetForm} className="flex-1">
+          <Button variant="outline" onClick={resetForm} className="flex-1 rounded-2xl">
             Reset
           </Button>
           <Button 
             onClick={handleAnalyze} 
             disabled={isLoading}
-            className="flex-1"
+            className="flex-1 nightingale-btn-primary"
             data-testid="analyze-btn"
           >
             {isLoading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
@@ -213,7 +215,7 @@ const BloodGasDialog = ({ open, onOpenChange }) => {
           </Button>
         </div>
 
-        {analysis && <AnalysisResults analysis={analysis} />}
+        {analysis && <AnalysisResults analysis={analysis} hb={parseFloat(manualValues.Hb)} />}
       </DialogContent>
     </Dialog>
   );
@@ -226,6 +228,7 @@ const ValuesForm = ({ values, onChange }) => {
     { key: "pO2", label: "pO2 (mmHg)", placeholder: "80-100" },
     { key: "HCO3", label: "HCO3 (mEq/L)", placeholder: "22-26" },
     { key: "BE", label: "Base Excess", placeholder: "-2 to +2" },
+    { key: "Hb", label: "Hb (g/dL)", placeholder: "12-16" },
     { key: "Na", label: "Na (mEq/L)", placeholder: "135-145" },
     { key: "K", label: "K (mEq/L)", placeholder: "3.5-5.0" },
     { key: "Cl", label: "Cl (mEq/L)", placeholder: "98-106" },
@@ -233,7 +236,7 @@ const ValuesForm = ({ values, onChange }) => {
   ];
 
   return (
-    <Card>
+    <Card className="nightingale-card">
       <CardHeader className="pb-3">
         <CardTitle className="text-base flex items-center gap-2">
           <PenLine className="h-4 w-4" />
@@ -252,7 +255,7 @@ const ValuesForm = ({ values, onChange }) => {
                 placeholder={placeholder}
                 value={values[key]}
                 onChange={(e) => onChange(key, e.target.value)}
-                className="h-9 font-mono text-sm"
+                className="h-9 font-mono text-sm nightingale-input"
                 data-testid={`input-${key}`}
               />
             </div>
@@ -263,15 +266,27 @@ const ValuesForm = ({ values, onChange }) => {
   );
 };
 
-const AnalysisResults = ({ analysis }) => {
+const AnalysisResults = ({ analysis, hb }) => {
+  // Hb analysis
+  const getHbStatus = () => {
+    if (!hb || isNaN(hb)) return null;
+    if (hb < 7) return { status: "Severe Anemia", severity: "critical", recommendation: "Blood transfusion indicated (Hb < 7 g/dL)" };
+    if (hb < 10) return { status: "Moderate Anemia", severity: "warning", recommendation: "Consider transfusion based on symptoms" };
+    if (hb < 12) return { status: "Mild Anemia", severity: "caution", recommendation: "Monitor and treat underlying cause" };
+    if (hb > 17) return { status: "Polycythemia", severity: "warning", recommendation: "Investigate cause" };
+    return { status: "Normal Hemoglobin", severity: "normal", recommendation: null };
+  };
+
+  const hbStatus = getHbStatus();
+
   return (
-    <Card className="mt-4 border-primary/30 bg-primary/5">
+    <Card className="mt-4 border-[#00d9c5]/30 bg-[#00d9c5]/5 rounded-2xl">
       <CardHeader className="pb-3">
         <CardTitle className="text-base">Analysis Results</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         {/* Primary Disorder */}
-        <div className="p-3 rounded-lg bg-background border">
+        <div className="p-3 rounded-xl bg-white dark:bg-gray-800 border">
           <p className="text-sm font-medium text-muted-foreground">Primary Disorder</p>
           <p className="text-lg font-bold text-foreground" data-testid="primary-disorder">
             {analysis.primary_disorder || "Unable to determine"}
@@ -284,20 +299,47 @@ const AnalysisResults = ({ analysis }) => {
               )}
             </p>
           )}
-          {/* Expected values note */}
           {analysis.expected_value && (
-            <p className="text-sm text-blue-600 dark:text-blue-400 mt-2 font-mono">
+            <p className="text-sm text-[#00d9c5] mt-2 font-mono">
               Expected {analysis.expected_label}: {analysis.expected_value}
             </p>
           )}
         </div>
 
+        {/* Hemoglobin Status */}
+        {hbStatus && (
+          <div className={`p-3 rounded-xl border ${
+            hbStatus.severity === 'critical' ? 'bg-red-50 dark:bg-red-950/30 border-red-200 dark:border-red-800' :
+            hbStatus.severity === 'warning' ? 'bg-amber-50 dark:bg-amber-950/30 border-amber-200 dark:border-amber-800' :
+            hbStatus.severity === 'caution' ? 'bg-yellow-50 dark:bg-yellow-950/30 border-yellow-200 dark:border-yellow-800' :
+            'bg-green-50 dark:bg-green-950/30 border-green-200 dark:border-green-800'
+          }`}>
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Hemoglobin Status</p>
+                <p className={`text-lg font-bold ${
+                  hbStatus.severity === 'critical' ? 'text-red-600 dark:text-red-400' :
+                  hbStatus.severity === 'warning' ? 'text-amber-600 dark:text-amber-400' :
+                  hbStatus.severity === 'caution' ? 'text-yellow-600 dark:text-yellow-400' :
+                  'text-green-600 dark:text-green-400'
+                }`}>
+                  {hbStatus.status}
+                </p>
+              </div>
+              <p className="text-2xl font-mono font-bold">{hb} g/dL</p>
+            </div>
+            {hbStatus.recommendation && (
+              <p className="text-sm mt-2 text-muted-foreground">{hbStatus.recommendation}</p>
+            )}
+          </div>
+        )}
+
         {/* Lactic Acidosis */}
         {analysis.lactic_acidosis && (
-          <div className="p-3 rounded-lg bg-destructive/10 border border-destructive/30">
+          <div className="p-3 rounded-xl bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800">
             <div className="flex items-center gap-2">
-              <AlertTriangle className="h-5 w-5 text-destructive" />
-              <span className="font-medium text-destructive">Lactic Acidosis Detected</span>
+              <AlertTriangle className="h-5 w-5 text-red-500" />
+              <span className="font-medium text-red-600 dark:text-red-400">Lactic Acidosis Detected</span>
             </div>
           </div>
         )}
@@ -305,7 +347,7 @@ const AnalysisResults = ({ analysis }) => {
         {/* Anion Gap */}
         {analysis.anion_gap !== null && (
           <div className="grid grid-cols-2 gap-3">
-            <div className="p-3 rounded-lg bg-background border">
+            <div className="p-3 rounded-xl bg-white dark:bg-gray-800 border">
               <p className="text-xs font-medium text-muted-foreground">Anion Gap</p>
               <p className="text-xl font-mono font-bold" data-testid="anion-gap">
                 {analysis.anion_gap}
@@ -313,7 +355,7 @@ const AnalysisResults = ({ analysis }) => {
               <p className="text-xs text-muted-foreground">{analysis.anion_gap_status}</p>
             </div>
             {analysis.cl_na_ratio && (
-              <div className="p-3 rounded-lg bg-background border">
+              <div className="p-3 rounded-xl bg-white dark:bg-gray-800 border">
                 <p className="text-xs font-medium text-muted-foreground">Cl:Na Ratio</p>
                 <p className="text-xl font-mono font-bold" data-testid="cl-na-ratio">
                   {analysis.cl_na_ratio}
@@ -328,13 +370,13 @@ const AnalysisResults = ({ analysis }) => {
 
         {/* Electrolyte Imbalances */}
         {analysis.electrolyte_imbalances?.length > 0 && (
-          <div className="p-3 rounded-lg bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800">
+          <div className="p-3 rounded-xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800">
             <p className="text-sm font-medium text-amber-700 dark:text-amber-300 mb-2">
               Electrolyte Imbalances
             </p>
             <div className="flex flex-wrap gap-2">
               {analysis.electrolyte_imbalances.map((imbalance, i) => (
-                <span key={i} className="px-2 py-1 bg-amber-100 dark:bg-amber-900/50 rounded text-xs font-medium">
+                <span key={i} className="px-2 py-1 bg-amber-100 dark:bg-amber-900/50 rounded-lg text-xs font-medium">
                   {imbalance}
                 </span>
               ))}
@@ -344,7 +386,7 @@ const AnalysisResults = ({ analysis }) => {
 
         {/* Recommendations */}
         {analysis.recommendations?.length > 0 && (
-          <div className="p-3 rounded-lg bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800">
+          <div className="p-3 rounded-xl bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800">
             <p className="text-sm font-medium text-blue-700 dark:text-blue-300 mb-2">
               Recommendations
             </p>
