@@ -70,6 +70,14 @@ module.exports = {
   				to: {
   					height: '0'
   				}
+  			},
+  			'wiggle': {
+  				'0%, 100%': {
+  					transform: 'rotate(-1.5deg)'
+  				},
+  				'50%': {
+  					transform: 'rotate(1.5deg)'
+  				}
   			}
   		},
   		animation: {
