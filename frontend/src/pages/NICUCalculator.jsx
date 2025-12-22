@@ -71,6 +71,7 @@ const NICUCalculator = ({ theme, toggleTheme }) => {
   const [fluidDialogOpen, setFluidDialogOpen] = useState(false);
   const [nrpDialogOpen, setNrpDialogOpen] = useState(false);
   const [catheterDialogOpen, setCatheterDialogOpen] = useState(false);
+  const [bpDialogOpen, setBpDialogOpen] = useState(false);
   const [prbcDialogOpen, setPrbcDialogOpen] = useState(false);
   const [exchangeDialogOpen, setExchangeDialogOpen] = useState(false);
 
@@ -96,6 +97,9 @@ const NICUCalculator = ({ theme, toggleTheme }) => {
         break;
       case "catheter":
         setCatheterDialogOpen(true);
+        break;
+      case "bp":
+        setBpDialogOpen(true);
         break;
       case "prbc":
         setPrbcDialogOpen(true);
