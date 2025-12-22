@@ -49,6 +49,7 @@ class BloodGasValues(BaseModel):
     K: Optional[float] = None
     Cl: Optional[float] = None
     lactate: Optional[float] = None
+    Hb: Optional[float] = None
 
 class BloodGasAnalysisRequest(BaseModel):
     values: BloodGasValues
