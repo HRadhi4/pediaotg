@@ -55,8 +55,8 @@ const LandingPage = ({ theme, toggleTheme }) => {
       <header className="fixed top-0 left-0 right-0 z-50 glass-header">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#00d9c5] to-[#00b3a0] flex items-center justify-center overflow-hidden">
-              <img src="/logo.png" alt="Logo" className="w-8 h-8 object-contain" style={{ filter: 'brightness(0) invert(1)' }} />
+            <div className="w-10 h-10 rounded-xl bg-[#00d9c5]/10 flex items-center justify-center overflow-hidden p-1">
+              <img src="/logo.png" alt="Logo" className="w-full h-full object-contain" />
             </div>
             <h1 className="font-heading text-xl font-bold text-foreground tracking-tight">
               Pediatrics on the Go
