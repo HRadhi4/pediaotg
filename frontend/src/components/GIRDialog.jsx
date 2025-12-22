@@ -15,20 +15,23 @@ const GIRDialog = ({ open, onOpenChange }) => {
   const [weight, setWeight] = useState("");
   const [results, setResults] = useState(null);
 
-  // Multiple fluid sources for GIR calculation
+  // Multiple fluid sources for GIR calculation (volumes in ml/day)
   const [fluidSources, setFluidSources] = useState([
     { id: 1, type: "d10", concentration: 10, volume: "", enabled: true }
   ]);
   
   // Formula feed
   const [includeFormula, setIncludeFormula] = useState(false);
-  const [formulaVolume, setFormulaVolume] = useState("");
+  const [formulaVolume, setFormulaVolume] = useState(""); // ml/day
   const [formulaCalories, setFormulaCalories] = useState("20");
 
   // Target GIR calculation
   const [targetGIR, setTargetGIR] = useState("");
-  const [workingTFI, setWorkingTFI] = useState("");
-  const [lineType, setLineType] = useState("peripheral"); // peripheral or central
+  const [workingTFI, setWorkingTFI] = useState(""); // ml/day
+  const [lineType, setLineType] = useState("peripheral");
+  const [useCombinedDextrose, setUseCombinedDextrose] = useState(false);
+  const [lowDextrose, setLowDextrose] = useState("d10");
+  const [highDextrose, setHighDextrose] = useState("d50");
 
   const dextroseOptions = [
     { type: "d5", label: "D5%", concentration: 5 },
@@ -39,7 +42,6 @@ const GIRDialog = ({ open, onOpenChange }) => {
     { type: "d50", label: "D50%", concentration: 50 }
   ];
 
-  // Max concentration for peripheral line
   const maxPeripheralConcentration = 12.5;
 
   const addFluidSource = () => {
@@ -77,12 +79,10 @@ const GIRDialog = ({ open, onOpenChange }) => {
     let totalVolume = 0;
     const breakdown = [];
 
-    // Calculate from each fluid source
+    // Calculate from each fluid source (volumes already in ml/day)
     fluidSources.forEach(source => {
-      const volPerKg = parseFloat(source.volume) || 0;
-      if (volPerKg > 0) {
-        // Volume input is ml/kg/day, calculate total ml/day
-        const volumePerDay = volPerKg * w; // ml/day
+      const volumePerDay = parseFloat(source.volume) || 0;
+      if (volumePerDay > 0) {
         const glucoseGrams = volumePerDay * (source.concentration / 100);
         const glucoseMg = glucoseGrams * 1000;
         totalGlucoseMg += glucoseMg;
@@ -91,7 +91,6 @@ const GIRDialog = ({ open, onOpenChange }) => {
         const option = dextroseOptions.find(o => o.type === source.type);
         breakdown.push({
           label: option?.label || source.type,
-          volumePerKg: volPerKg,
           volumePerDay: volumePerDay.toFixed(1),
           glucoseG: glucoseGrams.toFixed(2),
           glucoseMg: glucoseMg.toFixed(0)
@@ -99,12 +98,10 @@ const GIRDialog = ({ open, onOpenChange }) => {
       }
     });
 
-    // Add formula feed if included
+    // Add formula feed if included (volume in ml/day)
     if (includeFormula && formulaVolume) {
-      const formulaVolPerKg = parseFloat(formulaVolume) || 0;
-      if (formulaVolPerKg > 0) {
-        const formulaPerDay = formulaVolPerKg * w; // ml/day
-        // Formula typically has ~7g carbs per 100ml for standard 20kcal/oz formula
+      const formulaPerDay = parseFloat(formulaVolume) || 0;
+      if (formulaPerDay > 0) {
         const carbsPercent = parseFloat(formulaCalories) === 24 ? 8.5 : parseFloat(formulaCalories) === 27 ? 9.5 : 7;
         const glucoseGrams = formulaPerDay * (carbsPercent / 100);
         const glucoseMg = glucoseGrams * 1000;
@@ -113,7 +110,6 @@ const GIRDialog = ({ open, onOpenChange }) => {
         
         breakdown.push({
           label: `Formula (${formulaCalories} kcal)`,
-          volumePerKg: formulaVolPerKg,
           volumePerDay: formulaPerDay.toFixed(1),
           glucoseG: glucoseGrams.toFixed(2),
           glucoseMg: glucoseMg.toFixed(0),
@@ -130,7 +126,7 @@ const GIRDialog = ({ open, onOpenChange }) => {
     // GIR = mg/kg/min
     const girValue = totalGlucoseMg / w / 24 / 60;
     const hourlyRate = totalVolume / 24;
-    const tfiTotal = totalVolume / w;
+    const tfiPerKg = totalVolume / w;
 
     setResults({
       type: "gir",
@@ -139,7 +135,7 @@ const GIRDialog = ({ open, onOpenChange }) => {
       totalGlucoseG: (totalGlucoseMg / 1000).toFixed(2),
       totalVolume: totalVolume.toFixed(1),
       hourlyRate: hourlyRate.toFixed(1),
-      tfiTotal: tfiTotal.toFixed(1),
+      tfiPerKg: tfiPerKg.toFixed(1),
       breakdown
     });
   };
@@ -147,19 +143,17 @@ const GIRDialog = ({ open, onOpenChange }) => {
   const calculateFromTFI = () => {
     const w = parseFloat(weight);
     const gir = parseFloat(targetGIR);
-    const tfi = parseFloat(workingTFI);
+    const totalFluidPerDay = parseFloat(workingTFI); // Already in ml/day
     
-    if (!w || !gir || !tfi) {
+    if (!w || !gir || !totalFluidPerDay) {
       setResults({ error: "Please fill in weight, target GIR, and working TFI" });
       return;
     }
 
-    // Calculate total fluid per day
-    const totalFluidPerDay = tfi * w; // ml/day
     const hourlyRate = totalFluidPerDay / 24;
+    const tfiPerKg = totalFluidPerDay / w;
 
     // Calculate required glucose per day to achieve target GIR
-    // GIR = mg/kg/min → mg/day = GIR × weight × 24 × 60
     const requiredGlucoseMgPerDay = gir * w * 24 * 60;
     const requiredGlucoseGPerDay = requiredGlucoseMgPerDay / 1000;
 
@@ -170,56 +164,80 @@ const GIRDialog = ({ open, onOpenChange }) => {
     const maxConc = lineType === "peripheral" ? maxPeripheralConcentration : 100;
     const availableOptions = dextroseOptions.filter(o => o.concentration <= maxConc);
 
-    // Find the best matching concentration
     let recommendation = null;
     let warning = null;
+    let combinedMix = null;
 
-    if (requiredConcentration <= maxConc) {
-      // Find closest available concentration
-      const closest = availableOptions.reduce((prev, curr) => 
-        Math.abs(curr.concentration - requiredConcentration) < Math.abs(prev.concentration - requiredConcentration) ? curr : prev
-      );
+    // If using combined dextrose, calculate the mix
+    if (useCombinedDextrose) {
+      const lowOpt = dextroseOptions.find(o => o.type === lowDextrose);
+      const highOpt = dextroseOptions.find(o => o.type === highDextrose);
       
-      // Calculate actual GIR with this concentration
-      const actualGlucose = totalFluidPerDay * (closest.concentration / 100) * 1000;
-      const actualGIR = actualGlucose / w / 24 / 60;
-
-      recommendation = {
-        concentration: closest,
-        actualGIR: actualGIR.toFixed(2),
-        close: Math.abs(actualGIR - gir) < 0.5
-      };
-
-      // Check if we need to suggest alternatives
-      if (!recommendation.close) {
-        // Find options that bracket the target
-        const lowerOpt = availableOptions.filter(o => o.concentration < requiredConcentration).pop();
-        const higherOpt = availableOptions.find(o => o.concentration > requiredConcentration);
+      if (lowOpt && highOpt && requiredConcentration >= lowOpt.concentration && requiredConcentration <= highOpt.concentration) {
+        // Calculate mixing ratio using alligation method
+        // Parts of high = (required - low)
+        // Parts of low = (high - required)
+        const partsHigh = requiredConcentration - lowOpt.concentration;
+        const partsLow = highOpt.concentration - requiredConcentration;
+        const totalParts = partsHigh + partsLow;
         
-        if (lowerOpt && higherOpt) {
-          const lowerGIR = (totalFluidPerDay * (lowerOpt.concentration / 100) * 1000) / w / 24 / 60;
-          const higherGIR = (totalFluidPerDay * (higherOpt.concentration / 100) * 1000) / w / 24 / 60;
-          recommendation.alternatives = [
-            { ...lowerOpt, gir: lowerGIR.toFixed(2) },
-            { ...higherOpt, gir: higherGIR.toFixed(2) }
-          ];
+        const volumeHigh = (partsHigh / totalParts) * totalFluidPerDay;
+        const volumeLow = (partsLow / totalParts) * totalFluidPerDay;
+        
+        // Verify the mix achieves target GIR
+        const mixGlucose = (volumeLow * lowOpt.concentration / 100) + (volumeHigh * highOpt.concentration / 100);
+        const mixGIR = (mixGlucose * 1000) / w / 24 / 60;
+        
+        combinedMix = {
+          lowDextrose: lowOpt,
+          highDextrose: highOpt,
+          volumeLow: volumeLow.toFixed(1),
+          volumeHigh: volumeHigh.toFixed(1),
+          ratioLow: ((partsLow / totalParts) * 100).toFixed(0),
+          ratioHigh: ((partsHigh / totalParts) * 100).toFixed(0),
+          finalConcentration: requiredConcentration.toFixed(1),
+          achievedGIR: mixGIR.toFixed(2)
+        };
+
+        // Check if mix exceeds peripheral limit
+        if (lineType === "peripheral" && requiredConcentration > maxPeripheralConcentration) {
+          warning = `Final concentration (${requiredConcentration.toFixed(1)}%) exceeds peripheral line limit (${maxPeripheralConcentration}%). Consider central line.`;
         }
+      } else if (lowOpt && highOpt) {
+        warning = `Required concentration (${requiredConcentration.toFixed(1)}%) is outside the range of ${lowOpt.label} to ${highOpt.label}. Adjust your selection.`;
       }
-    } else {
-      warning = lineType === "peripheral" 
-        ? `Required concentration (${requiredConcentration.toFixed(1)}%) exceeds peripheral line limit (${maxPeripheralConcentration}%). Consider central line or reducing TFI.`
-        : `Required concentration (${requiredConcentration.toFixed(1)}%) is very high. Consider adjusting TFI.`;
-      
-      // Still show closest option
-      const closest = availableOptions[availableOptions.length - 1]; // highest available
-      const actualGlucose = totalFluidPerDay * (closest.concentration / 100) * 1000;
-      const actualGIR = actualGlucose / w / 24 / 60;
-      recommendation = {
-        concentration: closest,
-        actualGIR: actualGIR.toFixed(2),
-        close: false,
-        maxAvailable: true
-      };
+    }
+
+    // Single concentration recommendation
+    if (!useCombinedDextrose) {
+      if (requiredConcentration <= maxConc) {
+        const closest = availableOptions.reduce((prev, curr) => 
+          Math.abs(curr.concentration - requiredConcentration) < Math.abs(prev.concentration - requiredConcentration) ? curr : prev
+        );
+        
+        const actualGlucose = totalFluidPerDay * (closest.concentration / 100) * 1000;
+        const actualGIR = actualGlucose / w / 24 / 60;
+
+        recommendation = {
+          concentration: closest,
+          actualGIR: actualGIR.toFixed(2),
+          close: Math.abs(actualGIR - gir) < 0.5
+        };
+      } else {
+        warning = lineType === "peripheral" 
+          ? `Required concentration (${requiredConcentration.toFixed(1)}%) exceeds peripheral line limit (${maxPeripheralConcentration}%). Consider central line or combined dextrose.`
+          : `Required concentration (${requiredConcentration.toFixed(1)}%) is very high. Consider combined dextrose.`;
+        
+        const closest = availableOptions[availableOptions.length - 1];
+        const actualGlucose = totalFluidPerDay * (closest.concentration / 100) * 1000;
+        const actualGIR = actualGlucose / w / 24 / 60;
+        recommendation = {
+          concentration: closest,
+          actualGIR: actualGIR.toFixed(2),
+          close: false,
+          maxAvailable: true
+        };
+      }
     }
 
     // Calculate all available options
@@ -236,14 +254,16 @@ const GIRDialog = ({ open, onOpenChange }) => {
     setResults({
       type: "tfi",
       targetGIR: gir,
-      workingTFI: tfi,
-      totalFluidPerDay: totalFluidPerDay.toFixed(1),
+      workingTFI: totalFluidPerDay,
+      tfiPerKg: tfiPerKg.toFixed(1),
       hourlyRate: hourlyRate.toFixed(1),
       requiredConcentration: requiredConcentration.toFixed(1),
       recommendation,
       warning,
+      combinedMix,
       allOptions,
-      lineType
+      lineType,
+      useCombinedDextrose
     });
   };
 
@@ -254,6 +274,7 @@ const GIRDialog = ({ open, onOpenChange }) => {
     setFormulaVolume("");
     setTargetGIR("");
     setWorkingTFI("");
+    setUseCombinedDextrose(false);
     setResults(null);
   };
 
@@ -295,10 +316,10 @@ const GIRDialog = ({ open, onOpenChange }) => {
             <Card className="nightingale-card">
               <CardHeader className="pb-3">
                 <CardTitle className="text-base">Fluid Sources</CardTitle>
-                <CardDescription>Enter volumes in ml/kg/day</CardDescription>
+                <CardDescription>Enter volumes in ml/day</CardDescription>
               </CardHeader>
               <CardContent className="space-y-3">
-                {fluidSources.map((source, index) => (
+                {fluidSources.map((source) => (
                   <div key={source.id} className="flex gap-2 items-end">
                     <div className="flex-1 space-y-1">
                       <Label className="text-xs">{dextroseOptions.find(o => o.type === source.type)?.label || "Dextrose"}</Label>
@@ -313,11 +334,11 @@ const GIRDialog = ({ open, onOpenChange }) => {
                       </select>
                     </div>
                     <div className="flex-1 space-y-1">
-                      <Label className="text-xs">ml/kg/day</Label>
+                      <Label className="text-xs">Volume (ml/day)</Label>
                       <Input
                         type="number"
                         step="1"
-                        placeholder="e.g., 60"
+                        placeholder="e.g., 150"
                         value={source.volume}
                         onChange={(e) => updateFluidSource(source.id, "volume", e.target.value)}
                         className="nightingale-input font-mono h-10"
@@ -361,11 +382,11 @@ const GIRDialog = ({ open, onOpenChange }) => {
                 {includeFormula && (
                   <div className="grid grid-cols-2 gap-3 pl-6">
                     <div className="space-y-1">
-                      <Label className="text-xs">ml/kg/day</Label>
+                      <Label className="text-xs">Volume (ml/day)</Label>
                       <Input
                         type="number"
                         step="1"
-                        placeholder="e.g., 30"
+                        placeholder="e.g., 75"
                         value={formulaVolume}
                         onChange={(e) => setFormulaVolume(e.target.value)}
                         className="nightingale-input font-mono h-9"
@@ -415,11 +436,11 @@ const GIRDialog = ({ open, onOpenChange }) => {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label>Working TFI (ml/kg/day)</Label>
+                    <Label>Working TFI (ml/day)</Label>
                     <Input
                       type="number"
                       step="1"
-                      placeholder="e.g., 80"
+                      placeholder="e.g., 200"
                       value={workingTFI}
                       onChange={(e) => setWorkingTFI(e.target.value)}
                       className="nightingale-input font-mono"
@@ -433,13 +454,55 @@ const GIRDialog = ({ open, onOpenChange }) => {
                   <RadioGroup value={lineType} onValueChange={setLineType} className="flex gap-4">
                     <div className="flex items-center space-x-2">
                       <RadioGroupItem value="peripheral" id="peripheral" />
-                      <Label htmlFor="peripheral" className="cursor-pointer">Peripheral (max 12.5%)</Label>
+                      <Label htmlFor="peripheral" className="cursor-pointer text-sm">Peripheral (max 12.5%)</Label>
                     </div>
                     <div className="flex items-center space-x-2">
                       <RadioGroupItem value="central" id="central" />
-                      <Label htmlFor="central" className="cursor-pointer">Central Line</Label>
+                      <Label htmlFor="central" className="cursor-pointer text-sm">Central Line</Label>
                     </div>
                   </RadioGroup>
+                </div>
+
+                <Separator />
+
+                <div className="space-y-3">
+                  <div className="flex items-center space-x-3">
+                    <Checkbox
+                      id="useCombined"
+                      checked={useCombinedDextrose}
+                      onCheckedChange={setUseCombinedDextrose}
+                    />
+                    <Label htmlFor="useCombined" className="cursor-pointer font-medium">Use Combined Dextrose</Label>
+                  </div>
+                  
+                  {useCombinedDextrose && (
+                    <div className="grid grid-cols-2 gap-3 pl-6">
+                      <div className="space-y-1">
+                        <Label className="text-xs">Low Concentration</Label>
+                        <select
+                          value={lowDextrose}
+                          onChange={(e) => setLowDextrose(e.target.value)}
+                          className="w-full h-9 rounded-xl bg-gray-50 dark:bg-gray-800/50 border-0 px-3 text-sm"
+                        >
+                          {dextroseOptions.slice(0, 4).map(opt => (
+                            <option key={opt.type} value={opt.type}>{opt.label}</option>
+                          ))}
+                        </select>
+                      </div>
+                      <div className="space-y-1">
+                        <Label className="text-xs">High Concentration</Label>
+                        <select
+                          value={highDextrose}
+                          onChange={(e) => setHighDextrose(e.target.value)}
+                          className="w-full h-9 rounded-xl bg-gray-50 dark:bg-gray-800/50 border-0 px-3 text-sm"
+                        >
+                          {dextroseOptions.slice(2).map(opt => (
+                            <option key={opt.type} value={opt.type}>{opt.label}</option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </CardContent>
             </Card>
@@ -480,7 +543,7 @@ const GIRDialog = ({ open, onOpenChange }) => {
                     </div>
                     <div className="p-2 rounded-xl bg-white dark:bg-gray-800 border text-center">
                       <p className="text-xs text-muted-foreground">TFI</p>
-                      <p className="text-sm font-mono font-bold">{results.tfiTotal} ml/kg/day</p>
+                      <p className="text-sm font-mono font-bold">{results.tfiPerKg} ml/kg/day</p>
                     </div>
                   </div>
 
@@ -496,7 +559,7 @@ const GIRDialog = ({ open, onOpenChange }) => {
                               <span className="font-mono">{item.glucoseG}g glucose</span>
                             </div>
                             <div className="text-muted-foreground">
-                              {item.volumePerKg} ml/kg/day → <span className="font-mono font-medium">{item.volumePerDay} ml/day</span>
+                              <span className="font-mono font-medium">{item.volumePerDay} ml/day</span>
                             </div>
                           </div>
                         ))}
@@ -522,12 +585,36 @@ const GIRDialog = ({ open, onOpenChange }) => {
                     </div>
                     <div className="p-3 rounded-xl bg-white dark:bg-gray-800 border text-center">
                       <p className="text-xs text-muted-foreground">Total Fluid</p>
-                      <p className="text-lg font-mono font-bold">{results.totalFluidPerDay} ml/day</p>
-                      <p className="text-xs text-muted-foreground">{results.hourlyRate} ml/hr</p>
+                      <p className="text-lg font-mono font-bold">{results.workingTFI} ml/day</p>
+                      <p className="text-xs text-muted-foreground">{results.hourlyRate} ml/hr | {results.tfiPerKg} ml/kg/day</p>
                     </div>
                   </div>
 
-                  {results.recommendation && (
+                  {/* Combined Dextrose Mix Result */}
+                  {results.combinedMix && (
+                    <div className="p-4 rounded-xl bg-green-50 dark:bg-green-950/30 border border-green-200 space-y-3">
+                      <p className="text-sm font-medium text-green-700 dark:text-green-300">Combined Dextrose Mix</p>
+                      <div className="grid grid-cols-2 gap-3">
+                        <div className="p-2 rounded-lg bg-white dark:bg-gray-800 text-center">
+                          <p className="text-xs text-muted-foreground">{results.combinedMix.lowDextrose.label}</p>
+                          <p className="text-lg font-mono font-bold">{results.combinedMix.volumeLow} ml</p>
+                          <p className="text-xs text-muted-foreground">{results.combinedMix.ratioLow}%</p>
+                        </div>
+                        <div className="p-2 rounded-lg bg-white dark:bg-gray-800 text-center">
+                          <p className="text-xs text-muted-foreground">{results.combinedMix.highDextrose.label}</p>
+                          <p className="text-lg font-mono font-bold">{results.combinedMix.volumeHigh} ml</p>
+                          <p className="text-xs text-muted-foreground">{results.combinedMix.ratioHigh}%</p>
+                        </div>
+                      </div>
+                      <div className="text-center pt-2 border-t border-green-200">
+                        <p className="text-xs text-muted-foreground">Final Concentration: <span className="font-mono font-bold">{results.combinedMix.finalConcentration}%</span></p>
+                        <p className="text-xs text-muted-foreground">Achieved GIR: <span className="font-mono font-bold text-[#00d9c5]">{results.combinedMix.achievedGIR} mg/kg/min</span></p>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Single Concentration Recommendation */}
+                  {!results.useCombinedDextrose && results.recommendation && (
                     <div className={`p-3 rounded-xl border ${results.recommendation.close ? 'bg-green-50 dark:bg-green-950/30 border-green-200' : 'bg-blue-50 dark:bg-blue-950/30 border-blue-200'}`}>
                       <p className="text-xs font-medium text-muted-foreground mb-1">Recommended</p>
                       <div className="flex justify-between items-center">
@@ -540,22 +627,24 @@ const GIRDialog = ({ open, onOpenChange }) => {
                     </div>
                   )}
 
-                  <div className="space-y-2">
-                    <p className="text-sm font-medium">All Options ({results.lineType === 'peripheral' ? 'Peripheral ≤12.5%' : 'Central Line'}):</p>
-                    <div className="grid grid-cols-2 gap-2">
-                      {results.allOptions.map((opt, i) => (
-                        <div 
-                          key={i} 
-                          className={`p-2 rounded-lg text-sm ${opt.isTarget ? 'bg-[#00d9c5]/20 border-2 border-[#00d9c5]' : 'bg-gray-50 dark:bg-gray-800/50'}`}
-                        >
-                          <div className="flex justify-between">
-                            <span className="font-medium">{opt.label}</span>
-                            <span className="font-mono text-xs">GIR: {opt.gir}</span>
+                  {!results.useCombinedDextrose && (
+                    <div className="space-y-2">
+                      <p className="text-sm font-medium">All Options ({results.lineType === 'peripheral' ? 'Peripheral ≤12.5%' : 'Central Line'}):</p>
+                      <div className="grid grid-cols-2 gap-2">
+                        {results.allOptions.map((opt, i) => (
+                          <div 
+                            key={i} 
+                            className={`p-2 rounded-lg text-sm ${opt.isTarget ? 'bg-[#00d9c5]/20 border-2 border-[#00d9c5]' : 'bg-gray-50 dark:bg-gray-800/50'}`}
+                          >
+                            <div className="flex justify-between">
+                              <span className="font-medium">{opt.label}</span>
+                              <span className="font-mono text-xs">GIR: {opt.gir}</span>
+                            </div>
                           </div>
-                        </div>
-                      ))}
+                        ))}
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </>
               )}
             </CardContent>
