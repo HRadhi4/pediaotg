@@ -100,6 +100,9 @@ const NICUCalculator = ({ theme, toggleTheme }) => {
       case "catheter":
         setCatheterDialogOpen(true);
         break;
+      case "intubation":
+        setIntubationDialogOpen(true);
+        break;
       case "bp":
         setBpDialogOpen(true);
         break;
