@@ -105,9 +105,6 @@ const LandingPage = ({ theme, toggleTheme }) => {
                 <p className="text-muted-foreground">
                   Neonatal Intensive Care Unit
                 </p>
-                <div className="mt-4 px-4 py-2 rounded-full bg-[#00d9c5]/10 text-[#00d9c5] text-sm font-medium">
-                  Fluid Calculator
-                </div>
               </div>
             </div>
 
