@@ -6,55 +6,41 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Calculator, Droplets, AlertCircle } from "lucide-react";
-import { Separator } from "@/components/ui/separator";
 
 const BloodProductsDialog = ({ open, onOpenChange }) => {
   const [activeTab, setActiveTab] = useState("prbc");
   const [weight, setWeight] = useState("");
   const [results, setResults] = useState(null);
 
-  // PRBC specific
-  const [currentHb, setCurrentHb] = useState("");
-  const [targetHb, setTargetHb] = useState("");
-  const [hematocrit, setHematocrit] = useState("0.4");
-
-  // Coagulation
+  // Coagulation states
   const [ptType, setPtType] = useState("infant");
   const [fibrinogen, setFibrinogen] = useState("");
   const [platelets, setPlatelets] = useState("");
 
   const calculatePRBC = () => {
     const w = parseFloat(weight);
-    const hbCurrent = parseFloat(currentHb);
-    const hbTarget = parseFloat(targetHb);
-    const hct = parseFloat(hematocrit);
-
     if (!w) {
       setResults({ error: "Please enter weight" });
       return;
     }
 
-    // Simple dose: 10-15 ml/kg
-    const simpleDoseMin = w * 10;
-    const simpleDoseMax = Math.min(w * 15, 280);
-
-    // Formula dose if Hb values provided
-    let formulaDose = null;
-    if (!isNaN(hbCurrent) && !isNaN(hbTarget) && hct) {
-      const increment = hbTarget - hbCurrent;
-      formulaDose = (w * increment * 3) / hct;
-    }
+    // Simple: 15 ml/kg, max 1 unit (280 ml)
+    const dose = w * 15;
+    const maxDose = 280;
+    const actualDose = Math.min(dose, maxDose);
 
     setResults({
       type: "prbc",
-      simpleDose: `${simpleDoseMin.toFixed(0)} - ${simpleDoseMax.toFixed(0)} ml`,
-      formulaDose: formulaDose ? formulaDose.toFixed(1) : null,
+      dose: `${actualDose.toFixed(0)} ml`,
+      calculation: `${w} kg × 15 ml/kg = ${dose.toFixed(0)} ml`,
+      capped: dose > maxDose,
       duration: "3-4 hours",
       maxDose: "1 unit (280 ml)",
       notes: [
-        "Indication: Hb < 7 g/dL (unless known condition of anemia with different target)",
-        "10-15 ml/kg would raise Hb by approximately 2 g/dL",
-        "Always use leukocyte-reduced, irradiated blood for neonates"
+        "Indication: Hb < 7 g/dL",
+        "15 ml/kg raises Hb by approximately 2-3 g/dL",
+        "Max: 1 unit (280 ml)",
+        "Use leukocyte-reduced, irradiated blood for neonates"
       ]
     });
   };
@@ -176,8 +162,6 @@ const BloodProductsDialog = ({ open, onOpenChange }) => {
 
   const reset = () => {
     setWeight("");
-    setCurrentHb("");
-    setTargetHb("");
     setFibrinogen("");
     setPlatelets("");
     setResults(null);
@@ -206,13 +190,12 @@ const BloodProductsDialog = ({ open, onOpenChange }) => {
             {results.units && <p className="text-sm text-muted-foreground">{results.units}</p>}
           </div>
 
-          {results.formulaDose && (
-            <div className="p-3 rounded-xl bg-white dark:bg-gray-800 border">
-              <p className="text-xs text-muted-foreground">Calculated Dose (Formula)</p>
-              <p className="text-xl font-mono font-bold">{results.formulaDose} ml</p>
-              <p className="text-xs text-muted-foreground mt-1">
-                Formula: Weight × (Target Hb - Current Hb) × 3 ÷ Hct
-              </p>
+          {results.calculation && (
+            <div className="p-3 rounded-xl bg-gray-50 dark:bg-gray-800/50 text-center">
+              <p className="text-sm font-mono text-muted-foreground">{results.calculation}</p>
+              {results.capped && (
+                <p className="text-xs text-amber-600 mt-1">Capped at max dose</p>
+              )}
             </div>
           )}
 
@@ -294,46 +277,12 @@ const BloodProductsDialog = ({ open, onOpenChange }) => {
             <Card className="nightingale-card">
               <CardHeader className="pb-3">
                 <CardTitle className="text-base">Packed Red Blood Cells</CardTitle>
-                <CardDescription>Blood transfusion for anemia</CardDescription>
+                <CardDescription>Blood transfusion for anemia (Hb &lt; 7 g/dL)</CardDescription>
               </CardHeader>
-              <CardContent className="space-y-3">
-                <div className="grid grid-cols-3 gap-3">
-                  <div className="space-y-2">
-                    <Label className="text-xs">Current Hb (g/dL)</Label>
-                    <Input
-                      type="number"
-                      step="0.1"
-                      placeholder="e.g., 7"
-                      value={currentHb}
-                      onChange={(e) => setCurrentHb(e.target.value)}
-                      className="nightingale-input font-mono h-9"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label className="text-xs">Target Hb (g/dL)</Label>
-                    <Input
-                      type="number"
-                      step="0.1"
-                      placeholder="e.g., 10"
-                      value={targetHb}
-                      onChange={(e) => setTargetHb(e.target.value)}
-                      className="nightingale-input font-mono h-9"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label className="text-xs">Hct (decimal)</Label>
-                    <Input
-                      type="number"
-                      step="0.01"
-                      placeholder="0.4"
-                      value={hematocrit}
-                      onChange={(e) => setHematocrit(e.target.value)}
-                      className="nightingale-input font-mono h-9"
-                    />
-                  </div>
-                </div>
+              <CardContent>
                 <Button onClick={calculatePRBC} className="w-full nightingale-btn-primary">
-                  Calculate PRBC
+                  <Calculator className="h-4 w-4 mr-2" />
+                  Calculate PRBC (15 ml/kg)
                 </Button>
               </CardContent>
             </Card>
