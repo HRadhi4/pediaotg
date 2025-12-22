@@ -773,33 +773,64 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
           <TabsContent value="phosphate" className="space-y-4">
             <Card>
               <CardHeader className="pb-3">
-                <CardTitle className="text-base">Phosphate Replacement</CardTitle>
-                <CardDescription>Hypophosphatemia correction</CardDescription>
+                <CardTitle className="text-base">Phosphate Replacement (IV)</CardTitle>
+                <CardDescription>Symptomatic/Severe Hypophosphatemia (P &lt; 1-2 mg/dL)</CardDescription>
               </CardHeader>
               <CardContent className="space-y-3">
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="space-y-2">
-                    <Label>Current Phosphate Level</Label>
-                    <Input
-                      type="number"
-                      step="0.1"
-                      placeholder="mg/dL"
-                      value={phosphateLevel}
-                      onChange={(e) => setPhosphateLevel(e.target.value)}
-                      className="font-mono"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Total Feed Volume (ml)</Label>
-                    <Input
-                      type="number"
-                      placeholder="For division"
-                      value={feedVolume}
-                      onChange={(e) => setFeedVolume(e.target.value)}
-                      className="font-mono"
-                    />
-                  </div>
+                <div className="space-y-2">
+                  <Label>Current Phosphate Level (mg/dL)</Label>
+                  <Input
+                    type="number"
+                    step="0.1"
+                    placeholder="e.g., 1.5"
+                    value={phosphateLevel}
+                    onChange={(e) => setPhosphateLevel(e.target.value)}
+                    className="font-mono"
+                  />
                 </div>
+                
+                <div className="space-y-2">
+                  <Label>Severity</Label>
+                  <RadioGroup 
+                    value={phosphateSeverity} 
+                    onValueChange={setPhosphateSeverity}
+                    className="flex gap-4"
+                  >
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="moderate" id="phos-moderate" />
+                      <Label htmlFor="phos-moderate" className="cursor-pointer text-sm">Low/Moderate (P 1-2)</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="severe" id="phos-severe" />
+                      <Label htmlFor="phos-severe" className="cursor-pointer text-sm">Severe (P &lt;1)</Label>
+                    </div>
+                  </RadioGroup>
+                </div>
+
+                {/* Reference Table */}
+                <div className="p-3 rounded-lg bg-gray-50 dark:bg-gray-800/50">
+                  <p className="text-xs font-medium mb-2">IV Dose Reference:</p>
+                  <table className="w-full text-xs">
+                    <thead>
+                      <tr className="border-b">
+                        <th className="text-left py-1">Severity</th>
+                        <th className="text-right py-1">Dose (mmol/kg)</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr className="border-b">
+                        <td className="py-1">Low/Moderate</td>
+                        <td className="text-right font-mono">0.08 - 0.16</td>
+                      </tr>
+                      <tr>
+                        <td className="py-1">Severe</td>
+                        <td className="text-right font-mono">0.25 - 0.50</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <p className="text-xs text-muted-foreground mt-2">Max single dose: 15 mmol or 0.5 mmol/kg</p>
+                </div>
+
                 <Button onClick={calculatePhosphate} className="w-full">Calculate Phosphate</Button>
               </CardContent>
             </Card>
