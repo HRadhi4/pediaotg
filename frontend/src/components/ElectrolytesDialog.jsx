@@ -537,6 +537,15 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
               <p className="text-sm text-red-600 dark:text-red-400">{results.incompatible}</p>
             </div>
           )}
+          
+          {results.warning && (
+            <div className="p-3 rounded-lg bg-red-100 dark:bg-red-950/50 border border-red-300 dark:border-red-800">
+              <p className="text-sm font-bold text-red-700 dark:text-red-300 flex items-center gap-1">
+                <AlertCircle className="h-4 w-4" /> Warning
+              </p>
+              <p className="text-sm text-red-600 dark:text-red-400 mt-1">{results.warning}</p>
+            </div>
+          )}
         </CardContent>
       </Card>
     );
