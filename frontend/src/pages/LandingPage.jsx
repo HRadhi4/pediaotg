@@ -59,7 +59,7 @@ const LandingPage = ({ theme, toggleTheme }) => {
               <Baby className="h-5 w-5 text-white" />
             </div>
             <h1 className="font-heading text-xl font-bold text-foreground tracking-tight">
-              Pediatrics to Go
+              Pediatrics on the Go
             </h1>
           </div>
           <button
