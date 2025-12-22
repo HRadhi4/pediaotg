@@ -1,15 +1,32 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { Baby, Users, Moon, Sun, Droplets, FlaskConical, Stethoscope, BarChart3, User } from "lucide-react";
+import { Baby, Users, Moon, Sun, Droplets, FlaskConical, Stethoscope, BarChart3 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import BloodGasDialog from "@/components/BloodGasDialog";
 import ElectrolytesDialog from "@/components/ElectrolytesDialog";
+import JaundiceDialog from "@/components/JaundiceDialog";
+
+// Custom Sun icon for Jaundice
+const JaundiceIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="4"/>
+    <path d="M12 2v2"/>
+    <path d="M12 20v2"/>
+    <path d="m4.93 4.93 1.41 1.41"/>
+    <path d="m17.66 17.66 1.41 1.41"/>
+    <path d="M2 12h2"/>
+    <path d="M20 12h2"/>
+    <path d="m6.34 17.66-1.41 1.41"/>
+    <path d="m19.07 4.93-1.41 1.41"/>
+  </svg>
+);
 
 const LandingPage = ({ theme, toggleTheme }) => {
   const navigate = useNavigate();
   const [bloodGasOpen, setBloodGasOpen] = useState(false);
   const [electrolytesOpen, setElectrolytesOpen] = useState(false);
+  const [jaundiceOpen, setJaundiceOpen] = useState(false);
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -138,16 +155,18 @@ const LandingPage = ({ theme, toggleTheme }) => {
               <span className="text-xs font-medium">Coming</span>
             </Button>
 
-            {/* Future: Profile */}
+            {/* Neonatal Jaundice */}
             <Button
               variant="ghost"
               size="lg"
-              disabled
-              className="flex flex-col items-center gap-1 h-auto py-2 px-4 opacity-40"
-              data-testid="future-nav-3"
+              onClick={() => setJaundiceOpen(true)}
+              className="flex flex-col items-center gap-1 h-auto py-2 px-4 hover:bg-amber-500/10"
+              data-testid="jaundice-nav"
             >
-              <User className="h-6 w-6" />
-              <span className="text-xs font-medium">Coming</span>
+              <span className="text-amber-500">
+                <JaundiceIcon />
+              </span>
+              <span className="text-xs font-medium">Jaundice</span>
             </Button>
           </div>
         </div>
@@ -156,6 +175,7 @@ const LandingPage = ({ theme, toggleTheme }) => {
       {/* Dialogs */}
       <BloodGasDialog open={bloodGasOpen} onOpenChange={setBloodGasOpen} />
       <ElectrolytesDialog open={electrolytesOpen} onOpenChange={setElectrolytesOpen} />
+      <JaundiceDialog open={jaundiceOpen} onOpenChange={setJaundiceOpen} />
     </div>
   );
 };
