@@ -112,6 +112,10 @@ def main():
     
     # Test getting status checks
     tester.test_get_status_checks()
+    
+    # Test blood gas analysis
+    print("\n🩸 Testing Blood Gas Analysis...")
+    tester.test_blood_gas_analyze()
 
     # Print results
     print("\n" + "=" * 50)
