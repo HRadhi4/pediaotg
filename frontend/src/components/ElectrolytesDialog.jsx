@@ -31,7 +31,7 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
   
   // Phosphate states
   const [phosphateLevel, setPhosphateLevel] = useState("");
-  const [feedVolume, setFeedVolume] = useState("");
+  const [phosphateSeverity, setPhosphateSeverity] = useState("moderate"); // "moderate" or "severe"
 
   const calculateCalcium = () => {
     const w = parseFloat(weight);
