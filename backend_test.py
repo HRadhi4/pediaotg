@@ -64,6 +64,36 @@ class NICUBackendTester:
         """Test getting status checks"""
         return self.run_test("Get Status Checks", "GET", "api/status", 200)
 
+    def test_blood_gas_analyze(self):
+        """Test blood gas analysis with metabolic acidosis values"""
+        test_values = {
+            "values": {
+                "pH": 7.25,
+                "pCO2": 30,
+                "HCO3": 14,
+                "Na": 140,
+                "K": 5.2,
+                "Cl": 110,
+                "lactate": 4.5
+            }
+        }
+        success, response = self.run_test(
+            "Blood Gas Analysis",
+            "POST",
+            "api/blood-gas/analyze",
+            200,
+            data=test_values
+        )
+        
+        if success:
+            # Check if analysis contains expected results
+            if "primary_disorder" in response:
+                print(f"Primary Disorder: {response.get('primary_disorder')}")
+                print(f"Lactic Acidosis: {response.get('lactic_acidosis')}")
+                print(f"Anion Gap: {response.get('anion_gap')}")
+            
+        return success, response
+
 def main():
     print("🚀 Starting NICU Backend API Tests")
     print("=" * 50)
