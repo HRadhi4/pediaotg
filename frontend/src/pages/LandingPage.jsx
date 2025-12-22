@@ -165,17 +165,6 @@ const LandingPage = ({ theme, toggleTheme }) => {
             <FlaskConical className="h-5 w-5" />
           </button>
 
-          {/* Jaundice */}
-          <button
-            onClick={() => handleTabClick("jaundice")}
-            className={`tab-item ${activeTab === "jaundice" ? "active" : ""}`}
-            data-testid="jaundice-nav"
-          >
-            <span className={activeTab === "jaundice" ? "text-amber-400" : ""}>
-              <JaundiceIcon />
-            </span>
-          </button>
-
           {/* Blood Products */}
           <button
             onClick={() => handleTabClick("bloodproducts")}
@@ -194,6 +183,17 @@ const LandingPage = ({ theme, toggleTheme }) => {
             data-testid="gir-nav"
           >
             <Zap className="h-5 w-5" />
+          </button>
+
+          {/* Jaundice - Last */}
+          <button
+            onClick={() => handleTabClick("jaundice")}
+            className={`tab-item ${activeTab === "jaundice" ? "active" : ""}`}
+            data-testid="jaundice-nav"
+          >
+            <span className={activeTab === "jaundice" ? "text-amber-400" : ""}>
+              <JaundiceIcon />
+            </span>
           </button>
         </div>
       </nav>
