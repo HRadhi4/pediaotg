@@ -62,6 +62,7 @@ const NICUCalculator = ({ theme, toggleTheme }) => {
     { id: "fluid", title: "Fluid Calculator", icon: "droplets", color: "teal", enabled: true },
     { id: "nrp", title: "NRP Checklist", icon: "nrp", color: "red", enabled: true },
     { id: "catheter", title: "UVC/UAC Calculator", icon: "catheter", color: "blue", enabled: true },
+    { id: "intubation", title: "Intubation", icon: "intubation", color: "purple", enabled: true },
     { id: "bp", title: "Blood Pressure", icon: "activity", color: "red", enabled: true },
     { id: "prbc", title: "PRBC Transfusion", icon: "blood", color: "red", enabled: true },
     { id: "exchange", title: "Exchange Transfusion", icon: "repeat", color: "purple", enabled: true }
