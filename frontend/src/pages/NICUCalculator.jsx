@@ -484,116 +484,32 @@ const CatheterCalculatorDialog = ({ open, onOpenChange }) => {
   );
 };
 
-// PRBC Transfusion Calculator Dialog
+// PRBC Transfusion Calculator Dialog - Simplified (15 ml/kg, 1 unit = 280 ml)
 const PRBCGuidelineDialog = ({ open, onOpenChange }) => {
   const [weight, setWeight] = useState("");
-  const [age, setAge] = useState("");
-  const [ga, setGa] = useState("");
-  const [hb, setHb] = useState("");
-  const [hct, setHct] = useState("");
-  const [hasRespSupport, setHasRespSupport] = useState(false);
-  const [result, setResult] = useState(null);
 
-  const calculate = () => {
-    const w = parseFloat(weight);
-    const ageNum = parseInt(age);
-    const gaNum = parseInt(ga);
-    const hbVal = parseFloat(hb);
-    const hctVal = parseFloat(hct);
+  const DOSE_PER_KG = 15;
+  const UNIT_VOLUME = 280; // 1 unit = 280 ml
 
-    if (!w || !ageNum) {
-      setResult({ error: "Please enter weight and age" });
-      return;
-    }
-
-    if (!hbVal && !hctVal) {
-      setResult({ error: "Please enter Hb or Hct" });
-      return;
-    }
-
-    let transfusionIndicated = false;
-    let reason = "";
-    let thresholdHb = 0;
-    let thresholdHct = 0;
-
-    // Determine category and thresholds
-    if (gaNum <= 32 || w < 1.5) {
-      // Preterm < 1.5kg or GA <= 32 weeks
-      if (ageNum <= 7) {
-        thresholdHb = hasRespSupport ? 12 : 11;
-        thresholdHct = hasRespSupport ? 35 : 33;
-      } else if (ageNum <= 14) {
-        thresholdHb = hasRespSupport ? 11 : 9;
-        thresholdHct = hasRespSupport ? 33 : 27;
-      } else {
-        thresholdHb = hasRespSupport ? 10 : 8;
-        thresholdHct = hasRespSupport ? 30 : 25;
-      }
-    } else {
-      // GA >= 32 weeks or > 1.5kg
-      if (ageNum <= 7) {
-        thresholdHb = hasRespSupport ? 13.5 : 12;
-        thresholdHct = hasRespSupport ? 40 : 35;
-      } else if (ageNum <= 14) {
-        thresholdHb = hasRespSupport ? 12 : 10;
-        thresholdHct = hasRespSupport ? 35 : 30;
-      } else {
-        thresholdHb = hasRespSupport ? 11 : 7.7;
-        thresholdHct = hasRespSupport ? 33 : 23;
-      }
-    }
-
-    // Check if transfusion indicated
-    if (hbVal && hbVal <= thresholdHb) {
-      transfusionIndicated = true;
-      reason = `Hb ${hbVal} ≤ ${thresholdHb} g/dL`;
-    }
-    if (hctVal && hctVal <= thresholdHct) {
-      transfusionIndicated = true;
-      reason = reason ? `${reason}, Hct ${hctVal} ≤ ${thresholdHct}%` : `Hct ${hctVal} ≤ ${thresholdHct}%`;
-    }
-
-    // Calculate dose
-    // Standard: 20 ml/kg, if Hct > 30 use 10-15 ml/kg
-    let dosePerKg = 20;
-    let doseNote = "Standard dose: 20 ml/kg";
-    if (hctVal && hctVal > 30) {
-      dosePerKg = 15;
-      doseNote = "Hct > 30%: Using 10-15 ml/kg";
-    }
-
-    const totalDose = w * dosePerKg;
-    const maxDose = 280; // 1 unit
-    const actualDose = Math.min(totalDose, maxDose);
-
-    setResult({
-      transfusionIndicated,
-      reason: reason || "Values above threshold",
-      thresholdHb,
-      thresholdHct,
-      dosePerKg,
-      doseNote,
-      totalDose: totalDose.toFixed(0),
-      actualDose: actualDose.toFixed(0),
-      capped: totalDose > maxDose,
-      category: gaNum <= 32 || w < 1.5 ? "Preterm (<1.5kg or ≤32wk)" : "Late Preterm/Term",
-      ageGroup: ageNum <= 7 ? "1-7 days" : ageNum <= 14 ? "8-14 days" : "≥15 days"
-    });
+  const calculateDose = () => {
+    const w = parseFloat(weight) || 0;
+    if (w <= 0) return null;
+    
+    const totalDose = w * DOSE_PER_KG;
+    const units = totalDose / UNIT_VOLUME;
+    
+    return {
+      totalDose: totalDose.toFixed(1),
+      units: units.toFixed(2),
+      weight: w
+    };
   };
 
-  const reset = () => {
-    setWeight("");
-    setAge("");
-    setGa("");
-    setHb("");
-    setHct("");
-    setHasRespSupport(false);
-    setResult(null);
-  };
+  const result = calculateDose();
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-md">
         <DialogHeader>
           <DialogTitle className="font-heading text-xl flex items-center gap-2">
             <span className="text-red-500"><BloodDropIcon /></span>
@@ -602,160 +518,47 @@ const PRBCGuidelineDialog = ({ open, onOpenChange }) => {
         </DialogHeader>
 
         <div className="space-y-4">
-          {/* Patient Info */}
+          {/* Weight Input */}
           <Card className="nightingale-card">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm">Patient Information</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <div className="grid grid-cols-3 gap-2">
-                <div className="space-y-1">
-                  <Label className="text-xs">Weight (kg)</Label>
-                  <Input
-                    type="number"
-                    step="0.01"
-                    placeholder="1.5"
-                    value={weight}
-                    onChange={(e) => setWeight(e.target.value)}
-                    className="nightingale-input font-mono h-9"
-                  />
-                </div>
-                <div className="space-y-1">
-                  <Label className="text-xs">Age (days)</Label>
-                  <Input
-                    type="number"
-                    placeholder="5"
-                    value={age}
-                    onChange={(e) => setAge(e.target.value)}
-                    className="nightingale-input font-mono h-9"
-                  />
-                </div>
-                <div className="space-y-1">
-                  <Label className="text-xs">GA (weeks)</Label>
-                  <Input
-                    type="number"
-                    placeholder="32"
-                    value={ga}
-                    onChange={(e) => setGa(e.target.value)}
-                    className="nightingale-input font-mono h-9"
-                  />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Lab Values */}
-          <Card className="nightingale-card">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm">Lab Values</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <div className="grid grid-cols-2 gap-3">
-                <div className="space-y-1">
-                  <Label className="text-xs">Hb (g/dL)</Label>
-                  <Input
-                    type="number"
-                    step="0.1"
-                    placeholder="e.g., 10"
-                    value={hb}
-                    onChange={(e) => setHb(e.target.value)}
-                    className="nightingale-input font-mono h-9"
-                  />
-                </div>
-                <div className="space-y-1">
-                  <Label className="text-xs">Hct (%)</Label>
-                  <Input
-                    type="number"
-                    step="1"
-                    placeholder="e.g., 30"
-                    value={hct}
-                    onChange={(e) => setHct(e.target.value)}
-                    className="nightingale-input font-mono h-9"
-                  />
-                </div>
-              </div>
-
-              <div className="flex items-center space-x-3 p-3 rounded-xl bg-gray-50 dark:bg-gray-800/50">
-                <input
-                  type="checkbox"
-                  id="respSupport"
-                  checked={hasRespSupport}
-                  onChange={(e) => setHasRespSupport(e.target.checked)}
-                  className="w-4 h-4 rounded"
+            <CardContent className="pt-4">
+              <div className="space-y-2">
+                <Label>Weight (kg)</Label>
+                <Input
+                  type="number"
+                  step="0.01"
+                  placeholder="e.g., 2.5"
+                  value={weight}
+                  onChange={(e) => setWeight(e.target.value)}
+                  className="nightingale-input font-mono"
                 />
-                <Label htmlFor="respSupport" className="cursor-pointer text-sm">
-                  On Respiratory Support (Vent/CPAP/O2)
-                </Label>
               </div>
             </CardContent>
           </Card>
-
-          {/* Action Buttons */}
-          <div className="flex gap-3">
-            <Button variant="outline" onClick={reset} className="flex-1 rounded-2xl">
-              Reset
-            </Button>
-            <Button onClick={calculate} className="flex-1 nightingale-btn-primary">
-              Calculate
-            </Button>
-          </div>
 
           {/* Results */}
-          {result && !result.error && (
-            <Card className={`rounded-2xl ${result.transfusionIndicated ? 'border-red-300 bg-red-50 dark:bg-red-950/30' : 'border-green-300 bg-green-50 dark:bg-green-950/30'}`}>
+          {result && (
+            <Card className="border-red-200 bg-red-50 dark:bg-red-950/30 rounded-2xl">
               <CardContent className="pt-4 space-y-4">
-                {/* Indication */}
-                <div className={`text-center p-4 rounded-xl ${result.transfusionIndicated ? 'bg-red-100 dark:bg-red-900/50' : 'bg-green-100 dark:bg-green-900/50'}`}>
-                  <p className={`text-lg font-bold ${result.transfusionIndicated ? 'text-red-700 dark:text-red-300' : 'text-green-700 dark:text-green-300'}`}>
-                    {result.transfusionIndicated ? "Transfusion Indicated" : "Transfusion Not Indicated"}
+                <div className="text-center p-4 rounded-xl bg-white dark:bg-gray-800">
+                  <p className="text-sm text-muted-foreground">PRBC Volume</p>
+                  <p className="text-4xl font-mono font-bold text-red-600 dark:text-red-400">
+                    {result.totalDose} <span className="text-lg">ml</span>
                   </p>
-                  <p className="text-sm text-muted-foreground mt-1">{result.reason}</p>
+                  <p className="text-xs text-muted-foreground mt-2">
+                    {DOSE_PER_KG} ml/kg × {result.weight} kg
+                  </p>
                 </div>
 
-                {/* Thresholds */}
                 <div className="grid grid-cols-2 gap-3">
                   <div className="p-3 rounded-xl bg-white dark:bg-gray-800 border text-center">
-                    <p className="text-xs text-muted-foreground">Hb Threshold</p>
-                    <p className="text-xl font-mono font-bold">≤ {result.thresholdHb} g/dL</p>
+                    <p className="text-xs text-muted-foreground">Dose Rate</p>
+                    <p className="text-lg font-mono font-bold">{DOSE_PER_KG} ml/kg</p>
                   </div>
                   <div className="p-3 rounded-xl bg-white dark:bg-gray-800 border text-center">
-                    <p className="text-xs text-muted-foreground">Hct Threshold</p>
-                    <p className="text-xl font-mono font-bold">≤ {result.thresholdHct}%</p>
+                    <p className="text-xs text-muted-foreground">Units Required</p>
+                    <p className="text-lg font-mono font-bold">{result.units}</p>
                   </div>
                 </div>
-
-                {/* Dose Calculation */}
-                {result.transfusionIndicated && (
-                  <div className="p-4 rounded-xl bg-white dark:bg-gray-800 border">
-                    <p className="text-xs text-muted-foreground mb-2">{result.doseNote}</p>
-                    <div className="text-center">
-                      <p className="text-sm text-muted-foreground">Recommended Dose</p>
-                      <p className="text-3xl font-mono font-bold text-red-600 dark:text-red-400">
-                        {result.actualDose} ml
-                      </p>
-                      {result.capped && (
-                        <p className="text-xs text-amber-600 mt-1">Capped at 1 unit (280 ml)</p>
-                      )}
-                      <p className="text-xs text-muted-foreground mt-2">
-                        {result.dosePerKg} ml/kg × {weight} kg = {result.totalDose} ml
-                      </p>
-                    </div>
-                  </div>
-                )}
-
-                {/* Category Info */}
-                <div className="text-xs text-muted-foreground text-center">
-                  <p>Category: {result.category} | Age Group: {result.ageGroup}</p>
-                  <p>Respiratory Support: {hasRespSupport ? "Yes" : "No"}</p>
-                </div>
-              </CardContent>
-            </Card>
-          )}
-
-          {result?.error && (
-            <Card className="border-red-200 bg-red-50 dark:bg-red-950/30 rounded-2xl">
-              <CardContent className="pt-4">
-                <p className="text-red-600 text-center">{result.error}</p>
               </CardContent>
             </Card>
           )}
@@ -766,9 +569,8 @@ const PRBCGuidelineDialog = ({ open, onOpenChange }) => {
               <CardTitle className="text-sm">Reference</CardTitle>
             </CardHeader>
             <CardContent className="text-xs text-muted-foreground space-y-1">
-              <p>• Standard dose: 20 ml/kg PRBC</p>
-              <p>• If Hct &gt; 30%: Use 10-15 ml/kg</p>
-              <p>• Max: 1 unit (280 ml)</p>
+              <p>• Standard dose: <span className="font-bold">15 ml/kg</span> PRBC</p>
+              <p>• 1 unit = <span className="font-bold">280 ml</span></p>
               <p>• Transfuse over 3-4 hours</p>
             </CardContent>
           </Card>
