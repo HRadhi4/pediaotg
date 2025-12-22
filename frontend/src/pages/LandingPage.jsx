@@ -1,9 +1,11 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { Baby, Users, Moon, Sun, Droplets, FlaskConical, Stethoscope, BarChart3, Home } from "lucide-react";
+import { Baby, Users, Moon, Sun, Droplets, FlaskConical, Home, Zap } from "lucide-react";
 import BloodGasDialog from "@/components/BloodGasDialog";
 import ElectrolytesDialog from "@/components/ElectrolytesDialog";
 import JaundiceDialog from "@/components/JaundiceDialog";
+import GIRDialog from "@/components/GIRDialog";
+import BloodProductsDialog from "@/components/BloodProductsDialog";
 
 // Custom Sun icon for Jaundice
 const JaundiceIcon = () => (
@@ -20,11 +22,22 @@ const JaundiceIcon = () => (
   </svg>
 );
 
+// Blood drop icon for Blood Products
+const BloodDropIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M12 22c4-4 8-7.5 8-12a8 8 0 1 0-16 0c0 4.5 4 8 8 12Z"/>
+    <path d="M12 12v-2"/>
+    <path d="M12 16h.01"/>
+  </svg>
+);
+
 const LandingPage = ({ theme, toggleTheme }) => {
   const navigate = useNavigate();
   const [bloodGasOpen, setBloodGasOpen] = useState(false);
   const [electrolytesOpen, setElectrolytesOpen] = useState(false);
   const [jaundiceOpen, setJaundiceOpen] = useState(false);
+  const [girOpen, setGirOpen] = useState(false);
+  const [bloodProductsOpen, setBloodProductsOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("home");
 
   const handleTabClick = (tab) => {
@@ -32,6 +45,8 @@ const LandingPage = ({ theme, toggleTheme }) => {
     if (tab === "bloodgas") setBloodGasOpen(true);
     else if (tab === "electrolytes") setElectrolytesOpen(true);
     else if (tab === "jaundice") setJaundiceOpen(true);
+    else if (tab === "gir") setGirOpen(true);
+    else if (tab === "bloodproducts") setBloodProductsOpen(true);
   };
 
   return (
@@ -41,7 +56,7 @@ const LandingPage = ({ theme, toggleTheme }) => {
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#00d9c5] to-[#00b3a0] flex items-center justify-center">
-              <Stethoscope className="h-5 w-5 text-white" />
+              <Baby className="h-5 w-5 text-white" />
             </div>
             <h1 className="font-heading text-xl font-bold text-foreground tracking-tight">
               Pediatrics to Go
@@ -120,16 +135,16 @@ const LandingPage = ({ theme, toggleTheme }) => {
         </div>
       </main>
 
-      {/* Floating Tab Bar - Nightingale Style */}
+      {/* Floating Tab Bar - 7 icons */}
       <nav className="floating-tab-bar">
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-0.5">
           {/* Home */}
           <button
             onClick={() => setActiveTab("home")}
             className={`tab-item ${activeTab === "home" ? "active" : ""}`}
             data-testid="home-nav"
           >
-            <Home className="h-6 w-6" />
+            <Home className="h-5 w-5" />
           </button>
 
           {/* Blood Gas */}
@@ -138,7 +153,7 @@ const LandingPage = ({ theme, toggleTheme }) => {
             className={`tab-item ${activeTab === "bloodgas" ? "active" : ""}`}
             data-testid="blood-gas-nav"
           >
-            <Droplets className="h-6 w-6" />
+            <Droplets className="h-5 w-5" />
           </button>
 
           {/* Electrolytes */}
@@ -147,16 +162,16 @@ const LandingPage = ({ theme, toggleTheme }) => {
             className={`tab-item ${activeTab === "electrolytes" ? "active" : ""}`}
             data-testid="electrolytes-nav"
           >
-            <FlaskConical className="h-6 w-6" />
+            <FlaskConical className="h-5 w-5" />
           </button>
 
-          {/* Coming Soon 1 */}
+          {/* GIR - Glucose */}
           <button
-            disabled
-            className="tab-item tab-item-disabled"
-            data-testid="future-nav-1"
+            onClick={() => handleTabClick("gir")}
+            className={`tab-item ${activeTab === "gir" ? "active" : ""}`}
+            data-testid="gir-nav"
           >
-            <Stethoscope className="h-6 w-6" />
+            <Zap className="h-5 w-5" />
           </button>
 
           {/* Jaundice */}
@@ -169,6 +184,17 @@ const LandingPage = ({ theme, toggleTheme }) => {
               <JaundiceIcon />
             </span>
           </button>
+
+          {/* Blood Products */}
+          <button
+            onClick={() => handleTabClick("bloodproducts")}
+            className={`tab-item ${activeTab === "bloodproducts" ? "active" : ""}`}
+            data-testid="blood-products-nav"
+          >
+            <span className={activeTab === "bloodproducts" ? "text-red-400" : ""}>
+              <BloodDropIcon />
+            </span>
+          </button>
         </div>
       </nav>
 
@@ -176,6 +202,8 @@ const LandingPage = ({ theme, toggleTheme }) => {
       <BloodGasDialog open={bloodGasOpen} onOpenChange={(open) => { setBloodGasOpen(open); if (!open) setActiveTab("home"); }} />
       <ElectrolytesDialog open={electrolytesOpen} onOpenChange={(open) => { setElectrolytesOpen(open); if (!open) setActiveTab("home"); }} />
       <JaundiceDialog open={jaundiceOpen} onOpenChange={(open) => { setJaundiceOpen(open); if (!open) setActiveTab("home"); }} />
+      <GIRDialog open={girOpen} onOpenChange={(open) => { setGirOpen(open); if (!open) setActiveTab("home"); }} />
+      <BloodProductsDialog open={bloodProductsOpen} onOpenChange={(open) => { setBloodProductsOpen(open); if (!open) setActiveTab("home"); }} />
     </div>
   );
 };

@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Moon, Sun, Droplets, Calculator, AlertTriangle, Syringe, Home, FlaskConical, Stethoscope } from "lucide-react";
+import { ArrowLeft, Moon, Sun, Droplets, Calculator, AlertTriangle, Syringe, Home, FlaskConical, Zap } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -9,28 +9,33 @@ import { Separator } from "@/components/ui/separator";
 import BloodGasDialog from "@/components/BloodGasDialog";
 import ElectrolytesDialog from "@/components/ElectrolytesDialog";
 import JaundiceDialog from "@/components/JaundiceDialog";
+import GIRDialog from "@/components/GIRDialog";
+import BloodProductsDialog from "@/components/BloodProductsDialog";
 
-// Custom Sun icon for Jaundice
+// Custom icons
 const JaundiceIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <circle cx="12" cy="12" r="4"/>
-    <path d="M12 2v2"/>
-    <path d="M12 20v2"/>
-    <path d="m4.93 4.93 1.41 1.41"/>
-    <path d="m17.66 17.66 1.41 1.41"/>
-    <path d="M2 12h2"/>
-    <path d="M20 12h2"/>
-    <path d="m6.34 17.66-1.41 1.41"/>
-    <path d="m19.07 4.93-1.41 1.41"/>
+    <path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/>
+    <path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/>
+  </svg>
+);
+
+const BloodDropIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M12 22c4-4 8-7.5 8-12a8 8 0 1 0-16 0c0 4.5 4 8 8 12Z"/>
+    <path d="M12 12v-2"/><path d="M12 16h.01"/>
   </svg>
 );
 
 const NICUCalculator = ({ theme, toggleTheme }) => {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState("home");
+  const [activeTab, setActiveTab] = useState("");
   const [bloodGasOpen, setBloodGasOpen] = useState(false);
   const [electrolytesOpen, setElectrolytesOpen] = useState(false);
   const [jaundiceOpen, setJaundiceOpen] = useState(false);
+  const [girOpen, setGirOpen] = useState(false);
+  const [bloodProductsOpen, setBloodProductsOpen] = useState(false);
 
   // Patient Info
   const [weight, setWeight] = useState("");
@@ -45,7 +50,6 @@ const NICUCalculator = ({ theme, toggleTheme }) => {
   const [feedAmount, setFeedAmount] = useState("");
   const [tpnAmount, setTpnAmount] = useState("");
 
-  // TFI suggestion based on age
   const tfiSuggestion = useMemo(() => {
     const ageNum = parseInt(age) || 0;
     if (ageNum <= 1) return "60-80";
@@ -55,7 +59,6 @@ const NICUCalculator = ({ theme, toggleTheme }) => {
     return "150-180";
   }, [age]);
 
-  // Calculations
   const calculations = useMemo(() => {
     const weightNum = parseFloat(weight) || 0;
     const tfiNum = parseFloat(tfi) || 0;
@@ -96,6 +99,8 @@ const NICUCalculator = ({ theme, toggleTheme }) => {
     if (tab === "bloodgas") setBloodGasOpen(true);
     else if (tab === "electrolytes") setElectrolytesOpen(true);
     else if (tab === "jaundice") setJaundiceOpen(true);
+    else if (tab === "gir") setGirOpen(true);
+    else if (tab === "bloodproducts") setBloodProductsOpen(true);
     else if (tab === "home") navigate("/");
   };
 
@@ -132,7 +137,7 @@ const NICUCalculator = ({ theme, toggleTheme }) => {
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 md:px-6 py-6 md:py-8 pt-24 pb-32">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          {/* Patient Info Section */}
+          {/* Patient Info */}
           <div className="lg:col-span-12 nightingale-card p-6" data-testid="patient-info-card">
             <div className="flex items-center gap-3 mb-4">
               <div className="w-10 h-10 rounded-xl bg-[#00d9c5]/10 flex items-center justify-center">
@@ -142,23 +147,22 @@ const NICUCalculator = ({ theme, toggleTheme }) => {
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="weight" className="text-sm font-medium text-muted-foreground">Weight (kg)</Label>
-                <Input id="weight" type="number" step="0.01" placeholder="e.g., 1.5" value={weight} onChange={(e) => setWeight(e.target.value)} className="nightingale-input font-mono" data-testid="weight-input" />
+                <Label className="text-sm font-medium text-muted-foreground">Weight (kg)</Label>
+                <Input type="number" step="0.01" placeholder="e.g., 1.5" value={weight} onChange={(e) => setWeight(e.target.value)} className="nightingale-input font-mono" data-testid="weight-input" />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="age" className="text-sm font-medium text-muted-foreground">Age (days)</Label>
-                <Input id="age" type="number" placeholder="e.g., 3" value={age} onChange={(e) => setAge(e.target.value)} className="nightingale-input font-mono" data-testid="age-input" />
+                <Label className="text-sm font-medium text-muted-foreground">Age (days)</Label>
+                <Input type="number" placeholder="e.g., 3" value={age} onChange={(e) => setAge(e.target.value)} className="nightingale-input font-mono" data-testid="age-input" />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="gestationalAge" className="text-sm font-medium text-muted-foreground">Gestational Age (weeks)</Label>
-                <Input id="gestationalAge" type="number" placeholder="e.g., 32" value={gestationalAge} onChange={(e) => setGestationalAge(e.target.value)} className="nightingale-input font-mono" data-testid="gestational-age-input" />
+                <Label className="text-sm font-medium text-muted-foreground">Gestational Age (weeks)</Label>
+                <Input type="number" placeholder="e.g., 32" value={gestationalAge} onChange={(e) => setGestationalAge(e.target.value)} className="nightingale-input font-mono" data-testid="gestational-age-input" />
               </div>
             </div>
           </div>
 
           {/* Fluid Inputs */}
           <div className="lg:col-span-4 space-y-6">
-            {/* TFI Input */}
             <div className="nightingale-card p-6" data-testid="tfi-card">
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-10 h-10 rounded-xl bg-[#00d9c5]/10 flex items-center justify-center">
@@ -167,15 +171,12 @@ const NICUCalculator = ({ theme, toggleTheme }) => {
                 <h3 className="font-heading font-semibold">Total Fluid Intake (TFI)</h3>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="tfi" className="text-sm font-medium text-muted-foreground">TFI (ml/kg/day)</Label>
-                <Input id="tfi" type="number" placeholder="e.g., 120" value={tfi} onChange={(e) => setTfi(e.target.value)} className="nightingale-input font-mono" data-testid="tfi-input" />
-                {age && (
-                  <p className="text-sm text-muted-foreground">Suggested for day {age}: <span className="font-mono text-[#00d9c5] font-medium">{tfiSuggestion}</span> ml/kg/day</p>
-                )}
+                <Label className="text-sm font-medium text-muted-foreground">TFI (ml/kg/day)</Label>
+                <Input type="number" placeholder="e.g., 120" value={tfi} onChange={(e) => setTfi(e.target.value)} className="nightingale-input font-mono" data-testid="tfi-input" />
+                {age && <p className="text-sm text-muted-foreground">Suggested for day {age}: <span className="font-mono text-[#00d9c5] font-medium">{tfiSuggestion}</span> ml/kg/day</p>}
               </div>
             </div>
 
-            {/* Fluid Type */}
             <div className="nightingale-card p-6" data-testid="fluid-type-card">
               <h3 className="font-heading font-semibold mb-4">Fluid Type</h3>
               <RadioGroup value={fluidType} onValueChange={setFluidType} className="space-y-3">
@@ -190,7 +191,6 @@ const NICUCalculator = ({ theme, toggleTheme }) => {
               </RadioGroup>
             </div>
 
-            {/* 3% NaCl */}
             <div className="nightingale-card p-6" data-testid="nacl-card">
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-10 h-10 rounded-xl bg-[#00d9c5]/10 flex items-center justify-center">
@@ -205,8 +205,8 @@ const NICUCalculator = ({ theme, toggleTheme }) => {
                 </div>
                 {useNaCl && (
                   <div className="space-y-2 pl-4 border-l-2 border-[#00d9c5]/30">
-                    <Label htmlFor="naclAmount" className="text-sm font-medium text-muted-foreground">Amount (ml/kg/day)</Label>
-                    <Input id="naclAmount" type="number" step="0.1" placeholder="e.g., 5" value={naclAmount} onChange={(e) => setNaclAmount(e.target.value)} className="nightingale-input font-mono" data-testid="nacl-amount-input" />
+                    <Label className="text-sm font-medium text-muted-foreground">Amount (ml/kg/day)</Label>
+                    <Input type="number" step="0.1" placeholder="e.g., 5" value={naclAmount} onChange={(e) => setNaclAmount(e.target.value)} className="nightingale-input font-mono" data-testid="nacl-amount-input" />
                   </div>
                 )}
               </div>
@@ -218,8 +218,8 @@ const NICUCalculator = ({ theme, toggleTheme }) => {
             <div className="nightingale-card p-6" data-testid="feed-card">
               <h3 className="font-heading font-semibold mb-4">Feed Amount</h3>
               <div className="space-y-2">
-                <Label htmlFor="feedAmount" className="text-sm font-medium text-muted-foreground">Feed Volume (ml/kg/day)</Label>
-                <Input id="feedAmount" type="number" step="0.1" placeholder="e.g., 30" value={feedAmount} onChange={(e) => setFeedAmount(e.target.value)} className="nightingale-input font-mono" data-testid="feed-amount-input" />
+                <Label className="text-sm font-medium text-muted-foreground">Feed Volume (ml/kg/day)</Label>
+                <Input type="number" step="0.1" placeholder="e.g., 30" value={feedAmount} onChange={(e) => setFeedAmount(e.target.value)} className="nightingale-input font-mono" data-testid="feed-amount-input" />
                 <p className="text-xs text-muted-foreground">Deducted from TFI</p>
               </div>
             </div>
@@ -227,8 +227,8 @@ const NICUCalculator = ({ theme, toggleTheme }) => {
             <div className="nightingale-card p-6" data-testid="tpn-card">
               <h3 className="font-heading font-semibold mb-4">Total Parenteral Nutrition (TPN)</h3>
               <div className="space-y-2">
-                <Label htmlFor="tpnAmount" className="text-sm font-medium text-muted-foreground">TPN Volume (ml/kg/day)</Label>
-                <Input id="tpnAmount" type="number" step="0.1" placeholder="e.g., 40" value={tpnAmount} onChange={(e) => setTpnAmount(e.target.value)} className="nightingale-input font-mono" data-testid="tpn-amount-input" />
+                <Label className="text-sm font-medium text-muted-foreground">TPN Volume (ml/kg/day)</Label>
+                <Input type="number" step="0.1" placeholder="e.g., 40" value={tpnAmount} onChange={(e) => setTpnAmount(e.target.value)} className="nightingale-input font-mono" data-testid="tpn-amount-input" />
                 <p className="text-xs text-muted-foreground">Deducted from TFI</p>
               </div>
             </div>
@@ -238,7 +238,7 @@ const NICUCalculator = ({ theme, toggleTheme }) => {
             </button>
           </div>
 
-          {/* Results Panel */}
+          {/* Results */}
           <div className="lg:col-span-4">
             <div className="result-panel lg:sticky lg:top-24" data-testid="results-card">
               <div className="flex items-center gap-3 mb-6">
@@ -251,13 +251,9 @@ const NICUCalculator = ({ theme, toggleTheme }) => {
               <div aria-live="polite" className="space-y-6">
                 <div className="text-center py-4">
                   <p className="metric-label mb-2">Remaining IV Fluid</p>
-                  <p className={`metric-value ${calculations.isNegative ? 'text-red-500' : 'text-[#00d9c5]'}`} data-testid="remaining-iv-fluid">
-                    {calculations.remainingIVFluid}
-                  </p>
+                  <p className={`metric-value ${calculations.isNegative ? 'text-red-500' : 'text-[#00d9c5]'}`} data-testid="remaining-iv-fluid">{calculations.remainingIVFluid}</p>
                   <p className="text-sm text-muted-foreground mt-1">ml/day</p>
-                  <p className="font-mono text-lg mt-2" data-testid="remaining-iv-fluid-per-kg">
-                    ({calculations.remainingIVFluidPerKg} ml/kg/day)
-                  </p>
+                  <p className="font-mono text-lg mt-2" data-testid="remaining-iv-fluid-per-kg">({calculations.remainingIVFluidPerKg} ml/kg/day)</p>
                 </div>
 
                 {calculations.isNegative && (
@@ -271,12 +267,10 @@ const NICUCalculator = ({ theme, toggleTheme }) => {
 
                 <div className="space-y-3">
                   <h4 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Breakdown</h4>
-                  
                   <div className="flex justify-between items-center py-2">
                     <span className="text-sm text-muted-foreground">Total Fluid (TFI × Weight)</span>
                     <span className="font-mono font-medium" data-testid="total-fluid">{calculations.totalFluid} ml</span>
                   </div>
-
                   <div className="space-y-2 pl-4 border-l-2 border-[#00d9c5]/20">
                     {useNaCl && parseFloat(naclAmount) > 0 && (
                       <div className="flex justify-between items-center text-sm">
@@ -297,22 +291,11 @@ const NICUCalculator = ({ theme, toggleTheme }) => {
                       </div>
                     )}
                   </div>
-
                   <Separator className="bg-[#00d9c5]/20" />
-
                   <div className="flex justify-between items-center py-2">
                     <span className="text-sm font-medium">Hourly Rate</span>
-                    <span className="font-mono font-bold text-[#00d9c5]" data-testid="hourly-rate">
-                      {calculations.hourlyRate} ml/hr
-                    </span>
+                    <span className="font-mono font-bold text-[#00d9c5]" data-testid="hourly-rate">{calculations.hourlyRate} ml/hr</span>
                   </div>
-
-                  {fluidType === "d10d50" && (
-                    <div className="p-3 bg-white dark:bg-gray-800 rounded-xl text-sm">
-                      <p className="font-medium mb-1">D10% + D50% Mixing</p>
-                      <p className="text-muted-foreground">Selected for higher glucose concentration needs</p>
-                    </div>
-                  )}
                 </div>
               </div>
             </div>
@@ -322,29 +305,34 @@ const NICUCalculator = ({ theme, toggleTheme }) => {
 
       {/* Floating Tab Bar */}
       <nav className="floating-tab-bar">
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-0.5">
           <button onClick={() => handleTabClick("home")} className={`tab-item ${activeTab === "home" ? "active" : ""}`}>
-            <Home className="h-6 w-6" />
+            <Home className="h-5 w-5" />
           </button>
           <button onClick={() => handleTabClick("bloodgas")} className={`tab-item ${activeTab === "bloodgas" ? "active" : ""}`} data-testid="blood-gas-nav-calc">
-            <Droplets className="h-6 w-6" />
+            <Droplets className="h-5 w-5" />
           </button>
           <button onClick={() => handleTabClick("electrolytes")} className={`tab-item ${activeTab === "electrolytes" ? "active" : ""}`} data-testid="electrolytes-nav-calc">
-            <FlaskConical className="h-6 w-6" />
+            <FlaskConical className="h-5 w-5" />
           </button>
-          <button disabled className="tab-item tab-item-disabled">
-            <Stethoscope className="h-6 w-6" />
+          <button onClick={() => handleTabClick("gir")} className={`tab-item ${activeTab === "gir" ? "active" : ""}`} data-testid="gir-nav-calc">
+            <Zap className="h-5 w-5" />
           </button>
           <button onClick={() => handleTabClick("jaundice")} className={`tab-item ${activeTab === "jaundice" ? "active" : ""}`} data-testid="jaundice-nav-calc">
             <span className={activeTab === "jaundice" ? "text-amber-400" : ""}><JaundiceIcon /></span>
+          </button>
+          <button onClick={() => handleTabClick("bloodproducts")} className={`tab-item ${activeTab === "bloodproducts" ? "active" : ""}`} data-testid="blood-products-nav-calc">
+            <span className={activeTab === "bloodproducts" ? "text-red-400" : ""}><BloodDropIcon /></span>
           </button>
         </div>
       </nav>
 
       {/* Dialogs */}
-      <BloodGasDialog open={bloodGasOpen} onOpenChange={(open) => { setBloodGasOpen(open); if (!open) setActiveTab("home"); }} />
-      <ElectrolytesDialog open={electrolytesOpen} onOpenChange={(open) => { setElectrolytesOpen(open); if (!open) setActiveTab("home"); }} />
-      <JaundiceDialog open={jaundiceOpen} onOpenChange={(open) => { setJaundiceOpen(open); if (!open) setActiveTab("home"); }} />
+      <BloodGasDialog open={bloodGasOpen} onOpenChange={(open) => { setBloodGasOpen(open); if (!open) setActiveTab(""); }} />
+      <ElectrolytesDialog open={electrolytesOpen} onOpenChange={(open) => { setElectrolytesOpen(open); if (!open) setActiveTab(""); }} />
+      <JaundiceDialog open={jaundiceOpen} onOpenChange={(open) => { setJaundiceOpen(open); if (!open) setActiveTab(""); }} />
+      <GIRDialog open={girOpen} onOpenChange={(open) => { setGirOpen(open); if (!open) setActiveTab(""); }} />
+      <BloodProductsDialog open={bloodProductsOpen} onOpenChange={(open) => { setBloodProductsOpen(open); if (!open) setActiveTab(""); }} />
     </div>
   );
 };
