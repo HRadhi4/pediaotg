@@ -138,6 +138,7 @@ const NICUCalculator = ({ theme, toggleTheme }) => {
     switch(iconName) {
       case "droplets": return <Droplets className={`h-6 w-6 ${colorClass}`} />;
       case "catheter": return <CatheterIcon />;
+      case "intubation": return <span className={colorClass}><IntubationIcon /></span>;
       case "activity": return <Activity className={`h-6 w-6 ${colorClass}`} />;
       case "blood": return <span className={colorClass}><BloodDropIcon /></span>;
       case "repeat": return <Repeat className={`h-6 w-6 ${colorClass}`} />;
