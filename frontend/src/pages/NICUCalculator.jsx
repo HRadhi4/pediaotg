@@ -1,12 +1,14 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Moon, Sun, Droplets, Home, FlaskConical, Zap, GripVertical, Settings, X, Stethoscope, Activity, Repeat } from "lucide-react";
+import { ArrowLeft, Moon, Sun, Droplets, Home, FlaskConical, Zap, GripVertical, Settings, X, Stethoscope, Activity, Repeat, Heart, Check, Clock, AlertTriangle, ChevronDown, ChevronUp, Plus, Trash2 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Checkbox } from "@/components/ui/checkbox";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import BloodGasDialog from "@/components/BloodGasDialog";
 import ElectrolytesDialog from "@/components/ElectrolytesDialog";
 import JaundiceDialog from "@/components/JaundiceDialog";
@@ -38,6 +40,13 @@ const CatheterIcon = () => (
   </svg>
 );
 
+const NRPIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+    <path d="M12 5v4"/><path d="M10 7h4"/>
+  </svg>
+);
+
 const NICUCalculator = ({ theme, toggleTheme }) => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("");
@@ -51,6 +60,7 @@ const NICUCalculator = ({ theme, toggleTheme }) => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [widgets, setWidgets] = useState([
     { id: "fluid", title: "Fluid Calculator", icon: "droplets", color: "teal", enabled: true },
+    { id: "nrp", title: "NRP Checklist", icon: "nrp", color: "red", enabled: true },
     { id: "catheter", title: "UVC/UAC Calculator", icon: "catheter", color: "blue", enabled: true },
     { id: "bp", title: "Blood Pressure", icon: "activity", color: "red", enabled: true, comingSoon: true },
     { id: "prbc", title: "PRBC Transfusion", icon: "blood", color: "red", enabled: true },
@@ -59,6 +69,7 @@ const NICUCalculator = ({ theme, toggleTheme }) => {
 
   // Dialog states for widgets
   const [fluidDialogOpen, setFluidDialogOpen] = useState(false);
+  const [nrpDialogOpen, setNrpDialogOpen] = useState(false);
   const [catheterDialogOpen, setCatheterDialogOpen] = useState(false);
   const [prbcDialogOpen, setPrbcDialogOpen] = useState(false);
   const [exchangeDialogOpen, setExchangeDialogOpen] = useState(false);
@@ -79,6 +90,9 @@ const NICUCalculator = ({ theme, toggleTheme }) => {
     switch(widgetId) {
       case "fluid":
         setFluidDialogOpen(true);
+        break;
+      case "nrp":
+        setNrpDialogOpen(true);
         break;
       case "catheter":
         setCatheterDialogOpen(true);
@@ -118,6 +132,7 @@ const NICUCalculator = ({ theme, toggleTheme }) => {
       case "activity": return <Activity className={`h-6 w-6 ${colorClass}`} />;
       case "blood": return <span className={colorClass}><BloodDropIcon /></span>;
       case "repeat": return <Repeat className={`h-6 w-6 ${colorClass}`} />;
+      case "nrp": return <span className={colorClass}><NRPIcon /></span>;
       default: return <Stethoscope className={`h-6 w-6 ${colorClass}`} />;
     }
   };
@@ -248,6 +263,7 @@ const NICUCalculator = ({ theme, toggleTheme }) => {
 
       {/* Widget Dialogs */}
       <FluidCalculatorDialog open={fluidDialogOpen} onOpenChange={setFluidDialogOpen} />
+      <NRPChecklistDialog open={nrpDialogOpen} onOpenChange={setNrpDialogOpen} />
       <CatheterCalculatorDialog open={catheterDialogOpen} onOpenChange={setCatheterDialogOpen} />
       <PRBCGuidelineDialog open={prbcDialogOpen} onOpenChange={setPrbcDialogOpen} />
       <ExchangeCalculatorDialog open={exchangeDialogOpen} onOpenChange={setExchangeDialogOpen} />
@@ -262,17 +278,38 @@ const NICUCalculator = ({ theme, toggleTheme }) => {
   );
 };
 
-// Fluid Calculator Dialog (existing functionality moved here)
+// Enhanced Fluid Calculator Dialog with Order Summary
 const FluidCalculatorDialog = ({ open, onOpenChange }) => {
   const [weight, setWeight] = useState("");
   const [age, setAge] = useState("");
   const [gestationalAge, setGestationalAge] = useState("");
   const [tfi, setTfi] = useState("");
-  const [fluidType, setFluidType] = useState("d10");
-  const [useNaCl, setUseNaCl] = useState(false);
+  
+  // NaCl
   const [naclAmount, setNaclAmount] = useState("");
-  const [feedAmount, setFeedAmount] = useState("");
-  const [tpnAmount, setTpnAmount] = useState("");
+  
+  // Feed
+  const [feedVolume, setFeedVolume] = useState("");
+  const [feedFrequency, setFeedFrequency] = useState("2"); // q2h default
+  
+  // TPN
+  const [aminoGrams, setAminoGrams] = useState(""); // 1-3g limit
+  const [lipidGrams, setLipidGrams] = useState(""); // g/kg
+  
+  // Combined Dextrose
+  const [useCombinedDextrose, setUseCombinedDextrose] = useState(false);
+  const [dextroseItems, setDextroseItems] = useState([
+    { id: 1, type: "D10", percentage: 10, volume: "" }
+  ]);
+
+  const dextroseOptions = [
+    { type: "D5", percentage: 5 },
+    { type: "D10", percentage: 10 },
+    { type: "D12.5", percentage: 12.5 },
+    { type: "D15", percentage: 15 },
+    { type: "D20", percentage: 20 },
+    { type: "D50", percentage: 50 }
+  ];
 
   const getTfiSuggestion = () => {
     const ageNum = parseInt(age) || 0;
@@ -283,28 +320,103 @@ const FluidCalculatorDialog = ({ open, onOpenChange }) => {
     return "150-180";
   };
 
+  const addDextroseItem = () => {
+    const newId = Math.max(...dextroseItems.map(d => d.id), 0) + 1;
+    setDextroseItems([...dextroseItems, { id: newId, type: "D10", percentage: 10, volume: "" }]);
+  };
+
+  const removeDextroseItem = (id) => {
+    if (dextroseItems.length > 1) {
+      setDextroseItems(dextroseItems.filter(d => d.id !== id));
+    }
+  };
+
+  const updateDextroseItem = (id, field, value) => {
+    setDextroseItems(dextroseItems.map(d => {
+      if (d.id === id) {
+        if (field === "type") {
+          const opt = dextroseOptions.find(o => o.type === value);
+          return { ...d, type: value, percentage: opt?.percentage || 10 };
+        }
+        return { ...d, [field]: value };
+      }
+      return d;
+    }));
+  };
+
   const calculateResults = () => {
     const w = parseFloat(weight) || 0;
     const tfiNum = parseFloat(tfi) || 0;
-    const naclNum = useNaCl ? (parseFloat(naclAmount) || 0) : 0;
-    const feedNum = parseFloat(feedAmount) || 0;
-    const tpnNum = parseFloat(tpnAmount) || 0;
+    const naclNum = parseFloat(naclAmount) || 0;
+    const feedVol = parseFloat(feedVolume) || 0;
+    const feedFreq = parseInt(feedFrequency) || 2;
+    const aminoG = parseFloat(aminoGrams) || 0;
+    const lipidG = parseFloat(lipidGrams) || 0;
 
-    const totalFluid = tfiNum * w;
-    const naclTotal = naclNum * w;
-    const feedTotal = feedNum * w;
-    const tpnTotal = tpnNum * w;
-    const totalDeductions = naclTotal + feedTotal + tpnTotal;
-    const remainingIVFluid = Math.max(0, totalFluid - totalDeductions);
-    const remainingIVFluidPerKg = w > 0 ? remainingIVFluid / w : 0;
-    const hourlyRate = remainingIVFluid / 24;
+    // Total fluid per 24hr
+    const totalFluid24hr = tfiNum * w;
+    
+    // NaCl total
+    const nacl24hr = naclNum * w;
+    
+    // Feed calculations
+    const feedsPerDay = 24 / feedFreq;
+    const feed24hr = feedVol * feedsPerDay;
+    const feedPerKg = w > 0 ? feed24hr / w : 0;
+    
+    // TPN calculations (10% Aminoplasmin = 10g/100ml, 20% Intralipids = 20g/100ml)
+    const amino24hr = aminoG * w * 10; // ml (1g protein = 10ml of 10% solution)
+    const lipid24hr = lipidG * w * 5;  // ml (1g lipid = 5ml of 20% solution)
+    const tpn24hr = amino24hr + lipid24hr;
+    
+    // Dextrose calculation
+    let dextrose24hr = 0;
+    let dextroseBreakdown = [];
+    
+    if (useCombinedDextrose) {
+      dextroseItems.forEach(item => {
+        const vol = parseFloat(item.volume) || 0;
+        dextrose24hr += vol;
+        if (vol > 0) {
+          dextroseBreakdown.push({
+            type: item.type,
+            percentage: item.percentage,
+            volume: vol
+          });
+        }
+      });
+    } else {
+      // Auto-calculate remaining as D10%
+      const totalDeductions = nacl24hr + feed24hr + tpn24hr;
+      dextrose24hr = Math.max(0, totalFluid24hr - totalDeductions);
+      dextroseBreakdown = [{ type: "D10", percentage: 10, volume: dextrose24hr }];
+    }
+    
+    const totalUsed = nacl24hr + feed24hr + tpn24hr + dextrose24hr;
+    const remaining = totalFluid24hr - totalUsed;
+    const hourlyRate = totalFluid24hr / 24;
 
     return {
-      totalFluid: totalFluid.toFixed(1),
-      remainingIVFluid: remainingIVFluid.toFixed(1),
-      remainingIVFluidPerKg: remainingIVFluidPerKg.toFixed(1),
+      weight: w,
+      tfi: tfiNum,
+      totalFluid24hr: totalFluid24hr.toFixed(1),
       hourlyRate: hourlyRate.toFixed(2),
-      isNegative: totalFluid - totalDeductions < 0
+      nacl24hr: nacl24hr.toFixed(1),
+      naclPerKg: naclNum,
+      feedVol,
+      feedFreq,
+      feed24hr: feed24hr.toFixed(1),
+      feedPerKg: feedPerKg.toFixed(1),
+      aminoG,
+      amino24hr: amino24hr.toFixed(1),
+      lipidG,
+      lipid24hr: lipid24hr.toFixed(1),
+      tpn24hr: tpn24hr.toFixed(1),
+      dextroseBreakdown,
+      dextrose24hr: dextrose24hr.toFixed(1),
+      remaining: remaining.toFixed(1),
+      isOverLimit: remaining < -0.1,
+      useCombinedDextrose
     };
   };
 
@@ -330,7 +442,7 @@ const FluidCalculatorDialog = ({ open, onOpenChange }) => {
               <div className="grid grid-cols-3 gap-2">
                 <div className="space-y-1">
                   <Label className="text-xs">Weight (kg)</Label>
-                  <Input type="number" step="0.01" placeholder="1.5" value={weight} onChange={(e) => setWeight(e.target.value)} className="nightingale-input font-mono h-9" />
+                  <Input type="number" step="0.01" placeholder="0.8" value={weight} onChange={(e) => setWeight(e.target.value)} className="nightingale-input font-mono h-9" />
                 </div>
                 <div className="space-y-1">
                   <Label className="text-xs">Age (days)</Label>
@@ -349,43 +461,464 @@ const FluidCalculatorDialog = ({ open, onOpenChange }) => {
             <CardContent className="pt-4 space-y-3">
               <div className="space-y-1">
                 <Label className="text-xs">TFI (ml/kg/day)</Label>
-                <Input type="number" placeholder="120" value={tfi} onChange={(e) => setTfi(e.target.value)} className="nightingale-input font-mono" />
+                <Input type="number" placeholder="140" value={tfi} onChange={(e) => setTfi(e.target.value)} className="nightingale-input font-mono" />
                 {age && <p className="text-xs text-muted-foreground">Suggested: <span className="text-[#00d9c5] font-mono">{getTfiSuggestion()}</span></p>}
-              </div>
-              
-              <div className="grid grid-cols-2 gap-2">
-                <div className="space-y-1">
-                  <Label className="text-xs">3% NaCl (ml/kg/day)</Label>
-                  <Input type="number" placeholder="0" value={naclAmount} onChange={(e) => { setNaclAmount(e.target.value); setUseNaCl(!!e.target.value); }} className="nightingale-input font-mono h-9" />
-                </div>
-                <div className="space-y-1">
-                  <Label className="text-xs">Feed (ml/kg/day)</Label>
-                  <Input type="number" placeholder="30" value={feedAmount} onChange={(e) => setFeedAmount(e.target.value)} className="nightingale-input font-mono h-9" />
-                </div>
-              </div>
-              <div className="space-y-1">
-                <Label className="text-xs">TPN (ml/kg/day)</Label>
-                <Input type="number" placeholder="40" value={tpnAmount} onChange={(e) => setTpnAmount(e.target.value)} className="nightingale-input font-mono h-9" />
               </div>
             </CardContent>
           </Card>
 
-          {/* Results */}
-          <Card className="border-[#00d9c5]/30 bg-[#00d9c5]/5 rounded-2xl">
+          {/* Combined Dextrose Option */}
+          <Card className="nightingale-card">
             <CardContent className="pt-4 space-y-3">
-              <div className="text-center">
-                <p className="text-xs text-muted-foreground">Remaining IV Fluid</p>
-                <p className={`text-3xl font-mono font-bold ${results.isNegative ? 'text-red-500' : 'text-[#00d9c5]'}`}>
-                  {results.remainingIVFluid} <span className="text-sm">ml/day</span>
-                </p>
-                <p className="text-sm font-mono">({results.remainingIVFluidPerKg} ml/kg/day)</p>
+              <div className="flex items-center space-x-3">
+                <Checkbox
+                  id="useCombinedDex"
+                  checked={useCombinedDextrose}
+                  onCheckedChange={setUseCombinedDextrose}
+                />
+                <Label htmlFor="useCombinedDex" className="cursor-pointer font-medium text-sm">
+                  Combined Dextrose (Multiple Sugar Fluids)
+                </Label>
               </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Hourly Rate</span>
-                <span className="font-mono font-bold">{results.hourlyRate} ml/hr</span>
+              
+              {useCombinedDextrose && (
+                <div className="space-y-2 pt-2">
+                  {dextroseItems.map((item) => (
+                    <div key={item.id} className="flex gap-2 items-end">
+                      <div className="flex-1 space-y-1">
+                        <Label className="text-xs">{item.type}</Label>
+                        <select
+                          value={item.type}
+                          onChange={(e) => updateDextroseItem(item.id, "type", e.target.value)}
+                          className="w-full h-9 rounded-xl bg-gray-50 dark:bg-gray-800/50 border-0 px-3 text-sm"
+                        >
+                          {dextroseOptions.map(opt => (
+                            <option key={opt.type} value={opt.type}>{opt.type} ({opt.percentage}%)</option>
+                          ))}
+                        </select>
+                      </div>
+                      <div className="flex-1 space-y-1">
+                        <Label className="text-xs">Volume (ml/24hr)</Label>
+                        <Input
+                          type="number"
+                          placeholder="e.g., 50"
+                          value={item.volume}
+                          onChange={(e) => updateDextroseItem(item.id, "volume", e.target.value)}
+                          className="nightingale-input font-mono h-9"
+                        />
+                      </div>
+                      {dextroseItems.length > 1 && (
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => removeDextroseItem(item.id)}
+                          className="h-9 w-9 text-red-500"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      )}
+                    </div>
+                  ))}
+                  <Button variant="outline" size="sm" onClick={addDextroseItem} className="w-full rounded-xl">
+                    <Plus className="h-4 w-4 mr-2" />
+                    Add Dextrose Type
+                  </Button>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Additives */}
+          <Card className="nightingale-card">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm">Additives & Feed</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <div className="space-y-1">
+                <Label className="text-xs">3% NaCl (ml/kg/day)</Label>
+                <Input type="number" step="0.1" placeholder="0" value={naclAmount} onChange={(e) => setNaclAmount(e.target.value)} className="nightingale-input font-mono h-9" />
+              </div>
+              
+              <div className="grid grid-cols-2 gap-2">
+                <div className="space-y-1">
+                  <Label className="text-xs">Feed Volume (ml/feed)</Label>
+                  <Input type="number" placeholder="5" value={feedVolume} onChange={(e) => setFeedVolume(e.target.value)} className="nightingale-input font-mono h-9" />
+                </div>
+                <div className="space-y-1">
+                  <Label className="text-xs">Feed Frequency</Label>
+                  <select
+                    value={feedFrequency}
+                    onChange={(e) => setFeedFrequency(e.target.value)}
+                    className="w-full h-9 rounded-xl bg-gray-50 dark:bg-gray-800/50 border-0 px-3 text-sm"
+                  >
+                    <option value="1">q1h</option>
+                    <option value="2">q2h</option>
+                    <option value="3">q3h</option>
+                    <option value="4">q4h</option>
+                    <option value="6">q6h</option>
+                    <option value="8">q8h</option>
+                  </select>
+                </div>
               </div>
             </CardContent>
           </Card>
+
+          {/* TPN */}
+          <Card className="nightingale-card">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm">TPN</CardTitle>
+              <CardDescription className="text-xs">Aminoplasmin 10%, Intralipids 20%</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <div className="grid grid-cols-2 gap-2">
+                <div className="space-y-1">
+                  <Label className="text-xs">Amino Acids (g/kg/day)</Label>
+                  <Input 
+                    type="number" 
+                    step="0.1" 
+                    min="0"
+                    max="3"
+                    placeholder="1-3"
+                    value={aminoGrams} 
+                    onChange={(e) => {
+                      const val = parseFloat(e.target.value);
+                      if (val > 3) setAminoGrams("3");
+                      else if (val < 0) setAminoGrams("0");
+                      else setAminoGrams(e.target.value);
+                    }} 
+                    className="nightingale-input font-mono h-9" 
+                  />
+                  <p className="text-xs text-muted-foreground">Limit: 1-3 g/kg/day</p>
+                </div>
+                <div className="space-y-1">
+                  <Label className="text-xs">Lipids (g/kg/day)</Label>
+                  <Input 
+                    type="number" 
+                    step="0.1" 
+                    min="0"
+                    max="3"
+                    placeholder="0-3"
+                    value={lipidGrams} 
+                    onChange={(e) => setLipidGrams(e.target.value)} 
+                    className="nightingale-input font-mono h-9" 
+                  />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Order Summary Results */}
+          {parseFloat(weight) > 0 && parseFloat(tfi) > 0 && (
+            <Card className={`rounded-2xl ${results.isOverLimit ? 'border-red-300 bg-red-50 dark:bg-red-950/30' : 'border-[#00d9c5]/30 bg-[#00d9c5]/5'}`}>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm flex items-center gap-2">
+                  <Check className="h-4 w-4 text-[#00d9c5]" />
+                  Order Summary
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2 font-mono text-sm">
+                {/* TFI */}
+                <div className="p-2 rounded-lg bg-white dark:bg-gray-800 border">
+                  <span className="font-bold">TFI:</span> {results.tfi} ml/kg/day = <span className="text-[#00d9c5] font-bold">{results.totalFluid24hr} ml/24hr</span>
+                  <span className="text-muted-foreground text-xs ml-2">({results.hourlyRate} ml/hr)</span>
+                </div>
+
+                {/* Dextrose */}
+                {results.dextroseBreakdown.map((dex, idx) => (
+                  <div key={idx} className="p-2 rounded-lg bg-amber-50 dark:bg-amber-950/30 border border-amber-200">
+                    <span className="font-bold">{dex.type} ({dex.percentage}%):</span> <span className="text-amber-700 dark:text-amber-300 font-bold">{dex.volume.toFixed(1)} ml/24hr</span>
+                  </div>
+                ))}
+
+                {/* 3% NaCl */}
+                {parseFloat(results.nacl24hr) > 0 && (
+                  <div className="p-2 rounded-lg bg-blue-50 dark:bg-blue-950/30 border border-blue-200">
+                    <span className="font-bold">3% NaCl:</span> <span className="text-blue-700 dark:text-blue-300 font-bold">{results.nacl24hr} ml/24hr</span>
+                    <span className="text-muted-foreground text-xs ml-2">({results.naclPerKg} ml/kg/day)</span>
+                  </div>
+                )}
+
+                {/* Feed */}
+                {parseFloat(results.feed24hr) > 0 && (
+                  <div className="p-2 rounded-lg bg-green-50 dark:bg-green-950/30 border border-green-200">
+                    <span className="font-bold">Total Feed:</span>
+                    <div className="pl-2 text-green-700 dark:text-green-300">
+                      {results.feedVol} ml q{results.feedFreq}h = <span className="font-bold">{results.feed24hr} ml/24hr</span>
+                      <span className="text-muted-foreground text-xs ml-2">({results.feedPerKg} ml/kg/day)</span>
+                    </div>
+                  </div>
+                )}
+
+                {/* TPN */}
+                {(parseFloat(results.amino24hr) > 0 || parseFloat(results.lipid24hr) > 0) && (
+                  <div className="p-2 rounded-lg bg-purple-50 dark:bg-purple-950/30 border border-purple-200">
+                    <span className="font-bold">TPN:</span>
+                    <div className="pl-2 text-purple-700 dark:text-purple-300 space-y-1">
+                      {parseFloat(results.amino24hr) > 0 && (
+                        <div>10% Aminoplasmin ({results.aminoG}g/kg): <span className="font-bold">{results.amino24hr} ml/24hr</span></div>
+                      )}
+                      {parseFloat(results.lipid24hr) > 0 && (
+                        <div>20% Intralipids ({results.lipidG}g/kg): <span className="font-bold">{results.lipid24hr} ml/24hr</span></div>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {/* Balance */}
+                {results.useCombinedDextrose && (
+                  <div className={`p-2 rounded-lg border ${parseFloat(results.remaining) < 0 ? 'bg-red-100 border-red-300 text-red-700' : 'bg-gray-50 dark:bg-gray-800 border-gray-200'}`}>
+                    <span className="font-bold">Remaining:</span> <span className="font-bold">{results.remaining} ml/24hr</span>
+                    {parseFloat(results.remaining) < 0 && (
+                      <span className="text-red-500 text-xs ml-2">(Over TFI limit!)</span>
+                    )}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          )}
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
+// NRP Checklist Dialog
+const NRPChecklistDialog = ({ open, onOpenChange }) => {
+  const [expandedSections, setExpandedSections] = useState(["initial"]);
+  const [checkedItems, setCheckedItems] = useState({});
+  const [activeTimer, setActiveTimer] = useState(null);
+  const [timerSeconds, setTimerSeconds] = useState(0);
+
+  const toggleSection = (section) => {
+    setExpandedSections(prev => 
+      prev.includes(section) 
+        ? prev.filter(s => s !== section)
+        : [...prev, section]
+    );
+  };
+
+  const toggleCheck = (itemId) => {
+    setCheckedItems(prev => ({
+      ...prev,
+      [itemId]: !prev[itemId]
+    }));
+  };
+
+  const startTimer = (seconds, label) => {
+    setActiveTimer(label);
+    setTimerSeconds(seconds);
+    const interval = setInterval(() => {
+      setTimerSeconds(prev => {
+        if (prev <= 1) {
+          clearInterval(interval);
+          setActiveTimer(null);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+  };
+
+  const resetChecklist = () => {
+    setCheckedItems({});
+    setActiveTimer(null);
+    setTimerSeconds(0);
+  };
+
+  const sections = [
+    {
+      id: "initial",
+      title: "Initial Assessment",
+      color: "blue",
+      items: [
+        { id: "term", label: "Term?" },
+        { id: "tone", label: "Good tone?" },
+        { id: "crying", label: "Breathing or crying?" },
+      ],
+      note: "If YES to all: Routine care with mother"
+    },
+    {
+      id: "golden",
+      title: "Golden Minute (First 60s)",
+      color: "amber",
+      items: [
+        { id: "warm", label: "Warm and maintain temperature" },
+        { id: "position", label: "Position airway" },
+        { id: "clear", label: "Clear secretions if needed" },
+        { id: "dry", label: "Dry" },
+        { id: "stimulate", label: "Stimulate" },
+      ]
+    },
+    {
+      id: "apnea",
+      title: "Apnea/Gasping or HR < 100",
+      color: "red",
+      items: [
+        { id: "ppv", label: "Start PPV (21% O2, term | 21-30% preterm)" },
+        { id: "spo2", label: "Apply SpO2 monitor" },
+        { id: "ecg", label: "Consider ECG monitor" },
+      ],
+      timer: { seconds: 15, label: "PPV for 15s" }
+    },
+    {
+      id: "mrsopa",
+      title: "MR. SOPA (Ventilation Corrective)",
+      color: "purple",
+      items: [
+        { id: "mask", label: "M - Mask Adjust" },
+        { id: "reposition", label: "R - Reposition Airway" },
+        { id: "suction", label: "S - Suction mouth then nose" },
+        { id: "open", label: "O - Open mouth" },
+        { id: "pressure", label: "P - Pressure increase" },
+        { id: "alternate", label: "A - Alternate: LMA/ETT (NG first)" },
+      ],
+      note: "Use if no chest rise with PPV"
+    },
+    {
+      id: "hr60",
+      title: "HR < 60 (After 30s Good PPV)",
+      color: "red",
+      items: [
+        { id: "intubate", label: "Intubate if not already done" },
+        { id: "compress", label: "Start chest compressions (3:1 ratio)" },
+        { id: "100o2", label: "Increase to 100% O2" },
+        { id: "uvc", label: "Consider emergency UVC" },
+      ],
+      timer: { seconds: 60, label: "Compressions 60s" }
+    },
+    {
+      id: "epi",
+      title: "Epinephrine (HR still < 60)",
+      color: "red",
+      items: [
+        { id: "epi_iv", label: "IV: 0.01 mg/kg (0.1 ml/kg of 1:10,000)" },
+        { id: "epi_ett", label: "ETT: 0.1 mg/kg (may repeat q3-5min)" },
+        { id: "hypo", label: "Consider hypovolemia" },
+        { id: "pneumo", label: "Consider pneumothorax" },
+      ]
+    }
+  ];
+
+  const references = [
+    { title: "Compressions", items: ["Thumbs on sternum", "1/3 chest diameter", "3 Comp : 1 Vent", '"1 and 2 and 3 and bag"'] },
+    { title: "Ventilation Settings", items: ["Flow Rate: 10L", "FiO2: 21% (preterm 21-30%)", "PEEP: 5", "PIP: Max 40", "Rate: 40-60/min"] },
+    { title: "SpO2 Targets", items: ["1 min: 60-65%", "2 min: 65-70%", "3 min: 70-75%", "5 min: 80-85%", "10 min: 85-95%"] },
+    { title: "Post-Resus STABLE", items: ["Sugar: 4-6 mmol/L", "Temp: 36.5-37.5°C", "Airway: Patent", "BP: Monitor", "Labs: CO2 45-55", "Emotional support"] }
+  ];
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-lg max-h-[90vh] overflow-hidden flex flex-col">
+        <DialogHeader className="flex-shrink-0">
+          <DialogTitle className="font-heading text-xl flex items-center gap-2">
+            <Heart className="h-5 w-5 text-red-500" />
+            NRP Checklist
+          </DialogTitle>
+        </DialogHeader>
+
+        {/* Timer Display */}
+        {activeTimer && (
+          <div className="p-3 rounded-xl bg-red-100 dark:bg-red-950/50 border border-red-300 flex items-center justify-between animate-pulse">
+            <div className="flex items-center gap-2">
+              <Clock className="h-5 w-5 text-red-500" />
+              <span className="font-bold text-red-700 dark:text-red-300">{activeTimer}</span>
+            </div>
+            <span className="text-2xl font-mono font-bold text-red-600">{timerSeconds}s</span>
+          </div>
+        )}
+
+        <ScrollArea className="flex-1 pr-4">
+          <div className="space-y-3 pb-4">
+            {sections.map((section) => (
+              <Card key={section.id} className={`rounded-xl border-${section.color}-200 overflow-hidden`}>
+                <button
+                  onClick={() => toggleSection(section.id)}
+                  className={`w-full p-3 flex items-center justify-between bg-${section.color}-50 dark:bg-${section.color}-950/30 hover:opacity-80`}
+                  style={{ 
+                    backgroundColor: section.color === 'red' ? 'rgba(239,68,68,0.1)' : 
+                                    section.color === 'amber' ? 'rgba(245,158,11,0.1)' :
+                                    section.color === 'purple' ? 'rgba(168,85,247,0.1)' :
+                                    'rgba(59,130,246,0.1)'
+                  }}
+                >
+                  <span className="font-semibold text-sm">{section.title}</span>
+                  {expandedSections.includes(section.id) ? 
+                    <ChevronUp className="h-4 w-4" /> : 
+                    <ChevronDown className="h-4 w-4" />
+                  }
+                </button>
+                
+                {expandedSections.includes(section.id) && (
+                  <CardContent className="pt-3 space-y-2">
+                    {section.items.map((item) => (
+                      <div 
+                        key={item.id}
+                        onClick={() => toggleCheck(item.id)}
+                        className={`flex items-center gap-3 p-2 rounded-lg cursor-pointer transition-colors ${
+                          checkedItems[item.id] 
+                            ? 'bg-green-100 dark:bg-green-950/30' 
+                            : 'hover:bg-gray-50 dark:hover:bg-gray-800/50'
+                        }`}
+                      >
+                        <div className={`w-5 h-5 rounded border-2 flex items-center justify-center ${
+                          checkedItems[item.id] 
+                            ? 'bg-green-500 border-green-500' 
+                            : 'border-gray-300'
+                        }`}>
+                          {checkedItems[item.id] && <Check className="h-3 w-3 text-white" />}
+                        </div>
+                        <span className={`text-sm ${checkedItems[item.id] ? 'line-through text-muted-foreground' : ''}`}>
+                          {item.label}
+                        </span>
+                      </div>
+                    ))}
+                    
+                    {section.note && (
+                      <p className="text-xs text-muted-foreground italic pt-2 border-t">
+                        Note: {section.note}
+                      </p>
+                    )}
+                    
+                    {section.timer && (
+                      <Button 
+                        onClick={() => startTimer(section.timer.seconds, section.timer.label)}
+                        variant="outline"
+                        size="sm"
+                        className="w-full mt-2 rounded-xl"
+                        disabled={activeTimer !== null}
+                      >
+                        <Clock className="h-4 w-4 mr-2" />
+                        Start Timer: {section.timer.label}
+                      </Button>
+                    )}
+                  </CardContent>
+                )}
+              </Card>
+            ))}
+
+            {/* Quick Reference */}
+            <Card className="nightingale-card">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm">Quick Reference</CardTitle>
+              </CardHeader>
+              <CardContent className="grid grid-cols-2 gap-3">
+                {references.map((ref, idx) => (
+                  <div key={idx} className="text-xs space-y-1">
+                    <p className="font-bold text-[#00d9c5]">{ref.title}</p>
+                    {ref.items.map((item, i) => (
+                      <p key={i} className="text-muted-foreground">• {item}</p>
+                    ))}
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+          </div>
+        </ScrollArea>
+
+        <div className="flex-shrink-0 pt-3 border-t">
+          <Button variant="outline" onClick={resetChecklist} className="w-full rounded-xl">
+            Reset Checklist
+          </Button>
         </div>
       </DialogContent>
     </Dialog>
@@ -595,14 +1128,21 @@ const ExchangeCalculatorDialog = ({ open, onOpenChange }) => {
     
     // Formula: 80 × wt × (Observed Hct - Desired Hct) / Observed Hct
     const volume = (80 * w * (obsHct - desHct)) / obsHct;
-    return volume.toFixed(1);
+    
+    return {
+      volume: Math.max(0, volume).toFixed(1),
+      weight: w,
+      obsHct,
+      desHct,
+      isIndicated: obsHct > 65
+    };
   };
 
-  const exchangeVolume = calculateExchange();
+  const result = calculateExchange();
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-md">
+      <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="font-heading text-xl flex items-center gap-2">
             <Repeat className="h-5 w-5 text-purple-500" />
@@ -611,17 +1151,21 @@ const ExchangeCalculatorDialog = ({ open, onOpenChange }) => {
         </DialogHeader>
 
         <div className="space-y-4">
-          <Card className="nightingale-card">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm">Polycythemia Indications</CardTitle>
-            </CardHeader>
-            <CardContent className="text-xs space-y-2">
-              <p>• <strong>Hct &gt; 70%</strong> in asymptomatic neonates</p>
-              <p>• <strong>Hct &gt; 65%</strong> in symptomatic neonates</p>
-              <p className="text-muted-foreground mt-2">Symptoms: Hypoglycemia, Jaundice, Jitteriness, Respiratory distress, Seizures, Cyanosis, Apnea</p>
+          {/* Indications */}
+          <Card className="border-amber-200 bg-amber-50 dark:bg-amber-950/30 rounded-2xl">
+            <CardContent className="pt-4">
+              <p className="font-semibold text-sm text-amber-800 dark:text-amber-200 mb-2">Polycythemia Indications:</p>
+              <ul className="text-xs text-muted-foreground space-y-1">
+                <li>• Hct &gt; <span className="font-bold">70%</span> in asymptomatic neonates</li>
+                <li>• Hct &gt; <span className="font-bold">65%</span> in symptomatic neonates</li>
+              </ul>
+              <p className="text-xs text-muted-foreground mt-2">
+                <span className="font-medium">Symptoms:</span> Hypoglycemia, Jaundice, Jitteriness, Respiratory distress, Seizures, Cyanosis, Apnea
+              </p>
             </CardContent>
           </Card>
 
+          {/* Inputs */}
           <Card className="nightingale-card">
             <CardContent className="pt-4 space-y-3">
               <div className="space-y-2">
@@ -640,7 +1184,6 @@ const ExchangeCalculatorDialog = ({ open, onOpenChange }) => {
                   <Label>Observed Hct (%)</Label>
                   <Input
                     type="number"
-                    step="1"
                     placeholder="e.g., 70"
                     value={observedHct}
                     onChange={(e) => setObservedHct(e.target.value)}
@@ -651,7 +1194,6 @@ const ExchangeCalculatorDialog = ({ open, onOpenChange }) => {
                   <Label>Desired Hct (%)</Label>
                   <Input
                     type="number"
-                    step="1"
                     placeholder="55"
                     value={desiredHct}
                     onChange={(e) => setDesiredHct(e.target.value)}
@@ -662,33 +1204,37 @@ const ExchangeCalculatorDialog = ({ open, onOpenChange }) => {
             </CardContent>
           </Card>
 
-          {exchangeVolume && parseFloat(exchangeVolume) > 0 && (
+          {/* Results */}
+          {result && parseFloat(weight) > 0 && parseFloat(observedHct) > 0 && (
             <Card className="border-purple-200 bg-purple-50 dark:bg-purple-950/30 rounded-2xl">
-              <CardContent className="pt-4 text-center">
-                <p className="text-sm text-muted-foreground">Volume to be Withdrawn</p>
-                <p className="text-4xl font-mono font-bold text-purple-600 dark:text-purple-400 my-2">
-                  {exchangeVolume} ml
-                </p>
-                <p className="text-xs text-muted-foreground">
-                  Replace with equal volume of Normal Saline or IVF
-                </p>
+              <CardContent className="pt-4 space-y-4">
+                <div className="text-center p-4 rounded-xl bg-white dark:bg-gray-800">
+                  <p className="text-sm text-muted-foreground">Volume to be Withdrawn</p>
+                  <p className="text-4xl font-mono font-bold text-purple-600 dark:text-purple-400">
+                    {result.volume} <span className="text-lg">ml</span>
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-2">
+                    Replace with equal volume of Normal Saline or IVF
+                  </p>
+                </div>
               </CardContent>
             </Card>
           )}
 
+          {/* Formula */}
           <Card className="nightingale-card">
             <CardHeader className="pb-2">
               <CardTitle className="text-sm">Formula</CardTitle>
             </CardHeader>
-            <CardContent className="text-xs space-y-2">
-              <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded-lg font-mono text-center">
+            <CardContent className="space-y-2">
+              <div className="p-2 rounded-lg bg-gray-50 dark:bg-gray-800 font-mono text-xs text-center">
                 Volume = (80 × Wt × (Obs Hct - Desired Hct)) / Obs Hct
               </div>
-              <p className="text-muted-foreground">
-                • Perform partial exchange transfusion
-                <br/>• Remove calculated blood volume and replace with IVF
-                <br/>• Aim to dilute the blood and reduce Hct
-              </p>
+              <ul className="text-xs text-muted-foreground space-y-1">
+                <li>• Perform partial exchange transfusion</li>
+                <li>• Remove calculated blood volume and replace with IVF</li>
+                <li>• Aim to dilute the blood and reduce Hct</li>
+              </ul>
             </CardContent>
           </Card>
         </div>
