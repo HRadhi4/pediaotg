@@ -104,7 +104,7 @@ Return ONLY a JSON object with these fields (use null if not found):
   "K": number or null (mEq/L),
   "Cl": number or null (mEq/L),
   "lactate": number or null (mmol/L),
-  "albumin": number or null (g/dL)
+  "Hb": number or null (g/dL - hemoglobin)
 }
 Do not include any text outside the JSON."""
         ).with_model("gemini", "gemini-2.5-flash")
