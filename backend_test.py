@@ -74,7 +74,8 @@ class NICUBackendTester:
                 "Na": 140,
                 "K": 5.2,
                 "Cl": 110,
-                "lactate": 4.5
+                "lactate": 4.5,
+                "Hb": 6.5
             }
         }
         success, response = self.run_test(
