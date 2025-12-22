@@ -160,7 +160,8 @@ async def analyze_blood_gas(request: BloodGasAnalysisRequest):
         "anion_gap_status": None,
         "cl_na_ratio": None,
         "electrolyte_imbalances": [],
-        "recommendations": []
+        "recommendations": [],
+        "hb_analysis": None
     }
     
     pH = values.get("pH")
