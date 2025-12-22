@@ -6,7 +6,8 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Calculator, Droplets, Zap, Plus, Trash2 } from "lucide-react";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Calculator, Droplets, Zap, Plus, Trash2, AlertTriangle } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 
 const GIRDialog = ({ open, onOpenChange }) => {
@@ -22,13 +23,12 @@ const GIRDialog = ({ open, onOpenChange }) => {
   // Formula feed
   const [includeFormula, setIncludeFormula] = useState(false);
   const [formulaVolume, setFormulaVolume] = useState("");
-  const [formulaCalories, setFormulaCalories] = useState("20"); // kcal/oz or per 100ml
+  const [formulaCalories, setFormulaCalories] = useState("20");
 
   // Target GIR calculation
   const [targetGIR, setTargetGIR] = useState("");
-  const [targetFluidSources, setTargetFluidSources] = useState([
-    { id: 1, type: "d10", concentration: 10, enabled: true }
-  ]);
+  const [workingTFI, setWorkingTFI] = useState("");
+  const [lineType, setLineType] = useState("peripheral"); // peripheral or central
 
   const dextroseOptions = [
     { type: "d5", label: "D5%", concentration: 5 },
@@ -38,6 +38,9 @@ const GIRDialog = ({ open, onOpenChange }) => {
     { type: "d20", label: "D20%", concentration: 20 },
     { type: "d50", label: "D50%", concentration: 50 }
   ];
+
+  // Max concentration for peripheral line
+  const maxPeripheralConcentration = 12.5;
 
   const addFluidSource = () => {
     const newId = Math.max(...fluidSources.map(f => f.id), 0) + 1;
@@ -63,18 +66,6 @@ const GIRDialog = ({ open, onOpenChange }) => {
     }));
   };
 
-  const toggleTargetFluidSource = (type) => {
-    const exists = targetFluidSources.find(f => f.type === type);
-    if (exists) {
-      if (targetFluidSources.length > 1) {
-        setTargetFluidSources(targetFluidSources.filter(f => f.type !== type));
-      }
-    } else {
-      const option = dextroseOptions.find(o => o.type === type);
-      setTargetFluidSources([...targetFluidSources, { id: Date.now(), type, concentration: option.concentration, enabled: true }]);
-    }
-  };
-
   const calculateGIR = () => {
     const w = parseFloat(weight);
     if (!w) {
@@ -88,10 +79,10 @@ const GIRDialog = ({ open, onOpenChange }) => {
 
     // Calculate from each fluid source
     fluidSources.forEach(source => {
-      const vol = parseFloat(source.volume) || 0;
-      if (vol > 0) {
-        // Volume is ml/kg/day, concentration is g/100ml
-        const volumePerDay = vol * w; // ml/day
+      const volPerKg = parseFloat(source.volume) || 0;
+      if (volPerKg > 0) {
+        // Volume input is ml/kg/day, calculate total ml/day
+        const volumePerDay = volPerKg * w; // ml/day
         const glucoseGrams = volumePerDay * (source.concentration / 100);
         const glucoseMg = glucoseGrams * 1000;
         totalGlucoseMg += glucoseMg;
@@ -100,8 +91,8 @@ const GIRDialog = ({ open, onOpenChange }) => {
         const option = dextroseOptions.find(o => o.type === source.type);
         breakdown.push({
           label: option?.label || source.type,
-          volume: vol,
-          volumeTotal: volumePerDay.toFixed(1),
+          volumePerKg: volPerKg,
+          volumePerDay: volumePerDay.toFixed(1),
           glucoseG: glucoseGrams.toFixed(2),
           glucoseMg: glucoseMg.toFixed(0)
         });
@@ -110,11 +101,11 @@ const GIRDialog = ({ open, onOpenChange }) => {
 
     // Add formula feed if included
     if (includeFormula && formulaVolume) {
-      const formulaVol = parseFloat(formulaVolume) || 0;
-      if (formulaVol > 0) {
-        const formulaPerDay = formulaVol * w; // ml/day
+      const formulaVolPerKg = parseFloat(formulaVolume) || 0;
+      if (formulaVolPerKg > 0) {
+        const formulaPerDay = formulaVolPerKg * w; // ml/day
         // Formula typically has ~7g carbs per 100ml for standard 20kcal/oz formula
-        const carbsPercent = parseFloat(formulaCalories) === 24 ? 8.5 : 7; // rough estimate
+        const carbsPercent = parseFloat(formulaCalories) === 24 ? 8.5 : parseFloat(formulaCalories) === 27 ? 9.5 : 7;
         const glucoseGrams = formulaPerDay * (carbsPercent / 100);
         const glucoseMg = glucoseGrams * 1000;
         totalGlucoseMg += glucoseMg;
@@ -122,8 +113,8 @@ const GIRDialog = ({ open, onOpenChange }) => {
         
         breakdown.push({
           label: `Formula (${formulaCalories} kcal)`,
-          volume: formulaVol,
-          volumeTotal: formulaPerDay.toFixed(1),
+          volumePerKg: formulaVolPerKg,
+          volumePerDay: formulaPerDay.toFixed(1),
           glucoseG: glucoseGrams.toFixed(2),
           glucoseMg: glucoseMg.toFixed(0),
           isFormula: true
@@ -153,41 +144,106 @@ const GIRDialog = ({ open, onOpenChange }) => {
     });
   };
 
-  const calculateInfusionRate = () => {
+  const calculateFromTFI = () => {
     const w = parseFloat(weight);
     const gir = parseFloat(targetGIR);
+    const tfi = parseFloat(workingTFI);
     
-    if (!w || !gir) {
-      setResults({ error: "Please fill in weight and target GIR" });
+    if (!w || !gir || !tfi) {
+      setResults({ error: "Please fill in weight, target GIR, and working TFI" });
       return;
     }
 
-    if (targetFluidSources.length === 0) {
-      setResults({ error: "Please select at least one dextrose concentration" });
-      return;
-    }
+    // Calculate total fluid per day
+    const totalFluidPerDay = tfi * w; // ml/day
+    const hourlyRate = totalFluidPerDay / 24;
 
-    // Calculate for each selected concentration
-    const rates = targetFluidSources.map(source => {
-      // Rate (ml/hr) = GIR (mg/kg/min) × 6 × weight (kg) ÷ dextrose %
-      const rate = (gir * 6 * w) / source.concentration;
-      const dailyVolume = rate * 24;
-      const tfiCalc = dailyVolume / w;
-      const option = dextroseOptions.find(o => o.type === source.type);
+    // Calculate required glucose per day to achieve target GIR
+    // GIR = mg/kg/min → mg/day = GIR × weight × 24 × 60
+    const requiredGlucoseMgPerDay = gir * w * 24 * 60;
+    const requiredGlucoseGPerDay = requiredGlucoseMgPerDay / 1000;
+
+    // Required concentration = (glucose g/day) / (volume ml/day) × 100
+    const requiredConcentration = (requiredGlucoseGPerDay / totalFluidPerDay) * 100;
+
+    // Filter options based on line type
+    const maxConc = lineType === "peripheral" ? maxPeripheralConcentration : 100;
+    const availableOptions = dextroseOptions.filter(o => o.concentration <= maxConc);
+
+    // Find the best matching concentration
+    let recommendation = null;
+    let warning = null;
+
+    if (requiredConcentration <= maxConc) {
+      // Find closest available concentration
+      const closest = availableOptions.reduce((prev, curr) => 
+        Math.abs(curr.concentration - requiredConcentration) < Math.abs(prev.concentration - requiredConcentration) ? curr : prev
+      );
       
+      // Calculate actual GIR with this concentration
+      const actualGlucose = totalFluidPerDay * (closest.concentration / 100) * 1000;
+      const actualGIR = actualGlucose / w / 24 / 60;
+
+      recommendation = {
+        concentration: closest,
+        actualGIR: actualGIR.toFixed(2),
+        close: Math.abs(actualGIR - gir) < 0.5
+      };
+
+      // Check if we need to suggest alternatives
+      if (!recommendation.close) {
+        // Find options that bracket the target
+        const lowerOpt = availableOptions.filter(o => o.concentration < requiredConcentration).pop();
+        const higherOpt = availableOptions.find(o => o.concentration > requiredConcentration);
+        
+        if (lowerOpt && higherOpt) {
+          const lowerGIR = (totalFluidPerDay * (lowerOpt.concentration / 100) * 1000) / w / 24 / 60;
+          const higherGIR = (totalFluidPerDay * (higherOpt.concentration / 100) * 1000) / w / 24 / 60;
+          recommendation.alternatives = [
+            { ...lowerOpt, gir: lowerGIR.toFixed(2) },
+            { ...higherOpt, gir: higherGIR.toFixed(2) }
+          ];
+        }
+      }
+    } else {
+      warning = lineType === "peripheral" 
+        ? `Required concentration (${requiredConcentration.toFixed(1)}%) exceeds peripheral line limit (${maxPeripheralConcentration}%). Consider central line or reducing TFI.`
+        : `Required concentration (${requiredConcentration.toFixed(1)}%) is very high. Consider adjusting TFI.`;
+      
+      // Still show closest option
+      const closest = availableOptions[availableOptions.length - 1]; // highest available
+      const actualGlucose = totalFluidPerDay * (closest.concentration / 100) * 1000;
+      const actualGIR = actualGlucose / w / 24 / 60;
+      recommendation = {
+        concentration: closest,
+        actualGIR: actualGIR.toFixed(2),
+        close: false,
+        maxAvailable: true
+      };
+    }
+
+    // Calculate all available options
+    const allOptions = availableOptions.map(opt => {
+      const glucose = totalFluidPerDay * (opt.concentration / 100) * 1000;
+      const achievedGIR = glucose / w / 24 / 60;
       return {
-        label: option?.label || source.type,
-        concentration: source.concentration,
-        rate: rate.toFixed(2),
-        dailyVolume: dailyVolume.toFixed(1),
-        tfi: tfiCalc.toFixed(1)
+        ...opt,
+        gir: achievedGIR.toFixed(2),
+        isTarget: Math.abs(achievedGIR - gir) < 0.3
       };
     });
 
     setResults({
-      type: "rate",
+      type: "tfi",
       targetGIR: gir,
-      rates
+      workingTFI: tfi,
+      totalFluidPerDay: totalFluidPerDay.toFixed(1),
+      hourlyRate: hourlyRate.toFixed(1),
+      requiredConcentration: requiredConcentration.toFixed(1),
+      recommendation,
+      warning,
+      allOptions,
+      lineType
     });
   };
 
@@ -197,7 +253,7 @@ const GIRDialog = ({ open, onOpenChange }) => {
     setIncludeFormula(false);
     setFormulaVolume("");
     setTargetGIR("");
-    setTargetFluidSources([{ id: 1, type: "d10", concentration: 10, enabled: true }]);
+    setWorkingTFI("");
     setResults(null);
   };
 
@@ -239,7 +295,7 @@ const GIRDialog = ({ open, onOpenChange }) => {
             <Card className="nightingale-card">
               <CardHeader className="pb-3">
                 <CardTitle className="text-base">Fluid Sources</CardTitle>
-                <CardDescription>Add dextrose fluids (ml/kg/day)</CardDescription>
+                <CardDescription>Enter volumes in ml/kg/day</CardDescription>
               </CardHeader>
               <CardContent className="space-y-3">
                 {fluidSources.map((source, index) => (
@@ -257,7 +313,7 @@ const GIRDialog = ({ open, onOpenChange }) => {
                       </select>
                     </div>
                     <div className="flex-1 space-y-1">
-                      <Label className="text-xs">Volume (ml/kg/day)</Label>
+                      <Label className="text-xs">ml/kg/day</Label>
                       <Input
                         type="number"
                         step="1"
@@ -305,7 +361,7 @@ const GIRDialog = ({ open, onOpenChange }) => {
                 {includeFormula && (
                   <div className="grid grid-cols-2 gap-3 pl-6">
                     <div className="space-y-1">
-                      <Label className="text-xs">Volume (ml/kg/day)</Label>
+                      <Label className="text-xs">ml/kg/day</Label>
                       <Input
                         type="number"
                         step="1"
@@ -341,47 +397,56 @@ const GIRDialog = ({ open, onOpenChange }) => {
           <TabsContent value="rate" className="space-y-4">
             <Card className="nightingale-card">
               <CardHeader className="pb-3">
-                <CardTitle className="text-base">Target GIR</CardTitle>
-                <CardDescription>Calculate infusion rates for target GIR</CardDescription>
+                <CardTitle className="text-base">Find Dextrose Concentration</CardTitle>
+                <CardDescription>Calculate required concentration from TFI and target GIR</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <Label>Target GIR (mg/kg/min)</Label>
-                  <Input
-                    type="number"
-                    step="0.1"
-                    placeholder="e.g., 6"
-                    value={targetGIR}
-                    onChange={(e) => setTargetGIR(e.target.value)}
-                    className="nightingale-input font-mono"
-                    data-testid="target-gir"
-                  />
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-2">
+                    <Label>Target GIR (mg/kg/min)</Label>
+                    <Input
+                      type="number"
+                      step="0.1"
+                      placeholder="e.g., 6"
+                      value={targetGIR}
+                      onChange={(e) => setTargetGIR(e.target.value)}
+                      className="nightingale-input font-mono"
+                      data-testid="target-gir"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Working TFI (ml/kg/day)</Label>
+                    <Input
+                      type="number"
+                      step="1"
+                      placeholder="e.g., 80"
+                      value={workingTFI}
+                      onChange={(e) => setWorkingTFI(e.target.value)}
+                      className="nightingale-input font-mono"
+                      data-testid="working-tfi"
+                    />
+                  </div>
                 </div>
 
                 <div className="space-y-2">
-                  <Label className="text-sm">Select Dextrose Concentrations</Label>
-                  <div className="grid grid-cols-3 gap-2">
-                    {dextroseOptions.map(opt => (
-                      <button
-                        key={opt.type}
-                        onClick={() => toggleTargetFluidSource(opt.type)}
-                        className={`p-2 rounded-xl text-sm font-medium transition-colors ${
-                          targetFluidSources.some(f => f.type === opt.type)
-                            ? 'bg-[#00d9c5] text-gray-900'
-                            : 'bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700'
-                        }`}
-                      >
-                        {opt.label}
-                      </button>
-                    ))}
-                  </div>
+                  <Label className="text-sm">Line Type</Label>
+                  <RadioGroup value={lineType} onValueChange={setLineType} className="flex gap-4">
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="peripheral" id="peripheral" />
+                      <Label htmlFor="peripheral" className="cursor-pointer">Peripheral (max 12.5%)</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="central" id="central" />
+                      <Label htmlFor="central" className="cursor-pointer">Central Line</Label>
+                    </div>
+                  </RadioGroup>
                 </div>
               </CardContent>
             </Card>
 
-            <Button onClick={calculateInfusionRate} className="w-full nightingale-btn-primary">
+            <Button onClick={calculateFromTFI} className="w-full nightingale-btn-primary">
               <Droplets className="h-4 w-4 mr-2" />
-              Calculate Rates
+              Find Concentration
             </Button>
           </TabsContent>
         </Tabs>
@@ -431,7 +496,7 @@ const GIRDialog = ({ open, onOpenChange }) => {
                               <span className="font-mono">{item.glucoseG}g glucose</span>
                             </div>
                             <div className="text-muted-foreground">
-                              {item.volume} ml/kg/day = {item.volumeTotal} ml/day
+                              {item.volumePerKg} ml/kg/day → <span className="font-mono font-medium">{item.volumePerDay} ml/day</span>
                             </div>
                           </div>
                         ))}
@@ -441,29 +506,55 @@ const GIRDialog = ({ open, onOpenChange }) => {
                 </>
               )}
 
-              {results.type === "rate" && (
+              {results.type === "tfi" && (
                 <>
-                  <div className="text-center p-3 rounded-xl bg-white dark:bg-gray-800">
-                    <p className="text-sm text-muted-foreground">Target GIR: <span className="font-mono font-bold text-[#00d9c5]">{results.targetGIR}</span> mg/kg/min</p>
+                  {results.warning && (
+                    <div className="p-3 rounded-xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 flex items-start gap-2">
+                      <AlertTriangle className="h-5 w-5 text-amber-500 flex-shrink-0 mt-0.5" />
+                      <p className="text-sm text-amber-700 dark:text-amber-300">{results.warning}</p>
+                    </div>
+                  )}
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="p-3 rounded-xl bg-white dark:bg-gray-800 border text-center">
+                      <p className="text-xs text-muted-foreground">Required Concentration</p>
+                      <p className="text-2xl font-mono font-bold text-[#00d9c5]">{results.requiredConcentration}%</p>
+                    </div>
+                    <div className="p-3 rounded-xl bg-white dark:bg-gray-800 border text-center">
+                      <p className="text-xs text-muted-foreground">Total Fluid</p>
+                      <p className="text-lg font-mono font-bold">{results.totalFluidPerDay} ml/day</p>
+                      <p className="text-xs text-muted-foreground">{results.hourlyRate} ml/hr</p>
+                    </div>
                   </div>
+
+                  {results.recommendation && (
+                    <div className={`p-3 rounded-xl border ${results.recommendation.close ? 'bg-green-50 dark:bg-green-950/30 border-green-200' : 'bg-blue-50 dark:bg-blue-950/30 border-blue-200'}`}>
+                      <p className="text-xs font-medium text-muted-foreground mb-1">Recommended</p>
+                      <div className="flex justify-between items-center">
+                        <span className="text-xl font-bold">{results.recommendation.concentration.label}</span>
+                        <span className="font-mono">GIR: {results.recommendation.actualGIR} mg/kg/min</span>
+                      </div>
+                      {results.recommendation.maxAvailable && (
+                        <p className="text-xs text-amber-600 mt-1">Max available for {results.lineType} line</p>
+                      )}
+                    </div>
+                  )}
 
                   <div className="space-y-2">
-                    <p className="text-sm font-medium">Required Infusion Rates:</p>
-                    {results.rates.map((rate, i) => (
-                      <div key={i} className="p-3 rounded-xl bg-white dark:bg-gray-800 border">
-                        <div className="flex justify-between items-center">
-                          <span className="font-medium">{rate.label}</span>
-                          <span className="text-xl font-mono font-bold text-[#00d9c5]">{rate.rate} ml/hr</span>
+                    <p className="text-sm font-medium">All Options ({results.lineType === 'peripheral' ? 'Peripheral ≤12.5%' : 'Central Line'}):</p>
+                    <div className="grid grid-cols-2 gap-2">
+                      {results.allOptions.map((opt, i) => (
+                        <div 
+                          key={i} 
+                          className={`p-2 rounded-lg text-sm ${opt.isTarget ? 'bg-[#00d9c5]/20 border-2 border-[#00d9c5]' : 'bg-gray-50 dark:bg-gray-800/50'}`}
+                        >
+                          <div className="flex justify-between">
+                            <span className="font-medium">{opt.label}</span>
+                            <span className="font-mono text-xs">GIR: {opt.gir}</span>
+                          </div>
                         </div>
-                        <div className="text-xs text-muted-foreground mt-1">
-                          Daily: {rate.dailyVolume} ml | TFI: {rate.tfi} ml/kg/day
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-
-                  <div className="p-2 rounded-lg bg-gray-50 dark:bg-gray-800/50 text-xs text-muted-foreground">
-                    Formula: Rate = GIR × 6 × Weight ÷ D%
+                      ))}
+                    </div>
                   </div>
                 </>
               )}
@@ -487,7 +578,7 @@ const GIRDialog = ({ open, onOpenChange }) => {
           <CardContent className="text-xs text-muted-foreground space-y-1">
             <p>• Normal GIR: 4-6 mg/kg/min (neonates)</p>
             <p>• Hypoglycemia: May need 6-8 mg/kg/min</p>
-            <p>• Max peripheral: ~12.5% dextrose</p>
+            <p>• Peripheral line max: 10-12.5% dextrose</p>
             <p>• Central line needed for &gt;12.5%</p>
           </CardContent>
         </Card>
