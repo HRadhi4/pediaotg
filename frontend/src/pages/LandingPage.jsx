@@ -135,7 +135,7 @@ const LandingPage = ({ theme, toggleTheme }) => {
         </div>
       </main>
 
-      {/* Floating Tab Bar - 7 icons */}
+      {/* Floating Tab Bar - 6 icons */}
       <nav className="floating-tab-bar">
         <div className="flex items-center gap-0.5">
           {/* Home */}
@@ -165,15 +165,6 @@ const LandingPage = ({ theme, toggleTheme }) => {
             <FlaskConical className="h-5 w-5" />
           </button>
 
-          {/* GIR - Glucose */}
-          <button
-            onClick={() => handleTabClick("gir")}
-            className={`tab-item ${activeTab === "gir" ? "active" : ""}`}
-            data-testid="gir-nav"
-          >
-            <Zap className="h-5 w-5" />
-          </button>
-
           {/* Jaundice */}
           <button
             onClick={() => handleTabClick("jaundice")}
@@ -194,6 +185,15 @@ const LandingPage = ({ theme, toggleTheme }) => {
             <span className={activeTab === "bloodproducts" ? "text-red-400" : ""}>
               <BloodDropIcon />
             </span>
+          </button>
+
+          {/* GIR - Glucose */}
+          <button
+            onClick={() => handleTabClick("gir")}
+            className={`tab-item ${activeTab === "gir" ? "active" : ""}`}
+            data-testid="gir-nav"
+          >
+            <Zap className="h-5 w-5" />
           </button>
         </div>
       </nav>
