@@ -153,6 +153,8 @@ async def analyze_blood_gas(request: BloodGasAnalysisRequest):
         "primary_disorder": None,
         "compensation": None,
         "is_compensated": False,
+        "expected_value": None,
+        "expected_label": None,
         "lactic_acidosis": False,
         "anion_gap": None,
         "anion_gap_status": None,
@@ -169,18 +171,15 @@ async def analyze_blood_gas(request: BloodGasAnalysisRequest):
     K = values.get("K")
     Cl = values.get("Cl")
     lactate = values.get("lactate")
-    albumin = values.get("albumin") or 4.0  # Default albumin
     
-    # Calculate Anion Gap if electrolytes available
+    # Calculate Anion Gap if electrolytes available (without albumin correction)
     if Na and Cl and HCO3:
         anion_gap = Na - (Cl + HCO3)
-        # Corrected AG for albumin
-        corrected_ag = anion_gap + (2.5 * (4.0 - albumin))
-        analysis["anion_gap"] = round(corrected_ag, 1)
+        analysis["anion_gap"] = round(anion_gap, 1)
         
-        if corrected_ag > 12:
+        if anion_gap > 12:
             analysis["anion_gap_status"] = "Elevated (High Anion Gap)"
-        elif corrected_ag < 8:
+        elif anion_gap < 8:
             analysis["anion_gap_status"] = "Low Anion Gap"
         else:
             analysis["anion_gap_status"] = "Normal"
@@ -197,15 +196,19 @@ async def analyze_blood_gas(request: BloodGasAnalysisRequest):
             # Acidemia
             if pCO2 > 45:
                 analysis["primary_disorder"] = "Respiratory Acidosis"
-                # Check compensation
+                # Check compensation - expected HCO3
                 expected_hco3 = 24 + ((pCO2 - 40) * 0.1)  # Acute
+                analysis["expected_label"] = "HCO3"
+                analysis["expected_value"] = f"{expected_hco3:.1f} mEq/L (Acute)"
                 if HCO3 > expected_hco3 + 2:
                     analysis["compensation"] = "Metabolic compensation present"
                     analysis["is_compensated"] = True
             elif HCO3 < 22:
                 analysis["primary_disorder"] = "Metabolic Acidosis"
-                # Check compensation (Winter's formula)
+                # Check compensation (Winter's formula) - expected pCO2
                 expected_pco2 = (1.5 * HCO3) + 8
+                analysis["expected_label"] = "pCO2"
+                analysis["expected_value"] = f"{expected_pco2:.1f} ± 2 mmHg (Winter's formula: 1.5 × HCO3 + 8)"
                 if abs(pCO2 - expected_pco2) <= 2:
                     analysis["compensation"] = "Appropriate respiratory compensation"
                     analysis["is_compensated"] = True
@@ -218,12 +221,16 @@ async def analyze_blood_gas(request: BloodGasAnalysisRequest):
             if pCO2 < 35:
                 analysis["primary_disorder"] = "Respiratory Alkalosis"
                 expected_hco3 = 24 - ((40 - pCO2) * 0.2)  # Acute
+                analysis["expected_label"] = "HCO3"
+                analysis["expected_value"] = f"{expected_hco3:.1f} mEq/L (Acute)"
                 if HCO3 < expected_hco3 - 2:
                     analysis["compensation"] = "Metabolic compensation present"
                     analysis["is_compensated"] = True
             elif HCO3 > 26:
                 analysis["primary_disorder"] = "Metabolic Alkalosis"
                 expected_pco2 = 40 + (0.7 * (HCO3 - 24))
+                analysis["expected_label"] = "pCO2"
+                analysis["expected_value"] = f"{expected_pco2:.1f} mmHg (40 + 0.7 × (HCO3 - 24))"
                 if abs(pCO2 - expected_pco2) <= 2:
                     analysis["compensation"] = "Appropriate respiratory compensation"
                     analysis["is_compensated"] = True
