@@ -1,21 +1,80 @@
-/* FluidCal App Styles */
+/* Nightingale-inspired Medical App Styles */
 
-.landing-section {
-  transition: flex 0.5s ease;
+/* Floating tab bar */
+.floating-tab-bar {
+  @apply fixed bottom-6 left-1/2 -translate-x-1/2 z-50;
+  @apply bg-white dark:bg-[#1a1f2e] rounded-[2rem] px-2 py-2;
+  @apply shadow-[0_8px_32px_rgba(0,0,0,0.12)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.4)];
+  @apply border border-gray-100 dark:border-gray-800/50;
 }
 
-.landing-section:hover {
-  flex: 1.1;
+.tab-item {
+  @apply relative flex flex-col items-center justify-center px-5 py-2 rounded-2xl transition-all duration-300;
+  @apply text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300;
 }
 
-.input-highlight:focus-within {
-  @apply ring-2 ring-primary/20 border-primary;
+.tab-item.active {
+  @apply text-[#00d9c5];
 }
 
-.result-panel {
-  @apply bg-primary/5 dark:bg-primary/10 border border-primary/20 rounded-xl p-6;
+.tab-item.active::after {
+  content: '';
+  @apply absolute -bottom-1 left-1/2 -translate-x-1/2 w-6 h-1 rounded-full bg-[#00d9c5];
 }
 
+.tab-item-disabled {
+  @apply opacity-30 cursor-not-allowed;
+}
+
+/* Card styles */
+.nightingale-card {
+  @apply bg-white dark:bg-[#1a1f2e] rounded-3xl;
+  @apply shadow-[0_4px_20px_rgba(0,0,0,0.06)] dark:shadow-[0_4px_20px_rgba(0,0,0,0.3)];
+  @apply border border-gray-100 dark:border-gray-800/30;
+  @apply transition-all duration-300;
+}
+
+.nightingale-card:hover {
+  @apply shadow-[0_8px_30px_rgba(0,0,0,0.1)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.4)];
+  @apply -translate-y-1;
+}
+
+/* Selection cards */
+.selection-card {
+  @apply nightingale-card cursor-pointer overflow-hidden;
+}
+
+.selection-card.disabled {
+  @apply opacity-50 cursor-not-allowed hover:translate-y-0 hover:shadow-[0_4px_20px_rgba(0,0,0,0.06)];
+}
+
+/* Teal accent styling */
+.accent-teal {
+  color: #00d9c5;
+}
+
+.bg-accent-teal {
+  background-color: #00d9c5;
+}
+
+.bg-accent-teal-soft {
+  background-color: rgba(0, 217, 197, 0.1);
+}
+
+/* Icon circle backgrounds */
+.icon-circle {
+  @apply w-16 h-16 rounded-2xl flex items-center justify-center;
+  @apply bg-gradient-to-br from-[#00d9c5]/20 to-[#00d9c5]/5;
+  @apply dark:from-[#00d9c5]/30 dark:to-[#00d9c5]/10;
+}
+
+.icon-circle-amber {
+  @apply w-16 h-16 rounded-2xl flex items-center justify-center;
+  @apply bg-gradient-to-br from-amber-400/20 to-amber-400/5;
+  @apply dark:from-amber-400/30 dark:to-amber-400/10;
+}
+
+/* Metric display */
 .metric-value {
   @apply text-4xl md:text-5xl font-mono font-bold tracking-tighter;
 }
@@ -24,12 +83,42 @@
   @apply text-sm font-medium text-muted-foreground;
 }
 
-/* Smooth transitions for theme changes */
-* {
-  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+/* Input styles */
+.nightingale-input {
+  @apply h-12 rounded-xl bg-gray-50 dark:bg-gray-800/50 border-0;
+  @apply focus:ring-2 focus:ring-[#00d9c5]/30 focus:bg-white dark:focus:bg-gray-800;
+  @apply transition-all duration-200;
 }
 
-/* Remove transition from inputs to avoid lag */
+/* Button styles */
+.nightingale-btn {
+  @apply rounded-2xl font-semibold transition-all duration-300;
+  @apply active:scale-95;
+}
+
+.nightingale-btn-primary {
+  @apply nightingale-btn bg-[#00d9c5] text-gray-900 hover:bg-[#00c4b2];
+  @apply shadow-[0_4px_14px_rgba(0,217,197,0.3)];
+}
+
+/* Smooth transitions */
+* {
+  transition-property: background-color, border-color, color, opacity, transform, box-shadow;
+  transition-duration: 200ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
 input, select, textarea {
   transition: none;
+}
+
+/* Result panels */
+.result-panel {
+  @apply bg-[#00d9c5]/5 dark:bg-[#00d9c5]/10 border border-[#00d9c5]/20 rounded-2xl p-6;
+}
+
+/* Glass effect for header */
+.glass-header {
+  @apply bg-white/70 dark:bg-[#0d1117]/70 backdrop-blur-xl;
+  @apply border-b border-gray-200/50 dark:border-gray-800/50;
 }

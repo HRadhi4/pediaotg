@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500&family=Manrope:wght@600;700;800&family=Inter:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500&family=Manrope:wght@400;500;600;700;800&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,7 +6,7 @@
 
 :root {
   --font-heading: 'Manrope', sans-serif;
-  --font-body: 'Inter', sans-serif;
+  --font-body: 'Manrope', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
 }
 
@@ -23,48 +23,48 @@ code {
 
 @layer base {
   :root {
-    --background: 210 40% 98%;
-    --foreground: 222 47% 11%;
+    --background: 170 50% 98%;
+    --foreground: 200 20% 15%;
     --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
+    --card-foreground: 200 20% 15%;
     --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
-    --primary: 173 58% 26%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 215 16% 47%;
-    --secondary-foreground: 0 0% 100%;
-    --muted: 210 40% 96%;
-    --muted-foreground: 215 16% 47%;
-    --accent: 38 92% 50%;
-    --accent-foreground: 0 0% 100%;
+    --popover-foreground: 200 20% 15%;
+    --primary: 174 100% 42%;
+    --primary-foreground: 200 20% 10%;
+    --secondary: 200 15% 92%;
+    --secondary-foreground: 200 20% 25%;
+    --muted: 170 30% 95%;
+    --muted-foreground: 200 15% 45%;
+    --accent: 174 100% 42%;
+    --accent-foreground: 200 20% 10%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
-    --border: 214 32% 91%;
-    --input: 214 32% 91%;
-    --ring: 173 58% 26%;
-    --radius: 0.5rem;
+    --border: 170 20% 90%;
+    --input: 170 20% 90%;
+    --ring: 174 100% 42%;
+    --radius: 1rem;
   }
 
   .dark {
-    --background: 222 47% 11%;
-    --foreground: 210 40% 98%;
-    --card: 217 33% 17%;
-    --card-foreground: 210 40% 98%;
-    --popover: 217 33% 17%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 172 66% 50%;
-    --primary-foreground: 222 47% 11%;
-    --secondary: 215 25% 58%;
-    --secondary-foreground: 222 47% 11%;
-    --muted: 217 33% 17%;
-    --muted-foreground: 215 25% 58%;
-    --accent: 43 96% 56%;
-    --accent-foreground: 222 47% 11%;
-    --destructive: 0 63% 31%;
+    --background: 200 25% 8%;
+    --foreground: 170 30% 95%;
+    --card: 200 20% 12%;
+    --card-foreground: 170 30% 95%;
+    --popover: 200 20% 12%;
+    --popover-foreground: 170 30% 95%;
+    --primary: 174 100% 50%;
+    --primary-foreground: 200 25% 8%;
+    --secondary: 200 20% 18%;
+    --secondary-foreground: 170 30% 90%;
+    --muted: 200 20% 15%;
+    --muted-foreground: 170 20% 60%;
+    --accent: 174 100% 50%;
+    --accent-foreground: 200 25% 8%;
+    --destructive: 0 63% 40%;
     --destructive-foreground: 0 0% 98%;
-    --border: 217 33% 25%;
-    --input: 217 33% 25%;
-    --ring: 172 66% 50%;
+    --border: 200 20% 20%;
+    --input: 200 20% 20%;
+    --ring: 174 100% 50%;
   }
 }
 
@@ -90,4 +90,13 @@ code {
 
 .font-mono {
   font-family: var(--font-mono);
+}
+
+/* Nightingale-inspired gradient backgrounds */
+.gradient-bg-light {
+  background: linear-gradient(145deg, hsl(174, 60%, 92%) 0%, hsl(170, 40%, 98%) 50%, hsl(0, 0%, 100%) 100%);
+}
+
+.gradient-bg-dark {
+  background: linear-gradient(145deg, hsl(174, 50%, 15%) 0%, hsl(200, 30%, 10%) 50%, hsl(200, 25%, 8%) 100%);
 }
