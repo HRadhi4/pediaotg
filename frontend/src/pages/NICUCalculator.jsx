@@ -269,6 +269,7 @@ const NICUCalculator = ({ theme, toggleTheme }) => {
       <FluidCalculatorDialog open={fluidDialogOpen} onOpenChange={setFluidDialogOpen} />
       <NRPChecklistDialog open={nrpDialogOpen} onOpenChange={setNrpDialogOpen} />
       <CatheterCalculatorDialog open={catheterDialogOpen} onOpenChange={setCatheterDialogOpen} />
+      <BloodPressureDialog open={bpDialogOpen} onOpenChange={setBpDialogOpen} />
       <PRBCGuidelineDialog open={prbcDialogOpen} onOpenChange={setPrbcDialogOpen} />
       <ExchangeCalculatorDialog open={exchangeDialogOpen} onOpenChange={setExchangeDialogOpen} />
 
