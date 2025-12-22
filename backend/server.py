@@ -268,6 +268,44 @@ async def analyze_blood_gas(request: BloodGasAnalysisRequest):
         elif Cl > 106:
             analysis["electrolyte_imbalances"].append("Hyperchloremia")
     
+    # Hemoglobin analysis
+    if Hb:
+        if Hb < 7:
+            analysis["hb_analysis"] = {
+                "level": "Severe Anemia",
+                "color": "red",
+                "message": "Blood transfusion indicated",
+                "value": Hb
+            }
+        elif Hb < 10:
+            analysis["hb_analysis"] = {
+                "level": "Moderate Anemia", 
+                "color": "amber",
+                "message": "Consider transfusion based on symptoms",
+                "value": Hb
+            }
+        elif Hb < 12:
+            analysis["hb_analysis"] = {
+                "level": "Mild Anemia",
+                "color": "yellow", 
+                "message": "Monitor closely",
+                "value": Hb
+            }
+        elif Hb <= 17:
+            analysis["hb_analysis"] = {
+                "level": "Normal",
+                "color": "green",
+                "message": "Normal hemoglobin level",
+                "value": Hb
+            }
+        else:
+            analysis["hb_analysis"] = {
+                "level": "Elevated",
+                "color": "orange",
+                "message": "Elevated hemoglobin - investigate cause",
+                "value": Hb
+            }
+    
     return analysis
 
 # Include the router in the main app
