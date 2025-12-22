@@ -47,6 +47,15 @@ const NRPIcon = () => (
   </svg>
 );
 
+const IntubationIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M12 2v4"/>
+    <path d="M8 6h8"/>
+    <path d="M10 6v12c0 2 1 4 2 4s2-2 2-4V6"/>
+    <circle cx="12" cy="3" r="1"/>
+  </svg>
+);
+
 const NICUCalculator = ({ theme, toggleTheme }) => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("");
