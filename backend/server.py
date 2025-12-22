@@ -171,6 +171,7 @@ async def analyze_blood_gas(request: BloodGasAnalysisRequest):
     K = values.get("K")
     Cl = values.get("Cl")
     lactate = values.get("lactate")
+    Hb = values.get("Hb")
     
     # Calculate Anion Gap if electrolytes available (without albumin correction)
     if Na and Cl and HCO3:
