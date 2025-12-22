@@ -26,8 +26,7 @@ const BloodGasDialog = ({ open, onOpenChange }) => {
     Na: "",
     K: "",
     Cl: "",
-    lactate: "",
-    albumin: ""
+    lactate: ""
   });
   
   const fileInputRef = useRef(null);
@@ -49,7 +48,6 @@ const BloodGasDialog = ({ open, onOpenChange }) => {
           
           if (response.data.success && response.data.values) {
             setExtractedValues(response.data.values);
-            // Pre-fill manual values for editing
             setManualValues({
               pH: response.data.values.pH?.toString() || "",
               pCO2: response.data.values.pCO2?.toString() || "",
@@ -59,8 +57,7 @@ const BloodGasDialog = ({ open, onOpenChange }) => {
               Na: response.data.values.Na?.toString() || "",
               K: response.data.values.K?.toString() || "",
               Cl: response.data.values.Cl?.toString() || "",
-              lactate: response.data.values.lactate?.toString() || "",
-              albumin: response.data.values.albumin?.toString() || ""
+              lactate: response.data.values.lactate?.toString() || ""
             });
             toast.success("Values extracted! Please verify and edit if needed.");
           } else {
@@ -112,7 +109,7 @@ const BloodGasDialog = ({ open, onOpenChange }) => {
     setAnalysis(null);
     setManualValues({
       pH: "", pCO2: "", pO2: "", HCO3: "", BE: "",
-      Na: "", K: "", Cl: "", lactate: "", albumin: ""
+      Na: "", K: "", Cl: "", lactate: ""
     });
   };
 
@@ -201,7 +198,6 @@ const BloodGasDialog = ({ open, onOpenChange }) => {
           </TabsContent>
         </Tabs>
 
-        {/* Action Buttons */}
         <div className="flex gap-3 pt-4">
           <Button variant="outline" onClick={resetForm} className="flex-1">
             Reset
@@ -217,7 +213,6 @@ const BloodGasDialog = ({ open, onOpenChange }) => {
           </Button>
         </div>
 
-        {/* Analysis Results */}
         {analysis && <AnalysisResults analysis={analysis} />}
       </DialogContent>
     </Dialog>
@@ -234,8 +229,7 @@ const ValuesForm = ({ values, onChange }) => {
     { key: "Na", label: "Na (mEq/L)", placeholder: "135-145" },
     { key: "K", label: "K (mEq/L)", placeholder: "3.5-5.0" },
     { key: "Cl", label: "Cl (mEq/L)", placeholder: "98-106" },
-    { key: "lactate", label: "Lactate (mmol/L)", placeholder: "<2" },
-    { key: "albumin", label: "Albumin (g/dL)", placeholder: "3.5-5" }
+    { key: "lactate", label: "Lactate (mmol/L)", placeholder: "<2" }
   ];
 
   return (
@@ -288,6 +282,12 @@ const AnalysisResults = ({ analysis }) => {
               {analysis.is_compensated && (
                 <CheckCircle className="inline h-4 w-4 ml-1 text-green-500" />
               )}
+            </p>
+          )}
+          {/* Expected values note */}
+          {analysis.expected_value && (
+            <p className="text-sm text-blue-600 dark:text-blue-400 mt-2 font-mono">
+              Expected {analysis.expected_label}: {analysis.expected_value}
             </p>
           )}
         </div>
