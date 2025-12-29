@@ -141,7 +141,7 @@ const NICUCalculator = ({ theme, toggleTheme }) => {
         <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <button
-              onClick={() => navigate("/")}
+              onClick={() => currentPage === "main" ? navigate("/") : goToPage("main")}
               data-testid="back-button"
               className="w-10 h-10 rounded-xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
             >
@@ -149,75 +149,82 @@ const NICUCalculator = ({ theme, toggleTheme }) => {
             </button>
             <div>
               <h1 className="font-heading text-lg font-bold text-foreground tracking-tight">
-                NICU
+                {currentPage === "main" ? "NICU" : widgets.find(w => w.id === currentPage)?.title || "NICU"}
               </h1>
-              <p className="text-xs text-muted-foreground hidden sm:block">Neonatal Intensive Care Unit</p>
+              <p className="text-xs text-muted-foreground hidden sm:block">
+                {currentPage === "main" ? "Neonatal Intensive Care Unit" : "Tap arrow to go back"}
+              </p>
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => setIsEditMode(!isEditMode)}
-              className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${
-                isEditMode 
-                  ? 'bg-[#00d9c5] text-gray-900' 
-                  : 'bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700'
-              }`}
-              data-testid="edit-widgets"
-            >
-              {isEditMode ? <X className="h-5 w-5" /> : <Settings className="h-5 w-5" />}
-            </button>
-          </div>
+          {currentPage === "main" && (
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setIsEditMode(!isEditMode)}
+                className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${
+                  isEditMode 
+                    ? 'bg-[#00d9c5] text-gray-900' 
+                    : 'bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700'
+                }`}
+                data-testid="edit-widgets"
+              >
+                {isEditMode ? <X className="h-5 w-5" /> : <Settings className="h-5 w-5" />}
+              </button>
+            </div>
+          )}
         </div>
       </header>
 
-      {/* Main Content - Widget Grid */}
+      {/* Main Content */}
       <main className="max-w-4xl mx-auto px-4 md:px-6 py-6 pt-24 pb-32">
-        {isEditMode && (
-          <div className="mb-4 p-3 rounded-xl bg-[#00d9c5]/10 border border-[#00d9c5]/30 text-sm text-center">
-            Tap arrows to rearrange widgets. Tap ✕ when done.
-          </div>
-        )}
+        <ScrollArea className="h-[calc(100vh-160px)]">
+          {currentPage === "main" ? (
+            <>
+              {isEditMode && (
+                <div className="mb-4 p-3 rounded-xl bg-[#00d9c5]/10 border border-[#00d9c5]/30 text-sm text-center">
+                  Tap arrows to rearrange widgets. Tap ✕ when done.
+                </div>
+              )}
 
-        <div className="grid grid-cols-2 gap-4">
-          {widgets.filter(w => w.enabled).map((widget, index) => (
-            <Card
-              key={widget.id}
-              onClick={() => handleWidgetClick(widget.id)}
-              className={`nightingale-card cursor-pointer transition-all duration-300 ${
-                isEditMode ? 'animate-wiggle' : 'hover:scale-[1.02]'
-              } ${widget.comingSoon ? 'opacity-60' : ''}`}
-              data-testid={`widget-${widget.id}`}
-            >
-              <CardContent className="p-4 relative">
-                {isEditMode && (
-                  <div className="absolute top-2 right-2 flex gap-1">
-                    <button
-                      onClick={(e) => { e.stopPropagation(); moveWidget(index, "up"); }}
-                      disabled={index === 0}
-                      className="w-6 h-6 rounded bg-gray-100 dark:bg-gray-700 flex items-center justify-center text-xs disabled:opacity-30"
-                    >
-                      ↑
-                    </button>
-                    <button
-                      onClick={(e) => { e.stopPropagation(); moveWidget(index, "down"); }}
-                      disabled={index === widgets.length - 1}
-                      className="w-6 h-6 rounded bg-gray-100 dark:bg-gray-700 flex items-center justify-center text-xs disabled:opacity-30"
-                    >
-                      ↓
-                    </button>
-                  </div>
-                )}
-                
-                <div className="flex flex-col items-center text-center">
-                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-3 bg-${widget.color}-100 dark:bg-${widget.color}-900/30`}
-                    style={{ backgroundColor: widget.color === 'teal' ? 'rgba(0,217,197,0.1)' : undefined }}
+              <div className="grid grid-cols-2 gap-4">
+                {widgets.filter(w => w.enabled).map((widget, index) => (
+                  <Card
+                    key={widget.id}
+                    onClick={() => handleWidgetClick(widget.id)}
+                    className={`nightingale-card cursor-pointer transition-all duration-300 ${
+                      isEditMode ? 'animate-wiggle' : 'hover:scale-[1.02]'
+                    } ${widget.comingSoon ? 'opacity-60' : ''}`}
+                    data-testid={`widget-${widget.id}`}
                   >
-                    {getWidgetIcon(widget.icon, widget.color)}
-                  </div>
-                  <h3 className="font-heading font-semibold text-sm">{widget.title}</h3>
-                  {widget.comingSoon && (
-                    <span className="mt-1 px-2 py-0.5 bg-gray-100 dark:bg-gray-800 rounded-full text-xs text-gray-500">
-                      Coming Soon
+                    <CardContent className="p-4 relative">
+                      {isEditMode && (
+                        <div className="absolute top-2 right-2 flex gap-1">
+                          <button
+                            onClick={(e) => { e.stopPropagation(); moveWidget(index, "up"); }}
+                            disabled={index === 0}
+                            className="w-6 h-6 rounded bg-gray-100 dark:bg-gray-700 flex items-center justify-center text-xs disabled:opacity-30"
+                          >
+                            ↑
+                          </button>
+                          <button
+                            onClick={(e) => { e.stopPropagation(); moveWidget(index, "down"); }}
+                            disabled={index === widgets.length - 1}
+                            className="w-6 h-6 rounded bg-gray-100 dark:bg-gray-700 flex items-center justify-center text-xs disabled:opacity-30"
+                          >
+                            ↓
+                          </button>
+                        </div>
+                      )}
+                      
+                      <div className="flex flex-col items-center text-center">
+                        <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-3 bg-${widget.color}-100 dark:bg-${widget.color}-900/30`}
+                          style={{ backgroundColor: widget.color === 'teal' ? 'rgba(0,217,197,0.1)' : undefined }}
+                        >
+                          {getWidgetIcon(widget.icon, widget.color)}
+                        </div>
+                        <h3 className="font-heading font-semibold text-sm">{widget.title}</h3>
+                        {widget.comingSoon && (
+                          <span className="mt-1 px-2 py-0.5 bg-gray-100 dark:bg-gray-800 rounded-full text-xs text-gray-500">
+                            Coming Soon
                     </span>
                   )}
                 </div>
