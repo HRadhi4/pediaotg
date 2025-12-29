@@ -56,7 +56,6 @@ const ChildrenDashboard = ({ theme, toggleTheme }) => {
   const { page } = useParams();
   // Use page directly from URL params - no need for separate state
   const currentPage = page || "main";
-  const [searchTerm, setSearchTerm] = useState("");
   const [isEditMode, setIsEditMode] = useState(false);
   const [widgetOrder, setWidgetOrder] = useState(() => {
     const saved = localStorage.getItem("childrenWidgetOrder");
@@ -89,7 +88,6 @@ const ChildrenDashboard = ({ theme, toggleTheme }) => {
     } else {
       navigate(`/children/${pageId}`);
     }
-    setSearchTerm(""); // Clear search when navigating
   };
 
   // Widget definitions for main page with search keywords
