@@ -2729,27 +2729,85 @@ const GrowthChartPage = () => {
         </CardContent>
       </Card>
 
-      {/* Entries List */}
+      {/* Entries List with Interpretation */}
       {entries.length > 0 && (
         <Card className="nightingale-card">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm">Plotted Data ({entries.length})</CardTitle>
+            <CardTitle className="text-sm">Plotted Data & Interpretation ({entries.length})</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-2">
-            {entries.map((entry) => (
-              <div key={entry.id} className="p-2 rounded-xl bg-gray-50 dark:bg-gray-800/50 flex justify-between items-center text-xs">
-                <div className="flex gap-3 flex-wrap">
-                  <span className="font-medium text-[#00d9c5]">{entry.date}</span>
-                  <span className="font-medium">{formatAge(entry.ageValue, entry.ageUnit)}</span>
-                  {entry.weight && <span className="text-muted-foreground">W: {entry.weight}kg</span>}
-                  {entry.length && <span className="text-muted-foreground">L: {entry.length}cm</span>}
-                  {entry.hc && <span className="text-muted-foreground">HC: {entry.hc}cm</span>}
+          <CardContent className="space-y-3">
+            {entries.map((entry) => {
+              const interpretation = getEntryInterpretation(entry);
+              return (
+                <div key={entry.id} className="p-3 rounded-xl bg-gray-50 dark:bg-gray-800/50 space-y-2">
+                  {/* Entry Header */}
+                  <div className="flex justify-between items-center">
+                    <div className="flex gap-2 items-center">
+                      <span className="font-medium text-[#00d9c5]">{entry.date}</span>
+                      <span className="px-2 py-0.5 bg-gray-200 dark:bg-gray-700 rounded-full text-xs font-medium">
+                        {formatAge(entry.ageValue, entry.ageUnit)}
+                      </span>
+                    </div>
+                    <button onClick={() => removeEntry(entry.id)} className="text-red-500 hover:text-red-700 p-1">
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                  </div>
+                  
+                  {/* Measurements with Interpretation */}
+                  <div className="space-y-2">
+                    {entry.weight && interpretation.weight && (
+                      <div className="p-2 rounded-lg bg-white dark:bg-gray-900 border text-xs">
+                        <div className="flex justify-between items-center mb-1">
+                          <span className="font-medium">Weight: {entry.weight} kg</span>
+                          <span className={`font-bold ${interpretation.weight.color}`}>
+                            {interpretation.weight.percentile}th percentile
+                          </span>
+                        </div>
+                        <div className="flex justify-between items-center text-muted-foreground">
+                          <span>Z-score: <span className="font-mono">{interpretation.weight.zScore}</span></span>
+                          <span className={interpretation.weight.color}>{interpretation.weight.interpretation}</span>
+                        </div>
+                      </div>
+                    )}
+                    
+                    {entry.length && interpretation.length && (
+                      <div className="p-2 rounded-lg bg-white dark:bg-gray-900 border text-xs">
+                        <div className="flex justify-between items-center mb-1">
+                          <span className="font-medium">Length: {entry.length} cm</span>
+                          <span className={`font-bold ${interpretation.length.color}`}>
+                            {interpretation.length.percentile}th percentile
+                          </span>
+                        </div>
+                        <div className="flex justify-between items-center text-muted-foreground">
+                          <span>Z-score: <span className="font-mono">{interpretation.length.zScore}</span></span>
+                          <span className={interpretation.length.color}>{interpretation.length.interpretation}</span>
+                        </div>
+                      </div>
+                    )}
+                    
+                    {entry.hc && interpretation.hc && (
+                      <div className="p-2 rounded-lg bg-white dark:bg-gray-900 border text-xs">
+                        <div className="flex justify-between items-center mb-1">
+                          <span className="font-medium">Head Circ: {entry.hc} cm</span>
+                          <span className={`font-bold ${interpretation.hc.color}`}>
+                            {interpretation.hc.percentile}th percentile
+                          </span>
+                        </div>
+                        <div className="flex justify-between items-center text-muted-foreground">
+                          <span>Z-score: <span className="font-mono">{interpretation.hc.zScore}</span></span>
+                          <span className={interpretation.hc.color}>{interpretation.hc.interpretation}</span>
+                        </div>
+                      </div>
+                    )}
+                    
+                    {/* Show message if no measurements */}
+                    {!entry.weight && !entry.length && !entry.hc && (
+                      <p className="text-xs text-muted-foreground italic">No measurements entered for this date</p>
+                    )}
+                  </div>
                 </div>
-                <button onClick={() => removeEntry(entry.id)} className="text-red-500 hover:text-red-700 p-1">
-                  <Trash2 className="h-3 w-3" />
-                </button>
-              </div>
-            ))}
+              );
+            })}
           </CardContent>
         </Card>
       )}
@@ -2764,6 +2822,12 @@ const GrowthChartPage = () => {
           <p>• <span className="font-medium" style={{color: percentileColors.p85}}>15th-85th:</span> Normal range</p>
           <p>• <span className="font-medium" style={{color: percentileColors.p3}}>3rd-15th / 85th-97th:</span> Monitor growth</p>
           <p>• <span className="text-red-600 font-medium">&lt;3rd / &gt;97th:</span> Evaluation needed</p>
+          <div className="pt-2 border-t mt-2">
+            <p className="font-medium text-foreground">Z-score Interpretation:</p>
+            <p>• Z = 0: At the median (50th percentile)</p>
+            <p>• Z = -2 to +2: Normal range</p>
+            <p>• Z &lt; -2 or Z &gt; +2: Requires evaluation</p>
+          </div>
         </CardContent>
       </Card>
     </div>
