@@ -116,6 +116,9 @@ frontend:
       - working: true
         agent: "main"
         comment: "Page-based navigation working. Fixed linting error (useEffect setState). Widgets navigate to full pages correctly."
+      - working: true
+        agent: "testing"
+        comment: "✓ TESTED: Main dashboard fully functional. All 8 widgets present and clickable: Blood Pressure, Infusions, Intubation, Scoring, CPR, Approaches, Insensible Water Loss, Drugs. Page-based navigation working correctly. Medical disclaimer popup handled properly. All widgets navigate to their respective full-page calculators."
 
   - task: "Blood Pressure Calculator (Children)"
     implemented: true
