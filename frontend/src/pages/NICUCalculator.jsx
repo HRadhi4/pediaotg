@@ -2612,7 +2612,7 @@ const GrowthChartPage = () => {
               <span className="flex items-center gap-1"><span className="w-4 h-1" style={{backgroundColor: percentileColors.p50}}></span> 50th</span>
               <span className="flex items-center gap-1"><span className="w-4 h-0.5" style={{backgroundColor: percentileColors.p15}}></span> 15th</span>
               <span className="flex items-center gap-1"><span className="w-4 h-0.5" style={{backgroundColor: percentileColors.p3}}></span> 3rd</span>
-              <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-full bg-black border-2 border-white"></span> Patient</span>
+              <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-black border border-white"></span> Patient</span>
             </div>
           </div>
         </CardContent>
