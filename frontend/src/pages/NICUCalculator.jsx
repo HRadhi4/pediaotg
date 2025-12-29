@@ -269,6 +269,7 @@ const NICUCalculator = ({ theme, toggleTheme }) => {
               {currentPage === "bp" && <BloodPressurePage />}
               {currentPage === "prbc" && <PRBCGuidelinePage />}
               {currentPage === "exchange" && <ExchangeCalculatorPage />}
+              {currentPage === "growth" && <GrowthChartPage />}
             </div>
           )}
         </div>
