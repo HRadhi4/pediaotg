@@ -58,7 +58,7 @@ const ChildrenDashboard = ({ theme, toggleTheme }) => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [widgetOrder, setWidgetOrder] = useState(() => {
     const saved = localStorage.getItem("childrenWidgetOrder");
-    return saved ? JSON.parse(saved) : ["bp", "infusions", "intubation", "scoring", "cpr", "approaches", "insensible", "drugs"];
+    return saved ? JSON.parse(saved) : ["bp", "infusions", "intubation", "scoring", "cpr", "approaches", "drugs"];
   });
 
   // Dialog states for floating nav bar
