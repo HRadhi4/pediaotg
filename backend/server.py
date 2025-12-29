@@ -99,17 +99,23 @@ def perform_paddle_ocr(image_path: str) -> str:
     """Run PaddleOCR on image - runs in thread pool"""
     try:
         ocr = get_paddle_ocr()
-        result = ocr.ocr(image_path, cls=True)
+        result = ocr.predict(image_path)
         
-        # Extract text from OCR result
-        if not result or not result[0]:
+        # Extract text from OCR result (PaddleOCR 3.x format)
+        if not result:
             return ""
         
         text_lines = []
-        for line in result[0]:
-            if len(line) >= 2:
-                text = line[1][0]  # The text is in the second element
-                text_lines.append(text)
+        # result is a list of dictionaries with 'rec_texts' key
+        for item in result:
+            if isinstance(item, dict) and 'rec_texts' in item:
+                text_lines.extend(item['rec_texts'])
+            elif isinstance(item, dict) and 'text' in item:
+                text_lines.append(item['text'])
+            elif isinstance(item, list):
+                for sub_item in item:
+                    if isinstance(sub_item, dict) and 'rec_texts' in sub_item:
+                        text_lines.extend(sub_item['rec_texts'])
         
         return " ".join(text_lines)
     except Exception as e:
