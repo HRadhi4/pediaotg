@@ -159,17 +159,17 @@ async def analyze_blood_gas_image_offline(request: BloodGasInput):
         # Decode base64 to bytes
         image_bytes = base64.b64decode(image_data)
         
-        # Save to temporary file for PaddleOCR
+        # Save to temporary file for OCR
         with tempfile.NamedTemporaryFile(suffix=".jpg", delete=False) as tmp_file:
             tmp_file.write(image_bytes)
             tmp_path = tmp_file.name
         
         try:
-            # Run OCR in thread pool to avoid blocking
+            # Run Tesseract OCR in thread pool to avoid blocking
             loop = asyncio.get_event_loop()
             raw_text = await loop.run_in_executor(
                 ocr_executor,
-                perform_paddle_ocr,
+                perform_tesseract_ocr,
                 tmp_path
             )
             
@@ -180,7 +180,7 @@ async def analyze_blood_gas_image_offline(request: BloodGasInput):
                 "success": True,
                 "values": extracted_values,
                 "raw_text": raw_text,
-                "engine": "paddleocr"
+                "engine": "tesseract"
             }
         finally:
             # Cleanup temporary file
