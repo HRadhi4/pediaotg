@@ -10,6 +10,7 @@ class NICUBackendTester:
         self.base_url = base_url
         self.tests_run = 0
         self.tests_passed = 0
+        self.test_image_base64 = self.create_test_image()
 
     def run_test(self, name, method, endpoint, expected_status, data=None):
         """Run a single API test"""
