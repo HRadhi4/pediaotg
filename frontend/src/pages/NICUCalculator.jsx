@@ -1,6 +1,23 @@
+/**
+ * NICU Calculator Dashboard
+ * 
+ * File Structure:
+ * - Lines 1-60: Imports and Custom Icons
+ * - Lines 60-285: Main NICUCalculator Component (Dashboard & Navigation)
+ * - Lines 286-678: FluidCalculatorPage
+ * - Lines 681-910: NRPChecklistPage
+ * - Lines 913-991: CatheterCalculatorPage (UVC/UAC)
+ * - Lines 994-1377: PRBCGuidelinePage
+ * - Lines 1380-1605: ExchangeCalculatorPage
+ * - Lines 1608-1802: IntubationPage
+ * - Lines 1805-2009: BloodPressurePage
+ * 
+ * Future Refactoring: Each page component can be extracted to /pages/nicu/
+ */
+
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { ArrowLeft, Moon, Sun, Droplets, Home, FlaskConical, Zap, GripVertical, Settings, X, Stethoscope, Activity, Repeat, Heart, Check, Clock, AlertTriangle, ChevronDown, ChevronUp, Plus, Trash2 } from "lucide-react";
+import { ArrowLeft, Droplets, Home, FlaskConical, Zap, Settings, X, Stethoscope, Activity, Repeat, Check, Clock, ChevronDown, ChevronUp, Plus, Trash2 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
