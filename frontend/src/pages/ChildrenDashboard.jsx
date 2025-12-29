@@ -1580,8 +1580,15 @@ const ApproachesPage = ({ onBack }) => {
                 <p className="font-semibold text-blue-700 dark:text-blue-300 mb-2">Fluid Management</p>
                 <p className="text-muted-foreground mb-2">Use 0.9% or 0.45% NS until dextrose added</p>
                 <div className="space-y-2">
+                  {/* Initial Bolus - Even if not in shock */}
+                  <div className="p-2 bg-teal-100 dark:bg-teal-900/30 rounded-lg border border-teal-300">
+                    <p className="font-medium text-teal-700">Initial Approach (before insulin):</p>
+                    <p className="text-muted-foreground">10 mL/kg over 1 hour</p>
+                    {w > 0 && <p className="font-mono text-teal-600">→ {(w * 10).toFixed(0)} mL over 1 hr</p>}
+                    <p className="text-xs text-teal-600 mt-1">Can be given even if not in shock</p>
+                  </div>
                   <div className="p-2 bg-white/50 dark:bg-gray-900/50 rounded-lg">
-                    <p className="font-medium">If Stable (by weight):</p>
+                    <p className="font-medium">Maintenance (by weight):</p>
                     <div className="grid grid-cols-2 gap-2 mt-1 text-muted-foreground">
                       <span>&lt;10 kg: 6 mL/kg/hr</span>
                       <span>10-19 kg: 5 mL/kg/hr</span>
