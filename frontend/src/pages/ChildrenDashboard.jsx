@@ -137,45 +137,45 @@ const BPPage = ({ onBack }) => {
   const [gender, setGender] = useState("boys");
   const [selectedAge, setSelectedAge] = useState("");
 
-  // BP data based on the PDF provided (50th percentile at 50th height percentile)
+  // BP data from Harriet Lane Handbook 23rd Edition - includes all percentiles
   const bpData = {
     boys: [
-      { age: "1", systolic: { p50: 80, p90: 94, p95: 98, p99: 105 }, diastolic: { p50: 34, p90: 49, p95: 54, p99: 61 } },
-      { age: "2", systolic: { p50: 84, p90: 97, p95: 101, p99: 109 }, diastolic: { p50: 39, p90: 54, p95: 59, p99: 66 } },
-      { age: "3", systolic: { p50: 86, p90: 100, p95: 104, p99: 111 }, diastolic: { p50: 44, p90: 59, p95: 63, p99: 71 } },
-      { age: "4", systolic: { p50: 88, p90: 102, p95: 106, p99: 113 }, diastolic: { p50: 47, p90: 62, p95: 66, p99: 74 } },
-      { age: "5", systolic: { p50: 90, p90: 104, p95: 108, p99: 115 }, diastolic: { p50: 50, p90: 65, p95: 69, p99: 77 } },
-      { age: "6", systolic: { p50: 91, p90: 105, p95: 109, p99: 116 }, diastolic: { p50: 53, p90: 68, p95: 72, p99: 80 } },
-      { age: "7", systolic: { p50: 92, p90: 106, p95: 110, p99: 117 }, diastolic: { p50: 55, p90: 70, p95: 74, p99: 82 } },
-      { age: "8", systolic: { p50: 94, p90: 107, p95: 111, p99: 119 }, diastolic: { p50: 56, p90: 71, p95: 75, p99: 83 } },
-      { age: "9", systolic: { p50: 95, p90: 109, p95: 113, p99: 120 }, diastolic: { p50: 57, p90: 72, p95: 76, p99: 84 } },
-      { age: "10", systolic: { p50: 97, p90: 111, p95: 115, p99: 122 }, diastolic: { p50: 58, p90: 73, p95: 77, p99: 85 } },
-      { age: "11", systolic: { p50: 99, p90: 113, p95: 117, p99: 124 }, diastolic: { p50: 59, p90: 74, p95: 78, p99: 86 } },
-      { age: "12", systolic: { p50: 101, p90: 115, p95: 119, p99: 126 }, diastolic: { p50: 59, p90: 74, p95: 78, p99: 86 } },
-      { age: "13", systolic: { p50: 104, p90: 117, p95: 121, p99: 128 }, diastolic: { p50: 60, p90: 75, p95: 79, p99: 87 } },
-      { age: "14", systolic: { p50: 106, p90: 120, p95: 124, p99: 131 }, diastolic: { p50: 60, p90: 75, p95: 80, p99: 87 } },
-      { age: "15", systolic: { p50: 109, p90: 122, p95: 126, p99: 134 }, diastolic: { p50: 61, p90: 76, p95: 81, p99: 88 } },
-      { age: "16", systolic: { p50: 111, p90: 125, p95: 129, p99: 136 }, diastolic: { p50: 63, p90: 78, p95: 82, p99: 90 } },
-      { age: "17", systolic: { p50: 114, p90: 127, p95: 131, p99: 139 }, diastolic: { p50: 65, p90: 80, p95: 84, p99: 92 } },
+      { age: "1", systolic: { p5: 80, p10: 81, p50: 85, p90: 88, p95: 89, p99: 105 }, diastolic: { p5: 34, p10: 35, p50: 37, p90: 39, p95: 39, p99: 61 } },
+      { age: "2", systolic: { p5: 84, p10: 85, p50: 88, p90: 92, p95: 92, p99: 109 }, diastolic: { p5: 39, p10: 40, p50: 42, p90: 44, p95: 44, p99: 66 } },
+      { age: "3", systolic: { p5: 86, p10: 87, p50: 91, p90: 94, p95: 95, p99: 111 }, diastolic: { p5: 44, p10: 44, p50: 46, p90: 48, p95: 48, p99: 71 } },
+      { age: "4", systolic: { p5: 88, p10: 89, p50: 93, p90: 96, p95: 97, p99: 113 }, diastolic: { p5: 47, p10: 48, p50: 50, p90: 51, p95: 52, p99: 74 } },
+      { age: "5", systolic: { p5: 90, p10: 91, p50: 95, p90: 98, p95: 98, p99: 115 }, diastolic: { p5: 50, p10: 51, p50: 53, p90: 55, p95: 55, p99: 77 } },
+      { age: "6", systolic: { p5: 91, p10: 92, p50: 96, p90: 99, p95: 100, p99: 116 }, diastolic: { p5: 53, p10: 53, p50: 55, p90: 57, p95: 57, p99: 80 } },
+      { age: "7", systolic: { p5: 92, p10: 94, p50: 97, p90: 100, p95: 101, p99: 117 }, diastolic: { p5: 55, p10: 55, p50: 57, p90: 59, p95: 59, p99: 82 } },
+      { age: "8", systolic: { p5: 94, p10: 95, p50: 99, p90: 102, p95: 102, p99: 119 }, diastolic: { p5: 56, p10: 57, p50: 59, p90: 60, p95: 61, p99: 83 } },
+      { age: "9", systolic: { p5: 95, p10: 96, p50: 100, p90: 103, p95: 104, p99: 120 }, diastolic: { p5: 57, p10: 58, p50: 60, p90: 61, p95: 62, p99: 84 } },
+      { age: "10", systolic: { p5: 97, p10: 98, p50: 102, p90: 105, p95: 106, p99: 122 }, diastolic: { p5: 58, p10: 59, p50: 61, p90: 62, p95: 63, p99: 85 } },
+      { age: "11", systolic: { p5: 99, p10: 100, p50: 104, p90: 107, p95: 107, p99: 124 }, diastolic: { p5: 59, p10: 59, p50: 61, p90: 63, p95: 63, p99: 86 } },
+      { age: "12", systolic: { p5: 101, p10: 102, p50: 106, p90: 109, p95: 110, p99: 126 }, diastolic: { p5: 59, p10: 60, p50: 62, p90: 63, p95: 64, p99: 86 } },
+      { age: "13", systolic: { p5: 104, p10: 105, p50: 108, p90: 111, p95: 112, p99: 128 }, diastolic: { p5: 60, p10: 60, p50: 62, p90: 64, p95: 64, p99: 87 } },
+      { age: "14", systolic: { p5: 106, p10: 107, p50: 111, p90: 114, p95: 115, p99: 131 }, diastolic: { p5: 60, p10: 61, p50: 63, p90: 65, p95: 65, p99: 87 } },
+      { age: "15", systolic: { p5: 109, p10: 110, p50: 113, p90: 117, p95: 117, p99: 134 }, diastolic: { p5: 61, p10: 62, p50: 64, p90: 66, p95: 66, p99: 88 } },
+      { age: "16", systolic: { p5: 111, p10: 112, p50: 116, p90: 119, p95: 120, p99: 136 }, diastolic: { p5: 63, p10: 63, p50: 65, p90: 67, p95: 67, p99: 90 } },
+      { age: "17", systolic: { p5: 114, p10: 115, p50: 118, p90: 121, p95: 122, p99: 139 }, diastolic: { p5: 65, p10: 66, p50: 67, p90: 69, p95: 70, p99: 92 } },
     ],
     girls: [
-      { age: "1", systolic: { p50: 83, p90: 97, p95: 100, p99: 108 }, diastolic: { p50: 38, p90: 52, p95: 56, p99: 64 } },
-      { age: "2", systolic: { p50: 85, p90: 98, p95: 102, p99: 109 }, diastolic: { p50: 43, p90: 57, p95: 61, p99: 69 } },
-      { age: "3", systolic: { p50: 86, p90: 100, p95: 104, p99: 111 }, diastolic: { p50: 47, p90: 61, p95: 65, p99: 73 } },
-      { age: "4", systolic: { p50: 88, p90: 101, p95: 105, p99: 112 }, diastolic: { p50: 50, p90: 64, p95: 68, p99: 76 } },
-      { age: "5", systolic: { p50: 89, p90: 103, p95: 107, p99: 114 }, diastolic: { p50: 52, p90: 66, p95: 70, p99: 78 } },
-      { age: "6", systolic: { p50: 91, p90: 104, p95: 108, p99: 115 }, diastolic: { p50: 54, p90: 68, p95: 72, p99: 80 } },
-      { age: "7", systolic: { p50: 93, p90: 106, p95: 110, p99: 117 }, diastolic: { p50: 55, p90: 69, p95: 73, p99: 81 } },
-      { age: "8", systolic: { p50: 95, p90: 108, p95: 112, p99: 119 }, diastolic: { p50: 57, p90: 71, p95: 75, p99: 82 } },
-      { age: "9", systolic: { p50: 96, p90: 110, p95: 114, p99: 121 }, diastolic: { p50: 58, p90: 72, p95: 76, p99: 83 } },
-      { age: "10", systolic: { p50: 98, p90: 112, p95: 116, p99: 123 }, diastolic: { p50: 59, p90: 73, p95: 77, p99: 84 } },
-      { age: "11", systolic: { p50: 100, p90: 114, p95: 118, p99: 125 }, diastolic: { p50: 60, p90: 74, p95: 78, p99: 85 } },
-      { age: "12", systolic: { p50: 102, p90: 116, p95: 119, p99: 127 }, diastolic: { p50: 61, p90: 75, p95: 79, p99: 86 } },
-      { age: "13", systolic: { p50: 104, p90: 117, p95: 121, p99: 128 }, diastolic: { p50: 62, p90: 76, p95: 80, p99: 87 } },
-      { age: "14", systolic: { p50: 106, p90: 119, p95: 123, p99: 130 }, diastolic: { p50: 63, p90: 77, p95: 81, p99: 88 } },
-      { age: "15", systolic: { p50: 107, p90: 120, p95: 124, p99: 131 }, diastolic: { p50: 64, p90: 78, p95: 82, p99: 89 } },
-      { age: "16", systolic: { p50: 108, p90: 121, p95: 125, p99: 132 }, diastolic: { p50: 64, p90: 78, p95: 82, p99: 90 } },
-      { age: "17", systolic: { p50: 108, p90: 122, p95: 125, p99: 133 }, diastolic: { p50: 64, p90: 78, p95: 82, p99: 90 } },
+      { age: "1", systolic: { p5: 83, p10: 84, p50: 86, p90: 89, p95: 90, p99: 108 }, diastolic: { p5: 38, p10: 39, p50: 40, p90: 41, p95: 42, p99: 64 } },
+      { age: "2", systolic: { p5: 85, p10: 85, p50: 88, p90: 91, p95: 91, p99: 109 }, diastolic: { p5: 43, p10: 44, p50: 45, p90: 46, p95: 47, p99: 69 } },
+      { age: "3", systolic: { p5: 86, p10: 87, p50: 89, p90: 92, p95: 93, p99: 111 }, diastolic: { p5: 47, p10: 48, p50: 49, p90: 50, p95: 51, p99: 73 } },
+      { age: "4", systolic: { p5: 88, p10: 88, p50: 91, p90: 94, p95: 94, p99: 112 }, diastolic: { p5: 50, p10: 50, p50: 52, p90: 53, p95: 54, p99: 76 } },
+      { age: "5", systolic: { p5: 89, p10: 90, p50: 93, p90: 95, p95: 96, p99: 114 }, diastolic: { p5: 52, p10: 53, p50: 54, p90: 55, p95: 56, p99: 78 } },
+      { age: "6", systolic: { p5: 91, p10: 92, p50: 94, p90: 97, p95: 98, p99: 115 }, diastolic: { p5: 54, p10: 54, p50: 56, p90: 57, p95: 58, p99: 80 } },
+      { age: "7", systolic: { p5: 93, p10: 93, p50: 96, p90: 99, p95: 99, p99: 117 }, diastolic: { p5: 55, p10: 56, p50: 57, p90: 58, p95: 59, p99: 81 } },
+      { age: "8", systolic: { p5: 95, p10: 95, p50: 98, p90: 100, p95: 101, p99: 119 }, diastolic: { p5: 57, p10: 57, p50: 58, p90: 60, p95: 60, p99: 82 } },
+      { age: "9", systolic: { p5: 96, p10: 97, p50: 100, p90: 102, p95: 103, p99: 121 }, diastolic: { p5: 58, p10: 58, p50: 59, p90: 61, p95: 61, p99: 83 } },
+      { age: "10", systolic: { p5: 98, p10: 99, p50: 102, p90: 104, p95: 105, p99: 123 }, diastolic: { p5: 59, p10: 59, p50: 60, p90: 62, p95: 62, p99: 84 } },
+      { age: "11", systolic: { p5: 100, p10: 101, p50: 103, p90: 106, p95: 107, p99: 125 }, diastolic: { p5: 60, p10: 60, p50: 61, p90: 63, p95: 63, p99: 85 } },
+      { age: "12", systolic: { p5: 102, p10: 103, p50: 105, p90: 108, p95: 109, p99: 127 }, diastolic: { p5: 61, p10: 61, p50: 62, p90: 64, p95: 64, p99: 86 } },
+      { age: "13", systolic: { p5: 104, p10: 105, p50: 107, p90: 110, p95: 110, p99: 128 }, diastolic: { p5: 62, p10: 62, p50: 63, p90: 65, p95: 65, p99: 87 } },
+      { age: "14", systolic: { p5: 106, p10: 106, p50: 109, p90: 111, p95: 112, p99: 130 }, diastolic: { p5: 63, p10: 63, p50: 64, p90: 66, p95: 66, p99: 88 } },
+      { age: "15", systolic: { p5: 107, p10: 108, p50: 110, p90: 113, p95: 113, p99: 131 }, diastolic: { p5: 64, p10: 64, p50: 65, p90: 67, p95: 67, p99: 89 } },
+      { age: "16", systolic: { p5: 108, p10: 108, p50: 111, p90: 114, p95: 114, p99: 132 }, diastolic: { p5: 64, p10: 64, p50: 66, p90: 67, p95: 68, p99: 90 } },
+      { age: "17", systolic: { p5: 108, p10: 109, p50: 111, p90: 114, p95: 115, p99: 133 }, diastolic: { p5: 64, p10: 65, p50: 66, p90: 67, p95: 68, p99: 90 } },
     ]
   };
 
@@ -186,7 +186,7 @@ const BPPage = ({ onBack }) => {
       <Card className="nightingale-card">
         <CardHeader className="pb-3">
           <CardTitle className="text-base">Blood Pressure by Age</CardTitle>
-          <CardDescription>Percentiles at 50th height percentile</CardDescription>
+          <CardDescription>Harriet Lane Handbook 23rd Edition</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           {/* Gender Selection */}
@@ -227,57 +227,105 @@ const BPPage = ({ onBack }) => {
       {/* Results */}
       {selectedData && (
         <div className="space-y-3">
+          {/* Low BP - Below 50th percentile */}
+          <Card className="border-blue-200 bg-blue-50 dark:bg-blue-950/30">
+            <CardContent className="pt-4">
+              <p className="text-xs font-medium text-blue-700 dark:text-blue-300 mb-2">Below 50th Percentile (Low)</p>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="p-2 rounded-lg bg-white/50 dark:bg-gray-900/50">
+                  <p className="text-xs text-muted-foreground text-center mb-1">Systolic</p>
+                  <div className="flex justify-around text-center">
+                    <div>
+                      <p className="text-xs text-blue-600">5th</p>
+                      <p className="text-lg font-mono font-bold">{selectedData.systolic.p5}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-blue-600">10th</p>
+                      <p className="text-lg font-mono font-bold">{selectedData.systolic.p10}</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="p-2 rounded-lg bg-white/50 dark:bg-gray-900/50">
+                  <p className="text-xs text-muted-foreground text-center mb-1">Diastolic</p>
+                  <div className="flex justify-around text-center">
+                    <div>
+                      <p className="text-xs text-blue-600">5th</p>
+                      <p className="text-lg font-mono font-bold">{selectedData.diastolic.p5}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-blue-600">10th</p>
+                      <p className="text-lg font-mono font-bold">{selectedData.diastolic.p10}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Normal - 50th percentile */}
           <Card className="border-green-200 bg-green-50 dark:bg-green-950/30">
             <CardContent className="pt-4">
               <p className="text-xs font-medium text-green-700 dark:text-green-300 mb-2">50th Percentile (Normal)</p>
               <div className="grid grid-cols-2 gap-4 text-center">
                 <div>
                   <p className="text-xs text-muted-foreground">Systolic</p>
-                  <p className="text-2xl font-mono font-bold">{selectedData.systolic.p50}</p>
+                  <p className="text-3xl font-mono font-bold text-green-600">{selectedData.systolic.p50}</p>
                 </div>
                 <div>
                   <p className="text-xs text-muted-foreground">Diastolic</p>
-                  <p className="text-2xl font-mono font-bold">{selectedData.diastolic.p50}</p>
+                  <p className="text-3xl font-mono font-bold text-green-600">{selectedData.diastolic.p50}</p>
                 </div>
               </div>
             </CardContent>
           </Card>
 
+          {/* Elevated - 90th percentile */}
           <Card className="border-amber-200 bg-amber-50 dark:bg-amber-950/30">
             <CardContent className="pt-4">
-              <p className="text-xs font-medium text-amber-700 dark:text-amber-300 mb-2">90th Percentile (Pre-HTN)</p>
+              <p className="text-xs font-medium text-amber-700 dark:text-amber-300 mb-2">90th Percentile (Elevated)</p>
               <div className="grid grid-cols-2 gap-4 text-center">
                 <div>
                   <p className="text-xs text-muted-foreground">Systolic</p>
-                  <p className="text-2xl font-mono font-bold">{selectedData.systolic.p90}</p>
+                  <p className="text-2xl font-mono font-bold text-amber-600">{selectedData.systolic.p90}</p>
                 </div>
                 <div>
                   <p className="text-xs text-muted-foreground">Diastolic</p>
-                  <p className="text-2xl font-mono font-bold">{selectedData.diastolic.p90}</p>
+                  <p className="text-2xl font-mono font-bold text-amber-600">{selectedData.diastolic.p90}</p>
                 </div>
               </div>
             </CardContent>
           </Card>
 
+          {/* Hypertension - 95th / 99th percentile */}
           <Card className="border-red-200 bg-red-50 dark:bg-red-950/30">
             <CardContent className="pt-4">
-              <p className="text-xs font-medium text-red-700 dark:text-red-300 mb-2">95th / 99th Percentile (HTN)</p>
-              <div className="grid grid-cols-4 gap-2 text-center">
-                <div>
-                  <p className="text-xs text-muted-foreground">SBP 95th</p>
-                  <p className="text-lg font-mono font-bold">{selectedData.systolic.p95}</p>
+              <p className="text-xs font-medium text-red-700 dark:text-red-300 mb-2">95th / 99th Percentile (Hypertension)</p>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="p-2 rounded-lg bg-white/50 dark:bg-gray-900/50">
+                  <p className="text-xs text-muted-foreground text-center mb-1">Systolic</p>
+                  <div className="flex justify-around text-center">
+                    <div>
+                      <p className="text-xs text-red-600">95th</p>
+                      <p className="text-lg font-mono font-bold">{selectedData.systolic.p95}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-red-600">99th</p>
+                      <p className="text-lg font-mono font-bold">{selectedData.systolic.p99}</p>
+                    </div>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-xs text-muted-foreground">SBP 99th</p>
-                  <p className="text-lg font-mono font-bold">{selectedData.systolic.p99}</p>
-                </div>
-                <div>
-                  <p className="text-xs text-muted-foreground">DBP 95th</p>
-                  <p className="text-lg font-mono font-bold">{selectedData.diastolic.p95}</p>
-                </div>
-                <div>
-                  <p className="text-xs text-muted-foreground">DBP 99th</p>
-                  <p className="text-lg font-mono font-bold">{selectedData.diastolic.p99}</p>
+                <div className="p-2 rounded-lg bg-white/50 dark:bg-gray-900/50">
+                  <p className="text-xs text-muted-foreground text-center mb-1">Diastolic</p>
+                  <div className="flex justify-around text-center">
+                    <div>
+                      <p className="text-xs text-red-600">95th</p>
+                      <p className="text-lg font-mono font-bold">{selectedData.diastolic.p95}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-red-600">99th</p>
+                      <p className="text-lg font-mono font-bold">{selectedData.diastolic.p99}</p>
+                    </div>
+                  </div>
                 </div>
               </div>
             </CardContent>
@@ -291,10 +339,12 @@ const BPPage = ({ onBack }) => {
           <CardTitle className="text-sm">Reference</CardTitle>
         </CardHeader>
         <CardContent className="text-xs text-muted-foreground space-y-1">
-          <p>• Values at 50th height percentile</p>
-          <p>• Pre-HTN: 90th to &lt;95th percentile</p>
-          <p>• HTN Stage 1: ≥95th to &lt;99th + 5mmHg</p>
-          <p>• HTN Stage 2: ≥99th + 5mmHg</p>
+          <p className="font-medium">Source: Harriet Lane Handbook 23rd Edition</p>
+          <p>• &lt;5th percentile: Hypotension</p>
+          <p>• 50th percentile: Normal</p>
+          <p>• 90th to &lt;95th: Elevated BP</p>
+          <p>• ≥95th to &lt;99th + 5mmHg: HTN Stage 1</p>
+          <p>• ≥99th + 5mmHg: HTN Stage 2</p>
         </CardContent>
       </Card>
     </div>
