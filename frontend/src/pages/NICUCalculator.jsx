@@ -1799,12 +1799,10 @@ const IntubationPage = () => {
             </CardContent>
           </Card>
         </div>
-      </DialogContent>
-    </Dialog>
   );
 };
 
-// Blood Pressure Guidelines Dialog
+// Blood Pressure Guidelines Page
 const BloodPressurePage = () => {
   const [ageType, setAgeType] = useState("dayOne"); // "dayOne" or "postConceptional"
   const [gestationalAge, setGestationalAge] = useState("");
@@ -1866,8 +1864,7 @@ const BloodPressurePage = () => {
   const selectedData = gestationalAge ? currentData[parseInt(gestationalAge)] : null;
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-md">
+    <div className="space-y-4">
         <DialogHeader>
           <DialogTitle className="font-heading text-xl flex items-center gap-2">
             <Activity className="h-5 w-5 text-red-500" />
