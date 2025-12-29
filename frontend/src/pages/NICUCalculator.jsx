@@ -216,14 +216,14 @@ const NICUCalculator = ({ theme, toggleTheme }) => {
                   <Card
                     key={widget.id}
                     onClick={() => handleWidgetClick(widget.id)}
-                    className={`nightingale-card cursor-pointer transition-all duration-300 h-32 ${
+                    className={`nightingale-card cursor-pointer transition-all duration-300 h-36 ${
                       isEditMode ? 'animate-wiggle' : 'hover:scale-[1.02]'
                     } ${widget.comingSoon ? 'opacity-60' : ''}`}
                     data-testid={`widget-${widget.id}`}
                   >
-                    <CardContent className="p-4 relative h-full flex items-center justify-center">
+                    <CardContent className="p-3 relative h-full flex items-center justify-center">
                       {isEditMode && (
-                        <div className="absolute top-2 right-2 flex gap-1">
+                        <div className="absolute top-1 right-1 flex gap-1">
                           <button
                             onClick={(e) => { e.stopPropagation(); moveWidget(index, "up"); }}
                             disabled={index === 0}
@@ -241,22 +241,22 @@ const NICUCalculator = ({ theme, toggleTheme }) => {
                         </div>
                       )}
                       
-                      <div className="flex flex-col items-center text-center">
-                        <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-3 bg-${widget.color}-100 dark:bg-${widget.color}-900/30`}
+                      <div className="flex flex-col items-center text-center gap-2">
+                        <div className={`w-11 h-11 rounded-xl flex items-center justify-center bg-${widget.color}-100 dark:bg-${widget.color}-900/30`}
                           style={{ backgroundColor: widget.color === 'teal' ? 'rgba(0,217,197,0.1)' : undefined }}
                         >
                           {getWidgetIcon(widget.icon, widget.color)}
                         </div>
-                        <h3 className="font-heading font-semibold text-sm">{widget.title}</h3>
+                        <h3 className="font-heading font-semibold text-xs leading-tight px-1">{widget.title}</h3>
                         {widget.comingSoon && (
-                          <span className="mt-1 px-2 py-0.5 bg-gray-100 dark:bg-gray-800 rounded-full text-xs text-gray-500">
+                          <span className="px-2 py-0.5 bg-gray-100 dark:bg-gray-800 rounded-full text-[10px] text-gray-500">
                             Coming Soon
-                    </span>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+                          </span>
+                        )}
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
               </div>
             </>
           ) : (
