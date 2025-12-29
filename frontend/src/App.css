@@ -1,5 +1,25 @@
 /* Nightingale-inspired Medical App Styles */
 
+/* Native-like touch scrolling */
+.native-scroll {
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
+  scroll-behavior: smooth;
+  touch-action: pan-y;
+}
+
+/* Hide scrollbar for cleaner mobile look */
+.native-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.native-scroll {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
 /* Floating tab bar */
 .floating-tab-bar {
   @apply fixed bottom-6 left-1/2 -translate-x-1/2 z-50;
