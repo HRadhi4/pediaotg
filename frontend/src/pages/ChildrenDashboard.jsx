@@ -456,10 +456,13 @@ const BPPage = ({ onBack }) => {
   };
 
   const heightOptions = [
+    { value: "5", label: "5th percentile" },
+    { value: "10", label: "10th percentile" },
+    { value: "25", label: "25th percentile" },
     { value: "50", label: "50th percentile" },
+    { value: "75", label: "75th percentile" },
     { value: "90", label: "90th percentile" },
-    { value: "95", label: "95th percentile" },
-    { value: "99", label: "99th percentile" }
+    { value: "95", label: "95th percentile" }
   ];
 
   const selectedData = selectedAge ? bpData[gender][heightPercentile]?.find(d => d.age === selectedAge) : null;
