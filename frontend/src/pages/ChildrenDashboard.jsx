@@ -349,6 +349,12 @@ const BPPage = ({ onBack }) => {
                   <p className="text-xs text-muted-foreground">Diastolic</p>
                   <p className="text-2xl font-mono font-bold text-amber-600">{selectedData.diastolic.p90}</p>
                 </div>
+                <div>
+                  <p className="text-xs text-muted-foreground">MAP</p>
+                  <p className="text-2xl font-mono font-bold text-amber-600">
+                    {Math.round(selectedData.diastolic.p90 + (selectedData.systolic.p90 - selectedData.diastolic.p90) / 3)}
+                  </p>
+                </div>
               </div>
             </CardContent>
           </Card>
