@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { Baby, Users, Moon, Sun, Droplets, FlaskConical, Home, Zap } from "lucide-react";
+import { Baby, Users, Droplets, FlaskConical, Home, Zap } from "lucide-react";
+import Layout from "@/components/Layout";
 import BloodGasDialog from "@/components/BloodGasDialog";
 import ElectrolytesDialog from "@/components/ElectrolytesDialog";
 import JaundiceDialog from "@/components/JaundiceDialog";
@@ -50,34 +51,9 @@ const LandingPage = ({ theme, toggleTheme }) => {
   };
 
   return (
-    <div className={`min-h-screen flex flex-col ${theme === 'dark' ? 'gradient-bg-dark' : 'gradient-bg-light'}`}>
-      {/* Header */}
-      <header className="fixed top-0 left-0 right-0 z-50 glass-header">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-[#00d9c5]/10 flex items-center justify-center overflow-hidden p-1">
-              <img src="/logo.png" alt="Logo" className="w-full h-full object-contain" />
-            </div>
-            <h1 className="font-heading text-xl font-bold text-foreground tracking-tight">
-              Pediatrics on the Go
-            </h1>
-          </div>
-          <button
-            onClick={toggleTheme}
-            data-testid="theme-toggle"
-            className="w-10 h-10 rounded-xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
-          >
-            {theme === "light" ? (
-              <Moon className="h-5 w-5 text-gray-600" />
-            ) : (
-              <Sun className="h-5 w-5 text-gray-300" />
-            )}
-          </button>
-        </div>
-      </header>
-
+    <Layout theme={theme} toggleTheme={toggleTheme}>
       {/* Main Content */}
-      <main className="flex-1 flex flex-col items-center justify-center pt-24 pb-32 px-4 md:px-6">
+      <main className="flex-1 flex flex-col items-center justify-center pt-16 pb-32 px-4 md:px-6 min-h-screen">
         <div className="w-full max-w-4xl">
           <div className="text-center mb-10">
             <h2 className="font-heading text-3xl md:text-4xl font-bold text-foreground mb-3">
@@ -108,24 +84,22 @@ const LandingPage = ({ theme, toggleTheme }) => {
               </div>
             </div>
 
-            {/* Children Card */}
+            {/* Children Card - Now Enabled */}
             <div
-              className="selection-card disabled p-8"
+              onClick={() => navigate("/children")}
+              className="selection-card p-8 group cursor-pointer"
               data-testid="children-card"
             >
               <div className="flex flex-col items-center text-center">
-                <div className="w-16 h-16 rounded-2xl flex items-center justify-center bg-gray-100 dark:bg-gray-800 mb-6">
-                  <Users className="h-8 w-8 text-gray-400" />
+                <div className="icon-circle mb-6 group-hover:scale-110 transition-transform duration-300">
+                  <Users className="h-8 w-8 text-[#00d9c5]" />
                 </div>
                 <h3 className="font-heading text-2xl font-bold text-foreground mb-2">
                   Children
                 </h3>
-                <p className="text-muted-foreground mb-3">
+                <p className="text-muted-foreground">
                   Pediatric Ward
                 </p>
-                <span className="px-4 py-1.5 bg-gray-100 dark:bg-gray-800 rounded-full text-xs font-semibold text-gray-500">
-                  Coming Soon
-                </span>
               </div>
             </div>
           </div>
