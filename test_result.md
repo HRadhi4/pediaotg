@@ -283,14 +283,16 @@ metadata:
   run_ui: true
 
 test_plan:
-  current_focus: []
+  current_focus:
+    - "NICU Dashboard Page Navigation Fix"
+    - "Children Dashboard Navigation Fix"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
 
 agent_communication:
   - agent: "main"
-    message: "Implemented CPR/PALS page with full PALS 2025 algorithms. Fixed linting error in ChildrenDashboard. All page navigation working. Please test: 1) Page navigation (click widgets to see full pages), 2) CPR drug calculator with weight input, 3) All PALS algorithm tabs (Arrest, Tachy, Brady, Drugs), 4) Scoring systems (GCS, PRAM, Westley, OI), 5) BP calculator age selection."
+    message: "CRITICAL BUG FIXES COMPLETED: 1) Fixed NICU Dashboard crash (onOpenChange is not defined) by removing leftover Dialog wrappers from ExchangeCalculatorPage and BloodPressurePage components. 2) Fixed Children Dashboard navigation by removing the incorrect bottom navigation bar - the Layout component now provides the correct hamburger menu side panel. 3) Fixed linting errors (unescaped entities). Build successful. Please verify: 1) All NICU widgets open their respective pages without errors, 2) Children Dashboard has no bottom bar and hamburger menu opens side panel, 3) All widget pages in both dashboards load correctly."
   - agent: "testing"
     message: "✅ COMPREHENSIVE TESTING COMPLETED - ALL CHILDREN SECTION FUNCTIONALITY WORKING PERFECTLY. Tested all 8 widgets, page navigation, calculators, and algorithms. All features functional: BP percentiles, CPR/PALS drug calculations, scoring systems, infusions, intubation ETT calculator, and insensible water loss. Medical disclaimer handled properly. No critical issues found. Ready for production use."
   - agent: "testing"
