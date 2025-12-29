@@ -278,58 +278,56 @@ const NICUCalculator = ({ theme, toggleTheme }) => {
           {currentPage === "main" ? (
             <>
               {isEditMode && (
-                <div className="mb-4 p-3 rounded-xl bg-[#00d9c5]/10 border border-[#00d9c5]/30 text-sm text-center">
-                  Tap arrows to rearrange widgets. Tap ✕ when done.
+                <div className="mb-4 p-3 rounded-xl bg-[#00d9c5]/10 border border-[#00d9c5]/30 text-sm text-center flex items-center justify-center gap-2">
+                  <GripVertical className="h-4 w-4 text-[#00d9c5]" />
+                  <span>Drag widgets to rearrange</span>
                 </div>
               )}
 
-              <div className="grid grid-cols-2 gap-4">
-                {widgets.filter(w => w.enabled).map((widget, index) => (
-                  <Card
-                    key={widget.id}
-                    onClick={() => handleWidgetClick(widget.id)}
-                    className={`nightingale-card cursor-pointer transition-all duration-300 h-36 ${
-                      isEditMode ? 'animate-wiggle' : 'hover:scale-[1.02]'
-                    } ${widget.comingSoon ? 'opacity-60' : ''}`}
-                    data-testid={`widget-${widget.id}`}
-                  >
-                    <CardContent className="p-3 relative h-full flex items-center justify-center">
-                      {isEditMode && (
-                        <div className="absolute top-1 right-1 flex gap-1">
-                          <button
-                            onClick={(e) => { e.stopPropagation(); moveWidget(index, "up"); }}
-                            disabled={index === 0}
-                            className="w-6 h-6 rounded bg-gray-100 dark:bg-gray-700 flex items-center justify-center text-xs disabled:opacity-30"
-                          >
-                            ↑
-                          </button>
-                          <button
-                            onClick={(e) => { e.stopPropagation(); moveWidget(index, "down"); }}
-                            disabled={index === widgets.length - 1}
-                            className="w-6 h-6 rounded bg-gray-100 dark:bg-gray-700 flex items-center justify-center text-xs disabled:opacity-30"
-                          >
-                            ↓
-                          </button>
+              <DndContext
+                sensors={sensors}
+                collisionDetection={closestCenter}
+                onDragStart={handleDragStart}
+                onDragEnd={handleDragEnd}
+              >
+                <SortableContext items={widgets.filter(w => w.enabled).map(w => w.id)} strategy={rectSortingStrategy}>
+                  <div className="grid grid-cols-2 gap-4">
+                    {widgets.filter(w => w.enabled).map((widget) => (
+                      <SortableNICUWidget
+                        key={widget.id}
+                        widget={widget}
+                        isEditMode={isEditMode}
+                        onClick={handleWidgetClick}
+                        getWidgetIcon={getWidgetIcon}
+                      />
+                    ))}
+                  </div>
+                </SortableContext>
+                <DragOverlay>
+                  {activeId ? (
+                    <Card className="nightingale-card h-36 shadow-2xl scale-105 ring-2 ring-[#00d9c5]">
+                      <CardContent className="p-3 h-full flex items-center justify-center">
+                        <div className="flex flex-col items-center text-center gap-2">
+                          {(() => {
+                            const w = widgets.find(x => x.id === activeId);
+                            if (!w) return null;
+                            return (
+                              <>
+                                <div className={`w-11 h-11 rounded-xl flex items-center justify-center bg-${w.color}-100 dark:bg-${w.color}-900/30`}
+                                  style={{ backgroundColor: w.color === 'teal' ? 'rgba(0,217,197,0.1)' : undefined }}
+                                >
+                                  {getWidgetIcon(w.icon, w.color)}
+                                </div>
+                                <h3 className="font-heading font-semibold text-xs leading-tight px-1">{w.title}</h3>
+                              </>
+                            );
+                          })()}
                         </div>
-                      )}
-                      
-                      <div className="flex flex-col items-center text-center gap-2">
-                        <div className={`w-11 h-11 rounded-xl flex items-center justify-center bg-${widget.color}-100 dark:bg-${widget.color}-900/30`}
-                          style={{ backgroundColor: widget.color === 'teal' ? 'rgba(0,217,197,0.1)' : undefined }}
-                        >
-                          {getWidgetIcon(widget.icon, widget.color)}
-                        </div>
-                        <h3 className="font-heading font-semibold text-xs leading-tight px-1">{widget.title}</h3>
-                        {widget.comingSoon && (
-                          <span className="px-2 py-0.5 bg-gray-100 dark:bg-gray-800 rounded-full text-[10px] text-gray-500">
-                            Coming Soon
-                          </span>
-                        )}
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
+                      </CardContent>
+                    </Card>
+                  ) : null}
+                </DragOverlay>
+              </DndContext>
             </>
           ) : (
             /* Render Page Content based on currentPage */
