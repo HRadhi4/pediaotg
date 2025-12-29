@@ -138,8 +138,6 @@ const ChildrenDashboard = ({ theme, toggleTheme }) => {
         return <CPRPage onBack={() => goToPage("main")} />;
       case "approaches":
         return <ApproachesPage onBack={() => goToPage("main")} />;
-      case "insensible":
-        return <InsensiblePage onBack={() => goToPage("main")} />;
       case "drugs":
         return <DrugsPage onBack={() => goToPage("main")} />;
       default:
