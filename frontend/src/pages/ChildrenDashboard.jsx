@@ -17,6 +17,7 @@ const ChildrenDashboard = ({ theme, toggleTheme }) => {
   const { page } = useParams();
   // Use page directly from URL params - no need for separate state
   const currentPage = page || "main";
+  const [searchTerm, setSearchTerm] = useState("");
 
   // Navigate to a page
   const goToPage = (pageId) => {
@@ -25,19 +26,31 @@ const ChildrenDashboard = ({ theme, toggleTheme }) => {
     } else {
       navigate(`/children/${pageId}`);
     }
+    setSearchTerm(""); // Clear search when navigating
   };
 
-  // Widget definitions for main page
+  // Widget definitions for main page with search keywords
   const widgets = [
-    { id: "bp", title: "Blood Pressure", subtitle: "Age-based BP percentiles", icon: Activity, color: "red" },
-    { id: "infusions", title: "Infusions", subtitle: "IV drug calculations", icon: Syringe, color: "blue" },
-    { id: "intubation", title: "Intubation", subtitle: "ETT + RSI Checklist", icon: Stethoscope, color: "purple" },
-    { id: "scoring", title: "Scoring", subtitle: "GCS, PRAM, Westley, OI", icon: Calculator, color: "amber" },
-    { id: "cpr", title: "CPR", subtitle: "PALS drugs & algorithms", icon: Heart, color: "red" },
-    { id: "approaches", title: "Approaches", subtitle: "DKA, SE, Hyperammonemia", icon: FileText, color: "teal" },
-    { id: "insensible", title: "Insensible Water Loss", subtitle: "BSA-based calculation", icon: Droplets, color: "teal" },
-    { id: "drugs", title: "Drugs", subtitle: "Commonly used medications", icon: Pill, color: "purple" },
+    { id: "bp", title: "Blood Pressure", subtitle: "Age-based BP percentiles", icon: Activity, color: "red", keywords: ["hypertension", "systolic", "diastolic", "percentile", "boys", "girls"] },
+    { id: "infusions", title: "Infusions", subtitle: "IV drug calculations", icon: Syringe, color: "blue", keywords: ["dopamine", "dobutamine", "adrenaline", "epinephrine", "sedation", "midazolam", "fentanyl", "inotrope"] },
+    { id: "intubation", title: "Intubation", subtitle: "ETT + RSI Checklist", icon: Stethoscope, color: "purple", keywords: ["ett", "tube", "airway", "rsi", "rapid sequence", "laryngoscope", "cuffed", "uncuffed"] },
+    { id: "scoring", title: "Scoring", subtitle: "GCS, PRAM, Westley, OI", icon: Calculator, color: "amber", keywords: ["glasgow", "coma", "croup", "respiratory", "oxygenation", "pram", "westley"] },
+    { id: "cpr", title: "CPR", subtitle: "PALS drugs & algorithms", icon: Heart, color: "red", keywords: ["resuscitation", "pals", "arrest", "defibrillation", "epinephrine", "amiodarone", "adenosine", "tachycardia", "bradycardia", "vf", "vt", "asystole", "pea"] },
+    { id: "approaches", title: "Approaches", subtitle: "DKA, SE, Hyperammonemia", icon: FileText, color: "teal", keywords: ["diabetic", "ketoacidosis", "dka", "status epilepticus", "seizure", "convulsion", "hyperammonemia", "ammonia", "urea cycle", "phenytoin", "diazepam"] },
+    { id: "insensible", title: "Insensible Water Loss", subtitle: "BSA-based calculation", icon: Droplets, color: "teal", keywords: ["iwl", "bsa", "body surface", "fluid", "loss", "evaporation"] },
+    { id: "drugs", title: "Drugs", subtitle: "Commonly used medications", icon: Pill, color: "purple", keywords: ["antibiotic", "analgesic", "paracetamol", "ibuprofen", "morphine", "amoxicillin", "ceftriaxone", "vancomycin", "gentamicin", "pain", "fever"] },
   ];
+
+  // Filter widgets based on search term
+  const filteredWidgets = widgets.filter(widget => {
+    if (!searchTerm) return true;
+    const term = searchTerm.toLowerCase();
+    return (
+      widget.title.toLowerCase().includes(term) ||
+      widget.subtitle.toLowerCase().includes(term) ||
+      widget.keywords.some(k => k.toLowerCase().includes(term))
+    );
+  });
 
   const getColorClass = (color) => {
     const colors = {
