@@ -77,6 +77,13 @@ const NICUCalculator = ({ theme, toggleTheme }) => {
   const { page } = useParams();
   const currentPage = page || "main";
   
+  const [activeTab, setActiveTab] = useState("");
+  const [bloodGasOpen, setBloodGasOpen] = useState(false);
+  const [electrolytesOpen, setElectrolytesOpen] = useState(false);
+  const [jaundiceOpen, setJaundiceOpen] = useState(false);
+  const [girOpen, setGirOpen] = useState(false);
+  const [bloodProductsOpen, setBloodProductsOpen] = useState(false);
+  
   // Widget management
   const [isEditMode, setIsEditMode] = useState(false);
   const [widgets, setWidgets] = useState([
@@ -97,6 +104,16 @@ const NICUCalculator = ({ theme, toggleTheme }) => {
     } else {
       navigate(`/nicu/${pageId}`);
     }
+  };
+
+  const handleTabClick = (tab) => {
+    setActiveTab(tab);
+    if (tab === "bloodgas") setBloodGasOpen(true);
+    else if (tab === "electrolytes") setElectrolytesOpen(true);
+    else if (tab === "jaundice") setJaundiceOpen(true);
+    else if (tab === "gir") setGirOpen(true);
+    else if (tab === "bloodproducts") setBloodProductsOpen(true);
+    else if (tab === "home") navigate("/");
   };
 
   const handleWidgetClick = (widgetId) => {
