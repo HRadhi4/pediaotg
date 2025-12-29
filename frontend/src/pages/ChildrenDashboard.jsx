@@ -584,7 +584,7 @@ const InfusionsPage = ({ onBack }) => {
   ];
 
   return (
-    <div className="space-y-4 pb-8">
+    <div className="space-y-4 pt-4 pb-8">
       {/* Weight Input */}
       <Card className="nightingale-card">
         <CardContent className="pt-4">
@@ -725,7 +725,7 @@ const IntubationPage = ({ onBack }) => {
   ];
 
   return (
-    <div className="space-y-4 pb-8">
+    <div className="space-y-4 pt-4 pb-8">
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="calculator">Calculator</TabsTrigger>
@@ -879,7 +879,7 @@ const ScoringPage = ({ onBack }) => {
   const [activeScore, setActiveScore] = useState("gcs");
 
   return (
-    <div className="space-y-4 pb-8">
+    <div className="space-y-4 pt-4 pb-8">
       <div className="flex gap-2 overflow-x-auto pb-2">
         {[
           { id: "gcs", label: "GCS" },
@@ -1310,7 +1310,7 @@ const CPRPage = ({ onBack }) => {
   const drugs = calculateDrugs();
 
   return (
-    <div className="space-y-4 pb-8">
+    <div className="space-y-4 pt-4 pb-8">
       {/* Weight Input - Always visible */}
       <Card className="nightingale-card border-red-200 dark:border-red-800">
         <CardContent className="pt-4">
@@ -1728,7 +1728,7 @@ const ApproachesPage = ({ onBack }) => {
   const w = parseFloat(weight) || 0;
 
   return (
-    <div className="space-y-4 pb-8">
+    <div className="space-y-4 pt-4 pb-8">
       {/* Weight Input */}
       <Card className="nightingale-card border-teal-200 dark:border-teal-800">
         <CardContent className="pt-4">
@@ -2321,7 +2321,7 @@ const DrugsPage = ({ onBack }) => {
   };
 
   return (
-    <div className="space-y-4 pb-8">
+    <div className="space-y-4 pt-4 pb-8">
       {/* Weight Input */}
       <Card className="nightingale-card border-indigo-200 dark:border-indigo-800">
         <CardContent className="pt-4">
