@@ -10,9 +10,32 @@ from typing import List, Optional
 import uuid
 from datetime import datetime, timezone
 import base64
+import tempfile
+import asyncio
+from concurrent.futures import ThreadPoolExecutor
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
+
+# Thread pool for CPU-intensive OCR tasks
+ocr_executor = ThreadPoolExecutor(max_workers=2, thread_name_prefix="paddleocr_")
+
+# Global PaddleOCR instance (initialized lazily)
+paddle_ocr_instance = None
+
+def get_paddle_ocr():
+    """Get or initialize PaddleOCR instance (lazy loading)"""
+    global paddle_ocr_instance
+    if paddle_ocr_instance is None:
+        from paddleocr import PaddleOCR
+        paddle_ocr_instance = PaddleOCR(
+            use_angle_cls=True,
+            lang='en',
+            use_gpu=False,
+            show_log=False
+        )
+        logging.info("PaddleOCR model initialized")
+    return paddle_ocr_instance
 
 # MongoDB connection
 mongo_url = os.environ['MONGO_URL']
