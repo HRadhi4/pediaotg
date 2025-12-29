@@ -2132,7 +2132,6 @@ const GrowthChartPage = () => {
       setNewEntry({
         date: new Date().toISOString().split('T')[0],
         ageValue: "",
-        ageUnit: newEntry.ageUnit,
         weight: "",
         length: "",
         hc: ""
