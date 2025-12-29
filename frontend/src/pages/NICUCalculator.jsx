@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { ArrowLeft, Moon, Sun, Droplets, Home, FlaskConical, Zap, GripVertical, Settings, X, Stethoscope, Activity, Repeat, Heart, Check, Clock, AlertTriangle, ChevronDown, ChevronUp, Plus, Trash2 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
