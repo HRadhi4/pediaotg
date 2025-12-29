@@ -1716,6 +1716,13 @@ const ApproachesPage = ({ onBack }) => {
                   <p><span className="font-medium">Loading:</span> 20 mg/kg IV over 20 min</p>
                   {w > 0 && <p className="font-mono text-amber-600">→ {(w * 20).toFixed(0)} mg over 20 min</p>}
                   <p className="text-red-600">⚠ Max rate: 1 mg/kg/min (arrhythmia risk)</p>
+                  <div className="p-2 mt-2 bg-white/50 dark:bg-gray-900/50 rounded-lg border border-amber-300">
+                    <p className="text-xs font-medium text-amber-700">Alternatives (if available):</p>
+                    <p className="text-xs">• Levetiracetam (Keppra): 40-60 mg/kg IV</p>
+                    {w > 0 && <p className="font-mono text-amber-600 text-xs">→ {(w * 40).toFixed(0)}-{(w * 60).toFixed(0)} mg</p>}
+                    <p className="text-xs">• Valproate IV: 20-40 mg/kg</p>
+                    {w > 0 && <p className="font-mono text-amber-600 text-xs">→ {(w * 20).toFixed(0)}-{(w * 40).toFixed(0)} mg</p>}
+                  </div>
                 </div>
               </div>
 
@@ -1750,7 +1757,6 @@ const ApproachesPage = ({ onBack }) => {
                 <p className="font-bold text-red-700 dark:text-red-300 mb-2">⚠ REFRACTORY SEIZURES</p>
                 <p className="text-muted-foreground">If still seizing after above steps:</p>
                 <p className="font-semibold text-red-700 mt-1">→ General Anesthesia + Intubation</p>
-                <p className="text-xs text-muted-foreground mt-2">Alternatives (if available): Levetiracetam (Keppra), Valproate IV</p>
               </div>
             </CardContent>
           </Card>
