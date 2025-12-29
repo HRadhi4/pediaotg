@@ -242,9 +242,9 @@ const ChildrenDashboard = ({ theme, toggleTheme }) => {
         </div>
       </header>
 
-      {/* Main Content - Scrollable */}
-      <main className="max-w-4xl mx-auto px-4 md:px-6 pt-24 pb-32 min-h-screen">
-        <ScrollArea className="h-[calc(100vh-180px)]">
+      {/* Main Content */}
+      <main className="max-w-4xl mx-auto px-4 md:px-6 py-6 pt-24 pb-32">
+        <ScrollArea className="h-[calc(100vh-160px)]">
           {renderPage()}
         </ScrollArea>
       </main>
