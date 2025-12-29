@@ -1121,13 +1121,9 @@ const PRBCGuidelineDialog = ({ open, onOpenChange }) => {
       reasons.push(`Hct ${hctVal} ≤ ${thresholds.hct}%`);
     }
 
-    // Calculate dose: 20 ml/kg unless Hct > 30, then 10-15 ml/kg
-    let dosePerKg = 20;
-    let doseNote = "Standard dose: 20 ml/kg";
-    if (hctVal && hctVal > 30) {
-      dosePerKg = 15;
-      doseNote = "Hct > 30%: Using 10-15 ml/kg";
-    }
+    // Calculate dose: 15 ml/kg standard
+    let dosePerKg = 15;
+    let doseNote = "Standard dose: 15 ml/kg";
 
     const totalDose = w * dosePerKg;
     const units = totalDose / UNIT_VOLUME;
