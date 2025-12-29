@@ -58,6 +58,9 @@ const IntubationIcon = () => (
 
 const NICUCalculator = ({ theme, toggleTheme }) => {
   const navigate = useNavigate();
+  const { page } = useParams();
+  const currentPage = page || "main";
+  
   const [activeTab, setActiveTab] = useState("");
   const [bloodGasOpen, setBloodGasOpen] = useState(false);
   const [electrolytesOpen, setElectrolytesOpen] = useState(false);
@@ -77,14 +80,15 @@ const NICUCalculator = ({ theme, toggleTheme }) => {
     { id: "exchange", title: "Exchange Transfusion", icon: "repeat", color: "purple", enabled: true }
   ]);
 
-  // Dialog states for widgets
-  const [fluidDialogOpen, setFluidDialogOpen] = useState(false);
-  const [nrpDialogOpen, setNrpDialogOpen] = useState(false);
-  const [catheterDialogOpen, setCatheterDialogOpen] = useState(false);
-  const [intubationDialogOpen, setIntubationDialogOpen] = useState(false);
-  const [bpDialogOpen, setBpDialogOpen] = useState(false);
-  const [prbcDialogOpen, setPrbcDialogOpen] = useState(false);
-  const [exchangeDialogOpen, setExchangeDialogOpen] = useState(false);
+  // Navigate to page
+  const goToPage = (pageId) => {
+    if (isEditMode) return;
+    if (pageId === "main") {
+      navigate("/nicu");
+    } else {
+      navigate(`/nicu/${pageId}`);
+    }
+  };
 
   const handleTabClick = (tab) => {
     setActiveTab(tab);
@@ -97,27 +101,8 @@ const NICUCalculator = ({ theme, toggleTheme }) => {
   };
 
   const handleWidgetClick = (widgetId) => {
-    if (isEditMode) return;
-    
-    switch(widgetId) {
-      case "fluid":
-        setFluidDialogOpen(true);
-        break;
-      case "nrp":
-        setNrpDialogOpen(true);
-        break;
-      case "catheter":
-        setCatheterDialogOpen(true);
-        break;
-      case "intubation":
-        setIntubationDialogOpen(true);
-        break;
-      case "bp":
-        setBpDialogOpen(true);
-        break;
-      case "prbc":
-        setPrbcDialogOpen(true);
-        break;
+    goToPage(widgetId);
+  };
       case "exchange":
         setExchangeDialogOpen(true);
         break;
