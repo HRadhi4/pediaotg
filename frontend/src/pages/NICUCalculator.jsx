@@ -2110,33 +2110,20 @@ const GrowthChartPage = () => {
   const [chartType, setChartType] = useState("WHO"); // CDC or WHO
   const [gender, setGender] = useState("male");
   const [activeChart, setActiveChart] = useState("weight"); // weight, length, hc
-  const [ageRange, setAgeRange] = useState("0-2"); // 0-2 years or 2-20 years
   const [entries, setEntries] = useState([]);
   const [newEntry, setNewEntry] = useState({
     date: new Date().toISOString().split('T')[0],
     ageValue: "",
-    ageUnit: "months", // days, months, years
     weight: "",
     length: "",
     hc: ""
   });
   const chartRef = React.useRef(null);
 
-  // Convert age to months for chart plotting
-  const ageToMonths = (value, unit) => {
-    const val = parseFloat(value) || 0;
-    switch(unit) {
-      case 'days': return val / 30.44;
-      case 'months': return val;
-      case 'years': return val * 12;
-      default: return val;
-    }
-  };
-
   const addEntry = () => {
     if (newEntry.date && newEntry.ageValue) {
       // At least date and age are required
-      const ageInMonths = ageToMonths(newEntry.ageValue, newEntry.ageUnit);
+      const ageInMonths = parseFloat(newEntry.ageValue) || 0;
       setEntries([...entries, { 
         ...newEntry, 
         id: Date.now(),
