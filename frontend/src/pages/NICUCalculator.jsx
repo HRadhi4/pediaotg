@@ -1117,47 +1117,39 @@ const PRBCGuidelinePage = () => {
   ];
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle className="font-heading text-xl flex items-center gap-2">
-            <span className="text-red-500"><BloodDropIcon /></span>
-            PRBC Transfusion Guideline
-          </DialogTitle>
-        </DialogHeader>
+    <div className="space-y-4">
+      <Tabs defaultValue="calculator" className="w-full">
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="calculator">Calculator</TabsTrigger>
+          <TabsTrigger value="guidelines">Guidelines</TabsTrigger>
+        </TabsList>
 
-        <Tabs defaultValue="calculator" className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="calculator">Calculator</TabsTrigger>
-            <TabsTrigger value="guidelines">Guidelines</TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="calculator" className="space-y-4">
-            {/* Patient Info */}
-            <Card className="nightingale-card">
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm">Patient Information</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <div className="grid grid-cols-3 gap-2">
-                  <div className="space-y-1">
-                    <Label className="text-xs">Weight (kg)</Label>
-                    <Input
-                      type="number"
-                      step="0.01"
-                      placeholder="1.5"
-                      value={weight}
-                      onChange={(e) => setWeight(e.target.value)}
-                      className="nightingale-input font-mono h-9"
-                    />
-                  </div>
-                  <div className="space-y-1">
-                    <Label className="text-xs">Age (days)</Label>
-                    <Input
-                      type="number"
-                      placeholder="5"
-                      value={age}
-                      onChange={(e) => setAge(e.target.value)}
+        <TabsContent value="calculator" className="space-y-4">
+          {/* Patient Info */}
+          <Card className="nightingale-card">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm">Patient Information</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <div className="grid grid-cols-3 gap-2">
+                <div className="space-y-1">
+                  <Label className="text-xs">Weight (kg)</Label>
+                  <Input
+                    type="number"
+                    step="0.01"
+                    placeholder="1.5"
+                    value={weight}
+                    onChange={(e) => setWeight(e.target.value)}
+                    className="nightingale-input font-mono h-9"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <Label className="text-xs">Age (days)</Label>
+                  <Input
+                    type="number"
+                    placeholder="5"
+                    value={age}
+                    onChange={(e) => setAge(e.target.value)}
                       className="nightingale-input font-mono h-9"
                     />
                   </div>
