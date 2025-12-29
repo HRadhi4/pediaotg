@@ -126,7 +126,7 @@ frontend:
     file: "/app/frontend/src/pages/ChildrenDashboard.jsx"
     stuck_count: 0
     priority: "high"
-    needs_retesting: false
+    needs_retesting: true
     status_history:
       - working: true
         agent: "main"
@@ -134,6 +134,9 @@ frontend:
       - working: true
         agent: "testing"
         comment: "✓ TESTED: BP calculator fully functional. Gender selection (Boys/Girls) working, age dropdown (1-17 years) working, percentile cards display correctly with color coding (green=50th, amber=90th, red=95th/99th). Tested with 5-year-old girl: 89/52 mmHg (50th percentile). All calculations accurate."
+      - working: true
+        agent: "main"
+        comment: "UPDATED: Added lower percentiles (5th, 10th) from Harriet Lane 23rd Edition. Now shows complete BP range including hypotension thresholds."
 
   - task: "CPR/PALS Page"
     implemented: true
@@ -210,17 +213,20 @@ frontend:
         agent: "testing"
         comment: "✓ TESTED: Insensible Water Loss page fully functional. Weight and height inputs working (tested with 15kg, 100cm). BSA and IWL calculations accurate. Formulas properly implemented: BSA = √(Weight × Height / 3600), IWL = 400 × BSA. Results displaying correctly."
 
-  - task: "Approaches Page (DKA, SE, etc.)"
-    implemented: false
-    working: "NA"
+  - task: "Approaches Page (DKA, SE, Hyperammonemia)"
+    implemented: true
+    working: true
     file: "/app/frontend/src/pages/ChildrenDashboard.jsx"
     stuck_count: 0
-    priority: "medium"
-    needs_retesting: false
+    priority: "high"
+    needs_retesting: true
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Placeholder only. Phase 2 feature."
+      - working: true
+        agent: "main"
+        comment: "IMPLEMENTED: Full DKA protocol (SMC guidelines), Status Epilepticus (step-by-step medications with timing), Hyperammonemia (diagnostic pathway and management). Weight-based calculations for all drug doses."
 
   - task: "Drugs Page"
     implemented: false
