@@ -126,7 +126,7 @@ frontend:
     file: "/app/frontend/src/pages/ChildrenDashboard.jsx"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: true
         agent: "main"
@@ -137,6 +137,9 @@ frontend:
       - working: true
         agent: "main"
         comment: "UPDATED: Added lower percentiles (5th, 10th) from Harriet Lane 23rd Edition. Now shows complete BP range including hypotension thresholds."
+      - working: true
+        agent: "testing"
+        comment: "✅ COMPREHENSIVE TESTING COMPLETED: Lower percentiles feature working perfectly. For 5-year-old boys: 'Below 50th Percentile (Low)' section shows Systolic 5th: 90, 10th: 91, Diastolic 5th: 50, 10th: 51. 50th percentile shows Systolic: 95, Diastolic: 53. Gender switching works correctly. Source reference 'Harriet Lane Handbook 23rd Edition' displayed. All calculations accurate and UI fully functional."
 
   - task: "CPR/PALS Page"
     implemented: true
