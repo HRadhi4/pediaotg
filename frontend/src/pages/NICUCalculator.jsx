@@ -674,7 +674,6 @@ const FluidCalculatorPage = () => {
             </Card>
           )}
         </div>
-      </div>
   );
 };
 
