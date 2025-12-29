@@ -1600,8 +1600,7 @@ const ExchangeCalculatorPage = () => {
             </Card>
           </TabsContent>
         </Tabs>
-      </DialogContent>
-    </Dialog>
+      </div>
   );
 };
 
@@ -1865,14 +1864,6 @@ const BloodPressurePage = () => {
 
   return (
     <div className="space-y-4">
-        <DialogHeader>
-          <DialogTitle className="font-heading text-xl flex items-center gap-2">
-            <Activity className="h-5 w-5 text-red-500" />
-            Blood Pressure Guidelines
-          </DialogTitle>
-        </DialogHeader>
-
-        <div className="space-y-4">
           {/* Age Type Selector */}
           <Card className="nightingale-card">
             <CardContent className="pt-4 space-y-3">
@@ -2013,9 +2004,7 @@ const BloodPressurePage = () => {
               <p>• MAP = Diastolic + ⅓(Systolic - Diastolic)</p>
             </CardContent>
           </Card>
-        </div>
-      </DialogContent>
-    </Dialog>
+    </div>
   );
 };
 
