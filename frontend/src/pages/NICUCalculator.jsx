@@ -17,20 +17,15 @@
 
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { ArrowLeft, Droplets, Home, FlaskConical, Zap, Settings, X, Stethoscope, Activity, Repeat, Check, Clock, ChevronDown, ChevronUp, Plus, Trash2 } from "lucide-react";
+import { ArrowLeft, Droplets, Settings, X, Stethoscope, Activity, Repeat, Check, Clock, ChevronDown, ChevronUp, Plus, Trash2 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import BloodGasDialog from "@/components/BloodGasDialog";
-import ElectrolytesDialog from "@/components/ElectrolytesDialog";
-import JaundiceDialog from "@/components/JaundiceDialog";
-import GIRDialog from "@/components/GIRDialog";
-import BloodProductsDialog from "@/components/BloodProductsDialog";
+import FloatingNavBar from "@/components/FloatingNavBar";
 
 // Custom icons
 const JaundiceIcon = () => (
