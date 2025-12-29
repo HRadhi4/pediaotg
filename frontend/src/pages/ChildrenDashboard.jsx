@@ -472,11 +472,12 @@ const InfusionsPage = ({ onBack }) => {
     {
       category: "Inotropic Support",
       color: "red",
+      isInotrope: true,
       drugs: [
-        { name: "Dopamine", range: "0-20 mcg/kg/min", calc: w ? `0 - ${(w * 20 * 60 / 1000).toFixed(2)} mg/hr` : null },
-        { name: "Dobutamine", range: "0-20 mcg/kg/min", calc: w ? `0 - ${(w * 20 * 60 / 1000).toFixed(2)} mg/hr` : null },
-        { name: "Epinephrine", range: "0-0.5 mcg/kg/min", calc: w ? `0 - ${(w * 0.5 * 60).toFixed(1)} mcg/hr` : null },
-        { name: "Norepinephrine", range: "0-0.5 mcg/kg/min", calc: w ? `0 - ${(w * 0.5 * 60).toFixed(1)} mcg/hr` : null },
+        { name: "Dopamine", unit: "mcg/kg/min", min: 2, max: 20, note: "Low (2-5): renal, Med (5-10): cardiac, High (10-20): vasopressor" },
+        { name: "Dobutamine", unit: "mcg/kg/min", min: 2, max: 20, note: "Inotrope, minimal vasopressor effect" },
+        { name: "Epinephrine", unit: "mcg/kg/min", min: 0.01, max: 0.5, note: "Low: β-effect, High: α-effect" },
+        { name: "Norepinephrine", unit: "mcg/kg/min", min: 0.01, max: 0.5, note: "Potent vasopressor, minimal β-effect" },
       ]
     }
   ];
