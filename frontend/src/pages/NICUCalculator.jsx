@@ -1664,14 +1664,6 @@ const ExchangeCalculatorDialog = ({ open, onOpenChange }) => {
     </Dialog>
   );
 };
-              </ul>
-            </CardContent>
-          </Card>
-        </div>
-      </DialogContent>
-    </Dialog>
-  );
-};
 
 // Intubation Calculator Dialog
 const IntubationDialog = ({ open, onOpenChange }) => {
