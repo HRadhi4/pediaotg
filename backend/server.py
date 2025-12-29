@@ -27,9 +27,18 @@ def get_paddle_ocr():
     """Get or initialize PaddleOCR instance (lazy loading)"""
     global paddle_ocr_instance
     if paddle_ocr_instance is None:
+        import os
+        os.environ['DISABLE_MODEL_SOURCE_CHECK'] = 'True'
         from paddleocr import PaddleOCR
-        # New PaddleOCR 3.x API
-        paddle_ocr_instance = PaddleOCR(lang='en')
+        # Use mobile model for faster inference
+        paddle_ocr_instance = PaddleOCR(
+            lang='en',
+            use_doc_orientation_classify=False,
+            use_doc_unwarping=False,
+            use_textline_orientation=False,
+            text_detection_model_name='PP-OCRv5_mobile_det',
+            text_recognition_model_name='en_PP-OCRv5_mobile_rec'
+        )
         logging.info("PaddleOCR model initialized")
     return paddle_ocr_instance
 
