@@ -231,7 +231,21 @@ const NICUCalculator = ({ theme, toggleTheme }) => {
               </CardContent>
             </Card>
           ))}
-        </div>
+              </div>
+            </>
+          ) : (
+            /* Render Page Content based on currentPage */
+            <div className="space-y-4 pb-8">
+              {currentPage === "fluid" && <FluidCalculatorPage />}
+              {currentPage === "nrp" && <NRPChecklistPage />}
+              {currentPage === "catheter" && <CatheterCalculatorPage />}
+              {currentPage === "intubation" && <IntubationPage />}
+              {currentPage === "bp" && <BloodPressurePage />}
+              {currentPage === "prbc" && <PRBCGuidelinePage />}
+              {currentPage === "exchange" && <ExchangeCalculatorPage />}
+            </div>
+          )}
+        </ScrollArea>
       </main>
 
       {/* Floating Tab Bar */}
@@ -258,16 +272,7 @@ const NICUCalculator = ({ theme, toggleTheme }) => {
         </div>
       </nav>
 
-      {/* Widget Dialogs */}
-      <FluidCalculatorDialog open={fluidDialogOpen} onOpenChange={setFluidDialogOpen} />
-      <NRPChecklistDialog open={nrpDialogOpen} onOpenChange={setNrpDialogOpen} />
-      <CatheterCalculatorDialog open={catheterDialogOpen} onOpenChange={setCatheterDialogOpen} />
-      <IntubationDialog open={intubationDialogOpen} onOpenChange={setIntubationDialogOpen} />
-      <BloodPressureDialog open={bpDialogOpen} onOpenChange={setBpDialogOpen} />
-      <PRBCGuidelineDialog open={prbcDialogOpen} onOpenChange={setPrbcDialogOpen} />
-      <ExchangeCalculatorDialog open={exchangeDialogOpen} onOpenChange={setExchangeDialogOpen} />
-
-      {/* Navigation Dialogs */}
+      {/* Navigation Dialogs - keep these as popups */}
       <BloodGasDialog open={bloodGasOpen} onOpenChange={(open) => { setBloodGasOpen(open); if (!open) setActiveTab(""); }} />
       <ElectrolytesDialog open={electrolytesOpen} onOpenChange={(open) => { setElectrolytesOpen(open); if (!open) setActiveTab(""); }} />
       <JaundiceDialog open={jaundiceOpen} onOpenChange={(open) => { setJaundiceOpen(open); if (!open) setActiveTab(""); }} />
