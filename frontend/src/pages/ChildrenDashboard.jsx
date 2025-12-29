@@ -229,64 +229,11 @@ const ChildrenDashboard = ({ theme, toggleTheme }) => {
       </header>
 
       {/* Main Content - Scrollable */}
-      <main className="max-w-4xl mx-auto px-4 md:px-6 pt-24 pb-24 min-h-screen">
-        <ScrollArea className="h-[calc(100vh-180px)]">
+      <main className="max-w-4xl mx-auto px-4 md:px-6 pt-24 pb-8 min-h-screen">
+        <ScrollArea className="h-[calc(100vh-120px)]">
           {renderPage()}
         </ScrollArea>
       </main>
-
-      {/* Bottom Navigation Bar */}
-      <nav className="fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm border-t border-gray-200 dark:border-gray-800 safe-area-pb">
-        <div className="max-w-4xl mx-auto px-4 py-2">
-          <div className="flex justify-around items-center">
-            <button
-              onClick={() => goToPage("bp")}
-              className={`flex flex-col items-center p-2 rounded-xl transition-colors ${
-                currentPage === "bp" ? "text-[#00d9c5] bg-[#00d9c5]/10" : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              <Activity className="h-5 w-5" />
-              <span className="text-xs mt-1">BP</span>
-            </button>
-            <button
-              onClick={() => goToPage("cpr")}
-              className={`flex flex-col items-center p-2 rounded-xl transition-colors ${
-                currentPage === "cpr" ? "text-[#00d9c5] bg-[#00d9c5]/10" : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              <Heart className="h-5 w-5" />
-              <span className="text-xs mt-1">CPR</span>
-            </button>
-            <button
-              onClick={() => goToPage("main")}
-              className={`flex flex-col items-center p-2 rounded-xl transition-colors ${
-                currentPage === "main" ? "text-[#00d9c5] bg-[#00d9c5]/10" : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              <Users className="h-5 w-5" />
-              <span className="text-xs mt-1">All</span>
-            </button>
-            <button
-              onClick={() => goToPage("drugs")}
-              className={`flex flex-col items-center p-2 rounded-xl transition-colors ${
-                currentPage === "drugs" ? "text-[#00d9c5] bg-[#00d9c5]/10" : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              <Pill className="h-5 w-5" />
-              <span className="text-xs mt-1">Drugs</span>
-            </button>
-            <button
-              onClick={() => goToPage("scoring")}
-              className={`flex flex-col items-center p-2 rounded-xl transition-colors ${
-                currentPage === "scoring" ? "text-[#00d9c5] bg-[#00d9c5]/10" : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              <Calculator className="h-5 w-5" />
-              <span className="text-xs mt-1">Score</span>
-            </button>
-          </div>
-        </div>
-      </nav>
     </Layout>
   );
 };
