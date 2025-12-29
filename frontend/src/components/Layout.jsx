@@ -146,7 +146,7 @@ const SidePanel = ({ isOpen, onClose, theme, toggleTheme }) => {
 
       {/* About Dialog */}
       <Dialog open={showAbout} onOpenChange={setShowAbout}>
-        <DialogContent className="max-w-md">
+        <DialogContent className="max-w-md z-[70]">
           <DialogHeader>
             <DialogTitle className="font-heading flex items-center gap-2">
               <div className="w-10 h-10 rounded-xl bg-[#00d9c5]/10 flex items-center justify-center overflow-hidden p-1">
