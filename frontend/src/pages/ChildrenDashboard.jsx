@@ -334,7 +334,7 @@ const BPPage = ({ onBack }) => {
   const selectedData = selectedAge ? bpData[gender].find(d => d.age === selectedAge) : null;
 
   return (
-    <div className="space-y-4 pb-8">
+    <div className="space-y-4 pt-4 pb-8">
       <Card className="nightingale-card">
         <CardHeader className="pb-3">
           <CardTitle className="text-base">Blood Pressure by Age</CardTitle>
@@ -824,7 +824,7 @@ const InsensiblePage = ({ onBack }) => {
   const result = calculate();
 
   return (
-    <div className="space-y-4 pb-8">
+    <div className="space-y-4 pt-4 pb-8">
       <Card className="nightingale-card">
         <CardHeader className="pb-3">
           <CardTitle className="text-base">Insensible Water Loss</CardTitle>
