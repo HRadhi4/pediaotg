@@ -752,12 +752,17 @@ const BPPage = ({ onBack }) => {
         </CardHeader>
         <CardContent className="text-xs text-muted-foreground space-y-1">
           <p className="font-medium">Source: Harriet Lane Handbook 23rd Edition (2023)</p>
-          <p>• <span className="text-blue-600">Hypotension:</span> &lt;5th percentile</p>
-          <p>• <span className="text-green-600">Normal:</span> &lt;90th percentile</p>
-          <p>• <span className="text-amber-600">Elevated BP:</span> ≥90th to &lt;95th percentile</p>
-          <p>• <span className="text-orange-600">HTN Stage 1:</span> ≥95th to &lt;95th + 12 mmHg</p>
-          <p>• <span className="text-red-600">HTN Stage 2:</span> ≥95th + 12 mmHg</p>
+          <div className="mt-2 p-2 rounded-lg bg-blue-50 dark:bg-blue-950/30 border border-blue-200">
+            <p className="font-semibold text-blue-700 dark:text-blue-300 mb-1">Hypotension (&lt;5th percentile)</p>
+            <p className="text-blue-600">SBP &lt;{selectedData?.systolic?.p5 || "5th %ile"} or DBP &lt;{selectedData?.diastolic?.p5 || "5th %ile"} mmHg</p>
+            <p className="mt-1 text-xs">Consider: Volume status, cardiac function, sepsis screening</p>
+          </div>
+          <p className="pt-2">• <span className="text-green-600 font-medium">Normal:</span> &lt;90th percentile for age, sex, height</p>
+          <p>• <span className="text-amber-600 font-medium">Elevated BP:</span> ≥90th to &lt;95th percentile OR 120/80 to &lt;95th (whichever is lower)</p>
+          <p>• <span className="text-orange-600 font-medium">HTN Stage 1:</span> ≥95th to &lt;95th + 12 mmHg OR 130/80 to 139/89 (age ≥13y)</p>
+          <p>• <span className="text-red-600 font-medium">HTN Stage 2:</span> ≥95th + 12 mmHg OR ≥140/90 (age ≥13y)</p>
           <p className="pt-2 font-medium">MAP = DBP + (SBP - DBP) / 3</p>
+          <p className="text-xs italic mt-2">Note: Confirm elevated readings on ≥3 separate occasions before diagnosis</p>
         </CardContent>
       </Card>
     </div>
