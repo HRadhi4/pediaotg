@@ -2120,14 +2120,22 @@ const GrowthChartPage = () => {
   });
   const chartRef = React.useRef(null);
 
+  // Check if WHO or CDC is selected
+  const isWHO = chartType === "WHO";
+
   const addEntry = () => {
     if (newEntry.date && newEntry.ageValue) {
-      // At least date and age are required
-      const ageInMonths = parseFloat(newEntry.ageValue) || 0;
+      // Convert to months: WHO uses months directly, CDC uses years
+      const ageInMonths = isWHO 
+        ? parseFloat(newEntry.ageValue) || 0
+        : (parseFloat(newEntry.ageValue) || 0) * 12;
+      
       setEntries([...entries, { 
         ...newEntry, 
         id: Date.now(),
-        ageInMonths 
+        ageInMonths,
+        ageUnit: isWHO ? 'months' : 'years',
+        chartTypeUsed: chartType
       }]);
       setNewEntry({
         date: new Date().toISOString().split('T')[0],
