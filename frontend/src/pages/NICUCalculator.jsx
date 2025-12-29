@@ -987,12 +987,10 @@ const CatheterCalculatorPage = () => {
             </CardContent>
           </Card>
         </div>
-      </DialogContent>
-    </Dialog>
   );
 };
 
-// PRBC Transfusion Calculator Dialog - Based on Neonatal Guidelines
+// PRBC Transfusion Calculator Page - Based on Neonatal Guidelines
 const PRBCGuidelinePage = () => {
   const [weight, setWeight] = useState("");
   const [age, setAge] = useState("");
