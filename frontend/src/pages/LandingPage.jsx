@@ -59,9 +59,9 @@ const LandingPage = ({ theme, toggleTheme }) => {
           {/* NICU Card */}
           <div 
             onClick={() => navigate("/nicu")}
-            className="selection-card group cursor-pointer"
+            className="selection-card group cursor-pointer h-24"
           >
-            <div className="flex items-center gap-5 p-6">
+            <div className="flex items-center gap-5 p-6 h-full">
               <div className="w-16 h-16 rounded-2xl bg-[#00d9c5]/10 flex items-center justify-center group-hover:bg-[#00d9c5]/20 transition-colors flex-shrink-0">
                 <Baby className="h-8 w-8 text-[#00d9c5]" />
               </div>
@@ -79,9 +79,9 @@ const LandingPage = ({ theme, toggleTheme }) => {
           {/* Children Card */}
           <div 
             onClick={() => navigate("/children")}
-            className="selection-card group cursor-pointer"
+            className="selection-card group cursor-pointer h-24"
           >
-            <div className="flex items-center gap-5 p-6">
+            <div className="flex items-center gap-5 p-6 h-full">
               <div className="w-16 h-16 rounded-2xl bg-purple-500/10 flex items-center justify-center group-hover:bg-purple-500/20 transition-colors flex-shrink-0">
                 <Users className="h-8 w-8 text-purple-500" />
               </div>
