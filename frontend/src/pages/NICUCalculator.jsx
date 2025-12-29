@@ -1683,21 +1683,12 @@ const IntubationPage = () => {
   const result = calculateResults();
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-md">
-        <DialogHeader>
-          <DialogTitle className="font-heading text-xl flex items-center gap-2">
-            <span className="text-purple-500"><IntubationIcon /></span>
-            Endotracheal Intubation
-          </DialogTitle>
-        </DialogHeader>
-
-        <div className="space-y-4">
-          {/* Input */}
-          <Card className="nightingale-card">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm">Patient Information</CardTitle>
-              <CardDescription className="text-xs">Enter weight or gestational age</CardDescription>
+    <div className="space-y-4">
+      {/* Input */}
+      <Card className="nightingale-card">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-sm">Patient Information</CardTitle>
+          <CardDescription className="text-xs">Enter weight or gestational age</CardDescription>
             </CardHeader>
             <CardContent className="space-y-3">
               <div className="grid grid-cols-2 gap-3">
