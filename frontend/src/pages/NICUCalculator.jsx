@@ -674,13 +674,12 @@ const FluidCalculatorPage = () => {
             </Card>
           )}
         </div>
-      </DialogContent>
-    </Dialog>
+      </div>
   );
 };
 
-// NRP Checklist Dialog
-const NRPChecklistDialog = ({ open, onOpenChange }) => {
+// NRP Checklist Page
+const NRPChecklistPage = () => {
   const [expandedSections, setExpandedSections] = useState(["initial"]);
   const [checkedItems, setCheckedItems] = useState({});
   const [activeTimer, setActiveTimer] = useState(null);
