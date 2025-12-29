@@ -2603,7 +2603,7 @@ const GrowthChartPage = () => {
                     key={idx}
                     x={point.age}
                     y={point.value}
-                    r={5}
+                    r={3}
                     fill="#000"
                     stroke="#fff"
                     strokeWidth={2}
