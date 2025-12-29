@@ -164,12 +164,12 @@ const ChildrenDashboard = ({ theme, toggleTheme }) => {
           <Card
             key={widget.id}
             onClick={() => goToPage(widget.id)}
-            className={`nightingale-card cursor-pointer transition-all duration-300 ${
+            className={`nightingale-card cursor-pointer transition-all duration-300 h-32 ${
               isEditMode ? 'animate-wiggle' : 'hover:scale-[1.02]'
             }`}
             data-testid={`widget-${widget.id}`}
           >
-            <CardContent className="p-4 relative">
+            <CardContent className="p-4 relative h-full flex items-center justify-center">
               {/* Edit mode controls */}
               {isEditMode && (
                 <div className="absolute top-1 right-1 flex flex-col gap-1">
