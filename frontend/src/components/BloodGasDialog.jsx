@@ -5,9 +5,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Camera, Upload, PenLine, Loader2, AlertTriangle, CheckCircle } from "lucide-react";
+import { Camera, Upload, PenLine, Loader2, AlertTriangle, CheckCircle, Wifi, WifiOff } from "lucide-react";
 import { toast } from "sonner";
 import axios from "axios";
+import { createWorker } from "tesseract.js";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -15,6 +16,8 @@ const API = `${BACKEND_URL}/api`;
 const BloodGasDialog = ({ open, onOpenChange }) => {
   const [activeTab, setActiveTab] = useState("auto");
   const [isLoading, setIsLoading] = useState(false);
+  const [ocrProgress, setOcrProgress] = useState(0);
+  const [useOfflineOCR, setUseOfflineOCR] = useState(false);
   const [extractedValues, setExtractedValues] = useState(null);
   const [analysis, setAnalysis] = useState(null);
   const [manualValues, setManualValues] = useState({
@@ -33,9 +36,103 @@ const BloodGasDialog = ({ open, onOpenChange }) => {
   const fileInputRef = useRef(null);
   const cameraInputRef = useRef(null);
 
+  // Parse blood gas values from OCR text
+  const parseBloodGasFromText = (text) => {
+    const values = {};
+    const lines = text.split('\n').join(' ').toLowerCase();
+    
+    // Regex patterns for common blood gas parameters
+    const patterns = {
+      pH: /ph[:\s]*([0-9]+\.?[0-9]*)/i,
+      pCO2: /p?co2[:\s]*([0-9]+\.?[0-9]*)/i,
+      pO2: /p?o2[:\s]*([0-9]+\.?[0-9]*)/i,
+      HCO3: /hco3?[:\s-]*([0-9]+\.?[0-9]*)/i,
+      BE: /be[:\s]*([+-]?[0-9]+\.?[0-9]*)/i,
+      Na: /na[+]?[:\s]*([0-9]+\.?[0-9]*)/i,
+      K: /k[+]?[:\s]*([0-9]+\.?[0-9]*)/i,
+      Cl: /cl[-]?[:\s]*([0-9]+\.?[0-9]*)/i,
+      lactate: /lac(?:tate)?[:\s]*([0-9]+\.?[0-9]*)/i,
+      Hb: /h[ae]?moglobin|hb|hgb[:\s]*([0-9]+\.?[0-9]*)/i
+    };
+
+    Object.keys(patterns).forEach(key => {
+      const match = lines.match(patterns[key]);
+      if (match && match[1]) {
+        const val = parseFloat(match[1]);
+        // Basic sanity checks
+        if (key === 'pH' && val >= 6.5 && val <= 8.0) values[key] = val;
+        else if (key === 'pCO2' && val >= 10 && val <= 150) values[key] = val;
+        else if (key === 'pO2' && val >= 10 && val <= 600) values[key] = val;
+        else if (key === 'HCO3' && val >= 1 && val <= 60) values[key] = val;
+        else if (key === 'BE' && val >= -30 && val <= 30) values[key] = val;
+        else if (key === 'Na' && val >= 100 && val <= 180) values[key] = val;
+        else if (key === 'K' && val >= 1 && val <= 10) values[key] = val;
+        else if (key === 'Cl' && val >= 70 && val <= 130) values[key] = val;
+        else if (key === 'lactate' && val >= 0 && val <= 30) values[key] = val;
+        else if (key === 'Hb' && val >= 3 && val <= 25) values[key] = val;
+      }
+    });
+
+    return values;
+  };
+
+  // Offline OCR using Tesseract.js
+  const handleOfflineOCR = async (file) => {
+    setIsLoading(true);
+    setOcrProgress(0);
+    
+    try {
+      const worker = await createWorker('eng', 1, {
+        logger: m => {
+          if (m.status === 'recognizing text') {
+            setOcrProgress(Math.round(m.progress * 100));
+          }
+        }
+      });
+
+      const imageUrl = URL.createObjectURL(file);
+      const { data: { text } } = await worker.recognize(imageUrl);
+      await worker.terminate();
+      URL.revokeObjectURL(imageUrl);
+
+      const parsedValues = parseBloodGasFromText(text);
+      
+      if (Object.keys(parsedValues).length > 0) {
+        setExtractedValues(parsedValues);
+        setManualValues(prev => ({
+          ...prev,
+          pH: parsedValues.pH?.toString() || prev.pH,
+          pCO2: parsedValues.pCO2?.toString() || prev.pCO2,
+          pO2: parsedValues.pO2?.toString() || prev.pO2,
+          HCO3: parsedValues.HCO3?.toString() || prev.HCO3,
+          BE: parsedValues.BE?.toString() || prev.BE,
+          Na: parsedValues.Na?.toString() || prev.Na,
+          K: parsedValues.K?.toString() || prev.K,
+          Cl: parsedValues.Cl?.toString() || prev.Cl,
+          lactate: parsedValues.lactate?.toString() || prev.lactate,
+          Hb: parsedValues.Hb?.toString() || prev.Hb
+        }));
+        toast.success(`Extracted ${Object.keys(parsedValues).length} values! Please verify.`);
+      } else {
+        toast.error("Could not extract values. Try clearer image or manual entry.");
+      }
+    } catch (error) {
+      console.error("OCR Error:", error);
+      toast.error("OCR failed: " + error.message);
+    }
+    
+    setIsLoading(false);
+    setOcrProgress(0);
+  };
+
   const handleImageUpload = async (file) => {
     if (!file) return;
     
+    if (useOfflineOCR) {
+      return handleOfflineOCR(file);
+    }
+    
+    // Original Gemini-based OCR
     setIsLoading(true);
     try {
       const reader = new FileReader();
