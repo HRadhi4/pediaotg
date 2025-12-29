@@ -28,12 +28,8 @@ def get_paddle_ocr():
     global paddle_ocr_instance
     if paddle_ocr_instance is None:
         from paddleocr import PaddleOCR
-        paddle_ocr_instance = PaddleOCR(
-            use_angle_cls=True,
-            lang='en',
-            use_gpu=False,
-            show_log=False
-        )
+        # New PaddleOCR 3.x API
+        paddle_ocr_instance = PaddleOCR(lang='en')
         logging.info("PaddleOCR model initialized")
     return paddle_ocr_instance
 
