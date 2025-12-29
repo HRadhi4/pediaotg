@@ -1,67 +1,43 @@
-backend:
-  - task: "Offline OCR Endpoint Implementation"
-    implemented: true
-    working: true
-    file: "backend/server.py"
-    stuck_count: 0
-    priority: "high"
-    needs_retesting: false
-    status_history:
-      - working: true
-        agent: "testing"
-        comment: "✅ POST /api/blood-gas/analyze-image-offline endpoint working correctly. Returns success, values, raw_text, and engine='tesseract' as expected. Successfully extracted blood gas values from test image using Tesseract OCR."
-  
-  - task: "Online OCR Endpoint Verification"
-    implemented: true
-    working: true
-    file: "backend/server.py"
-    stuck_count: 0
-    priority: "high"
-    needs_retesting: false
-    status_history:
-      - working: true
-        agent: "testing"
-        comment: "✅ POST /api/blood-gas/analyze-image endpoint working correctly. Returns success and values as expected. Gemini AI OCR integration functioning properly."
+# Test Result Summary - Blood Pressure Component Reform
 
-  - task: "Blood Gas Analysis Endpoint"
-    implemented: true
-    working: true
-    file: "backend/server.py"
-    stuck_count: 0
-    priority: "medium"
-    needs_retesting: false
-    status_history:
-      - working: true
-        agent: "testing"
-        comment: "✅ POST /api/blood-gas/analyze endpoint working correctly. Provides comprehensive analysis including primary disorder, compensation, anion gap, and electrolyte imbalances."
+## Testing Protocol
+- Frontend testing for the Blood Pressure page in Children section
 
-frontend:
-  - task: "OCR Toggle Implementation"
-    implemented: true
-    working: "NA"
-    file: "frontend/src/components/BloodGasDialog.jsx"
-    stuck_count: 0
-    priority: "high"
-    needs_retesting: false
-    status_history:
-      - working: "NA"
-        agent: "testing"
-        comment: "Frontend OCR toggle implementation verified in code. Shows 'AI-Powered OCR' with 'Use Offline' button by default, switches to 'Offline OCR' with 'Switch to AI' button. Calls correct endpoints based on toggle state. Frontend testing not performed as per system limitations."
+## Tests to Run
 
-metadata:
-  created_by: "testing_agent"
-  version: "1.0"
-  test_sequence: 1
-  run_ui: false
+### Frontend Tests - Blood Pressure Page
+1. **Navigation Test**
+   - Navigate to Children > Blood Pressure
+   - Verify page loads with title "Blood Pressure by Age & Height"
+   - Verify Harriet Lane Handbook 23rd Edition reference
 
-test_plan:
-  current_focus:
-    - "Offline OCR Endpoint Implementation"
-    - "Online OCR Endpoint Verification"
-  stuck_tasks: []
-  test_all: false
-  test_priority: "high_first"
+2. **Input Controls Test**
+   - Boys/Girls gender toggle works
+   - Age dropdown (1-17 years) works
+   - Height Percentile dropdown (50th, 90th, 95th, 99th) works
+   - Patient SBP and DBP input fields accept numbers
 
-agent_communication:
-  - agent: "testing"
-    message: "Backend OCR implementation testing completed successfully. Both offline (Tesseract) and online (Gemini AI) OCR endpoints are working correctly. Frontend toggle implementation verified in code but not tested due to system limitations. All backend tests passed (6/6)."
+3. **BP Percentile Table Test**
+   - Select age and verify table shows all percentiles (5th, 10th, 25th, 50th, 75th, 90th, 95th)
+   - Verify MAP is calculated for each percentile row
+   - Verify table headers: BP %ile, SBP, DBP, MAP
+
+4. **Patient Classification Test**
+   - Enter patient BP (e.g., 110/70 for 10yo boy)
+   - Verify classification displays (Normal, Elevated BP, HTN Stage 1, HTN Stage 2)
+   - Verify patient MAP is calculated and displayed
+
+5. **Quick Reference Cards Test**
+   - Verify Normal (50th), Elevated (90th), HTN Stage 1 (95th), HTN Stage 2 cards display
+   - Each card shows SBP/DBP and MAP
+
+## Incorporate User Feedback
+- User requested complete reform from Harriet Lane 23rd Edition
+- Added height-based percentiles (50th, 90th, 95th, 99th)
+- Added MAP calculation for each centile by age
+- Added patient BP input with classification
+
+## Changes Made
+1. Replaced BPPage component in ChildrenDashboard.jsx
+2. Complete BP data from Harriet Lane 23rd Edition with height percentiles
+3. New features: height percentile selection, patient BP input, classification, MAP for all percentiles
