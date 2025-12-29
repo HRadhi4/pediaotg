@@ -1372,12 +1372,11 @@ const PRBCGuidelinePage = () => {
             </Card>
           </TabsContent>
         </Tabs>
-      </DialogContent>
-    </Dialog>
+      </div>
   );
 };
 
-// Exchange Transfusion Calculator Dialog
+// Exchange Transfusion Calculator Page
 const ExchangeCalculatorPage = () => {
   const [activeTab, setActiveTab] = useState("partial");
   const [weight, setWeight] = useState("");
@@ -1422,32 +1421,24 @@ const ExchangeCalculatorPage = () => {
   const wholeBloodResult = calculateWholeBloodExchange();
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle className="font-heading text-xl flex items-center gap-2">
-            <Repeat className="h-5 w-5 text-purple-500" />
-            Exchange Transfusion Calculator
-          </DialogTitle>
-        </DialogHeader>
+    <div className="space-y-4">
+      <Tabs value={activeTab} onValueChange={setActiveTab}>
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="partial">Partial Exchange</TabsTrigger>
+          <TabsTrigger value="whole">Whole Blood</TabsTrigger>
+        </TabsList>
 
-        <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="partial">Partial Exchange</TabsTrigger>
-            <TabsTrigger value="whole">Whole Blood</TabsTrigger>
-          </TabsList>
-
-          {/* Partial Exchange (Polycythemia) */}
-          <TabsContent value="partial" className="space-y-4">
-            {/* Indications */}
-            <Card className="border-amber-200 bg-amber-50 dark:bg-amber-950/30 rounded-2xl">
-              <CardContent className="pt-4">
-                <p className="font-semibold text-sm text-amber-800 dark:text-amber-200 mb-2">Polycythemia Indications:</p>
-                <ul className="text-xs text-muted-foreground space-y-1">
-                  <li>• Hct &gt; <span className="font-bold">70%</span> in asymptomatic neonates</li>
-                  <li>• Hct &gt; <span className="font-bold">65%</span> in symptomatic neonates</li>
-                </ul>
-                <p className="text-xs text-muted-foreground mt-2">
+        {/* Partial Exchange (Polycythemia) */}
+        <TabsContent value="partial" className="space-y-4">
+          {/* Indications */}
+          <Card className="border-amber-200 bg-amber-50 dark:bg-amber-950/30 rounded-2xl">
+            <CardContent className="pt-4">
+              <p className="font-semibold text-sm text-amber-800 dark:text-amber-200 mb-2">Polycythemia Indications:</p>
+              <ul className="text-xs text-muted-foreground space-y-1">
+                <li>• Hct &gt; <span className="font-bold">70%</span> in asymptomatic neonates</li>
+                <li>• Hct &gt; <span className="font-bold">65%</span> in symptomatic neonates</li>
+              </ul>
+              <p className="text-xs text-muted-foreground mt-2">
                   <span className="font-medium">Symptoms:</span> Hypoglycemia, Jaundice, Jitteriness, Respiratory distress, Seizures, Cyanosis, Apnea
                 </p>
               </CardContent>
