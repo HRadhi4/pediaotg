@@ -87,27 +87,65 @@ const ChildrenDashboard = ({ theme, toggleTheme }) => {
     }
   };
 
-  // Main page with widget grid
+  // Main page with widget grid and search
   const renderMainPage = () => (
-    <div className="grid grid-cols-2 gap-4">
-      {widgets.map((widget) => (
-        <Card
-          key={widget.id}
-          onClick={() => goToPage(widget.id)}
-          className="nightingale-card cursor-pointer hover:scale-[1.02] transition-all duration-300"
-          data-testid={`widget-${widget.id}`}
-        >
-          <CardContent className="p-4">
-            <div className="flex flex-col items-center text-center">
-              <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-3 ${getColorClass(widget.color)}`}>
-                <widget.icon className="h-6 w-6" />
+    <div className="space-y-4">
+      {/* Search Bar */}
+      <div className="relative">
+        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        <Input
+          type="text"
+          placeholder="Search calculators... (e.g., DKA, morphine, CPR)"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="pl-10 rounded-xl"
+        />
+        {searchTerm && (
+          <button
+            onClick={() => setSearchTerm("")}
+            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground"
+          >
+            ×
+          </button>
+        )}
+      </div>
+
+      {/* Results count when searching */}
+      {searchTerm && (
+        <p className="text-xs text-muted-foreground">
+          Found {filteredWidgets.length} result{filteredWidgets.length !== 1 ? 's' : ''} for "{searchTerm}"
+        </p>
+      )}
+
+      {/* Widget Grid */}
+      <div className="grid grid-cols-2 gap-4">
+        {filteredWidgets.map((widget) => (
+          <Card
+            key={widget.id}
+            onClick={() => goToPage(widget.id)}
+            className="nightingale-card cursor-pointer hover:scale-[1.02] transition-all duration-300"
+            data-testid={`widget-${widget.id}`}
+          >
+            <CardContent className="p-4">
+              <div className="flex flex-col items-center text-center">
+                <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-3 ${getColorClass(widget.color)}`}>
+                  <widget.icon className="h-6 w-6" />
+                </div>
+                <h3 className="font-heading font-semibold text-sm">{widget.title}</h3>
+                <p className="text-xs text-muted-foreground mt-1">{widget.subtitle}</p>
               </div>
-              <h3 className="font-heading font-semibold text-sm">{widget.title}</h3>
-              <p className="text-xs text-muted-foreground mt-1">{widget.subtitle}</p>
-            </div>
-          </CardContent>
-        </Card>
-      ))}
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      {/* No results message */}
+      {searchTerm && filteredWidgets.length === 0 && (
+        <div className="text-center py-8">
+          <p className="text-muted-foreground">No calculators found for "{searchTerm}"</p>
+          <p className="text-xs text-muted-foreground mt-1">Try searching for: DKA, morphine, CPR, seizure, antibiotic</p>
+        </div>
+      )}
     </div>
   );
 
