@@ -921,7 +921,7 @@ const NRPChecklistPage = () => {
 };
 
 // UVC/UAC Calculator Dialog
-const CatheterCalculatorPage = ({ open, onOpenChange }) => {
+const CatheterCalculatorPage = () => {
   const [weight, setWeight] = useState("");
 
   const calculateUAC = () => {
@@ -1013,7 +1013,7 @@ const CatheterCalculatorPage = ({ open, onOpenChange }) => {
 };
 
 // PRBC Transfusion Calculator Dialog - Based on Neonatal Guidelines
-const PRBCGuidelinePage = ({ open, onOpenChange }) => {
+const PRBCGuidelinePage = () => {
   const [weight, setWeight] = useState("");
   const [age, setAge] = useState("");
   const [ga, setGa] = useState("");
@@ -1408,7 +1408,7 @@ const PRBCGuidelinePage = ({ open, onOpenChange }) => {
 };
 
 // Exchange Transfusion Calculator Dialog
-const ExchangeCalculatorPage = ({ open, onOpenChange }) => {
+const ExchangeCalculatorPage = () => {
   const [activeTab, setActiveTab] = useState("partial");
   const [weight, setWeight] = useState("");
   const [observedHct, setObservedHct] = useState("");
@@ -1645,7 +1645,7 @@ const ExchangeCalculatorPage = ({ open, onOpenChange }) => {
 };
 
 // Intubation Calculator Dialog
-const IntubationPage = ({ open, onOpenChange }) => {
+const IntubationPage = () => {
   const [weight, setWeight] = useState("");
   const [gestationalAge, setGestationalAge] = useState("");
 
@@ -1853,7 +1853,7 @@ const IntubationPage = ({ open, onOpenChange }) => {
 };
 
 // Blood Pressure Guidelines Dialog
-const BloodPressurePage = ({ open, onOpenChange }) => {
+const BloodPressurePage = () => {
   const [ageType, setAgeType] = useState("dayOne"); // "dayOne" or "postConceptional"
   const [gestationalAge, setGestationalAge] = useState("");
 
