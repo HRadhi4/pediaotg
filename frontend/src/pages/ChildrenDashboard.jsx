@@ -1521,17 +1521,355 @@ const CPRPage = ({ onBack }) => {
   );
 };
 
-// Approaches Page - Placeholder
-const ApproachesPage = ({ onBack }) => (
-  <div className="space-y-4 pb-8">
-    <Card className="nightingale-card">
-      <CardHeader>
-        <CardTitle>Clinical Approaches</CardTitle>
-        <CardDescription>Coming in next phase - DKA, Status Epilepticus, Hyperammonemia, Hypocalcemia</CardDescription>
-      </CardHeader>
-    </Card>
-  </div>
-);
+// Approaches Page - DKA, Status Epilepticus, Hyperammonemia
+const ApproachesPage = ({ onBack }) => {
+  const [activeTab, setActiveTab] = useState("dka");
+  const [weight, setWeight] = useState("");
+  const w = parseFloat(weight) || 0;
+
+  return (
+    <div className="space-y-4 pb-8">
+      {/* Weight Input */}
+      <Card className="nightingale-card border-teal-200 dark:border-teal-800">
+        <CardContent className="pt-4">
+          <div className="flex items-center gap-3">
+            <Brain className="h-5 w-5 text-teal-500" />
+            <div className="flex-1">
+              <Label className="text-xs text-muted-foreground">Patient Weight (kg)</Label>
+              <Input
+                type="number"
+                placeholder="Enter weight for calculations"
+                value={weight}
+                onChange={(e) => setWeight(e.target.value)}
+                className="font-mono mt-1"
+              />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Tab Navigation */}
+      <Tabs value={activeTab} onValueChange={setActiveTab}>
+        <TabsList className="grid w-full grid-cols-3 text-xs">
+          <TabsTrigger value="dka">DKA</TabsTrigger>
+          <TabsTrigger value="se">Status Epilepticus</TabsTrigger>
+          <TabsTrigger value="hypernh3">Hyperammonemia</TabsTrigger>
+        </TabsList>
+
+        {/* DKA Tab */}
+        <TabsContent value="dka" className="space-y-3 mt-4">
+          <Card className="border-orange-300 bg-orange-50 dark:bg-orange-950/30">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm">Diabetic Ketoacidosis (DKA)</CardTitle>
+              <CardDescription className="text-xs">Salmaniya Medical Complex Guidelines</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3 text-xs">
+              {/* Diagnostic Criteria */}
+              <div className="p-3 rounded-xl bg-white/50 dark:bg-gray-900/50">
+                <p className="font-semibold text-orange-700 dark:text-orange-300 mb-2">Diagnostic Criteria</p>
+                <ul className="space-y-1 text-muted-foreground">
+                  <li>• Ketonuria positive</li>
+                  <li>• Glucose &gt;11 mmol/L (&gt;200 mg/dL)</li>
+                  <li>• pH &lt;7.30</li>
+                  <li>• Serum bicarbonate &lt;15 mmol/L</li>
+                </ul>
+              </div>
+
+              {/* Fluid Management */}
+              <div className="p-3 rounded-xl bg-blue-100 dark:bg-blue-950/50">
+                <p className="font-semibold text-blue-700 dark:text-blue-300 mb-2">Fluid Management</p>
+                <p className="text-muted-foreground mb-2">Use 0.9% or 0.45% NS until dextrose added</p>
+                <div className="space-y-2">
+                  <div className="p-2 bg-white/50 dark:bg-gray-900/50 rounded-lg">
+                    <p className="font-medium">If Stable (by weight):</p>
+                    <div className="grid grid-cols-2 gap-2 mt-1 text-muted-foreground">
+                      <span>&lt;10 kg: 6 mL/kg/hr</span>
+                      <span>10-19 kg: 5 mL/kg/hr</span>
+                      <span>20-30 kg: 3.5 mL/kg/hr</span>
+                      <span>&gt;30 kg: 3 mL/kg/hr</span>
+                    </div>
+                    {w > 0 && (
+                      <p className="font-mono text-blue-600 mt-2">
+                        → {w < 10 ? (w * 6).toFixed(0) : w < 20 ? (w * 5).toFixed(0) : w < 30 ? (w * 3.5).toFixed(0) : Math.min(w * 3, 250).toFixed(0)} mL/hr
+                      </p>
+                    )}
+                  </div>
+                  <div className="p-2 bg-red-100 dark:bg-red-900/30 rounded-lg">
+                    <p className="font-medium text-red-700">If Shock:</p>
+                    <p className="text-muted-foreground">10 mL/kg bolus over 10-20 min, reassess & repeat PRN</p>
+                    {w > 0 && <p className="font-mono text-red-600">→ {(w * 10).toFixed(0)} mL bolus</p>}
+                  </div>
+                </div>
+                <p className="text-muted-foreground mt-2 italic">Add dextrose when BG &lt;15 mmol/L (250 mg/dL)</p>
+              </div>
+
+              {/* Insulin */}
+              <div className="p-3 rounded-xl bg-green-100 dark:bg-green-950/50">
+                <p className="font-semibold text-green-700 dark:text-green-300 mb-2">Insulin</p>
+                <div className="space-y-2 text-muted-foreground">
+                  <div className="p-2 bg-white/50 dark:bg-gray-900/50 rounded-lg">
+                    <p className="font-medium">Continuous Infusion:</p>
+                    <p>0.1 units/kg/hr (= 1 mL/kg/hr of 25 units in 250 mL NS)</p>
+                    {w > 0 && <p className="font-mono text-green-600">→ {(w * 0.1).toFixed(2)} units/hr ({(w * 1).toFixed(0)} mL/hr)</p>}
+                  </div>
+                  <div className="p-2 bg-white/50 dark:bg-gray-900/50 rounded-lg">
+                    <p className="font-medium">Decrease insulin when:</p>
+                    <p>pH &gt;7.30 OR HCO3 &gt;15 mmol/L</p>
+                    <p className="text-xs">Decrease by 25-50% q1-2h to 0.02 U/kg/hr</p>
+                  </div>
+                  <p className="text-xs italic">If BG drops but acidosis persists → increase dextrose, not decrease insulin</p>
+                </div>
+              </div>
+
+              {/* Potassium */}
+              <div className="p-3 rounded-xl bg-purple-100 dark:bg-purple-950/50">
+                <p className="font-semibold text-purple-700 dark:text-purple-300 mb-2">Potassium</p>
+                <ul className="space-y-1 text-muted-foreground">
+                  <li>• If K+ &lt;5.5 mmol/L and patient voiding:</li>
+                  <li className="pl-4">Add 40 mEq/L KCl to IV fluid</li>
+                  <li>• Target K+: 4-5 mEq/L</li>
+                  <li>• If K+ &gt;5.5: use plain IVF</li>
+                </ul>
+              </div>
+
+              {/* Bicarbonate */}
+              <div className="p-3 rounded-xl bg-amber-100 dark:bg-amber-950/50">
+                <p className="font-semibold text-amber-700 dark:text-amber-300 mb-2">Bicarbonate</p>
+                <p className="text-muted-foreground"><span className="font-medium">Indication:</span> pH &lt;6.9 ONLY</p>
+                <p className="text-muted-foreground"><span className="font-medium">Dose:</span> 1-2 mEq/kg over 1 hour</p>
+                {w > 0 && <p className="font-mono text-amber-600">→ {(w * 1).toFixed(0)}-{(w * 2).toFixed(0)} mEq</p>}
+                <p className="text-xs text-red-600 mt-1">⚠ Always consult endocrinologist first!</p>
+              </div>
+
+              {/* Cerebral Edema */}
+              <div className="p-3 rounded-xl bg-red-100 dark:bg-red-950/50 border border-red-300">
+                <p className="font-semibold text-red-700 dark:text-red-300 mb-2">⚠ Cerebral Edema</p>
+                <p className="text-xs text-muted-foreground mb-2">Warning signs: headache, irritability, drowsiness, ↓LOC</p>
+                <div className="space-y-1 text-muted-foreground">
+                  <p>1. Raise head of bed</p>
+                  <p>2. Decrease fluids to 2 L/m²/day</p>
+                  <p>3. <span className="font-medium">Mannitol 0.25-0.5 g/kg</span> over 10-15 min</p>
+                  {w > 0 && <p className="font-mono text-red-600 pl-4">→ {(w * 0.25).toFixed(1)}-{(w * 0.5).toFixed(1)} g</p>}
+                  <p>4. If Na drops: 3% saline 2-4 mL/kg over 10-20 min</p>
+                  {w > 0 && <p className="font-mono text-red-600 pl-4">→ {(w * 2).toFixed(0)}-{(w * 4).toFixed(0)} mL</p>}
+                  <p>5. Decrease insulin to 0.04-0.05 U/kg/hr</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Status Epilepticus Tab */}
+        <TabsContent value="se" className="space-y-3 mt-4">
+          <Card className="border-red-300 bg-red-50 dark:bg-red-950/30">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm">Status Epilepticus Protocol</CardTitle>
+              <CardDescription className="text-xs">Start medication after 5 minutes of seizure</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3 text-xs">
+              {/* Initial Steps */}
+              <div className="p-3 rounded-xl bg-white/50 dark:bg-gray-900/50">
+                <p className="font-semibold text-red-700 dark:text-red-300 mb-2">Initial Steps</p>
+                <ul className="space-y-1 text-muted-foreground">
+                  <li>1. ABC: Airway, Breathing, O2, Circulation</li>
+                  <li>2. Start IV, collect: Sugar, Ca, Na</li>
+                  <li>3. Brief history</li>
+                  <li>4. Start medication after 5 minutes</li>
+                </ul>
+              </div>
+
+              {/* Step 1: Diazepam */}
+              <div className="p-3 rounded-xl bg-blue-100 dark:bg-blue-950/50">
+                <div className="flex justify-between items-center mb-2">
+                  <p className="font-semibold text-blue-700 dark:text-blue-300">Step 1: Diazepam (Valium)</p>
+                  <span className="text-xs bg-blue-200 dark:bg-blue-800 px-2 py-1 rounded">5 min</span>
+                </div>
+                <div className="space-y-2 text-muted-foreground">
+                  <p><span className="font-medium">IV:</span> 0.2-0.3 mg/kg (max 5 mg/dose)</p>
+                  <p><span className="font-medium">PR:</span> 0.5 mg/kg</p>
+                  {w > 0 && (
+                    <div className="font-mono text-blue-600">
+                      <p>→ IV: {(w * 0.2).toFixed(1)}-{Math.min(w * 0.3, 5).toFixed(1)} mg</p>
+                      <p>→ PR: {(w * 0.5).toFixed(1)} mg</p>
+                    </div>
+                  )}
+                  <p className="text-red-600">⚠ Total max 10 mg (respiratory depression risk)</p>
+                </div>
+              </div>
+
+              {/* Step 2: Repeat Diazepam */}
+              <div className="p-3 rounded-xl bg-blue-50 dark:bg-blue-900/30">
+                <div className="flex justify-between items-center mb-2">
+                  <p className="font-semibold text-blue-600">Step 2: Repeat Diazepam</p>
+                  <span className="text-xs bg-blue-200 dark:bg-blue-800 px-2 py-1 rounded">+5 min</span>
+                </div>
+                <p className="text-muted-foreground">Same dose if still seizing</p>
+              </div>
+
+              {/* Step 3: Phenytoin */}
+              <div className="p-3 rounded-xl bg-amber-100 dark:bg-amber-950/50">
+                <div className="flex justify-between items-center mb-2">
+                  <p className="font-semibold text-amber-700 dark:text-amber-300">Step 3: Phenytoin</p>
+                  <span className="text-xs bg-amber-200 dark:bg-amber-800 px-2 py-1 rounded">+10 min</span>
+                </div>
+                <div className="space-y-2 text-muted-foreground">
+                  <p><span className="font-medium">Loading:</span> 20 mg/kg IV over 20 min</p>
+                  {w > 0 && <p className="font-mono text-amber-600">→ {(w * 20).toFixed(0)} mg over 20 min</p>}
+                  <p className="text-red-600">⚠ Max rate: 1 mg/kg/min (arrhythmia risk)</p>
+                </div>
+              </div>
+
+              {/* Step 4: Repeat Phenytoin */}
+              <div className="p-3 rounded-xl bg-amber-50 dark:bg-amber-900/30">
+                <div className="flex justify-between items-center mb-2">
+                  <p className="font-semibold text-amber-600">Step 4: Phenytoin 2nd dose</p>
+                  <span className="text-xs bg-amber-200 dark:bg-amber-800 px-2 py-1 rounded">+10 min</span>
+                </div>
+                <div className="text-muted-foreground">
+                  <p>½ dose: 10 mg/kg IV over 10 min</p>
+                  {w > 0 && <p className="font-mono text-amber-600">→ {(w * 10).toFixed(0)} mg</p>}
+                </div>
+              </div>
+
+              {/* Step 5: Phenobarbital */}
+              <div className="p-3 rounded-xl bg-purple-100 dark:bg-purple-950/50">
+                <div className="flex justify-between items-center mb-2">
+                  <p className="font-semibold text-purple-700 dark:text-purple-300">Step 5: Phenobarbital</p>
+                  <span className="text-xs bg-purple-200 dark:bg-purple-800 px-2 py-1 rounded">+10 min</span>
+                </div>
+                <div className="space-y-2 text-muted-foreground">
+                  <p><span className="font-medium">Loading:</span> 20 mg/kg IV over 10 min</p>
+                  {w > 0 && <p className="font-mono text-purple-600">→ {(w * 20).toFixed(0)} mg</p>}
+                  <p><span className="font-medium">2nd dose:</span> 10 mg/kg over 10 min</p>
+                  {w > 0 && <p className="font-mono text-purple-600">→ {(w * 10).toFixed(0)} mg</p>}
+                </div>
+              </div>
+
+              {/* Refractory */}
+              <div className="p-3 rounded-xl bg-red-200 dark:bg-red-900/50 border border-red-400">
+                <p className="font-bold text-red-700 dark:text-red-300 mb-2">⚠ REFRACTORY SEIZURES</p>
+                <p className="text-muted-foreground">If still seizing after above steps:</p>
+                <p className="font-semibold text-red-700 mt-1">→ General Anesthesia + Intubation</p>
+                <p className="text-xs text-muted-foreground mt-2">Alternatives (if available): Levetiracetam (Keppra), Valproate IV</p>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Hyperammonemia Tab */}
+        <TabsContent value="hypernh3" className="space-y-3 mt-4">
+          <Card className="border-purple-300 bg-purple-50 dark:bg-purple-950/30">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm">Hyperammonemia Approach</CardTitle>
+              <CardDescription className="text-xs">Diagnostic algorithm and initial management</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3 text-xs">
+              {/* Initial Assessment */}
+              <div className="p-3 rounded-xl bg-white/50 dark:bg-gray-900/50">
+                <p className="font-semibold text-purple-700 dark:text-purple-300 mb-2">Initial Assessment</p>
+                <div className="grid grid-cols-2 gap-2 text-muted-foreground">
+                  <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
+                    <p className="font-medium text-blue-700">Normal pH / Alkalosis</p>
+                    <p className="text-xs">Consider urea cycle defects</p>
+                  </div>
+                  <div className="p-2 bg-red-100 dark:bg-red-900/30 rounded-lg">
+                    <p className="font-medium text-red-700">Acidosis</p>
+                    <p className="text-xs">Consider organic acidemias</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Diagnostic Pathway */}
+              <div className="p-3 rounded-xl bg-blue-100 dark:bg-blue-950/50">
+                <p className="font-semibold text-blue-700 dark:text-blue-300 mb-2">Diagnostic Pathway (Urea Cycle)</p>
+                <div className="space-y-2 text-muted-foreground">
+                  <p className="font-medium">Check Plasma Citrulline:</p>
+                  <div className="p-2 bg-white/50 dark:bg-gray-900/50 rounded-lg space-y-1">
+                    <p><span className="font-medium text-green-600">↑ Citrulline + ASA present:</span> Argininosuccinic aciduria</p>
+                    <p><span className="font-medium text-amber-600">↑ Citrulline + ASA absent:</span> Citrullinemia (ASS deficiency)</p>
+                  </div>
+                  <div className="p-2 bg-white/50 dark:bg-gray-900/50 rounded-lg">
+                    <p className="font-medium">↓/Absent Citrulline → Check Urine Orotic Acid:</p>
+                    <p className="pl-2"><span className="text-blue-600">Normal/Low:</span> CPS deficiency</p>
+                    <p className="pl-2"><span className="text-red-600">High:</span> OTC deficiency</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Immediate Management */}
+              <div className="p-3 rounded-xl bg-red-100 dark:bg-red-950/50 border border-red-300">
+                <p className="font-semibold text-red-700 dark:text-red-300 mb-2">⚠ Immediate Management</p>
+                <ol className="space-y-2 text-muted-foreground">
+                  <li className="p-2 bg-white/50 dark:bg-gray-900/50 rounded-lg">
+                    <span className="font-bold text-red-600">1. Stop protein intake</span>
+                    <p className="text-xs">Reduce nitrogen load</p>
+                  </li>
+                  <li className="p-2 bg-white/50 dark:bg-gray-900/50 rounded-lg">
+                    <span className="font-bold text-red-600">2. IV Dextrose 10%</span>
+                    <p className="text-xs">Prevent catabolism, provide calories</p>
+                    {w > 0 && <p className="font-mono text-red-600">→ Maintenance: {(w * 100 / 24).toFixed(0)} mL/hr D10%</p>}
+                  </li>
+                  <li className="p-2 bg-white/50 dark:bg-gray-900/50 rounded-lg">
+                    <span className="font-bold text-red-600">3. Ammonia Scavengers</span>
+                    <div className="mt-1">
+                      <p><span className="font-medium">Sodium Benzoate:</span> 250 mg/kg load, then 250-500 mg/kg/day</p>
+                      {w > 0 && <p className="font-mono text-red-600">→ Load: {(w * 0.25).toFixed(1)} g</p>}
+                      <p className="mt-1"><span className="font-medium">Sodium Phenylacetate:</span> 250 mg/kg load, then 250-500 mg/kg/day</p>
+                    </div>
+                  </li>
+                  <li className="p-2 bg-white/50 dark:bg-gray-900/50 rounded-lg">
+                    <span className="font-bold text-red-600">4. L-Arginine</span>
+                    <p>200-600 mg/kg/day (for urea cycle defects)</p>
+                    {w > 0 && <p className="font-mono text-red-600">→ {(w * 0.2).toFixed(1)}-{(w * 0.6).toFixed(1)} g/day</p>}
+                  </li>
+                  <li className="p-2 bg-white/50 dark:bg-gray-900/50 rounded-lg">
+                    <span className="font-bold text-red-600">5. Dialysis if severe</span>
+                    <p className="text-xs">Consider if NH3 &gt;500 µmol/L or not responding</p>
+                  </li>
+                </ol>
+              </div>
+
+              {/* Labs to Order */}
+              <div className="p-3 rounded-xl bg-gray-100 dark:bg-gray-800/50">
+                <p className="font-semibold mb-2">Labs to Order</p>
+                <div className="grid grid-cols-2 gap-2 text-muted-foreground">
+                  <div>
+                    <p className="font-medium">Blood:</p>
+                    <ul className="text-xs space-y-0.5">
+                      <li>• Ammonia (on ice)</li>
+                      <li>• VBG, Glucose</li>
+                      <li>• Lactate</li>
+                      <li>• Plasma amino acids</li>
+                      <li>• LFTs, Coags</li>
+                    </ul>
+                  </div>
+                  <div>
+                    <p className="font-medium">Urine:</p>
+                    <ul className="text-xs space-y-0.5">
+                      <li>• Orotic acid</li>
+                      <li>• Organic acids</li>
+                      <li>• Ketones</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              {/* Reference */}
+              <Card className="nightingale-card">
+                <CardContent className="pt-4 text-xs text-muted-foreground">
+                  <p className="font-medium mb-1">Normal Ammonia Levels</p>
+                  <p>• Newborn: &lt;110 µmol/L</p>
+                  <p>• Infant: &lt;80 µmol/L</p>
+                  <p>• Child/Adult: &lt;50 µmol/L</p>
+                </CardContent>
+              </Card>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
+    </div>
+  );
+};
 
 // Drugs Page - Placeholder
 const DrugsPage = ({ onBack }) => (
