@@ -97,7 +97,6 @@ const ChildrenDashboard = ({ theme, toggleTheme }) => {
     scoring: { id: "scoring", title: "Scoring/Calculators", subtitle: "GCS, PRAM, Westley, OI", icon: Calculator, color: "amber", keywords: ["glasgow", "coma", "croup", "respiratory", "oxygenation", "pram", "westley"] },
     cpr: { id: "cpr", title: "CPR", subtitle: "PALS drugs & algorithms", icon: Heart, color: "red", keywords: ["resuscitation", "pals", "arrest", "defibrillation", "epinephrine", "amiodarone", "adenosine", "tachycardia", "bradycardia", "vf", "vt", "asystole", "pea"] },
     approaches: { id: "approaches", title: "Approaches", subtitle: "DKA, SE, Hyperammonemia", icon: FileText, color: "teal", keywords: ["diabetic", "ketoacidosis", "dka", "status epilepticus", "seizure", "convulsion", "hyperammonemia", "ammonia", "urea cycle", "phenytoin", "diazepam"] },
-    insensible: { id: "insensible", title: "Insensible Water Loss", subtitle: "BSA-based calculation", icon: Droplets, color: "teal", keywords: ["iwl", "bsa", "body surface", "fluid", "loss", "evaporation"] },
     drugs: { id: "drugs", title: "Drugs", subtitle: "Commonly used medications", icon: Pill, color: "purple", keywords: ["antibiotic", "analgesic", "paracetamol", "ibuprofen", "morphine", "amoxicillin", "ceftriaxone", "vancomycin", "gentamicin", "pain", "fever"] },
   };
 
