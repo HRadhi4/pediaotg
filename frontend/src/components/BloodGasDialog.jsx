@@ -75,53 +75,64 @@ const BloodGasDialog = ({ open, onOpenChange }) => {
     return values;
   };
 
-  // Offline OCR using Tesseract.js
+  // Offline OCR using PaddleOCR (backend)
   const handleOfflineOCR = async (file) => {
     setIsLoading(true);
-    setOcrProgress(0);
+    setOcrProgress(10);
     
     try {
-      const worker = await createWorker('eng', 1, {
-        logger: m => {
-          if (m.status === 'recognizing text') {
-            setOcrProgress(Math.round(m.progress * 100));
+      const reader = new FileReader();
+      reader.onloadend = async () => {
+        const base64 = reader.result;
+        setOcrProgress(30);
+        
+        try {
+          const response = await axios.post(`${API}/blood-gas/analyze-image-offline`, {
+            image_base64: base64
+          });
+          
+          setOcrProgress(90);
+          
+          if (response.data.success && response.data.values) {
+            const parsedValues = response.data.values;
+            
+            if (Object.keys(parsedValues).length > 0) {
+              setExtractedValues(parsedValues);
+              setManualValues(prev => ({
+                ...prev,
+                pH: parsedValues.pH?.toString() || prev.pH,
+                pCO2: parsedValues.pCO2?.toString() || prev.pCO2,
+                pO2: parsedValues.pO2?.toString() || prev.pO2,
+                HCO3: parsedValues.HCO3?.toString() || prev.HCO3,
+                BE: parsedValues.BE?.toString() || prev.BE,
+                Na: parsedValues.Na?.toString() || prev.Na,
+                K: parsedValues.K?.toString() || prev.K,
+                Cl: parsedValues.Cl?.toString() || prev.Cl,
+                lactate: parsedValues.lactate?.toString() || prev.lactate,
+                Hb: parsedValues.Hb?.toString() || prev.Hb
+              }));
+              toast.success(`Extracted ${Object.keys(parsedValues).length} values (PaddleOCR)! Please verify.`);
+            } else {
+              toast.error("Could not extract values. Try clearer image or manual entry.");
+            }
+          } else {
+            toast.error("Could not extract values from image");
           }
+        } catch (err) {
+          console.error("Offline OCR Error:", err);
+          toast.error("OCR failed: " + (err.response?.data?.detail || err.message));
         }
-      });
-
-      const imageUrl = URL.createObjectURL(file);
-      const { data: { text } } = await worker.recognize(imageUrl);
-      await worker.terminate();
-      URL.revokeObjectURL(imageUrl);
-
-      const parsedValues = parseBloodGasFromText(text);
-      
-      if (Object.keys(parsedValues).length > 0) {
-        setExtractedValues(parsedValues);
-        setManualValues(prev => ({
-          ...prev,
-          pH: parsedValues.pH?.toString() || prev.pH,
-          pCO2: parsedValues.pCO2?.toString() || prev.pCO2,
-          pO2: parsedValues.pO2?.toString() || prev.pO2,
-          HCO3: parsedValues.HCO3?.toString() || prev.HCO3,
-          BE: parsedValues.BE?.toString() || prev.BE,
-          Na: parsedValues.Na?.toString() || prev.Na,
-          K: parsedValues.K?.toString() || prev.K,
-          Cl: parsedValues.Cl?.toString() || prev.Cl,
-          lactate: parsedValues.lactate?.toString() || prev.lactate,
-          Hb: parsedValues.Hb?.toString() || prev.Hb
-        }));
-        toast.success(`Extracted ${Object.keys(parsedValues).length} values! Please verify.`);
-      } else {
-        toast.error("Could not extract values. Try clearer image or manual entry.");
-      }
+        
+        setIsLoading(false);
+        setOcrProgress(0);
+      };
+      reader.readAsDataURL(file);
     } catch (error) {
       console.error("OCR Error:", error);
       toast.error("OCR failed: " + error.message);
+      setIsLoading(false);
+      setOcrProgress(0);
     }
-    
-    setIsLoading(false);
-    setOcrProgress(0);
   };
 
   const handleImageUpload = async (file) => {
