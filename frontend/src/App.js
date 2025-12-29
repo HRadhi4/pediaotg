@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useState, useEffect } from "react";
 import LandingPage from "@/pages/LandingPage";
 import NICUCalculator from "@/pages/NICUCalculator";
+import ChildrenDashboard from "@/pages/ChildrenDashboard";
 import { Toaster } from "@/components/ui/sonner";
 
 function App() {
@@ -30,6 +31,8 @@ function App() {
         <Routes>
           <Route path="/" element={<LandingPage theme={theme} toggleTheme={toggleTheme} />} />
           <Route path="/nicu" element={<NICUCalculator theme={theme} toggleTheme={toggleTheme} />} />
+          <Route path="/children" element={<ChildrenDashboard theme={theme} toggleTheme={toggleTheme} />} />
+          <Route path="/children/:page" element={<ChildrenDashboard theme={theme} toggleTheme={toggleTheme} />} />
         </Routes>
       </BrowserRouter>
       <Toaster position="top-right" />
