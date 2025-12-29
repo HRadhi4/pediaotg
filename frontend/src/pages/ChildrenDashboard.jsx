@@ -2651,28 +2651,28 @@ const DrugsPage = ({ onBack }) => {
         {/* Analgesics Tab */}
         <TabsContent value="analgesics" className="space-y-2 mt-4">
           {analgesics.map((drug, idx) => (
-            <Card key={idx} className={`border ${colorClasses[drug.color]}`}>
+            <Card key={idx} className={`border ${colorClasses[drug.color]} overflow-hidden`}>
               <CardContent className="pt-3 pb-3">
-                <div className="flex justify-between items-start">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2">
-                      <p className="font-semibold text-sm">{drug.name}</p>
-                      <span className="text-xs px-2 py-0.5 rounded-full bg-gray-200 dark:bg-gray-700">{drug.category}</span>
+                <div className="flex justify-between items-start gap-2">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <p className="font-semibold text-sm break-words">{drug.name}</p>
+                      <span className="text-xs px-2 py-0.5 rounded-full bg-gray-200 dark:bg-gray-700 whitespace-nowrap">{drug.category}</span>
                     </div>
-                    <p className="text-xs text-muted-foreground mt-1">
+                    <p className="text-xs text-muted-foreground mt-1 break-words">
                       <span className="font-medium">{drug.route}:</span> {drug.dose} {drug.unit} {drug.frequency}
                     </p>
                     {w > 0 && (
-                      <p className="font-mono text-sm text-indigo-600 dark:text-indigo-400 mt-1">
+                      <p className="font-mono text-sm text-indigo-600 dark:text-indigo-400 mt-1 break-words">
                         → {calculateDose(drug, w)} {drug.frequency}
                       </p>
                     )}
                   </div>
-                  <div className="text-right text-xs">
-                    <p className="text-muted-foreground">Max: {drug.max}</p>
+                  <div className="text-right text-xs flex-shrink-0 max-w-[40%]">
+                    <p className="text-muted-foreground break-words">Max: {drug.max}</p>
                   </div>
                 </div>
-                <p className="text-xs text-muted-foreground mt-2 border-t pt-2">{drug.notes}</p>
+                <p className="text-xs text-muted-foreground mt-2 border-t pt-2 break-words">{drug.notes}</p>
               </CardContent>
             </Card>
           ))}
