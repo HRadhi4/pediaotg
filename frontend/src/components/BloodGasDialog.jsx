@@ -256,7 +256,7 @@ const BloodGasDialog = ({ open, onOpenChange }) => {
                         {useOfflineOCR ? "Offline OCR" : "AI-Powered OCR"}
                       </p>
                       <p className="text-xs text-muted-foreground">
-                        {useOfflineOCR ? "Uses Tesseract.js (works without internet)" : "Uses Gemini Vision (more accurate)"}
+                        {useOfflineOCR ? "Server-side Tesseract (no external API)" : "Uses Gemini Vision (more accurate)"}
                       </p>
                     </div>
                   </div>
