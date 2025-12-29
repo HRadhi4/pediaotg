@@ -164,12 +164,12 @@ const ChildrenDashboard = ({ theme, toggleTheme }) => {
           <Card
             key={widget.id}
             onClick={() => goToPage(widget.id)}
-            className={`nightingale-card cursor-pointer transition-all duration-300 h-32 ${
+            className={`nightingale-card cursor-pointer transition-all duration-300 h-36 ${
               isEditMode ? 'animate-wiggle' : 'hover:scale-[1.02]'
             }`}
             data-testid={`widget-${widget.id}`}
           >
-            <CardContent className="p-4 relative h-full flex items-center justify-center">
+            <CardContent className="p-3 relative h-full flex items-center justify-center">
               {/* Edit mode controls */}
               {isEditMode && (
                 <div className="absolute top-1 right-1 flex flex-col gap-1">
@@ -189,12 +189,12 @@ const ChildrenDashboard = ({ theme, toggleTheme }) => {
                   </button>
                 </div>
               )}
-              <div className="flex flex-col items-center text-center">
-                <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-3 ${getColorClass(widget.color)}`}>
-                  <widget.icon className="h-6 w-6" />
+              <div className="flex flex-col items-center text-center gap-2">
+                <div className={`w-11 h-11 rounded-xl flex items-center justify-center ${getColorClass(widget.color)}`}>
+                  <widget.icon className="h-5 w-5" />
                 </div>
-                <h3 className="font-heading font-semibold text-sm">{widget.title}</h3>
-                <p className="text-xs text-muted-foreground mt-1">{widget.subtitle}</p>
+                <h3 className="font-heading font-semibold text-xs leading-tight px-1">{widget.title}</h3>
+                <p className="text-[10px] text-muted-foreground leading-tight px-1">{widget.subtitle}</p>
               </div>
             </CardContent>
           </Card>
