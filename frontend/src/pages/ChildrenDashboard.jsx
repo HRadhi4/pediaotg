@@ -789,7 +789,7 @@ const InfusionsPage = ({ onBack }) => {
         {
           name: "Cisatracurium (Nimbex)",
           stat: { dose: "0.1-0.2 mg/kg", calc: w ? `${(w * 0.1).toFixed(2)} - ${(w * 0.2).toFixed(2)} mg` : null },
-          infusion: { dose: "1-4 mcg/kg/min", calc: w ? `${(w * 0.06).toFixed(2)} - ${(w * 0.24).toFixed(2)} mg/hr` : null }
+          infusion: { dose: "1-4 mcg/kg/min", calc: w ? `${(w * 1).toFixed(0)} - ${(w * 4).toFixed(0)} mcg/min` : null }
         }
       ]
     },
