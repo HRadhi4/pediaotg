@@ -201,14 +201,6 @@ const ChildrenDashboard = ({ theme, toggleTheme }) => {
           </Card>
         ))}
       </div>
-
-      {/* No results message */}
-      {searchTerm && filteredWidgets.length === 0 && (
-        <div className="text-center py-8">
-          <p className="text-muted-foreground">No calculators found for &quot;{searchTerm}&quot;</p>
-          <p className="text-xs text-muted-foreground mt-1">Try searching for: DKA, morphine, CPR, seizure, antibiotic</p>
-        </div>
-      )}
     </div>
   );
 
