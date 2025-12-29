@@ -153,11 +153,14 @@ frontend:
     file: "/app/frontend/src/pages/ChildrenDashboard.jsx"
     stuck_count: 0
     priority: "medium"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: true
         agent: "main"
         comment: "Infusion calculator with categories: Neuromuscular Blockade, Sedatives, Diuretics, Bronchodilator, Inotropic Support. Weight-based calculations."
+      - working: true
+        agent: "testing"
+        comment: "✓ TESTED: Infusions page fully functional. Weight input working (tested with 20kg). All drug categories visible: Neuromuscular Blockade, Sedatives, Diuretics, Bronchodilator, Inotropic Support. Weight-based calculations displaying correctly with proper dosing ranges for pediatric patients."
 
   - task: "Intubation Page"
     implemented: true
