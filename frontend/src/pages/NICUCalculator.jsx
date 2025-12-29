@@ -1592,9 +1592,9 @@ const ExchangeCalculatorPage = () => {
                 <ul className="text-xs text-muted-foreground space-y-1">
                   <li>• Use whole blood or reconstituted blood</li>
                   <li>• Exchange in 5-10 ml aliquots</li>
-                  <li>• Remove baby's blood, replace with donor blood</li>
+                  <li>• Remove baby&apos;s blood, replace with donor blood</li>
                   <li>• Monitor vitals, glucose, calcium during procedure</li>
-                  <li>• Removes ~85% of baby's blood/bilirubin</li>
+                  <li>• Removes ~85% of baby&apos;s blood/bilirubin</li>
                 </ul>
               </CardContent>
             </Card>

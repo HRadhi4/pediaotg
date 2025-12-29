@@ -149,7 +149,7 @@ const ChildrenDashboard = ({ theme, toggleTheme }) => {
       {/* Results count when searching */}
       {searchTerm && !isEditMode && (
         <p className="text-xs text-muted-foreground">
-          Found {filteredWidgets.length} result{filteredWidgets.length !== 1 ? 's' : ''} for "{searchTerm}"
+          Found {filteredWidgets.length} result{filteredWidgets.length !== 1 ? 's' : ''} for &quot;{searchTerm}&quot;
         </p>
       )}
 
@@ -199,7 +199,7 @@ const ChildrenDashboard = ({ theme, toggleTheme }) => {
       {/* No results message */}
       {searchTerm && filteredWidgets.length === 0 && (
         <div className="text-center py-8">
-          <p className="text-muted-foreground">No calculators found for "{searchTerm}"</p>
+          <p className="text-muted-foreground">No calculators found for &quot;{searchTerm}&quot;</p>
           <p className="text-xs text-muted-foreground mt-1">Try searching for: DKA, morphine, CPR, seizure, antibiotic</p>
         </div>
       )}
@@ -1373,10 +1373,10 @@ const CPRPage = ({ onBack }) => {
 
               {/* H's and T's */}
               <div className="p-3 rounded-xl bg-purple-100 dark:bg-purple-950/50">
-                <p className="font-semibold text-purple-700 dark:text-purple-300 mb-2">Reversible Causes (H's & T's)</p>
+                <p className="font-semibold text-purple-700 dark:text-purple-300 mb-2">Reversible Causes (H&apos;s &amp; T&apos;s)</p>
                 <div className="grid grid-cols-2 gap-2 text-muted-foreground">
                   <div>
-                    <p className="font-medium text-purple-600">H's:</p>
+                    <p className="font-medium text-purple-600">H&apos;s:</p>
                     <ul className="space-y-0.5">
                       <li>• Hypoxia</li>
                       <li>• Hypovolemia</li>
@@ -1387,7 +1387,7 @@ const CPRPage = ({ onBack }) => {
                     </ul>
                   </div>
                   <div>
-                    <p className="font-medium text-purple-600">T's:</p>
+                    <p className="font-medium text-purple-600">T&apos;s:</p>
                     <ul className="space-y-0.5">
                       <li>• Tension pneumo</li>
                       <li>• Tamponade</li>
