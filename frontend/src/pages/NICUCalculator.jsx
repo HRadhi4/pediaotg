@@ -2386,6 +2386,93 @@ const GrowthChartPage = () => {
     }
   };
 
+  // Calculate Z-score and percentile for a measurement
+  const calculateZScoreAndPercentile = (ageInMonths, value, measureType) => {
+    if (!value || isNaN(parseFloat(value))) return null;
+    
+    const val = parseFloat(value);
+    const isWHOChart = chartType === "WHO";
+    const data = isWHOChart ? getWHOData() : getCDCData();
+    const measureData = data[measureType]?.[gender];
+    
+    if (!measureData) return null;
+    
+    // Find the closest age index
+    let ageIndex;
+    if (isWHOChart) {
+      ageIndex = Math.round(ageInMonths);
+      if (ageIndex < 0) ageIndex = 0;
+      if (ageIndex > 24) ageIndex = 24;
+    } else {
+      // CDC is 2-20 years (24-240 months)
+      const yearIndex = Math.round(ageInMonths / 12) - 2;
+      if (yearIndex < 0) ageIndex = 0;
+      else if (yearIndex > 18) ageIndex = 18;
+      else ageIndex = yearIndex;
+    }
+    
+    // Get percentile values at this age
+    const p3 = measureData.p3[ageIndex];
+    const p15 = measureData.p15[ageIndex];
+    const p50 = measureData.p50[ageIndex];
+    const p85 = measureData.p85[ageIndex];
+    const p97 = measureData.p97[ageIndex];
+    
+    // Estimate standard deviation using the percentile spread
+    // Z-score for p3 ≈ -1.88, p15 ≈ -1.04, p50 = 0, p85 ≈ 1.04, p97 ≈ 1.88
+    const sd = (p97 - p3) / 3.76; // Approximate SD from 3rd to 97th percentile
+    
+    // Calculate Z-score
+    const zScore = (val - p50) / sd;
+    
+    // Calculate percentile from Z-score (using approximation)
+    // Using the cumulative normal distribution approximation
+    const percentile = Math.round(100 * (0.5 * (1 + Math.tanh(0.8 * zScore))));
+    
+    // Determine interpretation
+    let interpretation = "";
+    let color = "";
+    if (percentile < 3) {
+      interpretation = "Severely below normal";
+      color = "text-red-600";
+    } else if (percentile < 15) {
+      interpretation = "Below normal - monitor";
+      color = "text-orange-500";
+    } else if (percentile <= 85) {
+      interpretation = "Normal range";
+      color = "text-green-600";
+    } else if (percentile <= 97) {
+      interpretation = "Above normal - monitor";
+      color = "text-orange-500";
+    } else {
+      interpretation = "Significantly above normal";
+      color = "text-red-600";
+    }
+    
+    return {
+      zScore: zScore.toFixed(2),
+      percentile: Math.max(1, Math.min(99, percentile)),
+      interpretation,
+      color,
+      p3, p15, p50, p85, p97
+    };
+  };
+
+  // Get interpretation for all entries
+  const getEntryInterpretation = (entry) => {
+    const results = {};
+    if (entry.weight) {
+      results.weight = calculateZScoreAndPercentile(entry.ageInMonths, entry.weight, 'weight');
+    }
+    if (entry.length) {
+      results.length = calculateZScoreAndPercentile(entry.ageInMonths, entry.length, 'length');
+    }
+    if (entry.hc) {
+      results.hc = calculateZScoreAndPercentile(entry.ageInMonths, entry.hc, 'hc');
+    }
+    return results;
+  };
+
   return (
     <div className="space-y-4 pb-8">
       {/* Chart Header */}
