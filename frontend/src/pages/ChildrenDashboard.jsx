@@ -25,7 +25,6 @@ const ChildrenDashboard = ({ theme, toggleTheme }) => {
     } else {
       navigate(`/children/${pageId}`);
     }
-    setCurrentPage(pageId);
   };
 
   // Widget definitions for main page
