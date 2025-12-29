@@ -560,7 +560,7 @@ const FluidCalculatorDialog = ({ open, onOpenChange }) => {
                 <Input type="number" step="0.1" placeholder="0" value={naclAmount} onChange={(e) => setNaclAmount(e.target.value)} className="nightingale-input font-mono h-9" />
               </div>
               
-              <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-2 gap-2">
                 <div className="space-y-1">
                   <Label className="text-xs">Feed Volume (ml/feed)</Label>
                   <Input type="number" placeholder="5" value={feedVolume} onChange={(e) => setFeedVolume(e.target.value)} className="nightingale-input font-mono h-9" />
@@ -578,6 +578,8 @@ const FluidCalculatorDialog = ({ open, onOpenChange }) => {
                     <option value="4">q4h</option>
                     <option value="6">q6h</option>
                     <option value="8">q8h</option>
+                    <option value="12">q12h</option>
+                    <option value="24">q24h</option>
                   </select>
                 </div>
               </div>
