@@ -261,7 +261,7 @@ const NICUCalculator = ({ theme, toggleTheme }) => {
             </>
           ) : (
             /* Render Page Content based on currentPage */
-            <div className="space-y-4 pb-8">
+            <div className="space-y-4 pt-4 pb-8">
               {currentPage === "fluid" && <FluidCalculatorPage />}
               {currentPage === "nrp" && <NRPChecklistPage />}
               {currentPage === "catheter" && <CatheterCalculatorPage />}
