@@ -227,6 +227,11 @@ def main():
     # Test blood gas analysis
     print("\n🩸 Testing Blood Gas Analysis...")
     tester.test_blood_gas_analyze()
+    
+    # Test OCR endpoints
+    print("\n📷 Testing Blood Gas OCR Endpoints...")
+    tester.test_blood_gas_ocr_offline()
+    tester.test_blood_gas_ocr_online()
 
     # Print results
     print("\n" + "=" * 50)
