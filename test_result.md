@@ -252,6 +252,30 @@ frontend:
         agent: "testing"
         comment: "✅ COMPREHENSIVE TESTING COMPLETED: Drugs page fully functional. Weight input working (tested with 20kg). Both Antibiotics and Analgesics tabs working correctly. All expected drugs present with accurate weight-based calculations: Antibiotics - Amoxicillin (500-1000mg q8h), Ampicillin (1000-2000mg q6h), Ceftriaxone (1000-2000mg q12-24h), Gentamicin (100-150mg q24h), Vancomycin (300mg q6-8h). Analgesics - Paracetamol (300mg q4-6h), Ibuprofen (100-200mg q6-8h), Morphine (1-2mg q2-4h PRN), Fentanyl (10-40mcg q1-2h PRN), Ketamine (20-40mg), Midazolam (1-2mg). Category badges, routes, frequencies, and clinical notes all displaying correctly. Opioid Equivalence reference card present with morphine-fentanyl conversion. Tab switching seamless with weight persistence. References from Harriet Lane 23rd Ed and Stanford Peds Pain displayed. Minor: Max dose display location could be improved but all essential functionality working perfectly."
 
+  - task: "Search Functionality (Children Dashboard)"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/ChildrenDashboard.jsx"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "IMPLEMENTED: Search bar on Children main page. Filters widgets by title, subtitle, and keywords. Shows result count and 'no results' message with suggestions."
+
+  - task: "Offline OCR for Blood Gas Analysis"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/components/BloodGasDialog.jsx"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "IMPLEMENTED: Added Tesseract.js offline OCR option. Users can toggle between AI-Powered (Gemini) and Offline OCR modes. Offline mode parses blood gas values using regex patterns with sanity checks. Shows progress bar during processing."
+
 metadata:
   created_by: "main_agent"
   version: "1.0"
