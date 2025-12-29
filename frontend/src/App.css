@@ -3,13 +3,23 @@
 /* Floating tab bar */
 .floating-tab-bar {
   @apply fixed bottom-6 left-1/2 -translate-x-1/2 z-50;
-  @apply bg-white dark:bg-[#1a1f2e] rounded-[2rem] px-2 py-2;
+  @apply bg-white dark:bg-[#1a1f2e] rounded-[2rem] px-1.5 py-1.5;
   @apply shadow-[0_8px_32px_rgba(0,0,0,0.12)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.4)];
   @apply border border-gray-100 dark:border-gray-800/50;
+  @apply transition-all duration-500 ease-in-out;
+}
+
+.floating-tab-bar.retracted {
+  @apply opacity-40 scale-90;
+}
+
+.floating-tab-bar:hover,
+.floating-tab-bar.expanded {
+  @apply opacity-100 scale-100;
 }
 
 .tab-item {
-  @apply relative flex flex-col items-center justify-center px-5 py-2 rounded-2xl transition-all duration-300;
+  @apply relative flex flex-col items-center justify-center px-3 py-1.5 rounded-xl transition-all duration-300;
   @apply text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300;
 }
 
@@ -19,7 +29,7 @@
 
 .tab-item.active::after {
   content: '';
-  @apply absolute -bottom-1 left-1/2 -translate-x-1/2 w-6 h-1 rounded-full bg-[#00d9c5];
+  @apply absolute -bottom-0.5 left-1/2 -translate-x-1/2 w-4 h-0.5 rounded-full bg-[#00d9c5];
 }
 
 .tab-item-disabled {
