@@ -108,28 +108,46 @@ const ChildrenDashboard = ({ theme, toggleTheme }) => {
   // Main page with widget grid and search
   const renderMainPage = () => (
     <div className="space-y-4">
-      {/* Search Bar */}
-      <div className="relative">
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-        <Input
-          type="text"
-          placeholder="Search calculators... (e.g., DKA, morphine, CPR)"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="pl-10 rounded-xl"
-        />
-        {searchTerm && (
-          <button
-            onClick={() => setSearchTerm("")}
-            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground"
-          >
-            ×
-          </button>
-        )}
+      {/* Search Bar and Edit Button */}
+      <div className="flex gap-2">
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input
+            type="text"
+            placeholder="Search calculators..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="pl-10 rounded-xl"
+            disabled={isEditMode}
+          />
+          {searchTerm && (
+            <button
+              onClick={() => setSearchTerm("")}
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground"
+            >
+              ×
+            </button>
+          )}
+        </div>
+        <button
+          onClick={() => setIsEditMode(!isEditMode)}
+          className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${
+            isEditMode ? 'bg-[#00d9c5] text-white' : 'bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700'
+          }`}
+        >
+          {isEditMode ? <X className="h-5 w-5" /> : <Settings className="h-5 w-5" />}
+        </button>
       </div>
 
+      {/* Edit Mode Instructions */}
+      {isEditMode && (
+        <div className="p-3 rounded-xl bg-[#00d9c5]/10 border border-[#00d9c5]/30 text-sm text-center">
+          Tap arrows to rearrange widgets. Tap ✕ when done.
+        </div>
+      )}
+
       {/* Results count when searching */}
-      {searchTerm && (
+      {searchTerm && !isEditMode && (
         <p className="text-xs text-muted-foreground">
           Found {filteredWidgets.length} result{filteredWidgets.length !== 1 ? 's' : ''} for "{searchTerm}"
         </p>
@@ -137,14 +155,35 @@ const ChildrenDashboard = ({ theme, toggleTheme }) => {
 
       {/* Widget Grid */}
       <div className="grid grid-cols-2 gap-4">
-        {filteredWidgets.map((widget) => (
+        {(isEditMode ? widgets : filteredWidgets).map((widget, index) => (
           <Card
             key={widget.id}
             onClick={() => goToPage(widget.id)}
-            className="nightingale-card cursor-pointer hover:scale-[1.02] transition-all duration-300"
+            className={`nightingale-card cursor-pointer transition-all duration-300 ${
+              isEditMode ? 'animate-wiggle' : 'hover:scale-[1.02]'
+            }`}
             data-testid={`widget-${widget.id}`}
           >
-            <CardContent className="p-4">
+            <CardContent className="p-4 relative">
+              {/* Edit mode controls */}
+              {isEditMode && (
+                <div className="absolute top-1 right-1 flex flex-col gap-1">
+                  <button
+                    onClick={(e) => { e.stopPropagation(); moveWidget(widgetOrder.indexOf(widget.id), 'up'); }}
+                    className="w-6 h-6 rounded bg-gray-200 dark:bg-gray-700 flex items-center justify-center"
+                    disabled={index === 0}
+                  >
+                    <ChevronUp className="h-4 w-4" />
+                  </button>
+                  <button
+                    onClick={(e) => { e.stopPropagation(); moveWidget(widgetOrder.indexOf(widget.id), 'down'); }}
+                    className="w-6 h-6 rounded bg-gray-200 dark:bg-gray-700 flex items-center justify-center"
+                    disabled={index === widgets.length - 1}
+                  >
+                    <ChevronDown className="h-4 w-4" />
+                  </button>
+                </div>
+              )}
               <div className="flex flex-col items-center text-center">
                 <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-3 ${getColorClass(widget.color)}`}>
                   <widget.icon className="h-6 w-6" />
