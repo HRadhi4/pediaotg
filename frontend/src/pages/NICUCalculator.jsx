@@ -2486,36 +2486,68 @@ const GrowthChartPage = () => {
             {gender === 'male' ? 'Boys' : 'Girls'} • {chartType} Standards • {isWHO ? 'Birth to 2 years' : '2 to 20 years'}
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
-          {/* Standard & Gender Selection */}
-          <div className="grid grid-cols-2 gap-2">
-            <div className="flex gap-1">
-              <Button variant={chartType === "WHO" ? "default" : "outline"} onClick={() => setChartType("WHO")} className="flex-1 text-xs h-8">WHO (0-2y)</Button>
-              <Button variant={chartType === "CDC" ? "default" : "outline"} onClick={() => setChartType("CDC")} className="flex-1 text-xs h-8">CDC (2-20y)</Button>
-            </div>
-            <div className="flex gap-1">
-              <Button variant={gender === "male" ? "default" : "outline"} onClick={() => setGender("male")} className="flex-1 text-xs h-8">👦 Boys</Button>
-              <Button variant={gender === "female" ? "default" : "outline"} onClick={() => setGender("female")} className="flex-1 text-xs h-8">👧 Girls</Button>
+        <CardContent className="space-y-3">
+          {/* Standard Selection */}
+          <div className="space-y-1">
+            <Label className="text-xs text-muted-foreground">Standard</Label>
+            <div className="grid grid-cols-2 gap-2">
+              <Button 
+                variant={chartType === "WHO" ? "default" : "outline"} 
+                onClick={() => setChartType("WHO")} 
+                className="text-xs h-9 px-2"
+              >
+                WHO (0-2y)
+              </Button>
+              <Button 
+                variant={chartType === "CDC" ? "default" : "outline"} 
+                onClick={() => setChartType("CDC")} 
+                className="text-xs h-9 px-2"
+              >
+                CDC (2-20y)
+              </Button>
             </div>
           </div>
           
-          {/* Measurement Type Tabs */}
-          <div className="flex gap-1">
-            {[
-              { id: "weight", label: "Weight (kg)" },
-              { id: "length", label: "Length (cm)" },
-              { id: "hc", label: "Head Circ (cm)" }
-            ].map((tab) => (
-              <Button
-                key={tab.id}
-                variant={activeChart === tab.id ? "default" : "outline"}
-                onClick={() => setActiveChart(tab.id)}
-                size="sm"
-                className="flex-1 text-xs"
+          {/* Gender Selection */}
+          <div className="space-y-1">
+            <Label className="text-xs text-muted-foreground">Gender</Label>
+            <div className="grid grid-cols-2 gap-2">
+              <Button 
+                variant={gender === "male" ? "default" : "outline"} 
+                onClick={() => setGender("male")} 
+                className="text-xs h-9 px-2"
               >
-                {tab.label}
+                👦 Boys
               </Button>
-            ))}
+              <Button 
+                variant={gender === "female" ? "default" : "outline"} 
+                onClick={() => setGender("female")} 
+                className="text-xs h-9 px-2"
+              >
+                👧 Girls
+              </Button>
+            </div>
+          </div>
+          
+          {/* Measurement Type */}
+          <div className="space-y-1">
+            <Label className="text-xs text-muted-foreground">Measurement</Label>
+            <div className="grid grid-cols-3 gap-2">
+              {[
+                { id: "weight", label: "Weight" },
+                { id: "length", label: "Length" },
+                { id: "hc", label: "Head Circ" }
+              ].map((tab) => (
+                <Button
+                  key={tab.id}
+                  variant={activeChart === tab.id ? "default" : "outline"}
+                  onClick={() => setActiveChart(tab.id)}
+                  className="text-xs h-9 px-2"
+                >
+                  {tab.label}
+                </Button>
+              ))}
+            </div>
           </div>
         </CardContent>
       </Card>
@@ -2527,7 +2559,7 @@ const GrowthChartPage = () => {
             <CardTitle className="text-sm">
               {chartLabels[activeChart].title} ({chartType})
             </CardTitle>
-            <Button variant="outline" size="sm" onClick={saveToGallery} className="text-xs h-7">
+            <Button variant="outline" size="sm" onClick={saveToGallery} className="text-xs h-7 px-2">
               📷 Save
             </Button>
           </div>
