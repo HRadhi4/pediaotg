@@ -249,8 +249,36 @@ const ChildrenDashboard = ({ theme, toggleTheme }) => {
         </ScrollArea>
       </main>
 
-      {/* Floating Nav Bar */}
-      <FloatingNavBar showHome={true} />
+      {/* Floating Tab Bar - Same as Home */}
+      <nav className="floating-tab-bar">
+        <div className="flex items-center gap-0.5">
+          <button onClick={() => handleTabClick("home")} className={`tab-item ${activeTab === "home" ? "active" : ""}`}>
+            <Home className="h-5 w-5" />
+          </button>
+          <button onClick={() => handleTabClick("bloodgas")} className={`tab-item ${activeTab === "bloodgas" ? "active" : ""}`}>
+            <Droplets className="h-5 w-5" />
+          </button>
+          <button onClick={() => handleTabClick("electrolytes")} className={`tab-item ${activeTab === "electrolytes" ? "active" : ""}`}>
+            <FlaskConical className="h-5 w-5" />
+          </button>
+          <button onClick={() => handleTabClick("bloodproducts")} className={`tab-item ${activeTab === "bloodproducts" ? "active" : ""}`}>
+            <span className={activeTab === "bloodproducts" ? "text-red-400" : ""}><BloodDropIcon /></span>
+          </button>
+          <button onClick={() => handleTabClick("gir")} className={`tab-item ${activeTab === "gir" ? "active" : ""}`}>
+            <Zap className="h-5 w-5" />
+          </button>
+          <button onClick={() => handleTabClick("jaundice")} className={`tab-item ${activeTab === "jaundice" ? "active" : ""}`}>
+            <span className={activeTab === "jaundice" ? "text-amber-400" : ""}><JaundiceIcon /></span>
+          </button>
+        </div>
+      </nav>
+
+      {/* Navigation Dialogs */}
+      <BloodGasDialog open={bloodGasOpen} onOpenChange={(open) => { setBloodGasOpen(open); if (!open) setActiveTab(""); }} />
+      <ElectrolytesDialog open={electrolytesOpen} onOpenChange={(open) => { setElectrolytesOpen(open); if (!open) setActiveTab(""); }} />
+      <JaundiceDialog open={jaundiceOpen} onOpenChange={(open) => { setJaundiceOpen(open); if (!open) setActiveTab(""); }} />
+      <GIRDialog open={girOpen} onOpenChange={(open) => { setGirOpen(open); if (!open) setActiveTab(""); }} />
+      <BloodProductsDialog open={bloodProductsOpen} onOpenChange={(open) => { setBloodProductsOpen(open); if (!open) setActiveTab(""); }} />
     </Layout>
   );
 };
