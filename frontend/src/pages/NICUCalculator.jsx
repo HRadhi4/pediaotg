@@ -216,12 +216,12 @@ const NICUCalculator = ({ theme, toggleTheme }) => {
                   <Card
                     key={widget.id}
                     onClick={() => handleWidgetClick(widget.id)}
-                    className={`nightingale-card cursor-pointer transition-all duration-300 ${
+                    className={`nightingale-card cursor-pointer transition-all duration-300 h-32 ${
                       isEditMode ? 'animate-wiggle' : 'hover:scale-[1.02]'
                     } ${widget.comingSoon ? 'opacity-60' : ''}`}
                     data-testid={`widget-${widget.id}`}
                   >
-                    <CardContent className="p-4 relative">
+                    <CardContent className="p-4 relative h-full flex items-center justify-center">
                       {isEditMode && (
                         <div className="absolute top-2 right-2 flex gap-1">
                           <button
