@@ -15,12 +15,8 @@ import Layout from "@/components/Layout";
 const ChildrenDashboard = ({ theme, toggleTheme }) => {
   const navigate = useNavigate();
   const { page } = useParams();
-  const [currentPage, setCurrentPage] = useState(page || "main");
-
-  // Update currentPage when URL changes
-  useEffect(() => {
-    setCurrentPage(page || "main");
-  }, [page]);
+  // Use page directly from URL params - no need for separate state
+  const currentPage = page || "main";
 
   // Navigate to a page
   const goToPage = (pageId) => {
