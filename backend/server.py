@@ -99,6 +99,122 @@ async def get_status_checks():
             check['timestamp'] = datetime.fromisoformat(check['timestamp'])
     return status_checks
 
+def perform_paddle_ocr(image_path: str) -> str:
+    """Run PaddleOCR on image - runs in thread pool"""
+    try:
+        ocr = get_paddle_ocr()
+        result = ocr.ocr(image_path, cls=True)
+        
+        # Extract text from OCR result
+        if not result or not result[0]:
+            return ""
+        
+        text_lines = []
+        for line in result[0]:
+            if len(line) >= 2:
+                text = line[1][0]  # The text is in the second element
+                text_lines.append(text)
+        
+        return " ".join(text_lines)
+    except Exception as e:
+        logging.error(f"PaddleOCR error: {e}")
+        raise
+
+def parse_blood_gas_from_text(text: str) -> dict:
+    """Parse blood gas values from OCR text"""
+    import re
+    
+    values = {}
+    text_lower = text.lower()
+    
+    # Regex patterns for common blood gas parameters
+    patterns = {
+        'pH': r'ph[:\s]*([0-9]+\.?[0-9]*)',
+        'pCO2': r'p?co2[:\s]*([0-9]+\.?[0-9]*)',
+        'pO2': r'p?o2[:\s]*([0-9]+\.?[0-9]*)',
+        'HCO3': r'hco3?[:\s-]*([0-9]+\.?[0-9]*)',
+        'BE': r'be[:\s]*([+-]?[0-9]+\.?[0-9]*)',
+        'Na': r'na[+]?[:\s]*([0-9]+\.?[0-9]*)',
+        'K': r'k[+]?[:\s]*([0-9]+\.?[0-9]*)',
+        'Cl': r'cl[-]?[:\s]*([0-9]+\.?[0-9]*)',
+        'lactate': r'lac(?:tate)?[:\s]*([0-9]+\.?[0-9]*)',
+        'Hb': r'h[ae]?moglobin|hb|hgb[:\s]*([0-9]+\.?[0-9]*)'
+    }
+    
+    # Valid ranges for sanity checking
+    valid_ranges = {
+        'pH': (6.5, 8.0),
+        'pCO2': (10, 150),
+        'pO2': (10, 600),
+        'HCO3': (1, 60),
+        'BE': (-30, 30),
+        'Na': (100, 180),
+        'K': (1, 10),
+        'Cl': (70, 130),
+        'lactate': (0, 30),
+        'Hb': (3, 25)
+    }
+    
+    for key, pattern in patterns.items():
+        match = re.search(pattern, text_lower, re.IGNORECASE)
+        if match and match.group(1):
+            try:
+                val = float(match.group(1))
+                min_val, max_val = valid_ranges.get(key, (0, float('inf')))
+                if min_val <= val <= max_val:
+                    values[key] = val
+            except ValueError:
+                continue
+    
+    return values
+
+@api_router.post("/blood-gas/analyze-image-offline")
+async def analyze_blood_gas_image_offline(request: BloodGasInput):
+    """Analyze blood gas image using PaddleOCR (offline, no external API)"""
+    if not request.image_base64:
+        raise HTTPException(status_code=400, detail="Image is required")
+    
+    try:
+        # Clean base64 if it has data URL prefix
+        image_data = request.image_base64
+        if "," in image_data:
+            image_data = image_data.split(",")[1]
+        
+        # Decode base64 to bytes
+        image_bytes = base64.b64decode(image_data)
+        
+        # Save to temporary file for PaddleOCR
+        with tempfile.NamedTemporaryFile(suffix=".jpg", delete=False) as tmp_file:
+            tmp_file.write(image_bytes)
+            tmp_path = tmp_file.name
+        
+        try:
+            # Run OCR in thread pool to avoid blocking
+            loop = asyncio.get_event_loop()
+            raw_text = await loop.run_in_executor(
+                ocr_executor,
+                perform_paddle_ocr,
+                tmp_path
+            )
+            
+            # Parse blood gas values from OCR text
+            extracted_values = parse_blood_gas_from_text(raw_text)
+            
+            return {
+                "success": True,
+                "values": extracted_values,
+                "raw_text": raw_text,
+                "engine": "paddleocr"
+            }
+        finally:
+            # Cleanup temporary file
+            if os.path.exists(tmp_path):
+                os.remove(tmp_path)
+    
+    except Exception as e:
+        logging.error(f"Offline OCR error: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"OCR processing failed: {str(e)}")
+
 @api_router.post("/blood-gas/analyze-image")
 async def analyze_blood_gas_image(request: BloodGasInput):
     """Analyze blood gas image using Gemini AI for OCR"""
