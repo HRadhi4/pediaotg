@@ -103,13 +103,6 @@ const NICUCalculator = ({ theme, toggleTheme }) => {
   const handleWidgetClick = (widgetId) => {
     goToPage(widgetId);
   };
-      case "exchange":
-        setExchangeDialogOpen(true);
-        break;
-      default:
-        break;
-    }
-  };
 
   const moveWidget = (index, direction) => {
     const newWidgets = [...widgets];
