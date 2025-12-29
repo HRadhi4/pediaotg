@@ -104,17 +104,6 @@ const ChildrenDashboard = ({ theme, toggleTheme }) => {
 
   const widgets = widgetOrder.map(id => widgetDefs[id]).filter(Boolean);
 
-  // Filter widgets based on search term
-  const filteredWidgets = widgets.filter(widget => {
-    if (!searchTerm) return true;
-    const term = searchTerm.toLowerCase();
-    return (
-      widget.title.toLowerCase().includes(term) ||
-      widget.subtitle.toLowerCase().includes(term) ||
-      widget.keywords.some(k => k.toLowerCase().includes(term))
-    );
-  });
-
   // Move widget up or down
   const moveWidget = (index, direction) => {
     const newOrder = [...widgetOrder];
