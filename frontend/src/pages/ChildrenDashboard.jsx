@@ -507,29 +507,64 @@ const InfusionsPage = ({ onBack }) => {
             <CardTitle className="text-sm">{cat.category}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
-            {cat.drugs.map((drug, dIdx) => (
-              <div key={dIdx} className="p-3 rounded-xl bg-gray-50 dark:bg-gray-800/50">
-                <p className="font-semibold text-sm mb-2">{drug.name}</p>
-                {drug.stat && (
-                  <div className="flex justify-between items-center text-xs mb-1">
-                    <span className="text-muted-foreground">Stat: {drug.stat.dose}</span>
-                    {drug.stat.calc && <span className="font-mono text-[#00d9c5]">→ {drug.stat.calc}</span>}
+            {cat.isInotrope ? (
+              // Special display for inotropes with mcg/kg/min
+              cat.drugs.map((drug, dIdx) => (
+                <div key={dIdx} className="p-3 rounded-xl bg-red-50 dark:bg-red-950/30">
+                  <div className="flex justify-between items-start">
+                    <p className="font-semibold text-sm">{drug.name}</p>
+                    <span className="text-xs text-muted-foreground">{drug.min}-{drug.max} {drug.unit}</span>
                   </div>
-                )}
-                {drug.infusion && (
-                  <div className="flex justify-between items-center text-xs mb-1">
-                    <span className="text-muted-foreground">Infusion: {drug.infusion.dose}</span>
-                    {drug.infusion.calc && <span className="font-mono text-[#00d9c5]">→ {drug.infusion.calc}</span>}
-                  </div>
-                )}
-                {drug.range && (
-                  <div className="flex justify-between items-center text-xs">
-                    <span className="text-muted-foreground">Range: {drug.range}</span>
-                    {drug.calc && <span className="font-mono text-[#00d9c5]">→ {drug.calc}</span>}
-                  </div>
-                )}
-              </div>
-            ))}
+                  {w > 0 && (
+                    <div className="mt-2 p-2 rounded-lg bg-white dark:bg-gray-900">
+                      <div className="grid grid-cols-3 gap-2 text-center text-xs">
+                        <div>
+                          <p className="text-muted-foreground">Low</p>
+                          <p className="font-mono text-red-600">{(drug.min)} {drug.unit}</p>
+                        </div>
+                        <div>
+                          <p className="text-muted-foreground">Med</p>
+                          <p className="font-mono text-red-600">{((drug.min + drug.max) / 2).toFixed(1)} {drug.unit}</p>
+                        </div>
+                        <div>
+                          <p className="text-muted-foreground">High</p>
+                          <p className="font-mono text-red-600">{drug.max} {drug.unit}</p>
+                        </div>
+                      </div>
+                      <p className="text-xs text-muted-foreground mt-2 text-center border-t pt-2">
+                        For {w}kg: {(drug.min * w * 60 / 1000).toFixed(2)} - {(drug.max * w * 60 / 1000).toFixed(2)} mg/hr
+                      </p>
+                    </div>
+                  )}
+                  <p className="text-xs text-muted-foreground mt-2">{drug.note}</p>
+                </div>
+              ))
+            ) : (
+              // Standard drug display
+              cat.drugs.map((drug, dIdx) => (
+                <div key={dIdx} className="p-3 rounded-xl bg-gray-50 dark:bg-gray-800/50">
+                  <p className="font-semibold text-sm mb-2">{drug.name}</p>
+                  {drug.stat && (
+                    <div className="flex justify-between items-center text-xs mb-1">
+                      <span className="text-muted-foreground">Stat: {drug.stat.dose}</span>
+                      {drug.stat.calc && <span className="font-mono text-[#00d9c5]">→ {drug.stat.calc}</span>}
+                    </div>
+                  )}
+                  {drug.infusion && (
+                    <div className="flex justify-between items-center text-xs mb-1">
+                      <span className="text-muted-foreground">Infusion: {drug.infusion.dose}</span>
+                      {drug.infusion.calc && <span className="font-mono text-[#00d9c5]">→ {drug.infusion.calc}</span>}
+                    </div>
+                  )}
+                  {drug.range && (
+                    <div className="flex justify-between items-center text-xs">
+                      <span className="text-muted-foreground">Range: {drug.range}</span>
+                      {drug.calc && <span className="font-mono text-[#00d9c5]">→ {drug.calc}</span>}
+                    </div>
+                  )}
+                </div>
+              ))
+            )}
           </CardContent>
         </Card>
       ))}
