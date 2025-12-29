@@ -282,8 +282,8 @@ const NICUCalculator = ({ theme, toggleTheme }) => {
   );
 };
 
-// Enhanced Fluid Calculator Dialog with Order Summary
-const FluidCalculatorDialog = ({ open, onOpenChange }) => {
+// Enhanced Fluid Calculator Page with Order Summary
+const FluidCalculatorPage = () => {
   const [weight, setWeight] = useState("");
   const [age, setAge] = useState("");
   const [gestationalAge, setGestationalAge] = useState("");
