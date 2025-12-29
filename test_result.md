@@ -120,6 +120,36 @@ frontend:
         agent: "testing"
         comment: "✓ TESTED: Main dashboard fully functional. All 8 widgets present and clickable: Blood Pressure, Infusions, Intubation, Scoring, CPR, Approaches, Insensible Water Loss, Drugs. Page-based navigation working correctly. Medical disclaimer popup handled properly. All widgets navigate to their respective full-page calculators."
 
+  - task: "NICU Dashboard Page Navigation Fix"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/pages/NICUCalculator.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "CRITICAL BUG FIX: Fixed 'onOpenChange is not defined' error by removing leftover Dialog wrappers from ExchangeCalculatorPage and BloodPressurePage components. All NICU widgets should now open without crashes."
+      - working: "NA"
+        agent: "testing"
+        comment: "🔍 TESTING ATTEMPTED: Encountered technical issues with Playwright automation preventing comprehensive testing. Code review shows proper Dialog component usage without problematic onOpenChange props. Manual testing required to verify the specific error fix."
+
+  - task: "Children Dashboard Navigation Fix"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/pages/ChildrenDashboard.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "CRITICAL BUG FIX: Removed incorrect bottom navigation bar. Layout component now provides correct hamburger menu side panel navigation. Children dashboard should show hamburger menu instead of bottom nav."
+      - working: "NA"
+        agent: "testing"
+        comment: "🔍 TESTING ATTEMPTED: Code review confirms Layout component integration with hamburger menu, no floating-tab-bar present. Medical disclaimer confirmed working. Manual testing required to verify navigation changes."
+
   - task: "Blood Pressure Calculator (Children)"
     implemented: true
     working: true
