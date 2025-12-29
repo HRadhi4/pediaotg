@@ -51,6 +51,57 @@ const BloodDropIcon = () => (
   </svg>
 );
 
+// Sortable Widget Component for drag and drop
+const SortableWidget = ({ widget, isEditMode, onClick, getColorClass }) => {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: widget.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+    zIndex: isDragging ? 1000 : 1,
+  };
+
+  return (
+    <Card
+      ref={setNodeRef}
+      style={style}
+      onClick={() => !isEditMode && onClick(widget.id)}
+      className={`nightingale-card transition-all duration-200 h-36 ${
+        isEditMode ? 'cursor-grab active:cursor-grabbing ring-2 ring-[#00d9c5]/30' : 'cursor-pointer hover:scale-[1.02]'
+      } ${isDragging ? 'shadow-2xl scale-105' : ''}`}
+      data-testid={`widget-${widget.id}`}
+    >
+      <CardContent className="p-3 relative h-full flex items-center justify-center">
+        {/* Drag handle for edit mode */}
+        {isEditMode && (
+          <div
+            {...attributes}
+            {...listeners}
+            className="absolute top-2 right-2 p-1.5 rounded-lg bg-[#00d9c5]/20 text-[#00d9c5] cursor-grab active:cursor-grabbing touch-none"
+          >
+            <GripVertical className="h-4 w-4" />
+          </div>
+        )}
+        <div className="flex flex-col items-center text-center gap-2">
+          <div className={`w-11 h-11 rounded-xl flex items-center justify-center ${getColorClass(widget.color)}`}>
+            <widget.icon className="h-5 w-5" />
+          </div>
+          <h3 className="font-heading font-semibold text-xs leading-tight px-1">{widget.title}</h3>
+          <p className="text-[10px] text-muted-foreground leading-tight px-1">{widget.subtitle}</p>
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
+
 // Children Dashboard - Page-based navigation
 const ChildrenDashboard = ({ theme, toggleTheme }) => {
   const navigate = useNavigate();
@@ -58,10 +109,17 @@ const ChildrenDashboard = ({ theme, toggleTheme }) => {
   // Use page directly from URL params - no need for separate state
   const currentPage = page || "main";
   const [isEditMode, setIsEditMode] = useState(false);
+  const [activeId, setActiveId] = useState(null);
   const [widgetOrder, setWidgetOrder] = useState(() => {
     const saved = localStorage.getItem("childrenWidgetOrder");
     return saved ? JSON.parse(saved) : ["bp", "infusions", "intubation", "scoring", "cpr", "approaches", "drugs"];
   });
+
+  // DnD sensors
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
+  );
 
   // Dialog states for floating nav bar
   const [activeTab, setActiveTab] = useState("");
