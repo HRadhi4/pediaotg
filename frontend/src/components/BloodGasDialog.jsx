@@ -8,7 +8,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Camera, Upload, PenLine, Loader2, AlertTriangle, CheckCircle, Wifi, WifiOff } from "lucide-react";
 import { toast } from "sonner";
 import axios from "axios";
-import { createWorker } from "tesseract.js";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
