@@ -2637,10 +2637,10 @@ const GrowthChartPage = () => {
               />
             </div>
             <div className="space-y-1">
-              <Label className="text-xs font-medium">Age (months) *</Label>
+              <Label className="text-xs font-medium">Age ({isWHO ? 'months' : 'years'}) *</Label>
               <Input 
                 type="number" 
-                placeholder="e.g., 6" 
+                placeholder={isWHO ? "e.g., 6" : "e.g., 5"} 
                 value={newEntry.ageValue} 
                 onChange={(e) => setNewEntry({...newEntry, ageValue: e.target.value})} 
                 className="h-9 font-mono text-sm" 
