@@ -2715,7 +2715,7 @@ const GrowthChartPage = () => {
                     <div className="flex gap-2 items-center">
                       <span className="font-medium text-[#00d9c5]">{entry.date}</span>
                       <span className="px-2 py-0.5 bg-gray-200 dark:bg-gray-700 rounded-full text-xs font-medium">
-                        {formatAge(entry.ageValue, entry.ageUnit)}
+                        {formatAge(entry.ageValue)}
                       </span>
                     </div>
                     <button onClick={() => removeEntry(entry.id)} className="text-red-500 hover:text-red-700 p-1">
