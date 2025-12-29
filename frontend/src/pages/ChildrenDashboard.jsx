@@ -242,8 +242,8 @@ const ChildrenDashboard = ({ theme, toggleTheme }) => {
       </header>
 
       {/* Main Content */}
-      <main className="max-w-4xl mx-auto px-4 md:px-6 pt-24 pb-32">
-        <div className="native-scroll" style={{ height: 'calc(100vh - 160px)' }}>
+      <main className="fixed top-[72px] bottom-[100px] left-0 right-0 overflow-hidden">
+        <div className="max-w-4xl mx-auto px-4 md:px-6 h-full native-scroll">
           {renderPage()}
         </div>
       </main>
