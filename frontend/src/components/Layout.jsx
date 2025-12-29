@@ -206,7 +206,7 @@ const Layout = ({ children, theme, toggleTheme, showNavBar = true }) => {
       {/* Hamburger Menu Button - Fixed */}
       <button
         onClick={() => setSidebarOpen(true)}
-        className="fixed top-4 left-4 z-40 w-10 h-10 rounded-xl bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-lg flex items-center justify-center hover:bg-white dark:hover:bg-gray-800 transition-colors"
+        className="fixed top-4 left-4 z-[60] w-10 h-10 rounded-xl bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-lg flex items-center justify-center hover:bg-white dark:hover:bg-gray-800 transition-colors"
       >
         <Menu className="h-5 w-5" />
       </button>
