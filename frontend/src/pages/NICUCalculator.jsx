@@ -427,57 +427,48 @@ const FluidCalculatorPage = () => {
   const results = calculateResults();
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle className="font-heading text-xl flex items-center gap-2">
-            <Droplets className="h-5 w-5 text-[#00d9c5]" />
-            Fluid Calculator
-          </DialogTitle>
-        </DialogHeader>
+    <div className="space-y-4">
+      {/* Patient Info */}
+      <Card className="nightingale-card">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-sm">Patient Information</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <div className="grid grid-cols-3 gap-2">
+            <div className="space-y-1">
+              <Label className="text-xs">Weight (kg)</Label>
+              <Input type="number" step="0.01" placeholder="0.8" value={weight} onChange={(e) => setWeight(e.target.value)} className="nightingale-input font-mono h-9" />
+            </div>
+            <div className="space-y-1">
+              <Label className="text-xs">Age (days)</Label>
+              <Input type="number" placeholder="3" value={age} onChange={(e) => setAge(e.target.value)} className="nightingale-input font-mono h-9" />
+            </div>
+            <div className="space-y-1">
+              <Label className="text-xs">GA (weeks)</Label>
+              <Input type="number" placeholder="32" value={gestationalAge} onChange={(e) => setGestationalAge(e.target.value)} className="nightingale-input font-mono h-9" />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
-        <div className="space-y-4">
-          {/* Patient Info */}
-          <Card className="nightingale-card">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm">Patient Information</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <div className="grid grid-cols-3 gap-2">
-                <div className="space-y-1">
-                  <Label className="text-xs">Weight (kg)</Label>
-                  <Input type="number" step="0.01" placeholder="0.8" value={weight} onChange={(e) => setWeight(e.target.value)} className="nightingale-input font-mono h-9" />
-                </div>
-                <div className="space-y-1">
-                  <Label className="text-xs">Age (days)</Label>
-                  <Input type="number" placeholder="3" value={age} onChange={(e) => setAge(e.target.value)} className="nightingale-input font-mono h-9" />
-                </div>
-                <div className="space-y-1">
-                  <Label className="text-xs">GA (weeks)</Label>
-                  <Input type="number" placeholder="32" value={gestationalAge} onChange={(e) => setGestationalAge(e.target.value)} className="nightingale-input font-mono h-9" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+      {/* TFI */}
+      <Card className="nightingale-card">
+        <CardContent className="pt-4 space-y-3">
+          <div className="space-y-1">
+            <Label className="text-xs">TFI (ml/kg/day)</Label>
+            <Input type="number" placeholder="140" value={tfi} onChange={(e) => setTfi(e.target.value)} className="nightingale-input font-mono" />
+            {age && <p className="text-xs text-muted-foreground">Suggested: <span className="text-[#00d9c5] font-mono">{getTfiSuggestion()}</span></p>}
+          </div>
+        </CardContent>
+      </Card>
 
-          {/* TFI */}
-          <Card className="nightingale-card">
-            <CardContent className="pt-4 space-y-3">
-              <div className="space-y-1">
-                <Label className="text-xs">TFI (ml/kg/day)</Label>
-                <Input type="number" placeholder="140" value={tfi} onChange={(e) => setTfi(e.target.value)} className="nightingale-input font-mono" />
-                {age && <p className="text-xs text-muted-foreground">Suggested: <span className="text-[#00d9c5] font-mono">{getTfiSuggestion()}</span></p>}
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Combined Dextrose Option */}
-          <Card className="nightingale-card">
-            <CardContent className="pt-4 space-y-3">
-              <div className="flex items-center space-x-3">
-                <Checkbox
-                  id="useCombinedDex"
-                  checked={useCombinedDextrose}
+      {/* Combined Dextrose Option */}
+      <Card className="nightingale-card">
+        <CardContent className="pt-4 space-y-3">
+          <div className="flex items-center space-x-3">
+            <Checkbox
+              id="useCombinedDex"
+              checked={useCombinedDextrose}
                   onCheckedChange={setUseCombinedDextrose}
                 />
                 <Label htmlFor="useCombinedDex" className="cursor-pointer font-medium text-sm">
