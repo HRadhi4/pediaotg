@@ -802,52 +802,43 @@ const NRPChecklistPage = () => {
   ];
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-lg max-h-[90vh] overflow-hidden flex flex-col">
-        <DialogHeader className="flex-shrink-0">
-          <DialogTitle className="font-heading text-xl flex items-center gap-2">
-            <Heart className="h-5 w-5 text-red-500" />
-            NRP Checklist
-          </DialogTitle>
-        </DialogHeader>
-
-        {/* Timer Display */}
-        {activeTimer && (
-          <div className="p-3 rounded-xl bg-red-100 dark:bg-red-950/50 border border-red-300 flex items-center justify-between animate-pulse">
-            <div className="flex items-center gap-2">
-              <Clock className="h-5 w-5 text-red-500" />
-              <span className="font-bold text-red-700 dark:text-red-300">{activeTimer}</span>
-            </div>
-            <span className="text-2xl font-mono font-bold text-red-600">{timerSeconds}s</span>
+    <div className="space-y-4">
+      {/* Timer Display */}
+      {activeTimer && (
+        <div className="p-3 rounded-xl bg-red-100 dark:bg-red-950/50 border border-red-300 flex items-center justify-between animate-pulse">
+          <div className="flex items-center gap-2">
+            <Clock className="h-5 w-5 text-red-500" />
+            <span className="font-bold text-red-700 dark:text-red-300">{activeTimer}</span>
           </div>
-        )}
+          <span className="text-2xl font-mono font-bold text-red-600">{timerSeconds}s</span>
+        </div>
+      )}
 
-        <ScrollArea className="flex-1 pr-4">
-          <div className="space-y-3 pb-4">
-            {sections.map((section) => (
-              <Card key={section.id} className={`rounded-xl border-${section.color}-200 overflow-hidden`}>
-                <button
-                  onClick={() => toggleSection(section.id)}
-                  className={`w-full p-3 flex items-center justify-between bg-${section.color}-50 dark:bg-${section.color}-950/30 hover:opacity-80`}
-                  style={{ 
-                    backgroundColor: section.color === 'red' ? 'rgba(239,68,68,0.1)' : 
-                                    section.color === 'amber' ? 'rgba(245,158,11,0.1)' :
-                                    section.color === 'purple' ? 'rgba(168,85,247,0.1)' :
-                                    'rgba(59,130,246,0.1)'
-                  }}
-                >
-                  <span className="font-semibold text-sm">{section.title}</span>
-                  {expandedSections.includes(section.id) ? 
-                    <ChevronUp className="h-4 w-4" /> : 
-                    <ChevronDown className="h-4 w-4" />
-                  }
-                </button>
-                
-                {expandedSections.includes(section.id) && (
-                  <CardContent className="pt-3 space-y-2">
-                    {section.items.map((item) => (
-                      <div 
-                        key={item.id}
+      <div className="space-y-3 pb-4">
+        {sections.map((section) => (
+          <Card key={section.id} className={`rounded-xl border-${section.color}-200 overflow-hidden`}>
+            <button
+              onClick={() => toggleSection(section.id)}
+              className={`w-full p-3 flex items-center justify-between bg-${section.color}-50 dark:bg-${section.color}-950/30 hover:opacity-80`}
+              style={{ 
+                backgroundColor: section.color === 'red' ? 'rgba(239,68,68,0.1)' : 
+                                section.color === 'amber' ? 'rgba(245,158,11,0.1)' :
+                                section.color === 'purple' ? 'rgba(168,85,247,0.1)' :
+                                'rgba(59,130,246,0.1)'
+              }}
+            >
+              <span className="font-semibold text-sm">{section.title}</span>
+              {expandedSections.includes(section.id) ? 
+                <ChevronUp className="h-4 w-4" /> : 
+                <ChevronDown className="h-4 w-4" />
+              }
+            </button>
+            
+            {expandedSections.includes(section.id) && (
+              <CardContent className="pt-3 space-y-2">
+                {section.items.map((item) => (
+                  <div 
+                    key={item.id}
                         onClick={() => toggleCheck(item.id)}
                         className={`flex items-center gap-3 p-2 rounded-lg cursor-pointer transition-colors ${
                           checkedItems[item.id] 
