@@ -317,7 +317,7 @@ const BPPage = ({ onBack }) => {
           <Card className="border-green-200 bg-green-50 dark:bg-green-950/30">
             <CardContent className="pt-4">
               <p className="text-xs font-medium text-green-700 dark:text-green-300 mb-2">50th Percentile (Normal)</p>
-              <div className="grid grid-cols-2 gap-4 text-center">
+              <div className="grid grid-cols-3 gap-4 text-center">
                 <div>
                   <p className="text-xs text-muted-foreground">Systolic</p>
                   <p className="text-3xl font-mono font-bold text-green-600">{selectedData.systolic.p50}</p>
@@ -325,6 +325,12 @@ const BPPage = ({ onBack }) => {
                 <div>
                   <p className="text-xs text-muted-foreground">Diastolic</p>
                   <p className="text-3xl font-mono font-bold text-green-600">{selectedData.diastolic.p50}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-muted-foreground">MAP</p>
+                  <p className="text-3xl font-mono font-bold text-green-600">
+                    {Math.round(selectedData.diastolic.p50 + (selectedData.systolic.p50 - selectedData.diastolic.p50) / 3)}
+                  </p>
                 </div>
               </div>
             </CardContent>
@@ -334,7 +340,7 @@ const BPPage = ({ onBack }) => {
           <Card className="border-amber-200 bg-amber-50 dark:bg-amber-950/30">
             <CardContent className="pt-4">
               <p className="text-xs font-medium text-amber-700 dark:text-amber-300 mb-2">90th Percentile (Elevated)</p>
-              <div className="grid grid-cols-2 gap-4 text-center">
+              <div className="grid grid-cols-3 gap-4 text-center">
                 <div>
                   <p className="text-xs text-muted-foreground">Systolic</p>
                   <p className="text-2xl font-mono font-bold text-amber-600">{selectedData.systolic.p90}</p>
