@@ -198,11 +198,14 @@ frontend:
     file: "/app/frontend/src/pages/ChildrenDashboard.jsx"
     stuck_count: 0
     priority: "medium"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: true
         agent: "main"
         comment: "BSA-based IWL calculation with weight and height inputs."
+      - working: true
+        agent: "testing"
+        comment: "✓ TESTED: Insensible Water Loss page fully functional. Weight and height inputs working (tested with 15kg, 100cm). BSA and IWL calculations accurate. Formulas properly implemented: BSA = √(Weight × Height / 3600), IWL = 400 × BSA. Results displaying correctly."
 
   - task: "Approaches Page (DKA, SE, etc.)"
     implemented: false
