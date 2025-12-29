@@ -1,4 +1,45 @@
-# Test Result Summary - Blood Pressure Component Reform
+# Test Result Summary - Growth Chart Feature
+
+## Testing Protocol
+- Frontend testing for the Growth Chart feature in NICU section
+
+## Tests to Run
+
+### Frontend Tests - Growth Chart Page
+1. **Navigation Test**
+   - Navigate to NICU > Growth Charts
+   - Verify page loads with title "Growth Charts"
+   - Verify description "Track and visualize growth over time"
+
+2. **Chart Type Selection Test**
+   - CDC/WHO toggle works
+   - Male/Female gender toggle works
+   - Weight/Length/Head Circ tabs work
+
+3. **Chart Rendering Test**
+   - Verify percentile curves (3rd, 10th, 50th, 90th, 97th) render
+   - X-axis shows gestational age (weeks)
+   - Y-axis shows appropriate units (kg for weight, cm for length/HC)
+
+4. **Data Entry Test**
+   - Date picker works
+   - Age (weeks) input accepts numbers
+   - Weight/Length/HC inputs accept numbers
+   - Add Entry button adds measurement to list
+   - Delete button removes measurement
+
+5. **Data Plotting Test**
+   - Added measurements appear as dots on the chart
+   - Multiple data points can be added
+   - Points are plotted at correct age/value positions
+
+6. **Save to Gallery Test**
+   - Save button is visible
+   - Clicking save downloads the chart as PNG image
+
+---
+
+# Previous Test Results - Blood Pressure Component Reform
 
 ## Testing Protocol
 - Frontend testing for the Blood Pressure page in Children section
