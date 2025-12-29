@@ -1533,6 +1533,72 @@ const OxygenationIndex = () => {
   );
 };
 
+// IWL Calculator Component (Insensible Water Loss)
+const IWLCalculator = () => {
+  const [weight, setWeight] = useState("");
+  const [height, setHeight] = useState("");
+
+  const calculate = () => {
+    const w = parseFloat(weight);
+    const h = parseFloat(height);
+    if (!w || !h) return null;
+    const bsa = Math.sqrt((w * h) / 3600);
+    return { bsa: bsa.toFixed(3), iwl: (400 * bsa).toFixed(1) };
+  };
+
+  const result = calculate();
+
+  return (
+    <div className="space-y-4">
+      <Card className="nightingale-card">
+        <CardHeader className="pb-3">
+          <CardTitle className="text-base">Insensible Water Loss</CardTitle>
+          <CardDescription>Based on Body Surface Area</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <div className="grid grid-cols-2 gap-3">
+            <div className="space-y-2">
+              <Label>Weight (kg)</Label>
+              <Input type="number" placeholder="e.g., 15" value={weight} onChange={(e) => setWeight(e.target.value)} className="font-mono" />
+            </div>
+            <div className="space-y-2">
+              <Label>Height (cm)</Label>
+              <Input type="number" placeholder="e.g., 100" value={height} onChange={(e) => setHeight(e.target.value)} className="font-mono" />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {result && (
+        <>
+          <Card className="border-teal-200 bg-teal-50 dark:bg-teal-950/30">
+            <CardContent className="pt-4 text-center">
+              <p className="text-sm text-muted-foreground mb-1">Insensible Water Loss</p>
+              <p className="text-4xl font-mono font-bold text-[#00d9c5]">{result.iwl} ml/day</p>
+            </CardContent>
+          </Card>
+          <Card className="nightingale-card">
+            <CardContent className="pt-4 text-center">
+              <p className="text-xs text-muted-foreground">Body Surface Area</p>
+              <p className="text-2xl font-mono font-bold">{result.bsa} m²</p>
+            </CardContent>
+          </Card>
+        </>
+      )}
+
+      <Card className="nightingale-card">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-sm">Formulas</CardTitle>
+        </CardHeader>
+        <CardContent className="text-xs text-muted-foreground space-y-1">
+          <p>• IWL = 400 × BSA</p>
+          <p>• BSA = √(Weight × Height / 3600)</p>
+        </CardContent>
+      </Card>
+    </div>
+  );
+};
+
 // CPR Page - PALS Algorithms & Drug Dosing
 const CPRPage = ({ onBack }) => {
   const [activeTab, setActiveTab] = useState("arrest");
