@@ -82,31 +82,18 @@ async def get_status_checks():
             check['timestamp'] = datetime.fromisoformat(check['timestamp'])
     return status_checks
 
-def perform_paddle_ocr(image_path: str) -> str:
-    """Run PaddleOCR on image - runs in thread pool"""
+def perform_tesseract_ocr(image_path: str) -> str:
+    """Run Tesseract OCR on image - runs in thread pool"""
     try:
-        ocr = get_paddle_ocr()
-        result = ocr.predict(image_path)
+        import pytesseract
+        from PIL import Image
         
-        # Extract text from OCR result (PaddleOCR 3.x format)
-        if not result:
-            return ""
-        
-        text_lines = []
-        # result is a list of dictionaries with 'rec_texts' key
-        for item in result:
-            if isinstance(item, dict) and 'rec_texts' in item:
-                text_lines.extend(item['rec_texts'])
-            elif isinstance(item, dict) and 'text' in item:
-                text_lines.append(item['text'])
-            elif isinstance(item, list):
-                for sub_item in item:
-                    if isinstance(sub_item, dict) and 'rec_texts' in sub_item:
-                        text_lines.extend(sub_item['rec_texts'])
-        
-        return " ".join(text_lines)
+        img = Image.open(image_path)
+        # Run OCR with English language
+        text = pytesseract.image_to_string(img, lang='eng')
+        return text
     except Exception as e:
-        logging.error(f"PaddleOCR error: {e}")
+        logging.error(f"Tesseract OCR error: {e}")
         raise
 
 def parse_blood_gas_from_text(text: str) -> dict:
