@@ -52,10 +52,10 @@ const LandingPage = ({ theme, toggleTheme }) => {
 
   return (
     <Layout theme={theme} toggleTheme={toggleTheme}>
-      {/* Main Content - Centered vertically */}
-      <main className="min-h-screen flex items-center justify-center px-4 md:px-6 pt-16 pb-24">
+      {/* Main Content - Centered vertically between header and nav bar */}
+      <main className="fixed inset-0 flex items-center justify-center px-4 md:px-6" style={{ top: '64px', bottom: '100px' }}>
         {/* Department Selection - Stacked Rectangular Cards */}
-        <div className="flex flex-col gap-4 max-w-md w-full">
+        <div className="flex flex-col gap-4 w-full max-w-md">
           {/* NICU Card */}
           <div 
             onClick={() => navigate("/nicu")}
