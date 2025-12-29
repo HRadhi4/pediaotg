@@ -188,13 +188,6 @@ const NICUCalculator = ({ theme, toggleTheme }) => {
             >
               {isEditMode ? <X className="h-5 w-5" /> : <Settings className="h-5 w-5" />}
             </button>
-            <button
-              onClick={toggleTheme}
-              data-testid="theme-toggle-calc"
-              className="w-10 h-10 rounded-xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
-            >
-              {theme === "light" ? <Moon className="h-5 w-5 text-gray-600" /> : <Sun className="h-5 w-5 text-gray-300" />}
-            </button>
           </div>
         </div>
       </header>
