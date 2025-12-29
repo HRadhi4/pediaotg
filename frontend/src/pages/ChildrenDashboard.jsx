@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { ArrowLeft, Activity, Syringe, Heart, Brain, Calculator, Pill, Droplets, Users, Stethoscope, Scale, AlertTriangle, FileText, ChevronRight, Search, Settings, X, ChevronUp, ChevronDown } from "lucide-react";
+import { ArrowLeft, Activity, Syringe, Heart, Brain, Calculator, Pill, Droplets, Stethoscope, Scale, AlertTriangle, FileText, Search, Settings, X, ChevronUp, ChevronDown } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
