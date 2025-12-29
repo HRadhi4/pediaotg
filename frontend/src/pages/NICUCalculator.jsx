@@ -2615,7 +2615,7 @@ const GrowthChartPage = () => {
                     key={idx}
                     x={point.age}
                     y={point.value}
-                    r={8}
+                    r={5}
                     fill="#000"
                     stroke="#fff"
                     strokeWidth={2}
@@ -2656,25 +2656,14 @@ const GrowthChartPage = () => {
               />
             </div>
             <div className="space-y-1">
-              <Label className="text-xs font-medium">Age *</Label>
-              <div className="flex gap-1">
-                <Input 
-                  type="number" 
-                  placeholder="Age" 
-                  value={newEntry.ageValue} 
-                  onChange={(e) => setNewEntry({...newEntry, ageValue: e.target.value})} 
-                  className="h-9 font-mono text-sm flex-1" 
-                />
-                <select
-                  value={newEntry.ageUnit}
-                  onChange={(e) => setNewEntry({...newEntry, ageUnit: e.target.value})}
-                  className="h-9 rounded-xl bg-gray-50 dark:bg-gray-800/50 border-0 px-2 text-sm"
-                >
-                  <option value="days">Days</option>
-                  <option value="months">Months</option>
-                  <option value="years">Years</option>
-                </select>
-              </div>
+              <Label className="text-xs font-medium">Age (months) *</Label>
+              <Input 
+                type="number" 
+                placeholder="e.g., 6" 
+                value={newEntry.ageValue} 
+                onChange={(e) => setNewEntry({...newEntry, ageValue: e.target.value})} 
+                className="h-9 font-mono text-sm" 
+              />
             </div>
           </div>
           
