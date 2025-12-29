@@ -2368,6 +2368,28 @@ const DrugsPage = ({ onBack }) => {
       color: "blue"
     },
     {
+      name: "Amoxicillin-Clavulanate (Augmentin) PO",
+      category: "Penicillin/BLI",
+      route: "PO",
+      dose: "25-45",
+      unit: "mg/kg/day",
+      frequency: "q12h",
+      max: "875 mg amox/dose",
+      notes: "Based on amoxicillin component. High dose: 90 mg/kg/day for resistant strep pneumo",
+      color: "blue"
+    },
+    {
+      name: "Amoxicillin-Clavulanate (Augmentin) IV",
+      category: "Penicillin/BLI",
+      route: "IV",
+      dose: "25-50",
+      unit: "mg/kg/dose",
+      frequency: "q6-8h",
+      max: "2 g amox/dose",
+      notes: "Based on amoxicillin component. Severe infections use higher dose range",
+      color: "blue"
+    },
+    {
       name: "Ampicillin",
       category: "Penicillin",
       route: "IV",
@@ -2376,6 +2398,17 @@ const DrugsPage = ({ onBack }) => {
       frequency: "q6h",
       max: "12 g/day",
       notes: "Meningitis: 100 mg/kg/dose q6h",
+      color: "blue"
+    },
+    {
+      name: "Piperacillin-Tazobactam (Tazocin)",
+      category: "Penicillin/BLI",
+      route: "IV",
+      dose: "80-100",
+      unit: "mg/kg/dose",
+      frequency: "q6-8h",
+      max: "4.5 g/dose",
+      notes: "Based on piperacillin. Pseudomonas: 100 mg/kg q6h. Extended infusion 3-4hr for severe infections",
       color: "blue"
     },
     {
@@ -2399,6 +2432,28 @@ const DrugsPage = ({ onBack }) => {
       max: "12 g/day",
       notes: "Preferred in neonates over ceftriaxone",
       color: "green"
+    },
+    {
+      name: "Ceftazidime",
+      category: "3rd Gen Ceph",
+      route: "IV",
+      dose: "50",
+      unit: "mg/kg/dose",
+      frequency: "q8h",
+      max: "6 g/day",
+      notes: "Anti-pseudomonal. Meningitis: 50 mg/kg q8h. Cystic fibrosis: may need higher doses",
+      color: "green"
+    },
+    {
+      name: "Cefepime",
+      category: "4th Gen Ceph",
+      route: "IV",
+      dose: "50",
+      unit: "mg/kg/dose",
+      frequency: "q8-12h",
+      max: "2 g/dose",
+      notes: "Broad spectrum incl. Pseudomonas. Meningitis/severe: 50 mg/kg q8h. Febrile neutropenia: q8h",
+      color: "teal"
     },
     {
       name: "Gentamicin",
@@ -2425,6 +2480,7 @@ const DrugsPage = ({ onBack }) => {
     {
       name: "Azithromycin",
       category: "Macrolide",
+      route: "PO",
       route: "PO",
       dose: "10",
       unit: "mg/kg/day",
