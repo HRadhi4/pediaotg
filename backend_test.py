@@ -144,6 +144,67 @@ class NICUBackendTester:
             
         return success, response
 
+    def test_blood_gas_ocr_offline(self):
+        """Test offline OCR endpoint with Tesseract"""
+        test_data = {
+            "image_base64": self.test_image_base64
+        }
+        success, response = self.run_test(
+            "Blood Gas OCR - Offline (Tesseract)",
+            "POST",
+            "api/blood-gas/analyze-image-offline",
+            200,
+            data=test_data
+        )
+        
+        if success:
+            # Verify response structure
+            required_fields = ["success", "values", "raw_text", "engine"]
+            missing_fields = [field for field in required_fields if field not in response]
+            
+            if missing_fields:
+                print(f"❌ Missing required fields: {missing_fields}")
+                return False, response
+            
+            # Verify engine is tesseract
+            if response.get("engine") != "tesseract":
+                print(f"❌ Expected engine 'tesseract', got '{response.get('engine')}'")
+                return False, response
+            
+            print(f"✅ Engine: {response.get('engine')}")
+            print(f"✅ Success: {response.get('success')}")
+            print(f"✅ Raw text length: {len(response.get('raw_text', ''))}")
+            print(f"✅ Extracted values: {response.get('values', {})}")
+            
+        return success, response
+
+    def test_blood_gas_ocr_online(self):
+        """Test online OCR endpoint with Gemini AI"""
+        test_data = {
+            "image_base64": self.test_image_base64
+        }
+        success, response = self.run_test(
+            "Blood Gas OCR - Online (Gemini AI)",
+            "POST", 
+            "api/blood-gas/analyze-image",
+            200,
+            data=test_data
+        )
+        
+        if success:
+            # Verify response structure
+            required_fields = ["success", "values"]
+            missing_fields = [field for field in required_fields if field not in response]
+            
+            if missing_fields:
+                print(f"❌ Missing required fields: {missing_fields}")
+                return False, response
+                
+            print(f"✅ Success: {response.get('success')}")
+            print(f"✅ Extracted values: {response.get('values', {})}")
+            
+        return success, response
+
 def main():
     print("🚀 Starting NICU Backend API Tests")
     print("=" * 50)
