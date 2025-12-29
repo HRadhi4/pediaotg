@@ -1750,10 +1750,10 @@ const ApproachesPage = ({ onBack }) => {
 
       {/* Tab Navigation */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid w-full grid-cols-3 text-xs">
-          <TabsTrigger value="dka">DKA</TabsTrigger>
-          <TabsTrigger value="se">Status Epilepticus</TabsTrigger>
-          <TabsTrigger value="hypernh3">Hyperammonemia</TabsTrigger>
+        <TabsList className="grid w-full grid-cols-3 h-auto">
+          <TabsTrigger value="dka" className="text-xs py-2 px-1">DKA</TabsTrigger>
+          <TabsTrigger value="se" className="text-xs py-2 px-1 leading-tight">Status<br/>Epilepticus</TabsTrigger>
+          <TabsTrigger value="hypernh3" className="text-xs py-2 px-1 leading-tight">Hyper-<br/>ammonemia</TabsTrigger>
         </TabsList>
 
         {/* DKA Tab */}
