@@ -191,8 +191,7 @@ const NICUCalculator = ({ theme, toggleTheme }) => {
       </header>
 
       {/* Main Content */}
-      <main className="max-w-4xl mx-auto px-4 md:px-6 py-6 pt-24 pb-32">
-        <ScrollArea className="h-[calc(100vh-160px)]">
+      <main className="max-w-4xl mx-auto px-4 md:px-6 pt-24 pb-32 h-screen native-scroll">
           {currentPage === "main" ? (
             <>
               {isEditMode && (
