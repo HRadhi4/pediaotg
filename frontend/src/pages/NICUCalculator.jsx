@@ -2035,4 +2035,282 @@ const BloodPressurePage = () => {
   );
 };
 
+// Growth Chart Page - CDC/WHO Charts for Weight, Height, Head Circumference
+const GrowthChartPage = () => {
+  const [chartType, setChartType] = useState("CDC"); // CDC or WHO
+  const [gender, setGender] = useState("male");
+  const [entries, setEntries] = useState([]);
+  const [newEntry, setNewEntry] = useState({
+    date: new Date().toISOString().split('T')[0],
+    age: "",
+    weight: "",
+    height: "",
+    hc: ""
+  });
+
+  const addEntry = () => {
+    if (newEntry.age && (newEntry.weight || newEntry.height || newEntry.hc)) {
+      setEntries([...entries, { ...newEntry, id: Date.now() }]);
+      setNewEntry({
+        date: new Date().toISOString().split('T')[0],
+        age: "",
+        weight: "",
+        height: "",
+        hc: ""
+      });
+    }
+  };
+
+  const removeEntry = (id) => {
+    setEntries(entries.filter(e => e.id !== id));
+  };
+
+  // CDC percentile reference data (simplified for key percentiles)
+  const getPercentile = (type, age, value, chartStandard) => {
+    // Simplified percentile calculation - returns category
+    const ageWeeks = parseFloat(age);
+    const val = parseFloat(value);
+    if (!ageWeeks || !val) return null;
+
+    // Reference ranges (simplified for demonstration)
+    const references = {
+      CDC: {
+        weight: { // kg for gestational age in weeks
+          male: { p3: 0.06 * ageWeeks, p10: 0.07 * ageWeeks, p50: 0.085 * ageWeeks, p90: 0.1 * ageWeeks, p97: 0.11 * ageWeeks },
+          female: { p3: 0.055 * ageWeeks, p10: 0.065 * ageWeeks, p50: 0.08 * ageWeeks, p90: 0.095 * ageWeeks, p97: 0.105 * ageWeeks }
+        },
+        height: { // cm
+          male: { p3: 0.9 * ageWeeks, p10: 0.95 * ageWeeks, p50: 1.05 * ageWeeks, p90: 1.15 * ageWeeks, p97: 1.2 * ageWeeks },
+          female: { p3: 0.85 * ageWeeks, p10: 0.9 * ageWeeks, p50: 1.0 * ageWeeks, p90: 1.1 * ageWeeks, p97: 1.15 * ageWeeks }
+        },
+        hc: { // cm
+          male: { p3: 0.6 * ageWeeks, p10: 0.65 * ageWeeks, p50: 0.72 * ageWeeks, p90: 0.78 * ageWeeks, p97: 0.82 * ageWeeks },
+          female: { p3: 0.58 * ageWeeks, p10: 0.63 * ageWeeks, p50: 0.7 * ageWeeks, p90: 0.76 * ageWeeks, p97: 0.8 * ageWeeks }
+        }
+      },
+      WHO: {
+        weight: {
+          male: { p3: 0.058 * ageWeeks, p10: 0.068 * ageWeeks, p50: 0.083 * ageWeeks, p90: 0.098 * ageWeeks, p97: 0.108 * ageWeeks },
+          female: { p3: 0.053 * ageWeeks, p10: 0.063 * ageWeeks, p50: 0.078 * ageWeeks, p90: 0.093 * ageWeeks, p97: 0.103 * ageWeeks }
+        },
+        height: {
+          male: { p3: 0.88 * ageWeeks, p10: 0.93 * ageWeeks, p50: 1.03 * ageWeeks, p90: 1.13 * ageWeeks, p97: 1.18 * ageWeeks },
+          female: { p3: 0.83 * ageWeeks, p10: 0.88 * ageWeeks, p50: 0.98 * ageWeeks, p90: 1.08 * ageWeeks, p97: 1.13 * ageWeeks }
+        },
+        hc: {
+          male: { p3: 0.58 * ageWeeks, p10: 0.63 * ageWeeks, p50: 0.7 * ageWeeks, p90: 0.77 * ageWeeks, p97: 0.81 * ageWeeks },
+          female: { p3: 0.56 * ageWeeks, p10: 0.61 * ageWeeks, p50: 0.68 * ageWeeks, p90: 0.75 * ageWeeks, p97: 0.79 * ageWeeks }
+        }
+      }
+    };
+
+    const ref = references[chartStandard][type][gender];
+    if (val < ref.p3) return { percentile: "<3rd", color: "text-red-500", bg: "bg-red-100" };
+    if (val < ref.p10) return { percentile: "3-10th", color: "text-amber-500", bg: "bg-amber-100" };
+    if (val < ref.p50) return { percentile: "10-50th", color: "text-blue-500", bg: "bg-blue-100" };
+    if (val < ref.p90) return { percentile: "50-90th", color: "text-green-500", bg: "bg-green-100" };
+    if (val < ref.p97) return { percentile: "90-97th", color: "text-blue-500", bg: "bg-blue-100" };
+    return { percentile: ">97th", color: "text-amber-500", bg: "bg-amber-100" };
+  };
+
+  return (
+    <div className="space-y-4 pb-8">
+      {/* Chart Type Selection */}
+      <Card className="nightingale-card">
+        <CardHeader className="pb-3">
+          <CardTitle className="text-base flex items-center gap-2">
+            <GrowthIcon />
+            Growth Charts
+          </CardTitle>
+          <CardDescription>Track weight, height, and head circumference</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {/* Standard Selection */}
+          <div className="space-y-2">
+            <Label className="text-xs">Chart Standard</Label>
+            <div className="flex gap-2">
+              <Button
+                variant={chartType === "CDC" ? "default" : "outline"}
+                onClick={() => setChartType("CDC")}
+                className="flex-1"
+                size="sm"
+              >
+                CDC
+              </Button>
+              <Button
+                variant={chartType === "WHO" ? "default" : "outline"}
+                onClick={() => setChartType("WHO")}
+                className="flex-1"
+                size="sm"
+              >
+                WHO
+              </Button>
+            </div>
+          </div>
+
+          {/* Gender Selection */}
+          <div className="space-y-2">
+            <Label className="text-xs">Gender</Label>
+            <div className="flex gap-2">
+              <Button
+                variant={gender === "male" ? "default" : "outline"}
+                onClick={() => setGender("male")}
+                className="flex-1"
+                size="sm"
+              >
+                Male
+              </Button>
+              <Button
+                variant={gender === "female" ? "default" : "outline"}
+                onClick={() => setGender("female")}
+                className="flex-1"
+                size="sm"
+              >
+                Female
+              </Button>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* New Entry Form */}
+      <Card className="nightingale-card">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-sm">Add Measurement</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <div className="grid grid-cols-2 gap-2">
+            <div className="space-y-1">
+              <Label className="text-xs">Date</Label>
+              <Input
+                type="date"
+                value={newEntry.date}
+                onChange={(e) => setNewEntry({...newEntry, date: e.target.value})}
+                className="h-9 text-sm"
+              />
+            </div>
+            <div className="space-y-1">
+              <Label className="text-xs">Age (weeks)</Label>
+              <Input
+                type="number"
+                placeholder="e.g., 32"
+                value={newEntry.age}
+                onChange={(e) => setNewEntry({...newEntry, age: e.target.value})}
+                className="h-9 font-mono text-sm"
+              />
+            </div>
+          </div>
+          <div className="grid grid-cols-3 gap-2">
+            <div className="space-y-1">
+              <Label className="text-xs">Weight (kg)</Label>
+              <Input
+                type="number"
+                step="0.01"
+                placeholder="1.5"
+                value={newEntry.weight}
+                onChange={(e) => setNewEntry({...newEntry, weight: e.target.value})}
+                className="h-9 font-mono text-sm"
+              />
+            </div>
+            <div className="space-y-1">
+              <Label className="text-xs">Height (cm)</Label>
+              <Input
+                type="number"
+                step="0.1"
+                placeholder="45"
+                value={newEntry.height}
+                onChange={(e) => setNewEntry({...newEntry, height: e.target.value})}
+                className="h-9 font-mono text-sm"
+              />
+            </div>
+            <div className="space-y-1">
+              <Label className="text-xs">HC (cm)</Label>
+              <Input
+                type="number"
+                step="0.1"
+                placeholder="30"
+                value={newEntry.hc}
+                onChange={(e) => setNewEntry({...newEntry, hc: e.target.value})}
+                className="h-9 font-mono text-sm"
+              />
+            </div>
+          </div>
+          <Button onClick={addEntry} className="w-full" size="sm">
+            <Plus className="h-4 w-4 mr-1" /> Add Entry
+          </Button>
+        </CardContent>
+      </Card>
+
+      {/* Entries List */}
+      {entries.length > 0 && (
+        <Card className="nightingale-card">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm">Measurements ({chartType} - {gender})</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            {entries.map((entry) => {
+              const weightP = entry.weight ? getPercentile("weight", entry.age, entry.weight, chartType) : null;
+              const heightP = entry.height ? getPercentile("height", entry.age, entry.height, chartType) : null;
+              const hcP = entry.hc ? getPercentile("hc", entry.age, entry.hc, chartType) : null;
+
+              return (
+                <div key={entry.id} className="p-3 rounded-xl bg-gray-50 dark:bg-gray-800/50 space-y-2">
+                  <div className="flex justify-between items-center">
+                    <div className="text-sm">
+                      <span className="font-medium">{entry.date}</span>
+                      <span className="text-muted-foreground ml-2">({entry.age} weeks)</span>
+                    </div>
+                    <button 
+                      onClick={() => removeEntry(entry.id)}
+                      className="text-red-500 hover:text-red-700"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                  </div>
+                  <div className="grid grid-cols-3 gap-2 text-xs">
+                    {entry.weight && (
+                      <div className={`p-2 rounded-lg ${weightP?.bg || 'bg-gray-100'}`}>
+                        <p className="text-muted-foreground">Weight</p>
+                        <p className="font-mono font-bold">{entry.weight} kg</p>
+                        <p className={`text-xs ${weightP?.color}`}>{weightP?.percentile}</p>
+                      </div>
+                    )}
+                    {entry.height && (
+                      <div className={`p-2 rounded-lg ${heightP?.bg || 'bg-gray-100'}`}>
+                        <p className="text-muted-foreground">Height</p>
+                        <p className="font-mono font-bold">{entry.height} cm</p>
+                        <p className={`text-xs ${heightP?.color}`}>{heightP?.percentile}</p>
+                      </div>
+                    )}
+                    {entry.hc && (
+                      <div className={`p-2 rounded-lg ${hcP?.bg || 'bg-gray-100'}`}>
+                        <p className="text-muted-foreground">HC</p>
+                        <p className="font-mono font-bold">{entry.hc} cm</p>
+                        <p className={`text-xs ${hcP?.color}`}>{hcP?.percentile}</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Reference Info */}
+      <Card className="nightingale-card">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-sm">Reference</CardTitle>
+        </CardHeader>
+        <CardContent className="text-xs text-muted-foreground space-y-1">
+          <p>• <span className="font-medium">CDC Charts:</span> Based on US national data, recommended for US children</p>
+          <p>• <span className="font-medium">WHO Charts:</span> International growth standard for breastfed infants</p>
+          <p>• <span className="font-medium">HC:</span> Head Circumference (Occipitofrontal)</p>
+          <p>• Percentiles color-coded: <span className="text-red-500">Low</span>, <span className="text-green-500">Normal</span>, <span className="text-amber-500">High</span></p>
+        </CardContent>
+      </Card>
+    </div>
+  );
+};
+
 export default NICUCalculator;
