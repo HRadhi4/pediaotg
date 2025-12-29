@@ -168,11 +168,14 @@ frontend:
     file: "/app/frontend/src/pages/ChildrenDashboard.jsx"
     stuck_count: 0
     priority: "medium"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: true
         agent: "main"
         comment: "ETT size calculator (cuffed/uncuffed) and RSI checklist implemented."
+      - working: true
+        agent: "testing"
+        comment: "✓ TESTED: Intubation page fully functional. Age input working (tested with 5 years). ETT size calculations accurate (uncuffed, cuffed, depth). Both Calculator and RSI Checklist tabs accessible. RSI checklist shows proper steps for pediatric intubation. All formulas working correctly."
 
   - task: "Scoring Page (GCS, PRAM, Westley, OI)"
     implemented: true
