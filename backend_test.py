@@ -12,6 +12,50 @@ class NICUBackendTester:
         self.tests_passed = 0
         self.test_image_base64 = self.create_test_image()
 
+    def create_test_image(self):
+        """Create a test image with blood gas values for OCR testing"""
+        try:
+            # Create a white image
+            img = Image.new('RGB', (400, 300), color='white')
+            draw = ImageDraw.Draw(img)
+            
+            # Try to use a default font, fallback to basic if not available
+            try:
+                font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 16)
+            except:
+                font = ImageFont.load_default()
+            
+            # Add blood gas values text
+            text_lines = [
+                "BLOOD GAS ANALYSIS",
+                "pH: 7.35",
+                "pCO2: 40 mmHg", 
+                "pO2: 95 mmHg",
+                "HCO3: 24 mEq/L",
+                "BE: 0 mEq/L",
+                "Na: 140 mEq/L",
+                "K: 4.0 mEq/L",
+                "Cl: 102 mEq/L",
+                "Lactate: 1.5 mmol/L",
+                "Hb: 12.5 g/dL"
+            ]
+            
+            y_position = 20
+            for line in text_lines:
+                draw.text((20, y_position), line, fill='black', font=font)
+                y_position += 25
+            
+            # Convert to base64
+            buffer = io.BytesIO()
+            img.save(buffer, format='PNG')
+            img_str = base64.b64encode(buffer.getvalue()).decode()
+            return img_str
+            
+        except Exception as e:
+            print(f"Warning: Could not create test image: {e}")
+            # Return a minimal base64 encoded 1x1 pixel image as fallback
+            return "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg=="
+
     def run_test(self, name, method, endpoint, expected_status, data=None):
         """Run a single API test"""
         url = f"{self.base_url}/{endpoint}"
