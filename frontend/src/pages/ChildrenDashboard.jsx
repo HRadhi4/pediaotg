@@ -906,24 +906,26 @@ const InfusionsPage = ({ onBack }) => {
               cat.drugs.map((drug, dIdx) => (
                 <div key={dIdx} className="p-3 rounded-xl bg-gray-50 dark:bg-gray-800/50">
                   <p className="font-semibold text-sm mb-2">{drug.name}</p>
-                  {drug.stat && (
-                    <div className="flex justify-between items-center text-xs mb-1">
-                      <span className="text-muted-foreground">Stat: {drug.stat.dose}</span>
-                      {drug.stat.calc && <span className="font-mono text-[#00d9c5]">→ {drug.stat.calc}</span>}
-                    </div>
-                  )}
-                  {drug.infusion && (
-                    <div className="flex justify-between items-center text-xs mb-1">
-                      <span className="text-muted-foreground">Infusion: {drug.infusion.dose}</span>
-                      {drug.infusion.calc && <span className="font-mono text-[#00d9c5]">→ {drug.infusion.calc}</span>}
-                    </div>
-                  )}
-                  {drug.range && (
-                    <div className="flex justify-between items-center text-xs">
-                      <span className="text-muted-foreground">Range: {drug.range}</span>
-                      {drug.calc && <span className="font-mono text-[#00d9c5]">→ {drug.calc}</span>}
-                    </div>
-                  )}
+                  <div className="space-y-1">
+                    {drug.stat && (
+                      <div className="grid grid-cols-[1fr_auto] gap-2 items-center text-xs">
+                        <span className="text-muted-foreground">Stat: {drug.stat.dose}</span>
+                        {drug.stat.calc && <span className="font-mono text-[#00d9c5] text-right whitespace-nowrap">→ {drug.stat.calc}</span>}
+                      </div>
+                    )}
+                    {drug.infusion && (
+                      <div className="grid grid-cols-[1fr_auto] gap-2 items-center text-xs">
+                        <span className="text-muted-foreground">Infusion: {drug.infusion.dose}</span>
+                        {drug.infusion.calc && <span className="font-mono text-[#00d9c5] text-right whitespace-nowrap">→ {drug.infusion.calc}</span>}
+                      </div>
+                    )}
+                    {drug.range && (
+                      <div className="grid grid-cols-[1fr_auto] gap-2 items-center text-xs">
+                        <span className="text-muted-foreground">Range: {drug.range}</span>
+                        {drug.calc && <span className="font-mono text-[#00d9c5] text-right whitespace-nowrap">→ {drug.calc}</span>}
+                      </div>
+                    )}
+                  </div>
                 </div>
               ))
             )}
