@@ -97,6 +97,7 @@ const NICUCalculator = ({ theme, toggleTheme }) => {
   
   // Widget management
   const [isEditMode, setIsEditMode] = useState(false);
+  const [activeId, setActiveId] = useState(null);
   const [widgets, setWidgets] = useState([
     { id: "fluid", title: "Fluid Calculator", icon: "droplets", color: "teal", enabled: true },
     { id: "nrp", title: "NRP Checklist", icon: "nrp", color: "red", enabled: true },
@@ -107,6 +108,12 @@ const NICUCalculator = ({ theme, toggleTheme }) => {
     { id: "exchange", title: "Exchange Transfusion", icon: "repeat", color: "purple", enabled: true },
     { id: "growth", title: "Growth Charts", icon: "growth", color: "teal", enabled: true }
   ]);
+
+  // DnD sensors
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
+  );
 
   // Navigate to page
   const goToPage = (pageId) => {
@@ -132,13 +139,19 @@ const NICUCalculator = ({ theme, toggleTheme }) => {
     goToPage(widgetId);
   };
 
-  const moveWidget = (index, direction) => {
-    const newWidgets = [...widgets];
-    const newIndex = direction === "up" ? index - 1 : index + 1;
-    if (newIndex >= 0 && newIndex < widgets.length) {
-      [newWidgets[index], newWidgets[newIndex]] = [newWidgets[newIndex], newWidgets[index]];
-      setWidgets(newWidgets);
+  // Handle drag end
+  const handleDragEnd = (event) => {
+    const { active, over } = event;
+    setActiveId(null);
+    if (active.id !== over?.id) {
+      const oldIndex = widgets.findIndex(w => w.id === active.id);
+      const newIndex = widgets.findIndex(w => w.id === over.id);
+      setWidgets(arrayMove(widgets, oldIndex, newIndex));
     }
+  };
+
+  const handleDragStart = (event) => {
+    setActiveId(event.active.id);
   };
 
   const getWidgetIcon = (iconName, color) => {
