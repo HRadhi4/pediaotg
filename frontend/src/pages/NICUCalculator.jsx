@@ -899,19 +899,17 @@ const NRPChecklistPage = () => {
               </CardContent>
             </Card>
           </div>
-        </ScrollArea>
 
-        <div className="flex-shrink-0 pt-3 border-t">
-          <Button variant="outline" onClick={resetChecklist} className="w-full rounded-xl">
-            Reset Checklist
-          </Button>
+          <div className="pt-3 border-t">
+            <Button variant="outline" onClick={resetChecklist} className="w-full rounded-xl">
+              Reset Checklist
+            </Button>
+          </div>
         </div>
-      </DialogContent>
-    </Dialog>
   );
 };
 
-// UVC/UAC Calculator Dialog
+// UVC/UAC Calculator Page
 const CatheterCalculatorPage = () => {
   const [weight, setWeight] = useState("");
 
@@ -927,27 +925,18 @@ const CatheterCalculatorPage = () => {
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-md">
-        <DialogHeader>
-          <DialogTitle className="font-heading text-xl flex items-center gap-2">
-            <CatheterIcon />
-            UVC/UAC Calculator
-          </DialogTitle>
-        </DialogHeader>
-
-        <div className="space-y-4">
-          <Card className="nightingale-card">
-            <CardContent className="pt-4">
-              <div className="space-y-2">
-                <Label>Weight (kg)</Label>
-                <Input
-                  type="number"
-                  step="0.01"
-                  placeholder="e.g., 1.5"
-                  value={weight}
-                  onChange={(e) => setWeight(e.target.value)}
-                  className="nightingale-input font-mono"
+    <div className="space-y-4">
+      <Card className="nightingale-card">
+        <CardContent className="pt-4">
+          <div className="space-y-2">
+            <Label>Weight (kg)</Label>
+            <Input
+              type="number"
+              step="0.01"
+              placeholder="e.g., 1.5"
+              value={weight}
+              onChange={(e) => setWeight(e.target.value)}
+              className="nightingale-input font-mono"
                 />
               </div>
             </CardContent>
