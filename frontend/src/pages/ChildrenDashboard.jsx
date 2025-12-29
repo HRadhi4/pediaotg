@@ -267,21 +267,37 @@ const ChildrenDashboard = ({ theme, toggleTheme }) => {
     <Layout theme={theme} toggleTheme={toggleTheme}>
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 z-40 glass-header pl-16">
-        <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 flex items-center gap-3">
-          <button
-            onClick={() => currentPage === "main" ? navigate("/") : goToPage("main")}
-            className="w-10 h-10 rounded-xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
-          >
-            <ArrowLeft className="h-5 w-5" />
-          </button>
-          <div>
-            <h1 className="font-heading text-lg font-bold text-foreground tracking-tight">
-              {currentPage === "main" ? "Children" : widgets.find(w => w.id === currentPage)?.title || "Children"}
-            </h1>
-            <p className="text-xs text-muted-foreground hidden sm:block">
-              {currentPage === "main" ? "Pediatric Ward" : "Tap arrow to go back"}
-            </p>
+        <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => currentPage === "main" ? navigate("/") : goToPage("main")}
+              className="w-10 h-10 rounded-xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+            >
+              <ArrowLeft className="h-5 w-5" />
+            </button>
+            <div>
+              <h1 className="font-heading text-lg font-bold text-foreground tracking-tight">
+                {currentPage === "main" ? "Children" : widgets.find(w => w.id === currentPage)?.title || "Children"}
+              </h1>
+              <p className="text-xs text-muted-foreground hidden sm:block">
+                {currentPage === "main" ? "Pediatric Ward" : "Tap arrow to go back"}
+              </p>
+            </div>
           </div>
+          {currentPage === "main" && (
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setIsEditMode(!isEditMode)}
+                className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${
+                  isEditMode 
+                    ? 'bg-[#00d9c5] text-gray-900' 
+                    : 'bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700'
+                }`}
+              >
+                {isEditMode ? <X className="h-5 w-5" /> : <Settings className="h-5 w-5" />}
+              </button>
+            </div>
+          )}
         </div>
       </header>
 
