@@ -150,7 +150,7 @@ const ChildrenDashboard = ({ theme, toggleTheme }) => {
 
   // Main page with widget grid
   const renderMainPage = () => (
-    <div className="space-y-4">
+    <div className="space-y-4 py-4">
       {/* Edit Mode Instructions */}
       {isEditMode && (
         <div className="p-3 rounded-xl bg-[#00d9c5]/10 border border-[#00d9c5]/30 text-sm text-center">
