@@ -92,7 +92,8 @@ const NICUCalculator = ({ theme, toggleTheme }) => {
     { id: "intubation", title: "Intubation", icon: "intubation", color: "purple", enabled: true },
     { id: "bp", title: "Blood Pressure", icon: "activity", color: "red", enabled: true },
     { id: "prbc", title: "PRBC Transfusion", icon: "blood", color: "red", enabled: true },
-    { id: "exchange", title: "Exchange Transfusion", icon: "repeat", color: "purple", enabled: true }
+    { id: "exchange", title: "Exchange Transfusion", icon: "repeat", color: "purple", enabled: true },
+    { id: "growth", title: "Growth Charts", icon: "growth", color: "teal", enabled: true }
   ]);
 
   // Navigate to page
