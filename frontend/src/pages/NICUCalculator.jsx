@@ -155,6 +155,7 @@ const NICUCalculator = ({ theme, toggleTheme }) => {
       case "blood": return <span className={colorClass}><BloodDropIcon /></span>;
       case "repeat": return <Repeat className={`h-6 w-6 ${colorClass}`} />;
       case "nrp": return <span className={colorClass}><NRPIcon /></span>;
+      case "growth": return <span className={colorClass}><GrowthIcon /></span>;
       default: return <Stethoscope className={`h-6 w-6 ${colorClass}`} />;
     }
   };
