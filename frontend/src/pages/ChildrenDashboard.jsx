@@ -217,53 +217,56 @@ const ChildrenDashboard = ({ theme, toggleTheme }) => {
     <div className="space-y-4 py-4">
       {/* Edit Mode Instructions */}
       {isEditMode && (
-        <div className="p-3 rounded-xl bg-[#00d9c5]/10 border border-[#00d9c5]/30 text-sm text-center">
-          Tap arrows to rearrange widgets. Tap ✕ when done.
+        <div className="p-3 rounded-xl bg-[#00d9c5]/10 border border-[#00d9c5]/30 text-sm text-center flex items-center justify-center gap-2">
+          <GripVertical className="h-4 w-4 text-[#00d9c5]" />
+          <span>Drag widgets to rearrange</span>
         </div>
       )}
 
-      {/* Widget Grid */}
-      <div className="grid grid-cols-2 gap-4">
-        {widgets.map((widget, index) => (
-          <Card
-            key={widget.id}
-            onClick={() => goToPage(widget.id)}
-            className={`nightingale-card cursor-pointer transition-all duration-300 h-36 ${
-              isEditMode ? 'animate-wiggle' : 'hover:scale-[1.02]'
-            }`}
-            data-testid={`widget-${widget.id}`}
-          >
-            <CardContent className="p-3 relative h-full flex items-center justify-center">
-              {/* Edit mode controls */}
-              {isEditMode && (
-                <div className="absolute top-1 right-1 flex flex-col gap-1">
-                  <button
-                    onClick={(e) => { e.stopPropagation(); moveWidget(widgetOrder.indexOf(widget.id), 'up'); }}
-                    className="w-6 h-6 rounded bg-gray-200 dark:bg-gray-700 flex items-center justify-center"
-                    disabled={index === 0}
-                  >
-                    <ChevronUp className="h-4 w-4" />
-                  </button>
-                  <button
-                    onClick={(e) => { e.stopPropagation(); moveWidget(widgetOrder.indexOf(widget.id), 'down'); }}
-                    className="w-6 h-6 rounded bg-gray-200 dark:bg-gray-700 flex items-center justify-center"
-                    disabled={index === widgets.length - 1}
-                  >
-                    <ChevronDown className="h-4 w-4" />
-                  </button>
+      {/* Widget Grid with DnD */}
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragStart={handleDragStart}
+        onDragEnd={handleDragEnd}
+      >
+        <SortableContext items={widgetOrder} strategy={rectSortingStrategy}>
+          <div className="grid grid-cols-2 gap-4">
+            {widgets.map((widget) => (
+              <SortableWidget
+                key={widget.id}
+                widget={widget}
+                isEditMode={isEditMode}
+                onClick={goToPage}
+                getColorClass={getColorClass}
+              />
+            ))}
+          </div>
+        </SortableContext>
+        <DragOverlay>
+          {activeId ? (
+            <Card className="nightingale-card h-36 shadow-2xl scale-105 ring-2 ring-[#00d9c5]">
+              <CardContent className="p-3 h-full flex items-center justify-center">
+                <div className="flex flex-col items-center text-center gap-2">
+                  {(() => {
+                    const w = widgetDefs[activeId];
+                    if (!w) return null;
+                    return (
+                      <>
+                        <div className={`w-11 h-11 rounded-xl flex items-center justify-center ${getColorClass(w.color)}`}>
+                          <w.icon className="h-5 w-5" />
+                        </div>
+                        <h3 className="font-heading font-semibold text-xs leading-tight px-1">{w.title}</h3>
+                        <p className="text-[10px] text-muted-foreground leading-tight px-1">{w.subtitle}</p>
+                      </>
+                    );
+                  })()}
                 </div>
-              )}
-              <div className="flex flex-col items-center text-center gap-2">
-                <div className={`w-11 h-11 rounded-xl flex items-center justify-center ${getColorClass(widget.color)}`}>
-                  <widget.icon className="h-5 w-5" />
-                </div>
-                <h3 className="font-heading font-semibold text-xs leading-tight px-1">{widget.title}</h3>
-                <p className="text-[10px] text-muted-foreground leading-tight px-1">{widget.subtitle}</p>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+              </CardContent>
+            </Card>
+          ) : null}
+        </DragOverlay>
+      </DndContext>
     </div>
   );
 
