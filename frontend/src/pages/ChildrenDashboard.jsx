@@ -1137,7 +1137,7 @@ const InsensiblePage = ({ onBack }) => {
   );
 };
 
-// Scoring Page - GCS, PRAM, Westley, OI
+// Scoring Page - GCS, PRAM, Westley, OI, IWL
 const ScoringPage = ({ onBack }) => {
   const [activeScore, setActiveScore] = useState("gcs");
 
@@ -1148,7 +1148,8 @@ const ScoringPage = ({ onBack }) => {
           { id: "gcs", label: "GCS" },
           { id: "pram", label: "PRAM" },
           { id: "westley", label: "Westley" },
-          { id: "oi", label: "OI" }
+          { id: "oi", label: "OI" },
+          { id: "iwl", label: "IWL" }
         ].map((score) => (
           <Button
             key={score.id}
@@ -1165,6 +1166,7 @@ const ScoringPage = ({ onBack }) => {
       {activeScore === "pram" && <PRAMScoring />}
       {activeScore === "westley" && <WestleyScoring />}
       {activeScore === "oi" && <OxygenationIndex />}
+      {activeScore === "iwl" && <IWLCalculator />}
     </div>
   );
 };
