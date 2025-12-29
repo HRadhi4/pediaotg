@@ -18,7 +18,7 @@
 
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { ArrowLeft, Activity, Syringe, Heart, Brain, Calculator, Pill, Droplets, Stethoscope, Scale, AlertTriangle, FileText, Search, Settings, X, ChevronUp, ChevronDown, Home, FlaskConical, Zap } from "lucide-react";
+import { ArrowLeft, Activity, Syringe, Heart, Brain, Calculator, Pill, Droplets, Stethoscope, Scale, AlertTriangle, FileText, Settings, X, ChevronUp, ChevronDown, Home, FlaskConical, Zap } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
