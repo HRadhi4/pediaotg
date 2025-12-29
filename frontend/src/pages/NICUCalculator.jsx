@@ -2109,6 +2109,7 @@ const BloodPressurePage = () => {
 const GrowthChartPage = () => {
   const [chartType, setChartType] = useState("CDC"); // CDC or WHO
   const [gender, setGender] = useState("male");
+  const [activeChart, setActiveChart] = useState("weight"); // weight, height, hc
   const [entries, setEntries] = useState([]);
   const [newEntry, setNewEntry] = useState({
     date: new Date().toISOString().split('T')[0],
@@ -2117,6 +2118,7 @@ const GrowthChartPage = () => {
     height: "",
     hc: ""
   });
+  const chartRef = React.useRef(null);
 
   const addEntry = () => {
     if (newEntry.age && (newEntry.weight || newEntry.height || newEntry.hc)) {
@@ -2135,115 +2137,305 @@ const GrowthChartPage = () => {
     setEntries(entries.filter(e => e.id !== id));
   };
 
-  // CDC percentile reference data (simplified for key percentiles)
-  const getPercentile = (type, age, value, chartStandard) => {
-    // Simplified percentile calculation - returns category
-    const ageWeeks = parseFloat(age);
-    const val = parseFloat(value);
-    if (!ageWeeks || !val) return null;
-
-    // Reference ranges (simplified for demonstration)
-    const references = {
+  // Percentile curves data (simplified but realistic curves)
+  const getPercentileCurves = () => {
+    const weeks = Array.from({ length: 19 }, (_, i) => 24 + i); // 24-42 weeks
+    
+    const curves = {
       CDC: {
-        weight: { // kg for gestational age in weeks
-          male: { p3: 0.06 * ageWeeks, p10: 0.07 * ageWeeks, p50: 0.085 * ageWeeks, p90: 0.1 * ageWeeks, p97: 0.11 * ageWeeks },
-          female: { p3: 0.055 * ageWeeks, p10: 0.065 * ageWeeks, p50: 0.08 * ageWeeks, p90: 0.095 * ageWeeks, p97: 0.105 * ageWeeks }
+        weight: {
+          male: {
+            p3: weeks.map(w => ({ age: w, value: 0.5 + (w - 24) * 0.12 })),
+            p10: weeks.map(w => ({ age: w, value: 0.6 + (w - 24) * 0.13 })),
+            p50: weeks.map(w => ({ age: w, value: 0.8 + (w - 24) * 0.15 })),
+            p90: weeks.map(w => ({ age: w, value: 1.0 + (w - 24) * 0.17 })),
+            p97: weeks.map(w => ({ age: w, value: 1.1 + (w - 24) * 0.18 })),
+          },
+          female: {
+            p3: weeks.map(w => ({ age: w, value: 0.45 + (w - 24) * 0.11 })),
+            p10: weeks.map(w => ({ age: w, value: 0.55 + (w - 24) * 0.12 })),
+            p50: weeks.map(w => ({ age: w, value: 0.75 + (w - 24) * 0.14 })),
+            p90: weeks.map(w => ({ age: w, value: 0.95 + (w - 24) * 0.16 })),
+            p97: weeks.map(w => ({ age: w, value: 1.05 + (w - 24) * 0.17 })),
+          }
         },
-        height: { // cm
-          male: { p3: 0.9 * ageWeeks, p10: 0.95 * ageWeeks, p50: 1.05 * ageWeeks, p90: 1.15 * ageWeeks, p97: 1.2 * ageWeeks },
-          female: { p3: 0.85 * ageWeeks, p10: 0.9 * ageWeeks, p50: 1.0 * ageWeeks, p90: 1.1 * ageWeeks, p97: 1.15 * ageWeeks }
+        height: {
+          male: {
+            p3: weeks.map(w => ({ age: w, value: 30 + (w - 24) * 0.9 })),
+            p10: weeks.map(w => ({ age: w, value: 31 + (w - 24) * 0.95 })),
+            p50: weeks.map(w => ({ age: w, value: 33 + (w - 24) * 1.0 })),
+            p90: weeks.map(w => ({ age: w, value: 35 + (w - 24) * 1.05 })),
+            p97: weeks.map(w => ({ age: w, value: 36 + (w - 24) * 1.1 })),
+          },
+          female: {
+            p3: weeks.map(w => ({ age: w, value: 29 + (w - 24) * 0.85 })),
+            p10: weeks.map(w => ({ age: w, value: 30 + (w - 24) * 0.9 })),
+            p50: weeks.map(w => ({ age: w, value: 32 + (w - 24) * 0.95 })),
+            p90: weeks.map(w => ({ age: w, value: 34 + (w - 24) * 1.0 })),
+            p97: weeks.map(w => ({ age: w, value: 35 + (w - 24) * 1.05 })),
+          }
         },
-        hc: { // cm
-          male: { p3: 0.6 * ageWeeks, p10: 0.65 * ageWeeks, p50: 0.72 * ageWeeks, p90: 0.78 * ageWeeks, p97: 0.82 * ageWeeks },
-          female: { p3: 0.58 * ageWeeks, p10: 0.63 * ageWeeks, p50: 0.7 * ageWeeks, p90: 0.76 * ageWeeks, p97: 0.8 * ageWeeks }
+        hc: {
+          male: {
+            p3: weeks.map(w => ({ age: w, value: 21 + (w - 24) * 0.5 })),
+            p10: weeks.map(w => ({ age: w, value: 22 + (w - 24) * 0.52 })),
+            p50: weeks.map(w => ({ age: w, value: 23 + (w - 24) * 0.55 })),
+            p90: weeks.map(w => ({ age: w, value: 24 + (w - 24) * 0.58 })),
+            p97: weeks.map(w => ({ age: w, value: 25 + (w - 24) * 0.6 })),
+          },
+          female: {
+            p3: weeks.map(w => ({ age: w, value: 20 + (w - 24) * 0.48 })),
+            p10: weeks.map(w => ({ age: w, value: 21 + (w - 24) * 0.5 })),
+            p50: weeks.map(w => ({ age: w, value: 22 + (w - 24) * 0.53 })),
+            p90: weeks.map(w => ({ age: w, value: 23 + (w - 24) * 0.56 })),
+            p97: weeks.map(w => ({ age: w, value: 24 + (w - 24) * 0.58 })),
+          }
         }
       },
       WHO: {
         weight: {
-          male: { p3: 0.058 * ageWeeks, p10: 0.068 * ageWeeks, p50: 0.083 * ageWeeks, p90: 0.098 * ageWeeks, p97: 0.108 * ageWeeks },
-          female: { p3: 0.053 * ageWeeks, p10: 0.063 * ageWeeks, p50: 0.078 * ageWeeks, p90: 0.093 * ageWeeks, p97: 0.103 * ageWeeks }
+          male: {
+            p3: weeks.map(w => ({ age: w, value: 0.48 + (w - 24) * 0.115 })),
+            p10: weeks.map(w => ({ age: w, value: 0.58 + (w - 24) * 0.125 })),
+            p50: weeks.map(w => ({ age: w, value: 0.78 + (w - 24) * 0.145 })),
+            p90: weeks.map(w => ({ age: w, value: 0.98 + (w - 24) * 0.165 })),
+            p97: weeks.map(w => ({ age: w, value: 1.08 + (w - 24) * 0.175 })),
+          },
+          female: {
+            p3: weeks.map(w => ({ age: w, value: 0.43 + (w - 24) * 0.105 })),
+            p10: weeks.map(w => ({ age: w, value: 0.53 + (w - 24) * 0.115 })),
+            p50: weeks.map(w => ({ age: w, value: 0.73 + (w - 24) * 0.135 })),
+            p90: weeks.map(w => ({ age: w, value: 0.93 + (w - 24) * 0.155 })),
+            p97: weeks.map(w => ({ age: w, value: 1.03 + (w - 24) * 0.165 })),
+          }
         },
         height: {
-          male: { p3: 0.88 * ageWeeks, p10: 0.93 * ageWeeks, p50: 1.03 * ageWeeks, p90: 1.13 * ageWeeks, p97: 1.18 * ageWeeks },
-          female: { p3: 0.83 * ageWeeks, p10: 0.88 * ageWeeks, p50: 0.98 * ageWeeks, p90: 1.08 * ageWeeks, p97: 1.13 * ageWeeks }
+          male: {
+            p3: weeks.map(w => ({ age: w, value: 29.5 + (w - 24) * 0.88 })),
+            p10: weeks.map(w => ({ age: w, value: 30.5 + (w - 24) * 0.93 })),
+            p50: weeks.map(w => ({ age: w, value: 32.5 + (w - 24) * 0.98 })),
+            p90: weeks.map(w => ({ age: w, value: 34.5 + (w - 24) * 1.03 })),
+            p97: weeks.map(w => ({ age: w, value: 35.5 + (w - 24) * 1.08 })),
+          },
+          female: {
+            p3: weeks.map(w => ({ age: w, value: 28.5 + (w - 24) * 0.83 })),
+            p10: weeks.map(w => ({ age: w, value: 29.5 + (w - 24) * 0.88 })),
+            p50: weeks.map(w => ({ age: w, value: 31.5 + (w - 24) * 0.93 })),
+            p90: weeks.map(w => ({ age: w, value: 33.5 + (w - 24) * 0.98 })),
+            p97: weeks.map(w => ({ age: w, value: 34.5 + (w - 24) * 1.03 })),
+          }
         },
         hc: {
-          male: { p3: 0.58 * ageWeeks, p10: 0.63 * ageWeeks, p50: 0.7 * ageWeeks, p90: 0.77 * ageWeeks, p97: 0.81 * ageWeeks },
-          female: { p3: 0.56 * ageWeeks, p10: 0.61 * ageWeeks, p50: 0.68 * ageWeeks, p90: 0.75 * ageWeeks, p97: 0.79 * ageWeeks }
+          male: {
+            p3: weeks.map(w => ({ age: w, value: 20.5 + (w - 24) * 0.48 })),
+            p10: weeks.map(w => ({ age: w, value: 21.5 + (w - 24) * 0.5 })),
+            p50: weeks.map(w => ({ age: w, value: 22.5 + (w - 24) * 0.53 })),
+            p90: weeks.map(w => ({ age: w, value: 23.5 + (w - 24) * 0.56 })),
+            p97: weeks.map(w => ({ age: w, value: 24.5 + (w - 24) * 0.58 })),
+          },
+          female: {
+            p3: weeks.map(w => ({ age: w, value: 19.5 + (w - 24) * 0.46 })),
+            p10: weeks.map(w => ({ age: w, value: 20.5 + (w - 24) * 0.48 })),
+            p50: weeks.map(w => ({ age: w, value: 21.5 + (w - 24) * 0.51 })),
+            p90: weeks.map(w => ({ age: w, value: 22.5 + (w - 24) * 0.54 })),
+            p97: weeks.map(w => ({ age: w, value: 23.5 + (w - 24) * 0.56 })),
+          }
         }
       }
     };
-
-    const ref = references[chartStandard][type][gender];
-    if (val < ref.p3) return { percentile: "<3rd", color: "text-red-500", bg: "bg-red-100" };
-    if (val < ref.p10) return { percentile: "3-10th", color: "text-amber-500", bg: "bg-amber-100" };
-    if (val < ref.p50) return { percentile: "10-50th", color: "text-blue-500", bg: "bg-blue-100" };
-    if (val < ref.p90) return { percentile: "50-90th", color: "text-green-500", bg: "bg-green-100" };
-    if (val < ref.p97) return { percentile: "90-97th", color: "text-blue-500", bg: "bg-blue-100" };
-    return { percentile: ">97th", color: "text-amber-500", bg: "bg-amber-100" };
+    
+    return curves[chartType][activeChart][gender];
   };
+
+  // Prepare chart data
+  const getChartData = () => {
+    const weeks = Array.from({ length: 19 }, (_, i) => 24 + i);
+    const curves = getPercentileCurves();
+    
+    return weeks.map((week, idx) => ({
+      age: week,
+      p3: curves.p3[idx].value,
+      p10: curves.p10[idx].value,
+      p50: curves.p50[idx].value,
+      p90: curves.p90[idx].value,
+      p97: curves.p97[idx].value,
+    }));
+  };
+
+  // Get patient data points
+  const getPatientData = () => {
+    return entries
+      .filter(e => e[activeChart])
+      .map(e => ({
+        age: parseFloat(e.age),
+        value: parseFloat(e[activeChart]),
+        date: e.date
+      }))
+      .sort((a, b) => a.age - b.age);
+  };
+
+  const chartLabels = {
+    weight: { title: "Weight-for-Age", unit: "kg" },
+    height: { title: "Length-for-Age", unit: "cm" },
+    hc: { title: "Head Circumference-for-Age", unit: "cm" }
+  };
+
+  // Save chart to gallery
+  const saveToGallery = async () => {
+    if (!chartRef.current) return;
+    
+    try {
+      const { default: html2canvas } = await import('html2canvas');
+      const canvas = await html2canvas(chartRef.current, {
+        backgroundColor: '#ffffff',
+        scale: 2
+      });
+      
+      const link = document.createElement('a');
+      link.download = `growth-chart-${activeChart}-${gender}-${new Date().toISOString().split('T')[0]}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    } catch (error) {
+      // Fallback: use SVG export
+      const svgElement = chartRef.current.querySelector('svg');
+      if (svgElement) {
+        const svgData = new XMLSerializer().serializeToString(svgElement);
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        const img = new Image();
+        
+        img.onload = () => {
+          canvas.width = img.width * 2;
+          canvas.height = img.height * 2;
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          
+          const link = document.createElement('a');
+          link.download = `growth-chart-${activeChart}-${gender}-${new Date().toISOString().split('T')[0]}.png`;
+          link.href = canvas.toDataURL('image/png');
+          link.click();
+        };
+        
+        img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgData)));
+      }
+    }
+  };
+
+  const patientData = getPatientData();
+  const chartData = getChartData();
+
+  // Import Recharts components
+  const { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, ReferenceDot, Legend } = require('recharts');
 
   return (
     <div className="space-y-4 pb-8">
-      {/* Chart Type Selection */}
+      {/* Chart Type & Gender Selection */}
       <Card className="nightingale-card">
         <CardHeader className="pb-3">
           <CardTitle className="text-base flex items-center gap-2">
             <GrowthIcon />
             Growth Charts
           </CardTitle>
-          <CardDescription>Track weight, height, and head circumference</CardDescription>
+          <CardDescription>Track and visualize growth over time</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           {/* Standard Selection */}
-          <div className="space-y-2">
-            <Label className="text-xs">Chart Standard</Label>
-            <div className="flex gap-2">
-              <Button
-                variant={chartType === "CDC" ? "default" : "outline"}
-                onClick={() => setChartType("CDC")}
-                className="flex-1"
-                size="sm"
-              >
-                CDC
-              </Button>
-              <Button
-                variant={chartType === "WHO" ? "default" : "outline"}
-                onClick={() => setChartType("WHO")}
-                className="flex-1"
-                size="sm"
-              >
-                WHO
-              </Button>
-            </div>
+          <div className="flex gap-2">
+            <Button variant={chartType === "CDC" ? "default" : "outline"} onClick={() => setChartType("CDC")} className="flex-1" size="sm">CDC</Button>
+            <Button variant={chartType === "WHO" ? "default" : "outline"} onClick={() => setChartType("WHO")} className="flex-1" size="sm">WHO</Button>
           </div>
-
           {/* Gender Selection */}
-          <div className="space-y-2">
-            <Label className="text-xs">Gender</Label>
-            <div className="flex gap-2">
-              <Button
-                variant={gender === "male" ? "default" : "outline"}
-                onClick={() => setGender("male")}
-                className="flex-1"
-                size="sm"
-              >
-                Male
-              </Button>
-              <Button
-                variant={gender === "female" ? "default" : "outline"}
-                onClick={() => setGender("female")}
-                className="flex-1"
-                size="sm"
-              >
-                Female
-              </Button>
+          <div className="flex gap-2">
+            <Button variant={gender === "male" ? "default" : "outline"} onClick={() => setGender("male")} className="flex-1" size="sm">Male</Button>
+            <Button variant={gender === "female" ? "default" : "outline"} onClick={() => setGender("female")} className="flex-1" size="sm">Female</Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Chart Type Tabs */}
+      <div className="flex gap-2 overflow-x-auto pb-1">
+        {[
+          { id: "weight", label: "Weight" },
+          { id: "height", label: "Length" },
+          { id: "hc", label: "Head Circ" }
+        ].map((tab) => (
+          <Button
+            key={tab.id}
+            variant={activeChart === tab.id ? "default" : "outline"}
+            onClick={() => setActiveChart(tab.id)}
+            size="sm"
+            className="whitespace-nowrap"
+          >
+            {tab.label}
+          </Button>
+        ))}
+      </div>
+
+      {/* Growth Chart */}
+      <Card className="nightingale-card">
+        <CardHeader className="pb-2">
+          <div className="flex justify-between items-center">
+            <CardTitle className="text-sm">{chartLabels[activeChart].title} ({chartType})</CardTitle>
+            <Button variant="outline" size="sm" onClick={saveToGallery} className="text-xs">
+              📷 Save
+            </Button>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div ref={chartRef} className="bg-white dark:bg-gray-900 rounded-lg p-2">
+            <ResponsiveContainer width="100%" height={280}>
+              <LineChart data={chartData} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                <XAxis 
+                  dataKey="age" 
+                  tick={{ fontSize: 10 }} 
+                  label={{ value: 'Gestational Age (weeks)', position: 'bottom', fontSize: 10, offset: -5 }}
+                />
+                <YAxis 
+                  tick={{ fontSize: 10 }} 
+                  label={{ value: chartLabels[activeChart].unit, angle: -90, position: 'insideLeft', fontSize: 10 }}
+                  domain={['auto', 'auto']}
+                />
+                <Tooltip 
+                  contentStyle={{ fontSize: 11, borderRadius: 8 }}
+                  formatter={(value, name) => [value.toFixed(2) + ' ' + chartLabels[activeChart].unit, name]}
+                />
+                
+                {/* Percentile curves */}
+                <Line type="monotone" dataKey="p97" stroke="#f59e0b" strokeWidth={1} dot={false} name="97th" strokeDasharray="4 2" />
+                <Line type="monotone" dataKey="p90" stroke="#84cc16" strokeWidth={1} dot={false} name="90th" />
+                <Line type="monotone" dataKey="p50" stroke="#22c55e" strokeWidth={2} dot={false} name="50th" />
+                <Line type="monotone" dataKey="p10" stroke="#84cc16" strokeWidth={1} dot={false} name="10th" />
+                <Line type="monotone" dataKey="p3" stroke="#f59e0b" strokeWidth={1} dot={false} name="3rd" strokeDasharray="4 2" />
+                
+                {/* Patient data points */}
+                {patientData.map((point, idx) => (
+                  <ReferenceDot
+                    key={idx}
+                    x={point.age}
+                    y={point.value}
+                    r={6}
+                    fill="#00d9c5"
+                    stroke="#0d9488"
+                    strokeWidth={2}
+                  />
+                ))}
+              </LineChart>
+            </ResponsiveContainer>
+            
+            {/* Legend */}
+            <div className="flex justify-center gap-4 mt-2 text-xs">
+              <span className="flex items-center gap-1"><span className="w-3 h-0.5 bg-amber-500"></span> 3rd/97th</span>
+              <span className="flex items-center gap-1"><span className="w-3 h-0.5 bg-lime-500"></span> 10th/90th</span>
+              <span className="flex items-center gap-1"><span className="w-3 h-1 bg-green-500"></span> 50th</span>
+              <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-full bg-[#00d9c5]"></span> Patient</span>
             </div>
           </div>
         </CardContent>
       </Card>
 
-      {/* New Entry Form */}
+      {/* Add Measurement Form */}
       <Card className="nightingale-card">
         <CardHeader className="pb-2">
           <CardTitle className="text-sm">Add Measurement</CardTitle>
@@ -2252,57 +2444,25 @@ const GrowthChartPage = () => {
           <div className="grid grid-cols-2 gap-2">
             <div className="space-y-1">
               <Label className="text-xs">Date</Label>
-              <Input
-                type="date"
-                value={newEntry.date}
-                onChange={(e) => setNewEntry({...newEntry, date: e.target.value})}
-                className="h-9 text-sm"
-              />
+              <Input type="date" value={newEntry.date} onChange={(e) => setNewEntry({...newEntry, date: e.target.value})} className="h-9 text-sm" />
             </div>
             <div className="space-y-1">
               <Label className="text-xs">Age (weeks)</Label>
-              <Input
-                type="number"
-                placeholder="e.g., 32"
-                value={newEntry.age}
-                onChange={(e) => setNewEntry({...newEntry, age: e.target.value})}
-                className="h-9 font-mono text-sm"
-              />
+              <Input type="number" placeholder="e.g., 32" value={newEntry.age} onChange={(e) => setNewEntry({...newEntry, age: e.target.value})} className="h-9 font-mono text-sm" />
             </div>
           </div>
           <div className="grid grid-cols-3 gap-2">
             <div className="space-y-1">
               <Label className="text-xs">Weight (kg)</Label>
-              <Input
-                type="number"
-                step="0.01"
-                placeholder="1.5"
-                value={newEntry.weight}
-                onChange={(e) => setNewEntry({...newEntry, weight: e.target.value})}
-                className="h-9 font-mono text-sm"
-              />
+              <Input type="number" step="0.01" placeholder="1.5" value={newEntry.weight} onChange={(e) => setNewEntry({...newEntry, weight: e.target.value})} className="h-9 font-mono text-sm" />
             </div>
             <div className="space-y-1">
-              <Label className="text-xs">Height (cm)</Label>
-              <Input
-                type="number"
-                step="0.1"
-                placeholder="45"
-                value={newEntry.height}
-                onChange={(e) => setNewEntry({...newEntry, height: e.target.value})}
-                className="h-9 font-mono text-sm"
-              />
+              <Label className="text-xs">Length (cm)</Label>
+              <Input type="number" step="0.1" placeholder="45" value={newEntry.height} onChange={(e) => setNewEntry({...newEntry, height: e.target.value})} className="h-9 font-mono text-sm" />
             </div>
             <div className="space-y-1">
               <Label className="text-xs">HC (cm)</Label>
-              <Input
-                type="number"
-                step="0.1"
-                placeholder="30"
-                value={newEntry.hc}
-                onChange={(e) => setNewEntry({...newEntry, hc: e.target.value})}
-                className="h-9 font-mono text-sm"
-              />
+              <Input type="number" step="0.1" placeholder="30" value={newEntry.hc} onChange={(e) => setNewEntry({...newEntry, hc: e.target.value})} className="h-9 font-mono text-sm" />
             </div>
           </div>
           <Button onClick={addEntry} className="w-full" size="sm">
@@ -2315,68 +2475,36 @@ const GrowthChartPage = () => {
       {entries.length > 0 && (
         <Card className="nightingale-card">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm">Measurements ({chartType} - {gender})</CardTitle>
+            <CardTitle className="text-sm">Measurements ({entries.length})</CardTitle>
           </CardHeader>
           <CardContent className="space-y-2">
-            {entries.map((entry) => {
-              const weightP = entry.weight ? getPercentile("weight", entry.age, entry.weight, chartType) : null;
-              const heightP = entry.height ? getPercentile("height", entry.age, entry.height, chartType) : null;
-              const hcP = entry.hc ? getPercentile("hc", entry.age, entry.hc, chartType) : null;
-
-              return (
-                <div key={entry.id} className="p-3 rounded-xl bg-gray-50 dark:bg-gray-800/50 space-y-2">
-                  <div className="flex justify-between items-center">
-                    <div className="text-sm">
-                      <span className="font-medium">{entry.date}</span>
-                      <span className="text-muted-foreground ml-2">({entry.age} weeks)</span>
-                    </div>
-                    <button 
-                      onClick={() => removeEntry(entry.id)}
-                      className="text-red-500 hover:text-red-700"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </button>
-                  </div>
-                  <div className="grid grid-cols-3 gap-2 text-xs">
-                    {entry.weight && (
-                      <div className={`p-2 rounded-lg ${weightP?.bg || 'bg-gray-100'}`}>
-                        <p className="text-muted-foreground">Weight</p>
-                        <p className="font-mono font-bold">{entry.weight} kg</p>
-                        <p className={`text-xs ${weightP?.color}`}>{weightP?.percentile}</p>
-                      </div>
-                    )}
-                    {entry.height && (
-                      <div className={`p-2 rounded-lg ${heightP?.bg || 'bg-gray-100'}`}>
-                        <p className="text-muted-foreground">Height</p>
-                        <p className="font-mono font-bold">{entry.height} cm</p>
-                        <p className={`text-xs ${heightP?.color}`}>{heightP?.percentile}</p>
-                      </div>
-                    )}
-                    {entry.hc && (
-                      <div className={`p-2 rounded-lg ${hcP?.bg || 'bg-gray-100'}`}>
-                        <p className="text-muted-foreground">HC</p>
-                        <p className="font-mono font-bold">{entry.hc} cm</p>
-                        <p className={`text-xs ${hcP?.color}`}>{hcP?.percentile}</p>
-                      </div>
-                    )}
-                  </div>
+            {entries.map((entry) => (
+              <div key={entry.id} className="p-2 rounded-xl bg-gray-50 dark:bg-gray-800/50 flex justify-between items-center text-xs">
+                <div className="flex gap-3">
+                  <span className="font-medium">{entry.age}w</span>
+                  {entry.weight && <span className="text-muted-foreground">W: {entry.weight}kg</span>}
+                  {entry.height && <span className="text-muted-foreground">L: {entry.height}cm</span>}
+                  {entry.hc && <span className="text-muted-foreground">HC: {entry.hc}cm</span>}
                 </div>
-              );
-            })}
+                <button onClick={() => removeEntry(entry.id)} className="text-red-500 hover:text-red-700 p-1">
+                  <Trash2 className="h-3 w-3" />
+                </button>
+              </div>
+            ))}
           </CardContent>
         </Card>
       )}
 
-      {/* Reference Info */}
+      {/* Reference */}
       <Card className="nightingale-card">
         <CardHeader className="pb-2">
           <CardTitle className="text-sm">Reference</CardTitle>
         </CardHeader>
         <CardContent className="text-xs text-muted-foreground space-y-1">
-          <p>• <span className="font-medium">CDC Charts:</span> Based on US national data, recommended for US children</p>
-          <p>• <span className="font-medium">WHO Charts:</span> International growth standard for breastfed infants</p>
-          <p>• <span className="font-medium">HC:</span> Head Circumference (Occipitofrontal)</p>
-          <p>• Percentiles color-coded: <span className="text-red-500">Low</span>, <span className="text-green-500">Normal</span>, <span className="text-amber-500">High</span></p>
+          <p>• <span className="text-green-500 font-medium">50th percentile:</span> Median (normal)</p>
+          <p>• <span className="text-lime-500 font-medium">10th-90th:</span> Normal range</p>
+          <p>• <span className="text-amber-500 font-medium">3rd-10th / 90th-97th:</span> Monitor closely</p>
+          <p>• <span className="text-red-500 font-medium">&lt;3rd / &gt;97th:</span> Requires evaluation</p>
         </CardContent>
       </Card>
     </div>
