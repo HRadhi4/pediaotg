@@ -454,7 +454,7 @@ const FluidCalculatorPage = () => {
   const results = calculateResults();
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 pt-4">
       {/* Patient Info */}
       <Card className="nightingale-card">
         <CardHeader className="pb-2">
@@ -829,7 +829,7 @@ const NRPChecklistPage = () => {
   ];
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 pt-4">
       {/* Timer Display */}
       {activeTimer && (
         <div className="p-3 rounded-xl bg-red-100 dark:bg-red-950/50 border border-red-300 flex items-center justify-between animate-pulse">
@@ -952,7 +952,7 @@ const CatheterCalculatorPage = () => {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 pt-4">
       <Card className="nightingale-card">
         <CardContent className="pt-4">
           <div className="space-y-2">
@@ -1144,7 +1144,7 @@ const PRBCGuidelinePage = () => {
   ];
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 pt-4">
       <Tabs defaultValue="calculator" className="w-full">
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="calculator">Calculator</TabsTrigger>
@@ -1448,7 +1448,7 @@ const ExchangeCalculatorPage = () => {
   const wholeBloodResult = calculateWholeBloodExchange();
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 pt-4">
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="partial">Partial Exchange</TabsTrigger>
@@ -1709,7 +1709,7 @@ const IntubationPage = () => {
   const result = calculateResults();
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 pt-4">
       {/* Input */}
       <Card className="nightingale-card">
         <CardHeader className="pb-2">
@@ -1890,7 +1890,7 @@ const BloodPressurePage = () => {
   const selectedData = gestationalAge ? currentData[parseInt(gestationalAge)] : null;
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 pt-4">
           {/* Age Type Selector */}
           <Card className="nightingale-card">
             <CardContent className="pt-4 space-y-3">
