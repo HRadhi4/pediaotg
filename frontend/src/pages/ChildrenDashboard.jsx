@@ -7,11 +7,10 @@
  * - Lines 294-550: BPPage (Blood Pressure Calculator)
  * - Lines 550-750: InfusionsPage (IV Drug Calculations)
  * - Lines 750-900: IntubationPage (ETT + RSI Checklist)
- * - Lines 900-1280: ScoringPage (GCS, PRAM, Westley, OI)
- * - Lines 1280-1600: CPRPage (PALS Algorithms & Drug Dosing)
- * - Lines 1600-2000: ApproachesPage (DKA, Status Epilepticus, Hyperammonemia)
- * - Lines 2000-2100: InsensiblePage (Water Loss Calculator)
- * - Lines 2100-2400: DrugsPage (Antibiotics & Analgesics)
+ * - Lines 900-1200: ScoringPage (GCS, PRAM, Westley, OI)
+ * - Lines 1200-1520: CPRPage (PALS Algorithms & Drug Dosing)
+ * - Lines 1520-1920: ApproachesPage (DKA, Status Epilepticus, Hyperammonemia)
+ * - Lines 1920-2220: DrugsPage (Antibiotics & Analgesics)
  * 
  * Future Refactoring: Each page component can be extracted to /pages/children/
  */
