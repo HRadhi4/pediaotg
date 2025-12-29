@@ -31,6 +31,7 @@ function App() {
         <Routes>
           <Route path="/" element={<LandingPage theme={theme} toggleTheme={toggleTheme} />} />
           <Route path="/nicu" element={<NICUCalculator theme={theme} toggleTheme={toggleTheme} />} />
+          <Route path="/nicu/:page" element={<NICUCalculator theme={theme} toggleTheme={toggleTheme} />} />
           <Route path="/children" element={<ChildrenDashboard theme={theme} toggleTheme={toggleTheme} />} />
           <Route path="/children/:page" element={<ChildrenDashboard theme={theme} toggleTheme={toggleTheme} />} />
         </Routes>
