@@ -138,11 +138,14 @@ frontend:
     file: "/app/frontend/src/pages/ChildrenDashboard.jsx"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: true
         agent: "main"
         comment: "Implemented full PALS 2025 algorithms: Cardiac Arrest (VF/pVT & Asystole/PEA), Tachycardia, Bradycardia. Drug calculator with weight-based dosing for Epinephrine, Amiodarone, Adenosine, Atropine, Defibrillation/Cardioversion."
+      - working: true
+        agent: "testing"
+        comment: "✓ TESTED: CPR/PALS page fully functional. Weight input working (tested with 15kg). All 4 tabs accessible (Arrest, Tachy, Brady, Drugs). Drug calculations working with weight-based dosing. PALS 2025 algorithms visible including VF/pVT, Asystole/PEA, SVT, and bradycardia protocols. All calculations accurate for pediatric dosing."
 
   - task: "Infusions Page"
     implemented: true
