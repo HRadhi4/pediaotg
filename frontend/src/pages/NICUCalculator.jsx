@@ -260,6 +260,7 @@ const NICUCalculator = ({ theme, toggleTheme }) => {
               {currentPage === "exchange" && <ExchangeCalculatorPage />}
             </div>
           )}
+        </div>
       </main>
 
       {/* Floating Tab Bar */}
