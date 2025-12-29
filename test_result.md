@@ -123,11 +123,14 @@ frontend:
     file: "/app/frontend/src/pages/ChildrenDashboard.jsx"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: true
         agent: "main"
         comment: "BP calculator with Boys/Girls selection, age-based percentiles (50th, 90th, 95th, 99th) for systolic/diastolic. Based on Harriet Lane guidelines."
+      - working: true
+        agent: "testing"
+        comment: "✓ TESTED: BP calculator fully functional. Gender selection (Boys/Girls) working, age dropdown (1-17 years) working, percentile cards display correctly with color coding (green=50th, amber=90th, red=95th/99th). Tested with 5-year-old girl: 89/52 mmHg (50th percentile). All calculations accurate."
 
   - task: "CPR/PALS Page"
     implemented: true
