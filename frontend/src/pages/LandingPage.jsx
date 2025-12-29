@@ -54,23 +54,23 @@ const LandingPage = ({ theme, toggleTheme }) => {
     <Layout theme={theme} toggleTheme={toggleTheme}>
       {/* Main Content */}
       <main className="max-w-4xl mx-auto px-4 md:px-6 py-6 pt-20 pb-32">
-        {/* Department Selection - Square Cards */}
-        <div className="grid grid-cols-2 gap-4">
+        {/* Department Selection - Stacked Rectangular Cards */}
+        <div className="flex flex-col gap-4 max-w-md mx-auto">
           {/* NICU Card */}
           <div 
             onClick={() => navigate("/nicu")}
-            className="selection-card group aspect-square flex flex-col items-center justify-center cursor-pointer"
+            className="selection-card group cursor-pointer"
           >
-            <div className="flex flex-col items-center gap-4 p-6">
-              <div className="w-20 h-20 rounded-2xl bg-[#00d9c5]/10 flex items-center justify-center group-hover:bg-[#00d9c5]/20 transition-colors">
-                <Baby className="h-10 w-10 text-[#00d9c5]" />
+            <div className="flex items-center gap-5 p-6">
+              <div className="w-16 h-16 rounded-2xl bg-[#00d9c5]/10 flex items-center justify-center group-hover:bg-[#00d9c5]/20 transition-colors flex-shrink-0">
+                <Baby className="h-8 w-8 text-[#00d9c5]" />
               </div>
-              <div className="text-center">
+              <div>
                 <h2 className="font-heading text-2xl font-bold text-foreground">
                   NICU
                 </h2>
-                <p className="text-sm text-muted-foreground">
-                  Neonatal ICU
+                <p className="text-muted-foreground">
+                  Neonatal Intensive Care Unit
                 </p>
               </div>
             </div>
@@ -79,17 +79,17 @@ const LandingPage = ({ theme, toggleTheme }) => {
           {/* Children Card */}
           <div 
             onClick={() => navigate("/children")}
-            className="selection-card group aspect-square flex flex-col items-center justify-center cursor-pointer"
+            className="selection-card group cursor-pointer"
           >
-            <div className="flex flex-col items-center gap-4 p-6">
-              <div className="w-20 h-20 rounded-2xl bg-purple-500/10 flex items-center justify-center group-hover:bg-purple-500/20 transition-colors">
-                <Users className="h-10 w-10 text-purple-500" />
+            <div className="flex items-center gap-5 p-6">
+              <div className="w-16 h-16 rounded-2xl bg-purple-500/10 flex items-center justify-center group-hover:bg-purple-500/20 transition-colors flex-shrink-0">
+                <Users className="h-8 w-8 text-purple-500" />
               </div>
-              <div className="text-center">
+              <div>
                 <h2 className="font-heading text-2xl font-bold text-foreground">
                   Children
                 </h2>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-muted-foreground">
                   Pediatric Ward
                 </p>
               </div>
