@@ -18,9 +18,15 @@ const ChildrenDashboard = ({ theme, toggleTheme }) => {
   // Use page directly from URL params - no need for separate state
   const currentPage = page || "main";
   const [searchTerm, setSearchTerm] = useState("");
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [widgetOrder, setWidgetOrder] = useState(() => {
+    const saved = localStorage.getItem("childrenWidgetOrder");
+    return saved ? JSON.parse(saved) : ["bp", "infusions", "intubation", "scoring", "cpr", "approaches", "insensible", "drugs"];
+  });
 
   // Navigate to a page
   const goToPage = (pageId) => {
+    if (isEditMode) return;
     if (pageId === "main") {
       navigate("/children");
     } else {
@@ -30,16 +36,18 @@ const ChildrenDashboard = ({ theme, toggleTheme }) => {
   };
 
   // Widget definitions for main page with search keywords
-  const widgets = [
-    { id: "bp", title: "Blood Pressure", subtitle: "Age-based BP percentiles", icon: Activity, color: "red", keywords: ["hypertension", "systolic", "diastolic", "percentile", "boys", "girls"] },
-    { id: "infusions", title: "Infusions", subtitle: "IV drug calculations", icon: Syringe, color: "blue", keywords: ["dopamine", "dobutamine", "adrenaline", "epinephrine", "sedation", "midazolam", "fentanyl", "inotrope"] },
-    { id: "intubation", title: "Intubation", subtitle: "ETT + RSI Checklist", icon: Stethoscope, color: "purple", keywords: ["ett", "tube", "airway", "rsi", "rapid sequence", "laryngoscope", "cuffed", "uncuffed"] },
-    { id: "scoring", title: "Scoring", subtitle: "GCS, PRAM, Westley, OI", icon: Calculator, color: "amber", keywords: ["glasgow", "coma", "croup", "respiratory", "oxygenation", "pram", "westley"] },
-    { id: "cpr", title: "CPR", subtitle: "PALS drugs & algorithms", icon: Heart, color: "red", keywords: ["resuscitation", "pals", "arrest", "defibrillation", "epinephrine", "amiodarone", "adenosine", "tachycardia", "bradycardia", "vf", "vt", "asystole", "pea"] },
-    { id: "approaches", title: "Approaches", subtitle: "DKA, SE, Hyperammonemia", icon: FileText, color: "teal", keywords: ["diabetic", "ketoacidosis", "dka", "status epilepticus", "seizure", "convulsion", "hyperammonemia", "ammonia", "urea cycle", "phenytoin", "diazepam"] },
-    { id: "insensible", title: "Insensible Water Loss", subtitle: "BSA-based calculation", icon: Droplets, color: "teal", keywords: ["iwl", "bsa", "body surface", "fluid", "loss", "evaporation"] },
-    { id: "drugs", title: "Drugs", subtitle: "Commonly used medications", icon: Pill, color: "purple", keywords: ["antibiotic", "analgesic", "paracetamol", "ibuprofen", "morphine", "amoxicillin", "ceftriaxone", "vancomycin", "gentamicin", "pain", "fever"] },
-  ];
+  const widgetDefs = {
+    bp: { id: "bp", title: "Blood Pressure", subtitle: "Age-based BP percentiles", icon: Activity, color: "red", keywords: ["hypertension", "systolic", "diastolic", "percentile", "boys", "girls", "map"] },
+    infusions: { id: "infusions", title: "Infusions", subtitle: "IV drug calculations", icon: Syringe, color: "blue", keywords: ["dopamine", "dobutamine", "adrenaline", "epinephrine", "sedation", "midazolam", "fentanyl", "inotrope"] },
+    intubation: { id: "intubation", title: "Intubation", subtitle: "ETT + RSI Checklist", icon: Stethoscope, color: "purple", keywords: ["ett", "tube", "airway", "rsi", "rapid sequence", "laryngoscope", "cuffed", "uncuffed"] },
+    scoring: { id: "scoring", title: "Scoring", subtitle: "GCS, PRAM, Westley, OI", icon: Calculator, color: "amber", keywords: ["glasgow", "coma", "croup", "respiratory", "oxygenation", "pram", "westley"] },
+    cpr: { id: "cpr", title: "CPR", subtitle: "PALS drugs & algorithms", icon: Heart, color: "red", keywords: ["resuscitation", "pals", "arrest", "defibrillation", "epinephrine", "amiodarone", "adenosine", "tachycardia", "bradycardia", "vf", "vt", "asystole", "pea"] },
+    approaches: { id: "approaches", title: "Approaches", subtitle: "DKA, SE, Hyperammonemia", icon: FileText, color: "teal", keywords: ["diabetic", "ketoacidosis", "dka", "status epilepticus", "seizure", "convulsion", "hyperammonemia", "ammonia", "urea cycle", "phenytoin", "diazepam"] },
+    insensible: { id: "insensible", title: "Insensible Water Loss", subtitle: "BSA-based calculation", icon: Droplets, color: "teal", keywords: ["iwl", "bsa", "body surface", "fluid", "loss", "evaporation"] },
+    drugs: { id: "drugs", title: "Drugs", subtitle: "Commonly used medications", icon: Pill, color: "purple", keywords: ["antibiotic", "analgesic", "paracetamol", "ibuprofen", "morphine", "amoxicillin", "ceftriaxone", "vancomycin", "gentamicin", "pain", "fever"] },
+  };
+
+  const widgets = widgetOrder.map(id => widgetDefs[id]).filter(Boolean);
 
   // Filter widgets based on search term
   const filteredWidgets = widgets.filter(widget => {
@@ -51,6 +59,16 @@ const ChildrenDashboard = ({ theme, toggleTheme }) => {
       widget.keywords.some(k => k.toLowerCase().includes(term))
     );
   });
+
+  // Move widget up or down
+  const moveWidget = (index, direction) => {
+    const newOrder = [...widgetOrder];
+    const newIndex = direction === 'up' ? index - 1 : index + 1;
+    if (newIndex < 0 || newIndex >= newOrder.length) return;
+    [newOrder[index], newOrder[newIndex]] = [newOrder[newIndex], newOrder[index]];
+    setWidgetOrder(newOrder);
+    localStorage.setItem("childrenWidgetOrder", JSON.stringify(newOrder));
+  };
 
   const getColorClass = (color) => {
     const colors = {
