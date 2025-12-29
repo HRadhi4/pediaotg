@@ -1885,15 +1885,361 @@ const ApproachesPage = ({ onBack }) => {
 };
 
 // Drugs Page - Placeholder
-const DrugsPage = ({ onBack }) => (
-  <div className="space-y-4 pb-8">
-    <Card className="nightingale-card">
-      <CardHeader>
-        <CardTitle>Commonly Used Drugs</CardTitle>
-        <CardDescription>Coming in next phase - Harriet Lane reference</CardDescription>
-      </CardHeader>
-    </Card>
-  </div>
-);
+// Drugs Page - Antibiotics & Analgesics
+const DrugsPage = ({ onBack }) => {
+  const [activeTab, setActiveTab] = useState("antibiotics");
+  const [weight, setWeight] = useState("");
+  const w = parseFloat(weight) || 0;
+
+  // Antibiotic data
+  const antibiotics = [
+    {
+      name: "Amoxicillin",
+      category: "Penicillin",
+      route: "PO",
+      dose: "25-50",
+      unit: "mg/kg/day",
+      frequency: "q8h",
+      max: "3 g/day",
+      notes: "High dose (80-90 mg/kg/day) for otitis media, pneumonia",
+      color: "blue"
+    },
+    {
+      name: "Ampicillin",
+      category: "Penicillin",
+      route: "IV",
+      dose: "50-100",
+      unit: "mg/kg/dose",
+      frequency: "q6h",
+      max: "12 g/day",
+      notes: "Meningitis: 100 mg/kg/dose q6h",
+      color: "blue"
+    },
+    {
+      name: "Ceftriaxone",
+      category: "3rd Gen Ceph",
+      route: "IV/IM",
+      dose: "50-100",
+      unit: "mg/kg/day",
+      frequency: "q12-24h",
+      max: "4 g/day",
+      notes: "Meningitis: 100 mg/kg/day. Avoid in neonates with jaundice",
+      color: "green"
+    },
+    {
+      name: "Cefotaxime",
+      category: "3rd Gen Ceph",
+      route: "IV",
+      dose: "50",
+      unit: "mg/kg/dose",
+      frequency: "q6-8h",
+      max: "12 g/day",
+      notes: "Preferred in neonates over ceftriaxone",
+      color: "green"
+    },
+    {
+      name: "Gentamicin",
+      category: "Aminoglycoside",
+      route: "IV",
+      dose: "5-7.5",
+      unit: "mg/kg/dose",
+      frequency: "q24h",
+      max: "560 mg/dose",
+      notes: "Once daily dosing. Monitor levels (trough <1, peak 20-30)",
+      color: "amber"
+    },
+    {
+      name: "Vancomycin",
+      category: "Glycopeptide",
+      route: "IV",
+      dose: "15",
+      unit: "mg/kg/dose",
+      frequency: "q6-8h",
+      max: "4 g/day",
+      notes: "Trough 10-15 (uncomplicated), 15-20 (meningitis/severe). Infuse over 1hr",
+      color: "red"
+    },
+    {
+      name: "Azithromycin",
+      category: "Macrolide",
+      route: "PO",
+      dose: "10",
+      unit: "mg/kg/day",
+      frequency: "once daily",
+      max: "500 mg/day",
+      notes: "Day 1: 10 mg/kg, Days 2-5: 5 mg/kg (Z-pack)",
+      color: "purple"
+    },
+    {
+      name: "Clindamycin",
+      category: "Lincosamide",
+      route: "IV/PO",
+      dose: "10-15",
+      unit: "mg/kg/dose",
+      frequency: "q6-8h",
+      max: "900 mg/dose",
+      notes: "Good for skin/soft tissue, bone. Anaerobic coverage",
+      color: "teal"
+    },
+    {
+      name: "Metronidazole",
+      category: "Nitroimidazole",
+      route: "IV/PO",
+      dose: "7.5",
+      unit: "mg/kg/dose",
+      frequency: "q8h",
+      max: "500 mg/dose",
+      notes: "Anaerobic infections, C. diff, H. pylori",
+      color: "orange"
+    },
+    {
+      name: "Penicillin G",
+      category: "Penicillin",
+      route: "IV",
+      dose: "50,000",
+      unit: "units/kg/dose",
+      frequency: "q4-6h",
+      max: "4 MU/dose",
+      notes: "Strep pharyngitis, syphilis, rheumatic fever prophylaxis",
+      color: "blue"
+    }
+  ];
+
+  // Analgesic data
+  const analgesics = [
+    {
+      name: "Paracetamol (Acetaminophen)",
+      category: "Antipyretic/Analgesic",
+      route: "PO/PR/IV",
+      dose: "15",
+      unit: "mg/kg/dose",
+      frequency: "q4-6h",
+      max: "75 mg/kg/day (max 4g/day)",
+      notes: "IV: 7.5 mg/kg if <10kg. Loading: 20-25 mg/kg PR",
+      color: "blue"
+    },
+    {
+      name: "Ibuprofen",
+      category: "NSAID",
+      route: "PO",
+      dose: "5-10",
+      unit: "mg/kg/dose",
+      frequency: "q6-8h",
+      max: "40 mg/kg/day (max 2.4g/day)",
+      notes: "Avoid if dehydrated, renal impairment, or GI bleed risk",
+      color: "green"
+    },
+    {
+      name: "Morphine",
+      category: "Opioid",
+      route: "IV",
+      dose: "0.05-0.1",
+      unit: "mg/kg/dose",
+      frequency: "q2-4h PRN",
+      max: "0.1-0.2 mg/kg/dose",
+      notes: "Start low, titrate. Monitor respiratory status. PO: 0.2-0.5 mg/kg/dose",
+      color: "red"
+    },
+    {
+      name: "Fentanyl",
+      category: "Opioid",
+      route: "IV",
+      dose: "0.5-2",
+      unit: "mcg/kg/dose",
+      frequency: "q1-2h PRN",
+      max: "4 mcg/kg/dose",
+      notes: "Rapid onset (1-2 min), short duration. Infusion: 1-3 mcg/kg/hr",
+      color: "red"
+    },
+    {
+      name: "Ketamine",
+      category: "Dissociative",
+      route: "IV/IM",
+      dose: "1-2",
+      unit: "mg/kg IV",
+      frequency: "single dose",
+      max: "4 mg/kg IM",
+      notes: "Procedural sedation. IM: 4-5 mg/kg. Causes salivation - consider glycopyrrolate",
+      color: "purple"
+    },
+    {
+      name: "Midazolam",
+      category: "Benzodiazepine",
+      route: "IV/IN/PO",
+      dose: "0.05-0.1",
+      unit: "mg/kg IV",
+      frequency: "single dose",
+      max: "0.5 mg/kg IN",
+      notes: "IN: 0.2-0.5 mg/kg. PO: 0.25-0.5 mg/kg. Anxiolysis/procedural",
+      color: "amber"
+    },
+    {
+      name: "Ketorolac",
+      category: "NSAID",
+      route: "IV",
+      dose: "0.5",
+      unit: "mg/kg/dose",
+      frequency: "q6h",
+      max: "30 mg/dose (15mg if <50kg)",
+      notes: "Max 5 days. Avoid in renal impairment, bleeding risk",
+      color: "green"
+    },
+    {
+      name: "Ondansetron",
+      category: "Antiemetic",
+      route: "IV/PO",
+      dose: "0.1-0.15",
+      unit: "mg/kg/dose",
+      frequency: "q8h PRN",
+      max: "4 mg/dose (<40kg), 8 mg (>40kg)",
+      notes: "For nausea/vomiting with opioids or post-op",
+      color: "teal"
+    }
+  ];
+
+  const calculateDose = (drug, weight) => {
+    if (!weight) return null;
+    const doseNum = parseFloat(drug.dose.split("-")[0]);
+    const doseMax = parseFloat(drug.dose.split("-")[1]) || doseNum;
+    
+    if (drug.unit.includes("units")) {
+      return `${(doseNum * weight / 1000).toFixed(0)}K - ${(doseMax * weight / 1000).toFixed(0)}K units`;
+    } else if (drug.unit.includes("mcg")) {
+      return `${(doseNum * weight).toFixed(1)} - ${(doseMax * weight).toFixed(1)} mcg`;
+    }
+    return `${(doseNum * weight).toFixed(0)} - ${(doseMax * weight).toFixed(0)} mg`;
+  };
+
+  const colorClasses = {
+    blue: "bg-blue-50 dark:bg-blue-950/30 border-blue-200",
+    green: "bg-green-50 dark:bg-green-950/30 border-green-200",
+    amber: "bg-amber-50 dark:bg-amber-950/30 border-amber-200",
+    red: "bg-red-50 dark:bg-red-950/30 border-red-200",
+    purple: "bg-purple-50 dark:bg-purple-950/30 border-purple-200",
+    teal: "bg-teal-50 dark:bg-teal-950/30 border-teal-200",
+    orange: "bg-orange-50 dark:bg-orange-950/30 border-orange-200",
+  };
+
+  return (
+    <div className="space-y-4 pb-8">
+      {/* Weight Input */}
+      <Card className="nightingale-card border-indigo-200 dark:border-indigo-800">
+        <CardContent className="pt-4">
+          <div className="flex items-center gap-3">
+            <Pill className="h-5 w-5 text-indigo-500" />
+            <div className="flex-1">
+              <Label className="text-xs text-muted-foreground">Patient Weight (kg)</Label>
+              <Input
+                type="number"
+                placeholder="Enter weight for dose calculations"
+                value={weight}
+                onChange={(e) => setWeight(e.target.value)}
+                className="font-mono mt-1"
+              />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Tab Navigation */}
+      <Tabs value={activeTab} onValueChange={setActiveTab}>
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="antibiotics">Antibiotics</TabsTrigger>
+          <TabsTrigger value="analgesics">Analgesics</TabsTrigger>
+        </TabsList>
+
+        {/* Antibiotics Tab */}
+        <TabsContent value="antibiotics" className="space-y-2 mt-4">
+          {antibiotics.map((drug, idx) => (
+            <Card key={idx} className={`border ${colorClasses[drug.color]}`}>
+              <CardContent className="pt-3 pb-3">
+                <div className="flex justify-between items-start">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2">
+                      <p className="font-semibold text-sm">{drug.name}</p>
+                      <span className="text-xs px-2 py-0.5 rounded-full bg-gray-200 dark:bg-gray-700">{drug.category}</span>
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      <span className="font-medium">{drug.route}:</span> {drug.dose} {drug.unit} {drug.frequency}
+                    </p>
+                    {w > 0 && (
+                      <p className="font-mono text-sm text-indigo-600 dark:text-indigo-400 mt-1">
+                        → {calculateDose(drug, w)} {drug.frequency}
+                      </p>
+                    )}
+                  </div>
+                  <div className="text-right text-xs">
+                    <p className="text-muted-foreground">Max: {drug.max}</p>
+                  </div>
+                </div>
+                <p className="text-xs text-muted-foreground mt-2 border-t pt-2">{drug.notes}</p>
+              </CardContent>
+            </Card>
+          ))}
+
+          {/* Reference */}
+          <Card className="nightingale-card">
+            <CardContent className="pt-3 text-xs text-muted-foreground">
+              <p className="font-medium">References: Harriet Lane Handbook 23rd Ed, UCSF Pediatric Dosing</p>
+              <p>• Adjust doses for renal/hepatic impairment</p>
+              <p>• Monitor levels for aminoglycosides, vancomycin</p>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Analgesics Tab */}
+        <TabsContent value="analgesics" className="space-y-2 mt-4">
+          {analgesics.map((drug, idx) => (
+            <Card key={idx} className={`border ${colorClasses[drug.color]}`}>
+              <CardContent className="pt-3 pb-3">
+                <div className="flex justify-between items-start">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2">
+                      <p className="font-semibold text-sm">{drug.name}</p>
+                      <span className="text-xs px-2 py-0.5 rounded-full bg-gray-200 dark:bg-gray-700">{drug.category}</span>
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      <span className="font-medium">{drug.route}:</span> {drug.dose} {drug.unit} {drug.frequency}
+                    </p>
+                    {w > 0 && (
+                      <p className="font-mono text-sm text-indigo-600 dark:text-indigo-400 mt-1">
+                        → {calculateDose(drug, w)} {drug.frequency}
+                      </p>
+                    )}
+                  </div>
+                  <div className="text-right text-xs">
+                    <p className="text-muted-foreground">Max: {drug.max}</p>
+                  </div>
+                </div>
+                <p className="text-xs text-muted-foreground mt-2 border-t pt-2">{drug.notes}</p>
+              </CardContent>
+            </Card>
+          ))}
+
+          {/* Opioid Conversion Reference */}
+          <Card className="border-red-200 bg-red-50 dark:bg-red-950/30">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm">Opioid Equivalence</CardTitle>
+            </CardHeader>
+            <CardContent className="text-xs text-muted-foreground">
+              <p>• Morphine IV 0.1 mg/kg ≈ Fentanyl IV 1-2 mcg/kg</p>
+              <p>• Morphine PO:IV ratio = 3:1</p>
+              <p>• Always use lowest effective dose, shortest duration</p>
+            </CardContent>
+          </Card>
+
+          {/* Reference */}
+          <Card className="nightingale-card">
+            <CardContent className="pt-3 text-xs text-muted-foreground">
+              <p className="font-medium">References: Harriet Lane Handbook 23rd Ed, Stanford Peds Pain</p>
+              <p>• Start opioids at lowest dose, titrate to effect</p>
+              <p>• Monitor sedation, respiratory rate, SpO2</p>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
+    </div>
+  );
+};
 
 export default ChildrenDashboard;
