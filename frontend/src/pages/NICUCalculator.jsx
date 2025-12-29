@@ -2369,10 +2369,10 @@ const GrowthChartPage = () => {
     }
   };
 
-  // Format age for display (always in months)
-  const formatAge = (ageValue) => {
-    const val = parseFloat(ageValue) || 0;
-    return `${val}m`;
+  // Format age for display based on unit used when entry was created
+  const formatAge = (entry) => {
+    const val = parseFloat(entry.ageValue) || 0;
+    return entry.ageUnit === 'years' ? `${val}y` : `${val}m`;
   };
 
   // Calculate Z-score and percentile for a measurement
