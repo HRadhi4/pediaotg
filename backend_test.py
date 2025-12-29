@@ -1,6 +1,9 @@
 import requests
 import sys
+import base64
 from datetime import datetime
+from PIL import Image, ImageDraw, ImageFont
+import io
 
 class NICUBackendTester:
     def __init__(self, base_url="https://kidcare-paddle.preview.emergentagent.com"):
