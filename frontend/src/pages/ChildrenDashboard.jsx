@@ -162,14 +162,21 @@ const ChildrenDashboard = ({ theme, toggleTheme }) => {
 
   const widgets = widgetOrder.map(id => widgetDefs[id]).filter(Boolean);
 
-  // Move widget up or down
-  const moveWidget = (index, direction) => {
-    const newOrder = [...widgetOrder];
-    const newIndex = direction === 'up' ? index - 1 : index + 1;
-    if (newIndex < 0 || newIndex >= newOrder.length) return;
-    [newOrder[index], newOrder[newIndex]] = [newOrder[newIndex], newOrder[index]];
-    setWidgetOrder(newOrder);
-    localStorage.setItem("childrenWidgetOrder", JSON.stringify(newOrder));
+  // Handle drag end
+  const handleDragEnd = (event) => {
+    const { active, over } = event;
+    setActiveId(null);
+    if (active.id !== over?.id) {
+      const oldIndex = widgetOrder.indexOf(active.id);
+      const newIndex = widgetOrder.indexOf(over.id);
+      const newOrder = arrayMove(widgetOrder, oldIndex, newIndex);
+      setWidgetOrder(newOrder);
+      localStorage.setItem("childrenWidgetOrder", JSON.stringify(newOrder));
+    }
+  };
+
+  const handleDragStart = (event) => {
+    setActiveId(event.active.id);
   };
 
   const getColorClass = (color) => {
