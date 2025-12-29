@@ -26,7 +26,7 @@ const DisclaimerDialog = ({ open, onAgree }) => {
               It is intended as a <strong>decision-support tool only</strong> and does not replace professional clinical judgment.
             </p>
             <p className="text-amber-700 dark:text-amber-300 leading-relaxed mt-3 font-medium">
-              Use of this application is at the user's own risk.
+              Use of this application is at the user&apos;s own risk.
             </p>
           </div>
           <Button 
@@ -165,7 +165,7 @@ const SidePanel = ({ isOpen, onClose, theme, toggleTheme }) => {
                 It is intended as a <strong>decision-support tool only</strong> and does not replace professional clinical judgment.
               </p>
               <p className="text-muted-foreground leading-relaxed mt-3">
-                Use of this application is at the user's own risk.
+                Use of this application is at the user&apos;s own risk.
               </p>
             </div>
           </div>
