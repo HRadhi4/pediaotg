@@ -2481,7 +2481,6 @@ const DrugsPage = ({ onBack }) => {
       name: "Azithromycin",
       category: "Macrolide",
       route: "PO",
-      route: "PO",
       dose: "10",
       unit: "mg/kg/day",
       frequency: "once daily",
