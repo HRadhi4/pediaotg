@@ -713,6 +713,13 @@ const BPPage = ({ onBack }) => {
 
           {/* Quick Reference Cards */}
           <div className="grid grid-cols-2 gap-3">
+            <Card className="border-blue-200 bg-blue-50 dark:bg-blue-950/30">
+              <CardContent className="pt-3 pb-3 text-center">
+                <p className="text-xs text-blue-700 dark:text-blue-300 mb-1">Hypotension (&lt;5th)</p>
+                <p className="text-lg font-mono font-bold text-blue-600">&lt;{selectedData.systolic.p5}/&lt;{selectedData.diastolic.p5}</p>
+                <p className="text-xs text-muted-foreground">MAP: &lt;{calcMAP(selectedData.systolic.p5, selectedData.diastolic.p5)}</p>
+              </CardContent>
+            </Card>
             <Card className="border-green-200 bg-green-50 dark:bg-green-950/30">
               <CardContent className="pt-3 pb-3 text-center">
                 <p className="text-xs text-green-700 dark:text-green-300 mb-1">Normal (50th)</p>
