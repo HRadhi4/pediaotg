@@ -2339,7 +2339,6 @@ const GrowthChartPage = () => {
   const chartData = getChartData();
   
   // Chart configuration
-  const isWHO = chartType === "WHO";
   const xAxisDomain = isWHO ? [0, 24] : [24, 240];
   const xAxisTicks = isWHO 
     ? [0, 3, 6, 9, 12, 15, 18, 21, 24]
