@@ -143,6 +143,18 @@ const NICUCalculator = ({ theme, toggleTheme }) => {
   const navigate = useNavigate();
   const { page } = useParams();
   const currentPage = page || "main";
+  const scrollContainerRef = React.useRef(null);
+  
+  // Scroll to top when page changes
+  React.useEffect(() => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollTop = 0;
+    }
+    // Also try window scroll for fallback
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+  }, [currentPage]);
   
   const [activeTab, setActiveTab] = useState("");
   const [bloodGasOpen, setBloodGasOpen] = useState(false);
