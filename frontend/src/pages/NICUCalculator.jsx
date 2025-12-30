@@ -1731,6 +1731,11 @@ const IntubationPage = () => {
   const [weight, setWeight] = useState("");
   const [gestationalAge, setGestationalAge] = useState("");
 
+  // Scroll to top when component mounts
+  React.useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   // Endotracheal Intubation Guidelines
   const guidelines = [
     { gaRange: "<28", weightRange: "<1.0", tubeSize: "2.5", depthRange: "6-7" },
