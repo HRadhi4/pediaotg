@@ -1480,6 +1480,11 @@ const ExchangeCalculatorPage = () => {
   const [observedHct, setObservedHct] = useState("");
   const [desiredHct, setDesiredHct] = useState("55");
 
+  // Scroll to top when component mounts
+  React.useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const calculatePartialExchange = () => {
     const w = parseFloat(weight) || 0;
     const obsHct = parseFloat(observedHct) || 0;
