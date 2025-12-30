@@ -145,13 +145,12 @@ const NICUCalculator = ({ theme, toggleTheme }) => {
   const currentPage = page || "main";
   const scrollContainerRef = React.useRef(null);
   
-  // Scroll to top when page changes
-  React.useEffect(() => {
+  // Reset scroll position immediately when page changes (useLayoutEffect runs before paint)
+  React.useLayoutEffect(() => {
     if (scrollContainerRef.current) {
       scrollContainerRef.current.scrollTop = 0;
     }
-    // Also try window scroll for fallback
-    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    window.scrollTo(0, 0);
     document.documentElement.scrollTop = 0;
     document.body.scrollTop = 0;
   }, [currentPage]);
