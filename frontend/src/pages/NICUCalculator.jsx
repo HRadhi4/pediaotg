@@ -1500,9 +1500,11 @@ const ExchangeCalculatorPage = () => {
   const [observedHct, setObservedHct] = useState("");
   const [desiredHct, setDesiredHct] = useState("55");
 
-  // Scroll to top when component mounts
+  // Scroll to top when component mounts (works on mobile)
   React.useEffect(() => {
-    window.scrollTo(0, 0);
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
   }, []);
 
   const calculatePartialExchange = () => {
