@@ -1112,6 +1112,11 @@ const PRBCGuidelinePage = () => {
   const [hasRespSupport, setHasRespSupport] = useState(false);
   const [result, setResult] = useState(null);
 
+  // Scroll to top when component mounts
+  React.useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const UNIT_VOLUME = 280; // 1 unit = 280 ml
 
   // Transfusion thresholds based on guidelines
