@@ -2155,6 +2155,11 @@ const GrowthChartPage = () => {
   });
   const chartRef = React.useRef(null);
 
+  // Scroll to top when component mounts
+  React.useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   // Check if WHO or CDC is selected
   const isWHO = chartType === "WHO";
 
