@@ -386,6 +386,11 @@ const FluidCalculatorPage = () => {
   const [gestationalAge, setGestationalAge] = useState("");
   const [tfi, setTfi] = useState("");
   
+  // Scroll to top when component mounts
+  React.useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+  
   // NaCl
   const [naclAmount, setNaclAmount] = useState("");
   
