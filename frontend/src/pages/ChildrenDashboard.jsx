@@ -650,13 +650,14 @@ const BPPage = ({ onBack }) => {
 
   const selectedData = selectedAge ? bpData[gender][heightPercentile]?.find(d => d.age === selectedAge) : null;
 
-  // Classify patient BP
+  // Classify patient BP using PALS for hypotension
   const classifyBP = () => {
-    if (!patientSBP || !patientDBP || !selectedData) return null;
+    if (!patientSBP || !patientDBP || !selectedData || !selectedAge) return null;
     const sbp = parseInt(patientSBP);
     const dbp = parseInt(patientDBP);
+    const hypotensionSBP = 70 + 2 * parseInt(selectedAge); // PALS formula
     
-    if (sbp < selectedData.systolic.p5 || dbp < selectedData.diastolic.p5) {
+    if (sbp < hypotensionSBP) {
       return { class: "Hypotension", color: "blue", severity: 0 };
     } else if (sbp < selectedData.systolic.p90 && dbp < selectedData.diastolic.p90) {
       return { class: "Normal", color: "green", severity: 1 };
