@@ -826,9 +826,30 @@ const BPPage = ({ onBack }) => {
         </CardHeader>
         <CardContent className="text-xs text-muted-foreground space-y-1">
           <p className="font-medium">Source: Harriet Lane Handbook 23rd Edition (2023)</p>
+          
+          {/* PALS SBP Calculation */}
+          {selectedAge && (
+            <div className="mt-2 p-3 rounded-lg bg-purple-50 dark:bg-purple-950/30 border border-purple-200">
+              <p className="font-semibold text-purple-700 dark:text-purple-300 mb-2">PALS SBP Thresholds (Age: {selectedAge} years)</p>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="p-2 bg-white dark:bg-gray-900 rounded-lg">
+                  <p className="text-xs text-muted-foreground">5th Centile (Hypotension)</p>
+                  <p className="text-lg font-bold text-purple-600">{70 + 2 * parseInt(selectedAge)} mmHg</p>
+                  <p className="text-xs font-mono text-muted-foreground">70 + 2 × {selectedAge}</p>
+                </div>
+                <div className="p-2 bg-white dark:bg-gray-900 rounded-lg">
+                  <p className="text-xs text-muted-foreground">50th Centile (Median)</p>
+                  <p className="text-lg font-bold text-purple-600">{90 + 2 * parseInt(selectedAge)} mmHg</p>
+                  <p className="text-xs font-mono text-muted-foreground">90 + 2 × {selectedAge}</p>
+                </div>
+              </div>
+              <p className="text-xs mt-2 italic">Source: PALS (Pediatric Advanced Life Support)</p>
+            </div>
+          )}
+          
           <div className="mt-2 p-2 rounded-lg bg-blue-50 dark:bg-blue-950/30 border border-blue-200">
             <p className="font-semibold text-blue-700 dark:text-blue-300 mb-1">Hypotension (&lt;5th percentile)</p>
-            <p className="text-blue-600">SBP &lt;{selectedData?.systolic?.p5 || "5th %ile"} or DBP &lt;{selectedData?.diastolic?.p5 || "5th %ile"} mmHg</p>
+            <p className="text-blue-600">SBP &lt;{selectedAge ? (70 + 2 * parseInt(selectedAge)) : "5th %ile"} mmHg (PALS) or per Harriet Lane table</p>
             <p className="mt-1 text-xs">Consider: Volume status, cardiac function, sepsis screening</p>
           </div>
           <p className="pt-2">• <span className="text-green-600 font-medium">Normal:</span> &lt;90th percentile for age, sex, height</p>
