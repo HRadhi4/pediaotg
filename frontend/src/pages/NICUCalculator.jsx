@@ -388,7 +388,9 @@ const FluidCalculatorPage = () => {
   
   // Scroll to top when component mounts
   React.useEffect(() => {
-    window.scrollTo(0, 0);
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
   }, []);
   
   // NaCl
@@ -788,7 +790,9 @@ const NRPChecklistPage = () => {
 
   // Scroll to top when component mounts
   React.useEffect(() => {
-    window.scrollTo(0, 0);
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
   }, []);
 
   const toggleSection = (section) => {
@@ -1022,7 +1026,9 @@ const CatheterCalculatorPage = () => {
 
   // Scroll to top when component mounts
   React.useEffect(() => {
-    window.scrollTo(0, 0);
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
   }, []);
 
   const calculateUAC = () => {
@@ -1114,7 +1120,9 @@ const PRBCGuidelinePage = () => {
 
   // Scroll to top when component mounts
   React.useEffect(() => {
-    window.scrollTo(0, 0);
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
   }, []);
 
   const UNIT_VOLUME = 280; // 1 unit = 280 ml
@@ -1735,7 +1743,9 @@ const IntubationPage = () => {
 
   // Scroll to top when component mounts
   React.useEffect(() => {
-    window.scrollTo(0, 0);
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
   }, []);
 
   // Endotracheal Intubation Guidelines
@@ -1937,7 +1947,9 @@ const BloodPressurePage = () => {
 
   // Scroll to top when component mounts
   React.useEffect(() => {
-    window.scrollTo(0, 0);
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
   }, []);
 
   // Day One Blood Pressure Data (GA 22-42 weeks)
@@ -2159,7 +2171,9 @@ const GrowthChartPage = () => {
 
   // Scroll to top when component mounts
   React.useEffect(() => {
-    window.scrollTo(0, 0);
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
   }, []);
 
   // Check if WHO or CDC is selected
