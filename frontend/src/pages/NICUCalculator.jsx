@@ -401,12 +401,6 @@ const FluidCalculatorPage = () => {
   const [gestationalAge, setGestationalAge] = useState("");
   const [tfi, setTfi] = useState("");
   
-  // Scroll to top when component mounts
-  React.useEffect(() => {
-    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
-    document.documentElement.scrollTop = 0;
-    document.body.scrollTop = 0;
-  }, []);
   
   // NaCl
   const [naclAmount, setNaclAmount] = useState("");
@@ -803,12 +797,6 @@ const NRPChecklistPage = () => {
   const [activeTimer, setActiveTimer] = useState(null);
   const [timerSeconds, setTimerSeconds] = useState(0);
 
-  // Scroll to top when component mounts
-  React.useEffect(() => {
-    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
-    document.documentElement.scrollTop = 0;
-    document.body.scrollTop = 0;
-  }, []);
 
   const toggleSection = (section) => {
     setExpandedSections(prev => 
@@ -1039,12 +1027,6 @@ const NRPChecklistPage = () => {
 const CatheterCalculatorPage = () => {
   const [weight, setWeight] = useState("");
 
-  // Scroll to top when component mounts
-  React.useEffect(() => {
-    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
-    document.documentElement.scrollTop = 0;
-    document.body.scrollTop = 0;
-  }, []);
 
   const calculateUAC = () => {
     const w = parseFloat(weight) || 0;
@@ -1133,12 +1115,6 @@ const PRBCGuidelinePage = () => {
   const [hasRespSupport, setHasRespSupport] = useState(false);
   const [result, setResult] = useState(null);
 
-  // Scroll to top when component mounts
-  React.useEffect(() => {
-    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
-    document.documentElement.scrollTop = 0;
-    document.body.scrollTop = 0;
-  }, []);
 
   const UNIT_VOLUME = 280; // 1 unit = 280 ml
 
@@ -1523,12 +1499,6 @@ const ExchangeCalculatorPage = () => {
   const [observedHct, setObservedHct] = useState("");
   const [desiredHct, setDesiredHct] = useState("55");
 
-  // Scroll to top when component mounts (works on mobile)
-  React.useEffect(() => {
-    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
-    document.documentElement.scrollTop = 0;
-    document.body.scrollTop = 0;
-  }, []);
 
   const calculatePartialExchange = () => {
     const w = parseFloat(weight) || 0;
@@ -1756,12 +1726,6 @@ const IntubationPage = () => {
   const [weight, setWeight] = useState("");
   const [gestationalAge, setGestationalAge] = useState("");
 
-  // Scroll to top when component mounts
-  React.useEffect(() => {
-    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
-    document.documentElement.scrollTop = 0;
-    document.body.scrollTop = 0;
-  }, []);
 
   // Endotracheal Intubation Guidelines
   const guidelines = [
@@ -1960,12 +1924,6 @@ const BloodPressurePage = () => {
   const [ageType, setAgeType] = useState("dayOne"); // "dayOne" or "postConceptional"
   const [gestationalAge, setGestationalAge] = useState("");
 
-  // Scroll to top when component mounts
-  React.useEffect(() => {
-    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
-    document.documentElement.scrollTop = 0;
-    document.body.scrollTop = 0;
-  }, []);
 
   // Day One Blood Pressure Data (GA 22-42 weeks)
   const dayOneData = {
@@ -2184,12 +2142,6 @@ const GrowthChartPage = () => {
   });
   const chartRef = React.useRef(null);
 
-  // Scroll to top when component mounts
-  React.useEffect(() => {
-    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
-    document.documentElement.scrollTop = 0;
-    document.body.scrollTop = 0;
-  }, []);
 
   // Check if WHO or CDC is selected
   const isWHO = chartType === "WHO";
