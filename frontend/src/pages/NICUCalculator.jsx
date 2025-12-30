@@ -183,9 +183,13 @@ const NICUCalculator = ({ theme, toggleTheme }) => {
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
   );
 
-  // Navigate to page
+  // Navigate to page - reset scroll before navigation
   const goToPage = (pageId) => {
     if (isEditMode) return;
+    // Reset scroll position before navigation
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollTop = 0;
+    }
     if (pageId === "main") {
       navigate("/nicu");
     } else {
