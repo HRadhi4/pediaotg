@@ -637,7 +637,6 @@ const BPPage = ({ onBack }) => {
       ]
     }
   };
-  };
 
   const heightOptions = [
     { value: "5", label: "5th percentile" },
