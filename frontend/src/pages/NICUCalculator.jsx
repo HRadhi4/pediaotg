@@ -1933,6 +1933,11 @@ const BloodPressurePage = () => {
   const [ageType, setAgeType] = useState("dayOne"); // "dayOne" or "postConceptional"
   const [gestationalAge, setGestationalAge] = useState("");
 
+  // Scroll to top when component mounts
+  React.useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   // Day One Blood Pressure Data (GA 22-42 weeks)
   const dayOneData = {
     22: { systolic: { high: 55, normal: 39, low: 22 }, diastolic: { high: 31, normal: 22, low: 14 }, mean: { high: 39, normal: 28, low: 17 } },
