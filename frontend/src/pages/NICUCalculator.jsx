@@ -786,6 +786,11 @@ const NRPChecklistPage = () => {
   const [activeTimer, setActiveTimer] = useState(null);
   const [timerSeconds, setTimerSeconds] = useState(0);
 
+  // Scroll to top when component mounts
+  React.useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const toggleSection = (section) => {
     setExpandedSections(prev => 
       prev.includes(section) 
