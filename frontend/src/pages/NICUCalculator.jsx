@@ -1020,6 +1020,11 @@ const NRPChecklistPage = () => {
 const CatheterCalculatorPage = () => {
   const [weight, setWeight] = useState("");
 
+  // Scroll to top when component mounts
+  React.useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const calculateUAC = () => {
     const w = parseFloat(weight) || 0;
     return ((3.5 * w) + 9).toFixed(1);
