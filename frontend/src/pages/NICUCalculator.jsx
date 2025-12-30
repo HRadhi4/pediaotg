@@ -286,7 +286,7 @@ const NICUCalculator = ({ theme, toggleTheme }) => {
 
       {/* Main Content */}
       <main className="fixed top-[72px] bottom-[100px] left-0 right-0 overflow-hidden">
-        <div className="max-w-4xl mx-auto px-4 md:px-6 h-full native-scroll py-4">
+        <div ref={scrollContainerRef} className="max-w-4xl mx-auto px-4 md:px-6 h-full native-scroll py-4">
           {currentPage === "main" ? (
             <>
               {isEditMode && (
