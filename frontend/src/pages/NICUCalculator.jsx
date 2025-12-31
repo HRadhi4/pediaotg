@@ -2841,10 +2841,16 @@ const NICUDrugsPage = () => {
       id: "vancomycin",
       name: "Vancomycin",
       category: "Antibiotic",
-      dose: "10-15 mg/kg/dose IV",
-      indication: "Serious MRSA infections, Anthrax",
+      doses: {
+        standard: { label: "Standard", value: 15, unit: "mg/kg/dose" },
+        meningitis: { label: "Meningitis", value: 15, unit: "mg/kg/dose" }
+      },
+      indication: "Serious MRSA infections, Anthrax, CNS infections",
       route: "IV infusion over 60 min",
-      getDose: (w) => w > 0 ? `${(15 * w).toFixed(1)} mg` : null,
+      getDose: (w) => w > 0 ? ({
+        standard: `${(15 * w).toFixed(1)} mg`,
+        meningitis: `${(15 * w).toFixed(1)} mg`
+      }) : null,
       intervalTable: [
         { pma: "≤29", pna: "0-14 days", interval: "18h" },
         { pma: "≤29", pna: ">14 days", interval: "12h" },
@@ -2854,16 +2860,71 @@ const NICUDrugsPage = () => {
         { pma: "37-44", pna: ">7 days", interval: "8h" },
         { pma: "≥45", pna: "ALL", interval: "6h" }
       ],
-      notes: "PMA is primary determinant. Monitor trough levels (target 10-20 mcg/mL)."
+      notes: "Target trough: 10-20 mcg/mL (standard), 15-20 mcg/mL (CNS). Monitor renal function."
+    },
+    {
+      id: "ampicillin",
+      name: "Ampicillin",
+      category: "Antibiotic",
+      doses: {
+        standard: { label: "Standard", value: 25, unit: "mg/kg/dose" },
+        gbs: { label: "GBS Bacteremia", value: 50, unit: "mg/kg/dose" },
+        meningitis: { label: "Meningitis", value: 100, unit: "mg/kg/dose" }
+      },
+      indication: "GBS, Listeria, susceptible gram-positive infections, meningitis",
+      route: "IV slow push or IM",
+      getDose: (w) => w > 0 ? ({
+        standard: `${(25 * w).toFixed(1)} mg`,
+        gbs: `${(50 * w).toFixed(1)} mg`,
+        meningitis: `${(100 * w).toFixed(1)} mg`
+      }) : null,
+      intervalTable: [
+        { pma: "≤29", pna: "0-28 days", interval: "12h" },
+        { pma: "≤29", pna: ">28 days", interval: "8h" },
+        { pma: "30-36", pna: "0-14 days", interval: "12h" },
+        { pma: "30-36", pna: ">14 days", interval: "8h" },
+        { pma: "37-44", pna: "0-7 days", interval: "12h" },
+        { pma: "37-44", pna: ">7 days", interval: "8h" },
+        { pma: "≥45", pna: "ALL", interval: "6h" }
+      ],
+      notes: "Standard: 25 mg/kg. GBS bacteremia: 50 mg/kg. Meningitis: 75-100 mg/kg/dose."
+    },
+    {
+      id: "gentamicin",
+      name: "Gentamicin",
+      category: "Antibiotic",
+      doses: {
+        standard: { label: "Standard", value: 4, unit: "mg/kg/dose" },
+        synergy: { label: "GBS Synergy", value: 2.5, unit: "mg/kg/dose" }
+      },
+      indication: "Gram-negative infections, GBS synergy with ampicillin",
+      route: "IV over 30 min",
+      getDose: (w) => w > 0 ? ({
+        standard: `${(4 * w).toFixed(1)} mg`,
+        synergy: `${(2.5 * w).toFixed(1)} mg`
+      }) : null,
+      intervalTable: [
+        { pma: "≤29", pna: "0-7 days", interval: "48h" },
+        { pma: "≤29", pna: "8-28 days", interval: "36h" },
+        { pma: "≤29", pna: "≥29 days", interval: "24h" },
+        { pma: "30-34", pna: "0-7 days", interval: "36h" },
+        { pma: "30-34", pna: "≥8 days", interval: "24h" },
+        { pma: "≥35", pna: "ALL", interval: "24h" }
+      ],
+      notes: "Standard: 4-5 mg/kg. GBS synergy: 2.5 mg/kg. Target peak: 5-12, trough <1."
     },
     {
       id: "amikacin",
       name: "Amikacin",
       category: "Antibiotic",
-      dose: "12-20 mg/kg/dose",
+      doses: {
+        standard: { label: "Standard", value: 15, unit: "mg/kg/dose" }
+      },
       indication: "Gram-negative infections, aminoglycoside-resistant organisms",
       route: "IV over 30 min",
-      getDose: (w) => w > 0 ? `${(15 * w).toFixed(1)} mg` : null,
+      getDose: (w) => w > 0 ? ({
+        standard: `${(15 * w).toFixed(1)} mg`
+      }) : null,
       intervalTable: [
         { pma: "≤29", pna: "0-7 days", interval: "48h" },
         { pma: "≤29", pna: "8-28 days", interval: "36h" },
@@ -2875,13 +2936,19 @@ const NICUDrugsPage = () => {
       notes: "Target: peak >24 mg/L, trough <5 mg/L. Prolong interval by 10h if on ibuprofen."
     },
     {
-      id: "ampicillin",
-      name: "Ampicillin",
+      id: "cefotaxime",
+      name: "Cefotaxime",
       category: "Antibiotic",
-      dose: "25-50 mg/kg/dose",
-      indication: "GBS, Listeria, susceptible gram-positive infections",
-      route: "IV slow push or IM",
-      getDose: (w) => w > 0 ? `${(50 * w).toFixed(1)} mg` : null,
+      doses: {
+        standard: { label: "Standard", value: 50, unit: "mg/kg/dose" },
+        meningitis: { label: "Meningitis", value: 50, unit: "mg/kg/dose q6-8h" }
+      },
+      indication: "Gram-negative sepsis, meningitis, gonococcal infections",
+      route: "IV over 30 min",
+      getDose: (w) => w > 0 ? ({
+        standard: `${(50 * w).toFixed(1)} mg`,
+        meningitis: `${(50 * w).toFixed(1)} mg`
+      }) : null,
       intervalTable: [
         { pma: "≤29", pna: "0-28 days", interval: "12h" },
         { pma: "≤29", pna: ">28 days", interval: "8h" },
@@ -2891,16 +2958,22 @@ const NICUDrugsPage = () => {
         { pma: "37-44", pna: ">7 days", interval: "8h" },
         { pma: "≥45", pna: "ALL", interval: "6h" }
       ],
-      notes: "Meningitis: 75-100 mg/kg/dose. GBS bacteremia: 50 mg/kg/dose."
+      notes: "Meningitis: q6h dosing (150-200 mg/kg/day). Good CSF penetration."
     },
     {
       id: "caffeine",
       name: "Caffeine Citrate",
       category: "Stimulant",
-      dose: "Loading: 20 mg/kg, Maintenance: 5-10 mg/kg/day",
+      doses: {
+        loading: { label: "Loading", value: 20, unit: "mg/kg" },
+        maintenance: { label: "Maintenance", value: 5, unit: "mg/kg/day" }
+      },
       indication: "Apnea of prematurity (28-33 weeks)",
       route: "IV over 30 min or PO",
-      getDose: (w) => w > 0 ? `Load: ${(20 * w).toFixed(1)} mg, Maint: ${(5 * w).toFixed(1)}-${(10 * w).toFixed(1)} mg` : null,
+      getDose: (w) => w > 0 ? ({
+        loading: `${(20 * w).toFixed(1)} mg`,
+        maintenance: `${(5 * w).toFixed(1)}-${(10 * w).toFixed(1)} mg`
+      }) : null,
       intervalTable: [
         { pma: "ALL", pna: "Loading", interval: "Once" },
         { pma: "ALL", pna: "Maintenance", interval: "24h" }
@@ -2908,32 +2981,19 @@ const NICUDrugsPage = () => {
       notes: "Start maintenance 24h after loading dose. Monitor for tachycardia, irritability."
     },
     {
-      id: "cefazolin",
-      name: "Cefazolin",
-      category: "Antibiotic",
-      dose: "25 mg/kg/dose",
-      indication: "Perioperative prophylaxis, UTI, soft tissue infections",
-      route: "IV or IM",
-      getDose: (w) => w > 0 ? `${(25 * w).toFixed(1)} mg` : null,
-      intervalTable: [
-        { pma: "≤29", pna: "0-28 days", interval: "12h" },
-        { pma: "≤29", pna: ">28 days", interval: "8h" },
-        { pma: "30-36", pna: "0-14 days", interval: "12h" },
-        { pma: "30-36", pna: ">14 days", interval: "8h" },
-        { pma: "37-44", pna: "0-7 days", interval: "12h" },
-        { pma: "37-44", pna: ">7 days", interval: "8h" },
-        { pma: "≥45", pna: "ALL", interval: "6h" }
-      ],
-      notes: "First-generation cephalosporin. Good Staph coverage."
-    },
-    {
       id: "ceftazidime",
       name: "Ceftazidime",
       category: "Antibiotic",
-      dose: "30 mg/kg/dose",
+      doses: {
+        standard: { label: "Standard", value: 30, unit: "mg/kg/dose" },
+        meningitis: { label: "Meningitis", value: 50, unit: "mg/kg/dose" }
+      },
       indication: "Gram-negative sepsis/meningitis, Pseudomonas",
       route: "IV infusion or IM",
-      getDose: (w) => w > 0 ? `${(30 * w).toFixed(1)} mg` : null,
+      getDose: (w) => w > 0 ? ({
+        standard: `${(30 * w).toFixed(1)} mg`,
+        meningitis: `${(50 * w).toFixed(1)} mg`
+      }) : null,
       intervalTable: [
         { pma: "≤29", pna: "0-28 days", interval: "12h" },
         { pma: "≤29", pna: ">28 days", interval: "8h" },
@@ -2949,10 +3009,16 @@ const NICUDrugsPage = () => {
       id: "meropenem",
       name: "Meropenem",
       category: "Antibiotic",
-      dose: "20-40 mg/kg/dose",
+      doses: {
+        standard: { label: "Standard", value: 20, unit: "mg/kg/dose" },
+        meningitis: { label: "Meningitis", value: 40, unit: "mg/kg/dose" }
+      },
       indication: "Severe infections, meningitis, multidrug-resistant organisms",
-      route: "IV infusion",
-      getDose: (w) => w > 0 ? `${(20 * w).toFixed(1)}-${(40 * w).toFixed(1)} mg` : null,
+      route: "IV infusion over 30 min",
+      getDose: (w) => w > 0 ? ({
+        standard: `${(20 * w).toFixed(1)} mg`,
+        meningitis: `${(40 * w).toFixed(1)} mg`
+      }) : null,
       intervalTable: [
         { pma: "<32", pna: "<14 days", interval: "12h" },
         { pma: "<32", pna: "≥14 days", interval: "8h" },
@@ -2965,27 +3031,78 @@ const NICUDrugsPage = () => {
       id: "metronidazole",
       name: "Metronidazole",
       category: "Antibiotic",
-      dose: "Loading: 7.5-10 mg/kg, Maint: 15 mg/kg",
+      doses: {
+        loading: { label: "Loading", value: 15, unit: "mg/kg" },
+        maintenance: { label: "Maintenance", value: 7.5, unit: "mg/kg/dose" }
+      },
       indication: "Anaerobic infections, NEC, surgical prophylaxis",
-      route: "IV or PO",
-      getDose: (w) => w > 0 ? `Load: ${(7.5 * w).toFixed(1)} mg, Maint: ${(15 * w).toFixed(1)} mg` : null,
+      route: "IV over 60 min or PO",
+      getDose: (w) => w > 0 ? ({
+        loading: `${(15 * w).toFixed(1)} mg`,
+        maintenance: `${(7.5 * w).toFixed(1)} mg`
+      }) : null,
       intervalTable: [
-        { pma: "24-25", pna: "ALL", interval: "24h" },
-        { pma: "26-27", pna: "ALL", interval: "24h" },
-        { pma: "28-33", pna: "ALL", interval: "12h" },
-        { pma: "34-40", pna: "ALL", interval: "8h" },
-        { pma: ">40", pna: "ALL", interval: "6h" }
+        { pma: "≤29", pna: "ALL", interval: "48h" },
+        { pma: "30-36", pna: "ALL", interval: "24h" },
+        { pma: "37-44", pna: "ALL", interval: "12h" },
+        { pma: "≥45", pna: "ALL", interval: "8h" }
       ],
-      notes: "Surgical prophylaxis: 7.5-15 mg/kg single dose 60 min before incision."
+      notes: "Surgical prophylaxis: 15 mg/kg single dose 60 min before incision."
+    },
+    {
+      id: "acyclovir",
+      name: "Acyclovir",
+      category: "Antiviral",
+      doses: {
+        skin: { label: "Skin/Eye/Mouth", value: 20, unit: "mg/kg/dose" },
+        cns: { label: "CNS/Disseminated", value: 20, unit: "mg/kg/dose q8h" }
+      },
+      indication: "HSV infection - skin/eye/mouth, CNS, disseminated",
+      route: "IV infusion over 60 min",
+      getDose: (w) => w > 0 ? ({
+        skin: `${(20 * w).toFixed(1)} mg`,
+        cns: `${(20 * w).toFixed(1)} mg`
+      }) : null,
+      intervalTable: [
+        { pma: "ALL", pna: "SEM disease", interval: "8h x 14 days" },
+        { pma: "ALL", pna: "CNS disease", interval: "8h x 21 days" },
+        { pma: "ALL", pna: "Disseminated", interval: "8h x 21 days" }
+      ],
+      notes: "SEM: 14 days. CNS/Disseminated: 21 days. Follow with suppressive therapy."
+    },
+    {
+      id: "fluconazole",
+      name: "Fluconazole",
+      category: "Antifungal",
+      doses: {
+        prophylaxis: { label: "Prophylaxis", value: 3, unit: "mg/kg/dose" },
+        treatment: { label: "Treatment", value: 12, unit: "mg/kg/dose" }
+      },
+      indication: "Candida prophylaxis, candidiasis treatment",
+      route: "IV over 30 min or PO",
+      getDose: (w) => w > 0 ? ({
+        prophylaxis: `${(3 * w).toFixed(1)} mg`,
+        treatment: `${(12 * w).toFixed(1)} mg`
+      }) : null,
+      intervalTable: [
+        { pma: "ALL", pna: "Prophylaxis", interval: "72h" },
+        { pma: "<30", pna: "Treatment", interval: "72h" },
+        { pma: "≥30", pna: "Treatment", interval: "48h" }
+      ],
+      notes: "Prophylaxis: 3-6 mg/kg twice weekly. Treatment: 12 mg/kg loading then maintenance."
     },
     {
       id: "hydrochlorothiazide",
       name: "Hydrochlorothiazide",
       category: "Diuretic",
-      dose: "1-2 mg/kg/dose",
+      doses: {
+        standard: { label: "Standard", value: 2, unit: "mg/kg/dose" }
+      },
       indication: "BPD, edema, hypertension, heart failure",
       route: "PO",
-      getDose: (w) => w > 0 ? `${(1 * w).toFixed(1)}-${(2 * w).toFixed(1)} mg` : null,
+      getDose: (w) => w > 0 ? ({
+        standard: `${(1 * w).toFixed(1)}-${(2 * w).toFixed(1)} mg`
+      }) : null,
       intervalTable: [
         { pma: "ALL", pna: "ALL", interval: "12h" }
       ],
@@ -2995,10 +3112,14 @@ const NICUDrugsPage = () => {
       id: "spironolactone",
       name: "Spironolactone",
       category: "Diuretic",
-      dose: "1-3 mg/kg/dose",
+      doses: {
+        standard: { label: "Standard", value: 2, unit: "mg/kg/dose" }
+      },
       indication: "BPD, heart failure, pulmonary hypertension",
       route: "PO",
-      getDose: (w) => w > 0 ? `${(1 * w).toFixed(1)}-${(3 * w).toFixed(1)} mg` : null,
+      getDose: (w) => w > 0 ? ({
+        standard: `${(1 * w).toFixed(1)}-${(3 * w).toFixed(1)} mg`
+      }) : null,
       intervalTable: [
         { pma: "ALL", pna: "ALL", interval: "24h" }
       ],
