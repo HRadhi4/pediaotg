@@ -91,7 +91,7 @@ const LandingPage = ({ theme, toggleTheme }) => {
             className={`tab-item ${activeTab === "home" ? "active" : ""}`}
             data-testid="home-nav"
           >
-            <Home className="h-5 w-5" />
+            <HomeIcon className="h-5 w-5" />
           </button>
 
           {/* Blood Gas */}
@@ -100,7 +100,7 @@ const LandingPage = ({ theme, toggleTheme }) => {
             className={`tab-item ${activeTab === "bloodgas" ? "active" : ""}`}
             data-testid="blood-gas-nav"
           >
-            <Droplets className="h-5 w-5" />
+            <BloodGasIcon className="h-5 w-5" />
           </button>
 
           {/* Electrolytes */}
@@ -109,7 +109,7 @@ const LandingPage = ({ theme, toggleTheme }) => {
             className={`tab-item ${activeTab === "electrolytes" ? "active" : ""}`}
             data-testid="electrolytes-nav"
           >
-            <FlaskConical className="h-5 w-5" />
+            <ElectrolytesIcon className="h-5 w-5" />
           </button>
 
           {/* Blood Products */}
@@ -118,9 +118,7 @@ const LandingPage = ({ theme, toggleTheme }) => {
             className={`tab-item ${activeTab === "bloodproducts" ? "active" : ""}`}
             data-testid="blood-products-nav"
           >
-            <span className={activeTab === "bloodproducts" ? "text-red-400" : ""}>
-              <BloodDropIcon />
-            </span>
+            <BloodProductsIcon className={`h-5 w-5 ${activeTab === "bloodproducts" ? "text-red-400" : ""}`} />
           </button>
 
           {/* GIR - Glucose */}
@@ -129,7 +127,7 @@ const LandingPage = ({ theme, toggleTheme }) => {
             className={`tab-item ${activeTab === "gir" ? "active" : ""}`}
             data-testid="gir-nav"
           >
-            <Zap className="h-5 w-5" />
+            <GIRIcon className="h-5 w-5" />
           </button>
 
           {/* Jaundice - Last */}
@@ -138,9 +136,7 @@ const LandingPage = ({ theme, toggleTheme }) => {
             className={`tab-item ${activeTab === "jaundice" ? "active" : ""}`}
             data-testid="jaundice-nav"
           >
-            <span className={activeTab === "jaundice" ? "text-amber-400" : ""}>
-              <JaundiceIcon />
-            </span>
+            <JaundiceNavIcon className={`h-5 w-5 ${activeTab === "jaundice" ? "text-amber-400" : ""}`} />
           </button>
         </div>
       </nav>
