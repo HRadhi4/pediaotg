@@ -223,6 +223,7 @@ const NICUCalculator = ({ theme, toggleTheme }) => {
       case "repeat": return <span className={colorClass}><HealthExchangeIcon className="h-6 w-6" /></span>;
       case "nrp": return <span className={colorClass}><HealthNRPIcon className="h-6 w-6" /></span>;
       case "growth": return <span className={colorClass}><HealthGrowthIcon className="h-6 w-6" /></span>;
+      case "drugs": return <span className={colorClass}><HealthDrugsIcon className="h-6 w-6" /></span>;
       default: return <span className={colorClass}><HealthStethoscopeIcon className="h-6 w-6" /></span>;
     }
   };
