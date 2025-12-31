@@ -1660,8 +1660,8 @@ const CPRPage = ({ onBack }) => {
 
   const drugs = calculateDrugs();
 
-  // Calculated value styling - teal color for visibility
-  const calcValue = "font-mono font-bold text-teal-600 dark:text-teal-400";
+  // Calculated value styling - red color for visibility
+  const calcValue = "font-mono font-bold text-red-600 dark:text-red-400";
 
   // Collapsible Section Component
   const Section = ({ title, children, defaultOpen = false, color = "gray" }) => {
