@@ -392,3 +392,34 @@ The implementation exceeds the requirements with sophisticated Z-score calculati
 - **Data Accuracy**: All calculations verified against expected values
 - **Edge Cases**: Height percentile changes properly affect classification
 - **Integration**: Seamless integration with Children dashboard navigation
+
+
+## Latest Update: Health Icons Integration (Wed Dec 31 16:33:17 UTC 2025)
+
+### Changes Made:
+- Replaced lucide-react icons with custom medical health icons (healthicons.org style)
+- Created new HealthIcons.jsx component with medical-themed SVG icons
+- Updated Children Dashboard with new icons:
+  - Blood Pressure → BloodPressureIcon
+  - Infusions → InfusionIcon
+  - Intubation → IntubationIcon
+  - Scoring/Calculators → ScoringIcon
+  - CPR → HeartIcon
+  - Approaches → ApproachesIcon
+  - Drugs → DrugsIcon
+- Updated NICU Calculator with new icons:
+  - Fluid Calculator → FluidIcon
+  - NRP Checklist → ResuscitationIcon
+  - UVC/UAC Calculator → CatheterIcon
+  - Intubation → IntubationIcon
+  - Blood Pressure → ActivityIcon
+  - PRBC Transfusion → BloodDropIcon
+  - Exchange Transfusion → ExchangeIcon
+  - Growth Charts → GrowthChartIcon
+
+### Testing Needed:
+1. Verify both dashboards load without errors
+2. Verify all icons display correctly with proper colors
+3. Verify navigation works (clicking cards opens pages)
+4. Verify Approaches page content is displayed correctly
+
