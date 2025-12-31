@@ -89,8 +89,15 @@ const SortableNICUWidget = ({ widget, isEditMode, onClick, getWidgetIcon }) => {
           </div>
         )}
         <div className="flex flex-col items-center text-center gap-2">
-          <div className={`w-11 h-11 rounded-xl flex items-center justify-center bg-${widget.color}-100 dark:bg-${widget.color}-900/30`}
-            style={{ backgroundColor: widget.color === 'teal' ? 'rgba(0,217,197,0.1)' : undefined }}
+          <div className="w-11 h-11 rounded-xl flex items-center justify-center"
+            style={{ 
+              backgroundColor: widget.color === 'teal' ? 'rgba(0,217,197,0.1)' 
+                : widget.color === 'red' ? 'rgba(239,68,68,0.1)'
+                : widget.color === 'blue' ? 'rgba(59,130,246,0.1)'
+                : widget.color === 'purple' ? 'rgba(168,85,247,0.1)'
+                : widget.color === 'amber' ? 'rgba(245,158,11,0.1)'
+                : 'rgba(107,114,128,0.1)'
+            }}
           >
             {getWidgetIcon(widget.icon, widget.color)}
           </div>
