@@ -2823,4 +2823,393 @@ const GrowthChartPage = () => {
   );
 };
 
+// ==================== NICU DRUGS PAGE ====================
+const NICUDrugsPage = () => {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [weight, setWeight] = useState("");
+  const [pma, setPma] = useState("");
+  const [pna, setPna] = useState("");
+  const [expandedDrug, setExpandedDrug] = useState(null);
+  
+  const w = parseFloat(weight) || 0;
+  const pmaWeeks = parseFloat(pma) || 0;
+  const pnaDays = parseFloat(pna) || 0;
+
+  // Drug data from Neofax 2024
+  const drugs = [
+    {
+      id: "vancomycin",
+      name: "Vancomycin",
+      category: "Antibiotic",
+      dose: "10-15 mg/kg/dose IV",
+      indication: "Serious MRSA infections, Anthrax",
+      route: "IV infusion over 60 min",
+      getDose: (w) => w > 0 ? `${(15 * w).toFixed(1)} mg` : null,
+      intervalTable: [
+        { pma: "≤29", pna: "0-14 days", interval: "18h" },
+        { pma: "≤29", pna: ">14 days", interval: "12h" },
+        { pma: "30-36", pna: "0-14 days", interval: "12h" },
+        { pma: "30-36", pna: ">14 days", interval: "8h" },
+        { pma: "37-44", pna: "0-7 days", interval: "12h" },
+        { pma: "37-44", pna: ">7 days", interval: "8h" },
+        { pma: "≥45", pna: "ALL", interval: "6h" }
+      ],
+      notes: "PMA is primary determinant. Monitor trough levels (target 10-20 mcg/mL)."
+    },
+    {
+      id: "amikacin",
+      name: "Amikacin",
+      category: "Antibiotic",
+      dose: "12-20 mg/kg/dose",
+      indication: "Gram-negative infections, aminoglycoside-resistant organisms",
+      route: "IV over 30 min",
+      getDose: (w) => w > 0 ? `${(15 * w).toFixed(1)} mg` : null,
+      intervalTable: [
+        { pma: "≤29", pna: "0-7 days", interval: "48h" },
+        { pma: "≤29", pna: "8-28 days", interval: "36h" },
+        { pma: "≤29", pna: "≥29 days", interval: "24h" },
+        { pma: "30-34", pna: "0-7 days", interval: "36h" },
+        { pma: "30-34", pna: "≥8 days", interval: "24h" },
+        { pma: "≥35", pna: "ALL", interval: "24h" }
+      ],
+      notes: "Target: peak >24 mg/L, trough <5 mg/L. Prolong interval by 10h if on ibuprofen."
+    },
+    {
+      id: "ampicillin",
+      name: "Ampicillin",
+      category: "Antibiotic",
+      dose: "25-50 mg/kg/dose",
+      indication: "GBS, Listeria, susceptible gram-positive infections",
+      route: "IV slow push or IM",
+      getDose: (w) => w > 0 ? `${(50 * w).toFixed(1)} mg` : null,
+      intervalTable: [
+        { pma: "≤29", pna: "0-28 days", interval: "12h" },
+        { pma: "≤29", pna: ">28 days", interval: "8h" },
+        { pma: "30-36", pna: "0-14 days", interval: "12h" },
+        { pma: "30-36", pna: ">14 days", interval: "8h" },
+        { pma: "37-44", pna: "0-7 days", interval: "12h" },
+        { pma: "37-44", pna: ">7 days", interval: "8h" },
+        { pma: "≥45", pna: "ALL", interval: "6h" }
+      ],
+      notes: "Meningitis: 75-100 mg/kg/dose. GBS bacteremia: 50 mg/kg/dose."
+    },
+    {
+      id: "caffeine",
+      name: "Caffeine Citrate",
+      category: "Stimulant",
+      dose: "Loading: 20 mg/kg, Maintenance: 5-10 mg/kg/day",
+      indication: "Apnea of prematurity (28-33 weeks)",
+      route: "IV over 30 min or PO",
+      getDose: (w) => w > 0 ? `Load: ${(20 * w).toFixed(1)} mg, Maint: ${(5 * w).toFixed(1)}-${(10 * w).toFixed(1)} mg` : null,
+      intervalTable: [
+        { pma: "ALL", pna: "Loading", interval: "Once" },
+        { pma: "ALL", pna: "Maintenance", interval: "24h" }
+      ],
+      notes: "Start maintenance 24h after loading dose. Monitor for tachycardia, irritability."
+    },
+    {
+      id: "cefazolin",
+      name: "Cefazolin",
+      category: "Antibiotic",
+      dose: "25 mg/kg/dose",
+      indication: "Perioperative prophylaxis, UTI, soft tissue infections",
+      route: "IV or IM",
+      getDose: (w) => w > 0 ? `${(25 * w).toFixed(1)} mg` : null,
+      intervalTable: [
+        { pma: "≤29", pna: "0-28 days", interval: "12h" },
+        { pma: "≤29", pna: ">28 days", interval: "8h" },
+        { pma: "30-36", pna: "0-14 days", interval: "12h" },
+        { pma: "30-36", pna: ">14 days", interval: "8h" },
+        { pma: "37-44", pna: "0-7 days", interval: "12h" },
+        { pma: "37-44", pna: ">7 days", interval: "8h" },
+        { pma: "≥45", pna: "ALL", interval: "6h" }
+      ],
+      notes: "First-generation cephalosporin. Good Staph coverage."
+    },
+    {
+      id: "ceftazidime",
+      name: "Ceftazidime",
+      category: "Antibiotic",
+      dose: "30 mg/kg/dose",
+      indication: "Gram-negative sepsis/meningitis, Pseudomonas",
+      route: "IV infusion or IM",
+      getDose: (w) => w > 0 ? `${(30 * w).toFixed(1)} mg` : null,
+      intervalTable: [
+        { pma: "≤29", pna: "0-28 days", interval: "12h" },
+        { pma: "≤29", pna: ">28 days", interval: "8h" },
+        { pma: "30-36", pna: "0-14 days", interval: "12h" },
+        { pma: "30-36", pna: ">14 days", interval: "8h" },
+        { pma: "37-44", pna: "0-7 days", interval: "12h" },
+        { pma: "37-44", pna: ">7 days", interval: "8h" },
+        { pma: "≥45", pna: "ALL", interval: "8h" }
+      ],
+      notes: "Meningitis: 100-150 mg/kg/day divided. May mix with 1% lidocaine for IM."
+    },
+    {
+      id: "meropenem",
+      name: "Meropenem",
+      category: "Antibiotic",
+      dose: "20-40 mg/kg/dose",
+      indication: "Severe infections, meningitis, multidrug-resistant organisms",
+      route: "IV infusion",
+      getDose: (w) => w > 0 ? `${(20 * w).toFixed(1)}-${(40 * w).toFixed(1)} mg` : null,
+      intervalTable: [
+        { pma: "<32", pna: "<14 days", interval: "12h" },
+        { pma: "<32", pna: "≥14 days", interval: "8h" },
+        { pma: "≥32", pna: "<14 days", interval: "8h" },
+        { pma: "≥32", pna: "≥14 days", interval: "8h" }
+      ],
+      notes: "Meningitis: 40 mg/kg/dose. Non-CNS: 20 mg/kg/dose. Broad spectrum carbapenem."
+    },
+    {
+      id: "metronidazole",
+      name: "Metronidazole",
+      category: "Antibiotic",
+      dose: "Loading: 7.5-10 mg/kg, Maint: 15 mg/kg",
+      indication: "Anaerobic infections, NEC, surgical prophylaxis",
+      route: "IV or PO",
+      getDose: (w) => w > 0 ? `Load: ${(7.5 * w).toFixed(1)} mg, Maint: ${(15 * w).toFixed(1)} mg` : null,
+      intervalTable: [
+        { pma: "24-25", pna: "ALL", interval: "24h" },
+        { pma: "26-27", pna: "ALL", interval: "24h" },
+        { pma: "28-33", pna: "ALL", interval: "12h" },
+        { pma: "34-40", pna: "ALL", interval: "8h" },
+        { pma: ">40", pna: "ALL", interval: "6h" }
+      ],
+      notes: "Surgical prophylaxis: 7.5-15 mg/kg single dose 60 min before incision."
+    },
+    {
+      id: "hydrochlorothiazide",
+      name: "Hydrochlorothiazide",
+      category: "Diuretic",
+      dose: "1-2 mg/kg/dose",
+      indication: "BPD, edema, hypertension, heart failure",
+      route: "PO",
+      getDose: (w) => w > 0 ? `${(1 * w).toFixed(1)}-${(2 * w).toFixed(1)} mg` : null,
+      intervalTable: [
+        { pma: "ALL", pna: "ALL", interval: "12h" }
+      ],
+      notes: "Give with food. Monitor K+, glucose, uric acid. Contraindicated in renal/hepatic impairment."
+    },
+    {
+      id: "spironolactone",
+      name: "Spironolactone",
+      category: "Diuretic",
+      dose: "1-3 mg/kg/dose",
+      indication: "BPD, heart failure, pulmonary hypertension",
+      route: "PO",
+      getDose: (w) => w > 0 ? `${(1 * w).toFixed(1)}-${(3 * w).toFixed(1)} mg` : null,
+      intervalTable: [
+        { pma: "ALL", pna: "ALL", interval: "24h" }
+      ],
+      notes: "Potassium-sparing. Often combined with thiazides. Monitor K+."
+    }
+  ];
+
+  const filteredDrugs = drugs.filter(drug => 
+    drug.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    drug.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    drug.indication.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const getIntervalForPatient = (drug) => {
+    if (!pmaWeeks || !pnaDays) return null;
+    for (const row of drug.intervalTable) {
+      const pmaParts = row.pma.match(/([<>≤≥]*)(\d+)(?:-(\d+))?/);
+      if (pmaParts) {
+        const op = pmaParts[1];
+        const min = parseInt(pmaParts[2]);
+        const max = pmaParts[3] ? parseInt(pmaParts[3]) : null;
+        
+        let pmaMatch = false;
+        if (op === "≤" || op === "<") pmaMatch = pmaWeeks <= min;
+        else if (op === "≥" || op === ">") pmaMatch = pmaWeeks >= min;
+        else if (max) pmaMatch = pmaWeeks >= min && pmaWeeks <= max;
+        else if (row.pma === "ALL") pmaMatch = true;
+        else pmaMatch = pmaWeeks === min;
+        
+        if (pmaMatch) {
+          if (row.pna === "ALL" || row.pna === "Loading" || row.pna === "Maintenance") {
+            return row.interval;
+          }
+          const pnaParts = row.pna.match(/([<>≤≥]*)(\d+)/);
+          if (pnaParts) {
+            const pnaOp = pnaParts[1];
+            const pnaVal = parseInt(pnaParts[2]);
+            if (pnaOp === ">" && pnaDays > pnaVal) return row.interval;
+            if ((pnaOp === "≥" || pnaOp === "") && pnaDays >= pnaVal) return row.interval;
+            if (pnaOp === "<" && pnaDays < pnaVal) return row.interval;
+            if (pnaOp === "≤" && pnaDays <= pnaVal) return row.interval;
+          }
+          if (row.pna.includes("-")) {
+            const [minPna, maxPna] = row.pna.match(/\d+/g).map(Number);
+            if (pnaDays >= minPna && pnaDays <= maxPna) return row.interval;
+          }
+        }
+      }
+    }
+    return drug.intervalTable[0]?.interval || "See table";
+  };
+
+  return (
+    <div className="space-y-4 pt-4 pb-24">
+      {/* Search and Patient Info */}
+      <Card className="nightingale-card">
+        <CardContent className="pt-4 space-y-3">
+          {/* Search Bar */}
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              type="text"
+              placeholder="Search drugs..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10"
+            />
+          </div>
+          
+          {/* Patient Parameters */}
+          <div className="grid grid-cols-3 gap-2">
+            <div>
+              <Label className="text-[10px] text-muted-foreground">Weight (kg)</Label>
+              <Input
+                type="number"
+                placeholder="kg"
+                value={weight}
+                onChange={(e) => setWeight(e.target.value)}
+                className="font-mono text-sm h-9"
+              />
+            </div>
+            <div>
+              <Label className="text-[10px] text-muted-foreground">PMA (weeks)</Label>
+              <Input
+                type="number"
+                placeholder="wks"
+                value={pma}
+                onChange={(e) => setPma(e.target.value)}
+                className="font-mono text-sm h-9"
+              />
+            </div>
+            <div>
+              <Label className="text-[10px] text-muted-foreground">PNA (days)</Label>
+              <Input
+                type="number"
+                placeholder="days"
+                value={pna}
+                onChange={(e) => setPna(e.target.value)}
+                className="font-mono text-sm h-9"
+              />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Drug List */}
+      <div className="space-y-2">
+        {filteredDrugs.map((drug) => {
+          const calculatedDose = drug.getDose(w);
+          const interval = getIntervalForPatient(drug);
+          const isExpanded = expandedDrug === drug.id;
+          
+          return (
+            <Card 
+              key={drug.id} 
+              className="nightingale-card cursor-pointer hover:border-blue-300 dark:hover:border-blue-700 transition-colors"
+              onClick={() => setExpandedDrug(isExpanded ? null : drug.id)}
+            >
+              <CardContent className="p-3">
+                {/* Drug Header */}
+                <div className="flex items-start justify-between">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2">
+                      <h3 className="font-semibold text-sm">{drug.name}</h3>
+                      <span className="text-[10px] px-1.5 py-0.5 rounded bg-gray-100 dark:bg-gray-800 text-muted-foreground">
+                        {drug.category}
+                      </span>
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-0.5">{drug.dose}</p>
+                  </div>
+                  {calculatedDose && (
+                    <div className="text-right">
+                      <p className="text-sm font-mono font-bold text-blue-600">{calculatedDose}</p>
+                      {interval && <p className="text-[10px] text-muted-foreground">q{interval}</p>}
+                    </div>
+                  )}
+                </div>
+
+                {/* Expanded Content */}
+                {isExpanded && (
+                  <div className="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700 space-y-3">
+                    {/* Indication */}
+                    <div>
+                      <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">Indication</p>
+                      <p className="text-xs">{drug.indication}</p>
+                    </div>
+                    
+                    {/* Route */}
+                    <div>
+                      <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">Route</p>
+                      <p className="text-xs">{drug.route}</p>
+                    </div>
+
+                    {/* Dosing Interval Table */}
+                    <div>
+                      <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide mb-1">Dosing Interval</p>
+                      <div className="overflow-x-auto -mx-1">
+                        <table className="w-full text-[10px] min-w-[250px]">
+                          <thead>
+                            <tr className="bg-gray-50 dark:bg-gray-800/50">
+                              <th className="text-left py-1.5 px-2 font-medium">PMA (wks)</th>
+                              <th className="text-left py-1.5 px-2 font-medium">PNA</th>
+                              <th className="text-center py-1.5 px-2 font-medium">Interval</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {drug.intervalTable.map((row, idx) => (
+                              <tr key={idx} className="border-t border-gray-100 dark:border-gray-800">
+                                <td className="py-1.5 px-2">{row.pma}</td>
+                                <td className="py-1.5 px-2">{row.pna}</td>
+                                <td className="py-1.5 px-2 text-center font-mono font-medium">{row.interval}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+
+                    {/* Notes */}
+                    <div className="p-2 bg-gray-50 dark:bg-gray-800/50 rounded text-[10px] text-muted-foreground">
+                      <p className="font-medium text-foreground mb-0.5">Notes:</p>
+                      <p>{drug.notes}</p>
+                    </div>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          );
+        })}
+      </div>
+
+      {/* Empty State */}
+      {filteredDrugs.length === 0 && (
+        <Card className="nightingale-card">
+          <CardContent className="py-8 text-center">
+            <p className="text-muted-foreground text-sm">No drugs found matching "{searchTerm}"</p>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Reference */}
+      <Card className="nightingale-card">
+        <CardContent className="pt-4 text-xs text-muted-foreground">
+          <p className="font-medium text-foreground mb-1">Reference: Neofax 2024</p>
+          <p>• PMA = Postmenstrual Age (gestational age + postnatal age)</p>
+          <p>• PNA = Postnatal Age (days since birth)</p>
+          <p>• Always verify doses and adjust based on renal/hepatic function</p>
+        </CardContent>
+      </Card>
+    </div>
+  );
+};
+
 export default NICUCalculator;
