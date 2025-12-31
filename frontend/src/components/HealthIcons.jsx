@@ -79,13 +79,17 @@ export const BloodPressureIcon = ({ className }) => (
   </svg>
 );
 
-// Infusion Icon - from devices/intravenous-bag
+// Infusion Icon - from devices/intravenous-drip (healthicons.org)
 export const InfusionIcon = ({ className }) => (
   <svg className={className} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M14 14H34V36C34 38.2 32.2 40 30 40H18C15.8 40 14 38.2 14 36V14Z" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
-    <path d="M20 14V10C20 8.9 20.9 8 22 8H26C27.1 8 28 8.9 28 10V14" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
-    <path d="M24 40V44" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
-    <path d="M14 22H34" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
+    <circle cx="16" cy="10" r="4" stroke="currentColor" strokeWidth="3"/>
+    <path d="M12 17H20V24C20 26.2 18.2 28 16 28C13.8 28 12 26.2 12 24V17Z" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M16 28V32" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
+    <path d="M16 32C16 32 12 36 12 40C12 42 14 44 16 44C18 44 20 42 20 40C20 36 16 32 16 32Z" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M32 8V14" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
+    <path d="M28 12H36" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
+    <rect x="26" y="18" width="12" height="22" rx="2" stroke="currentColor" strokeWidth="3"/>
+    <path d="M26 26H38" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
   </svg>
 );
 
