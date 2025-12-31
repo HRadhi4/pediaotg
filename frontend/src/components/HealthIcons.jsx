@@ -15,8 +15,8 @@ export const ArrowLeftIcon = ({ className }) => (
 // Settings / Gear Icon - consistent with healthicons.org stroke style
 export const SettingsIcon = ({ className }) => (
   <svg className={className} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <circle cx="24" cy="24" r="6" stroke="currentColor" strokeWidth="3"/>
-    <path d="M24 6V10M24 38V42M42 24H38M10 24H6M37.5 10.5L34.5 13.5M13.5 34.5L10.5 37.5M37.5 37.5L34.5 34.5M13.5 13.5L10.5 10.5" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
+    <path d="M20 8H28L29 12C29.8 12.3 30.5 12.7 31.2 13.2L35 11.5L39 18.5L35.5 21C35.6 21.6 35.7 22.3 35.7 23C35.7 23.7 35.6 24.4 35.5 25L39 27.5L35 34.5L31.2 32.8C30.5 33.3 29.8 33.7 29 34L28 38H20L19 34C18.2 33.7 17.5 33.3 16.8 32.8L13 34.5L9 27.5L12.5 25C12.4 24.4 12.3 23.7 12.3 23C12.3 22.3 12.4 21.6 12.5 21L9 18.5L13 11.5L16.8 13.2C17.5 12.7 18.2 12.3 19 12L20 8Z" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+    <circle cx="24" cy="23" r="5" stroke="currentColor" strokeWidth="3"/>
   </svg>
 );
 
