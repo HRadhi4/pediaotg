@@ -17,7 +17,16 @@
 
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { ArrowLeft, Activity, Syringe, Heart, Brain, Calculator, Pill, Droplets, Stethoscope, Scale, AlertTriangle, FileText, Settings, X, GripVertical, Home, FlaskConical, Zap, Route } from "lucide-react";
+import { ArrowLeft, AlertTriangle, Settings, X, GripVertical, Home, FlaskConical, Zap, Route, Droplets, Scale } from "lucide-react";
+import { 
+  BloodPressureIcon, 
+  InfusionIcon, 
+  IntubationIcon, 
+  ScoringIcon, 
+  HeartIcon, 
+  ApproachesIcon, 
+  DrugsIcon 
+} from "@/components/HealthIcons";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
