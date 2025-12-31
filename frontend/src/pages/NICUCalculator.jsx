@@ -2838,31 +2838,6 @@ const NICUDrugsPage = () => {
   // Drug data from Neofax 2024
   const drugs = [
     {
-      id: "vancomycin",
-      name: "Vancomycin",
-      category: "Antibiotic",
-      doses: {
-        standard: { label: "Standard", value: 15, unit: "mg/kg/dose" },
-        meningitis: { label: "Meningitis", value: 15, unit: "mg/kg/dose" }
-      },
-      indication: "Serious MRSA infections, Anthrax, CNS infections",
-      route: "IV infusion over 60 min",
-      getDose: (w) => w > 0 ? ({
-        standard: `${(15 * w).toFixed(1)} mg`,
-        meningitis: `${(15 * w).toFixed(1)} mg`
-      }) : null,
-      intervalTable: [
-        { pma: "≤29", pna: "0-14 days", interval: "18h" },
-        { pma: "≤29", pna: ">14 days", interval: "12h" },
-        { pma: "30-36", pna: "0-14 days", interval: "12h" },
-        { pma: "30-36", pna: ">14 days", interval: "8h" },
-        { pma: "37-44", pna: "0-7 days", interval: "12h" },
-        { pma: "37-44", pna: ">7 days", interval: "8h" },
-        { pma: "≥45", pna: "ALL", interval: "6h" }
-      ],
-      notes: "Target trough: 10-20 mcg/mL (standard), 15-20 mcg/mL (CNS). Monitor renal function."
-    },
-    {
       id: "ampicillin",
       name: "Ampicillin",
       category: "Antibiotic",
@@ -2871,6 +2846,7 @@ const NICUDrugsPage = () => {
         gbs: { label: "GBS Bacteremia", value: 50, unit: "mg/kg/dose" },
         meningitis: { label: "Meningitis", value: 100, unit: "mg/kg/dose" }
       },
+      quickViewDoses: ["gbs", "meningitis"],
       indication: "GBS, Listeria, susceptible gram-positive infections, meningitis",
       route: "IV slow push or IM",
       getDose: (w) => w > 0 ? ({
@@ -2912,6 +2888,31 @@ const NICUDrugsPage = () => {
         { pma: "≥35", pna: "ALL", interval: "24h" }
       ],
       notes: "Standard: 4-5 mg/kg. GBS synergy: 2.5 mg/kg. Target peak: 5-12, trough <1."
+    },
+    {
+      id: "vancomycin",
+      name: "Vancomycin",
+      category: "Antibiotic",
+      doses: {
+        standard: { label: "Standard", value: 15, unit: "mg/kg/dose" },
+        meningitis: { label: "Meningitis", value: 15, unit: "mg/kg/dose" }
+      },
+      indication: "Serious MRSA infections, Anthrax, CNS infections",
+      route: "IV infusion over 60 min",
+      getDose: (w) => w > 0 ? ({
+        standard: `${(15 * w).toFixed(1)} mg`,
+        meningitis: `${(15 * w).toFixed(1)} mg`
+      }) : null,
+      intervalTable: [
+        { pma: "≤29", pna: "0-14 days", interval: "18h" },
+        { pma: "≤29", pna: ">14 days", interval: "12h" },
+        { pma: "30-36", pna: "0-14 days", interval: "12h" },
+        { pma: "30-36", pna: ">14 days", interval: "8h" },
+        { pma: "37-44", pna: "0-7 days", interval: "12h" },
+        { pma: "37-44", pna: ">7 days", interval: "8h" },
+        { pma: "≥45", pna: "ALL", interval: "6h" }
+      ],
+      notes: "Target trough: 10-20 mcg/mL (standard), 15-20 mcg/mL (CNS). Monitor renal function."
     },
     {
       id: "amikacin",
