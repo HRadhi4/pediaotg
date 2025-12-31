@@ -91,10 +91,9 @@ const SortableWidget = ({ widget, isEditMode, onClick, getColorClass }) => {
         )}
         <div className="flex flex-col items-center text-center gap-2">
           <div className={`w-11 h-11 rounded-xl flex items-center justify-center ${getColorClass(widget.color)}`}>
-            <widget.icon className="h-5 w-5" />
+            <widget.icon className="h-6 w-6" />
           </div>
           <h3 className="font-heading font-semibold text-xs leading-tight px-1">{widget.title}</h3>
-          <p className="text-[10px] text-muted-foreground leading-tight px-1">{widget.subtitle}</p>
         </div>
       </CardContent>
     </Card>
