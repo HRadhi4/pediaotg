@@ -2806,33 +2806,69 @@ const ApproachesPage = ({ onBack }) => {
           </button>
         </CardHeader>
         {expandedSections['vitals'] && (
-          <CardContent className="pt-3">
-            <div className="overflow-x-auto">
-              <table className="w-full text-xs">
+          <CardContent className="pt-3 px-2 sm:px-4">
+            <div className="overflow-x-auto -mx-2 sm:mx-0">
+              <table className="w-full text-[10px] sm:text-xs min-w-[320px]">
                 <thead>
-                  <tr className="border-b">
-                    <th className="text-left py-1 pr-2">Age</th>
-                    <th className="text-left py-1 pr-2">HR</th>
-                    <th className="text-left py-1 pr-2">RR</th>
-                    <th className="text-left py-1 pr-2">SBP</th>
-                    <th className="text-left py-1">Wt (kg)</th>
+                  <tr className="border-b bg-gray-50 dark:bg-gray-800/50">
+                    <th className="text-left py-2 px-2 font-semibold">Age</th>
+                    <th className="text-center py-2 px-2 font-semibold">HR</th>
+                    <th className="text-center py-2 px-2 font-semibold">RR</th>
+                    <th className="text-center py-2 px-2 font-semibold">SBP</th>
+                    <th className="text-center py-2 px-2 font-semibold">Wt(kg)</th>
                   </tr>
                 </thead>
                 <tbody className="text-muted-foreground">
-                  <tr><td className="py-1 pr-2">Newborn</td><td>120-160</td><td>30-50</td><td>50-70</td><td>2-3</td></tr>
-                  <tr><td className="py-1 pr-2">Infant</td><td>80-140</td><td>20-30</td><td>70-100</td><td>4-10</td></tr>
-                  <tr><td className="py-1 pr-2">Toddler (1-3y)</td><td>80-130</td><td>20-30</td><td>80-110</td><td>10-14</td></tr>
-                  <tr><td className="py-1 pr-2">Preschool (3-5y)</td><td>80-120</td><td>20-30</td><td>80-110</td><td>14-18</td></tr>
-                  <tr><td className="py-1 pr-2">School (6-12y)</td><td>70-110</td><td>20-30</td><td>80-120</td><td>20-42</td></tr>
-                  <tr><td className="py-1 pr-2">Adolescent</td><td>55-105</td><td>12-20</td><td>110-120</td><td>&gt;50</td></tr>
+                  <tr className="border-b border-gray-100 dark:border-gray-800">
+                    <td className="py-2 px-2 font-medium text-foreground">Newborn</td>
+                    <td className="py-2 px-2 text-center">120-160</td>
+                    <td className="py-2 px-2 text-center">30-50</td>
+                    <td className="py-2 px-2 text-center">50-70</td>
+                    <td className="py-2 px-2 text-center">2-3</td>
+                  </tr>
+                  <tr className="border-b border-gray-100 dark:border-gray-800">
+                    <td className="py-2 px-2 font-medium text-foreground">Infant</td>
+                    <td className="py-2 px-2 text-center">80-140</td>
+                    <td className="py-2 px-2 text-center">20-30</td>
+                    <td className="py-2 px-2 text-center">70-100</td>
+                    <td className="py-2 px-2 text-center">4-10</td>
+                  </tr>
+                  <tr className="border-b border-gray-100 dark:border-gray-800">
+                    <td className="py-2 px-2 font-medium text-foreground whitespace-nowrap">Toddler</td>
+                    <td className="py-2 px-2 text-center">80-130</td>
+                    <td className="py-2 px-2 text-center">20-30</td>
+                    <td className="py-2 px-2 text-center">80-110</td>
+                    <td className="py-2 px-2 text-center">10-14</td>
+                  </tr>
+                  <tr className="border-b border-gray-100 dark:border-gray-800">
+                    <td className="py-2 px-2 font-medium text-foreground whitespace-nowrap">Preschool</td>
+                    <td className="py-2 px-2 text-center">80-120</td>
+                    <td className="py-2 px-2 text-center">20-30</td>
+                    <td className="py-2 px-2 text-center">80-110</td>
+                    <td className="py-2 px-2 text-center">14-18</td>
+                  </tr>
+                  <tr className="border-b border-gray-100 dark:border-gray-800">
+                    <td className="py-2 px-2 font-medium text-foreground whitespace-nowrap">School</td>
+                    <td className="py-2 px-2 text-center">70-110</td>
+                    <td className="py-2 px-2 text-center">20-30</td>
+                    <td className="py-2 px-2 text-center">80-120</td>
+                    <td className="py-2 px-2 text-center">20-42</td>
+                  </tr>
+                  <tr>
+                    <td className="py-2 px-2 font-medium text-foreground whitespace-nowrap">Adolescent</td>
+                    <td className="py-2 px-2 text-center">55-105</td>
+                    <td className="py-2 px-2 text-center">12-20</td>
+                    <td className="py-2 px-2 text-center">110-120</td>
+                    <td className="py-2 px-2 text-center">&gt;50</td>
+                  </tr>
                 </tbody>
               </table>
             </div>
-            <div className="mt-3 p-2 bg-gray-50 dark:bg-gray-800 rounded text-xs">
-              <p className="font-medium">Minimal Acceptable SBP:</p>
-              <p className="text-muted-foreground">&lt;1 mo: &gt;60 | 1mo-1y: &gt;70 | 1-10y: 70 + (2×age) | &gt;10y: &gt;90</p>
+            <div className="mt-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg text-xs">
+              <p className="font-medium mb-1">Minimal Acceptable SBP:</p>
+              <p className="text-muted-foreground text-[11px] leading-relaxed">&lt;1mo: &gt;60 | 1mo-1y: &gt;70 | 1-10y: 70+(2×age) | &gt;10y: &gt;90</p>
               {ageNum > 0 && ageNum <= 10 && (
-                <p className="font-mono text-blue-600 mt-1">→ Min SBP for {ageNum}y: {70 + (2 * ageNum)} mmHg</p>
+                <p className="font-mono text-blue-600 mt-2 text-sm">→ Min SBP for {ageNum}y: {70 + (2 * ageNum)} mmHg</p>
               )}
             </div>
           </CardContent>
