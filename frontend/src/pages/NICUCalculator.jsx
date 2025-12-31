@@ -246,15 +246,15 @@ const NICUCalculator = ({ theme, toggleTheme }) => {
     }[color] || "text-gray-500";
 
     switch(iconName) {
-      case "droplets": return <Droplets className={`h-6 w-6 ${colorClass}`} />;
-      case "catheter": return <CatheterIcon />;
-      case "intubation": return <span className={colorClass}><IntubationIcon /></span>;
-      case "activity": return <Activity className={`h-6 w-6 ${colorClass}`} />;
-      case "blood": return <span className={colorClass}><BloodDropIcon /></span>;
-      case "repeat": return <Repeat className={`h-6 w-6 ${colorClass}`} />;
-      case "nrp": return <span className={colorClass}><NRPIcon /></span>;
-      case "growth": return <span className={colorClass}><GrowthIcon /></span>;
-      default: return <Stethoscope className={`h-6 w-6 ${colorClass}`} />;
+      case "droplets": return <span className={colorClass}><HealthFluidIcon className="h-6 w-6" /></span>;
+      case "catheter": return <span className={colorClass}><HealthCatheterIcon className="h-6 w-6" /></span>;
+      case "intubation": return <span className={colorClass}><HealthIntubationIcon className="h-6 w-6" /></span>;
+      case "activity": return <span className={colorClass}><HealthActivityIcon className="h-6 w-6" /></span>;
+      case "blood": return <span className={colorClass}><HealthBloodDropIcon className="h-6 w-6" /></span>;
+      case "repeat": return <span className={colorClass}><HealthExchangeIcon className="h-6 w-6" /></span>;
+      case "nrp": return <span className={colorClass}><HealthNRPIcon className="h-6 w-6" /></span>;
+      case "growth": return <span className={colorClass}><HealthGrowthIcon className="h-6 w-6" /></span>;
+      default: return <span className={colorClass}><HealthStethoscopeIcon className="h-6 w-6" /></span>;
     }
   };
 
