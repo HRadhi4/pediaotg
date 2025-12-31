@@ -439,3 +439,32 @@ The implementation exceeds the requirements with sophisticated Z-score calculati
 - **Priority**: high
 - **Implementation**: Complete and functional
 
+
+
+## Update: Navigation Bar & CPR Page Redesign (Wed Dec 31 16:56:57 UTC 2025)
+
+### Task 1: Unified Navigation Bar Icons
+- Created unified health icons for navigation: HomeIcon, BloodGasIcon, ElectrolytesIcon, BloodProductsIcon, GIRIcon, JaundiceNavIcon
+- Updated all three pages (LandingPage, ChildrenDashboard, NICUCalculator) to use consistent icons
+- All icons now use h-5 w-5 sizing consistently
+- Removed old inline SVG icon definitions
+
+### Task 2: CPR Page Redesign (PALS 2025)
+- Completely redesigned CPR page with minimalist, user-friendly interface
+- Reduced color usage - now primarily gray/white with subtle accents
+- Implemented collapsible sections (H's & T's, Normal HR by Age)
+- Clear side-by-side comparison of VF/pVT vs Asystole/PEA
+- Cleaner drug reference layout with calculated doses
+- All tabs (Arrest, Tachy, Brady, Drugs) redesigned for consistency
+
+### Files Modified:
+- /app/frontend/src/components/HealthIcons.jsx - Added nav icons
+- /app/frontend/src/pages/LandingPage.jsx - Updated nav bar
+- /app/frontend/src/pages/ChildrenDashboard.jsx - Updated nav bar + CPR page
+- /app/frontend/src/pages/NICUCalculator.jsx - Updated nav bar
+
+### Testing Needed:
+1. Verify navigation bar is consistent across all pages
+2. Test CPR page tabs and weight calculations
+3. Verify collapsible sections work
+
