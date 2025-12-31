@@ -17,7 +17,18 @@
 
 import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { ArrowLeft, Droplets, Home, FlaskConical, Zap, Settings, X, Stethoscope, Activity, Repeat, Check, Clock, GripVertical, Plus, Trash2, ChevronUp, ChevronDown } from "lucide-react";
+import { ArrowLeft, Home, FlaskConical, Zap, Settings, X, Check, Clock, GripVertical, Plus, Trash2, ChevronUp, ChevronDown } from "lucide-react";
+import { 
+  FluidIcon as HealthFluidIcon, 
+  IntubationIcon as HealthIntubationIcon, 
+  ActivityIcon as HealthActivityIcon, 
+  BloodDropIcon as HealthBloodDropIcon, 
+  ExchangeIcon as HealthExchangeIcon, 
+  GrowthChartIcon as HealthGrowthIcon,
+  ResuscitationIcon as HealthNRPIcon,
+  CatheterIcon as HealthCatheterIcon,
+  StethoscopeIcon as HealthStethoscopeIcon
+} from "@/components/HealthIcons";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
