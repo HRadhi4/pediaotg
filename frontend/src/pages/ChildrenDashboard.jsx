@@ -1878,8 +1878,8 @@ const CPRPage = ({ onBack }) => {
                       {drugs && <p className={calcValue}>{drugs.amiodarone.dose}mg over 20-60min</p>}
                     </div>
                     <div className="p-2 rounded bg-gray-50 dark:bg-gray-800">
-                      <p className="font-medium text-foreground">Unstable/Pulseless:</p>
-                      <p className="text-muted-foreground">Cardioversion or Arrest protocol</p>
+                      <p className="font-medium text-foreground text-[10px] sm:text-xs">Unstable/Pulseless:</p>
+                      <p className="text-muted-foreground text-[10px] sm:text-xs">Cardioversion or Arrest protocol</p>
                     </div>
                   </div>
                 </div>
