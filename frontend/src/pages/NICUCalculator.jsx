@@ -17,7 +17,7 @@
 
 import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Check, Clock, Plus, Trash2, ChevronUp, ChevronDown, Droplets } from "lucide-react";
+import { Check, Clock, Plus, Trash2, ChevronUp, ChevronDown, Droplets, Search } from "lucide-react";
 import { 
   FluidIcon as HealthFluidIcon, 
   IntubationIcon as HealthIntubationIcon, 
@@ -37,7 +37,8 @@ import {
   ArrowLeftIcon,
   SettingsIcon,
   CloseIcon,
-  GripIcon
+  GripIcon,
+  DrugsIcon as HealthDrugsIcon
 } from "@/components/HealthIcons";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
