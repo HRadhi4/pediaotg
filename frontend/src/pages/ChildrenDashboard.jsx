@@ -281,7 +281,7 @@ const ChildrenDashboard = ({ theme, toggleTheme }) => {
               onClick={() => currentPage === "main" ? navigate("/") : goToPage("main")}
               className="w-10 h-10 rounded-xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
             >
-              <ArrowLeft className="h-5 w-5" />
+              <ArrowLeftIcon className="h-5 w-5" />
             </button>
             <div>
               <h1 className="font-heading text-lg font-bold text-foreground tracking-tight">
