@@ -1136,15 +1136,21 @@ const IntubationPage = ({ onBack }) => {
               <CardHeader className="pb-2">
                 <CardTitle className="text-sm text-[#00d9c5]">{step.title}</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-1">
+              <CardContent className="space-y-2">
                 {step.items && step.items.map((item, i) => (
-                  <p key={i} className="text-xs">• {item}</p>
+                  <label key={i} className="flex items-start gap-3 cursor-pointer group">
+                    <input type="checkbox" className="mt-0.5 h-4 w-4 rounded border-gray-300 text-[#00d9c5] focus:ring-[#00d9c5]" />
+                    <span className="text-xs group-hover:text-foreground text-muted-foreground">{item}</span>
+                  </label>
                 ))}
                 {step.drugs && step.drugs.map((drug, i) => (
-                  <div key={i} className="p-2 rounded-lg bg-gray-50 dark:bg-gray-800/50 text-xs mb-1">
-                    <p className="font-medium">{drug.name}: {drug.dose}</p>
-                    <p className="text-muted-foreground">{drug.note}</p>
-                  </div>
+                  <label key={i} className="flex items-start gap-3 cursor-pointer group">
+                    <input type="checkbox" className="mt-1 h-4 w-4 rounded border-gray-300 text-[#00d9c5] focus:ring-[#00d9c5]" />
+                    <div className="flex-1 p-2 rounded-lg bg-gray-50 dark:bg-gray-800/50 text-xs">
+                      <p className="font-medium">{drug.name}: {drug.dose}</p>
+                      <p className="text-muted-foreground">{drug.note}</p>
+                    </div>
+                  </label>
                 ))}
               </CardContent>
             </Card>
