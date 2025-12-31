@@ -147,12 +147,17 @@ export const DrugsIcon = ({ className }) => (
 
 // ==================== NICU DASHBOARD WIDGETS ====================
 
-// Fluid Icon - from devices/intravenous-bag (same as infusion but smaller drops)
+// Fluid Icon - from devices/intravenous-drip (healthicons.org)
 export const FluidIcon = ({ className }) => (
   <svg className={className} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M16 6C16 6 10 14 10 20C10 23.3 12.7 26 16 26C19.3 26 22 23.3 22 20C22 14 16 6 16 6Z" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
-    <path d="M32 14C32 14 26 22 26 28C26 31.3 28.7 34 32 34C35.3 34 38 31.3 38 28C38 22 32 14 32 14Z" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
-    <path d="M20 30C20 30 14 38 14 42" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+    <circle cx="16" cy="10" r="4" stroke="currentColor" strokeWidth="3"/>
+    <path d="M12 17H20V24C20 26.2 18.2 28 16 28C13.8 28 12 26.2 12 24V17Z" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M16 28V32" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
+    <path d="M16 32C16 32 12 36 12 40C12 42 14 44 16 44C18 44 20 42 20 40C20 36 16 32 16 32Z" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M32 8V14" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
+    <path d="M28 12H36" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
+    <rect x="26" y="18" width="12" height="22" rx="2" stroke="currentColor" strokeWidth="3"/>
+    <path d="M26 26H38" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
   </svg>
 );
 
