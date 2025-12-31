@@ -3133,7 +3133,7 @@ const DrugsPage = ({ onBack }) => {
       <Card className="nightingale-card border-indigo-200 dark:border-indigo-800">
         <CardContent className="pt-4">
           <div className="flex items-center gap-3">
-            <Pill className="h-5 w-5 text-indigo-500" />
+            <DrugsIcon className="h-5 w-5 text-indigo-500" />
             <div className="flex-1">
               <Label className="text-xs text-muted-foreground">Patient Weight (kg)</Label>
               <Input
