@@ -3228,9 +3228,10 @@ const NICUDrugsPage = () => {
       {/* Drug List */}
       <div className="space-y-2">
         {filteredDrugs.map((drug) => {
-          const calculatedDose = drug.getDose(w);
+          const calculatedDoses = drug.getDose(w);
           const interval = getIntervalForPatient(drug);
           const isExpanded = expandedDrug === drug.id;
+          const doseKeys = drug.doses ? Object.keys(drug.doses) : [];
           
           return (
             <Card 
@@ -3248,12 +3249,28 @@ const NICUDrugsPage = () => {
                         {drug.category}
                       </span>
                     </div>
-                    <p className="text-xs text-muted-foreground mt-0.5">{drug.dose}</p>
+                    {/* Show dose types */}
+                    {drug.doses && (
+                      <div className="flex flex-wrap gap-1 mt-1">
+                        {doseKeys.map(key => (
+                          <span key={key} className="text-[9px] px-1 py-0.5 rounded bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400">
+                            {drug.doses[key].label}: {drug.doses[key].value} {drug.doses[key].unit}
+                          </span>
+                        ))}
+                      </div>
+                    )}
                   </div>
-                  {calculatedDose && (
-                    <div className="text-right">
-                      <p className="text-sm font-mono font-bold text-blue-600">{calculatedDose}</p>
-                      {interval && <p className="text-[10px] text-muted-foreground">q{interval}</p>}
+                  {calculatedDoses && w > 0 && (
+                    <div className="text-right ml-2">
+                      <div className="space-y-0.5">
+                        {doseKeys.slice(0, 2).map(key => (
+                          <p key={key} className="text-[11px] font-mono">
+                            <span className="text-muted-foreground">{drug.doses[key].label}:</span>{' '}
+                            <span className="font-bold text-blue-600">{calculatedDoses[key]}</span>
+                          </p>
+                        ))}
+                      </div>
+                      {interval && <p className="text-[10px] text-muted-foreground mt-0.5">q{interval}</p>}
                     </div>
                   )}
                 </div>
@@ -3261,6 +3278,21 @@ const NICUDrugsPage = () => {
                 {/* Expanded Content */}
                 {isExpanded && (
                   <div className="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700 space-y-3">
+                    {/* Calculated Doses Table */}
+                    {calculatedDoses && w > 0 && (
+                      <div>
+                        <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide mb-1">Calculated Doses ({w}kg)</p>
+                        <div className="grid grid-cols-2 gap-2">
+                          {doseKeys.map(key => (
+                            <div key={key} className="p-2 rounded bg-blue-50 dark:bg-blue-900/20">
+                              <p className="text-[10px] text-muted-foreground">{drug.doses[key].label}</p>
+                              <p className="font-mono font-bold text-blue-600">{calculatedDoses[key]}</p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
                     {/* Indication */}
                     <div>
                       <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">Indication</p>
