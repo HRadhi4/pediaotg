@@ -252,10 +252,9 @@ const ChildrenDashboard = ({ theme, toggleTheme }) => {
                     return (
                       <>
                         <div className={`w-11 h-11 rounded-xl flex items-center justify-center ${getColorClass(w.color)}`}>
-                          <w.icon className="h-5 w-5" />
+                          <w.icon className="h-6 w-6" />
                         </div>
                         <h3 className="font-heading font-semibold text-xs leading-tight px-1">{w.title}</h3>
-                        <p className="text-[10px] text-muted-foreground leading-tight px-1">{w.subtitle}</p>
                       </>
                     );
                   })()}
