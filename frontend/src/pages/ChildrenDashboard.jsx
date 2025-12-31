@@ -2112,7 +2112,7 @@ const ApproachesPage = ({ onBack }) => {
   };
 
   return (
-    <div className="space-y-4 pt-4 pb-24">
+    <div className="space-y-4 pt-4 pb-32">
       {/* Patient Info Input */}
       <Card className="border-slate-200 dark:border-slate-700">
         <CardContent className="pt-4">
