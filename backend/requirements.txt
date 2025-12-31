@@ -144,3 +144,5 @@ wcwidth==0.2.14
 websockets==15.0.1
 yarl==1.22.0
 zipp==3.23.0
+pytesseract==0.3.10
+Pillow==10.4.0
