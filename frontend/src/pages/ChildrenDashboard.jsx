@@ -17,7 +17,7 @@
 
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { ArrowLeft, AlertTriangle, Settings, X, GripVertical, Home, FlaskConical, Zap, Route, Droplets, Scale } from "lucide-react";
+import { ArrowLeft, AlertTriangle, Settings, X, GripVertical, Scale } from "lucide-react";
 import { 
   BloodPressureIcon, 
   InfusionIcon, 
@@ -25,7 +25,13 @@ import {
   ScoringIcon, 
   HeartIcon, 
   ApproachesIcon, 
-  DrugsIcon 
+  DrugsIcon,
+  HomeIcon,
+  BloodGasIcon,
+  ElectrolytesIcon,
+  BloodProductsIcon,
+  GIRIcon,
+  JaundiceNavIcon
 } from "@/components/HealthIcons";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
