@@ -3134,42 +3134,76 @@ const NICUDrugsPage = () => {
   );
 
   const getIntervalForPatient = (drug) => {
-    if (!pmaWeeks || !pnaDays) return null;
+    if (!pmaWeeks && pmaWeeks !== 0) return null;
+    
     for (const row of drug.intervalTable) {
-      const pmaParts = row.pma.match(/([<>≤≥]*)(\d+)(?:-(\d+))?/);
-      if (pmaParts) {
-        const op = pmaParts[1];
-        const min = parseInt(pmaParts[2]);
-        const max = pmaParts[3] ? parseInt(pmaParts[3]) : null;
-        
-        let pmaMatch = false;
-        if (op === "≤" || op === "<") pmaMatch = pmaWeeks <= min;
-        else if (op === "≥" || op === ">") pmaMatch = pmaWeeks >= min;
-        else if (max) pmaMatch = pmaWeeks >= min && pmaWeeks <= max;
-        else if (row.pma === "ALL") pmaMatch = true;
-        else pmaMatch = pmaWeeks === min;
-        
-        if (pmaMatch) {
-          if (row.pna === "ALL" || row.pna === "Loading" || row.pna === "Maintenance") {
-            return row.interval;
-          }
-          const pnaParts = row.pna.match(/([<>≤≥]*)(\d+)/);
-          if (pnaParts) {
-            const pnaOp = pnaParts[1];
-            const pnaVal = parseInt(pnaParts[2]);
-            if (pnaOp === ">" && pnaDays > pnaVal) return row.interval;
-            if ((pnaOp === "≥" || pnaOp === "") && pnaDays >= pnaVal) return row.interval;
-            if (pnaOp === "<" && pnaDays < pnaVal) return row.interval;
-            if (pnaOp === "≤" && pnaDays <= pnaVal) return row.interval;
-          }
-          if (row.pna.includes("-")) {
-            const [minPna, maxPna] = row.pna.match(/\d+/g).map(Number);
-            if (pnaDays >= minPna && pnaDays <= maxPna) return row.interval;
-          }
+      // Check PMA match
+      let pmaMatch = false;
+      const pmaStr = row.pma;
+      
+      if (pmaStr === "ALL") {
+        pmaMatch = true;
+      } else if (pmaStr.startsWith("≤")) {
+        const val = parseInt(pmaStr.replace("≤", ""));
+        pmaMatch = pmaWeeks <= val;
+      } else if (pmaStr.startsWith("<")) {
+        const val = parseInt(pmaStr.replace("<", ""));
+        pmaMatch = pmaWeeks < val;
+      } else if (pmaStr.startsWith("≥")) {
+        const val = parseInt(pmaStr.replace("≥", ""));
+        pmaMatch = pmaWeeks >= val;
+      } else if (pmaStr.startsWith(">")) {
+        const val = parseInt(pmaStr.replace(">", ""));
+        pmaMatch = pmaWeeks > val;
+      } else if (pmaStr.includes("-")) {
+        const parts = pmaStr.match(/(\d+)-(\d+)/);
+        if (parts) {
+          const minPma = parseInt(parts[1]);
+          const maxPma = parseInt(parts[2]);
+          pmaMatch = pmaWeeks >= minPma && pmaWeeks <= maxPma;
+        }
+      } else {
+        const val = parseInt(pmaStr);
+        pmaMatch = pmaWeeks === val;
+      }
+      
+      if (!pmaMatch) continue;
+      
+      // Check PNA match
+      const pnaStr = row.pna;
+      let pnaMatch = false;
+      
+      if (pnaStr === "ALL" || pnaStr === "Loading" || pnaStr === "Maintenance" || 
+          pnaStr === "SEM disease" || pnaStr === "CNS disease" || pnaStr === "Disseminated" ||
+          pnaStr === "Prophylaxis" || pnaStr === "Treatment") {
+        pnaMatch = true;
+      } else if (pnaStr.startsWith("≥")) {
+        const val = parseInt(pnaStr.match(/\d+/)?.[0] || "0");
+        pnaMatch = pnaDays >= val;
+      } else if (pnaStr.startsWith(">")) {
+        const val = parseInt(pnaStr.match(/\d+/)?.[0] || "0");
+        pnaMatch = pnaDays > val;
+      } else if (pnaStr.startsWith("≤")) {
+        const val = parseInt(pnaStr.match(/\d+/)?.[0] || "0");
+        pnaMatch = pnaDays <= val;
+      } else if (pnaStr.startsWith("<")) {
+        const val = parseInt(pnaStr.match(/\d+/)?.[0] || "0");
+        pnaMatch = pnaDays < val;
+      } else if (pnaStr.includes("-")) {
+        const parts = pnaStr.match(/(\d+)-(\d+)/);
+        if (parts) {
+          const minPna = parseInt(parts[1]);
+          const maxPna = parseInt(parts[2]);
+          pnaMatch = pnaDays >= minPna && pnaDays <= maxPna;
         }
       }
+      
+      if (pmaMatch && pnaMatch) {
+        return row.interval;
+      }
     }
-    return drug.intervalTable[0]?.interval || "See table";
+    
+    return null;
   };
 
   return (
