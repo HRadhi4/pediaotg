@@ -1633,6 +1633,11 @@ const CPRPage = ({ onBack }) => {
   const [weight, setWeight] = useState("");
   const w = parseFloat(weight) || 0;
 
+  // Scroll to top when page loads
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   // Drug calculations based on weight (PALS 2025)
   const calculateDrugs = () => {
     if (!w) return null;
