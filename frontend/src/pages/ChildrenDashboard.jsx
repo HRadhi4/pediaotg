@@ -90,7 +90,7 @@ const SortableWidget = ({ widget, isEditMode, onClick, getColorClass }) => {
             {...listeners}
             className="absolute top-2 right-2 p-1.5 rounded-lg bg-[#00d9c5]/20 text-[#00d9c5] cursor-grab active:cursor-grabbing touch-none"
           >
-            <GripVertical className="h-4 w-4" />
+            <GripIcon className="h-4 w-4" />
           </div>
         )}
         <div className="flex flex-col items-center text-center gap-2">
