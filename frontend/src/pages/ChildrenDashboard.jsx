@@ -1664,18 +1664,13 @@ const CPRPage = ({ onBack }) => {
   const calcValue = "font-mono font-bold text-red-600 dark:text-red-400";
 
   // Collapsible Section Component
-  const Section = ({ title, children, defaultOpen = false, color = "gray" }) => {
+  const Section = ({ title, children, defaultOpen = false }) => {
     const [isOpen, setIsOpen] = useState(defaultOpen);
-    const colorClasses = {
-      gray: "bg-gray-50 dark:bg-gray-800/50 hover:bg-gray-100",
-      purple: "bg-purple-50 dark:bg-purple-900/30 hover:bg-purple-100",
-      blue: "bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100",
-    };
     return (
       <div className="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className={`w-full px-4 py-3 flex items-center justify-between ${colorClasses[color]} dark:hover:bg-gray-800 transition-colors`}
+          className="w-full px-4 py-3 flex items-center justify-between bg-gray-50 dark:bg-gray-800/50 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
         >
           <span className="font-medium text-sm">{title}</span>
           <ChevronDown className={`h-4 w-4 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
@@ -1711,10 +1706,10 @@ const CPRPage = ({ onBack }) => {
       {/* Tab Navigation */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList className="grid w-full grid-cols-4 text-xs bg-gray-100 dark:bg-gray-800">
-          <TabsTrigger value="arrest" className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-900 data-[state=active]:text-red-600">Arrest</TabsTrigger>
-          <TabsTrigger value="tachy" className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-900 data-[state=active]:text-amber-600">Tachy</TabsTrigger>
-          <TabsTrigger value="brady" className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-900 data-[state=active]:text-blue-600">Brady</TabsTrigger>
-          <TabsTrigger value="drugs" className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-900 data-[state=active]:text-teal-600">Drugs</TabsTrigger>
+          <TabsTrigger value="arrest" className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-900">Arrest</TabsTrigger>
+          <TabsTrigger value="tachy" className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-900">Tachy</TabsTrigger>
+          <TabsTrigger value="brady" className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-900">Brady</TabsTrigger>
+          <TabsTrigger value="drugs" className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-900">Drugs</TabsTrigger>
         </TabsList>
 
         {/* ==================== CARDIAC ARREST TAB ==================== */}
@@ -1729,8 +1724,8 @@ const CPRPage = ({ onBack }) => {
             </CardHeader>
             <CardContent className="space-y-3">
               {/* Start CPR Box */}
-              <div className="p-4 rounded-lg bg-red-50 dark:bg-red-900/20 border-l-4 border-red-400">
-                <p className="font-semibold text-sm mb-2 text-red-700 dark:text-red-300">1. Start High-Quality CPR</p>
+              <div className="p-4 rounded-lg bg-gray-50 dark:bg-gray-800/50 border-l-4 border-red-400">
+                <p className="font-semibold text-sm mb-2">1. Start High-Quality CPR</p>
                 <div className="grid grid-cols-2 gap-4 text-xs text-muted-foreground">
                   <div>
                     <p>• Rate: <span className={calcValue}>100-120/min</span></p>
@@ -1748,8 +1743,8 @@ const CPRPage = ({ onBack }) => {
                 <p className="font-semibold text-sm mb-3">2. Check Rhythm - Shockable?</p>
                 <div className="grid grid-cols-2 gap-3">
                   {/* Shockable */}
-                  <div className="p-3 rounded-lg border-2 border-amber-300 dark:border-amber-600 bg-amber-50 dark:bg-amber-900/20">
-                    <p className="font-semibold text-xs mb-2 text-center border-b border-amber-200 pb-2 text-amber-700 dark:text-amber-300">VF / pVT</p>
+                  <div className="p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900">
+                    <p className="font-semibold text-xs mb-2 text-center border-b pb-2">VF / pVT</p>
                     <ol className="space-y-1.5 text-xs text-muted-foreground">
                       <li><span className="font-medium text-foreground">→ Shock</span> {drugs ? <span className={calcValue}>{drugs.defibrillation.first}J</span> : <span className="text-muted-foreground">2 J/kg</span>}</li>
                       <li>→ CPR 2 min</li>
@@ -1759,8 +1754,8 @@ const CPRPage = ({ onBack }) => {
                     </ol>
                   </div>
                   {/* Non-Shockable */}
-                  <div className="p-3 rounded-lg border-2 border-blue-300 dark:border-blue-600 bg-blue-50 dark:bg-blue-900/20">
-                    <p className="font-semibold text-xs mb-2 text-center border-b border-blue-200 pb-2 text-blue-700 dark:text-blue-300">Asystole / PEA</p>
+                  <div className="p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900">
+                    <p className="font-semibold text-xs mb-2 text-center border-b pb-2">Asystole / PEA</p>
                     <ol className="space-y-1.5 text-xs text-muted-foreground">
                       <li>→ CPR 2 min</li>
                       <li><span className="font-medium text-foreground">→ Epinephrine ASAP</span></li>
@@ -1774,23 +1769,23 @@ const CPRPage = ({ onBack }) => {
 
               {/* Drug Doses Quick Reference */}
               {drugs && (
-                <div className="p-4 rounded-lg bg-teal-50 dark:bg-teal-900/20 border-l-4 border-teal-400">
-                  <p className="font-semibold text-sm mb-2 text-teal-700 dark:text-teal-300">Quick Drug Doses ({w}kg)</p>
+                <div className="p-4 rounded-lg bg-gray-50 dark:bg-gray-800/50 border-l-4 border-gray-400">
+                  <p className="font-semibold text-sm mb-2">Quick Drug Doses ({w}kg)</p>
                   <div className="grid grid-cols-2 gap-2 text-xs">
-                    <div className="p-2 rounded bg-white dark:bg-gray-900">
+                    <div className="p-2 rounded bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700">
                       <span className="text-muted-foreground">Epinephrine:</span>
                       <span className={`${calcValue} ml-1`}>{drugs.epinephrine.dose}mg</span>
                       <span className="text-muted-foreground text-[10px] ml-1">({drugs.epinephrine.volume1to10000}mL)</span>
                     </div>
-                    <div className="p-2 rounded bg-white dark:bg-gray-900">
+                    <div className="p-2 rounded bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700">
                       <span className="text-muted-foreground">Amiodarone:</span>
                       <span className={`${calcValue} ml-1`}>{drugs.amiodarone.dose}mg</span>
                     </div>
-                    <div className="p-2 rounded bg-white dark:bg-gray-900">
+                    <div className="p-2 rounded bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700">
                       <span className="text-muted-foreground">Defib 1st:</span>
                       <span className={`${calcValue} ml-1`}>{drugs.defibrillation.first}J</span>
                     </div>
-                    <div className="p-2 rounded bg-white dark:bg-gray-900">
+                    <div className="p-2 rounded bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700">
                       <span className="text-muted-foreground">Defib 2nd+:</span>
                       <span className={`${calcValue} ml-1`}>{drugs.defibrillation.subsequent}J</span>
                     </div>
@@ -1799,10 +1794,10 @@ const CPRPage = ({ onBack }) => {
               )}
 
               {/* H's and T's - Collapsible */}
-              <Section title="Reversible Causes (H's & T's)" color="purple">
+              <Section title="Reversible Causes (H's & T's)">
                 <div className="grid grid-cols-2 gap-4 text-xs text-muted-foreground">
                   <div>
-                    <p className="font-medium text-purple-600 dark:text-purple-400 mb-1">H&apos;s</p>
+                    <p className="font-medium text-foreground mb-1">H&apos;s</p>
                     <ul className="space-y-0.5">
                       <li>• Hypoxia</li>
                       <li>• Hypovolemia</li>
@@ -1813,7 +1808,7 @@ const CPRPage = ({ onBack }) => {
                     </ul>
                   </div>
                   <div>
-                    <p className="font-medium text-purple-600 dark:text-purple-400 mb-1">T&apos;s</p>
+                    <p className="font-medium text-foreground mb-1">T&apos;s</p>
                     <ul className="space-y-0.5">
                       <li>• Tension pneumothorax</li>
                       <li>• Tamponade (cardiac)</li>
@@ -1840,8 +1835,8 @@ const CPRPage = ({ onBack }) => {
             </CardHeader>
             <CardContent className="space-y-3">
               {/* Initial Assessment */}
-              <div className="p-4 rounded-lg bg-amber-50 dark:bg-amber-900/20 border-l-4 border-amber-400">
-                <p className="font-semibold text-sm mb-2 text-amber-700 dark:text-amber-300">Initial Assessment</p>
+              <div className="p-4 rounded-lg bg-gray-50 dark:bg-gray-800/50 border-l-4 border-amber-400">
+                <p className="font-semibold text-sm mb-2">Initial Assessment</p>
                 <ul className="text-xs text-muted-foreground space-y-1">
                   <li>• Support ABCs, give O₂, IV/IO access</li>
                   <li>• 12-lead ECG → QRS narrow (&lt;0.09s) or wide (≥0.09s)?</li>
@@ -1852,11 +1847,11 @@ const CPRPage = ({ onBack }) => {
               {/* QRS Comparison */}
               <div className="grid grid-cols-2 gap-3">
                 {/* Narrow QRS */}
-                <div className="p-3 rounded-lg border-2 border-green-300 dark:border-green-600 bg-green-50 dark:bg-green-900/20">
-                  <p className="font-semibold text-xs mb-2 text-center border-b border-green-200 pb-2 text-green-700 dark:text-green-300">Narrow QRS (SVT)</p>
+                <div className="p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900">
+                  <p className="font-semibold text-xs mb-2 text-center border-b pb-2">Narrow QRS (SVT)</p>
                   <div className="space-y-2 text-xs">
-                    <div className="p-2 rounded bg-white dark:bg-gray-900">
-                      <p className="font-medium text-green-700 dark:text-green-400">Stable:</p>
+                    <div className="p-2 rounded bg-gray-50 dark:bg-gray-800">
+                      <p className="font-medium text-foreground">Stable:</p>
                       <p className="text-muted-foreground">1. Vagal maneuvers</p>
                       <p className="text-muted-foreground">2. Adenosine IV push</p>
                       {drugs && (
@@ -1866,8 +1861,8 @@ const CPRPage = ({ onBack }) => {
                         </p>
                       )}
                     </div>
-                    <div className="p-2 rounded bg-red-100 dark:bg-red-900/30">
-                      <p className="font-medium text-red-700 dark:text-red-400">Unstable:</p>
+                    <div className="p-2 rounded bg-gray-50 dark:bg-gray-800">
+                      <p className="font-medium text-foreground">Unstable:</p>
                       <p className="text-muted-foreground">Synchronized cardioversion</p>
                       {drugs && <p className={calcValue}>{drugs.cardioversion.first}-{drugs.cardioversion.second}J</p>}
                     </div>
@@ -1875,17 +1870,17 @@ const CPRPage = ({ onBack }) => {
                 </div>
 
                 {/* Wide QRS */}
-                <div className="p-3 rounded-lg border-2 border-red-300 dark:border-red-600 bg-red-50 dark:bg-red-900/20">
-                  <p className="font-semibold text-xs mb-2 text-center border-b border-red-200 pb-2 text-red-700 dark:text-red-300">Wide QRS (VT)</p>
+                <div className="p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900">
+                  <p className="font-semibold text-xs mb-2 text-center border-b pb-2">Wide QRS (VT)</p>
                   <div className="space-y-2 text-xs">
-                    <div className="p-2 rounded bg-white dark:bg-gray-900">
-                      <p className="font-medium text-amber-700 dark:text-amber-400">Stable:</p>
+                    <div className="p-2 rounded bg-gray-50 dark:bg-gray-800">
+                      <p className="font-medium text-foreground">Stable:</p>
                       <p className="text-muted-foreground">Expert consultation</p>
                       <p className="text-muted-foreground">Amiodarone IV</p>
                       {drugs && <p className={calcValue}>{drugs.amiodarone.dose}mg over 20-60min</p>}
                     </div>
-                    <div className="p-2 rounded bg-red-200 dark:bg-red-900/50">
-                      <p className="font-medium text-red-700 dark:text-red-400">Unstable/Pulseless:</p>
+                    <div className="p-2 rounded bg-gray-50 dark:bg-gray-800">
+                      <p className="font-medium text-foreground">Unstable/Pulseless:</p>
                       <p className="text-muted-foreground">Cardioversion or Arrest protocol</p>
                     </div>
                   </div>
@@ -1907,8 +1902,8 @@ const CPRPage = ({ onBack }) => {
             </CardHeader>
             <CardContent className="space-y-3">
               {/* Initial Steps */}
-              <div className="p-4 rounded-lg bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-400">
-                <p className="font-semibold text-sm mb-2 text-blue-700 dark:text-blue-300">Initial Steps</p>
+              <div className="p-4 rounded-lg bg-gray-50 dark:bg-gray-800/50 border-l-4 border-blue-400">
+                <p className="font-semibold text-sm mb-2">Initial Steps</p>
                 <ul className="text-xs text-muted-foreground space-y-1">
                   <li>• Support ABCs, give O₂, monitor, IV/IO</li>
                   <li>• If HR &lt;60 with poor perfusion → <span className="font-medium text-red-600">Start CPR</span></li>
@@ -1916,42 +1911,42 @@ const CPRPage = ({ onBack }) => {
               </div>
 
               {/* Treatment Algorithm */}
-              <div className="p-4 rounded-lg bg-gray-50 dark:bg-gray-800/50 border-l-4 border-blue-400">
-                <p className="font-semibold text-sm mb-3 text-blue-700 dark:text-blue-300">Persistent Bradycardia + Compromise</p>
+              <div className="p-4 rounded-lg bg-gray-50 dark:bg-gray-800/50 border-l-4 border-gray-400">
+                <p className="font-semibold text-sm mb-3">Persistent Bradycardia + Compromise</p>
                 <div className="space-y-2">
-                  <div className="p-3 rounded bg-white dark:bg-gray-900 border-l-2 border-blue-300 text-xs">
-                    <p className="font-medium text-blue-600 dark:text-blue-400">1. Epinephrine</p>
+                  <div className="p-3 rounded bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-xs">
+                    <p className="font-medium text-foreground">1. Epinephrine</p>
                     <p className="text-muted-foreground">0.01 mg/kg IV/IO (1:10,000) q3-5min</p>
                     {drugs && <p className={`${calcValue} mt-1`}>{drugs.epinephrine.dose}mg ({drugs.epinephrine.volume1to10000}mL)</p>}
                   </div>
-                  <div className="p-3 rounded bg-white dark:bg-gray-900 border-l-2 border-blue-300 text-xs">
-                    <p className="font-medium text-blue-600 dark:text-blue-400">2. Atropine <span className="font-normal text-muted-foreground">(if vagal/AV block)</span></p>
+                  <div className="p-3 rounded bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-xs">
+                    <p className="font-medium text-foreground">2. Atropine <span className="font-normal text-muted-foreground">(if vagal/AV block)</span></p>
                     <p className="text-muted-foreground">0.02 mg/kg IV/IO (min 0.1mg, max 0.5mg)</p>
                     {drugs && <p className={`${calcValue} mt-1`}>{drugs.atropine.dose}mg</p>}
                   </div>
-                  <div className="p-3 rounded bg-white dark:bg-gray-900 border-l-2 border-blue-300 text-xs">
-                    <p className="font-medium text-blue-600 dark:text-blue-400">3. Consider pacing</p>
+                  <div className="p-3 rounded bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-xs">
+                    <p className="font-medium text-foreground">3. Consider pacing</p>
                     <p className="text-muted-foreground">If unresponsive to medications</p>
                   </div>
                 </div>
               </div>
 
               {/* Normal HR Reference */}
-              <Section title="Normal Heart Rate by Age" color="blue">
+              <Section title="Normal Heart Rate by Age">
                 <div className="grid grid-cols-2 gap-2 text-xs">
-                  <div className="p-2 rounded bg-blue-50 dark:bg-blue-900/30">
+                  <div className="p-2 rounded bg-gray-50 dark:bg-gray-800">
                     <span className="text-muted-foreground">Newborn:</span>
                     <span className={`${calcValue} ml-2`}>80-205 bpm</span>
                   </div>
-                  <div className="p-2 rounded bg-blue-50 dark:bg-blue-900/30">
+                  <div className="p-2 rounded bg-gray-50 dark:bg-gray-800">
                     <span className="text-muted-foreground">Infant:</span>
                     <span className={`${calcValue} ml-2`}>75-190 bpm</span>
                   </div>
-                  <div className="p-2 rounded bg-blue-50 dark:bg-blue-900/30">
+                  <div className="p-2 rounded bg-gray-50 dark:bg-gray-800">
                     <span className="text-muted-foreground">Child (1-10y):</span>
                     <span className={`${calcValue} ml-2`}>60-140 bpm</span>
                   </div>
-                  <div className="p-2 rounded bg-blue-50 dark:bg-blue-900/30">
+                  <div className="p-2 rounded bg-gray-50 dark:bg-gray-800">
                     <span className="text-muted-foreground">Adolescent:</span>
                     <span className={`${calcValue} ml-2`}>50-100 bpm</span>
                   </div>
@@ -1966,7 +1961,7 @@ const CPRPage = ({ onBack }) => {
           <Card className="nightingale-card">
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-semibold flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-teal-500"></span>
+                <span className="w-2 h-2 rounded-full bg-gray-500"></span>
                 PALS Drug Reference
               </CardTitle>
               <CardDescription className="text-xs">
@@ -1975,10 +1970,10 @@ const CPRPage = ({ onBack }) => {
             </CardHeader>
             <CardContent className="space-y-2">
               {/* Epinephrine */}
-              <div className="p-3 rounded-lg border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/20">
+              <div className="p-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
                 <div className="flex justify-between items-start">
                   <div>
-                    <p className="font-semibold text-sm text-red-700 dark:text-red-300">Epinephrine (1:10,000)</p>
+                    <p className="font-semibold text-sm">Epinephrine (1:10,000)</p>
                     <p className="text-xs text-muted-foreground">Arrest, bradycardia, anaphylaxis</p>
                   </div>
                   <div className="text-right">
@@ -1991,10 +1986,10 @@ const CPRPage = ({ onBack }) => {
               </div>
 
               {/* Amiodarone */}
-              <div className="p-3 rounded-lg border border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-900/20">
+              <div className="p-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
                 <div className="flex justify-between items-start">
                   <div>
-                    <p className="font-semibold text-sm text-amber-700 dark:text-amber-300">Amiodarone</p>
+                    <p className="font-semibold text-sm">Amiodarone</p>
                     <p className="text-xs text-muted-foreground">VF/pVT, stable VT</p>
                   </div>
                   <div className="text-right">
@@ -2005,10 +2000,10 @@ const CPRPage = ({ onBack }) => {
               </div>
 
               {/* Adenosine */}
-              <div className="p-3 rounded-lg border border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-900/20">
+              <div className="p-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
                 <div className="flex justify-between items-start">
                   <div>
-                    <p className="font-semibold text-sm text-green-700 dark:text-green-300">Adenosine</p>
+                    <p className="font-semibold text-sm">Adenosine</p>
                     <p className="text-xs text-muted-foreground">SVT (rapid IV push + flush)</p>
                   </div>
                   <div className="text-right text-xs">
@@ -2021,10 +2016,10 @@ const CPRPage = ({ onBack }) => {
               </div>
 
               {/* Atropine */}
-              <div className="p-3 rounded-lg border border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-900/20">
+              <div className="p-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
                 <div className="flex justify-between items-start">
                   <div>
-                    <p className="font-semibold text-sm text-blue-700 dark:text-blue-300">Atropine</p>
+                    <p className="font-semibold text-sm">Atropine</p>
                     <p className="text-xs text-muted-foreground">Bradycardia (vagal/AV block)</p>
                   </div>
                   <div className="text-right">
@@ -2035,16 +2030,16 @@ const CPRPage = ({ onBack }) => {
               </div>
 
               {/* Energy Doses */}
-              <div className="p-3 rounded-lg border border-purple-200 dark:border-purple-800 bg-purple-50 dark:bg-purple-900/20">
-                <p className="font-semibold text-sm text-purple-700 dark:text-purple-300 mb-2">Energy Doses</p>
+              <div className="p-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
+                <p className="font-semibold text-sm mb-2">Energy Doses</p>
                 <div className="grid grid-cols-2 gap-3 text-xs">
                   <div>
-                    <p className="font-medium text-purple-600 dark:text-purple-400">Defibrillation</p>
+                    <p className="font-medium">Defibrillation</p>
                     <p className="text-muted-foreground">1st: 2 J/kg {drugs && <span className={calcValue}>→ {drugs.defibrillation.first}J</span>}</p>
                     <p className="text-muted-foreground">2nd+: 4 J/kg {drugs && <span className={calcValue}>→ {drugs.defibrillation.subsequent}J</span>}</p>
                   </div>
                   <div>
-                    <p className="font-medium text-purple-600 dark:text-purple-400">Cardioversion</p>
+                    <p className="font-medium">Cardioversion</p>
                     <p className="text-muted-foreground">0.5-1 J/kg → 2 J/kg</p>
                     {drugs && <p className={calcValue}>{drugs.cardioversion.first}-{drugs.cardioversion.second}J</p>}
                   </div>
