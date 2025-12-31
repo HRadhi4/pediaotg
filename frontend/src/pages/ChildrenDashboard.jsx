@@ -1619,19 +1619,19 @@ const IWLCalculator = () => {
   );
 };
 
-// CPR Page - PALS Algorithms & Drug Dosing
+// CPR Page - PALS 2025 Algorithms & Drug Dosing (Redesigned)
 const CPRPage = ({ onBack }) => {
   const [activeTab, setActiveTab] = useState("arrest");
   const [weight, setWeight] = useState("");
   const w = parseFloat(weight) || 0;
 
-  // Drug calculations based on weight
+  // Drug calculations based on weight (PALS 2025)
   const calculateDrugs = () => {
     if (!w) return null;
     return {
       epinephrine: {
         dose: (w * 0.01).toFixed(3),
-        volume1to10000: (w * 0.1).toFixed(2), // 1:10,000 = 0.1mg/mL
+        volume1to10000: (w * 0.1).toFixed(2),
         ettDose: (w * 0.1).toFixed(2),
       },
       amiodarone: {
@@ -1660,18 +1660,37 @@ const CPRPage = ({ onBack }) => {
 
   const drugs = calculateDrugs();
 
+  // Collapsible Section Component
+  const Section = ({ title, children, defaultOpen = false }) => {
+    const [isOpen, setIsOpen] = useState(defaultOpen);
+    return (
+      <div className="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          className="w-full px-4 py-3 flex items-center justify-between bg-gray-50 dark:bg-gray-800/50 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+        >
+          <span className="font-medium text-sm">{title}</span>
+          <ChevronDown className={`h-4 w-4 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+        </button>
+        {isOpen && <div className="p-4 bg-white dark:bg-gray-900 text-sm">{children}</div>}
+      </div>
+    );
+  };
+
   return (
     <div className="space-y-4 pt-4 pb-8">
-      {/* Weight Input - Always visible */}
-      <Card className="nightingale-card border-red-200 dark:border-red-800">
+      {/* Header Card - Weight Input */}
+      <Card className="nightingale-card">
         <CardContent className="pt-4">
           <div className="flex items-center gap-3">
-            <Heart className="h-5 w-5 text-red-500" />
+            <div className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800">
+              <HeartIcon className="h-5 w-5 text-gray-600 dark:text-gray-400" />
+            </div>
             <div className="flex-1">
               <Label className="text-xs text-muted-foreground">Patient Weight (kg)</Label>
               <Input
                 type="number"
-                placeholder="Enter weight for drug calculations"
+                placeholder="Enter weight"
                 value={weight}
                 onChange={(e) => setWeight(e.target.value)}
                 className="font-mono mt-1"
@@ -1683,95 +1702,96 @@ const CPRPage = ({ onBack }) => {
 
       {/* Tab Navigation */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid w-full grid-cols-4 text-xs">
-          <TabsTrigger value="arrest">Arrest</TabsTrigger>
-          <TabsTrigger value="tachy">Tachy</TabsTrigger>
-          <TabsTrigger value="brady">Brady</TabsTrigger>
-          <TabsTrigger value="drugs">Drugs</TabsTrigger>
+        <TabsList className="grid w-full grid-cols-4 text-xs bg-gray-100 dark:bg-gray-800">
+          <TabsTrigger value="arrest" className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-900">Arrest</TabsTrigger>
+          <TabsTrigger value="tachy" className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-900">Tachy</TabsTrigger>
+          <TabsTrigger value="brady" className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-900">Brady</TabsTrigger>
+          <TabsTrigger value="drugs" className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-900">Drugs</TabsTrigger>
         </TabsList>
 
-        {/* Cardiac Arrest Algorithm */}
+        {/* ==================== CARDIAC ARREST TAB ==================== */}
         <TabsContent value="arrest" className="space-y-3 mt-4">
-          <Card className="border-red-300 bg-red-50 dark:bg-red-950/30">
+          {/* CPR Basics */}
+          <Card className="nightingale-card">
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm flex items-center gap-2">
-                <AlertTriangle className="h-4 w-4 text-red-500" />
-                Cardiac Arrest Algorithm (PALS 2025)
-              </CardTitle>
+              <CardTitle className="text-sm font-semibold">Cardiac Arrest - PALS 2025</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-3 text-xs">
-              <div className="p-3 rounded-xl bg-white/50 dark:bg-gray-900/50">
-                <p className="font-semibold text-red-700 dark:text-red-300 mb-2">1. Start CPR Immediately</p>
-                <ul className="space-y-1 text-muted-foreground">
-                  <li>• Push hard & fast: 100-120/min</li>
-                  <li>• Compression-to-ventilation: 15:2 (2 rescuers)</li>
-                  <li>• Minimize interruptions (&gt;60% CPR time)</li>
-                  <li>• Attach monitor/defibrillator</li>
-                </ul>
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                {/* Shockable Rhythm */}
-                <div className="p-3 rounded-xl bg-amber-100 dark:bg-amber-950/50 border border-amber-300">
-                  <p className="font-bold text-amber-800 dark:text-amber-200 text-center mb-2">VF/pVT (Shockable)</p>
-                  <ol className="space-y-2 text-muted-foreground">
-                    <li className="flex items-start gap-1">
-                      <span className="font-bold text-amber-600">1.</span>
-                      <span>Shock: <span className="font-mono text-amber-700">{drugs ? `${drugs.defibrillation.first}J` : "2 J/kg"}</span></span>
-                    </li>
-                    <li className="flex items-start gap-1">
-                      <span className="font-bold text-amber-600">2.</span>
-                      <span>CPR 2 min</span>
-                    </li>
-                    <li className="flex items-start gap-1">
-                      <span className="font-bold text-amber-600">3.</span>
-                      <span>Shock: <span className="font-mono text-amber-700">{drugs ? `${drugs.defibrillation.subsequent}J` : "4 J/kg"}</span></span>
-                    </li>
-                    <li className="flex items-start gap-1">
-                      <span className="font-bold text-amber-600">4.</span>
-                      <span>Epinephrine + CPR</span>
-                    </li>
-                    <li className="flex items-start gap-1">
-                      <span className="font-bold text-amber-600">5.</span>
-                      <span>Shock + Amiodarone</span>
-                    </li>
-                  </ol>
-                </div>
-
-                {/* Non-Shockable Rhythm */}
-                <div className="p-3 rounded-xl bg-blue-100 dark:bg-blue-950/50 border border-blue-300">
-                  <p className="font-bold text-blue-800 dark:text-blue-200 text-center mb-2">Asystole/PEA</p>
-                  <ol className="space-y-2 text-muted-foreground">
-                    <li className="flex items-start gap-1">
-                      <span className="font-bold text-blue-600">1.</span>
-                      <span>CPR 2 min</span>
-                    </li>
-                    <li className="flex items-start gap-1">
-                      <span className="font-bold text-blue-600">2.</span>
-                      <span>Epinephrine ASAP</span>
-                    </li>
-                    <li className="flex items-start gap-1">
-                      <span className="font-bold text-blue-600">3.</span>
-                      <span>CPR 2 min</span>
-                    </li>
-                    <li className="flex items-start gap-1">
-                      <span className="font-bold text-blue-600">4.</span>
-                      <span>Check rhythm</span>
-                    </li>
-                    <li className="flex items-start gap-1">
-                      <span className="font-bold text-blue-600">5.</span>
-                      <span>Repeat; Epi q3-5min</span>
-                    </li>
-                  </ol>
-                </div>
-              </div>
-
-              {/* H's and T's */}
-              <div className="p-3 rounded-xl bg-purple-100 dark:bg-purple-950/50">
-                <p className="font-semibold text-purple-700 dark:text-purple-300 mb-2">Reversible Causes (H&apos;s &amp; T&apos;s)</p>
-                <div className="grid grid-cols-2 gap-2 text-muted-foreground">
+            <CardContent className="space-y-3">
+              {/* Start CPR Box */}
+              <div className="p-4 rounded-lg bg-gray-50 dark:bg-gray-800/50 border-l-4 border-gray-400">
+                <p className="font-semibold text-sm mb-2">1. Start High-Quality CPR</p>
+                <div className="grid grid-cols-2 gap-4 text-xs text-muted-foreground">
                   <div>
-                    <p className="font-medium text-purple-600">H&apos;s:</p>
+                    <p>• Rate: <span className="font-mono font-medium text-foreground">100-120/min</span></p>
+                    <p>• Depth: <span className="font-mono font-medium text-foreground">⅓ AP diameter</span></p>
+                  </div>
+                  <div>
+                    <p>• C:V ratio: <span className="font-mono font-medium text-foreground">15:2</span> (2 rescuers)</p>
+                    <p>• CPR fraction: <span className="font-mono font-medium text-foreground">&gt;60%</span></p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Rhythm Check */}
+              <div className="p-4 rounded-lg bg-gray-50 dark:bg-gray-800/50 border-l-4 border-gray-400">
+                <p className="font-semibold text-sm mb-3">2. Check Rhythm - Shockable?</p>
+                <div className="grid grid-cols-2 gap-3">
+                  {/* Shockable */}
+                  <div className="p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900">
+                    <p className="font-semibold text-xs mb-2 text-center border-b pb-2">VF / pVT</p>
+                    <ol className="space-y-1.5 text-xs text-muted-foreground">
+                      <li><span className="font-medium text-foreground">→ Shock</span> {drugs ? <span className="font-mono">{drugs.defibrillation.first}J</span> : "2 J/kg"}</li>
+                      <li>→ CPR 2 min</li>
+                      <li><span className="font-medium text-foreground">→ Shock</span> {drugs ? <span className="font-mono">{drugs.defibrillation.subsequent}J</span> : "4 J/kg"}</li>
+                      <li>→ CPR + Epinephrine</li>
+                      <li>→ Shock + Amiodarone</li>
+                    </ol>
+                  </div>
+                  {/* Non-Shockable */}
+                  <div className="p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900">
+                    <p className="font-semibold text-xs mb-2 text-center border-b pb-2">Asystole / PEA</p>
+                    <ol className="space-y-1.5 text-xs text-muted-foreground">
+                      <li>→ CPR 2 min</li>
+                      <li><span className="font-medium text-foreground">→ Epinephrine ASAP</span></li>
+                      <li>→ CPR 2 min</li>
+                      <li>→ Check rhythm</li>
+                      <li>→ Epi q3-5 min</li>
+                    </ol>
+                  </div>
+                </div>
+              </div>
+
+              {/* Drug Doses Quick Reference */}
+              {drugs && (
+                <div className="p-4 rounded-lg bg-gray-50 dark:bg-gray-800/50 border-l-4 border-gray-400">
+                  <p className="font-semibold text-sm mb-2">Quick Drug Doses ({w}kg)</p>
+                  <div className="grid grid-cols-2 gap-2 text-xs">
+                    <div className="p-2 rounded bg-white dark:bg-gray-900">
+                      <span className="text-muted-foreground">Epinephrine:</span>
+                      <span className="font-mono font-medium ml-1">{drugs.epinephrine.dose}mg</span>
+                      <span className="text-muted-foreground text-[10px] ml-1">({drugs.epinephrine.volume1to10000}mL)</span>
+                    </div>
+                    <div className="p-2 rounded bg-white dark:bg-gray-900">
+                      <span className="text-muted-foreground">Amiodarone:</span>
+                      <span className="font-mono font-medium ml-1">{drugs.amiodarone.dose}mg</span>
+                    </div>
+                    <div className="p-2 rounded bg-white dark:bg-gray-900">
+                      <span className="text-muted-foreground">Defib 1st:</span>
+                      <span className="font-mono font-medium ml-1">{drugs.defibrillation.first}J</span>
+                    </div>
+                    <div className="p-2 rounded bg-white dark:bg-gray-900">
+                      <span className="text-muted-foreground">Defib 2nd+:</span>
+                      <span className="font-mono font-medium ml-1">{drugs.defibrillation.subsequent}J</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* H's and T's - Collapsible */}
+              <Section title="Reversible Causes (H's & T's)">
+                <div className="grid grid-cols-2 gap-4 text-xs text-muted-foreground">
+                  <div>
+                    <p className="font-medium text-foreground mb-1">H&apos;s</p>
                     <ul className="space-y-0.5">
                       <li>• Hypoxia</li>
                       <li>• Hypovolemia</li>
@@ -1782,83 +1802,77 @@ const CPRPage = ({ onBack }) => {
                     </ul>
                   </div>
                   <div>
-                    <p className="font-medium text-purple-600">T&apos;s:</p>
+                    <p className="font-medium text-foreground mb-1">T&apos;s</p>
                     <ul className="space-y-0.5">
-                      <li>• Tension pneumo</li>
-                      <li>• Tamponade</li>
+                      <li>• Tension pneumothorax</li>
+                      <li>• Tamponade (cardiac)</li>
                       <li>• Toxins</li>
                       <li>• Thrombosis (PE)</li>
                       <li>• Thrombosis (coronary)</li>
                     </ul>
                   </div>
                 </div>
-              </div>
+              </Section>
             </CardContent>
           </Card>
         </TabsContent>
 
-        {/* Tachycardia Algorithm */}
+        {/* ==================== TACHYCARDIA TAB ==================== */}
         <TabsContent value="tachy" className="space-y-3 mt-4">
-          <Card className="border-amber-300 bg-amber-50 dark:bg-amber-950/30">
+          <Card className="nightingale-card">
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm">Tachycardia with Pulse Algorithm</CardTitle>
-              <CardDescription className="text-xs">HR &gt;220 bpm (infant) or &gt;180 bpm (child)</CardDescription>
+              <CardTitle className="text-sm font-semibold">Tachycardia with Pulse</CardTitle>
+              <CardDescription className="text-xs">HR &gt;220 (infant) or &gt;180 (child)</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-3 text-xs">
-              <div className="p-3 rounded-xl bg-white/50 dark:bg-gray-900/50">
-                <p className="font-semibold mb-2">Initial Assessment</p>
-                <ul className="space-y-1 text-muted-foreground">
-                  <li>• Support ABCs, give O2</li>
-                  <li>• Obtain IV/IO access</li>
-                  <li>• 12-lead ECG if available</li>
-                  <li>• Assess: QRS narrow (&lt;0.09s) or wide (≥0.09s)?</li>
+            <CardContent className="space-y-3">
+              {/* Initial Assessment */}
+              <div className="p-4 rounded-lg bg-gray-50 dark:bg-gray-800/50 border-l-4 border-gray-400">
+                <p className="font-semibold text-sm mb-2">Initial Assessment</p>
+                <ul className="text-xs text-muted-foreground space-y-1">
+                  <li>• Support ABCs, give O₂, IV/IO access</li>
+                  <li>• 12-lead ECG → QRS narrow (&lt;0.09s) or wide (≥0.09s)?</li>
+                  <li>• Signs of hemodynamic instability?</li>
                 </ul>
               </div>
 
-              {/* Narrow vs Wide Complex */}
+              {/* QRS Comparison */}
               <div className="grid grid-cols-2 gap-3">
-                <div className="p-3 rounded-xl bg-green-100 dark:bg-green-950/50 border border-green-300">
-                  <p className="font-bold text-green-800 dark:text-green-200 text-center mb-2">Narrow QRS (SVT)</p>
-                  <div className="space-y-2 text-muted-foreground">
-                    <div className="p-2 bg-white/50 dark:bg-gray-900/50 rounded-lg">
-                      <p className="font-medium text-green-700">If STABLE:</p>
-                      <p>1. Vagal maneuvers</p>
-                      <p>2. Adenosine:</p>
-                      <p className="font-mono text-green-600 pl-2">
-                        1st: {drugs ? `${drugs.adenosine.firstDose}mg` : "0.1mg/kg (max 6mg)"}
-                      </p>
-                      <p className="font-mono text-green-600 pl-2">
-                        2nd: {drugs ? `${drugs.adenosine.secondDose}mg` : "0.2mg/kg (max 12mg)"}
-                      </p>
+                {/* Narrow QRS */}
+                <div className="p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900">
+                  <p className="font-semibold text-xs mb-2 text-center border-b pb-2">Narrow QRS (SVT)</p>
+                  <div className="space-y-2 text-xs">
+                    <div className="p-2 rounded bg-gray-50 dark:bg-gray-800">
+                      <p className="font-medium text-foreground">Stable:</p>
+                      <p className="text-muted-foreground">1. Vagal maneuvers</p>
+                      <p className="text-muted-foreground">2. Adenosine IV push</p>
+                      {drugs && (
+                        <p className="font-mono text-foreground mt-1">
+                          1st: {drugs.adenosine.firstDose}mg<br/>
+                          2nd: {drugs.adenosine.secondDose}mg
+                        </p>
+                      )}
                     </div>
-                    <div className="p-2 bg-red-100 dark:bg-red-900/30 rounded-lg">
-                      <p className="font-medium text-red-700">If UNSTABLE:</p>
-                      <p>Synchronized cardioversion</p>
-                      <p className="font-mono text-red-600">
-                        {drugs ? `${drugs.cardioversion.first}-${drugs.cardioversion.second}J` : "0.5-1 J/kg → 2 J/kg"}
-                      </p>
+                    <div className="p-2 rounded bg-gray-50 dark:bg-gray-800">
+                      <p className="font-medium text-foreground">Unstable:</p>
+                      <p className="text-muted-foreground">Synchronized cardioversion</p>
+                      {drugs && <p className="font-mono text-foreground">{drugs.cardioversion.first}-{drugs.cardioversion.second}J</p>}
                     </div>
                   </div>
                 </div>
 
-                <div className="p-3 rounded-xl bg-red-100 dark:bg-red-950/50 border border-red-300">
-                  <p className="font-bold text-red-800 dark:text-red-200 text-center mb-2">Wide QRS (VT)</p>
-                  <div className="space-y-2 text-muted-foreground">
-                    <div className="p-2 bg-red-200/50 dark:bg-red-900/30 rounded-lg">
-                      <p className="font-medium text-red-700">If UNSTABLE or Pulseless:</p>
-                      <p>Synchronized cardioversion</p>
-                      <p className="font-mono text-red-600">
-                        {drugs ? `${drugs.cardioversion.first}-${drugs.cardioversion.second}J` : "0.5-1 J/kg"}
-                      </p>
-                      <p className="text-xs mt-1">If pulseless → Arrest algorithm</p>
+                {/* Wide QRS */}
+                <div className="p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900">
+                  <p className="font-semibold text-xs mb-2 text-center border-b pb-2">Wide QRS (VT)</p>
+                  <div className="space-y-2 text-xs">
+                    <div className="p-2 rounded bg-gray-50 dark:bg-gray-800">
+                      <p className="font-medium text-foreground">Stable:</p>
+                      <p className="text-muted-foreground">Expert consultation</p>
+                      <p className="text-muted-foreground">Amiodarone IV</p>
+                      {drugs && <p className="font-mono text-foreground">{drugs.amiodarone.dose}mg over 20-60min</p>}
                     </div>
-                    <div className="p-2 bg-white/50 dark:bg-gray-900/50 rounded-lg">
-                      <p className="font-medium text-amber-700">If STABLE:</p>
-                      <p>Expert consultation</p>
-                      <p>Consider Amiodarone:</p>
-                      <p className="font-mono text-amber-600">
-                        {drugs ? `${drugs.amiodarone.dose}mg` : "5mg/kg"} IV over 20-60 min
-                      </p>
+                    <div className="p-2 rounded bg-gray-50 dark:bg-gray-800">
+                      <p className="font-medium text-foreground">Unstable/Pulseless:</p>
+                      <p className="text-muted-foreground">Cardioversion or Arrest protocol</p>
                     </div>
                   </div>
                 </div>
@@ -1867,108 +1881,97 @@ const CPRPage = ({ onBack }) => {
           </Card>
         </TabsContent>
 
-        {/* Bradycardia Algorithm */}
+        {/* ==================== BRADYCARDIA TAB ==================== */}
         <TabsContent value="brady" className="space-y-3 mt-4">
-          <Card className="border-blue-300 bg-blue-50 dark:bg-blue-950/30">
+          <Card className="nightingale-card">
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm">Bradycardia with Pulse Algorithm</CardTitle>
-              <CardDescription className="text-xs">HR &lt;60 bpm with cardiopulmonary compromise</CardDescription>
+              <CardTitle className="text-sm font-semibold">Bradycardia with Pulse</CardTitle>
+              <CardDescription className="text-xs">HR &lt;60 with cardiopulmonary compromise</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-3 text-xs">
-              <div className="p-3 rounded-xl bg-white/50 dark:bg-gray-900/50">
-                <p className="font-semibold mb-2">Initial Steps</p>
-                <ul className="space-y-1 text-muted-foreground">
-                  <li>• Support ABCs, give O2</li>
-                  <li>• Attach monitor, IV/IO access</li>
-                  <li>• If HR &lt;60 with poor perfusion → Start CPR</li>
+            <CardContent className="space-y-3">
+              {/* Initial Steps */}
+              <div className="p-4 rounded-lg bg-gray-50 dark:bg-gray-800/50 border-l-4 border-gray-400">
+                <p className="font-semibold text-sm mb-2">Initial Steps</p>
+                <ul className="text-xs text-muted-foreground space-y-1">
+                  <li>• Support ABCs, give O₂, monitor, IV/IO</li>
+                  <li>• If HR &lt;60 with poor perfusion → <span className="font-medium text-foreground">Start CPR</span></li>
                 </ul>
               </div>
 
-              <div className="p-3 rounded-xl bg-blue-100 dark:bg-blue-900/50">
-                <p className="font-semibold text-blue-700 mb-2">If Persistent Bradycardia + Compromise:</p>
-                <ol className="space-y-2 text-muted-foreground">
-                  <li className="p-2 bg-white/50 dark:bg-gray-900/50 rounded-lg">
-                    <span className="font-bold text-blue-600">1. Epinephrine</span>
-                    <p className="font-mono text-blue-600">
-                      IV/IO: {drugs ? `${drugs.epinephrine.dose}mg` : "0.01mg/kg"} ({drugs ? `${drugs.epinephrine.volume1to10000}mL` : "0.1mL/kg"} of 1:10,000)
-                    </p>
-                    <p className="text-xs text-muted-foreground">Repeat every 3-5 minutes</p>
-                  </li>
-                  <li className="p-2 bg-white/50 dark:bg-gray-900/50 rounded-lg">
-                    <span className="font-bold text-blue-600">2. Atropine</span> (if increased vagal tone or AV block)
-                    <p className="font-mono text-blue-600">
-                      {drugs ? `${drugs.atropine.dose}mg` : "0.02mg/kg"} IV/IO (min 0.1mg, max 0.5mg)
-                    </p>
-                    <p className="text-xs text-muted-foreground">May repeat once</p>
-                  </li>
-                  <li className="p-2 bg-white/50 dark:bg-gray-900/50 rounded-lg">
-                    <span className="font-bold text-blue-600">3. Consider pacing</span> if unresponsive to medications
-                  </li>
-                </ol>
-              </div>
-
-              {/* Normal HR by Age */}
-              <div className="p-3 rounded-xl bg-gray-100 dark:bg-gray-800/50">
-                <p className="font-semibold mb-2">Normal Heart Rate by Age</p>
-                <div className="grid grid-cols-2 gap-2 text-muted-foreground">
-                  <div className="p-2 bg-white/50 dark:bg-gray-900/50 rounded">
-                    <p className="font-medium">Newborn</p>
-                    <p className="font-mono">80-205 bpm</p>
+              {/* Treatment Algorithm */}
+              <div className="p-4 rounded-lg bg-gray-50 dark:bg-gray-800/50 border-l-4 border-gray-400">
+                <p className="font-semibold text-sm mb-3">Persistent Bradycardia + Compromise</p>
+                <div className="space-y-2">
+                  <div className="p-3 rounded bg-white dark:bg-gray-900 text-xs">
+                    <p className="font-medium text-foreground">1. Epinephrine</p>
+                    <p className="text-muted-foreground">0.01 mg/kg IV/IO (1:10,000) q3-5min</p>
+                    {drugs && <p className="font-mono text-foreground mt-1">{drugs.epinephrine.dose}mg ({drugs.epinephrine.volume1to10000}mL)</p>}
                   </div>
-                  <div className="p-2 bg-white/50 dark:bg-gray-900/50 rounded">
-                    <p className="font-medium">Infant</p>
-                    <p className="font-mono">75-190 bpm</p>
+                  <div className="p-3 rounded bg-white dark:bg-gray-900 text-xs">
+                    <p className="font-medium text-foreground">2. Atropine <span className="font-normal text-muted-foreground">(if vagal/AV block)</span></p>
+                    <p className="text-muted-foreground">0.02 mg/kg IV/IO (min 0.1mg, max 0.5mg)</p>
+                    {drugs && <p className="font-mono text-foreground mt-1">{drugs.atropine.dose}mg</p>}
                   </div>
-                  <div className="p-2 bg-white/50 dark:bg-gray-900/50 rounded">
-                    <p className="font-medium">Child (1-10y)</p>
-                    <p className="font-mono">60-140 bpm</p>
-                  </div>
-                  <div className="p-2 bg-white/50 dark:bg-gray-900/50 rounded">
-                    <p className="font-medium">Adolescent</p>
-                    <p className="font-mono">50-100 bpm</p>
+                  <div className="p-3 rounded bg-white dark:bg-gray-900 text-xs">
+                    <p className="font-medium text-foreground">3. Consider pacing</p>
+                    <p className="text-muted-foreground">If unresponsive to medications</p>
                   </div>
                 </div>
               </div>
+
+              {/* Normal HR Reference */}
+              <Section title="Normal Heart Rate by Age">
+                <div className="grid grid-cols-2 gap-2 text-xs">
+                  <div className="p-2 rounded bg-gray-50 dark:bg-gray-800">
+                    <span className="text-muted-foreground">Newborn:</span>
+                    <span className="font-mono ml-2">80-205 bpm</span>
+                  </div>
+                  <div className="p-2 rounded bg-gray-50 dark:bg-gray-800">
+                    <span className="text-muted-foreground">Infant:</span>
+                    <span className="font-mono ml-2">75-190 bpm</span>
+                  </div>
+                  <div className="p-2 rounded bg-gray-50 dark:bg-gray-800">
+                    <span className="text-muted-foreground">Child (1-10y):</span>
+                    <span className="font-mono ml-2">60-140 bpm</span>
+                  </div>
+                  <div className="p-2 rounded bg-gray-50 dark:bg-gray-800">
+                    <span className="text-muted-foreground">Adolescent:</span>
+                    <span className="font-mono ml-2">50-100 bpm</span>
+                  </div>
+                </div>
+              </Section>
             </CardContent>
           </Card>
         </TabsContent>
 
-        {/* Drug Doses Summary */}
+        {/* ==================== DRUGS TAB ==================== */}
         <TabsContent value="drugs" className="space-y-3 mt-4">
           <Card className="nightingale-card">
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm">PALS Drug Doses</CardTitle>
+              <CardTitle className="text-sm font-semibold">PALS Drug Reference</CardTitle>
               <CardDescription className="text-xs">
-                {w ? `Calculated for ${w} kg` : "Enter weight above for calculations"}
+                {w ? `Calculated for ${w} kg patient` : "Enter weight above for calculations"}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-2">
               {/* Epinephrine */}
-              <div className="p-3 rounded-xl bg-red-50 dark:bg-red-950/30">
+              <div className="p-3 rounded-lg border border-gray-200 dark:border-gray-700">
                 <div className="flex justify-between items-start">
                   <div>
                     <p className="font-semibold text-sm">Epinephrine (1:10,000)</p>
-                    <p className="text-xs text-muted-foreground">Cardiac arrest, bradycardia</p>
+                    <p className="text-xs text-muted-foreground">Arrest, bradycardia, anaphylaxis</p>
                   </div>
                   <div className="text-right">
                     <p className="text-xs text-muted-foreground">0.01 mg/kg IV/IO</p>
                     {drugs && (
-                      <>
-                        <p className="font-mono text-red-600 font-bold">{drugs.epinephrine.dose} mg</p>
-                        <p className="font-mono text-red-600 text-sm">({drugs.epinephrine.volume1to10000} mL)</p>
-                      </>
+                      <p className="font-mono text-sm font-medium">{drugs.epinephrine.dose} mg <span className="text-muted-foreground">({drugs.epinephrine.volume1to10000} mL)</span></p>
                     )}
                   </div>
                 </div>
-                {drugs && (
-                  <p className="text-xs text-muted-foreground mt-2 border-t pt-2">
-                    ETT: {drugs.epinephrine.ettDose} mg (0.1 mg/kg)
-                  </p>
-                )}
               </div>
 
               {/* Amiodarone */}
-              <div className="p-3 rounded-xl bg-amber-50 dark:bg-amber-950/30">
+              <div className="p-3 rounded-lg border border-gray-200 dark:border-gray-700">
                 <div className="flex justify-between items-start">
                   <div>
                     <p className="font-semibold text-sm">Amiodarone</p>
@@ -1976,73 +1979,60 @@ const CPRPage = ({ onBack }) => {
                   </div>
                   <div className="text-right">
                     <p className="text-xs text-muted-foreground">5 mg/kg IV/IO</p>
-                    {drugs && <p className="font-mono text-amber-600 font-bold">{drugs.amiodarone.dose} mg</p>}
+                    {drugs && <p className="font-mono text-sm font-medium">{drugs.amiodarone.dose} mg</p>}
                   </div>
                 </div>
-                <p className="text-xs text-muted-foreground mt-2">Arrest: rapid push. Stable: over 20-60 min</p>
               </div>
 
               {/* Adenosine */}
-              <div className="p-3 rounded-xl bg-green-50 dark:bg-green-950/30">
+              <div className="p-3 rounded-lg border border-gray-200 dark:border-gray-700">
                 <div className="flex justify-between items-start">
                   <div>
                     <p className="font-semibold text-sm">Adenosine</p>
                     <p className="text-xs text-muted-foreground">SVT (rapid IV push + flush)</p>
                   </div>
-                  <div className="text-right">
-                    {drugs ? (
-                      <>
-                        <p className="text-xs text-muted-foreground">1st: 0.1mg/kg (max 6mg)</p>
-                        <p className="font-mono text-green-600 font-bold">{drugs.adenosine.firstDose} mg</p>
-                        <p className="text-xs text-muted-foreground mt-1">2nd: 0.2mg/kg (max 12mg)</p>
-                        <p className="font-mono text-green-600 font-bold">{drugs.adenosine.secondDose} mg</p>
-                      </>
-                    ) : (
-                      <>
-                        <p className="text-xs">1st: 0.1 mg/kg (max 6mg)</p>
-                        <p className="text-xs">2nd: 0.2 mg/kg (max 12mg)</p>
-                      </>
-                    )}
+                  <div className="text-right text-xs">
+                    <p className="text-muted-foreground">1st: 0.1 mg/kg (max 6mg)</p>
+                    {drugs && <p className="font-mono font-medium">{drugs.adenosine.firstDose} mg</p>}
+                    <p className="text-muted-foreground mt-1">2nd: 0.2 mg/kg (max 12mg)</p>
+                    {drugs && <p className="font-mono font-medium">{drugs.adenosine.secondDose} mg</p>}
                   </div>
                 </div>
               </div>
 
               {/* Atropine */}
-              <div className="p-3 rounded-xl bg-blue-50 dark:bg-blue-950/30">
+              <div className="p-3 rounded-lg border border-gray-200 dark:border-gray-700">
                 <div className="flex justify-between items-start">
                   <div>
                     <p className="font-semibold text-sm">Atropine</p>
                     <p className="text-xs text-muted-foreground">Bradycardia (vagal/AV block)</p>
                   </div>
                   <div className="text-right">
-                    <p className="text-xs text-muted-foreground">0.02 mg/kg IV/IO</p>
-                    {drugs && <p className="font-mono text-blue-600 font-bold">{drugs.atropine.dose} mg</p>}
+                    <p className="text-xs text-muted-foreground">0.02 mg/kg (min 0.1, max 0.5)</p>
+                    {drugs && <p className="font-mono text-sm font-medium">{drugs.atropine.dose} mg</p>}
                   </div>
                 </div>
-                <p className="text-xs text-muted-foreground mt-2">Min 0.1mg, Max 0.5mg/dose</p>
               </div>
 
-              {/* Defibrillation/Cardioversion */}
-              <div className="p-3 rounded-xl bg-purple-50 dark:bg-purple-950/30">
+              {/* Energy Doses */}
+              <div className="p-3 rounded-lg border border-gray-200 dark:border-gray-700">
                 <p className="font-semibold text-sm mb-2">Energy Doses</p>
-                <div className="grid grid-cols-2 gap-2 text-xs">
-                  <div className="p-2 bg-white/50 dark:bg-gray-900/50 rounded">
+                <div className="grid grid-cols-2 gap-3 text-xs">
+                  <div>
                     <p className="font-medium">Defibrillation</p>
-                    <p className="text-muted-foreground">1st: 2 J/kg</p>
-                    {drugs && <p className="font-mono text-purple-600">{drugs.defibrillation.first} J</p>}
-                    <p className="text-muted-foreground">2nd+: 4 J/kg</p>
-                    {drugs && <p className="font-mono text-purple-600">{drugs.defibrillation.subsequent} J</p>}
+                    <p className="text-muted-foreground">1st: 2 J/kg {drugs && <span className="font-mono">→ {drugs.defibrillation.first}J</span>}</p>
+                    <p className="text-muted-foreground">2nd+: 4 J/kg {drugs && <span className="font-mono">→ {drugs.defibrillation.subsequent}J</span>}</p>
                   </div>
-                  <div className="p-2 bg-white/50 dark:bg-gray-900/50 rounded">
+                  <div>
                     <p className="font-medium">Cardioversion</p>
                     <p className="text-muted-foreground">0.5-1 J/kg → 2 J/kg</p>
-                    {drugs && <p className="font-mono text-purple-600">{drugs.cardioversion.first}-{drugs.cardioversion.second} J</p>}
+                    {drugs && <p className="font-mono">{drugs.cardioversion.first}-{drugs.cardioversion.second}J</p>}
                   </div>
                 </div>
               </div>
 
               {/* Lidocaine */}
-              <div className="p-3 rounded-xl bg-gray-50 dark:bg-gray-800/50">
+              <div className="p-3 rounded-lg border border-gray-200 dark:border-gray-700">
                 <div className="flex justify-between items-start">
                   <div>
                     <p className="font-semibold text-sm">Lidocaine (alternative)</p>
@@ -2050,19 +2040,19 @@ const CPRPage = ({ onBack }) => {
                   </div>
                   <div className="text-right">
                     <p className="text-xs text-muted-foreground">1 mg/kg IV/IO bolus</p>
-                    {drugs && <p className="font-mono text-gray-600 font-bold">{drugs.lidocaine.bolus} mg</p>}
+                    {drugs && <p className="font-mono text-sm font-medium">{drugs.lidocaine.bolus} mg</p>}
                   </div>
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          {/* Reference */}
+          {/* Quick Reference */}
           <Card className="nightingale-card">
             <CardContent className="pt-4 text-xs text-muted-foreground">
-              <p className="font-medium mb-1">Reference: AHA PALS Guidelines 2025</p>
-              <p>• Epinephrine repeat: every 3-5 minutes</p>
-              <p>• CPR quality: 100-120/min, &gt;60% of time</p>
+              <p className="font-medium text-foreground mb-1">PALS 2025 Quick Reference</p>
+              <p>• Epinephrine: repeat every 3-5 minutes</p>
+              <p>• CPR: 100-120/min, minimize interruptions (&gt;60%)</p>
               <p>• DBP target: ≥25 mmHg (infant), ≥30 mmHg (child)</p>
             </CardContent>
           </Card>
