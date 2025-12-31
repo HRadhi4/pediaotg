@@ -151,7 +151,8 @@ const NICUCalculator = ({ theme, toggleTheme }) => {
     { id: "bp", title: "Blood Pressure", icon: "activity", color: "red", enabled: true },
     { id: "prbc", title: "PRBC Transfusion", icon: "blood", color: "red", enabled: true },
     { id: "exchange", title: "Exchange Transfusion", icon: "repeat", color: "purple", enabled: true },
-    { id: "growth", title: "Growth Charts", icon: "growth", color: "teal", enabled: true }
+    { id: "growth", title: "Growth Charts", icon: "growth", color: "teal", enabled: true },
+    { id: "drugs", title: "Drugs", icon: "drugs", color: "blue", enabled: true }
   ]);
 
   // DnD sensors
