@@ -3,6 +3,42 @@
  * Free, open source health icons for any use
  */
 
+// ==================== UI UTILITY ICONS (healthicons.org style) ====================
+
+// Arrow Left / Back Icon - consistent with healthicons.org stroke style
+export const ArrowLeftIcon = ({ className }) => (
+  <svg className={className} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M30 12L18 24L30 36" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+);
+
+// Settings / Gear Icon - consistent with healthicons.org stroke style
+export const SettingsIcon = ({ className }) => (
+  <svg className={className} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="24" cy="24" r="6" stroke="currentColor" strokeWidth="3"/>
+    <path d="M24 6V10M24 38V42M42 24H38M10 24H6M37.5 10.5L34.5 13.5M13.5 34.5L10.5 37.5M37.5 37.5L34.5 34.5M13.5 13.5L10.5 10.5" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
+  </svg>
+);
+
+// Close / X Icon - consistent with healthicons.org stroke style
+export const CloseIcon = ({ className }) => (
+  <svg className={className} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M14 14L34 34M34 14L14 34" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+);
+
+// Grip / Drag Handle Icon - consistent with healthicons.org stroke style
+export const GripIcon = ({ className }) => (
+  <svg className={className} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="18" cy="14" r="3" fill="currentColor"/>
+    <circle cx="30" cy="14" r="3" fill="currentColor"/>
+    <circle cx="18" cy="24" r="3" fill="currentColor"/>
+    <circle cx="30" cy="24" r="3" fill="currentColor"/>
+    <circle cx="18" cy="34" r="3" fill="currentColor"/>
+    <circle cx="30" cy="34" r="3" fill="currentColor"/>
+  </svg>
+);
+
 // ==================== NAVIGATION BAR ICONS ====================
 
 // Home Icon - from places/home
