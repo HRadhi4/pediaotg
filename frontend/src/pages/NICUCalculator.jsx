@@ -2457,7 +2457,7 @@ const GrowthChartPage = () => {
       <Card className="nightingale-card">
         <CardHeader className="pb-3">
           <CardTitle className="text-base flex items-center gap-2">
-            <GrowthIcon />
+            <HealthGrowthIcon className="h-5 w-5 text-teal-500" />
             {chartLabels[activeChart].title}
           </CardTitle>
           <CardDescription>
