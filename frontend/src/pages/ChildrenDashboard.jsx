@@ -302,7 +302,7 @@ const ChildrenDashboard = ({ theme, toggleTheme }) => {
                     : 'bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700'
                 }`}
               >
-                {isEditMode ? <X className="h-5 w-5" /> : <Settings className="h-5 w-5" />}
+                {isEditMode ? <CloseIcon className="h-5 w-5" /> : <SettingsIcon className="h-5 w-5" />}
               </button>
             </div>
           )}
