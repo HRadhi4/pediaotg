@@ -1,36 +1,20 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { Baby, Users, Droplets, FlaskConical, Home, Zap } from "lucide-react";
+import { Baby, Users } from "lucide-react";
 import Layout from "@/components/Layout";
 import BloodGasDialog from "@/components/BloodGasDialog";
 import ElectrolytesDialog from "@/components/ElectrolytesDialog";
 import JaundiceDialog from "@/components/JaundiceDialog";
 import GIRDialog from "@/components/GIRDialog";
 import BloodProductsDialog from "@/components/BloodProductsDialog";
-
-// Custom Sun icon for Jaundice
-const JaundiceIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="12" cy="12" r="4"/>
-    <path d="M12 2v2"/>
-    <path d="M12 20v2"/>
-    <path d="m4.93 4.93 1.41 1.41"/>
-    <path d="m17.66 17.66 1.41 1.41"/>
-    <path d="M2 12h2"/>
-    <path d="M20 12h2"/>
-    <path d="m6.34 17.66-1.41 1.41"/>
-    <path d="m19.07 4.93-1.41 1.41"/>
-  </svg>
-);
-
-// Blood drop icon for Blood Products
-const BloodDropIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M12 22c4-4 8-7.5 8-12a8 8 0 1 0-16 0c0 4.5 4 8 8 12Z"/>
-    <path d="M12 12v-2"/>
-    <path d="M12 16h.01"/>
-  </svg>
-);
+import { 
+  HomeIcon, 
+  BloodGasIcon, 
+  ElectrolytesIcon, 
+  BloodProductsIcon, 
+  GIRIcon, 
+  JaundiceNavIcon 
+} from "@/components/HealthIcons";
 
 const LandingPage = ({ theme, toggleTheme }) => {
   const navigate = useNavigate();
