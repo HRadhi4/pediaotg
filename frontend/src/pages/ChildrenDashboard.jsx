@@ -17,7 +17,7 @@
 
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { ArrowLeft, AlertTriangle, Settings, X, GripVertical, Scale, ChevronDown } from "lucide-react";
+import { AlertTriangle, Scale, ChevronDown } from "lucide-react";
 import { 
   BloodPressureIcon, 
   InfusionIcon, 
@@ -31,7 +31,11 @@ import {
   ElectrolytesIcon,
   BloodProductsIcon,
   GIRIcon,
-  JaundiceNavIcon
+  JaundiceNavIcon,
+  ArrowLeftIcon,
+  SettingsIcon,
+  CloseIcon,
+  GripIcon
 } from "@/components/HealthIcons";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
