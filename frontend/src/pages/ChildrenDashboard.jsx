@@ -17,7 +17,7 @@
 
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { ArrowLeft, AlertTriangle, Settings, X, GripVertical, Scale } from "lucide-react";
+import { ArrowLeft, AlertTriangle, Settings, X, GripVertical, Scale, ChevronDown } from "lucide-react";
 import { 
   BloodPressureIcon, 
   InfusionIcon, 
