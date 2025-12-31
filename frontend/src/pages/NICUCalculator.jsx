@@ -302,8 +302,15 @@ const NICUCalculator = ({ theme, toggleTheme }) => {
                             if (!w) return null;
                             return (
                               <>
-                                <div className={`w-11 h-11 rounded-xl flex items-center justify-center bg-${w.color}-100 dark:bg-${w.color}-900/30`}
-                                  style={{ backgroundColor: w.color === 'teal' ? 'rgba(0,217,197,0.1)' : undefined }}
+                                <div className="w-11 h-11 rounded-xl flex items-center justify-center"
+                                  style={{ 
+                                    backgroundColor: w.color === 'teal' ? 'rgba(0,217,197,0.1)' 
+                                      : w.color === 'red' ? 'rgba(239,68,68,0.1)'
+                                      : w.color === 'blue' ? 'rgba(59,130,246,0.1)'
+                                      : w.color === 'purple' ? 'rgba(168,85,247,0.1)'
+                                      : w.color === 'amber' ? 'rgba(245,158,11,0.1)'
+                                      : 'rgba(107,114,128,0.1)'
+                                  }}
                                 >
                                   {getWidgetIcon(w.icon, w.color)}
                                 </div>
