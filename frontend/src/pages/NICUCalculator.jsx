@@ -258,7 +258,7 @@ const NICUCalculator = ({ theme, toggleTheme }) => {
                 }`}
                 data-testid="edit-widgets"
               >
-                {isEditMode ? <X className="h-5 w-5" /> : <Settings className="h-5 w-5" />}
+                {isEditMode ? <CloseIcon className="h-5 w-5" /> : <SettingsIcon className="h-5 w-5" />}
               </button>
             </div>
           )}
