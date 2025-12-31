@@ -258,10 +258,20 @@ export const BloodProductsIcon = ({ className }) => (
   </svg>
 );
 
-// GIR / Energy / Lightning Icon
+// GIR / Glucose Meter Icon
 export const GIRIcon = ({ className }) => (
   <svg className={className} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M26 4L10 28H24L22 44L38 20H24L26 4Z" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+    {/* Glucose meter device body */}
+    <rect x="10" y="8" width="28" height="32" rx="4" stroke="currentColor" strokeWidth="3"/>
+    {/* Screen */}
+    <rect x="14" y="12" width="20" height="12" rx="2" stroke="currentColor" strokeWidth="2"/>
+    {/* Glucose reading display */}
+    <path d="M18 18H22" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
+    <path d="M26 18H30" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
+    {/* Test strip slot */}
+    <path d="M20 36H28" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
+    {/* Button */}
+    <circle cx="24" cy="30" r="2" fill="currentColor"/>
   </svg>
 );
 
