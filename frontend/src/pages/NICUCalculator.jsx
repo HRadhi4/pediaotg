@@ -343,7 +343,7 @@ const NICUCalculator = ({ theme, toggleTheme }) => {
             <FlaskConical className="h-5 w-5" />
           </button>
           <button onClick={() => handleTabClick("bloodproducts")} className={`tab-item ${activeTab === "bloodproducts" ? "active" : ""}`}>
-            <span className={activeTab === "bloodproducts" ? "text-red-400" : ""}><BloodDropIcon /></span>
+            <span className={activeTab === "bloodproducts" ? "text-red-400" : ""}><HealthBloodDropIcon className="h-5 w-5" /></span>
           </button>
           <button onClick={() => handleTabClick("gir")} className={`tab-item ${activeTab === "gir" ? "active" : ""}`}>
             <Zap className="h-5 w-5" />
