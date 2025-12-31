@@ -15,7 +15,7 @@
  * Future Refactoring: Each page component can be extracted to /pages/children/
  */
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { AlertTriangle, Scale, ChevronDown } from "lucide-react";
 import { 
