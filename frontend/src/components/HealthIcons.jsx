@@ -220,6 +220,66 @@ export const LungsIcon = ({ className }) => (
   </svg>
 );
 
+// Navigation Bar Icons (unified size and style)
+
+// Home Icon
+export const HomeIcon = ({ className }) => (
+  <svg className={className} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M8 24L24 8L40 24" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M12 22V40H20V30H28V40H36V22" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+);
+
+// Blood Gas / Droplets Icon
+export const BloodGasIcon = ({ className }) => (
+  <svg className={className} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M24 42C31 42 36 36 36 28C36 20 24 6 24 6C24 6 12 20 12 28C12 36 17 42 24 42Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M18 28H30" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+    <path d="M24 22V34" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+  </svg>
+);
+
+// Electrolytes / Flask Icon
+export const ElectrolytesIcon = ({ className }) => (
+  <svg className={className} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 6H30" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+    <path d="M20 6V18L10 38C10 40.2091 11.7909 42 14 42H34C36.2091 42 38 40.2091 38 38L28 18V6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M14 32H34" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+  </svg>
+);
+
+// Blood Products Icon
+export const BloodProductsIcon = ({ className }) => (
+  <svg className={className} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M24 42C31 42 36 36 36 28C36 20 24 6 24 6C24 6 12 20 12 28C12 36 17 42 24 42Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    <circle cx="24" cy="30" r="6" stroke="currentColor" strokeWidth="2"/>
+    <path d="M24 27V33" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+    <path d="M21 30H27" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+  </svg>
+);
+
+// GIR / Energy / Lightning Icon
+export const GIRIcon = ({ className }) => (
+  <svg className={className} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M26 4L10 28H24L22 44L38 20H24L26 4Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+);
+
+// Jaundice / Sun Icon
+export const JaundiceNavIcon = ({ className }) => (
+  <svg className={className} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="24" cy="24" r="8" stroke="currentColor" strokeWidth="2"/>
+    <path d="M24 6V12" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+    <path d="M24 36V42" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+    <path d="M6 24H12" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+    <path d="M36 24H42" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+    <path d="M11.5 11.5L15.5 15.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+    <path d="M32.5 32.5L36.5 36.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+    <path d="M11.5 36.5L15.5 32.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+    <path d="M32.5 15.5L36.5 11.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+  </svg>
+);
+
 export default {
   BloodPressureIcon,
   InfusionIcon,
@@ -240,5 +300,11 @@ export default {
   FluidIcon,
   ExchangeIcon,
   BabyIcon,
-  LungsIcon
+  LungsIcon,
+  HomeIcon,
+  BloodGasIcon,
+  ElectrolytesIcon,
+  BloodProductsIcon,
+  GIRIcon,
+  JaundiceNavIcon
 };
