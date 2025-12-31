@@ -318,22 +318,22 @@ const ChildrenDashboard = ({ theme, toggleTheme }) => {
       <nav className="floating-tab-bar">
         <div className="flex items-center gap-0.5">
           <button onClick={() => handleTabClick("home")} className={`tab-item ${activeTab === "home" ? "active" : ""}`}>
-            <Home className="h-5 w-5" />
+            <HomeIcon className="h-5 w-5" />
           </button>
           <button onClick={() => handleTabClick("bloodgas")} className={`tab-item ${activeTab === "bloodgas" ? "active" : ""}`}>
-            <Droplets className="h-5 w-5" />
+            <BloodGasIcon className="h-5 w-5" />
           </button>
           <button onClick={() => handleTabClick("electrolytes")} className={`tab-item ${activeTab === "electrolytes" ? "active" : ""}`}>
-            <FlaskConical className="h-5 w-5" />
+            <ElectrolytesIcon className="h-5 w-5" />
           </button>
           <button onClick={() => handleTabClick("bloodproducts")} className={`tab-item ${activeTab === "bloodproducts" ? "active" : ""}`}>
-            <span className={activeTab === "bloodproducts" ? "text-red-400" : ""}><BloodDropIcon /></span>
+            <BloodProductsIcon className={`h-5 w-5 ${activeTab === "bloodproducts" ? "text-red-400" : ""}`} />
           </button>
           <button onClick={() => handleTabClick("gir")} className={`tab-item ${activeTab === "gir" ? "active" : ""}`}>
-            <Zap className="h-5 w-5" />
+            <GIRIcon className="h-5 w-5" />
           </button>
           <button onClick={() => handleTabClick("jaundice")} className={`tab-item ${activeTab === "jaundice" ? "active" : ""}`}>
-            <span className={activeTab === "jaundice" ? "text-amber-400" : ""}><JaundiceIcon /></span>
+            <JaundiceNavIcon className={`h-5 w-5 ${activeTab === "jaundice" ? "text-amber-400" : ""}`} />
           </button>
         </div>
       </nav>
