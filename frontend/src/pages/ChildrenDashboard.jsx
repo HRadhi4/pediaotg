@@ -2073,26 +2073,59 @@ const CPRPage = ({ onBack }) => {
   );
 };
 
-// Approaches Page - DKA, Status Epilepticus, Hyperammonemia
+// Approaches Page - PICU Protocols (Saudi MOH Guidelines)
 const ApproachesPage = ({ onBack }) => {
-  const [activeTab, setActiveTab] = useState("dka");
+  const [activeTab, setActiveTab] = useState("sepsis");
   const [weight, setWeight] = useState("");
+  const [age, setAge] = useState("");
+  const [expandedSections, setExpandedSections] = useState({});
   const w = parseFloat(weight) || 0;
+  const ageNum = parseFloat(age) || 0;
+
+  const toggleSection = (section) => {
+    setExpandedSections(prev => ({ ...prev, [section]: !prev[section] }));
+  };
+
+  // Collapsible Section Component
+  const Section = ({ id, title, children, defaultOpen = false }) => {
+    const isOpen = expandedSections[id] ?? defaultOpen;
+    return (
+      <div className="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
+        <button
+          onClick={() => toggleSection(id)}
+          className="w-full px-4 py-3 flex items-center justify-between bg-gray-50 dark:bg-gray-800/50 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+        >
+          <span className="font-medium text-sm text-left">{title}</span>
+          <span className={`transform transition-transform ${isOpen ? 'rotate-180' : ''}`}>▼</span>
+        </button>
+        {isOpen && <div className="p-4 space-y-3 text-sm">{children}</div>}
+      </div>
+    );
+  };
 
   return (
     <div className="space-y-4 pt-4 pb-8">
-      {/* Weight Input */}
-      <Card className="nightingale-card border-teal-200 dark:border-teal-800">
+      {/* Patient Info Input */}
+      <Card className="border-slate-200 dark:border-slate-700">
         <CardContent className="pt-4">
-          <div className="flex items-center gap-3">
-            <Brain className="h-5 w-5 text-teal-500" />
-            <div className="flex-1">
-              <Label className="text-xs text-muted-foreground">Patient Weight (kg)</Label>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <Label className="text-xs text-muted-foreground">Weight (kg)</Label>
               <Input
                 type="number"
-                placeholder="Enter weight for calculations"
+                placeholder="kg"
                 value={weight}
                 onChange={(e) => setWeight(e.target.value)}
+                className="font-mono mt-1"
+              />
+            </div>
+            <div>
+              <Label className="text-xs text-muted-foreground">Age (years)</Label>
+              <Input
+                type="number"
+                placeholder="years"
+                value={age}
+                onChange={(e) => setAge(e.target.value)}
                 className="font-mono mt-1"
               />
             </div>
@@ -2100,338 +2133,703 @@ const ApproachesPage = ({ onBack }) => {
         </CardContent>
       </Card>
 
-      {/* Tab Navigation */}
+      {/* Tab Navigation - Scrollable */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid w-full grid-cols-3 h-auto">
-          <TabsTrigger value="dka" className="text-xs py-2 px-1">DKA</TabsTrigger>
-          <TabsTrigger value="se" className="text-xs py-2 px-1 leading-tight">Status<br/>Epilepticus</TabsTrigger>
-          <TabsTrigger value="hypernh3" className="text-xs py-2 px-1 leading-tight">Hyper-<br/>ammonemia</TabsTrigger>
-        </TabsList>
+        <div className="overflow-x-auto">
+          <TabsList className="inline-flex w-max min-w-full h-auto p-1">
+            <TabsTrigger value="sepsis" className="text-xs py-2 px-3 whitespace-nowrap">Septic Shock</TabsTrigger>
+            <TabsTrigger value="seizure" className="text-xs py-2 px-3 whitespace-nowrap">Status Epilepticus</TabsTrigger>
+            <TabsTrigger value="asthma" className="text-xs py-2 px-3 whitespace-nowrap">Status Asthmaticus</TabsTrigger>
+            <TabsTrigger value="tbi" className="text-xs py-2 px-3 whitespace-nowrap">TBI</TabsTrigger>
+            <TabsTrigger value="dka" className="text-xs py-2 px-3 whitespace-nowrap">DKA</TabsTrigger>
+            <TabsTrigger value="adrenal" className="text-xs py-2 px-3 whitespace-nowrap">Adrenal Crisis</TabsTrigger>
+          </TabsList>
+        </div>
 
-        {/* DKA Tab */}
-        <TabsContent value="dka" className="space-y-3 mt-4">
-          <Card className="border-orange-300 bg-orange-50 dark:bg-orange-950/30">
+        {/* SEPTIC SHOCK TAB */}
+        <TabsContent value="sepsis" className="space-y-3 mt-4">
+          <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm">Diabetic Ketoacidosis (DKA)</CardTitle>
-              <CardDescription className="text-xs">Salmaniya Medical Complex Guidelines</CardDescription>
+              <CardTitle className="text-base">Septic Shock in Children</CardTitle>
+              <CardDescription className="text-xs">Time-based resuscitation protocol</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-3 text-xs">
-              {/* Diagnostic Criteria */}
-              <div className="p-3 rounded-xl bg-white/50 dark:bg-gray-900/50">
-                <p className="font-semibold text-orange-700 dark:text-orange-300 mb-2">Diagnostic Criteria</p>
-                <ul className="space-y-1 text-muted-foreground">
-                  <li>• Ketonuria positive</li>
-                  <li>• Glucose &gt;11 mmol/L (&gt;200 mg/dL)</li>
-                  <li>• pH &lt;7.30</li>
-                  <li>• Serum bicarbonate &lt;15 mmol/L</li>
+            <CardContent className="space-y-3">
+              {/* Recognition */}
+              <Section id="sepsis-recognition" title="Recognition (0-5 min)" defaultOpen={true}>
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="p-3 bg-blue-50 dark:bg-blue-950/30 rounded-lg">
+                    <p className="font-semibold text-blue-700 dark:text-blue-300 text-xs mb-1">Cold Shock</p>
+                    <p className="text-xs text-muted-foreground">Cold extremities, prolonged cap refill</p>
+                  </div>
+                  <div className="p-3 bg-red-50 dark:bg-red-950/30 rounded-lg">
+                    <p className="font-semibold text-red-700 dark:text-red-300 text-xs mb-1">Warm Shock</p>
+                    <p className="text-xs text-muted-foreground">Warm extremities, brisk cap refill</p>
+                  </div>
+                </div>
+                <div className="mt-2 text-xs text-muted-foreground">
+                  <p>• Decreased LOC • Persistent tachycardia • Decreased urine output</p>
+                  <p>• Hypotension (late sign)</p>
+                </div>
+              </Section>
+
+              {/* Initial Steps */}
+              <Section id="sepsis-initial" title="Initial Management (5-15 min)">
+                <div className="space-y-2 text-xs">
+                  <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
+                    <p className="font-medium">1. Airway & Breathing</p>
+                    <p className="text-muted-foreground">100% O₂ via non-rebreather mask</p>
+                  </div>
+                  <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
+                    <p className="font-medium">2. IV Access</p>
+                    <p className="text-muted-foreground">2 peripheral IVs. IO if IV not achieved in 5 min</p>
+                  </div>
+                  <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
+                    <p className="font-medium">3. Fluid Bolus</p>
+                    <p className="text-muted-foreground">20 mL/kg 0.9% NS. Push, up to 60 mL/kg</p>
+                    {w > 0 && <p className="font-mono text-blue-600 mt-1">→ {(w * 20).toFixed(0)} mL bolus</p>}
+                  </div>
+                  <div className="p-2 bg-red-50 dark:bg-red-900/20 rounded border border-red-200">
+                    <p className="font-medium text-red-700">4. Antibiotics</p>
+                    <p className="text-muted-foreground">Give 1st dose within 1 hour. DO NOT delay for cultures</p>
+                  </div>
+                  <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
+                    <p className="font-medium">5. Correct</p>
+                    <p className="text-muted-foreground">Hypoglycemia & Hypocalcemia</p>
+                  </div>
+                </div>
+              </Section>
+
+              {/* Vasopressors */}
+              <Section id="sepsis-vasopressors" title="Vasopressors (15-60 min)">
+                <div className="space-y-2 text-xs">
+                  <p className="text-muted-foreground">If shock not reversed after fluid resuscitation:</p>
+                  <div className="p-2 bg-blue-50 dark:bg-blue-900/20 rounded">
+                    <p className="font-medium">Cold Shock → Epinephrine</p>
+                    <p className="text-muted-foreground">0.05-0.3 mcg/kg/min</p>
+                    {w > 0 && <p className="font-mono text-blue-600">→ {(w * 0.1).toFixed(2)} mcg/min (starting)</p>}
+                  </div>
+                  <div className="p-2 bg-red-50 dark:bg-red-900/20 rounded">
+                    <p className="font-medium">Warm Shock → Norepinephrine</p>
+                    <p className="text-muted-foreground">0.05-0.3 mcg/kg/min (via central line)</p>
+                  </div>
+                  <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
+                    <p className="font-medium">Alternative: Dopamine</p>
+                    <p className="text-muted-foreground">Up to 10 mcg/kg/min (peripheral IV/IO acceptable)</p>
+                    {w > 0 && <p className="font-mono text-gray-600">→ {(w * 10).toFixed(0)} mcg/min (max)</p>}
+                  </div>
+                </div>
+              </Section>
+
+              {/* Goals */}
+              <Section id="sepsis-goals" title="Therapeutic Endpoints">
+                <ul className="text-xs text-muted-foreground space-y-1">
+                  <li>• Cap refill ≤2 seconds, warm extremities</li>
+                  <li>• Normal BP for age</li>
+                  <li>• Normal pulses (no central-peripheral difference)</li>
+                  <li>• Urine output ≥1 mL/kg/hr</li>
+                  <li>• Normal mental status</li>
+                  <li>• ScvO₂ ≥70%</li>
                 </ul>
-              </div>
+              </Section>
 
-              {/* Fluid Management */}
-              <div className="p-3 rounded-xl bg-blue-100 dark:bg-blue-950/50">
-                <p className="font-semibold text-blue-700 dark:text-blue-300 mb-2">Fluid Management</p>
-                <p className="text-muted-foreground mb-2">Use 0.9% or 0.45% NS until dextrose added</p>
-                <div className="space-y-2">
-                  {/* Initial Bolus - Even if not in shock */}
-                  <div className="p-2 bg-teal-100 dark:bg-teal-900/30 rounded-lg border border-teal-300">
-                    <p className="font-medium text-teal-700">Initial Approach (before insulin):</p>
-                    <p className="text-muted-foreground">10 mL/kg over 1 hour</p>
-                    {w > 0 && <p className="font-mono text-teal-600">→ {(w * 10).toFixed(0)} mL over 1 hr</p>}
-                    <p className="text-xs text-teal-600 mt-1">Can be given even if not in shock</p>
+              {/* Additional Considerations */}
+              <Section id="sepsis-additional" title="Additional Considerations">
+                <div className="space-y-2 text-xs">
+                  <div className="p-2 bg-amber-50 dark:bg-amber-900/20 rounded">
+                    <p className="font-medium">Hydrocortisone (if adrenal insufficiency risk)</p>
+                    <p className="text-muted-foreground">2 mg/kg load, then 1 mg/kg q6h</p>
+                    {w > 0 && <p className="font-mono text-amber-600">→ Load: {(w * 2).toFixed(0)} mg, then {w.toFixed(0)} mg q6h</p>}
                   </div>
-                  <div className="p-2 bg-white/50 dark:bg-gray-900/50 rounded-lg">
-                    <p className="font-medium">Maintenance (by weight):</p>
-                    <div className="grid grid-cols-2 gap-2 mt-1 text-muted-foreground">
-                      <span>&lt;10 kg: 6 mL/kg/hr</span>
-                      <span>10-19 kg: 5 mL/kg/hr</span>
-                      <span>20-30 kg: 3.5 mL/kg/hr</span>
-                      <span>&gt;30 kg: 3 mL/kg/hr</span>
-                    </div>
-                    {w > 0 && (
-                      <p className="font-mono text-blue-600 mt-2">
-                        → {w < 10 ? (w * 6).toFixed(0) : w < 20 ? (w * 5).toFixed(0) : w < 30 ? (w * 3.5).toFixed(0) : Math.min(w * 3, 250).toFixed(0)} mL/hr
-                      </p>
-                    )}
+                  <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
+                    <p className="font-medium">Intubation (if needed)</p>
+                    <p className="text-muted-foreground">Ketamine 1-2 mg/kg ± Atropine 0.02 mg/kg</p>
                   </div>
-                  <div className="p-2 bg-red-100 dark:bg-red-900/30 rounded-lg">
-                    <p className="font-medium text-red-700">If Shock:</p>
-                    <p className="text-muted-foreground">10 mL/kg bolus over 10-20 min, reassess & repeat PRN</p>
-                    {w > 0 && <p className="font-mono text-red-600">→ {(w * 10).toFixed(0)} mL bolus</p>}
-                  </div>
+                  <p className="text-muted-foreground">• Keep Hgb &gt;10 g/dL • Monitor lactate • Early source control</p>
                 </div>
-                <p className="text-muted-foreground mt-2 italic">Add dextrose when BG &lt;15 mmol/L (250 mg/dL)</p>
-              </div>
-
-              {/* Insulin */}
-              <div className="p-3 rounded-xl bg-green-100 dark:bg-green-950/50">
-                <p className="font-semibold text-green-700 dark:text-green-300 mb-2">Insulin</p>
-                <div className="space-y-2 text-muted-foreground">
-                  <div className="p-2 bg-white/50 dark:bg-gray-900/50 rounded-lg">
-                    <p className="font-medium">Continuous Infusion:</p>
-                    <p>0.1 units/kg/hr (= 1 mL/kg/hr of 25 units in 250 mL NS)</p>
-                    {w > 0 && <p className="font-mono text-green-600">→ {(w * 0.1).toFixed(2)} units/hr ({(w * 1).toFixed(0)} mL/hr)</p>}
-                  </div>
-                  <div className="p-2 bg-white/50 dark:bg-gray-900/50 rounded-lg">
-                    <p className="font-medium">Decrease insulin when:</p>
-                    <p>pH &gt;7.30 OR HCO3 &gt;15 mmol/L</p>
-                    <p className="text-xs">Decrease by 25-50% q1-2h to 0.02 U/kg/hr</p>
-                  </div>
-                  <p className="text-xs italic">If BG drops but acidosis persists → increase dextrose, not decrease insulin</p>
-                </div>
-              </div>
-
-              {/* Potassium */}
-              <div className="p-3 rounded-xl bg-purple-100 dark:bg-purple-950/50">
-                <p className="font-semibold text-purple-700 dark:text-purple-300 mb-2">Potassium</p>
-                <ul className="space-y-1 text-muted-foreground">
-                  <li>• If K+ &lt;5.5 mmol/L and patient voiding:</li>
-                  <li className="pl-4">Add 40 mEq/L KCl to IV fluid</li>
-                  <li>• Target K+: 4-5 mEq/L</li>
-                  <li>• If K+ &gt;5.5: use plain IVF</li>
-                </ul>
-              </div>
-
-              {/* Bicarbonate */}
-              <div className="p-3 rounded-xl bg-amber-100 dark:bg-amber-950/50">
-                <p className="font-semibold text-amber-700 dark:text-amber-300 mb-2">Bicarbonate</p>
-                <p className="text-muted-foreground"><span className="font-medium">Indication:</span> pH &lt;6.9 ONLY</p>
-                <p className="text-muted-foreground"><span className="font-medium">Dose:</span> 1-2 mEq/kg over 1 hour</p>
-                {w > 0 && <p className="font-mono text-amber-600">→ {(w * 1).toFixed(0)}-{(w * 2).toFixed(0)} mEq</p>}
-                <p className="text-xs text-red-600 mt-1">⚠ Always consult endocrinologist first!</p>
-              </div>
-
-              {/* Cerebral Edema */}
-              <div className="p-3 rounded-xl bg-red-100 dark:bg-red-950/50 border border-red-300">
-                <p className="font-semibold text-red-700 dark:text-red-300 mb-2">⚠ Cerebral Edema</p>
-                <p className="text-xs text-muted-foreground mb-2">Warning signs: headache, irritability, drowsiness, ↓LOC</p>
-                <div className="space-y-1 text-muted-foreground">
-                  <p>1. Raise head of bed</p>
-                  <p>2. Decrease fluids to 2 L/m²/day</p>
-                  <p>3. <span className="font-medium">Mannitol 0.25-0.5 g/kg</span> over 10-15 min</p>
-                  {w > 0 && <p className="font-mono text-red-600 pl-4">→ {(w * 0.25).toFixed(1)}-{(w * 0.5).toFixed(1)} g</p>}
-                  <p>4. If Na drops: 3% saline 2-4 mL/kg over 10-20 min</p>
-                  {w > 0 && <p className="font-mono text-red-600 pl-4">→ {(w * 2).toFixed(0)}-{(w * 4).toFixed(0)} mL</p>}
-                  <p>5. Decrease insulin to 0.04-0.05 U/kg/hr</p>
-                </div>
-              </div>
+              </Section>
             </CardContent>
           </Card>
         </TabsContent>
 
-        {/* Status Epilepticus Tab */}
-        <TabsContent value="se" className="space-y-3 mt-4">
-          <Card className="border-red-300 bg-red-50 dark:bg-red-950/30">
+        {/* STATUS EPILEPTICUS TAB */}
+        <TabsContent value="seizure" className="space-y-3 mt-4">
+          <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm">Status Epilepticus Protocol</CardTitle>
-              <CardDescription className="text-xs">Start medication after 5 minutes of seizure</CardDescription>
+              <CardTitle className="text-base">Status Epilepticus</CardTitle>
+              <CardDescription className="text-xs">Start treatment after 5 minutes of seizure activity</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-3 text-xs">
-              {/* Initial Steps */}
-              <div className="p-3 rounded-xl bg-white/50 dark:bg-gray-900/50">
-                <p className="font-semibold text-red-700 dark:text-red-300 mb-2">Initial Steps</p>
-                <ul className="space-y-1 text-muted-foreground">
-                  <li>1. ABC: Airway, Breathing, O2, Circulation</li>
-                  <li>2. Start IV, collect: Sugar, Ca, Na</li>
-                  <li>3. Brief history</li>
-                  <li>4. Start medication after 5 minutes</li>
-                </ul>
-              </div>
-
-              {/* Step 1: Diazepam */}
-              <div className="p-3 rounded-xl bg-blue-100 dark:bg-blue-950/50">
-                <div className="flex justify-between items-center mb-2">
-                  <p className="font-semibold text-blue-700 dark:text-blue-300">Step 1: Diazepam (Valium)</p>
-                  <span className="text-xs bg-blue-200 dark:bg-blue-800 px-2 py-1 rounded">5 min</span>
+            <CardContent className="space-y-3">
+              {/* Initial Stabilization */}
+              <Section id="se-initial" title="Initial Stabilization (0-5 min)" defaultOpen={true}>
+                <div className="space-y-2 text-xs">
+                  <p className="text-muted-foreground">• Maintain A, B, C + Neurologic exam</p>
+                  <p className="text-muted-foreground">• Give oxygen, connect monitors</p>
+                  <p className="text-muted-foreground">• Establish IV access</p>
+                  <p className="text-muted-foreground">• Check bedside glucose</p>
+                  <p className="text-muted-foreground">• Correct hypoglycemia, hyponatremia, hypocalcemia</p>
                 </div>
-                <div className="space-y-2 text-muted-foreground">
-                  <p><span className="font-medium">IV:</span> 0.2-0.3 mg/kg (max 5 mg/dose)</p>
-                  <p><span className="font-medium">PR:</span> 0.5 mg/kg</p>
-                  {w > 0 && (
-                    <div className="font-mono text-blue-600">
-                      <p>→ IV: {(w * 0.2).toFixed(1)}-{Math.min(w * 0.3, 5).toFixed(1)} mg</p>
-                      <p>→ PR: {(w * 0.5).toFixed(1)} mg</p>
+                <div className="mt-2 p-2 bg-gray-50 dark:bg-gray-800 rounded">
+                  <p className="font-medium text-xs">Labs: Glucose, Na, iCa, Mg, CBC, LFTs</p>
+                </div>
+              </Section>
+
+              {/* Phase 1: Benzodiazepines */}
+              <Section id="se-phase1" title="Phase 1: Benzodiazepines (5-20 min)">
+                <div className="space-y-2 text-xs">
+                  <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded">
+                    <p className="font-semibold">If IV/IO available:</p>
+                    <div className="mt-1 space-y-1 text-muted-foreground">
+                      <p>• <span className="font-medium">Lorazepam:</span> 0.1 mg/kg (max 4 mg)</p>
+                      {w > 0 && <p className="font-mono text-blue-600 pl-2">→ {Math.min(w * 0.1, 4).toFixed(1)} mg</p>}
+                      <p>• OR <span className="font-medium">Midazolam IV:</span> 0.1-0.2 mg/kg (max 10 mg)</p>
+                      {w > 0 && <p className="font-mono text-blue-600 pl-2">→ {(w * 0.15).toFixed(1)} mg</p>}
+                      <p className="text-xs italic mt-1">Can repeat once</p>
                     </div>
-                  )}
-                  <p className="text-red-600">⚠ Total max 10 mg (respiratory depression risk)</p>
-                </div>
-              </div>
-
-              {/* Step 2: Repeat Diazepam */}
-              <div className="p-3 rounded-xl bg-blue-50 dark:bg-blue-900/30">
-                <div className="flex justify-between items-center mb-2">
-                  <p className="font-semibold text-blue-600">Step 2: Repeat Diazepam</p>
-                  <span className="text-xs bg-blue-200 dark:bg-blue-800 px-2 py-1 rounded">+5 min</span>
-                </div>
-                <p className="text-muted-foreground">Same dose if still seizing</p>
-              </div>
-
-              {/* Step 3: Phenytoin */}
-              <div className="p-3 rounded-xl bg-amber-100 dark:bg-amber-950/50">
-                <div className="flex justify-between items-center mb-2">
-                  <p className="font-semibold text-amber-700 dark:text-amber-300">Step 3: Phenytoin</p>
-                  <span className="text-xs bg-amber-200 dark:bg-amber-800 px-2 py-1 rounded">+10 min</span>
-                </div>
-                <div className="space-y-2 text-muted-foreground">
-                  <p><span className="font-medium">Loading:</span> 20 mg/kg IV over 20 min</p>
-                  {w > 0 && <p className="font-mono text-amber-600">→ {(w * 20).toFixed(0)} mg over 20 min</p>}
-                  <p className="text-red-600">⚠ Max rate: 1 mg/kg/min (arrhythmia risk)</p>
-                  <div className="p-2 mt-2 bg-white/50 dark:bg-gray-900/50 rounded-lg border border-amber-300">
-                    <p className="text-xs font-medium text-amber-700">Alternatives (if available):</p>
-                    <p className="text-xs">• Levetiracetam (Keppra): 40-60 mg/kg IV</p>
-                    {w > 0 && <p className="font-mono text-amber-600 text-xs">→ {(w * 40).toFixed(0)}-{(w * 60).toFixed(0)} mg</p>}
-                    <p className="text-xs">• Valproate IV: 20-40 mg/kg</p>
-                    {w > 0 && <p className="font-mono text-amber-600 text-xs">→ {(w * 20).toFixed(0)}-{(w * 40).toFixed(0)} mg</p>}
+                  </div>
+                  <div className="p-3 bg-gray-50 dark:bg-gray-800 rounded">
+                    <p className="font-semibold">If NO IV/IO:</p>
+                    <div className="mt-1 space-y-1 text-muted-foreground">
+                      <p>• <span className="font-medium">Midazolam IM:</span> 0.2 mg/kg (one dose)</p>
+                      {w > 0 && <p className="font-mono text-gray-600 pl-2">→ {(w * 0.2).toFixed(1)} mg IM</p>}
+                      <p>• OR <span className="font-medium">Diazepam PR:</span> 0.2-0.5 mg/kg (max 20 mg)</p>
+                      {w > 0 && <p className="font-mono text-gray-600 pl-2">→ {(w * 0.3).toFixed(1)} mg PR</p>}
+                    </div>
                   </div>
                 </div>
-              </div>
+              </Section>
 
-              {/* Step 4: Repeat Phenytoin */}
-              <div className="p-3 rounded-xl bg-amber-50 dark:bg-amber-900/30">
-                <div className="flex justify-between items-center mb-2">
-                  <p className="font-semibold text-amber-600">Step 4: Phenytoin 2nd dose</p>
-                  <span className="text-xs bg-amber-200 dark:bg-amber-800 px-2 py-1 rounded">+10 min</span>
+              {/* Phase 2: Antiepileptics */}
+              <Section id="se-phase2" title="Phase 2: Antiepileptics (20-40 min)">
+                <p className="text-xs text-muted-foreground mb-2">Choose ONE of the following:</p>
+                <div className="space-y-2 text-xs">
+                  <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
+                    <p className="font-medium">Fosphenytoin/Phenytoin</p>
+                    <p className="text-muted-foreground">20 mg PE/kg over 5-10 min (fosphenytoin) or 30 min (phenytoin)</p>
+                    {w > 0 && <p className="font-mono text-gray-600">→ {(w * 20).toFixed(0)} mg</p>}
+                  </div>
+                  <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
+                    <p className="font-medium">Levetiracetam (Keppra)</p>
+                    <p className="text-muted-foreground">20-60 mg/kg (max 2500 mg)</p>
+                    {w > 0 && <p className="font-mono text-gray-600">→ {Math.min(w * 40, 2500).toFixed(0)} mg</p>}
+                  </div>
+                  <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
+                    <p className="font-medium">Valproic Acid</p>
+                    <p className="text-muted-foreground">40 mg/kg (max 3000 mg)</p>
+                    {w > 0 && <p className="font-mono text-gray-600">→ {Math.min(w * 40, 3000).toFixed(0)} mg</p>}
+                  </div>
                 </div>
-                <div className="text-muted-foreground">
-                  <p>½ dose: 10 mg/kg IV over 10 min</p>
-                  {w > 0 && <p className="font-mono text-amber-600">→ {(w * 10).toFixed(0)} mg</p>}
-                </div>
-              </div>
+              </Section>
 
-              {/* Step 5: Phenobarbital */}
-              <div className="p-3 rounded-xl bg-purple-100 dark:bg-purple-950/50">
-                <div className="flex justify-between items-center mb-2">
-                  <p className="font-semibold text-purple-700 dark:text-purple-300">Step 5: Phenobarbital</p>
-                  <span className="text-xs bg-purple-200 dark:bg-purple-800 px-2 py-1 rounded">+10 min</span>
+              {/* Phase 3 */}
+              <Section id="se-phase3" title="Phase 3 (40-60 min)">
+                <div className="space-y-2 text-xs">
+                  <p className="text-muted-foreground">Call PICU and Neurology</p>
+                  <p className="text-muted-foreground">Use alternative from Phase 2, or:</p>
+                  <div className="p-2 bg-purple-50 dark:bg-purple-900/20 rounded">
+                    <p className="font-medium">Phenobarbital</p>
+                    <p className="text-muted-foreground">20 mg/kg single dose</p>
+                    {w > 0 && <p className="font-mono text-purple-600">→ {(w * 20).toFixed(0)} mg</p>}
+                  </div>
                 </div>
-                <div className="space-y-2 text-muted-foreground">
-                  <p><span className="font-medium">Loading:</span> 20 mg/kg IV over 10 min</p>
-                  {w > 0 && <p className="font-mono text-purple-600">→ {(w * 20).toFixed(0)} mg</p>}
-                  <p><span className="font-medium">2nd dose:</span> 10 mg/kg over 10 min</p>
-                  {w > 0 && <p className="font-mono text-purple-600">→ {(w * 10).toFixed(0)} mg</p>}
-                </div>
-              </div>
+              </Section>
 
               {/* Refractory */}
-              <div className="p-3 rounded-xl bg-red-200 dark:bg-red-900/50 border border-red-400">
-                <p className="font-bold text-red-700 dark:text-red-300 mb-2">⚠ REFRACTORY SEIZURES</p>
-                <p className="text-muted-foreground">If still seizing after above steps:</p>
-                <p className="font-semibold text-red-700 mt-1">→ General Anesthesia + Intubation</p>
-              </div>
+              <Section id="se-refractory" title="Refractory Status Epilepticus (>60 min)">
+                <div className="p-3 bg-red-50 dark:bg-red-900/20 rounded border border-red-200 text-xs">
+                  <p className="font-semibold text-red-700">Request continuous EEG monitoring</p>
+                  <p className="font-semibold text-red-700 mt-1">Be ready for intubation</p>
+                  <div className="mt-2 space-y-1 text-muted-foreground">
+                    <p className="font-medium">Midazolam Infusion:</p>
+                    <p>• Bolus 0.2 mg/kg, then infusion 1 mcg/kg/min</p>
+                    <p>• Increase by 2 mcg/kg/min q10-15 min PRN (max 24 mcg/kg/min)</p>
+                    <p className="mt-2 font-medium">If seizure persists: Barbiturate coma</p>
+                  </div>
+                </div>
+              </Section>
             </CardContent>
           </Card>
         </TabsContent>
 
-        {/* Hyperammonemia Tab */}
-        <TabsContent value="hypernh3" className="space-y-3 mt-4">
-          <Card className="border-purple-300 bg-purple-50 dark:bg-purple-950/30">
+        {/* STATUS ASTHMATICUS TAB */}
+        <TabsContent value="asthma" className="space-y-3 mt-4">
+          <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm">Hyperammonemia Approach</CardTitle>
-              <CardDescription className="text-xs">Diagnostic algorithm and initial management</CardDescription>
+              <CardTitle className="text-base">Status Asthmaticus</CardTitle>
+              <CardDescription className="text-xs">Asthma failing initial nebulized treatment & steroids</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-3 text-xs">
-              {/* Initial Assessment */}
-              <div className="p-3 rounded-xl bg-white/50 dark:bg-gray-900/50">
-                <p className="font-semibold text-purple-700 dark:text-purple-300 mb-2">Initial Assessment</p>
-                <div className="grid grid-cols-2 gap-2 text-muted-foreground">
-                  <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
-                    <p className="font-medium text-blue-700">Normal pH / Alkalosis</p>
-                    <p className="text-xs">Consider urea cycle defects</p>
-                  </div>
-                  <div className="p-2 bg-red-100 dark:bg-red-900/30 rounded-lg">
-                    <p className="font-medium text-red-700">Acidosis</p>
-                    <p className="text-xs">Consider organic acidemias</p>
-                  </div>
-                </div>
+            <CardContent className="space-y-3">
+              {/* High Risk Groups */}
+              <div className="p-3 bg-amber-50 dark:bg-amber-900/20 rounded-lg text-xs">
+                <p className="font-semibold text-amber-700 dark:text-amber-300">High Risk Groups</p>
+                <ul className="mt-1 text-muted-foreground space-y-0.5">
+                  <li>• Previous PICU admission (with or without intubation)</li>
+                  <li>• On ≥3 classes of asthma medications</li>
+                  <li>• Repeated ER/hospitalization</li>
+                  <li>• Poor compliance</li>
+                </ul>
               </div>
 
-              {/* Diagnostic Pathway */}
-              <div className="p-3 rounded-xl bg-blue-100 dark:bg-blue-950/50">
-                <p className="font-semibold text-blue-700 dark:text-blue-300 mb-2">Diagnostic Pathway (Urea Cycle)</p>
-                <div className="space-y-2 text-muted-foreground">
-                  <p className="font-medium">Check Plasma Citrulline:</p>
-                  <div className="p-2 bg-white/50 dark:bg-gray-900/50 rounded-lg space-y-1">
-                    <p><span className="font-medium text-green-600">↑ Citrulline + ASA present:</span> Argininosuccinic aciduria</p>
-                    <p><span className="font-medium text-amber-600">↑ Citrulline + ASA absent:</span> Citrullinemia (ASS deficiency)</p>
+              {/* Initial Management */}
+              <Section id="asthma-initial" title="Initial Management" defaultOpen={true}>
+                <div className="space-y-2 text-xs">
+                  <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
+                    <p className="font-medium">Oxygen</p>
+                    <p className="text-muted-foreground">Maintain O₂ Sat &gt;90%. Keep NPO</p>
                   </div>
-                  <div className="p-2 bg-white/50 dark:bg-gray-900/50 rounded-lg">
-                    <p className="font-medium">↓/Absent Citrulline → Check Urine Orotic Acid:</p>
-                    <p className="pl-2"><span className="text-blue-600">Normal/Low:</span> CPS deficiency</p>
-                    <p className="pl-2"><span className="text-red-600">High:</span> OTC deficiency</p>
+                  <div className="p-2 bg-blue-50 dark:bg-blue-900/20 rounded">
+                    <p className="font-medium">Nebulized Albuterol (Salbutamol)</p>
+                    <p className="text-muted-foreground">0.15-0.3 mg/kg × 3 doses back-to-back (15-20 min each)</p>
+                    {w > 0 && (
+                      <p className="font-mono text-blue-600">→ {Math.max(2.5, Math.min(w * 0.2, 10)).toFixed(1)} mg/dose ({w < 20 ? "2.5 mg" : "5 mg"} simplified)</p>
+                    )}
+                  </div>
+                  <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
+                    <p className="font-medium">Ipratropium Bromide (Atrovent)</p>
+                    <p className="text-muted-foreground">0.5 mg mixed with albuterol</p>
+                  </div>
+                  <div className="p-2 bg-green-50 dark:bg-green-900/20 rounded">
+                    <p className="font-medium">Methylprednisolone IV</p>
+                    <p className="text-muted-foreground">2 mg/kg load, then 2 mg/kg/day ÷ q6h (max 60 mg/day)</p>
+                    {w > 0 && <p className="font-mono text-green-600">→ Load: {(w * 2).toFixed(0)} mg, then {Math.min((w * 2 / 4), 15).toFixed(0)} mg q6h</p>}
                   </div>
                 </div>
-              </div>
+              </Section>
 
-              {/* Immediate Management */}
-              <div className="p-3 rounded-xl bg-red-100 dark:bg-red-950/50 border border-red-300">
-                <p className="font-semibold text-red-700 dark:text-red-300 mb-2">⚠ Immediate Management</p>
-                <ol className="space-y-2 text-muted-foreground">
-                  <li className="p-2 bg-white/50 dark:bg-gray-900/50 rounded-lg">
-                    <span className="font-bold text-red-600">1. Stop protein intake</span>
-                    <p className="text-xs">Reduce nitrogen load</p>
-                  </li>
-                  <li className="p-2 bg-white/50 dark:bg-gray-900/50 rounded-lg">
-                    <span className="font-bold text-red-600">2. IV Dextrose 10%</span>
-                    <p className="text-xs">Prevent catabolism, provide calories</p>
-                    {w > 0 && <p className="font-mono text-red-600">→ Maintenance: {(w * 100 / 24).toFixed(0)} mL/hr D10%</p>}
-                  </li>
-                  <li className="p-2 bg-white/50 dark:bg-gray-900/50 rounded-lg">
-                    <span className="font-bold text-red-600">3. Ammonia Scavengers</span>
-                    <div className="mt-1">
-                      <p><span className="font-medium">Sodium Benzoate:</span> 250 mg/kg load, then 250-500 mg/kg/day</p>
-                      {w > 0 && <p className="font-mono text-red-600">→ Load: {(w * 0.25).toFixed(1)} g</p>}
-                      <p className="mt-1"><span className="font-medium">Sodium Phenylacetate:</span> 250 mg/kg load, then 250-500 mg/kg/day</p>
+              {/* If Failing Initial Treatment */}
+              <Section id="asthma-escalation" title="If Failing Initial Treatment">
+                <div className="space-y-2 text-xs">
+                  <p className="text-red-600 font-medium">Notify PICU</p>
+                  <div className="p-2 bg-blue-50 dark:bg-blue-900/20 rounded">
+                    <p className="font-medium">Continuous Nebulized Albuterol</p>
+                    <p className="text-muted-foreground">0.5 mg/kg/hr via infusion pump</p>
+                    {w > 0 && <p className="font-mono text-blue-600">→ {(w * 0.5).toFixed(1)} mg/hr</p>}
+                  </div>
+                  <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
+                    <p className="font-medium">Ipratropium</p>
+                    <p className="text-muted-foreground">0.5 mg q4-6h for 24 hours</p>
+                  </div>
+                  <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
+                    <p className="font-medium">Increase Methylprednisolone</p>
+                    <p className="text-muted-foreground">4 mg/kg/day ÷ q6h</p>
+                  </div>
+                  <div className="p-2 bg-amber-50 dark:bg-amber-900/20 rounded">
+                    <p className="font-medium">Magnesium Sulfate</p>
+                    <p className="text-muted-foreground">25-50 mg/kg IV over 30 min (max 2 g)</p>
+                    {w > 0 && <p className="font-mono text-amber-600">→ {Math.min(w * 40, 2000).toFixed(0)} mg</p>}
+                    <p className="text-xs text-red-600 mt-1">Monitor for hypotension, apnea</p>
+                  </div>
+                </div>
+              </Section>
+
+              {/* IV Beta Agonist */}
+              <Section id="asthma-iv" title="IV Beta Agonist Infusions">
+                <div className="space-y-2 text-xs">
+                  <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
+                    <p className="font-medium">Terbutaline</p>
+                    <p className="text-muted-foreground">Load: 10 mcg/kg over 10 min</p>
+                    <p className="text-muted-foreground">Infusion: 0.2 mcg/kg/min, ↑ by 0.1-0.2 q30min (max 10 mcg/kg/min)</p>
+                    {w > 0 && <p className="font-mono text-gray-600">→ Load: {(w * 10).toFixed(0)} mcg, Start: {(w * 0.2).toFixed(1)} mcg/min</p>}
+                  </div>
+                  <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
+                    <p className="font-medium">OR Salbutamol IV</p>
+                    <p className="text-muted-foreground">Start 1 mcg/kg/min, ↑ by 1 q15min (max 10 mcg/kg/min)</p>
+                    {w > 0 && <p className="font-mono text-gray-600">→ Start: {w.toFixed(0)} mcg/min</p>}
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-2">Monitor: HR, BP, Arrhythmias, Potassium</p>
+                </div>
+              </Section>
+
+              {/* Intubation */}
+              <Section id="asthma-intubation" title="Intubation Indications">
+                <div className="p-3 bg-red-50 dark:bg-red-900/20 rounded border border-red-200 text-xs">
+                  <ul className="text-muted-foreground space-y-1">
+                    <li>• Severe hypoxemia</li>
+                    <li>• Respiratory arrest</li>
+                    <li>• Deteriorating consciousness</li>
+                    <li>• Fatigue with rising CO₂</li>
+                  </ul>
+                  <div className="mt-2 border-t border-red-200 pt-2">
+                    <p className="font-medium text-red-700">RSI Recommendations:</p>
+                    <p className="text-muted-foreground">Ketamine as induction + Rocuronium</p>
+                    <p className="text-muted-foreground text-xs">(Avoid morphine, atracurium)</p>
+                  </div>
+                </div>
+              </Section>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* TBI TAB */}
+        <TabsContent value="tbi" className="space-y-3 mt-4">
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-base">Severe Traumatic Brain Injury</CardTitle>
+              <CardDescription className="text-xs">GCS ≤8 Management</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {/* Initial Stabilization */}
+              <Section id="tbi-initial" title="Initial Stabilization" defaultOpen={true}>
+                <div className="space-y-2 text-xs">
+                  <p className="text-muted-foreground">• Maintain ABC + C-spine precautions</p>
+                  <p className="text-muted-foreground">• Continuous cardiopulmonary monitoring</p>
+                  <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded mt-2">
+                    <p className="font-medium">Airway (Jaw thrust, no head tilt)</p>
+                    <p className="text-muted-foreground">RSI: Fentanyl + Rocuronium OR Etomidate + Rocuronium</p>
+                  </div>
+                  <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
+                    <p className="font-medium">Oxygenation Targets</p>
+                    <p className="text-muted-foreground">SpO₂ 92-98%, PaCO₂ 35-40 mmHg</p>
+                  </div>
+                  <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
+                    <p className="font-medium">Circulation</p>
+                    <p className="text-muted-foreground">20 mL/kg NS bolus if hypotensive, repeat ×3</p>
+                    {w > 0 && <p className="font-mono text-gray-600">→ {(w * 20).toFixed(0)} mL bolus</p>}
+                  </div>
+                  <p className="text-muted-foreground mt-2">• Elevate HOB 30°, midline neutral position</p>
+                </div>
+              </Section>
+
+              {/* Brain Protective Therapies */}
+              <Section id="tbi-protective" title="Standard Brain Protective Therapies">
+                <ul className="text-xs text-muted-foreground space-y-1">
+                  <li>□ Control ventilation (PaCO₂ 35-40)</li>
+                  <li>□ Avoid hypotension</li>
+                  <li>□ IVF: 0.9% NS at maintenance</li>
+                  <li>□ Maintain Na &gt;140</li>
+                  <li>□ Sedation: Fentanyl + Midazolam infusion</li>
+                  <li>□ Maintain normothermia (&lt;37.5°C)</li>
+                  <li>□ Seizure prophylaxis (Phenytoin)</li>
+                  <li>□ Stress ulcer prophylaxis</li>
+                  <li>□ Glucose 80-180 mg/dL</li>
+                </ul>
+                <div className="mt-3 p-2 bg-red-50 dark:bg-red-900/20 rounded text-xs">
+                  <p className="font-semibold text-red-700">DO NOT ALLOW:</p>
+                  <p className="text-muted-foreground">Hypoxemia • Hypotension • Hyperthermia • Hyponatremia</p>
+                </div>
+              </Section>
+
+              {/* High ICP Management */}
+              <Section id="tbi-icp" title="High ICP Management">
+                <div className="text-xs">
+                  <p className="text-muted-foreground mb-2">If ICP &gt;20 mmHg for &gt;5 min or clinical signs:</p>
+                  <div className="space-y-2">
+                    <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
+                      <p className="font-medium">1. Drain CSF from EVD (if present)</p>
                     </div>
-                  </li>
-                  <li className="p-2 bg-white/50 dark:bg-gray-900/50 rounded-lg">
-                    <span className="font-bold text-red-600">4. L-Arginine</span>
-                    <p>200-600 mg/kg/day (for urea cycle defects)</p>
-                    {w > 0 && <p className="font-mono text-red-600">→ {(w * 0.2).toFixed(1)}-{(w * 0.6).toFixed(1)} g/day</p>}
-                  </li>
-                  <li className="p-2 bg-white/50 dark:bg-gray-900/50 rounded-lg">
-                    <span className="font-bold text-red-600">5. Dialysis if severe</span>
-                    <p className="text-xs">Consider if NH3 &gt;500 µmol/L or not responding</p>
-                  </li>
-                </ol>
-              </div>
+                    <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
+                      <p className="font-medium">2. Bolus sedation/analgesia/paralysis</p>
+                    </div>
+                    <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
+                      <p className="font-medium">3. Temporary hyperventilation</p>
+                      <p className="text-muted-foreground">PaCO₂ 30-35 mmHg</p>
+                    </div>
+                    <div className="p-2 bg-blue-50 dark:bg-blue-900/20 rounded">
+                      <p className="font-medium">4. Hyperosmolar Therapy</p>
+                      <p className="text-muted-foreground">3% NaCl: 5-10 mL/kg over 5-10 min q2-6h</p>
+                      {w > 0 && <p className="font-mono text-blue-600">→ {(w * 5).toFixed(0)}-{(w * 10).toFixed(0)} mL</p>}
+                      <p className="text-muted-foreground mt-1">OR Mannitol: 0.5-1 g/kg over 20 min</p>
+                      {w > 0 && <p className="font-mono text-blue-600">→ {(w * 0.5).toFixed(1)}-{w.toFixed(0)} g</p>}
+                    </div>
+                  </div>
+                </div>
+              </Section>
 
-              {/* Labs to Order */}
-              <div className="p-3 rounded-xl bg-gray-100 dark:bg-gray-800/50">
-                <p className="font-semibold mb-2">Labs to Order</p>
-                <div className="grid grid-cols-2 gap-2 text-muted-foreground">
+              {/* Clinical Signs of High ICP */}
+              <Section id="tbi-signs" title="Clinical Signs of High ICP">
+                <ul className="text-xs text-muted-foreground space-y-1">
+                  <li>• ↓GCS &gt;2 from baseline</li>
+                  <li>• New loss of pupil reactivity</li>
+                  <li>• Pupil asymmetry</li>
+                  <li>• New focal motor deficit</li>
+                  <li>• Cushing's triad: HTN, Bradycardia, Abnormal breathing</li>
+                </ul>
+              </Section>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* DKA TAB */}
+        <TabsContent value="dka" className="space-y-3 mt-4">
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-base">Diabetic Ketoacidosis (DKA)</CardTitle>
+              <CardDescription className="text-xs">Saudi MOH Guidelines</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {/* Recognition */}
+              <Section id="dka-recognition" title="Recognition & Diagnosis" defaultOpen={true}>
+                <div className="grid grid-cols-2 gap-3 text-xs">
                   <div>
-                    <p className="font-medium">Blood:</p>
-                    <ul className="text-xs space-y-0.5">
-                      <li>• Ammonia (on ice)</li>
-                      <li>• VBG, Glucose</li>
-                      <li>• Lactate</li>
-                      <li>• Plasma amino acids</li>
-                      <li>• LFTs, Coags</li>
+                    <p className="font-medium mb-1">History</p>
+                    <ul className="text-muted-foreground space-y-0.5">
+                      <li>• Polyuria, polydipsia</li>
+                      <li>• Weight loss</li>
+                      <li>• Abdominal pain, vomiting</li>
+                      <li>• Lethargy</li>
                     </ul>
                   </div>
                   <div>
-                    <p className="font-medium">Urine:</p>
-                    <ul className="text-xs space-y-0.5">
-                      <li>• Orotic acid</li>
-                      <li>• Organic acids</li>
-                      <li>• Ketones</li>
+                    <p className="font-medium mb-1">Clinical Findings</p>
+                    <ul className="text-muted-foreground space-y-0.5">
+                      <li>• Kussmaul breathing</li>
+                      <li>• Dehydration</li>
+                      <li>• Fruity breath</li>
                     </ul>
                   </div>
                 </div>
-              </div>
+                <div className="mt-3 p-2 bg-amber-50 dark:bg-amber-900/20 rounded">
+                  <p className="font-medium text-xs">Confirm DKA:</p>
+                  <p className="text-xs text-muted-foreground">• Ketonuria + Glucose &gt;200 mg/dL + pH &lt;7.30 and/or HCO₃ &lt;15</p>
+                </div>
+              </Section>
 
-              {/* Reference */}
-              <Card className="nightingale-card">
-                <CardContent className="pt-4 text-xs text-muted-foreground">
-                  <p className="font-medium mb-1">Normal Ammonia Levels</p>
-                  <p>• Newborn: &lt;110 µmol/L</p>
-                  <p>• Infant: &lt;80 µmol/L</p>
-                  <p>• Child/Adult: &lt;50 µmol/L</p>
-                </CardContent>
-              </Card>
+              {/* First Hour */}
+              <Section id="dka-first-hour" title="1st Hour Management">
+                <div className="space-y-2 text-xs">
+                  <div className="p-2 bg-red-50 dark:bg-red-900/20 rounded border border-red-200">
+                    <p className="font-medium text-red-700">If in Shock:</p>
+                    <p className="text-muted-foreground">10 mL/kg 0.9% NS bolus over 5-10 min, repeat PRN</p>
+                    {w > 0 && <p className="font-mono text-red-600">→ {(w * 10).toFixed(0)} mL bolus</p>}
+                  </div>
+                  <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
+                    <p className="font-medium">If NOT in Shock:</p>
+                    <p className="text-muted-foreground">&lt;20 kg: 7 mL/kg over 1 hour</p>
+                    <p className="text-muted-foreground">&gt;20 kg: 5 mL/kg over 1 hour</p>
+                    {w > 0 && <p className="font-mono text-gray-600">→ {(w < 20 ? w * 7 : w * 5).toFixed(0)} mL over 1 hr</p>}
+                  </div>
+                  <div className="p-2 bg-red-100 dark:bg-red-900/30 rounded">
+                    <p className="font-semibold text-red-700 text-xs">DO NOT:</p>
+                    <ul className="text-muted-foreground space-y-0.5">
+                      <li>• Give insulin bolus</li>
+                      <li>• Give NaHCO₃ (unless life-threatening)</li>
+                      <li>• Give unnecessary fluid boluses</li>
+                      <li>• Use hypotonic fluids</li>
+                    </ul>
+                  </div>
+                </div>
+              </Section>
+
+              {/* Post 1st Hour - Fluids */}
+              <Section id="dka-fluids" title="Fluid Management (Post 1st Hour)">
+                <div className="text-xs">
+                  <p className="font-medium mb-2">Total Fluid Intake (TFI) by weight:</p>
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-xs">
+                      <thead>
+                        <tr className="border-b">
+                          <th className="text-left py-1 pr-4">Weight</th>
+                          <th className="text-left py-1">TFI (mL/kg/hr)</th>
+                        </tr>
+                      </thead>
+                      <tbody className="text-muted-foreground">
+                        <tr><td className="py-1 pr-4">≤15 kg</td><td>5</td></tr>
+                        <tr><td className="py-1 pr-4">15-35 kg</td><td>4</td></tr>
+                        <tr><td className="py-1 pr-4">35-50 kg</td><td>3</td></tr>
+                        <tr><td className="py-1 pr-4">&gt;50 kg</td><td>2</td></tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  {w > 0 && (
+                    <p className="font-mono text-blue-600 mt-2">
+                      → {(w * (w <= 15 ? 5 : w <= 35 ? 4 : w <= 50 ? 3 : 2)).toFixed(0)} mL/hr
+                    </p>
+                  )}
+                </div>
+              </Section>
+
+              {/* Insulin */}
+              <Section id="dka-insulin" title="Insulin">
+                <div className="space-y-2 text-xs">
+                  <p className="text-muted-foreground">Mix 50 units Regular in 50 mL NS (1 unit/mL)</p>
+                  <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
+                    <p className="font-medium">Standard dose: 0.1 U/kg/hr</p>
+                    {w > 0 && <p className="font-mono text-gray-600">→ {(w * 0.1).toFixed(1)} units/hr ({(w * 0.1).toFixed(1)} mL/hr)</p>}
+                  </div>
+                  <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
+                    <p className="font-medium">Low dose: 0.05 U/kg/hr</p>
+                    <p className="text-muted-foreground">For: newly diagnosed, ≤5 years, or recently received insulin</p>
+                    {w > 0 && <p className="font-mono text-gray-600">→ {(w * 0.05).toFixed(2)} units/hr</p>}
+                  </div>
+                </div>
+              </Section>
+
+              {/* Potassium */}
+              <Section id="dka-potassium" title="Potassium">
+                <div className="text-xs text-muted-foreground">
+                  <p>• Add KCl 40 mEq/L once voiding (unless K &gt;5.5)</p>
+                  <p>• If K &lt;3.5: increase to 60 mEq/L</p>
+                </div>
+              </Section>
+
+              {/* Dextrose */}
+              <Section id="dka-dextrose" title="Dextrose">
+                <div className="text-xs text-muted-foreground">
+                  <p>• Add D5 if glucose &lt;250 mg/dL or rapid drop &gt;100 mg/dL/hr</p>
+                  <p>• Add D10 if glucose &lt;180 mg/dL</p>
+                </div>
+              </Section>
+
+              {/* Cerebral Edema */}
+              <Section id="dka-cerebral" title="Cerebral Edema">
+                <div className="p-3 bg-red-50 dark:bg-red-900/20 rounded border border-red-200 text-xs">
+                  <p className="font-semibold text-red-700 mb-1">Warning Signs:</p>
+                  <p className="text-muted-foreground">Headache, irritability, ↓LOC, vomiting, bradycardia, HTN</p>
+                  <div className="mt-2 border-t border-red-200 pt-2">
+                    <p className="font-medium">Treatment:</p>
+                    <p className="text-muted-foreground">• Elevate HOB, secure airway</p>
+                    <p className="text-muted-foreground">• Mannitol 0.5-1 g/kg OR 3% NaCl 5-10 mL/kg</p>
+                    {w > 0 && <p className="font-mono text-red-600">→ Mannitol: {(w * 0.5).toFixed(1)}-{w.toFixed(0)} g</p>}
+                    <p className="text-muted-foreground">• Neurosurgery consult, Head CT</p>
+                  </div>
+                </div>
+              </Section>
+
+              {/* Resolution */}
+              <Section id="dka-resolution" title="DKA Resolution">
+                <div className="text-xs text-muted-foreground">
+                  <p className="font-medium">DKA resolves when:</p>
+                  <p>pH &gt;7.30, HCO₃ &gt;15, normal anion gap</p>
+                  <div className="mt-2 p-2 bg-gray-50 dark:bg-gray-800 rounded">
+                    <p className="font-medium">After resolution:</p>
+                    <p>• Start oral fluids (controlled)</p>
+                    <p>• Give SC insulin, stop IV 30 min after</p>
+                    <p>• Start diabetic diet</p>
+                  </div>
+                </div>
+              </Section>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* ADRENAL CRISIS TAB */}
+        <TabsContent value="adrenal" className="space-y-3 mt-4">
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-base">Adrenal Crisis</CardTitle>
+              <CardDescription className="text-xs">Recognition and emergency management</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {/* Causes */}
+              <Section id="adrenal-causes" title="Causes" defaultOpen={true}>
+                <div className="grid grid-cols-2 gap-3 text-xs">
+                  <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
+                    <p className="font-medium">Primary</p>
+                    <p className="text-muted-foreground">Salt wasting (↓Na, ↑K), hyperpigmentation</p>
+                  </div>
+                  <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
+                    <p className="font-medium">Secondary/Tertiary</p>
+                    <p className="text-muted-foreground">Pituitary/hypothalamic, prolonged steroid use</p>
+                  </div>
+                </div>
+              </Section>
+
+              {/* When to Suspect */}
+              <Section id="adrenal-suspect" title="When to Suspect">
+                <ul className="text-xs text-muted-foreground space-y-1">
+                  <li>• Volume depletion, hypotension</li>
+                  <li>• Hyponatremia, hyperkalemia</li>
+                  <li>• Hyperpigmentation</li>
+                  <li>• Abdominal pain, fever</li>
+                  <li>• Precocious puberty</li>
+                </ul>
+              </Section>
+
+              {/* Confirmation */}
+              <Section id="adrenal-confirm" title="Confirmation (if stable)">
+                <div className="text-xs text-muted-foreground">
+                  <p>1. Check baseline cortisol</p>
+                  <p>2. Give Cosyntropin (ACTH) 1 mcg IV</p>
+                  <p>3. Repeat cortisol at 30 min</p>
+                  <p className="mt-1 font-medium">Adrenal insufficiency: Cortisol &lt;9 mcg/dL</p>
+                </div>
+              </Section>
+
+              {/* Management */}
+              <Section id="adrenal-management" title="Emergency Management">
+                <div className="space-y-2 text-xs">
+                  <div className="p-2 bg-blue-50 dark:bg-blue-900/20 rounded">
+                    <p className="font-medium">Fluid Resuscitation</p>
+                    <p className="text-muted-foreground">D5 NS 20 mL/kg bolus, up to 60 mL/kg</p>
+                    {w > 0 && <p className="font-mono text-blue-600">→ {(w * 20).toFixed(0)} mL bolus</p>}
+                  </div>
+                  <div className="p-2 bg-green-50 dark:bg-green-900/20 rounded">
+                    <p className="font-medium">Hydrocortisone</p>
+                    <p className="text-muted-foreground">50 mg/m² bolus, then 50 mg/m² ÷ q6h for 24h</p>
+                    <div className="mt-2 p-2 bg-white dark:bg-gray-900 rounded">
+                      <p className="font-medium text-xs">Approximate Doses:</p>
+                      <div className="grid grid-cols-2 gap-2 text-muted-foreground mt-1">
+                        <span>Infant: 10 mg</span>
+                        <span>Toddler: 25 mg</span>
+                        <span>Older child: 50 mg</span>
+                        <span>Adolescent: 100 mg</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
+                    <p className="font-medium">Treat Electrolyte Imbalances</p>
+                    <p className="text-muted-foreground">Hyperkalemia, hyponatremia per protocols</p>
+                  </div>
+                </div>
+              </Section>
+
+              {/* Important Notes */}
+              <div className="p-3 bg-amber-50 dark:bg-amber-900/20 rounded-lg text-xs">
+                <p className="font-semibold text-amber-700 dark:text-amber-300">Important Notes</p>
+                <ul className="mt-1 text-muted-foreground space-y-0.5">
+                  <li>• Never delay treatment waiting for results</li>
+                  <li>• Consult pediatric endocrinologist</li>
+                  <li>• If not improving, consider other diagnoses</li>
+                </ul>
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
       </Tabs>
+
+      {/* Vital Signs Reference - Collapsible at bottom */}
+      <Card className="border-slate-200 dark:border-slate-700">
+        <CardHeader className="pb-0">
+          <button
+            onClick={() => toggleSection('vitals')}
+            className="w-full flex items-center justify-between"
+          >
+            <CardTitle className="text-sm">Pediatric Vital Signs Reference</CardTitle>
+            <span className={`transform transition-transform ${expandedSections['vitals'] ? 'rotate-180' : ''}`}>▼</span>
+          </button>
+        </CardHeader>
+        {expandedSections['vitals'] && (
+          <CardContent className="pt-3">
+            <div className="overflow-x-auto">
+              <table className="w-full text-xs">
+                <thead>
+                  <tr className="border-b">
+                    <th className="text-left py-1 pr-2">Age</th>
+                    <th className="text-left py-1 pr-2">HR</th>
+                    <th className="text-left py-1 pr-2">RR</th>
+                    <th className="text-left py-1 pr-2">SBP</th>
+                    <th className="text-left py-1">Wt (kg)</th>
+                  </tr>
+                </thead>
+                <tbody className="text-muted-foreground">
+                  <tr><td className="py-1 pr-2">Newborn</td><td>120-160</td><td>30-50</td><td>50-70</td><td>2-3</td></tr>
+                  <tr><td className="py-1 pr-2">Infant</td><td>80-140</td><td>20-30</td><td>70-100</td><td>4-10</td></tr>
+                  <tr><td className="py-1 pr-2">Toddler (1-3y)</td><td>80-130</td><td>20-30</td><td>80-110</td><td>10-14</td></tr>
+                  <tr><td className="py-1 pr-2">Preschool (3-5y)</td><td>80-120</td><td>20-30</td><td>80-110</td><td>14-18</td></tr>
+                  <tr><td className="py-1 pr-2">School (6-12y)</td><td>70-110</td><td>20-30</td><td>80-120</td><td>20-42</td></tr>
+                  <tr><td className="py-1 pr-2">Adolescent</td><td>55-105</td><td>12-20</td><td>110-120</td><td>&gt;50</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div className="mt-3 p-2 bg-gray-50 dark:bg-gray-800 rounded text-xs">
+              <p className="font-medium">Minimal Acceptable SBP:</p>
+              <p className="text-muted-foreground">&lt;1 mo: &gt;60 | 1mo-1y: &gt;70 | 1-10y: 70 + (2×age) | &gt;10y: &gt;90</p>
+              {ageNum > 0 && ageNum <= 10 && (
+                <p className="font-mono text-blue-600 mt-1">→ Min SBP for {ageNum}y: {70 + (2 * ageNum)} mmHg</p>
+              )}
+            </div>
+          </CardContent>
+        )}
+      </Card>
     </div>
   );
 };
