@@ -63,7 +63,6 @@ markdown-it-py==4.0.0
 MarkupSafe==3.0.3
 mccabe==0.7.0
 mdurl==0.1.2
-modelscope==1.33.0
 motor==3.3.1
 multidict==6.7.0
 mypy==1.19.0
@@ -72,13 +71,8 @@ networkx==3.6.1
 numpy==2.2.6
 oauthlib==3.3.1
 openai==1.99.9
-opencv-contrib-python==4.10.0.84
-opencv-python-headless==4.12.0.88
 opt-einsum==3.3.0
 packaging==25.0
-paddleocr==3.3.2
-paddlepaddle==3.2.2
-paddlex==3.3.12
 pandas==2.3.3
 passlib==1.7.4
 pathspec==0.12.1
