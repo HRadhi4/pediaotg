@@ -17,7 +17,7 @@
 
 import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { ArrowLeft, Home, FlaskConical, Zap, Settings, X, Check, Clock, GripVertical, Plus, Trash2, ChevronUp, ChevronDown } from "lucide-react";
+import { ArrowLeft, Home, FlaskConical, Zap, Settings, X, Check, Clock, GripVertical, Plus, Trash2, ChevronUp, ChevronDown, Droplets } from "lucide-react";
 import { 
   FluidIcon as HealthFluidIcon, 
   IntubationIcon as HealthIntubationIcon, 
