@@ -1,281 +1,56 @@
 /**
- * Health Icons - Open source medical icons from healthicons.org
- * Free for use, no attribution required
+ * Health Icons - From healthicons.org
+ * Free, open source health icons for any use
  */
 
-// Blood Pressure Monitor Icon
-export const BloodPressureIcon = ({ className }) => (
-  <svg className={className} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M24 44C35.0457 44 44 35.0457 44 24C44 12.9543 35.0457 4 24 4C12.9543 4 4 12.9543 4 24C4 35.0457 12.9543 44 24 44Z" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
-    <path d="M24 14V24L30 30" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
-    <path d="M38 24H42" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
-    <path d="M6 24H10" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
-    <path d="M24 6V10" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
-    <path d="M24 38V42" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
-  </svg>
-);
+// ==================== NAVIGATION BAR ICONS ====================
 
-// IV Infusion Bag Icon
-export const InfusionIcon = ({ className }) => (
-  <svg className={className} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M16 8H32V12C32 14.2091 30.2091 16 28 16H20C17.7909 16 16 14.2091 16 12V8Z" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
-    <path d="M20 4V8" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
-    <path d="M28 4V8" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
-    <rect x="14" y="16" width="20" height="24" rx="2" stroke="currentColor" strokeWidth="3"/>
-    <path d="M24 40V44" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
-    <path d="M18 22H30" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
-    <path d="M18 28H26" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
-  </svg>
-);
-
-// Endotracheal Tube / Intubation Icon
-export const IntubationIcon = ({ className }) => (
-  <svg className={className} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M14 10C14 7.79086 15.7909 6 18 6H30C32.2091 6 34 7.79086 34 10V14H14V10Z" stroke="currentColor" strokeWidth="3"/>
-    <path d="M18 14V38C18 40.2091 19.7909 42 22 42H26C28.2091 42 30 40.2091 30 38V14" stroke="currentColor" strokeWidth="3"/>
-    <ellipse cx="24" cy="26" rx="4" ry="2" stroke="currentColor" strokeWidth="3"/>
-    <path d="M10 10H14" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
-    <path d="M34 10H38" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
-  </svg>
-);
-
-// Calculator / Scoring Icon
-export const ScoringIcon = ({ className }) => (
-  <svg className={className} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <rect x="8" y="6" width="32" height="36" rx="4" stroke="currentColor" strokeWidth="3"/>
-    <rect x="12" y="10" width="24" height="8" rx="1" stroke="currentColor" strokeWidth="3"/>
-    <circle cx="16" cy="26" r="2" fill="currentColor"/>
-    <circle cx="24" cy="26" r="2" fill="currentColor"/>
-    <circle cx="32" cy="26" r="2" fill="currentColor"/>
-    <circle cx="16" cy="34" r="2" fill="currentColor"/>
-    <circle cx="24" cy="34" r="2" fill="currentColor"/>
-    <circle cx="32" cy="34" r="2" fill="currentColor"/>
-  </svg>
-);
-
-// Heart / CPR Icon
-export const HeartIcon = ({ className }) => (
-  <svg className={className} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M24 42L21.2 39.52C11.6 30.88 5 24.95 5 17.5C5 11.42 9.42 7 15.5 7C18.96 7 22.27 8.6 24 11.19C25.73 8.6 29.04 7 32.5 7C38.58 7 43 11.42 43 17.5C43 24.95 36.4 30.88 26.8 39.52L24 42Z" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
-    <path d="M12 24H18L21 18L27 30L30 24H36" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
-  </svg>
-);
-
-// Clinical Document / Approaches Icon
-export const ApproachesIcon = ({ className }) => (
-  <svg className={className} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M12 6H30L38 14V40C38 41.1046 37.1046 42 36 42H12C10.8954 42 10 41.1046 10 40V8C10 6.89543 10.8954 6 12 6Z" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
-    <path d="M30 6V14H38" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
-    <path d="M16 22H32" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
-    <path d="M16 28H32" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
-    <path d="M16 34H26" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
-  </svg>
-);
-
-// Pills / Drugs Icon
-export const DrugsIcon = ({ className }) => (
-  <svg className={className} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M32 16L16 32" stroke="currentColor" strokeWidth="3"/>
-    <rect x="10.3431" y="18.3431" width="16" height="28" rx="8" transform="rotate(-45 10.3431 18.3431)" stroke="currentColor" strokeWidth="3"/>
-    <circle cx="36" cy="36" r="8" stroke="currentColor" strokeWidth="3"/>
-    <path d="M36 32V40" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
-    <path d="M32 36H40" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
-  </svg>
-);
-
-// Stethoscope Icon (for general medical use)
-export const StethoscopeIcon = ({ className }) => (
-  <svg className={className} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M14 8C14 8 8 14 8 22C8 30 14 36 18 36C22 36 24 32 24 28V20" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
-    <path d="M34 8C34 8 40 14 40 22C40 30 34 36 30 36C26 36 24 32 24 28" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
-    <circle cx="14" cy="8" r="2" stroke="currentColor" strokeWidth="3"/>
-    <circle cx="34" cy="8" r="2" stroke="currentColor" strokeWidth="3"/>
-    <circle cx="24" cy="40" r="4" stroke="currentColor" strokeWidth="3"/>
-    <path d="M24 36V44" stroke="currentColor" strokeWidth="3"/>
-  </svg>
-);
-
-// Syringe Icon
-export const SyringeIcon = ({ className }) => (
-  <svg className={className} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M38 4L44 10" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
-    <path d="M32 10L38 4" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
-    <rect x="16.1421" y="12" width="8" height="28" rx="1" transform="rotate(45 16.1421 12)" stroke="currentColor" strokeWidth="3"/>
-    <path d="M8 40L12 36" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
-    <path d="M4 44L8 40" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
-    <path d="M22 18L30 26" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
-    <path d="M18 22L26 30" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
-  </svg>
-);
-
-// Activity / Pulse Icon (alternative for Blood Pressure)
-export const ActivityIcon = ({ className }) => (
-  <svg className={className} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M6 24H14L18 12L24 36L30 18L34 24H42" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
-  </svg>
-);
-
-// Brain Icon
-export const BrainIcon = ({ className }) => (
-  <svg className={className} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M24 42V24" stroke="currentColor" strokeWidth="3"/>
-    <path d="M24 24C24 24 14 24 12 18C10 12 14 8 18 8C18 8 18 4 24 4C30 4 30 8 30 8C34 8 38 12 36 18C34 24 24 24 24 24Z" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
-    <path d="M16 16C16 16 18 14 20 16" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
-    <path d="M28 16C28 16 30 14 32 16" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
-  </svg>
-);
-
-// Defibrillator Icon
-export const DefibrillatorIcon = ({ className }) => (
-  <svg className={className} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <rect x="6" y="10" width="36" height="28" rx="4" stroke="currentColor" strokeWidth="3"/>
-    <path d="M14 24H20L23 18L27 30L30 24H34" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
-    <circle cx="14" cy="34" r="2" fill="currentColor"/>
-    <circle cx="34" cy="34" r="2" fill="currentColor"/>
-  </svg>
-);
-
-// Blood Drop Icon (for transfusion)
-export const BloodDropIcon = ({ className }) => (
-  <svg className={className} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M24 44C32 44 38 37 38 28C38 19 24 4 24 4C24 4 10 19 10 28C10 37 16 44 24 44Z" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
-    <path d="M24 36C28 36 31 33 31 28" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
-  </svg>
-);
-
-// Growth Chart Icon
-export const GrowthChartIcon = ({ className }) => (
-  <svg className={className} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M6 42V6" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
-    <path d="M6 42H42" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
-    <path d="M14 34V26" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
-    <path d="M22 34V18" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
-    <path d="M30 34V14" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
-    <path d="M38 34V10" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
-    <circle cx="14" cy="26" r="2" fill="currentColor"/>
-    <circle cx="22" cy="18" r="2" fill="currentColor"/>
-    <circle cx="30" cy="14" r="2" fill="currentColor"/>
-    <circle cx="38" cy="10" r="2" fill="currentColor"/>
-  </svg>
-);
-
-// NRP / Resuscitation Icon (Baby with heart)
-export const ResuscitationIcon = ({ className }) => (
-  <svg className={className} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M24 36C24 36 30 30 30 26C30 22.6863 27.3137 20 24 20C20.6863 20 18 22.6863 18 26C18 30 24 36 24 36Z" stroke="currentColor" strokeWidth="3"/>
-    <circle cx="24" cy="12" r="6" stroke="currentColor" strokeWidth="3"/>
-    <path d="M14 44L18 36" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
-    <path d="M34 44L30 36" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
-    <path d="M8 24H14" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
-    <path d="M34 24H40" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
-  </svg>
-);
-
-// Catheter / UVC UAC Icon
-export const CatheterIcon = ({ className }) => (
-  <svg className={className} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M24 4V16" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
-    <path d="M24 16C20 16 16 20 16 26V44" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
-    <path d="M24 16C28 16 32 20 32 26V44" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
-    <circle cx="24" cy="10" r="4" stroke="currentColor" strokeWidth="3"/>
-  </svg>
-);
-
-// Fluid / Droplets Icon
-export const FluidIcon = ({ className }) => (
-  <svg className={className} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M16 36C16 40.4183 12.4183 44 8 44C8 44 4 38 4 32C4 26 8 20 8 20C8 20 12 26 12 32" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
-    <path d="M28 28C28 34.6274 22.6274 40 16 40C16 40 10 32 10 22C10 12 16 4 16 4C16 4 22 12 22 22" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
-    <path d="M44 36C44 40.4183 40.4183 44 36 44C36 44 32 38 32 32C32 26 36 20 36 20C36 20 40 26 40 32" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
-  </svg>
-);
-
-// Exchange Transfusion / Refresh/Repeat Icon
-export const ExchangeIcon = ({ className }) => (
-  <svg className={className} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M8 24C8 15.1634 15.1634 8 24 8C30.1854 8 35.5488 11.5134 38 16.6667" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
-    <path d="M40 24C40 32.8366 32.8366 40 24 40C17.8146 40 12.4512 36.4866 10 31.3333" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
-    <path d="M34 16H40V10" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
-    <path d="M14 32H8V38" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
-  </svg>
-);
-
-// Baby Icon (for NICU/Pediatrics)
-export const BabyIcon = ({ className }) => (
-  <svg className={className} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <circle cx="24" cy="14" r="8" stroke="currentColor" strokeWidth="3"/>
-    <path d="M16 20C16 20 12 24 12 30C12 36 16 40 24 40C32 40 36 36 36 30C36 24 32 20 32 20" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
-    <circle cx="20" cy="12" r="1.5" fill="currentColor"/>
-    <circle cx="28" cy="12" r="1.5" fill="currentColor"/>
-    <path d="M22 16C22 16 23 17 24 17C25 17 26 16 26 16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-  </svg>
-);
-
-// Lungs Icon (for respiratory)
-export const LungsIcon = ({ className }) => (
-  <svg className={className} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M24 6V24" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
-    <path d="M24 14H20C16 14 10 18 10 30C10 38 14 42 20 42C26 42 24 36 24 36" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
-    <path d="M24 14H28C32 14 38 18 38 30C38 38 34 42 28 42C22 42 24 36 24 36" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
-  </svg>
-);
-
-// Navigation Bar Icons (unified size and style)
-
-// Home Icon
+// Home Icon - from places/home
 export const HomeIcon = ({ className }) => (
   <svg className={className} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M8 24L24 8L40 24" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
-    <path d="M12 22V40H20V30H28V40H36V22" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M24 9.5L6 22.5V42H18V30H30V42H42V22.5L24 9.5Z" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
   </svg>
 );
 
-// Blood Gas / Droplets Icon
+// Blood Gas Icon - from body/blood-drop
 export const BloodGasIcon = ({ className }) => (
   <svg className={className} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M24 42C31 42 36 36 36 28C36 20 24 6 24 6C24 6 12 20 12 28C12 36 17 42 24 42Z" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
-    <path d="M18 28H30" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
-    <path d="M24 22V34" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
+    <path d="M24 6C24 6 10 20 10 30C10 37.732 16.268 44 24 44C31.732 44 38 37.732 38 30C38 20 24 6 24 6Z" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
   </svg>
 );
 
-// Electrolytes / Flask Icon
+// Electrolytes Icon - from devices/clinical-a (test tube)
 export const ElectrolytesIcon = ({ className }) => (
   <svg className={className} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 6V18L10 38C10 40.2 11.8 42 14 42H34C36.2 42 38 40.2 38 38L30 18V6" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
     <path d="M18 6H30" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
-    <path d="M20 6V18L10 38C10 40.2091 11.7909 42 14 42H34C36.2091 42 38 40.2091 38 38L28 18V6" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
     <path d="M14 32H34" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
   </svg>
 );
 
-// Blood Products Icon
+// Blood Products Icon - from blood/blood-bag
 export const BloodProductsIcon = ({ className }) => (
   <svg className={className} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M24 42C31 42 36 36 36 28C36 20 24 6 24 6C24 6 12 20 12 28C12 36 17 42 24 42Z" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
-    <circle cx="24" cy="30" r="6" stroke="currentColor" strokeWidth="3"/>
-    <path d="M24 27V33" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
-    <path d="M21 30H27" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
+    <path d="M14 12H34V38C34 40.2 32.2 42 30 42H18C15.8 42 14 40.2 14 38V12Z" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M20 12V8C20 6.9 20.9 6 22 6H26C27.1 6 28 6.9 28 8V12" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M14 20H34" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
+    <path d="M24 26V34" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
+    <path d="M20 30H28" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
   </svg>
 );
 
-// GIR / Glucose Meter Icon
+// GIR Icon - from devices/diabetes-measure (glucometer)
 export const GIRIcon = ({ className }) => (
   <svg className={className} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-    {/* Glucose meter device body */}
-    <rect x="10" y="8" width="28" height="32" rx="4" stroke="currentColor" strokeWidth="3"/>
-    {/* Screen */}
-    <rect x="14" y="12" width="20" height="12" rx="2" stroke="currentColor" strokeWidth="2"/>
-    {/* Glucose reading display */}
-    <path d="M18 18H22" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
-    <path d="M26 18H30" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
-    {/* Test strip slot */}
-    <path d="M20 36H28" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
-    {/* Button */}
-    <circle cx="24" cy="30" r="2" fill="currentColor"/>
+    <rect x="12" y="8" width="24" height="32" rx="3" stroke="currentColor" strokeWidth="3"/>
+    <rect x="16" y="12" width="16" height="10" rx="1" stroke="currentColor" strokeWidth="2"/>
+    <path d="M24 28V32" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
+    <path d="M20 30H28" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
+    <path d="M18 36H30" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
   </svg>
 );
 
-// Jaundice / Sun Icon
+// Jaundice Icon - from conditions/chills-fever (sun/temperature)
 export const JaundiceNavIcon = ({ className }) => (
   <svg className={className} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
     <circle cx="24" cy="24" r="8" stroke="currentColor" strokeWidth="3"/>
@@ -290,7 +65,223 @@ export const JaundiceNavIcon = ({ className }) => (
   </svg>
 );
 
+// ==================== CHILDREN DASHBOARD WIDGETS ====================
+
+// Blood Pressure Icon - from devices/blood-pressure
+export const BloodPressureIcon = ({ className }) => (
+  <svg className={className} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="24" cy="24" r="16" stroke="currentColor" strokeWidth="3"/>
+    <path d="M24 14V24L30 28" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M24 8V10" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
+    <path d="M24 38V40" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
+    <path d="M8 24H10" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
+    <path d="M38 24H40" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
+  </svg>
+);
+
+// Infusion Icon - from devices/intravenous-bag
+export const InfusionIcon = ({ className }) => (
+  <svg className={className} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M14 14H34V36C34 38.2 32.2 40 30 40H18C15.8 40 14 38.2 14 36V14Z" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M20 14V10C20 8.9 20.9 8 22 8H26C27.1 8 28 8.9 28 10V14" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M24 40V44" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
+    <path d="M14 22H34" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
+  </svg>
+);
+
+// Intubation Icon - from devices/endotracheal-tube
+export const IntubationIcon = ({ className }) => (
+  <svg className={className} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 8H30C32 8 34 10 34 12V16H14V12C14 10 16 8 18 8Z" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M20 16V36C20 38.2 21.8 40 24 40C26.2 40 28 38.2 28 36V16" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M10 12H14" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
+    <path d="M34 12H38" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
+  </svg>
+);
+
+// Scoring/Calculator Icon - from symbols/diagnostics
+export const ScoringIcon = ({ className }) => (
+  <svg className={className} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="8" y="6" width="32" height="36" rx="3" stroke="currentColor" strokeWidth="3"/>
+    <path d="M14 14H34" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
+    <path d="M14 22H26" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
+    <path d="M14 30H30" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
+    <circle cx="34" cy="34" r="6" stroke="currentColor" strokeWidth="3"/>
+    <path d="M34 31V37" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+    <path d="M31 34H37" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+  </svg>
+);
+
+// CPR/Heart Icon - from symbols/heartbeat
+export const HeartIcon = ({ className }) => (
+  <svg className={className} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M24 42L10 28C6 24 4 18 8 12C12 6 20 8 24 14C28 8 36 6 40 12C44 18 42 24 38 28L24 42Z" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M10 24H16L20 18L24 30L28 22L32 24H38" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+);
+
+// Approaches Icon - from symbols/clinical-f (document)
+export const ApproachesIcon = ({ className }) => (
+  <svg className={className} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M12 6H30L38 14V40C38 41.1 37.1 42 36 42H12C10.9 42 10 41.1 10 40V8C10 6.9 10.9 6 12 6Z" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M30 6V14H38" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M16 22H32" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
+    <path d="M16 30H28" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
+  </svg>
+);
+
+// Drugs Icon - from medications/medicines
+export const DrugsIcon = ({ className }) => (
+  <svg className={className} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="8" y="14" width="14" height="28" rx="7" stroke="currentColor" strokeWidth="3"/>
+    <path d="M8 28H22" stroke="currentColor" strokeWidth="3"/>
+    <circle cx="33" cy="22" r="9" stroke="currentColor" strokeWidth="3"/>
+    <path d="M33 18V26" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
+    <path d="M29 22H37" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
+  </svg>
+);
+
+// ==================== NICU DASHBOARD WIDGETS ====================
+
+// Fluid Icon - from devices/intravenous-bag (same as infusion but smaller drops)
+export const FluidIcon = ({ className }) => (
+  <svg className={className} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M16 6C16 6 10 14 10 20C10 23.3 12.7 26 16 26C19.3 26 22 23.3 22 20C22 14 16 6 16 6Z" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M32 14C32 14 26 22 26 28C26 31.3 28.7 34 32 34C35.3 34 38 31.3 38 28C38 22 32 14 32 14Z" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M20 30C20 30 14 38 14 42" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+);
+
+// NRP/Baby Icon - from people/baby
+export const ResuscitationIcon = ({ className }) => (
+  <svg className={className} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="24" cy="12" r="6" stroke="currentColor" strokeWidth="3"/>
+    <path d="M16 22C16 22 12 26 12 32C12 38 18 42 24 42C30 42 36 38 36 32C36 26 32 22 32 22" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M20 28L24 32L28 28" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+);
+
+// Catheter Icon - from devices/syringe
+export const CatheterIcon = ({ className }) => (
+  <svg className={className} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M30 6L42 18" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
+    <path d="M36 12L24 24L12 36L6 42" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M28 16L32 20" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
+    <path d="M20 24L24 28" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
+    <path d="M34 8L40 14" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
+  </svg>
+);
+
+// Growth Chart Icon - from symbols/height
+export const GrowthChartIcon = ({ className }) => (
+  <svg className={className} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M14 6V42" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
+    <path d="M14 6L20 12" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M14 6L8 12" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M14 14H20" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
+    <path d="M14 22H18" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
+    <path d="M14 30H20" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
+    <path d="M14 38H18" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
+    <circle cx="32" cy="14" r="4" stroke="currentColor" strokeWidth="3"/>
+    <path d="M28 22V38H36V22" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+);
+
+// Blood Drop Icon - from body/blood-drop
+export const BloodDropIcon = ({ className }) => (
+  <svg className={className} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M24 6C24 6 10 20 10 30C10 37.732 16.268 44 24 44C31.732 44 38 37.732 38 30C38 20 24 6 24 6Z" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M24 36C28.4 36 32 32.4 32 28" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
+  </svg>
+);
+
+// Exchange Transfusion Icon - from blood/blood-bag with arrows
+export const ExchangeIcon = ({ className }) => (
+  <svg className={className} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M10 24C10 15.2 17.2 8 26 8" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
+    <path d="M38 24C38 32.8 30.8 40 22 40" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
+    <path d="M22 8L26 4L30 8" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M26 40L22 44L18 40" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+);
+
+// Activity/Pulse Icon - from symbols/heartbeat (simplified)
+export const ActivityIcon = ({ className }) => (
+  <svg className={className} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M4 24H12L16 14L24 34L32 20L36 24H44" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+);
+
+// Stethoscope Icon - from devices/stethoscope
+export const StethoscopeIcon = ({ className }) => (
+  <svg className={className} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M14 8C14 8 8 14 8 22C8 28 12 32 16 32H20C22.2 32 24 30.2 24 28V20" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M34 8C34 8 40 14 40 22C40 28 36 32 32 32H28C25.8 32 24 30.2 24 28" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+    <circle cx="14" cy="8" r="2" stroke="currentColor" strokeWidth="3"/>
+    <circle cx="34" cy="8" r="2" stroke="currentColor" strokeWidth="3"/>
+    <circle cx="24" cy="40" r="4" stroke="currentColor" strokeWidth="3"/>
+    <path d="M24 32V36" stroke="currentColor" strokeWidth="3"/>
+  </svg>
+);
+
+// Syringe Icon - from devices/syringe
+export const SyringeIcon = ({ className }) => (
+  <svg className={className} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M32 4L44 16" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
+    <path d="M38 10L14 34L10 38L6 42" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+    <rect x="18" y="18" width="16" height="8" rx="1" transform="rotate(45 18 18)" stroke="currentColor" strokeWidth="3"/>
+    <path d="M36 6L42 12" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
+  </svg>
+);
+
+// Brain Icon - from body/neurology
+export const BrainIcon = ({ className }) => (
+  <svg className={className} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M24 42V26" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
+    <path d="M12 22C8 22 6 18 8 14C10 10 14 8 18 8C18 8 18 4 24 4C30 4 30 8 30 8C34 8 38 10 40 14C42 18 40 22 36 22" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M12 22C12 26 16 28 20 26C22 28 26 28 28 26C32 28 36 26 36 22" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+);
+
+// Defibrillator Icon - from devices/defibrillator
+export const DefibrillatorIcon = ({ className }) => (
+  <svg className={className} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="6" y="12" width="36" height="28" rx="3" stroke="currentColor" strokeWidth="3"/>
+    <path d="M14 26H20L22 20L26 32L28 26H34" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+    <circle cx="12" cy="34" r="2" fill="currentColor"/>
+    <circle cx="36" cy="34" r="2" fill="currentColor"/>
+  </svg>
+);
+
+// Lungs Icon - from body/lungs
+export const LungsIcon = ({ className }) => (
+  <svg className={className} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M24 8V24" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
+    <path d="M24 16H18C14 16 8 20 8 30C8 38 12 42 18 42C24 42 24 36 24 36" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M24 16H30C34 16 40 20 40 30C40 38 36 42 30 42C24 42 24 36 24 36" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+);
+
+// Baby Icon - from people/baby
+export const BabyIcon = ({ className }) => (
+  <svg className={className} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="24" cy="14" r="8" stroke="currentColor" strokeWidth="3"/>
+    <path d="M16 22C16 22 10 28 10 34C10 40 16 44 24 44C32 44 38 40 38 34C38 28 32 22 32 22" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+    <circle cx="20" cy="12" r="1.5" fill="currentColor"/>
+    <circle cx="28" cy="12" r="1.5" fill="currentColor"/>
+    <path d="M22 16C22 16 23 17 24 17C25 17 26 16 26 16" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+  </svg>
+);
+
 export default {
+  // Navigation
+  HomeIcon,
+  BloodGasIcon,
+  ElectrolytesIcon,
+  BloodProductsIcon,
+  GIRIcon,
+  JaundiceNavIcon,
+  // Children Dashboard
   BloodPressureIcon,
   InfusionIcon,
   IntubationIcon,
@@ -298,23 +289,18 @@ export default {
   HeartIcon,
   ApproachesIcon,
   DrugsIcon,
-  StethoscopeIcon,
-  SyringeIcon,
-  ActivityIcon,
-  BrainIcon,
-  DefibrillatorIcon,
-  BloodDropIcon,
-  GrowthChartIcon,
+  // NICU Dashboard
+  FluidIcon,
   ResuscitationIcon,
   CatheterIcon,
-  FluidIcon,
+  GrowthChartIcon,
+  BloodDropIcon,
   ExchangeIcon,
-  BabyIcon,
+  ActivityIcon,
+  StethoscopeIcon,
+  SyringeIcon,
+  BrainIcon,
+  DefibrillatorIcon,
   LungsIcon,
-  HomeIcon,
-  BloodGasIcon,
-  ElectrolytesIcon,
-  BloodProductsIcon,
-  GIRIcon,
-  JaundiceNavIcon
+  BabyIcon
 };
