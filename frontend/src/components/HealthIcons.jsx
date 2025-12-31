@@ -3,16 +3,6 @@
  * Free for use, no attribution required
  */
 
-// Base component for rendering health icons as inline SVGs
-const HealthIcon = ({ src, className = "h-5 w-5" }) => (
-  <img 
-    src={src} 
-    alt="" 
-    className={className}
-    style={{ filter: 'brightness(0) saturate(100%)' }} // Makes icon inherit color via CSS
-  />
-);
-
 // Blood Pressure Monitor Icon
 export const BloodPressureIcon = ({ className }) => (
   <svg className={className} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -145,6 +135,91 @@ export const DefibrillatorIcon = ({ className }) => (
   </svg>
 );
 
+// Blood Drop Icon (for transfusion)
+export const BloodDropIcon = ({ className }) => (
+  <svg className={className} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M24 44C32 44 38 37 38 28C38 19 24 4 24 4C24 4 10 19 10 28C10 37 16 44 24 44Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M24 36C28 36 31 33 31 28" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+  </svg>
+);
+
+// Growth Chart Icon
+export const GrowthChartIcon = ({ className }) => (
+  <svg className={className} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M6 42V6" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+    <path d="M6 42H42" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+    <path d="M14 34V26" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+    <path d="M22 34V18" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+    <path d="M30 34V14" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+    <path d="M38 34V10" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+    <circle cx="14" cy="26" r="2" fill="currentColor"/>
+    <circle cx="22" cy="18" r="2" fill="currentColor"/>
+    <circle cx="30" cy="14" r="2" fill="currentColor"/>
+    <circle cx="38" cy="10" r="2" fill="currentColor"/>
+  </svg>
+);
+
+// NRP / Resuscitation Icon (Baby with heart)
+export const ResuscitationIcon = ({ className }) => (
+  <svg className={className} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M24 36C24 36 30 30 30 26C30 22.6863 27.3137 20 24 20C20.6863 20 18 22.6863 18 26C18 30 24 36 24 36Z" stroke="currentColor" strokeWidth="2"/>
+    <circle cx="24" cy="12" r="6" stroke="currentColor" strokeWidth="2"/>
+    <path d="M14 44L18 36" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+    <path d="M34 44L30 36" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+    <path d="M8 24H14" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+    <path d="M34 24H40" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+  </svg>
+);
+
+// Catheter / UVC UAC Icon
+export const CatheterIcon = ({ className }) => (
+  <svg className={className} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M24 4V16" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+    <path d="M24 16C20 16 16 20 16 26V44" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+    <path d="M24 16C28 16 32 20 32 26V44" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+    <circle cx="24" cy="10" r="4" stroke="currentColor" strokeWidth="2"/>
+  </svg>
+);
+
+// Fluid / Droplets Icon
+export const FluidIcon = ({ className }) => (
+  <svg className={className} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M16 36C16 40.4183 12.4183 44 8 44C8 44 4 38 4 32C4 26 8 20 8 20C8 20 12 26 12 32" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M28 28C28 34.6274 22.6274 40 16 40C16 40 10 32 10 22C10 12 16 4 16 4C16 4 22 12 22 22" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M44 36C44 40.4183 40.4183 44 36 44C36 44 32 38 32 32C32 26 36 20 36 20C36 20 40 26 40 32" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+);
+
+// Exchange Transfusion / Refresh/Repeat Icon
+export const ExchangeIcon = ({ className }) => (
+  <svg className={className} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M8 24C8 15.1634 15.1634 8 24 8C30.1854 8 35.5488 11.5134 38 16.6667" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+    <path d="M40 24C40 32.8366 32.8366 40 24 40C17.8146 40 12.4512 36.4866 10 31.3333" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+    <path d="M34 16H40V10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M14 32H8V38" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+);
+
+// Baby Icon (for NICU/Pediatrics)
+export const BabyIcon = ({ className }) => (
+  <svg className={className} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="24" cy="14" r="8" stroke="currentColor" strokeWidth="2"/>
+    <path d="M16 20C16 20 12 24 12 30C12 36 16 40 24 40C32 40 36 36 36 30C36 24 32 20 32 20" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+    <circle cx="20" cy="12" r="1.5" fill="currentColor"/>
+    <circle cx="28" cy="12" r="1.5" fill="currentColor"/>
+    <path d="M22 16C22 16 23 17 24 17C25 17 26 16 26 16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+  </svg>
+);
+
+// Lungs Icon (for respiratory)
+export const LungsIcon = ({ className }) => (
+  <svg className={className} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M24 6V24" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+    <path d="M24 14H20C16 14 10 18 10 30C10 38 14 42 20 42C26 42 24 36 24 36" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+    <path d="M24 14H28C32 14 38 18 38 30C38 38 34 42 28 42C22 42 24 36 24 36" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+  </svg>
+);
+
 export default {
   BloodPressureIcon,
   InfusionIcon,
@@ -157,5 +232,13 @@ export default {
   SyringeIcon,
   ActivityIcon,
   BrainIcon,
-  DefibrillatorIcon
+  DefibrillatorIcon,
+  BloodDropIcon,
+  GrowthChartIcon,
+  ResuscitationIcon,
+  CatheterIcon,
+  FluidIcon,
+  ExchangeIcon,
+  BabyIcon,
+  LungsIcon
 };
