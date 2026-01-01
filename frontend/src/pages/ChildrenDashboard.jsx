@@ -35,7 +35,8 @@ import {
   ArrowLeftIcon,
   SettingsIcon,
   CloseIcon,
-  GripIcon
+  GripIcon,
+  FluidIcon
 } from "@/components/HealthIcons";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
