@@ -322,6 +322,20 @@ class PediaOTGBackendTester:
                 "widgets": ["fluid", "nrp"]
             }
         }
+        
+        # Debug: Test auth check first
+        auth_success, auth_response = self.run_test(
+            "Debug - Auth check before layout creation",
+            "GET",
+            "api/auth/check",
+            200,
+            auth_token=self.user_token
+        )
+        
+        if not auth_success:
+            print("❌ User token authentication failed")
+            return False, {}
+            
         success, response = self.run_test(
             "Layouts Create - Save user layout",
             "POST",
