@@ -445,10 +445,22 @@ app.include_router(subscription_router, prefix="/api")
 app.include_router(layouts_router, prefix="/api")
 app.include_router(admin_router, prefix="/api")
 
+# CORS configuration - for credentials, we need explicit origins
+cors_origins_env = os.environ.get('CORS_ORIGINS', '*')
+if cors_origins_env == '*':
+    # When using wildcard, we need to explicitly list allowed origins for credentials
+    cors_origins = [
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+        "https://medsuite-peds.preview.emergentagent.com"
+    ]
+else:
+    cors_origins = cors_origins_env.split(',')
+
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
-    allow_origins=os.environ.get('CORS_ORIGINS', '*').split(','),
+    allow_origins=cors_origins,
     allow_methods=["*"],
     allow_headers=["*"],
 )
