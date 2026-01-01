@@ -2,17 +2,19 @@
  * Children Dashboard - Pediatric Ward Calculator
  * 
  * File Structure:
- * - Lines 1-50: Imports
- * - Lines 50-240: Main ChildrenDashboard Component (Dashboard & Navigation)
- * - Lines 294-550: BPPage (Blood Pressure Calculator)
- * - Lines 550-750: InfusionsPage (IV Drug Calculations)
- * - Lines 750-900: IntubationPage (ETT + RSI Checklist)
- * - Lines 900-1200: ScoringPage (GCS, PRAM, Westley, OI)
- * - Lines 1200-1520: CPRPage (PALS Algorithms & Drug Dosing)
- * - Lines 1520-1920: ApproachesPage (DKA, Status Epilepticus, Hyperammonemia)
- * - Lines 1920-2220: DrugsPage (Antibiotics & Analgesics)
+ * - Lines 1-60: Imports
+ * - Lines 60-240: Main ChildrenDashboard Component (Dashboard & Navigation)
+ * - Lines 240-400: SortableWidget Component
+ * - Lines 400-900: BPPage (Blood Pressure Calculator)
+ * - Lines 900-1070: InfusionsPage (IV Drug Calculations)
+ * - Lines 1070-1210: IntubationPage (ETT + RSI Checklist)
+ * - Lines 1210-1680: ScoringPage (GCS, PRAM, Westley, OI, IWL)
+ * - Lines 1680-2140: CPRPage (PALS Algorithms & Drug Dosing)
+ * - Lines 2140-2943: ApproachesPage (DKA, Status Epilepticus, Hyperammonemia)
  * 
- * Future Refactoring: Each page component can be extracted to /pages/children/
+ * Extracted to /pages/children/:
+ * - DrugsPage.jsx (~1880 lines) - Pediatric Drug Formulary
+ * - FluidReplacementPage.jsx (~330 lines) - Fluid Calculations
  */
 
 import { useState, useEffect } from "react";
