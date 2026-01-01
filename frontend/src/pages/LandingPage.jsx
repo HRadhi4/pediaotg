@@ -14,20 +14,18 @@ import {
   BloodProductsIcon, 
   GIRIcon, 
   JaundiceNavIcon,
-  BPIcon,
+  BloodPressureIcon,
   InfusionIcon,
   IntubationIcon,
   ScoringIcon,
-  CPRIcon,
+  HeartIcon,
   ApproachesIcon,
   FluidIcon,
   ResuscitationIcon,
-  ETTIcon,
-  RSIIcon,
-  VitalSignsIcon,
+  CatheterIcon,
+  ActivityIcon,
   GrowthChartIcon,
-  DrugsIcon,
-  FluidReplacementIcon
+  DrugsIcon
 } from "@/components/HealthIcons";
 
 const LandingPage = ({ theme, toggleTheme }) => {
