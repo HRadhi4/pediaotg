@@ -4682,72 +4682,7 @@ const FluidReplacementPage = ({ onBack }) => {
 
   return (
     <div className="space-y-4 pt-4 pb-24">
-    },
-    // ===== ADDITIONAL ANTIBIOTICS =====
-    {
-      id: "penicillinG",
-      name: "Penicillin G",
-      category: "Antibiotic",
-      route: "IV",
-      doses: {
-        standard: { label: "Standard", value: "50000", unit: "units/kg/dose q4-6h" },
-        meningitis: { label: "Meningitis", value: "75000", unit: "units/kg/dose q4h" }
-      },
-      max: "4 MU/dose",
-      indication: "Strep infections, syphilis, rheumatic fever",
-      notes: "300,000-400,000 units/kg/day for meningitis."
-    },
-    {
-      id: "cefuroxime",
-      name: "Cefuroxime",
-      category: "Antibiotic",
-      route: "IV/PO",
-      doses: {
-        iv: { label: "IV", value: "25-50", unit: "mg/kg/dose q8h" },
-        po: { label: "PO", value: "10-15", unit: "mg/kg/dose q12h" }
-      },
-      max: "1.5 g IV, 500 mg PO",
-      indication: "CAP, UTI, skin infections, surgical prophylaxis",
-      notes: "2nd gen cephalosporin. Take PO with food."
-    },
-    {
-      id: "cephalexin",
-      name: "Cephalexin",
-      category: "Antibiotic",
-      route: "PO",
-      doses: {
-        standard: { label: "Standard", value: "25-50", unit: "mg/kg/day divided q6-8h" },
-        severe: { label: "Severe", value: "50-100", unit: "mg/kg/day divided q6h" }
-      },
-      max: "4 g/day",
-      indication: "Skin infections, UTI, strep pharyngitis",
-      notes: "1st gen cephalosporin. Good for outpatient SSTI."
-    },
-    {
-      id: "erythromycin",
-      name: "Erythromycin",
-      category: "Antibiotic",
-      route: "PO/IV",
-      doses: {
-        po: { label: "PO", value: "30-50", unit: "mg/kg/day divided q6-8h" },
-        iv: { label: "IV", value: "15-20", unit: "mg/kg/day divided q6h" }
-      },
-      max: "4 g/day PO, 4 g/day IV",
-      indication: "Atypical pneumonia, pertussis, GI motility",
-      notes: "Multiple drug interactions. GI upset common."
-    },
-    {
-      id: "clarithromycin",
-      name: "Clarithromycin",
-      category: "Antibiotic",
-      route: "PO",
-      doses: {
-        standard: { label: "Standard", value: "7.5", unit: "mg/kg/dose q12h" }
-      },
-      max: "500 mg/dose",
-      indication: "CAP, H. pylori, MAC prophylaxis",
-      notes: "Macrolide. Less GI upset than erythromycin."
-    },
+      {/* Input Card */}
     {
       id: "ciprofloxacin",
       name: "Ciprofloxacin",
