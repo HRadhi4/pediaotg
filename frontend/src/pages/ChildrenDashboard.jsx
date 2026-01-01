@@ -2899,412 +2899,710 @@ const ApproachesPage = ({ onBack }) => {
 // Drugs Page - Placeholder
 // Drugs Page - Antibiotics & Analgesics
 const DrugsPage = ({ onBack }) => {
-  const [activeTab, setActiveTab] = useState("antibiotics");
+  const [searchTerm, setSearchTerm] = useState("");
   const [weight, setWeight] = useState("");
+  const [expandedDrug, setExpandedDrug] = useState(null);
+  
   const w = parseFloat(weight) || 0;
 
-  // Antibiotic data
-  const antibiotics = [
-    {
-      name: "Amoxicillin",
-      category: "Penicillin",
-      route: "PO",
-      dose: "25-50",
-      unit: "mg/kg/day",
-      frequency: "q8h",
-      max: "3 g/day",
-      notes: "High dose (80-90 mg/kg/day) for otitis media, pneumonia",
-      color: "blue"
-    },
-    {
-      name: "Amoxicillin-Clavulanate (Augmentin) PO",
-      category: "Penicillin/BLI",
-      route: "PO",
-      dose: "25-45",
-      unit: "mg/kg/day",
-      frequency: "q12h",
-      max: "875 mg amox/dose",
-      notes: "Based on amoxicillin component. High dose: 90 mg/kg/day for resistant strep pneumo",
-      color: "blue"
-    },
-    {
-      name: "Amoxicillin-Clavulanate (Augmentin) IV",
-      category: "Penicillin/BLI",
-      route: "IV",
-      dose: "25-50",
-      unit: "mg/kg/dose",
-      frequency: "q6-8h",
-      max: "2 g amox/dose",
-      notes: "Based on amoxicillin component. Severe infections use higher dose range",
-      color: "blue"
-    },
-    {
-      name: "Ampicillin",
-      category: "Penicillin",
-      route: "IV",
-      dose: "50-100",
-      unit: "mg/kg/dose",
-      frequency: "q6h",
-      max: "12 g/day",
-      notes: "Meningitis: 100 mg/kg/dose q6h",
-      color: "blue"
-    },
-    {
-      name: "Piperacillin-Tazobactam (Tazocin)",
-      category: "Penicillin/BLI",
-      route: "IV",
-      dose: "80-100",
-      unit: "mg/kg/dose",
-      frequency: "q6-8h",
-      max: "4.5 g/dose",
-      notes: "Based on piperacillin. Pseudomonas: 100 mg/kg q6h. Extended infusion 3-4hr for severe infections",
-      color: "blue"
-    },
-    {
-      name: "Ceftriaxone",
-      category: "3rd Gen Ceph",
-      route: "IV/IM",
-      dose: "50-100",
-      unit: "mg/kg/day",
-      frequency: "q12-24h",
-      max: "4 g/day",
-      notes: "Meningitis: 100 mg/kg/day. Avoid in neonates with jaundice",
-      color: "green"
-    },
-    {
-      name: "Cefotaxime",
-      category: "3rd Gen Ceph",
-      route: "IV",
-      dose: "50",
-      unit: "mg/kg/dose",
-      frequency: "q6-8h",
-      max: "12 g/day",
-      notes: "Preferred in neonates over ceftriaxone",
-      color: "green"
-    },
-    {
-      name: "Ceftazidime",
-      category: "3rd Gen Ceph",
-      route: "IV",
-      dose: "50",
-      unit: "mg/kg/dose",
-      frequency: "q8h",
-      max: "6 g/day",
-      notes: "Anti-pseudomonal. Meningitis: 50 mg/kg q8h. Cystic fibrosis: may need higher doses",
-      color: "green"
-    },
-    {
-      name: "Cefepime",
-      category: "4th Gen Ceph",
-      route: "IV",
-      dose: "50",
-      unit: "mg/kg/dose",
-      frequency: "q8-12h",
-      max: "2 g/dose",
-      notes: "Broad spectrum incl. Pseudomonas. Meningitis/severe: 50 mg/kg q8h. Febrile neutropenia: q8h",
-      color: "teal"
-    },
-    {
-      name: "Gentamicin",
-      category: "Aminoglycoside",
-      route: "IV",
-      dose: "5-7.5",
-      unit: "mg/kg/dose",
-      frequency: "q24h",
-      max: "560 mg/dose",
-      notes: "Once daily dosing. Monitor levels (trough <1, peak 20-30)",
-      color: "amber"
-    },
-    {
-      name: "Vancomycin",
-      category: "Glycopeptide",
-      route: "IV",
-      dose: "15",
-      unit: "mg/kg/dose",
-      frequency: "q6-8h",
-      max: "4 g/day",
-      notes: "Trough 10-15 (uncomplicated), 15-20 (meningitis/severe). Infuse over 1hr",
-      color: "red"
-    },
-    {
-      name: "Azithromycin",
-      category: "Macrolide",
-      route: "PO",
-      dose: "10",
-      unit: "mg/kg/day",
-      frequency: "once daily",
-      max: "500 mg/day",
-      notes: "Day 1: 10 mg/kg, Days 2-5: 5 mg/kg (Z-pack)",
-      color: "purple"
-    },
-    {
-      name: "Clindamycin",
-      category: "Lincosamide",
-      route: "IV/PO",
-      dose: "10-15",
-      unit: "mg/kg/dose",
-      frequency: "q6-8h",
-      max: "900 mg/dose",
-      notes: "Good for skin/soft tissue, bone. Anaerobic coverage",
-      color: "teal"
-    },
-    {
-      name: "Metronidazole",
-      category: "Nitroimidazole",
-      route: "IV/PO",
-      dose: "7.5",
-      unit: "mg/kg/dose",
-      frequency: "q8h",
-      max: "500 mg/dose",
-      notes: "Anaerobic infections, C. diff, H. pylori",
-      color: "orange"
-    },
-    {
-      name: "Penicillin G",
-      category: "Penicillin",
-      route: "IV",
-      dose: "50,000",
-      unit: "units/kg/dose",
-      frequency: "q4-6h",
-      max: "4 MU/dose",
-      notes: "Strep pharyngitis, syphilis, rheumatic fever prophylaxis",
-      color: "blue"
-    }
-  ];
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
-  // Analgesic data
-  const analgesics = [
+  // Comprehensive pediatric drug formulary (Harriet Lane 23rd Ed)
+  const drugs = [
+    // ===== ANTIBIOTICS =====
     {
-      name: "Paracetamol (Acetaminophen)",
-      category: "Antipyretic/Analgesic",
-      route: "PO/PR/IV",
-      dose: "15",
-      unit: "mg/kg/dose",
-      frequency: "q4-6h",
-      max: "75 mg/kg/day (max 4g/day)",
-      notes: "IV: 7.5 mg/kg if <10kg. Loading: 20-25 mg/kg PR",
-      color: "blue"
-    },
-    {
-      name: "Ibuprofen",
-      category: "NSAID",
+      id: "amoxicillin",
+      name: "Amoxicillin",
+      category: "Antibiotic",
       route: "PO",
-      dose: "5-10",
-      unit: "mg/kg/dose",
-      frequency: "q6-8h",
-      max: "40 mg/kg/day (max 2.4g/day)",
-      notes: "Avoid if dehydrated, renal impairment, or GI bleed risk",
-      color: "green"
+      doses: {
+        standard: { label: "Standard", value: "25-50", unit: "mg/kg/day divided q8h" },
+        highDose: { label: "High Dose (AOM/CAP)", value: "80-90", unit: "mg/kg/day divided q12h" }
+      },
+      max: "3 g/day",
+      indication: "Otitis media, strep pharyngitis, CAP, UTI",
+      notes: "High dose for resistant S. pneumoniae. Take with or without food."
     },
     {
+      id: "augmentin",
+      name: "Amoxicillin-Clavulanate",
+      category: "Antibiotic",
+      route: "PO/IV",
+      doses: {
+        standard: { label: "Standard PO", value: "25-45", unit: "mg/kg/day divided q12h" },
+        highDose: { label: "High Dose PO", value: "90", unit: "mg/kg/day divided q12h" },
+        iv: { label: "IV", value: "25-50", unit: "mg/kg/dose q6-8h" }
+      },
+      max: "875 mg amox/dose PO, 2g IV",
+      indication: "Sinusitis, bite wounds, resistant infections",
+      notes: "Based on amoxicillin component. ES formulation for high dose."
+    },
+    {
+      id: "ampicillin",
+      name: "Ampicillin",
+      category: "Antibiotic",
+      route: "IV/IM",
+      doses: {
+        standard: { label: "Standard", value: "50-100", unit: "mg/kg/dose q6h" },
+        meningitis: { label: "Meningitis", value: "100", unit: "mg/kg/dose q6h" }
+      },
+      max: "12 g/day",
+      indication: "Listeria, enterococcus, GBS, meningitis",
+      notes: "Meningitis: 300-400 mg/kg/day divided q6h."
+    },
+    {
+      id: "piptazo",
+      name: "Piperacillin-Tazobactam",
+      category: "Antibiotic",
+      route: "IV",
+      doses: {
+        standard: { label: "Standard", value: "80-100", unit: "mg/kg/dose q6-8h" },
+        pseudomonas: { label: "Pseudomonas", value: "100", unit: "mg/kg/dose q6h" }
+      },
+      max: "4.5 g/dose",
+      indication: "Nosocomial infections, Pseudomonas, intra-abdominal",
+      notes: "Extended infusion (3-4h) for severe infections. Based on piperacillin."
+    },
+    {
+      id: "ceftriaxone",
+      name: "Ceftriaxone",
+      category: "Antibiotic",
+      route: "IV/IM",
+      doses: {
+        standard: { label: "Standard", value: "50-75", unit: "mg/kg/day q12-24h" },
+        meningitis: { label: "Meningitis", value: "100", unit: "mg/kg/day divided q12h" }
+      },
+      max: "4 g/day",
+      indication: "CAP, meningitis, gonorrhea, Lyme disease",
+      notes: "Avoid in neonates with hyperbilirubinemia. Do not mix with calcium."
+    },
+    {
+      id: "cefotaxime",
+      name: "Cefotaxime",
+      category: "Antibiotic",
+      route: "IV/IM",
+      doses: {
+        standard: { label: "Standard", value: "50", unit: "mg/kg/dose q6-8h" },
+        meningitis: { label: "Meningitis", value: "50", unit: "mg/kg/dose q6h" }
+      },
+      max: "12 g/day",
+      indication: "Meningitis, sepsis (preferred in neonates)",
+      notes: "Preferred over ceftriaxone in neonates. Good CSF penetration."
+    },
+    {
+      id: "ceftazidime",
+      name: "Ceftazidime",
+      category: "Antibiotic",
+      route: "IV/IM",
+      doses: {
+        standard: { label: "Standard", value: "50", unit: "mg/kg/dose q8h" },
+        cf: { label: "Cystic Fibrosis", value: "50", unit: "mg/kg/dose q6h" }
+      },
+      max: "6 g/day",
+      indication: "Pseudomonas, gram-negative meningitis",
+      notes: "Anti-pseudomonal. Higher doses for CF patients."
+    },
+    {
+      id: "cefepime",
+      name: "Cefepime",
+      category: "Antibiotic",
+      route: "IV",
+      doses: {
+        standard: { label: "Standard", value: "50", unit: "mg/kg/dose q8-12h" },
+        neutropenia: { label: "Febrile Neutropenia", value: "50", unit: "mg/kg/dose q8h" }
+      },
+      max: "2 g/dose",
+      indication: "Febrile neutropenia, Pseudomonas, nosocomial",
+      notes: "4th gen cephalosporin. Good gram-positive and gram-negative coverage."
+    },
+    {
+      id: "meropenem",
+      name: "Meropenem",
+      category: "Antibiotic",
+      route: "IV",
+      doses: {
+        standard: { label: "Standard", value: "20", unit: "mg/kg/dose q8h" },
+        meningitis: { label: "Meningitis", value: "40", unit: "mg/kg/dose q8h" }
+      },
+      max: "2 g/dose (6 g/day)",
+      indication: "Serious gram-negative, intra-abdominal, meningitis",
+      notes: "Carbapenem. Extended infusion (3h) for severe infections."
+    },
+    {
+      id: "gentamicin",
+      name: "Gentamicin",
+      category: "Antibiotic",
+      route: "IV/IM",
+      doses: {
+        standard: { label: "Once Daily", value: "5-7.5", unit: "mg/kg/dose q24h" },
+        traditional: { label: "Traditional", value: "2.5", unit: "mg/kg/dose q8h" }
+      },
+      max: "560 mg/dose",
+      indication: "Gram-negative sepsis, synergy for endocarditis",
+      notes: "Monitor levels: trough <1, peak 20-30. Adjust for renal function."
+    },
+    {
+      id: "vancomycin",
+      name: "Vancomycin",
+      category: "Antibiotic",
+      route: "IV",
+      doses: {
+        standard: { label: "Standard", value: "15", unit: "mg/kg/dose q6-8h" },
+        meningitis: { label: "Meningitis/Severe", value: "15-20", unit: "mg/kg/dose q6h" }
+      },
+      max: "4 g/day",
+      indication: "MRSA, C. diff (PO), serious gram-positive",
+      notes: "Trough: 10-15 (standard), 15-20 (CNS/severe). Infuse over 1hr."
+    },
+    {
+      id: "azithromycin",
+      name: "Azithromycin",
+      category: "Antibiotic",
+      route: "PO/IV",
+      doses: {
+        standard: { label: "Standard (Z-pack)", value: "10", unit: "mg/kg day 1, then 5 mg/kg days 2-5" },
+        cap: { label: "CAP", value: "10", unit: "mg/kg/day x5 days" }
+      },
+      max: "500 mg/day",
+      indication: "Atypical pneumonia, pertussis, MAC prophylaxis",
+      notes: "Long half-life. QT prolongation risk."
+    },
+    {
+      id: "clindamycin",
+      name: "Clindamycin",
+      category: "Antibiotic",
+      route: "IV/PO",
+      doses: {
+        standard: { label: "Standard", value: "10-13", unit: "mg/kg/dose q6-8h" },
+        severe: { label: "Severe/Bone", value: "10-15", unit: "mg/kg/dose q6h" }
+      },
+      max: "900 mg/dose",
+      indication: "Skin/soft tissue, osteomyelitis, anaerobes, MRSA",
+      notes: "Good bone penetration. Risk of C. diff colitis."
+    },
+    {
+      id: "metronidazole",
+      name: "Metronidazole",
+      category: "Antibiotic",
+      route: "IV/PO",
+      doses: {
+        standard: { label: "Standard", value: "7.5", unit: "mg/kg/dose q8h" },
+        cdiff: { label: "C. diff", value: "7.5", unit: "mg/kg/dose q6h PO" }
+      },
+      max: "500 mg/dose",
+      indication: "Anaerobes, C. diff, H. pylori, giardia",
+      notes: "Avoid alcohol. Metallic taste common."
+    },
+    {
+      id: "tmp-smx",
+      name: "TMP-SMX (Bactrim)",
+      category: "Antibiotic",
+      route: "IV/PO",
+      doses: {
+        uti: { label: "UTI", value: "4-6", unit: "mg TMP/kg/day divided q12h" },
+        pcp: { label: "PCP Treatment", value: "15-20", unit: "mg TMP/kg/day divided q6-8h" }
+      },
+      max: "320 mg TMP/dose",
+      indication: "UTI, PCP, MRSA skin infections, Nocardia",
+      notes: "Dose based on TMP component. Adequate hydration required."
+    },
+    // ===== ANALGESICS & SEDATIVES =====
+    {
+      id: "paracetamol",
+      name: "Paracetamol (Acetaminophen)",
+      category: "Analgesic",
+      route: "PO/PR/IV",
+      doses: {
+        po: { label: "PO/PR", value: "15", unit: "mg/kg/dose q4-6h" },
+        iv: { label: "IV", value: "15", unit: "mg/kg/dose q6h (7.5 if <10kg)" }
+      },
+      max: "75 mg/kg/day (max 4g/day)",
+      indication: "Pain, fever",
+      notes: "PR loading: 20-25 mg/kg. IV: 7.5 mg/kg if <10kg."
+    },
+    {
+      id: "ibuprofen",
+      name: "Ibuprofen",
+      category: "Analgesic",
+      route: "PO",
+      doses: {
+        standard: { label: "Standard", value: "5-10", unit: "mg/kg/dose q6-8h" }
+      },
+      max: "40 mg/kg/day (max 2.4g/day)",
+      indication: "Pain, fever, inflammation",
+      notes: "Avoid if dehydrated, renal impairment, GI bleed risk."
+    },
+    {
+      id: "morphine",
       name: "Morphine",
       category: "Opioid",
-      route: "IV",
-      dose: "0.05-0.1",
-      unit: "mg/kg/dose",
-      frequency: "q2-4h PRN",
-      max: "0.1-0.2 mg/kg/dose",
-      notes: "Start low, titrate. Monitor respiratory status. PO: 0.2-0.5 mg/kg/dose",
-      color: "red"
+      route: "IV/PO",
+      doses: {
+        iv: { label: "IV", value: "0.05-0.1", unit: "mg/kg/dose q2-4h" },
+        po: { label: "PO", value: "0.2-0.5", unit: "mg/kg/dose q4h" }
+      },
+      max: "0.1-0.2 mg/kg/dose IV",
+      indication: "Moderate-severe pain",
+      notes: "Start low, titrate. Monitor respiratory status. PO:IV = 3:1."
     },
     {
+      id: "fentanyl",
       name: "Fentanyl",
       category: "Opioid",
-      route: "IV",
-      dose: "0.5-2",
-      unit: "mcg/kg/dose",
-      frequency: "q1-2h PRN",
+      route: "IV/IN",
+      doses: {
+        iv: { label: "IV Bolus", value: "0.5-2", unit: "mcg/kg/dose q1-2h" },
+        infusion: { label: "Infusion", value: "1-3", unit: "mcg/kg/hr" }
+      },
       max: "4 mcg/kg/dose",
-      notes: "Rapid onset (1-2 min), short duration. Infusion: 1-3 mcg/kg/hr",
-      color: "red"
+      indication: "Procedural sedation, severe pain, intubation",
+      notes: "Rapid onset (1-2 min), short duration. IN: 1.5-2 mcg/kg."
     },
     {
+      id: "ketamine",
       name: "Ketamine",
-      category: "Dissociative",
+      category: "Sedative",
       route: "IV/IM",
-      dose: "1-2",
-      unit: "mg/kg IV",
-      frequency: "single dose",
-      max: "4 mg/kg IM",
-      notes: "Procedural sedation. IM: 4-5 mg/kg. Causes salivation - consider glycopyrrolate",
-      color: "purple"
+      doses: {
+        iv: { label: "IV", value: "1-2", unit: "mg/kg" },
+        im: { label: "IM", value: "4-5", unit: "mg/kg" }
+      },
+      max: "4 mg/kg IV, 10 mg/kg IM",
+      indication: "Procedural sedation, analgesia",
+      notes: "Dissociative. Causes salivation - consider glycopyrrolate."
     },
     {
+      id: "midazolam",
       name: "Midazolam",
-      category: "Benzodiazepine",
+      category: "Sedative",
       route: "IV/IN/PO",
-      dose: "0.05-0.1",
-      unit: "mg/kg IV",
-      frequency: "single dose",
-      max: "0.5 mg/kg IN",
-      notes: "IN: 0.2-0.5 mg/kg. PO: 0.25-0.5 mg/kg. Anxiolysis/procedural",
-      color: "amber"
+      doses: {
+        iv: { label: "IV", value: "0.05-0.1", unit: "mg/kg" },
+        intranasal: { label: "Intranasal", value: "0.2-0.5", unit: "mg/kg" },
+        po: { label: "PO", value: "0.25-0.5", unit: "mg/kg" }
+      },
+      max: "0.5 mg/kg IN, 10 mg IV",
+      indication: "Anxiolysis, procedural sedation, seizures",
+      notes: "Short-acting benzo. Reversal: flumazenil."
+    },
+    // ===== ANTICONVULSANTS =====
+    {
+      id: "levetiracetam",
+      name: "Levetiracetam (Keppra)",
+      category: "Anticonvulsant",
+      route: "IV/PO",
+      doses: {
+        loading: { label: "Loading", value: "20-60", unit: "mg/kg" },
+        maintenance: { label: "Maintenance", value: "20-30", unit: "mg/kg/day divided q12h" }
+      },
+      max: "3000 mg/day",
+      indication: "Seizures, status epilepticus",
+      notes: "No drug interactions. Can cause behavioral changes."
     },
     {
-      name: "Ketorolac",
-      category: "NSAID",
+      id: "phenytoin",
+      name: "Phenytoin/Fosphenytoin",
+      category: "Anticonvulsant",
       route: "IV",
-      dose: "0.5",
-      unit: "mg/kg/dose",
-      frequency: "q6h",
-      max: "30 mg/dose (15mg if <50kg)",
-      notes: "Max 5 days. Avoid in renal impairment, bleeding risk",
-      color: "green"
+      doses: {
+        loading: { label: "Loading", value: "20", unit: "mg PE/kg" },
+        maintenance: { label: "Maintenance", value: "5-7", unit: "mg/kg/day divided q8-12h" }
+      },
+      max: "1500 mg load",
+      indication: "Status epilepticus, seizure prophylaxis",
+      notes: "Fosphenytoin preferred (less irritation). Monitor levels, cardiac."
     },
     {
+      id: "phenobarbital",
+      name: "Phenobarbital",
+      category: "Anticonvulsant",
+      route: "IV/PO",
+      doses: {
+        loading: { label: "Loading", value: "20", unit: "mg/kg" },
+        maintenance: { label: "Maintenance", value: "3-5", unit: "mg/kg/day" }
+      },
+      max: "40 mg/kg total load",
+      indication: "Neonatal seizures, status epilepticus",
+      notes: "Causes sedation. Additional 10 mg/kg loads PRN to max 40 mg/kg."
+    },
+    // ===== STEROIDS =====
+    {
+      id: "dexamethasone",
+      name: "Dexamethasone",
+      category: "Steroid",
+      route: "IV/PO",
+      doses: {
+        croup: { label: "Croup", value: "0.6", unit: "mg/kg single dose" },
+        meningitis: { label: "Meningitis", value: "0.15", unit: "mg/kg q6h x2 days" },
+        airway: { label: "Airway Edema", value: "0.5-1", unit: "mg/kg q6h" }
+      },
+      max: "10 mg/dose",
+      indication: "Croup, meningitis, airway edema, asthma",
+      notes: "Give before/with first abx dose for meningitis."
+    },
+    {
+      id: "prednisolone",
+      name: "Prednisolone/Prednisone",
+      category: "Steroid",
+      route: "PO",
+      doses: {
+        asthma: { label: "Asthma", value: "1-2", unit: "mg/kg/day divided q12-24h" },
+        immunosupp: { label: "Immunosuppression", value: "2", unit: "mg/kg/day" }
+      },
+      max: "60 mg/day",
+      indication: "Asthma exacerbation, nephrotic syndrome",
+      notes: "Give with food. Taper if >5 days."
+    },
+    {
+      id: "hydrocortisone",
+      name: "Hydrocortisone",
+      category: "Steroid",
+      route: "IV",
+      doses: {
+        stress: { label: "Stress Dose", value: "50-100", unit: "mg/m² or 1-2 mg/kg" },
+        shock: { label: "Shock", value: "1-2", unit: "mg/kg q6h" }
+      },
+      max: "100 mg/dose",
+      indication: "Adrenal insufficiency, shock",
+      notes: "Stress dosing for illness/surgery in adrenal insufficiency."
+    },
+    // ===== CARDIOVASCULAR =====
+    {
+      id: "adrenaline",
+      name: "Epinephrine (Adrenaline)",
+      category: "Vasoactive",
+      route: "IV/IM/ETT",
+      doses: {
+        arrest: { label: "Cardiac Arrest", value: "0.01", unit: "mg/kg (0.1 ml/kg of 1:10,000) q3-5min" },
+        anaphylaxis: { label: "Anaphylaxis IM", value: "0.01", unit: "mg/kg (0.01 ml/kg of 1:1,000)" },
+        infusion: { label: "Infusion", value: "0.01-1", unit: "mcg/kg/min" }
+      },
+      max: "1 mg/dose arrest, 0.5 mg IM",
+      indication: "Cardiac arrest, anaphylaxis, shock",
+      notes: "ETT: 0.1 mg/kg (10x IV dose). IM for anaphylaxis."
+    },
+    {
+      id: "adenosine",
+      name: "Adenosine",
+      category: "Antiarrhythmic",
+      route: "IV rapid push",
+      doses: {
+        first: { label: "1st Dose", value: "0.1", unit: "mg/kg rapid push" },
+        second: { label: "2nd Dose", value: "0.2", unit: "mg/kg if needed" }
+      },
+      max: "6 mg first, 12 mg subsequent",
+      indication: "SVT",
+      notes: "Give rapid IV push followed by saline flush. May cause brief asystole."
+    },
+    {
+      id: "amiodarone",
+      name: "Amiodarone",
+      category: "Antiarrhythmic",
+      route: "IV",
+      doses: {
+        arrest: { label: "VF/pVT Arrest", value: "5", unit: "mg/kg bolus" },
+        other: { label: "Other Arrhythmias", value: "5", unit: "mg/kg over 20-60 min" }
+      },
+      max: "300 mg/dose",
+      indication: "VF, pVT, refractory SVT",
+      notes: "May repeat x2 in arrest. Loading then infusion for non-arrest."
+    },
+    {
+      id: "atropine",
+      name: "Atropine",
+      category: "Anticholinergic",
+      route: "IV/IM/ETT",
+      doses: {
+        bradycardia: { label: "Bradycardia", value: "0.02", unit: "mg/kg" },
+        premedication: { label: "Pre-intubation", value: "0.02", unit: "mg/kg" }
+      },
+      max: "0.5 mg child, 1 mg adolescent",
+      indication: "Symptomatic bradycardia, RSI premedication",
+      notes: "Min dose 0.1 mg (paradoxical bradycardia). ETT: 2-3x IV dose."
+    },
+    // ===== RESPIRATORY =====
+    {
+      id: "salbutamol",
+      name: "Salbutamol (Albuterol)",
+      category: "Bronchodilator",
+      route: "Nebulizer/MDI",
+      doses: {
+        neb: { label: "Nebulizer", value: "0.15", unit: "mg/kg (min 2.5mg, max 5mg) q20min x3" },
+        mdi: { label: "MDI", value: "4-8", unit: "puffs q20min x3" }
+      },
+      max: "5 mg/neb, continuous if severe",
+      indication: "Asthma, bronchospasm",
+      notes: "May give continuous neb in severe asthma. Monitor HR, K+."
+    },
+    {
+      id: "ipratropium",
+      name: "Ipratropium",
+      category: "Bronchodilator",
+      route: "Nebulizer/MDI",
+      doses: {
+        neb: { label: "Nebulizer", value: "250-500", unit: "mcg q20min x3" },
+        mdi: { label: "MDI", value: "4-8", unit: "puffs" }
+      },
+      max: "500 mcg/dose",
+      indication: "Moderate-severe asthma (with salbutamol)",
+      notes: "Use with salbutamol for first 3 doses in severe asthma."
+    },
+    // ===== GI =====
+    {
+      id: "ondansetron",
       name: "Ondansetron",
       category: "Antiemetic",
       route: "IV/PO",
-      dose: "0.1-0.15",
-      unit: "mg/kg/dose",
-      frequency: "q8h PRN",
-      max: "4 mg/dose (<40kg), 8 mg (>40kg)",
-      notes: "For nausea/vomiting with opioids or post-op",
-      color: "teal"
+      doses: {
+        standard: { label: "Standard", value: "0.1-0.15", unit: "mg/kg/dose q8h" }
+      },
+      max: "4 mg (<40kg), 8 mg (>40kg)",
+      indication: "Nausea, vomiting",
+      notes: "QT prolongation risk. Max 3 doses/day."
+    },
+    {
+      id: "omeprazole",
+      name: "Omeprazole",
+      category: "PPI",
+      route: "PO/IV",
+      doses: {
+        standard: { label: "Standard", value: "1", unit: "mg/kg/day divided q12-24h" }
+      },
+      max: "40 mg/day",
+      indication: "GERD, GI bleeding, stress ulcer prophylaxis",
+      notes: "Give 30 min before meals. IV for active bleeding."
+    },
+    // ===== OTHER ESSENTIAL =====
+    {
+      id: "furosemide",
+      name: "Furosemide (Lasix)",
+      category: "Diuretic",
+      route: "IV/PO",
+      doses: {
+        iv: { label: "IV", value: "0.5-1", unit: "mg/kg/dose q6-12h" },
+        po: { label: "PO", value: "1-2", unit: "mg/kg/dose q6-12h" }
+      },
+      max: "6 mg/kg/dose",
+      indication: "Edema, heart failure, fluid overload",
+      notes: "Monitor K+, Mg2+. PO bioavailability ~50% of IV."
+    },
+    {
+      id: "mannitol",
+      name: "Mannitol",
+      category: "Osmotic Diuretic",
+      route: "IV",
+      doses: {
+        cerebral: { label: "Cerebral Edema", value: "0.25-1", unit: "g/kg over 20-30 min" }
+      },
+      max: "1 g/kg/dose",
+      indication: "Cerebral edema, raised ICP",
+      notes: "Monitor serum osmolality (keep <320). Requires urinary catheter."
+    },
+    {
+      id: "calciumgluc",
+      name: "Calcium Gluconate",
+      category: "Electrolyte",
+      route: "IV",
+      doses: {
+        hypocalcemia: { label: "Hypocalcemia", value: "50-100", unit: "mg/kg (0.5-1 ml/kg of 10%)" },
+        arrest: { label: "Cardiac Arrest", value: "60-100", unit: "mg/kg" }
+      },
+      max: "2 g/dose",
+      indication: "Hypocalcemia, hyperkalemia, calcium channel blocker OD",
+      notes: "Give slowly over 10-30 min. Monitor for extravasation."
+    },
+    {
+      id: "magnesium",
+      name: "Magnesium Sulfate",
+      category: "Electrolyte",
+      route: "IV",
+      doses: {
+        hypo: { label: "Hypomagnesemia", value: "25-50", unit: "mg/kg over 2-4h" },
+        asthma: { label: "Severe Asthma", value: "25-75", unit: "mg/kg over 20 min" }
+      },
+      max: "2 g/dose",
+      indication: "Hypomagnesemia, severe asthma, torsades",
+      notes: "Monitor for hypotension, bradycardia. Slow infusion."
     }
   ];
 
-  const calculateDose = (drug, weight) => {
-    if (!weight) return null;
-    const doseNum = parseFloat(drug.dose.split("-")[0]);
-    const doseMax = parseFloat(drug.dose.split("-")[1]) || doseNum;
-    
-    if (drug.unit.includes("units")) {
-      return `${(doseNum * weight / 1000).toFixed(0)}K - ${(doseMax * weight / 1000).toFixed(0)}K units`;
-    } else if (drug.unit.includes("mcg")) {
-      return `${(doseNum * weight).toFixed(1)} - ${(doseMax * weight).toFixed(1)} mcg`;
-    }
-    return `${(doseNum * weight).toFixed(0)} - ${(doseMax * weight).toFixed(0)} mg`;
-  };
+  // Filter drugs based on search
+  const filteredDrugs = drugs.filter(drug => 
+    drug.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    drug.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    drug.indication.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
-  const colorClasses = {
-    blue: "bg-blue-50 dark:bg-blue-950/30 border-blue-200",
-    green: "bg-green-50 dark:bg-green-950/30 border-green-200",
-    amber: "bg-amber-50 dark:bg-amber-950/30 border-amber-200",
-    red: "bg-red-50 dark:bg-red-950/30 border-red-200",
-    purple: "bg-purple-50 dark:bg-purple-950/30 border-purple-200",
-    teal: "bg-teal-50 dark:bg-teal-950/30 border-teal-200",
-    orange: "bg-orange-50 dark:bg-orange-950/30 border-orange-200",
+  // Calculate dose helper
+  const calculateDose = (doseStr, weight) => {
+    if (!weight || !doseStr) return null;
+    const parts = doseStr.split("-");
+    const min = parseFloat(parts[0]);
+    const max = parseFloat(parts[1]) || min;
+    
+    if (doseStr.includes("mcg")) {
+      return `${(min * weight).toFixed(1)}${max !== min ? ` - ${(max * weight).toFixed(1)}` : ''} mcg`;
+    }
+    return `${(min * weight).toFixed(1)}${max !== min ? ` - ${(max * weight).toFixed(1)}` : ''} mg`;
   };
 
   return (
-    <div className="space-y-4 pt-4 pb-8">
-      {/* Weight Input */}
-      <Card className="nightingale-card border-indigo-200 dark:border-indigo-800">
-        <CardContent className="pt-4">
-          <div className="flex items-center gap-3">
-            <DrugsIcon className="h-5 w-5 text-indigo-500" />
-            <div className="flex-1">
-              <Label className="text-xs text-muted-foreground">Patient Weight (kg)</Label>
-              <Input
-                type="number"
-                placeholder="Enter weight for dose calculations"
-                value={weight}
-                onChange={(e) => setWeight(e.target.value)}
-                className="font-mono mt-1"
-              />
-            </div>
+    <div className="space-y-4 pt-4 pb-24">
+      {/* Search and Weight Input */}
+      <Card className="nightingale-card">
+        <CardContent className="pt-4 space-y-3">
+          {/* Search Bar */}
+          <div className="relative">
+            <Scale className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              type="text"
+              placeholder="Search drugs..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10"
+            />
+          </div>
+          
+          {/* Weight Input */}
+          <div>
+            <Label className="text-[10px] text-muted-foreground">Weight (kg)</Label>
+            <Input
+              type="number"
+              placeholder="Enter weight for dose calculations"
+              value={weight}
+              onChange={(e) => setWeight(e.target.value)}
+              className="font-mono text-sm h-9"
+            />
           </div>
         </CardContent>
       </Card>
 
-      {/* Tab Navigation */}
-      <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="antibiotics">Antibiotics</TabsTrigger>
-          <TabsTrigger value="analgesics">Analgesics</TabsTrigger>
-        </TabsList>
-
-        {/* Antibiotics Tab */}
-        <TabsContent value="antibiotics" className="space-y-2 mt-4">
-          {antibiotics.map((drug, idx) => (
-            <Card key={idx} className={`border ${colorClasses[drug.color]} overflow-hidden`}>
-              <CardContent className="pt-3 pb-3">
-                <div className="flex justify-between items-start gap-2">
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <p className="font-semibold text-sm break-words">{drug.name}</p>
-                      <span className="text-xs px-2 py-0.5 rounded-full bg-gray-200 dark:bg-gray-700 whitespace-nowrap">{drug.category}</span>
+      {/* Drug List */}
+      <div className="space-y-2">
+        {filteredDrugs.map((drug) => {
+          const isExpanded = expandedDrug === drug.id;
+          const doseKeys = drug.doses ? Object.keys(drug.doses) : [];
+          const firstDoseKey = doseKeys[0];
+          const firstDose = drug.doses?.[firstDoseKey];
+          
+          return (
+            <Card 
+              key={drug.id} 
+              className="nightingale-card cursor-pointer hover:border-blue-300 dark:hover:border-blue-700 transition-colors"
+              onClick={() => setExpandedDrug(isExpanded ? null : drug.id)}
+            >
+              <CardContent className="p-3">
+                {/* Drug Header */}
+                <div className="flex items-start justify-between">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2">
+                      <h3 className="font-semibold text-sm">{drug.name}</h3>
+                      <span className="text-[10px] px-1.5 py-0.5 rounded bg-gray-100 dark:bg-gray-800 text-muted-foreground">
+                        {drug.category}
+                      </span>
                     </div>
-                    <p className="text-xs text-muted-foreground mt-1 break-words">
-                      <span className="font-medium">{drug.route}:</span> {drug.dose} {drug.unit} {drug.frequency}
-                    </p>
-                    {w > 0 && (
-                      <p className="font-mono text-sm text-indigo-600 dark:text-indigo-400 mt-1 break-words">
-                        → {calculateDose(drug, w)} {drug.frequency}
-                      </p>
+                    {/* Show first dose type */}
+                    {firstDose && (
+                      <div className="flex flex-wrap gap-1 mt-1">
+                        <span className="text-[9px] px-1 py-0.5 rounded bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400">
+                          {firstDose.label}: {firstDose.value} {firstDose.unit}
+                        </span>
+                      </div>
                     )}
                   </div>
-                  <div className="text-right text-xs flex-shrink-0 max-w-[40%]">
-                    <p className="text-muted-foreground break-words">Max: {drug.max}</p>
-                  </div>
-                </div>
-                <p className="text-xs text-muted-foreground mt-2 border-t pt-2 break-words">{drug.notes}</p>
-              </CardContent>
-            </Card>
-          ))}
-
-          {/* Reference */}
-          <Card className="nightingale-card">
-            <CardContent className="pt-3 text-xs text-muted-foreground">
-              <p className="font-medium">References: Harriet Lane Handbook 23rd Ed, UCSF Pediatric Dosing</p>
-              <p>• Adjust doses for renal/hepatic impairment</p>
-              <p>• Monitor levels for aminoglycosides, vancomycin</p>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        {/* Analgesics Tab */}
-        <TabsContent value="analgesics" className="space-y-2 mt-4">
-          {analgesics.map((drug, idx) => (
-            <Card key={idx} className={`border ${colorClasses[drug.color]} overflow-hidden`}>
-              <CardContent className="pt-3 pb-3">
-                <div className="flex justify-between items-start gap-2">
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <p className="font-semibold text-sm break-words">{drug.name}</p>
-                      <span className="text-xs px-2 py-0.5 rounded-full bg-gray-200 dark:bg-gray-700 whitespace-nowrap">{drug.category}</span>
-                    </div>
-                    <p className="text-xs text-muted-foreground mt-1 break-words">
-                      <span className="font-medium">{drug.route}:</span> {drug.dose} {drug.unit} {drug.frequency}
-                    </p>
-                    {w > 0 && (
-                      <p className="font-mono text-sm text-indigo-600 dark:text-indigo-400 mt-1 break-words">
-                        → {calculateDose(drug, w)} {drug.frequency}
+                  {w > 0 && firstDose && (
+                    <div className="text-right ml-2">
+                      <p className="text-[11px] font-mono">
+                        <span className="font-bold text-blue-600">{calculateDose(firstDose.value, w)}</span>
                       </p>
-                    )}
-                  </div>
-                  <div className="text-right text-xs flex-shrink-0 max-w-[40%]">
-                    <p className="text-muted-foreground break-words">Max: {drug.max}</p>
-                  </div>
+                    </div>
+                  )}
                 </div>
-                <p className="text-xs text-muted-foreground mt-2 border-t pt-2 break-words">{drug.notes}</p>
+
+                {/* Expanded Content */}
+                {isExpanded && (
+                  <div className="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700 space-y-3">
+                    {/* All Calculated Doses */}
+                    {w > 0 && (
+                      <div>
+                        <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide mb-1">Calculated Doses ({w}kg)</p>
+                        <div className="grid grid-cols-2 gap-2">
+                          {doseKeys.map(key => (
+                            <div key={key} className="p-2 rounded bg-blue-50 dark:bg-blue-900/20">
+                              <p className="text-[10px] text-muted-foreground">{drug.doses[key].label}</p>
+                              <p className="font-mono font-bold text-blue-600">{calculateDose(drug.doses[key].value, w)}</p>
+                              <p className="text-[9px] text-muted-foreground">{drug.doses[key].unit}</p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Dose Table (when no weight) */}
+                    {!w && (
+                      <div>
+                        <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide mb-1">Dosing</p>
+                        <div className="space-y-1">
+                          {doseKeys.map(key => (
+                            <div key={key} className="text-xs">
+                              <span className="font-medium">{drug.doses[key].label}:</span> {drug.doses[key].value} {drug.doses[key].unit}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Route */}
+                    <div>
+                      <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">Route</p>
+                      <p className="text-xs">{drug.route}</p>
+                    </div>
+
+                    {/* Max Dose */}
+                    <div>
+                      <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">Max Dose</p>
+                      <p className="text-xs font-medium text-red-600">{drug.max}</p>
+                    </div>
+
+                    {/* Indication */}
+                    <div>
+                      <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">Indication</p>
+                      <p className="text-xs">{drug.indication}</p>
+                    </div>
+
+                    {/* Notes */}
+                    <div className="p-2 bg-gray-50 dark:bg-gray-800/50 rounded text-[10px] text-muted-foreground">
+                      <p className="font-medium text-foreground mb-0.5">Notes:</p>
+                      <p>{drug.notes}</p>
+                    </div>
+                  </div>
+                )}
               </CardContent>
             </Card>
-          ))}
+          );
+        })}
+      </div>
 
-          {/* Opioid Conversion Reference */}
-          <Card className="border-red-200 bg-red-50 dark:bg-red-950/30">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm">Opioid Equivalence</CardTitle>
-            </CardHeader>
-            <CardContent className="text-xs text-muted-foreground">
-              <p>• Morphine IV 0.1 mg/kg ≈ Fentanyl IV 1-2 mcg/kg</p>
-              <p>• Morphine PO:IV ratio = 3:1</p>
-              <p>• Always use lowest effective dose, shortest duration</p>
-            </CardContent>
-          </Card>
+      {/* Empty State */}
+      {filteredDrugs.length === 0 && (
+        <Card className="nightingale-card">
+          <CardContent className="py-8 text-center">
+            <p className="text-muted-foreground text-sm">No drugs found matching "{searchTerm}"</p>
+          </CardContent>
+        </Card>
+      )}
 
-          {/* Reference */}
-          <Card className="nightingale-card">
-            <CardContent className="pt-3 text-xs text-muted-foreground">
-              <p className="font-medium">References: Harriet Lane Handbook 23rd Ed, Stanford Peds Pain</p>
-              <p>• Start opioids at lowest dose, titrate to effect</p>
-              <p>• Monitor sedation, respiratory rate, SpO2</p>
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
+      {/* Reference */}
+      <Card className="nightingale-card">
+        <CardContent className="pt-4 text-xs text-muted-foreground">
+          <p className="font-medium text-foreground mb-1">Reference: Harriet Lane Handbook 23rd Ed (2023)</p>
+          <p>• Always verify doses and adjust for renal/hepatic function</p>
+          <p>• Monitor drug levels for aminoglycosides, vancomycin</p>
+          <p>• Check for drug interactions and allergies</p>
+        </CardContent>
+      </Card>
     </div>
   );
 };
