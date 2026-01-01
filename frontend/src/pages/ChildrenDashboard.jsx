@@ -4637,67 +4637,51 @@ const FluidReplacementPage = ({ onBack }) => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
-      name: "Omeprazole",
-      category: "PPI",
-      route: "PO/IV",
-      doses: {
-        standard: { label: "Standard", value: "1", unit: "mg/kg/day divided q12-24h" }
-      },
-      max: "40 mg/day",
-      indication: "GERD, GI bleeding, stress ulcer prophylaxis",
-      notes: "Give 30 min before meals. IV for active bleeding."
-    },
-    // ===== OTHER ESSENTIAL =====
-    {
-      id: "furosemide",
-      name: "Furosemide (Lasix)",
-      category: "Diuretic",
-      route: "IV/PO",
-      doses: {
-        iv: { label: "IV", value: "0.5-1", unit: "mg/kg/dose q6-12h" },
-        po: { label: "PO", value: "1-2", unit: "mg/kg/dose q6-12h" }
-      },
-      max: "6 mg/kg/dose",
-      indication: "Edema, heart failure, fluid overload",
-      notes: "Monitor K+, Mg2+. PO bioavailability ~50% of IV."
-    },
-    {
-      id: "mannitol",
-      name: "Mannitol",
-      category: "Osmotic Diuretic",
-      route: "IV",
-      doses: {
-        cerebral: { label: "Cerebral Edema", value: "0.25-1", unit: "g/kg over 20-30 min" }
-      },
-      max: "1 g/kg/dose",
-      indication: "Cerebral edema, raised ICP",
-      notes: "Monitor serum osmolality (keep <320). Requires urinary catheter."
-    },
-    {
-      id: "calciumgluc",
-      name: "Calcium Gluconate",
-      category: "Electrolyte",
-      route: "IV",
-      doses: {
-        hypocalcemia: { label: "Hypocalcemia", value: "50-100", unit: "mg/kg (0.5-1 ml/kg of 10%)" },
-        arrest: { label: "Cardiac Arrest", value: "60-100", unit: "mg/kg" }
-      },
-      max: "2 g/dose",
-      indication: "Hypocalcemia, hyperkalemia, calcium channel blocker OD",
-      notes: "Give slowly over 10-30 min. Monitor for extravasation."
-    },
-    {
-      id: "magnesium",
-      name: "Magnesium Sulfate",
-      category: "Electrolyte",
-      route: "IV",
-      doses: {
-        hypo: { label: "Hypomagnesemia", value: "25-50", unit: "mg/kg over 2-4h" },
-        asthma: { label: "Severe Asthma", value: "25-75", unit: "mg/kg over 20 min" }
-      },
-      max: "2 g/dose",
-      indication: "Hypomagnesemia, severe asthma, torsades",
-      notes: "Monitor for hypotension, bradycardia. Slow infusion."
+
+  const w = parseFloat(weight) || 0;
+  const includeDeficit = calculationType === "dehydration";
+
+  // Maintenance fluid calculation (Holliday-Segar formula)
+  const calculateMaintenance = (kg) => {
+    if (kg <= 0) return 0;
+    if (kg <= 10) return kg * 100;
+    if (kg <= 20) return 1000 + (kg - 10) * 50;
+    return 1500 + (kg - 20) * 20;
+  };
+
+  // Deficit percentages
+  const deficitTable = {
+    infant: { mild: 5, moderate: 10, severe: 15 },
+    children: { mild: 3, moderate: 6, severe: 9 }
+  };
+
+  // Calculate all values
+  const maintenance24h = calculateMaintenance(w);
+  const deficitPercent = includeDeficit ? deficitTable[ageGroup][dehydrationLevel] : 0;
+  const deficitMlPerKg = deficitPercent * 10; // Convert % to ml/kg
+  const totalDeficit = w * deficitMlPerKg;
+
+  // First 8 hours: 1/3 maintenance + 1/2 deficit
+  const maint8h = maintenance24h / 3;
+  const deficit8h = includeDeficit ? totalDeficit / 2 : 0;
+  const total8h = maint8h + deficit8h;
+  const rate8h = total8h / 8;
+
+  // Next 16 hours: 2/3 maintenance + 1/2 deficit
+  const maint16h = (maintenance24h * 2) / 3;
+  const deficit16h = includeDeficit ? totalDeficit / 2 : 0;
+  const total16h = maint16h + deficit16h;
+  const rate16h = total16h / 16;
+
+  // Total 24h (capped at 2500ml)
+  const total24h = Math.min(total8h + total16h, 2500);
+  const exceeds2500 = (total8h + total16h) > 2500;
+
+  // Maintenance only hourly rate
+  const maintenanceHourlyRate = maintenance24h / 24;
+
+  return (
+    <div className="space-y-4 pt-4 pb-24">
     },
     // ===== ADDITIONAL ANTIBIOTICS =====
     {
