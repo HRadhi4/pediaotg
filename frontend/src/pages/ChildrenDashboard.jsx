@@ -4714,7 +4714,7 @@ const DrugsPage = ({ onBack }) => {
           <p>• Always verify doses and adjust for renal/hepatic function</p>
           <p>• Monitor drug levels for aminoglycosides, vancomycin</p>
           <p>• Check for drug interactions and allergies</p>
-          <p>• GFR calculation uses Bedside Schwartz equation (ages 1-17)</p>
+          <p>• GFR calculation uses Schwartz equation with age-specific k values</p>
         </CardContent>
       </Card>
     </div>
