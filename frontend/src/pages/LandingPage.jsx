@@ -159,6 +159,48 @@ const LandingPage = ({ theme, toggleTheme }) => {
               </div>
             </div>
           </div>
+
+          {/* Quick Access Favorites */}
+          {favorites.length > 0 && (
+            <div className="mt-2">
+              <div className="flex items-center gap-2 mb-2">
+                <Star className="h-4 w-4 text-amber-500 fill-amber-500" />
+                <span className="text-xs text-muted-foreground font-medium">Quick Access</span>
+              </div>
+              <div className="grid grid-cols-4 gap-2">
+                {favorites.slice(0, 4).map((favKey) => {
+                  const widget = allWidgets[favKey];
+                  if (!widget) return null;
+                  return (
+                    <div
+                      key={favKey}
+                      onClick={() => handleFavoriteClick(favKey)}
+                      className="selection-card group cursor-pointer p-3 flex flex-col items-center gap-1.5 hover:scale-[1.02] transition-all"
+                    >
+                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
+                        widget.color === 'teal' ? 'bg-[#00d9c5]/10' :
+                        widget.color === 'blue' ? 'bg-blue-500/10' :
+                        widget.color === 'red' ? 'bg-red-500/10' :
+                        widget.color === 'purple' ? 'bg-purple-500/10' :
+                        widget.color === 'amber' ? 'bg-amber-500/10' :
+                        'bg-gray-500/10'
+                      }`}>
+                        {getWidgetIcon(widget.icon, widget.color)}
+                      </div>
+                      <span className="text-[10px] text-center font-medium text-muted-foreground leading-tight">
+                        {widget.title}
+                      </span>
+                      <span className={`text-[8px] px-1 py-0.5 rounded ${
+                        widget.dashboard === 'nicu' ? 'bg-[#00d9c5]/10 text-[#00d9c5]' : 'bg-purple-500/10 text-purple-500'
+                      }`}>
+                        {widget.dashboard === 'nicu' ? 'NICU' : 'Peds'}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
         </div>
       </main>
 
