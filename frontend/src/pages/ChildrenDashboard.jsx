@@ -3314,12 +3314,14 @@ const FluidReplacementPage = ({ onBack }) => {
   const [weight, setWeight] = useState("");
   const [ageGroup, setAgeGroup] = useState("children"); // "infant" or "children"
   const [dehydrationLevel, setDehydrationLevel] = useState("moderate");
+  const [calculationType, setCalculationType] = useState("dehydration"); // "maintenance" or "dehydration"
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
   const w = parseFloat(weight) || 0;
+  const includeDeficit = calculationType === "dehydration";
 
   // Maintenance fluid calculation (Holliday-Segar formula)
   const calculateMaintenance = (kg) => {
@@ -3337,25 +3339,28 @@ const FluidReplacementPage = ({ onBack }) => {
 
   // Calculate all values
   const maintenance24h = calculateMaintenance(w);
-  const deficitPercent = deficitTable[ageGroup][dehydrationLevel];
+  const deficitPercent = includeDeficit ? deficitTable[ageGroup][dehydrationLevel] : 0;
   const deficitMlPerKg = deficitPercent * 10; // Convert % to ml/kg
   const totalDeficit = w * deficitMlPerKg;
 
   // First 8 hours: 1/3 maintenance + 1/2 deficit
   const maint8h = maintenance24h / 3;
-  const deficit8h = totalDeficit / 2;
+  const deficit8h = includeDeficit ? totalDeficit / 2 : 0;
   const total8h = maint8h + deficit8h;
   const rate8h = total8h / 8;
 
   // Next 16 hours: 2/3 maintenance + 1/2 deficit
   const maint16h = (maintenance24h * 2) / 3;
-  const deficit16h = totalDeficit / 2;
+  const deficit16h = includeDeficit ? totalDeficit / 2 : 0;
   const total16h = maint16h + deficit16h;
   const rate16h = total16h / 16;
 
   // Total 24h (capped at 2500ml)
   const total24h = Math.min(total8h + total16h, 2500);
   const exceeds2500 = (total8h + total16h) > 2500;
+
+  // Maintenance only hourly rate
+  const maintenanceHourlyRate = maintenance24h / 24;
 
   return (
     <div className="space-y-4 pt-4 pb-24">
@@ -3374,95 +3379,150 @@ const FluidReplacementPage = ({ onBack }) => {
             />
           </div>
 
-          {/* Age Group Selection */}
+          {/* Calculation Type Selection */}
           <div className="space-y-2">
-            <Label className="text-sm font-medium">Age Group</Label>
+            <Label className="text-sm font-medium">Calculation Type</Label>
             <div className="grid grid-cols-2 gap-2">
               <Button
-                variant={ageGroup === "infant" ? "default" : "outline"}
-                onClick={() => setAgeGroup("infant")}
+                variant={calculationType === "maintenance" ? "default" : "outline"}
+                onClick={() => setCalculationType("maintenance")}
                 className="text-sm"
               >
-                Infant (&lt;1 year)
+                Maintenance Only
               </Button>
               <Button
-                variant={ageGroup === "children" ? "default" : "outline"}
-                onClick={() => setAgeGroup("children")}
+                variant={calculationType === "dehydration" ? "default" : "outline"}
+                onClick={() => setCalculationType("dehydration")}
                 className="text-sm"
               >
-                Children (&gt;1 year)
+                + Dehydration
               </Button>
             </div>
           </div>
 
-          {/* Dehydration Level */}
-          <div className="space-y-2">
-            <Label className="text-sm font-medium">Dehydration Level</Label>
-            <div className="grid grid-cols-3 gap-2">
-              <Button
-                variant={dehydrationLevel === "mild" ? "default" : "outline"}
-                onClick={() => setDehydrationLevel("mild")}
-                className="text-xs"
-              >
-                Mild
-              </Button>
-              <Button
-                variant={dehydrationLevel === "moderate" ? "default" : "outline"}
-                onClick={() => setDehydrationLevel("moderate")}
-                className="text-xs"
-              >
-                Moderate
-              </Button>
-              <Button
-                variant={dehydrationLevel === "severe" ? "default" : "outline"}
-                onClick={() => setDehydrationLevel("severe")}
-                className="text-xs"
-              >
-                Severe
-              </Button>
+          {/* Age Group Selection - Only show if dehydration selected */}
+          {includeDeficit && (
+            <div className="space-y-2">
+              <Label className="text-sm font-medium">Age Group</Label>
+              <div className="grid grid-cols-2 gap-2">
+                <Button
+                  variant={ageGroup === "infant" ? "default" : "outline"}
+                  onClick={() => setAgeGroup("infant")}
+                  className="text-sm"
+                >
+                  Infant (&lt;1 year)
+                </Button>
+                <Button
+                  variant={ageGroup === "children" ? "default" : "outline"}
+                  onClick={() => setAgeGroup("children")}
+                  className="text-sm"
+                >
+                  Children (&gt;1 year)
+                </Button>
+              </div>
             </div>
-          </div>
+          )}
+
+          {/* Dehydration Level - Only show if dehydration selected */}
+          {includeDeficit && (
+            <div className="space-y-2">
+              <Label className="text-sm font-medium">Dehydration Level</Label>
+              <div className="grid grid-cols-3 gap-2">
+                <Button
+                  variant={dehydrationLevel === "mild" ? "default" : "outline"}
+                  onClick={() => setDehydrationLevel("mild")}
+                  className="text-xs"
+                >
+                  Mild
+                </Button>
+                <Button
+                  variant={dehydrationLevel === "moderate" ? "default" : "outline"}
+                  onClick={() => setDehydrationLevel("moderate")}
+                  className="text-xs"
+                >
+                  Moderate
+                </Button>
+                <Button
+                  variant={dehydrationLevel === "severe" ? "default" : "outline"}
+                  onClick={() => setDehydrationLevel("severe")}
+                  className="text-xs"
+                >
+                  Severe
+                </Button>
+              </div>
+            </div>
+          )}
         </CardContent>
       </Card>
 
-      {/* Deficit Reference Table */}
-      <Card className="nightingale-card">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-sm">Deficit Reference</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="overflow-x-auto">
-            <table className="w-full text-xs">
-              <thead>
-                <tr className="bg-gray-50 dark:bg-gray-800/50">
-                  <th className="py-2 px-2 text-left font-medium">Age Group</th>
-                  <th className="py-2 px-2 text-center font-medium">Mild</th>
-                  <th className="py-2 px-2 text-center font-medium">Moderate</th>
-                  <th className="py-2 px-2 text-center font-medium">Severe</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr className="border-t">
-                  <td className="py-2 px-2 font-medium">Infants</td>
-                  <td className="py-2 px-2 text-center">5% (50 ml/kg)</td>
-                  <td className="py-2 px-2 text-center">10% (100 ml/kg)</td>
-                  <td className="py-2 px-2 text-center">15% (150 ml/kg)</td>
-                </tr>
-                <tr className="border-t">
-                  <td className="py-2 px-2 font-medium">Children</td>
-                  <td className="py-2 px-2 text-center">3% (30 ml/kg)</td>
-                  <td className="py-2 px-2 text-center">6% (60 ml/kg)</td>
-                  <td className="py-2 px-2 text-center">9% (90 ml/kg)</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </CardContent>
-      </Card>
+      {/* Deficit Reference Table - Only show if dehydration selected */}
+      {includeDeficit && (
+        <Card className="nightingale-card">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm">Deficit Reference</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="overflow-x-auto">
+              <table className="w-full text-xs">
+                <thead>
+                  <tr className="bg-gray-50 dark:bg-gray-800/50">
+                    <th className="py-2 px-2 text-left font-medium">Age Group</th>
+                    <th className="py-2 px-2 text-center font-medium">Mild</th>
+                    <th className="py-2 px-2 text-center font-medium">Moderate</th>
+                    <th className="py-2 px-2 text-center font-medium">Severe</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr className="border-t">
+                    <td className="py-2 px-2 font-medium">Infants</td>
+                    <td className="py-2 px-2 text-center">5% (50 ml/kg)</td>
+                    <td className="py-2 px-2 text-center">10% (100 ml/kg)</td>
+                    <td className="py-2 px-2 text-center">15% (150 ml/kg)</td>
+                  </tr>
+                  <tr className="border-t">
+                    <td className="py-2 px-2 font-medium">Children</td>
+                    <td className="py-2 px-2 text-center">3% (30 ml/kg)</td>
+                    <td className="py-2 px-2 text-center">6% (60 ml/kg)</td>
+                    <td className="py-2 px-2 text-center">9% (90 ml/kg)</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Results */}
       {w > 0 && (
         <>
+          {/* Maintenance Only Results */}
+          {!includeDeficit && (
+            <Card className="nightingale-card">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm">Maintenance Fluids</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="p-4 rounded-lg bg-teal-50 dark:bg-teal-900/20 text-center">
+                  <p className="text-xs text-muted-foreground uppercase mb-1">24 Hour Total</p>
+                  <p className="font-mono font-bold text-3xl text-teal-600">{maintenance24h.toFixed(0)} ml</p>
+                </div>
+                <div className="p-3 rounded-lg bg-gray-50 dark:bg-gray-800/50">
+                  <p className="text-xs text-muted-foreground">Hourly Rate:</p>
+                  <p className="font-mono font-bold text-xl">{maintenanceHourlyRate.toFixed(1)} ml/hr</p>
+                </div>
+                <div className="p-2 bg-gray-50 dark:bg-gray-800/50 rounded text-xs text-muted-foreground">
+                  <p className="font-medium text-foreground mb-1">Holliday-Segar Formula:</p>
+                  <p>• First 10kg: 100 ml/kg/day</p>
+                  <p>• Next 10kg: 50 ml/kg/day</p>
+                  <p>• Each kg &gt;20kg: 20 ml/kg/day</p>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Dehydration + Maintenance Results */}
+          {includeDeficit && (
+            <>
           {/* Calculated Values */}
           <Card className="nightingale-card">
             <CardHeader className="pb-2">
