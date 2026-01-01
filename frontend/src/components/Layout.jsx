@@ -48,6 +48,7 @@ const SidePanel = ({ isOpen, onClose, theme, toggleTheme }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [showAbout, setShowAbout] = useState(false);
+  const { user, isAdmin, hasSubscription, logout } = useAuth();
 
   const menuItems = [
     { id: "home", label: "Home", icon: Home, path: "/" },
@@ -58,6 +59,33 @@ const SidePanel = ({ isOpen, onClose, theme, toggleTheme }) => {
   const handleNavigate = (path) => {
     navigate(path);
     onClose();
+  };
+
+  const handleLogout = async () => {
+    await logout();
+    navigate('/login');
+    onClose();
+  };
+
+  // Get subscription status badge
+  const getSubscriptionBadge = () => {
+    if (isAdmin) {
+      return <Badge className="bg-purple-100 text-purple-700 text-xs">Admin</Badge>;
+    }
+    if (!user) return null;
+    
+    const status = user.subscriptionStatus;
+    const plan = user.subscriptionPlan;
+    
+    if (status === 'trial') {
+      return <Badge className="bg-blue-100 text-blue-700 text-xs"><Clock className="h-3 w-3 mr-1" />Trial</Badge>;
+    } else if (status === 'active') {
+      return <Badge className="bg-green-100 text-green-700 text-xs capitalize">{plan}</Badge>;
+    } else if (status === 'canceled') {
+      return <Badge className="bg-amber-100 text-amber-700 text-xs">Canceled</Badge>;
+    } else {
+      return <Badge className="bg-red-100 text-red-700 text-xs">Subscribe</Badge>;
+    }
   };
 
   return (
