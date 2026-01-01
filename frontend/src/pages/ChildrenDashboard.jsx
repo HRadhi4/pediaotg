@@ -2901,17 +2901,142 @@ const ApproachesPage = ({ onBack }) => {
 const DrugsPage = ({ onBack }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [weight, setWeight] = useState("");
+  const [height, setHeight] = useState("");
+  const [creatinine, setCreatinine] = useState("");
   const [expandedDrug, setExpandedDrug] = useState(null);
+  const [showGFRCalc, setShowGFRCalc] = useState(false);
   
   const w = parseFloat(weight) || 0;
+  const h = parseFloat(height) || 0;
+  const scr = parseFloat(creatinine) || 0;
+
+  // Bedside Schwartz GFR calculation
+  const calculateGFR = () => {
+    if (h > 0 && scr > 0) {
+      return (0.413 * h / scr).toFixed(1);
+    }
+    return null;
+  };
+
+  const gfr = calculateGFR();
+
+  // Get GFR category for renal dosing
+  const getGFRCategory = () => {
+    if (!gfr) return null;
+    const gfrNum = parseFloat(gfr);
+    if (gfrNum >= 50) return "normal";
+    if (gfrNum >= 30) return "mild";
+    if (gfrNum >= 10) return "moderate";
+    return "severe";
+  };
+
+  const gfrCategory = getGFRCategory();
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
-  // Comprehensive pediatric drug formulary (Harriet Lane 23rd Ed)
+  // Comprehensive pediatric drug formulary (Harriet Lane 23rd Ed) - ALPHABETICALLY SORTED
   const drugs = [
-    // ===== ANTIBIOTICS =====
+    {
+      id: "nacetylcysteine",
+      name: "Acetylcysteine (N-Acetylcysteine)",
+      category: "Antidote",
+      route: "PO/IV",
+      doses: {
+        loading: { label: "Loading", value: "140", unit: "mg/kg PO or 150 mg/kg IV over 1h" },
+        maintenance: { label: "Maintenance PO", value: "70", unit: "mg/kg q4h x17 doses" }
+      },
+      max: "See protocol",
+      indication: "Acetaminophen overdose, mucolytic",
+      notes: "Start within 8h of ingestion for best efficacy. IV protocol: 150mg/kg over 1h, then 50mg/kg over 4h, then 100mg/kg over 16h.",
+      renalAdjust: null
+    },
+    {
+      id: "acyclovir",
+      name: "Acyclovir",
+      category: "Antiviral",
+      route: "IV/PO",
+      doses: {
+        iv: { label: "IV (HSV/VZV)", value: "10-20", unit: "mg/kg/dose q8h" },
+        po: { label: "PO (Chickenpox)", value: "20", unit: "mg/kg/dose q6h x5 days" },
+        encephalitis: { label: "HSV Encephalitis", value: "20", unit: "mg/kg/dose q8h x21 days" }
+      },
+      max: "800 mg PO, 20 mg/kg IV",
+      indication: "HSV, VZV, chickenpox, encephalitis",
+      notes: "HSV encephalitis: 20 mg/kg q8h x21 days. Hydrate well to prevent crystalluria.",
+      renalAdjust: { gfr50: "q8h", gfr30: "q12h", gfr10: "q24h", hd: "Give after HD" }
+    },
+    {
+      id: "adenosine",
+      name: "Adenosine",
+      category: "Antiarrhythmic",
+      route: "IV rapid push",
+      doses: {
+        first: { label: "1st Dose", value: "0.1", unit: "mg/kg rapid push" },
+        second: { label: "2nd Dose", value: "0.2", unit: "mg/kg if needed" }
+      },
+      max: "6 mg first, 12 mg subsequent",
+      indication: "SVT",
+      notes: "Give rapid IV push followed by saline flush. May cause brief asystole.",
+      renalAdjust: null
+    },
+    {
+      id: "salbutamol",
+      name: "Albuterol (Salbutamol)",
+      category: "Bronchodilator",
+      route: "Nebulizer/MDI",
+      doses: {
+        neb: { label: "Nebulizer", value: "0.15", unit: "mg/kg (min 2.5mg, max 5mg) q20min x3" },
+        mdi: { label: "MDI", value: "4-8", unit: "puffs q20min x3" }
+      },
+      max: "5 mg/neb, continuous if severe",
+      indication: "Asthma, bronchospasm",
+      notes: "May give continuous neb in severe asthma. Monitor HR, K+.",
+      renalAdjust: null
+    },
+    {
+      id: "amikacin",
+      name: "Amikacin",
+      category: "Antibiotic",
+      route: "IV/IM",
+      doses: {
+        standard: { label: "Once Daily", value: "15-22.5", unit: "mg/kg/dose q24h" },
+        traditional: { label: "Traditional", value: "5-7.5", unit: "mg/kg/dose q8h" }
+      },
+      max: "1.5 g/day",
+      indication: "Serious gram-negative infections, mycobacterial",
+      notes: "Monitor levels: trough <5, peak 25-35. Ototoxic and nephrotoxic.",
+      renalAdjust: { gfr50: "q12-18h", gfr30: "q24h", gfr10: "q48-72h", hd: "Give after HD, redose per levels" }
+    },
+    {
+      id: "amiodarone",
+      name: "Amiodarone",
+      category: "Antiarrhythmic",
+      route: "IV",
+      doses: {
+        arrest: { label: "VF/pVT Arrest", value: "5", unit: "mg/kg bolus" },
+        other: { label: "Other Arrhythmias", value: "5", unit: "mg/kg over 20-60 min" }
+      },
+      max: "300 mg/dose",
+      indication: "VF, pVT, refractory SVT",
+      notes: "May repeat x2 in arrest. Loading then infusion for non-arrest.",
+      renalAdjust: null
+    },
+    {
+      id: "amlodipine",
+      name: "Amlodipine",
+      category: "Antihypertensive",
+      route: "PO",
+      doses: {
+        standard: { label: "Standard", value: "0.05-0.1", unit: "mg/kg/day once daily" },
+        max: { label: "Max", value: "0.4-0.6", unit: "mg/kg/day" }
+      },
+      max: "10 mg/day",
+      indication: "Hypertension",
+      notes: "Calcium channel blocker. Peripheral edema possible.",
+      renalAdjust: null
+    },
     {
       id: "amoxicillin",
       name: "Amoxicillin",
@@ -2923,11 +3048,12 @@ const DrugsPage = ({ onBack }) => {
       },
       max: "3 g/day",
       indication: "Otitis media, strep pharyngitis, CAP, UTI",
-      notes: "High dose for resistant S. pneumoniae. Take with or without food."
+      notes: "High dose for resistant S. pneumoniae. Take with or without food.",
+      renalAdjust: { gfr50: "No change", gfr30: "q8-12h", gfr10: "q24h", hd: "Give after HD" }
     },
     {
       id: "augmentin",
-      name: "Amoxicillin-Clavulanate",
+      name: "Amoxicillin-Clavulanate (Augmentin)",
       category: "Antibiotic",
       route: "PO/IV",
       doses: {
@@ -2937,7 +3063,22 @@ const DrugsPage = ({ onBack }) => {
       },
       max: "875 mg amox/dose PO, 2g IV",
       indication: "Sinusitis, bite wounds, resistant infections",
-      notes: "Based on amoxicillin component. ES formulation for high dose."
+      notes: "Based on amoxicillin component. ES formulation for high dose.",
+      renalAdjust: { gfr50: "No change", gfr30: "q12h", gfr10: "q24h", hd: "Give after HD" }
+    },
+    {
+      id: "amphotericinB",
+      name: "Amphotericin B",
+      category: "Antifungal",
+      route: "IV",
+      doses: {
+        conventional: { label: "Conventional", value: "0.5-1", unit: "mg/kg/day over 2-6h" },
+        lipid: { label: "Liposomal (AmBisome)", value: "3-5", unit: "mg/kg/day" }
+      },
+      max: "1.5 mg/kg/day conventional",
+      indication: "Severe systemic fungal infections, mucormycosis",
+      notes: "Premedicate with antipyretic/antihistamine. Monitor renal function, K+, Mg2+.",
+      renalAdjust: { gfr50: "No change", gfr30: "Monitor closely", gfr10: "Consider lipid formulation", hd: "No supplement" }
     },
     {
       id: "ampicillin",
@@ -2950,11 +3091,998 @@ const DrugsPage = ({ onBack }) => {
       },
       max: "12 g/day",
       indication: "Listeria, enterococcus, GBS, meningitis",
-      notes: "Meningitis: 300-400 mg/kg/day divided q6h."
+      notes: "Meningitis: 300-400 mg/kg/day divided q6h.",
+      renalAdjust: { gfr50: "q6h", gfr30: "q6-8h", gfr10: "q12h", hd: "Give after HD" }
+    },
+    {
+      id: "atropine",
+      name: "Atropine",
+      category: "Anticholinergic",
+      route: "IV/IM/ETT",
+      doses: {
+        bradycardia: { label: "Bradycardia", value: "0.02", unit: "mg/kg" },
+        premedication: { label: "Pre-intubation", value: "0.02", unit: "mg/kg" }
+      },
+      max: "0.5 mg child, 1 mg adolescent",
+      indication: "Symptomatic bradycardia, RSI premedication",
+      notes: "Min dose 0.1 mg (paradoxical bradycardia). ETT: 2-3x IV dose.",
+      renalAdjust: null
+    },
+    {
+      id: "azithromycin",
+      name: "Azithromycin",
+      category: "Antibiotic",
+      route: "PO/IV",
+      doses: {
+        standard: { label: "Standard (Z-pack)", value: "10", unit: "mg/kg day 1, then 5 mg/kg days 2-5" },
+        cap: { label: "CAP", value: "10", unit: "mg/kg/day x5 days" }
+      },
+      max: "500 mg/day",
+      indication: "Atypical pneumonia, pertussis, MAC prophylaxis",
+      notes: "Long half-life. QT prolongation risk.",
+      renalAdjust: null
+    },
+    {
+      id: "budesonide",
+      name: "Budesonide (Nebulized)",
+      category: "Steroid",
+      route: "Nebulizer",
+      doses: {
+        croup: { label: "Croup", value: "2", unit: "mg nebulized once" },
+        maintenance: { label: "Asthma Maintenance", value: "0.25-0.5", unit: "mg q12h" }
+      },
+      max: "2 mg/dose",
+      indication: "Croup, asthma maintenance",
+      notes: "Inhaled steroid. Rinse mouth after use.",
+      renalAdjust: null
+    },
+    {
+      id: "calciumgluc",
+      name: "Calcium Gluconate",
+      category: "Electrolyte",
+      route: "IV",
+      doses: {
+        hypocalcemia: { label: "Hypocalcemia", value: "50-100", unit: "mg/kg (0.5-1 ml/kg of 10%)" },
+        arrest: { label: "Cardiac Arrest", value: "60-100", unit: "mg/kg" }
+      },
+      max: "2 g/dose",
+      indication: "Hypocalcemia, hyperkalemia, calcium channel blocker OD",
+      notes: "Give slowly over 10-30 min. Monitor for extravasation.",
+      renalAdjust: { gfr50: "No change", gfr30: "Use with caution", gfr10: "Monitor Ca2+ closely", hd: "No supplement" }
+    },
+    {
+      id: "carbamazepine",
+      name: "Carbamazepine",
+      category: "Anticonvulsant",
+      route: "PO",
+      doses: {
+        initial: { label: "Initial", value: "5-10", unit: "mg/kg/day divided q12h" },
+        maintenance: { label: "Maintenance", value: "10-30", unit: "mg/kg/day divided q8-12h" }
+      },
+      max: "35 mg/kg/day or 1200 mg/day",
+      indication: "Partial seizures, trigeminal neuralgia",
+      notes: "Many drug interactions. HLA-B*1502 testing in Asians.",
+      renalAdjust: { gfr50: "No change", gfr30: "75% of dose", gfr10: "50% of dose", hd: "Give after HD" }
+    },
+    {
+      id: "cefepime",
+      name: "Cefepime",
+      category: "Antibiotic",
+      route: "IV",
+      doses: {
+        standard: { label: "Standard", value: "50", unit: "mg/kg/dose q8-12h" },
+        neutropenia: { label: "Febrile Neutropenia", value: "50", unit: "mg/kg/dose q8h" }
+      },
+      max: "2 g/dose",
+      indication: "Febrile neutropenia, Pseudomonas, nosocomial",
+      notes: "4th gen cephalosporin. Good gram-positive and gram-negative coverage.",
+      renalAdjust: { gfr50: "q12h", gfr30: "q24h", gfr10: "q24h (50% dose)", hd: "Give after HD" }
+    },
+    {
+      id: "cefotaxime",
+      name: "Cefotaxime",
+      category: "Antibiotic",
+      route: "IV/IM",
+      doses: {
+        standard: { label: "Standard", value: "50", unit: "mg/kg/dose q6-8h" },
+        meningitis: { label: "Meningitis", value: "50", unit: "mg/kg/dose q6h" }
+      },
+      max: "12 g/day",
+      indication: "Meningitis, sepsis (preferred in neonates)",
+      notes: "Preferred over ceftriaxone in neonates. Good CSF penetration.",
+      renalAdjust: { gfr50: "No change", gfr30: "q8-12h", gfr10: "q24h", hd: "Give after HD" }
+    },
+    {
+      id: "ceftazidime",
+      name: "Ceftazidime",
+      category: "Antibiotic",
+      route: "IV/IM",
+      doses: {
+        standard: { label: "Standard", value: "50", unit: "mg/kg/dose q8h" },
+        cf: { label: "Cystic Fibrosis", value: "50", unit: "mg/kg/dose q6h" }
+      },
+      max: "6 g/day",
+      indication: "Pseudomonas, gram-negative meningitis",
+      notes: "Anti-pseudomonal. Higher doses for CF patients.",
+      renalAdjust: { gfr50: "q12h", gfr30: "q24h", gfr10: "q48h", hd: "Give after HD" }
+    },
+    {
+      id: "ceftriaxone",
+      name: "Ceftriaxone",
+      category: "Antibiotic",
+      route: "IV/IM",
+      doses: {
+        standard: { label: "Standard", value: "50-75", unit: "mg/kg/day q12-24h" },
+        meningitis: { label: "Meningitis", value: "100", unit: "mg/kg/day divided q12h" }
+      },
+      max: "4 g/day",
+      indication: "CAP, meningitis, gonorrhea, Lyme disease",
+      notes: "Avoid in neonates with hyperbilirubinemia. Do not mix with calcium.",
+      renalAdjust: null
+    },
+    {
+      id: "cefuroxime",
+      name: "Cefuroxime",
+      category: "Antibiotic",
+      route: "IV/PO",
+      doses: {
+        iv: { label: "IV", value: "25-50", unit: "mg/kg/dose q8h" },
+        po: { label: "PO", value: "10-15", unit: "mg/kg/dose q12h" }
+      },
+      max: "1.5 g IV, 500 mg PO",
+      indication: "CAP, UTI, skin infections, surgical prophylaxis",
+      notes: "2nd gen cephalosporin. Take PO with food.",
+      renalAdjust: { gfr50: "No change", gfr30: "q12h", gfr10: "q24h", hd: "Give after HD" }
+    },
+    {
+      id: "cephalexin",
+      name: "Cephalexin",
+      category: "Antibiotic",
+      route: "PO",
+      doses: {
+        standard: { label: "Standard", value: "25-50", unit: "mg/kg/day divided q6-8h" },
+        severe: { label: "Severe", value: "50-100", unit: "mg/kg/day divided q6h" }
+      },
+      max: "4 g/day",
+      indication: "Skin infections, UTI, strep pharyngitis",
+      notes: "1st gen cephalosporin. Good for outpatient SSTI.",
+      renalAdjust: { gfr50: "No change", gfr30: "q8-12h", gfr10: "q12-24h", hd: "Give after HD" }
+    },
+    {
+      id: "cetirizine",
+      name: "Cetirizine (Zyrtec)",
+      category: "Antihistamine",
+      route: "PO",
+      ageDosing: [
+        { age: "6-12 months", dose: "2.5 mg once daily" },
+        { age: "1-5 years", dose: "2.5-5 mg once daily" },
+        { age: "≥6 years", dose: "5-10 mg once daily" }
+      ],
+      doses: {
+        infant: { label: "6-12 months", value: "2.5", unit: "mg once daily" },
+        child: { label: "1-5 years", value: "2.5-5", unit: "mg once daily" },
+        older: { label: "≥6 years", value: "5-10", unit: "mg once daily" }
+      },
+      max: "10 mg/day",
+      indication: "Allergic rhinitis, urticaria",
+      notes: "2nd gen antihistamine. Less sedating.",
+      renalAdjust: { gfr50: "No change", gfr30: "5 mg/day", gfr10: "5 mg q48h", hd: "5 mg q48h" }
+    },
+    {
+      id: "charcoal",
+      name: "Charcoal (Activated)",
+      category: "Antidote",
+      route: "PO/NG",
+      doses: {
+        standard: { label: "Standard", value: "1-2", unit: "g/kg" }
+      },
+      max: "50-100 g",
+      indication: "Poisoning/ingestion within 1-2 hours",
+      notes: "Not effective for metals, alcohols, hydrocarbons.",
+      renalAdjust: null
+    },
+    {
+      id: "ciprofloxacin",
+      name: "Ciprofloxacin",
+      category: "Antibiotic",
+      route: "PO/IV",
+      doses: {
+        po: { label: "PO", value: "10-20", unit: "mg/kg/dose q12h" },
+        iv: { label: "IV", value: "10-15", unit: "mg/kg/dose q8-12h" }
+      },
+      max: "750 mg PO, 400 mg IV",
+      indication: "Pseudomonas, complicated UTI, anthrax",
+      notes: "Fluoroquinolone - avoid in children <18y unless necessary.",
+      renalAdjust: { gfr50: "No change", gfr30: "50-75% dose", gfr10: "50% dose q12h", hd: "Give after HD" }
+    },
+    {
+      id: "clarithromycin",
+      name: "Clarithromycin",
+      category: "Antibiotic",
+      route: "PO",
+      doses: {
+        standard: { label: "Standard", value: "7.5", unit: "mg/kg/dose q12h" }
+      },
+      max: "500 mg/dose",
+      indication: "CAP, H. pylori, MAC prophylaxis",
+      notes: "Macrolide. Less GI upset than erythromycin.",
+      renalAdjust: { gfr50: "No change", gfr30: "50% dose", gfr10: "50% dose", hd: "50% dose after HD" }
+    },
+    {
+      id: "clindamycin",
+      name: "Clindamycin",
+      category: "Antibiotic",
+      route: "IV/PO",
+      doses: {
+        standard: { label: "Standard", value: "10-13", unit: "mg/kg/dose q6-8h" },
+        severe: { label: "Severe/Bone", value: "10-15", unit: "mg/kg/dose q6h" }
+      },
+      max: "900 mg/dose",
+      indication: "Skin/soft tissue, osteomyelitis, anaerobes, MRSA",
+      notes: "Good bone penetration. Risk of C. diff colitis.",
+      renalAdjust: null
+    },
+    {
+      id: "dexamethasone",
+      name: "Dexamethasone",
+      category: "Steroid",
+      route: "IV/PO",
+      doses: {
+        croup: { label: "Croup", value: "0.6", unit: "mg/kg single dose" },
+        meningitis: { label: "Meningitis", value: "0.15", unit: "mg/kg q6h x2 days" },
+        airway: { label: "Airway Edema", value: "0.5-1", unit: "mg/kg q6h" }
+      },
+      max: "10 mg/dose",
+      indication: "Croup, meningitis, airway edema, asthma",
+      notes: "Give before/with first abx dose for meningitis.",
+      renalAdjust: null
+    },
+    {
+      id: "dexmedetomidine",
+      name: "Dexmedetomidine (Precedex)",
+      category: "Sedative",
+      route: "IV",
+      doses: {
+        loading: { label: "Loading (optional)", value: "0.5-1", unit: "mcg/kg over 10 min" },
+        infusion: { label: "Infusion", value: "0.2-0.7", unit: "mcg/kg/hr" }
+      },
+      max: "1.4 mcg/kg/hr",
+      indication: "ICU sedation, procedural sedation",
+      notes: "Alpha-2 agonist. Less respiratory depression. Bradycardia possible.",
+      renalAdjust: null
+    },
+    {
+      id: "dextrose",
+      name: "Dextrose",
+      category: "Electrolyte",
+      route: "IV",
+      doses: {
+        hypoglycemia: { label: "Hypoglycemia", value: "0.25-0.5", unit: "g/kg (D10: 2.5-5 mL/kg)" },
+        hyperkalemia: { label: "Hyperkalemia", value: "0.5", unit: "g/kg with insulin" }
+      },
+      max: "25 g/dose",
+      indication: "Hypoglycemia, hyperkalemia (with insulin)",
+      notes: "D10 for peripheral, D25 for central line.",
+      renalAdjust: null
+    },
+    {
+      id: "diazepam",
+      name: "Diazepam",
+      category: "Sedative",
+      route: "IV/PR/PO",
+      doses: {
+        seizure: { label: "Status Epilepticus", value: "0.1-0.3", unit: "mg/kg IV (max 10mg)" },
+        rectal: { label: "Rectal", value: "0.5", unit: "mg/kg PR (max 20mg)" }
+      },
+      max: "10 mg IV, 20 mg PR",
+      indication: "Status epilepticus, seizure rescue, muscle spasm",
+      notes: "Long-acting benzo. PR gel for home seizure rescue.",
+      renalAdjust: null
+    },
+    {
+      id: "diphenhydramine",
+      name: "Diphenhydramine (Benadryl)",
+      category: "Antihistamine",
+      route: "PO/IV/IM",
+      doses: {
+        standard: { label: "Standard", value: "1-1.25", unit: "mg/kg/dose q4-6h" }
+      },
+      max: "5 mg/kg/day or 300 mg/day",
+      indication: "Allergic reactions, anaphylaxis, pruritus, sleep",
+      notes: "Sedating antihistamine. Causes drowsiness.",
+      renalAdjust: { gfr50: "No change", gfr30: "q6-8h", gfr10: "q12-18h", hd: "No supplement" }
+    },
+    {
+      id: "dobutamine",
+      name: "Dobutamine",
+      category: "Vasoactive",
+      route: "IV Infusion",
+      doses: {
+        standard: { label: "Standard", value: "2-20", unit: "mcg/kg/min" }
+      },
+      max: "40 mcg/kg/min",
+      indication: "Cardiogenic shock, low cardiac output",
+      notes: "Inotrope with minimal vasoconstriction.",
+      renalAdjust: null
+    },
+    {
+      id: "dopamine",
+      name: "Dopamine",
+      category: "Vasoactive",
+      route: "IV Infusion",
+      doses: {
+        low: { label: "Low (renal)", value: "2-5", unit: "mcg/kg/min" },
+        medium: { label: "Medium (cardiac)", value: "5-10", unit: "mcg/kg/min" },
+        high: { label: "High (pressor)", value: "10-20", unit: "mcg/kg/min" }
+      },
+      max: "20 mcg/kg/min",
+      indication: "Shock, hypotension",
+      notes: "Central line preferred. Titrate to effect.",
+      renalAdjust: null
+    },
+    {
+      id: "doxycycline",
+      name: "Doxycycline",
+      category: "Antibiotic",
+      route: "PO/IV",
+      doses: {
+        standard: { label: "Standard", value: "2-4", unit: "mg/kg/day divided q12h" }
+      },
+      max: "200 mg/day",
+      indication: "Rickettsial infections, Lyme, MRSA, acne",
+      notes: "Tetracycline - use in children ≥8 years. Take with food.",
+      renalAdjust: null
+    },
+    {
+      id: "enalapril",
+      name: "Enalapril",
+      category: "Antihypertensive",
+      route: "PO",
+      doses: {
+        standard: { label: "Standard", value: "0.08-0.1", unit: "mg/kg/day once daily" },
+        max: { label: "Max", value: "0.5", unit: "mg/kg/day divided q12-24h" }
+      },
+      max: "40 mg/day",
+      indication: "Hypertension, heart failure",
+      notes: "ACE inhibitor. Monitor K+ and creatinine.",
+      renalAdjust: { gfr50: "No change", gfr30: "75% dose", gfr10: "50% dose", hd: "Give after HD" }
+    },
+    {
+      id: "adrenaline",
+      name: "Epinephrine (Adrenaline)",
+      category: "Vasoactive",
+      route: "IV/IM/ETT",
+      doses: {
+        arrest: { label: "Cardiac Arrest", value: "0.01", unit: "mg/kg (0.1 ml/kg of 1:10,000) q3-5min" },
+        anaphylaxis: { label: "Anaphylaxis IM", value: "0.01", unit: "mg/kg (0.01 ml/kg of 1:1,000)" },
+        infusion: { label: "Infusion", value: "0.01-1", unit: "mcg/kg/min" }
+      },
+      max: "1 mg/dose arrest, 0.5 mg IM",
+      indication: "Cardiac arrest, anaphylaxis, shock",
+      notes: "ETT: 0.1 mg/kg (10x IV dose). IM for anaphylaxis.",
+      renalAdjust: null
+    },
+    {
+      id: "racemicepinephrine",
+      name: "Epinephrine (Racemic)",
+      category: "Bronchodilator",
+      route: "Nebulizer",
+      doses: {
+        croup: { label: "Croup/Stridor", value: "0.5", unit: "mL of 2.25% in 3mL NS" }
+      },
+      max: "0.5 mL/dose",
+      indication: "Croup, post-extubation stridor",
+      notes: "Observe 2-4h for rebound. May repeat q20min x3.",
+      renalAdjust: null
+    },
+    {
+      id: "erythromycin",
+      name: "Erythromycin",
+      category: "Antibiotic",
+      route: "PO/IV",
+      doses: {
+        po: { label: "PO", value: "30-50", unit: "mg/kg/day divided q6-8h" },
+        iv: { label: "IV", value: "15-20", unit: "mg/kg/day divided q6h" }
+      },
+      max: "4 g/day PO, 4 g/day IV",
+      indication: "Atypical pneumonia, pertussis, GI motility",
+      notes: "Multiple drug interactions. GI upset common.",
+      renalAdjust: null
+    },
+    {
+      id: "fentanyl",
+      name: "Fentanyl",
+      category: "Opioid",
+      route: "IV/IN",
+      doses: {
+        iv: { label: "IV Bolus", value: "0.5-2", unit: "mcg/kg/dose q1-2h" },
+        infusion: { label: "Infusion", value: "1-3", unit: "mcg/kg/hr" }
+      },
+      max: "4 mcg/kg/dose",
+      indication: "Procedural sedation, severe pain, intubation",
+      notes: "Rapid onset (1-2 min), short duration. IN: 1.5-2 mcg/kg.",
+      renalAdjust: { gfr50: "No change", gfr30: "75% dose", gfr10: "50% dose", hd: "No supplement" }
+    },
+    {
+      id: "ferroussulfate",
+      name: "Ferrous Sulfate",
+      category: "Supplement",
+      route: "PO",
+      doses: {
+        treatment: { label: "Iron Deficiency", value: "3-6", unit: "mg elemental Fe/kg/day divided q8-12h" },
+        prophylaxis: { label: "Prophylaxis", value: "1-2", unit: "mg elemental Fe/kg/day" }
+      },
+      max: "6 mg/kg/day elemental iron",
+      indication: "Iron deficiency anemia",
+      notes: "Give between meals with vitamin C. Stool discoloration.",
+      renalAdjust: null
+    },
+    {
+      id: "fluconazole",
+      name: "Fluconazole",
+      category: "Antifungal",
+      route: "PO/IV",
+      doses: {
+        loading: { label: "Loading", value: "12", unit: "mg/kg day 1" },
+        maintenance: { label: "Maintenance", value: "6-12", unit: "mg/kg/day once daily" }
+      },
+      max: "400 mg/day",
+      indication: "Candidiasis (oral, esophageal, systemic)",
+      notes: "Oral thrush: 6 mg/kg day 1, then 3 mg/kg/day x14 days.",
+      renalAdjust: { gfr50: "No change", gfr30: "q24-36h", gfr10: "q48h", hd: "Give after HD" }
+    },
+    {
+      id: "flumazenil",
+      name: "Flumazenil",
+      category: "Antidote",
+      route: "IV",
+      doses: {
+        reversal: { label: "Reversal", value: "0.01", unit: "mg/kg (max 0.2mg/dose)" }
+      },
+      max: "0.2 mg/dose, 1 mg total",
+      indication: "Benzodiazepine overdose/reversal",
+      notes: "May precipitate seizures. Avoid in chronic benzo use.",
+      renalAdjust: null
+    },
+    {
+      id: "furosemide",
+      name: "Furosemide (Lasix)",
+      category: "Diuretic",
+      route: "IV/PO",
+      doses: {
+        iv: { label: "IV", value: "0.5-1", unit: "mg/kg/dose q6-12h" },
+        po: { label: "PO", value: "1-2", unit: "mg/kg/dose q6-12h" }
+      },
+      max: "6 mg/kg/dose",
+      indication: "Edema, heart failure, fluid overload",
+      notes: "Monitor K+, Mg2+. PO bioavailability ~50% of IV.",
+      renalAdjust: { gfr50: "No change", gfr30: "Higher doses may be needed", gfr10: "May need continuous infusion", hd: "Usually ineffective" }
+    },
+    {
+      id: "gentamicin",
+      name: "Gentamicin",
+      category: "Antibiotic",
+      route: "IV/IM",
+      doses: {
+        standard: { label: "Once Daily", value: "5-7.5", unit: "mg/kg/dose q24h" },
+        traditional: { label: "Traditional", value: "2.5", unit: "mg/kg/dose q8h" }
+      },
+      max: "560 mg/dose",
+      indication: "Gram-negative sepsis, synergy for endocarditis",
+      notes: "Monitor levels: trough <1, peak 20-30. Adjust for renal function.",
+      renalAdjust: { gfr50: "q12h or per levels", gfr30: "q24h or per levels", gfr10: "q48-72h or per levels", hd: "Give after HD, redose per levels" }
+    },
+    {
+      id: "hydralazine",
+      name: "Hydralazine",
+      category: "Antihypertensive",
+      route: "IV/PO",
+      doses: {
+        iv: { label: "IV", value: "0.1-0.2", unit: "mg/kg/dose q4-6h" },
+        po: { label: "PO", value: "0.75-1", unit: "mg/kg/day divided q6-8h" }
+      },
+      max: "20 mg IV, 200 mg/day PO",
+      indication: "Hypertensive emergency",
+      notes: "Direct vasodilator. Reflex tachycardia common.",
+      renalAdjust: { gfr50: "No change", gfr30: "q8h", gfr10: "q8-12h", hd: "Give after HD" }
+    },
+    {
+      id: "hydrocortisone",
+      name: "Hydrocortisone",
+      category: "Steroid",
+      route: "IV",
+      doses: {
+        stress: { label: "Stress Dose", value: "50-100", unit: "mg/m² or 1-2 mg/kg" },
+        shock: { label: "Shock", value: "1-2", unit: "mg/kg q6h" }
+      },
+      max: "100 mg/dose",
+      indication: "Adrenal insufficiency, shock",
+      notes: "Stress dosing for illness/surgery in adrenal insufficiency.",
+      renalAdjust: null
+    },
+    {
+      id: "hydroxyzine",
+      name: "Hydroxyzine",
+      category: "Antihistamine",
+      route: "PO/IM",
+      doses: {
+        antipruritic: { label: "Antipruritic", value: "0.5-1", unit: "mg/kg/dose q6h" },
+        anxiolytic: { label: "Anxiolytic", value: "0.5", unit: "mg/kg/dose" }
+      },
+      max: "100 mg/dose",
+      indication: "Pruritus, anxiety, preoperative sedation",
+      notes: "Sedating. Good for atopic dermatitis itch.",
+      renalAdjust: { gfr50: "No change", gfr30: "50% dose", gfr10: "50% dose", hd: "No supplement" }
+    },
+    {
+      id: "ibuprofen",
+      name: "Ibuprofen",
+      category: "Analgesic",
+      route: "PO",
+      doses: {
+        standard: { label: "Standard", value: "5-10", unit: "mg/kg/dose q6-8h" }
+      },
+      max: "40 mg/kg/day (max 2.4g/day)",
+      indication: "Pain, fever, inflammation",
+      notes: "Avoid if dehydrated, renal impairment, GI bleed risk.",
+      renalAdjust: { gfr50: "Use with caution", gfr30: "Avoid", gfr10: "Avoid", hd: "Avoid" }
+    },
+    {
+      id: "insulin",
+      name: "Insulin (Regular)",
+      category: "Antidiabetic",
+      route: "IV/SQ",
+      doses: {
+        dka: { label: "DKA Infusion", value: "0.05-0.1", unit: "units/kg/hr" },
+        hyperkalemia: { label: "Hyperkalemia", value: "0.1", unit: "units/kg with dextrose" }
+      },
+      max: "10 units/dose for hyperkalemia",
+      indication: "DKA, hyperglycemia, hyperkalemia",
+      notes: "Monitor glucose hourly. Give with dextrose for hyperkalemia.",
+      renalAdjust: { gfr50: "No change", gfr30: "May need dose reduction", gfr10: "25-50% reduction", hd: "Monitor closely" }
+    },
+    {
+      id: "ipratropium",
+      name: "Ipratropium",
+      category: "Bronchodilator",
+      route: "Nebulizer/MDI",
+      doses: {
+        neb: { label: "Nebulizer", value: "250-500", unit: "mcg q20min x3" },
+        mdi: { label: "MDI", value: "4-8", unit: "puffs" }
+      },
+      max: "500 mcg/dose",
+      indication: "Moderate-severe asthma (with salbutamol)",
+      notes: "Use with salbutamol for first 3 doses in severe asthma.",
+      renalAdjust: null
+    },
+    {
+      id: "ketamine",
+      name: "Ketamine",
+      category: "Sedative",
+      route: "IV/IM",
+      doses: {
+        iv: { label: "IV", value: "1-2", unit: "mg/kg" },
+        im: { label: "IM", value: "4-5", unit: "mg/kg" }
+      },
+      max: "4 mg/kg IV, 10 mg/kg IM",
+      indication: "Procedural sedation, analgesia",
+      notes: "Dissociative. Causes salivation - consider glycopyrrolate.",
+      renalAdjust: null
+    },
+    {
+      id: "labetalol",
+      name: "Labetalol",
+      category: "Antihypertensive",
+      route: "IV/PO",
+      doses: {
+        iv: { label: "IV Bolus", value: "0.2-1", unit: "mg/kg/dose (max 40mg)" },
+        infusion: { label: "IV Infusion", value: "0.25-3", unit: "mg/kg/hr" },
+        po: { label: "PO", value: "1-3", unit: "mg/kg/dose q8-12h" }
+      },
+      max: "40 mg IV bolus, 300 mg PO",
+      indication: "Hypertensive urgency/emergency",
+      notes: "Alpha/beta blocker. Avoid in asthma, heart block.",
+      renalAdjust: null
+    },
+    {
+      id: "lactulose",
+      name: "Lactulose",
+      category: "Laxative",
+      route: "PO/PR",
+      doses: {
+        constipation: { label: "Constipation", value: "1-3", unit: "mL/kg/day divided q12-24h" },
+        encephalopathy: { label: "Hepatic Encephalopathy", value: "0.5-1", unit: "mL/kg q6-8h" }
+      },
+      max: "60 mL/dose",
+      indication: "Constipation, hepatic encephalopathy",
+      notes: "Goal 2-3 soft stools/day. Abdominal cramping common.",
+      renalAdjust: null
+    },
+    {
+      id: "lansoprazole",
+      name: "Lansoprazole",
+      category: "PPI",
+      route: "PO",
+      ageDosing: [
+        { age: "<10 weeks", dose: "0.2-0.3 mg/kg/day" },
+        { age: "<30kg", dose: "15 mg once daily" },
+        { age: ">30kg", dose: "30 mg once daily" }
+      ],
+      doses: {
+        infant: { label: "<10 weeks", value: "0.2-0.3", unit: "mg/kg/day" },
+        child: { label: "<30kg", value: "15", unit: "mg once daily" },
+        older: { label: ">30kg", value: "30", unit: "mg once daily" }
+      },
+      max: "30 mg/day",
+      indication: "GERD, H. pylori",
+      notes: "PPI. Give 30 min before meals. Do not crush capsule.",
+      renalAdjust: null
+    },
+    {
+      id: "levetiracetam",
+      name: "Levetiracetam (Keppra)",
+      category: "Anticonvulsant",
+      route: "IV/PO",
+      doses: {
+        loading: { label: "Loading", value: "20-60", unit: "mg/kg" },
+        maintenance: { label: "Maintenance", value: "20-30", unit: "mg/kg/day divided q12h" }
+      },
+      max: "3000 mg/day",
+      indication: "Seizures, status epilepticus",
+      notes: "No drug interactions. Can cause behavioral changes.",
+      renalAdjust: { gfr50: "50-100% dose q12h", gfr30: "50% dose q12h", gfr10: "50% dose q24h", hd: "Give supplement after HD" }
+    },
+    {
+      id: "lidocaine",
+      name: "Lidocaine",
+      category: "Antiarrhythmic",
+      route: "IV",
+      doses: {
+        bolus: { label: "VF/pVT", value: "1", unit: "mg/kg bolus" },
+        infusion: { label: "Infusion", value: "20-50", unit: "mcg/kg/min" }
+      },
+      max: "100 mg bolus",
+      indication: "Ventricular arrhythmias, local anesthesia",
+      notes: "Class IB antiarrhythmic. Monitor for CNS toxicity.",
+      renalAdjust: null
+    },
+    {
+      id: "linezolid",
+      name: "Linezolid",
+      category: "Antibiotic",
+      route: "PO/IV",
+      doses: {
+        standard: { label: "Standard", value: "10", unit: "mg/kg/dose q8h" }
+      },
+      max: "600 mg/dose",
+      indication: "VRE, MRSA, resistant gram-positive",
+      notes: "Oxazolidinone. Monitor CBC for myelosuppression.",
+      renalAdjust: null
+    },
+    {
+      id: "loratadine",
+      name: "Loratadine (Claritin)",
+      category: "Antihistamine",
+      route: "PO",
+      ageDosing: [
+        { age: "2-5 years", dose: "5 mg once daily" },
+        { age: "≥6 years", dose: "10 mg once daily" }
+      ],
+      doses: {
+        child: { label: "2-5 years", value: "5", unit: "mg once daily" },
+        older: { label: "≥6 years", value: "10", unit: "mg once daily" }
+      },
+      max: "10 mg/day",
+      indication: "Allergic rhinitis, urticaria",
+      notes: "Non-sedating. Take without regard to food.",
+      renalAdjust: { gfr50: "No change", gfr30: "q48h", gfr10: "q48h", hd: "No supplement" }
+    },
+    {
+      id: "lorazepam",
+      name: "Lorazepam",
+      category: "Sedative",
+      route: "IV/PO",
+      doses: {
+        seizure: { label: "Status Epilepticus", value: "0.05-0.1", unit: "mg/kg (max 4mg)" },
+        sedation: { label: "Sedation", value: "0.02-0.05", unit: "mg/kg q4-8h" }
+      },
+      max: "4 mg/dose",
+      indication: "Status epilepticus, sedation, anxiety",
+      notes: "Benzodiazepine. Contains propylene glycol (IV).",
+      renalAdjust: null
+    },
+    {
+      id: "magnesium",
+      name: "Magnesium Sulfate",
+      category: "Electrolyte",
+      route: "IV",
+      doses: {
+        hypo: { label: "Hypomagnesemia", value: "25-50", unit: "mg/kg over 2-4h" },
+        asthma: { label: "Severe Asthma", value: "25-75", unit: "mg/kg over 20 min" }
+      },
+      max: "2 g/dose",
+      indication: "Hypomagnesemia, severe asthma, torsades",
+      notes: "Monitor for hypotension, bradycardia. Slow infusion.",
+      renalAdjust: { gfr50: "75% dose", gfr30: "50% dose", gfr10: "25-50% dose", hd: "Avoid unless critical" }
+    },
+    {
+      id: "mannitol",
+      name: "Mannitol",
+      category: "Osmotic Diuretic",
+      route: "IV",
+      doses: {
+        cerebral: { label: "Cerebral Edema", value: "0.25-1", unit: "g/kg over 20-30 min" }
+      },
+      max: "1 g/kg/dose",
+      indication: "Cerebral edema, raised ICP",
+      notes: "Monitor serum osmolality (keep <320). Requires urinary catheter.",
+      renalAdjust: { gfr50: "Use with caution", gfr30: "Avoid if possible", gfr10: "Contraindicated", hd: "Contraindicated" }
+    },
+    {
+      id: "meropenem",
+      name: "Meropenem",
+      category: "Antibiotic",
+      route: "IV",
+      doses: {
+        standard: { label: "Standard", value: "20", unit: "mg/kg/dose q8h" },
+        meningitis: { label: "Meningitis", value: "40", unit: "mg/kg/dose q8h" }
+      },
+      max: "2 g/dose (6 g/day)",
+      indication: "Serious gram-negative, intra-abdominal, meningitis",
+      notes: "Carbapenem. Extended infusion (3h) for severe infections.",
+      renalAdjust: { gfr50: "No change", gfr30: "q12h", gfr10: "50% q12h", hd: "Give after HD" }
+    },
+    {
+      id: "metoclopramide",
+      name: "Metoclopramide",
+      category: "Prokinetic",
+      route: "PO/IV",
+      doses: {
+        standard: { label: "Standard", value: "0.1-0.2", unit: "mg/kg/dose q6-8h" }
+      },
+      max: "0.5 mg/kg/day",
+      indication: "GERD, gastroparesis, nausea",
+      notes: "Risk of extrapyramidal symptoms. Black box warning - tardive dyskinesia.",
+      renalAdjust: { gfr50: "No change", gfr30: "50% dose", gfr10: "50% dose", hd: "No supplement" }
+    },
+    {
+      id: "metronidazole",
+      name: "Metronidazole",
+      category: "Antibiotic",
+      route: "IV/PO",
+      doses: {
+        standard: { label: "Standard", value: "7.5", unit: "mg/kg/dose q8h" },
+        cdiff: { label: "C. diff", value: "7.5", unit: "mg/kg/dose q6h PO" }
+      },
+      max: "500 mg/dose",
+      indication: "Anaerobes, C. diff, H. pylori, giardia",
+      notes: "Avoid alcohol. Metallic taste common.",
+      renalAdjust: { gfr50: "No change", gfr30: "No change", gfr10: "q12h or 50%", hd: "Give after HD" }
+    },
+    {
+      id: "midazolam",
+      name: "Midazolam (Versed)",
+      category: "Sedative",
+      route: "IV/IN/PO",
+      doses: {
+        iv: { label: "IV", value: "0.05-0.1", unit: "mg/kg" },
+        intranasal: { label: "Intranasal", value: "0.2-0.5", unit: "mg/kg" },
+        po: { label: "PO", value: "0.25-0.5", unit: "mg/kg" }
+      },
+      max: "0.5 mg/kg IN, 10 mg IV",
+      indication: "Anxiolysis, procedural sedation, seizures",
+      notes: "Short-acting benzo. Reversal: flumazenil.",
+      renalAdjust: null
+    },
+    {
+      id: "milrinone",
+      name: "Milrinone",
+      category: "Vasoactive",
+      route: "IV Infusion",
+      doses: {
+        loading: { label: "Loading (optional)", value: "50", unit: "mcg/kg over 15 min" },
+        infusion: { label: "Infusion", value: "0.25-0.75", unit: "mcg/kg/min" }
+      },
+      max: "0.75 mcg/kg/min",
+      indication: "Low cardiac output, post-cardiac surgery",
+      notes: "Inodilator. Reduce dose in renal impairment.",
+      renalAdjust: { gfr50: "No change", gfr30: "0.33-0.43 mcg/kg/min max", gfr10: "0.23 mcg/kg/min max", hd: "Use with caution" }
+    },
+    {
+      id: "montelukast",
+      name: "Montelukast (Singulair)",
+      category: "Leukotriene Inhibitor",
+      route: "PO",
+      ageDosing: [
+        { age: "6 months-5 years", dose: "4 mg once daily" },
+        { age: "6-14 years", dose: "5 mg once daily" },
+        { age: "≥15 years", dose: "10 mg once daily" }
+      ],
+      doses: {
+        infant: { label: "6mo-5y", value: "4", unit: "mg once daily" },
+        child: { label: "6-14y", value: "5", unit: "mg once daily" },
+        adult: { label: "≥15y", value: "10", unit: "mg once daily" }
+      },
+      max: "10 mg/day",
+      indication: "Asthma, allergic rhinitis",
+      notes: "Leukotriene receptor antagonist. Give in evening.",
+      renalAdjust: null
+    },
+    {
+      id: "morphine",
+      name: "Morphine",
+      category: "Opioid",
+      route: "IV/PO",
+      doses: {
+        iv: { label: "IV", value: "0.05-0.1", unit: "mg/kg/dose q2-4h" },
+        po: { label: "PO", value: "0.2-0.5", unit: "mg/kg/dose q4h" }
+      },
+      max: "0.1-0.2 mg/kg/dose IV",
+      indication: "Moderate-severe pain",
+      notes: "Start low, titrate. Monitor respiratory status. PO:IV = 3:1.",
+      renalAdjust: { gfr50: "75% dose", gfr30: "50% dose", gfr10: "25-50% dose", hd: "No supplement" }
+    },
+    {
+      id: "naloxone",
+      name: "Naloxone (Narcan)",
+      category: "Antidote",
+      route: "IV/IM/IN/ETT",
+      doses: {
+        reversal: { label: "Opioid Reversal", value: "0.01-0.1", unit: "mg/kg (max 2mg)" },
+        fullReversal: { label: "Full Reversal", value: "0.1", unit: "mg/kg" }
+      },
+      max: "2 mg/dose (may repeat)",
+      indication: "Opioid overdose/reversal",
+      notes: "Short duration (30-90 min). May need repeat doses or infusion.",
+      renalAdjust: null
+    },
+    {
+      id: "nifedipine",
+      name: "Nifedipine",
+      category: "Antihypertensive",
+      route: "PO",
+      doses: {
+        standard: { label: "Standard", value: "0.25-0.5", unit: "mg/kg/dose q4-6h" },
+        er: { label: "Extended Release", value: "0.25-0.5", unit: "mg/kg/day" }
+      },
+      max: "3 mg/kg/day or 120 mg/day",
+      indication: "Hypertension, Raynaud's",
+      notes: "Avoid in acute MI. ER formulation preferred.",
+      renalAdjust: null
+    },
+    {
+      id: "norepinephrine",
+      name: "Norepinephrine (Levophed)",
+      category: "Vasoactive",
+      route: "IV Infusion",
+      doses: {
+        standard: { label: "Standard", value: "0.05-2", unit: "mcg/kg/min" }
+      },
+      max: "2 mcg/kg/min",
+      indication: "Septic shock, vasodilatory shock",
+      notes: "Potent vasoconstrictor. Central line required.",
+      renalAdjust: null
+    },
+    {
+      id: "nystatin",
+      name: "Nystatin",
+      category: "Antifungal",
+      route: "PO/Topical",
+      doses: {
+        oral: { label: "Oral Thrush", value: "100000-500000", unit: "units q6h swish & swallow" },
+        infant: { label: "Infants", value: "100000", unit: "units to each cheek q6h" }
+      },
+      max: "500,000 units/dose",
+      indication: "Oral thrush, candidal diaper dermatitis",
+      notes: "Topical only - not absorbed systemically.",
+      renalAdjust: null
+    },
+    {
+      id: "omeprazole",
+      name: "Omeprazole",
+      category: "PPI",
+      route: "PO/IV",
+      doses: {
+        standard: { label: "Standard", value: "1", unit: "mg/kg/day divided q12-24h" }
+      },
+      max: "40 mg/day",
+      indication: "GERD, GI bleeding, stress ulcer prophylaxis",
+      notes: "Give 30 min before meals. IV for active bleeding.",
+      renalAdjust: null
+    },
+    {
+      id: "ondansetron",
+      name: "Ondansetron (Zofran)",
+      category: "Antiemetic",
+      route: "IV/PO",
+      doses: {
+        standard: { label: "Standard", value: "0.1-0.15", unit: "mg/kg/dose q8h" }
+      },
+      max: "4 mg (<40kg), 8 mg (>40kg)",
+      indication: "Nausea, vomiting",
+      notes: "QT prolongation risk. Max 3 doses/day.",
+      renalAdjust: null
+    },
+    {
+      id: "oseltamivir",
+      name: "Oseltamivir (Tamiflu)",
+      category: "Antiviral",
+      route: "PO",
+      ageDosing: [
+        { age: "<1 year", dose: "3 mg/kg/dose q12h x5 days" },
+        { age: "1-12 years ≤15kg", dose: "30 mg q12h" },
+        { age: "1-12 years 15-23kg", dose: "45 mg q12h" },
+        { age: "1-12 years 23-40kg", dose: "60 mg q12h" },
+        { age: ">40kg or ≥13 years", dose: "75 mg q12h" }
+      ],
+      doses: {
+        infant: { label: "<1 year", value: "3", unit: "mg/kg/dose q12h x5 days" },
+        weightBased: { label: "Weight-based", value: "See age dosing", unit: "" }
+      },
+      max: "75 mg/dose",
+      indication: "Influenza treatment and prophylaxis",
+      notes: "Start within 48h of symptoms. Prophylaxis: once daily.",
+      renalAdjust: { gfr50: "No change", gfr30: "30 mg q12h", gfr10: "30 mg q24h", hd: "30 mg after each HD session" }
+    },
+    {
+      id: "paracetamol",
+      name: "Paracetamol (Acetaminophen)",
+      category: "Analgesic",
+      route: "PO/PR/IV",
+      doses: {
+        po: { label: "PO/PR", value: "15", unit: "mg/kg/dose q4-6h" },
+        iv: { label: "IV", value: "15", unit: "mg/kg/dose q6h (7.5 if <10kg)" }
+      },
+      max: "75 mg/kg/day (max 4g/day)",
+      indication: "Pain, fever",
+      notes: "PR loading: 20-25 mg/kg. IV: 7.5 mg/kg if <10kg.",
+      renalAdjust: { gfr50: "No change", gfr30: "q6h", gfr10: "q8h", hd: "Give after HD" }
+    },
+    {
+      id: "penicillinG",
+      name: "Penicillin G",
+      category: "Antibiotic",
+      route: "IV",
+      doses: {
+        standard: { label: "Standard", value: "50000", unit: "units/kg/dose q4-6h" },
+        meningitis: { label: "Meningitis", value: "75000", unit: "units/kg/dose q4h" }
+      },
+      max: "4 MU/dose",
+      indication: "Strep infections, syphilis, rheumatic fever",
+      notes: "300,000-400,000 units/kg/day for meningitis.",
+      renalAdjust: { gfr50: "No change", gfr30: "75% dose", gfr10: "50% dose", hd: "Give after HD" }
+    },
+    {
+      id: "phenobarbital",
+      name: "Phenobarbital",
+      category: "Anticonvulsant",
+      route: "IV/PO",
+      doses: {
+        loading: { label: "Loading", value: "20", unit: "mg/kg" },
+        maintenance: { label: "Maintenance", value: "3-5", unit: "mg/kg/day" }
+      },
+      max: "40 mg/kg total load",
+      indication: "Neonatal seizures, status epilepticus",
+      notes: "Causes sedation. Additional 10 mg/kg loads PRN to max 40 mg/kg.",
+      renalAdjust: { gfr50: "No change", gfr30: "No change", gfr10: "q12-16h", hd: "Give after HD" }
+    },
+    {
+      id: "phenytoin",
+      name: "Phenytoin/Fosphenytoin",
+      category: "Anticonvulsant",
+      route: "IV",
+      doses: {
+        loading: { label: "Loading", value: "20", unit: "mg PE/kg" },
+        maintenance: { label: "Maintenance", value: "5-7", unit: "mg/kg/day divided q8-12h" }
+      },
+      max: "1500 mg load",
+      indication: "Status epilepticus, seizure prophylaxis",
+      notes: "Fosphenytoin preferred (less irritation). Monitor levels, cardiac.",
+      renalAdjust: null
     },
     {
       id: "piptazo",
-      name: "Piperacillin-Tazobactam",
+      name: "Piperacillin-Tazobactam (Tazocin)",
       category: "Antibiotic",
       route: "IV",
       doses: {
