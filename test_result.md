@@ -506,3 +506,32 @@ The implementation exceeds the requirements with sophisticated Z-score calculati
 - **CPR Page Redesign**: ✅ WORKING - Clean design, 4 tabs, weight calculations, drug doses all implemented correctly
 - **Overall Implementation**: ✅ COMPLETE - Both features fully implemented and functional
 
+
+
+## Update: Fluid Replacement Calculator "Maintenance Only" Mode (Jan 1, 2026)
+
+### Feature Implementation:
+- Added "Calculation Type" toggle with two options: "Maintenance Only" and "+ Dehydration"
+- When "Maintenance Only" is selected:
+  - Age Group selection is hidden
+  - Dehydration Level selection is hidden
+  - Deficit Reference table is hidden
+  - Only shows maintenance fluids calculation with 24-hour total and hourly rate
+- When "+ Dehydration" is selected:
+  - All inputs visible (Age Group, Dehydration Level)
+  - Shows full deficit + maintenance calculation with 8h and 16h phases
+
+### Fixed JSX Syntax Error:
+- Fixed unclosed JSX fragment tag in FluidReplacementPage component
+- The outer fragment `<>` from `{w > 0 && (<>` was not properly closed
+
+### Testing Results:
+- ✅ Maintenance Only mode correctly hides dehydration-related inputs
+- ✅ Maintenance calculation shows correct values (1250ml for 15kg, 52.1 ml/hr)
+- ✅ Dehydration mode shows all inputs and calculations
+- ✅ Toggle between modes works correctly
+- ✅ NICU Drugs widget is visible on dashboard (scrollable grid)
+- ✅ NICU Drugs page is fully functional with search and dose calculations
+
+### Files Modified:
+- /app/frontend/src/pages/ChildrenDashboard.jsx - Fixed JSX syntax error in FluidReplacementPage
