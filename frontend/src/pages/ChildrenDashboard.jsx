@@ -4091,63 +4091,234 @@ const DrugsPage = ({ onBack }) => {
       },
       max: "4.5 g/dose",
       indication: "Nosocomial infections, Pseudomonas, intra-abdominal",
-      notes: "Extended infusion (3-4h) for severe infections. Based on piperacillin."
+      notes: "Extended infusion (3-4h) for severe infections. Based on piperacillin.",
+      renalAdjust: { gfr50: "q6h", gfr30: "q8h", gfr10: "q12h", hd: "Give after HD" }
     },
     {
-      id: "ceftriaxone",
-      name: "Ceftriaxone",
-      category: "Antibiotic",
+      id: "polyethyleneglycol",
+      name: "Polyethylene Glycol (Miralax)",
+      category: "Laxative",
+      route: "PO",
+      doses: {
+        maintenance: { label: "Maintenance", value: "0.5-1", unit: "g/kg/day" },
+        disimpaction: { label: "Disimpaction", value: "1-1.5", unit: "g/kg/day x3-6 days" }
+      },
+      max: "17 g/day maintenance",
+      indication: "Constipation, fecal impaction",
+      notes: "Mix in any liquid. Adjust dose for soft daily BM.",
+      renalAdjust: null
+    },
+    {
+      id: "potassiumchloride",
+      name: "Potassium Chloride",
+      category: "Electrolyte",
+      route: "PO/IV",
+      doses: {
+        po: { label: "PO Supplement", value: "1-2", unit: "mEq/kg/day divided" },
+        iv: { label: "IV (diluted)", value: "0.5-1", unit: "mEq/kg over 1-2h" }
+      },
+      max: "40 mEq/dose IV (max 0.5 mEq/kg/hr peripheral)",
+      indication: "Hypokalemia",
+      notes: "Never IV push. Cardiac monitoring for IV infusion.",
+      renalAdjust: { gfr50: "Use with caution", gfr30: "50% dose, monitor K+", gfr10: "Avoid or monitor closely", hd: "Usually not needed" }
+    },
+    {
+      id: "prednisolone",
+      name: "Prednisolone/Prednisone",
+      category: "Steroid",
+      route: "PO",
+      doses: {
+        asthma: { label: "Asthma", value: "1-2", unit: "mg/kg/day divided q12-24h" },
+        immunosupp: { label: "Immunosuppression", value: "2", unit: "mg/kg/day" }
+      },
+      max: "60 mg/day",
+      indication: "Asthma exacerbation, nephrotic syndrome",
+      notes: "Give with food. Taper if >5 days.",
+      renalAdjust: null
+    },
+    {
+      id: "propofol",
+      name: "Propofol",
+      category: "Sedative",
+      route: "IV",
+      doses: {
+        induction: { label: "Induction", value: "2-3", unit: "mg/kg" },
+        infusion: { label: "Sedation Infusion", value: "50-200", unit: "mcg/kg/min" }
+      },
+      max: "4 mg/kg/hr for >48h",
+      indication: "Procedural sedation, induction, ICU sedation",
+      notes: "Avoid prolonged use in children (PRIS). Contains egg/soy.",
+      renalAdjust: null
+    },
+    {
+      id: "ranitidine",
+      name: "Ranitidine",
+      category: "H2 Blocker",
+      route: "PO/IV",
+      doses: {
+        po: { label: "PO", value: "2-4", unit: "mg/kg/dose q12h" },
+        iv: { label: "IV", value: "1-2", unit: "mg/kg/dose q6-8h" }
+      },
+      max: "300 mg/day PO, 200 mg/day IV",
+      indication: "GERD, stress ulcer prophylaxis",
+      notes: "H2 receptor antagonist. (Note: withdrawn in many countries)",
+      renalAdjust: { gfr50: "No change", gfr30: "50% dose", gfr10: "25% dose", hd: "Give after HD" }
+    },
+    {
+      id: "rocuronium",
+      name: "Rocuronium",
+      category: "Neuromuscular Blocker",
+      route: "IV",
+      doses: {
+        intubation: { label: "RSI Intubation", value: "0.6-1.2", unit: "mg/kg" },
+        maintenance: { label: "Maintenance", value: "0.1-0.2", unit: "mg/kg PRN" }
+      },
+      max: "1.2 mg/kg for RSI",
+      indication: "Rapid sequence intubation, paralysis",
+      notes: "Non-depolarizing. Onset 60-90 sec. Reversal: sugammadex.",
+      renalAdjust: null
+    },
+    {
+      id: "sodiumbicarbonate",
+      name: "Sodium Bicarbonate",
+      category: "Electrolyte",
+      route: "IV",
+      doses: {
+        acidosis: { label: "Metabolic Acidosis", value: "1-2", unit: "mEq/kg slow IV" },
+        arrest: { label: "Cardiac Arrest", value: "1", unit: "mEq/kg" }
+      },
+      max: "50 mEq/dose",
+      indication: "Severe metabolic acidosis, hyperkalemia, TCA overdose",
+      notes: "Dilute before use. Do not mix with calcium.",
+      renalAdjust: { gfr50: "Use with caution", gfr30: "Monitor Na+ closely", gfr10: "Risk of Na+ overload", hd: "Use with caution" }
+    },
+    {
+      id: "succinylcholine",
+      name: "Succinylcholine",
+      category: "Neuromuscular Blocker",
       route: "IV/IM",
       doses: {
-        standard: { label: "Standard", value: "50-75", unit: "mg/kg/day q12-24h" },
-        meningitis: { label: "Meningitis", value: "100", unit: "mg/kg/day divided q12h" }
+        iv: { label: "IV", value: "1-2", unit: "mg/kg" },
+        im: { label: "IM", value: "4-5", unit: "mg/kg (max 150mg)" }
       },
-      max: "4 g/day",
-      indication: "CAP, meningitis, gonorrhea, Lyme disease",
-      notes: "Avoid in neonates with hyperbilirubinemia. Do not mix with calcium."
+      max: "150 mg",
+      indication: "Rapid sequence intubation",
+      notes: "Depolarizing. Avoid in hyperkalemia, burns, crush injury.",
+      renalAdjust: null
     },
     {
-      id: "cefotaxime",
-      name: "Cefotaxime",
+      id: "tmp-smx",
+      name: "Trimethoprim-Sulfamethoxazole (Septrin)",
       category: "Antibiotic",
-      route: "IV/IM",
+      route: "IV/PO",
       doses: {
-        standard: { label: "Standard", value: "50", unit: "mg/kg/dose q6-8h" },
-        meningitis: { label: "Meningitis", value: "50", unit: "mg/kg/dose q6h" }
+        uti: { label: "UTI", value: "4-6", unit: "mg TMP/kg/day divided q12h" },
+        pcp: { label: "PCP Treatment", value: "15-20", unit: "mg TMP/kg/day divided q6-8h" }
       },
-      max: "12 g/day",
-      indication: "Meningitis, sepsis (preferred in neonates)",
-      notes: "Preferred over ceftriaxone in neonates. Good CSF penetration."
+      max: "320 mg TMP/dose",
+      indication: "UTI, PCP, MRSA skin infections, Nocardia",
+      notes: "Dose based on TMP component. Adequate hydration required.",
+      renalAdjust: { gfr50: "No change", gfr30: "50% dose", gfr10: "Avoid or 50% dose q24h", hd: "Give after HD" }
     },
     {
-      id: "ceftazidime",
-      name: "Ceftazidime",
-      category: "Antibiotic",
-      route: "IV/IM",
+      id: "topiramate",
+      name: "Topiramate",
+      category: "Anticonvulsant",
+      route: "PO",
       doses: {
-        standard: { label: "Standard", value: "50", unit: "mg/kg/dose q8h" },
-        cf: { label: "Cystic Fibrosis", value: "50", unit: "mg/kg/dose q6h" }
+        initial: { label: "Initial", value: "1-3", unit: "mg/kg/day" },
+        maintenance: { label: "Maintenance", value: "5-9", unit: "mg/kg/day divided q12h" }
       },
-      max: "6 g/day",
-      indication: "Pseudomonas, gram-negative meningitis",
-      notes: "Anti-pseudomonal. Higher doses for CF patients."
+      max: "400 mg/day",
+      indication: "Epilepsy, migraine prophylaxis",
+      notes: "Titrate slowly. Risk of kidney stones, cognitive effects.",
+      renalAdjust: { gfr50: "No change", gfr30: "50% dose", gfr10: "50% dose", hd: "Give supplement after HD" }
     },
     {
-      id: "cefepime",
-      name: "Cefepime",
+      id: "valacyclovir",
+      name: "Valacyclovir",
+      category: "Antiviral",
+      route: "PO",
+      doses: {
+        chickenpox: { label: "Chickenpox ≥2y", value: "20", unit: "mg/kg/dose q8h x5 days" },
+        herpes: { label: "Herpes Simplex", value: "20", unit: "mg/kg/dose q12h" }
+      },
+      max: "1 g/dose",
+      indication: "HSV, VZV, chickenpox",
+      notes: "Prodrug of acyclovir with better oral bioavailability.",
+      renalAdjust: { gfr50: "No change", gfr30: "q12h", gfr10: "q24h", hd: "Give after HD" }
+    },
+    {
+      id: "valproicacid",
+      name: "Valproic Acid",
+      category: "Anticonvulsant",
+      route: "PO/IV",
+      doses: {
+        loading: { label: "Loading", value: "20-40", unit: "mg/kg" },
+        maintenance: { label: "Maintenance", value: "30-60", unit: "mg/kg/day divided q8-12h" }
+      },
+      max: "60 mg/kg/day",
+      indication: "Seizures, status epilepticus, bipolar",
+      notes: "Monitor LFTs, ammonia. Teratogenic - avoid in pregnancy.",
+      renalAdjust: null
+    },
+    {
+      id: "vancomycin",
+      name: "Vancomycin",
       category: "Antibiotic",
       route: "IV",
       doses: {
-        standard: { label: "Standard", value: "50", unit: "mg/kg/dose q8-12h" },
-        neutropenia: { label: "Febrile Neutropenia", value: "50", unit: "mg/kg/dose q8h" }
+        standard: { label: "Standard", value: "15", unit: "mg/kg/dose q6-8h" },
+        meningitis: { label: "Meningitis/Severe", value: "15-20", unit: "mg/kg/dose q6h" }
       },
-      max: "2 g/dose",
-      indication: "Febrile neutropenia, Pseudomonas, nosocomial",
-      notes: "4th gen cephalosporin. Good gram-positive and gram-negative coverage."
+      max: "4 g/day",
+      indication: "MRSA, C. diff (PO), serious gram-positive",
+      notes: "Trough: 10-15 (standard), 15-20 (CNS/severe). Infuse over 1hr.",
+      renalAdjust: { gfr50: "q8-12h or per levels", gfr30: "q12-24h or per levels", gfr10: "q24-48h or per levels", hd: "Redose per levels after HD" }
     },
     {
-      id: "meropenem",
-      name: "Meropenem",
+      id: "vecuronium",
+      name: "Vecuronium",
+      category: "Neuromuscular Blocker",
+      route: "IV",
+      doses: {
+        intubation: { label: "Intubation", value: "0.1", unit: "mg/kg" },
+        infusion: { label: "Infusion", value: "0.8-1.7", unit: "mcg/kg/min" }
+      },
+      max: "0.15 mg/kg bolus",
+      indication: "Intubation, mechanical ventilation",
+      notes: "Non-depolarizing. Longer onset than rocuronium.",
+      renalAdjust: null
+    },
+    {
+      id: "vitamind",
+      name: "Vitamin D (Cholecalciferol)",
+      category: "Vitamin",
+      route: "PO",
+      doses: {
+        prophylaxis: { label: "Prophylaxis", value: "400-600", unit: "IU/day" },
+        deficiency: { label: "Deficiency", value: "1000-5000", unit: "IU/day x8-12 weeks" }
+      },
+      max: "10,000 IU/day",
+      indication: "Rickets prevention, vitamin D deficiency",
+      notes: "All breastfed infants need 400 IU/day.",
+      renalAdjust: null
+    },
+    {
+      id: "vitamink",
+      name: "Vitamin K (Phytonadione)",
+      category: "Vitamin",
+      route: "IM/IV/PO",
+      doses: {
+        newborn: { label: "Newborn Prophylaxis", value: "0.5-1", unit: "mg IM once" },
+        bleeding: { label: "Bleeding/Reversal", value: "1-5", unit: "mg IV/PO" }
+      },
+      max: "10 mg/dose",
+      indication: "VKDB prophylaxis, warfarin reversal",
+      notes: "IM preferred for newborns. IV: slow infusion (risk of anaphylaxis).",
+      renalAdjust: null
+    }
+  ];
       category: "Antibiotic",
       route: "IV",
       doses: {
