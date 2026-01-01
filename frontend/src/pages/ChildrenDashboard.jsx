@@ -220,7 +220,7 @@ const ChildrenDashboard = ({ theme, toggleTheme }) => {
       {/* Edit Mode Instructions */}
       {isEditMode && (
         <div className="p-3 rounded-xl bg-[#00d9c5]/10 border border-[#00d9c5]/30 text-sm text-center flex items-center justify-center gap-2">
-          <GripVertical className="h-4 w-4 text-[#00d9c5]" />
+          <GripIcon className="h-4 w-4 text-[#00d9c5]" />
           <span>Drag widgets to rearrange</span>
         </div>
       )}
