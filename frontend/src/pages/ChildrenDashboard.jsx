@@ -4319,65 +4319,149 @@ const DrugsPage = ({ onBack }) => {
       renalAdjust: null
     }
   ];
-      category: "Antibiotic",
-      route: "IV",
-      doses: {
-        standard: { label: "Standard", value: "20", unit: "mg/kg/dose q8h" },
-        meningitis: { label: "Meningitis", value: "40", unit: "mg/kg/dose q8h" }
-      },
-      max: "2 g/dose (6 g/day)",
-      indication: "Serious gram-negative, intra-abdominal, meningitis",
-      notes: "Carbapenem. Extended infusion (3h) for severe infections."
-    },
-    {
-      id: "gentamicin",
-      name: "Gentamicin",
-      category: "Antibiotic",
-      route: "IV/IM",
-      doses: {
-        standard: { label: "Once Daily", value: "5-7.5", unit: "mg/kg/dose q24h" },
-        traditional: { label: "Traditional", value: "2.5", unit: "mg/kg/dose q8h" }
-      },
-      max: "560 mg/dose",
-      indication: "Gram-negative sepsis, synergy for endocarditis",
-      notes: "Monitor levels: trough <1, peak 20-30. Adjust for renal function."
-    },
-    {
-      id: "vancomycin",
-      name: "Vancomycin",
-      category: "Antibiotic",
-      route: "IV",
-      doses: {
-        standard: { label: "Standard", value: "15", unit: "mg/kg/dose q6-8h" },
-        meningitis: { label: "Meningitis/Severe", value: "15-20", unit: "mg/kg/dose q6h" }
-      },
-      max: "4 g/day",
-      indication: "MRSA, C. diff (PO), serious gram-positive",
-      notes: "Trough: 10-15 (standard), 15-20 (CNS/severe). Infuse over 1hr."
-    },
-    {
-      id: "azithromycin",
-      name: "Azithromycin",
-      category: "Antibiotic",
-      route: "PO/IV",
-      doses: {
-        standard: { label: "Standard (Z-pack)", value: "10", unit: "mg/kg day 1, then 5 mg/kg days 2-5" },
-        cap: { label: "CAP", value: "10", unit: "mg/kg/day x5 days" }
-      },
-      max: "500 mg/day",
-      indication: "Atypical pneumonia, pertussis, MAC prophylaxis",
-      notes: "Long half-life. QT prolongation risk."
-    },
-    {
-      id: "clindamycin",
-      name: "Clindamycin",
-      category: "Antibiotic",
-      route: "IV/PO",
-      doses: {
-        standard: { label: "Standard", value: "10-13", unit: "mg/kg/dose q6-8h" },
-        severe: { label: "Severe/Bone", value: "10-15", unit: "mg/kg/dose q6h" }
-      },
-      max: "900 mg/dose",
+
+  // Sort drugs alphabetically by name
+  const sortedDrugs = [...drugs].sort((a, b) => a.name.localeCompare(b.name));
+
+  // Filter drugs based on search
+  const filteredDrugs = sortedDrugs.filter(drug => 
+    drug.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    drug.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    drug.indication.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  // Calculate dose helper
+  const calculateDose = (doseStr, weight) => {
+    if (!weight || !doseStr) return null;
+    if (doseStr.includes("See age")) return doseStr;
+    const parts = doseStr.split("-");
+    const min = parseFloat(parts[0]);
+    const max = parseFloat(parts[1]) || min;
+    
+    if (isNaN(min)) return null;
+    
+    if (doseStr.includes("mcg")) {
+      return `${(min * weight).toFixed(1)}${max !== min ? ` - ${(max * weight).toFixed(1)}` : ''} mcg`;
+    }
+    if (doseStr.includes("units")) {
+      const multiplier = doseStr.includes("50000") || doseStr.includes("75000") ? 1000 : 1;
+      return `${((min * weight) / multiplier).toFixed(0)}K${max !== min ? ` - ${((max * weight) / multiplier).toFixed(0)}K` : ''} units`;
+    }
+    return `${(min * weight).toFixed(1)}${max !== min ? ` - ${(max * weight).toFixed(1)}` : ''} mg`;
+  };
+
+  // GFR category colors
+  const getGFRColor = () => {
+    if (!gfr) return "";
+    const gfrNum = parseFloat(gfr);
+    if (gfrNum >= 90) return "text-green-600";
+    if (gfrNum >= 60) return "text-green-500";
+    if (gfrNum >= 30) return "text-yellow-600";
+    if (gfrNum >= 15) return "text-orange-600";
+    return "text-red-600";
+  };
+
+  return (
+    <div className="space-y-4 pt-4 pb-24">
+      {/* Search and Weight Input */}
+      <Card className="nightingale-card">
+        <CardContent className="pt-4 space-y-3">
+          {/* Search Bar */}
+          <div className="relative">
+            <Scale className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              type="text"
+              placeholder="Search drugs..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10"
+            />
+          </div>
+          
+          {/* Weight Input */}
+          <div>
+            <Label className="text-[10px] text-muted-foreground">Weight (kg)</Label>
+            <Input
+              type="number"
+              placeholder="Enter weight for dose calculations"
+              value={weight}
+              onChange={(e) => setWeight(e.target.value)}
+              className="font-mono text-sm h-9"
+            />
+          </div>
+
+          {/* GFR Calculator Toggle */}
+          <button 
+            onClick={() => setShowGFRCalc(!showGFRCalc)}
+            className="w-full flex items-center justify-between p-2 rounded bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-300 text-xs"
+          >
+            <span className="font-medium">🧪 GFR Calculator (for renal dosing)</span>
+            <span>{showGFRCalc ? '▲' : '▼'}</span>
+          </button>
+
+          {/* GFR Calculator */}
+          {showGFRCalc && (
+            <div className="p-3 rounded border border-amber-200 dark:border-amber-800 bg-amber-50/50 dark:bg-amber-900/10 space-y-2">
+              <p className="text-[10px] text-muted-foreground font-medium">Bedside Schwartz Equation (Ages 1-17)</p>
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <Label className="text-[10px] text-muted-foreground">Height (cm)</Label>
+                  <Input
+                    type="number"
+                    placeholder="Height"
+                    value={height}
+                    onChange={(e) => setHeight(e.target.value)}
+                    className="font-mono text-sm h-8"
+                  />
+                </div>
+                <div>
+                  <Label className="text-[10px] text-muted-foreground">Creatinine (mg/dL)</Label>
+                  <Input
+                    type="number"
+                    step="0.1"
+                    placeholder="SCr"
+                    value={creatinine}
+                    onChange={(e) => setCreatinine(e.target.value)}
+                    className="font-mono text-sm h-8"
+                  />
+                </div>
+              </div>
+              {gfr && (
+                <div className="p-2 rounded bg-white dark:bg-gray-800 border">
+                  <p className="text-[10px] text-muted-foreground">Estimated GFR</p>
+                  <p className={`text-lg font-bold font-mono ${getGFRColor()}`}>
+                    {gfr} <span className="text-xs font-normal">mL/min/1.73m²</span>
+                  </p>
+                  <p className="text-[9px] text-muted-foreground mt-1">
+                    {parseFloat(gfr) >= 90 && "Normal kidney function"}
+                    {parseFloat(gfr) >= 60 && parseFloat(gfr) < 90 && "Mildly decreased (CKD Stage 2)"}
+                    {parseFloat(gfr) >= 30 && parseFloat(gfr) < 60 && "Moderately decreased (CKD Stage 3)"}
+                    {parseFloat(gfr) >= 15 && parseFloat(gfr) < 30 && "Severely decreased (CKD Stage 4)"}
+                    {parseFloat(gfr) < 15 && "Kidney failure (CKD Stage 5)"}
+                  </p>
+                </div>
+              )}
+              <p className="text-[8px] text-muted-foreground">Formula: eGFR = 0.413 × Height(cm) / SCr(mg/dL)</p>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Drug Count */}
+      <p className="text-xs text-muted-foreground px-1">
+        Showing {filteredDrugs.length} of {sortedDrugs.length} drugs
+        {gfr && <span className="ml-2 text-amber-600">• GFR: {gfr} mL/min/1.73m²</span>}
+      </p>
+
+      {/* Drug List */}
+      <div className="space-y-2">
+        {filteredDrugs.map((drug) => {
+          const isExpanded = expandedDrug === drug.id;
+          const doseKeys = drug.doses ? Object.keys(drug.doses) : [];
+          const firstDoseKey = doseKeys[0];
+          const firstDose = drug.doses?.[firstDoseKey];
+          
+          return (
       indication: "Skin/soft tissue, osteomyelitis, anaerobes, MRSA",
       notes: "Good bone penetration. Risk of C. diff colitis."
     },
