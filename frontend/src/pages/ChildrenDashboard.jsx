@@ -17,7 +17,7 @@
 
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { AlertTriangle, Scale, ChevronDown } from "lucide-react";
+import { AlertTriangle, Scale, ChevronDown, Star } from "lucide-react";
 import { 
   BloodPressureIcon, 
   InfusionIcon, 
