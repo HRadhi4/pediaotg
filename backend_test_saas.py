@@ -339,7 +339,7 @@ class PediaOTGBackendTester:
         success, response = self.run_test(
             "Layouts Create - Save user layout",
             "POST",
-            "api/layouts",
+            "api/layouts/",
             200,
             data=test_data,
             auth_token=self.user_token
