@@ -161,6 +161,7 @@ const ChildrenDashboard = ({ theme, toggleTheme }) => {
     cpr: { id: "cpr", title: "CPR", subtitle: "PALS drugs & algorithms", icon: HeartIcon, color: "red", keywords: ["resuscitation", "pals", "arrest", "defibrillation", "epinephrine", "amiodarone", "adenosine", "tachycardia", "bradycardia", "vf", "vt", "asystole", "pea"] },
     approaches: { id: "approaches", title: "Approaches", subtitle: "DKA, SE, Hyperammonemia", icon: ApproachesIcon, color: "teal", keywords: ["diabetic", "ketoacidosis", "dka", "status epilepticus", "seizure", "convulsion", "hyperammonemia", "ammonia", "urea cycle", "phenytoin", "diazepam"] },
     drugs: { id: "drugs", title: "Drugs", subtitle: "Commonly used medications", icon: DrugsIcon, color: "purple", keywords: ["antibiotic", "analgesic", "paracetamol", "ibuprofen", "morphine", "amoxicillin", "ceftriaxone", "vancomycin", "gentamicin", "pain", "fever"] },
+    fluidReplacement: { id: "fluidReplacement", title: "Fluid Replacement", subtitle: "Deficit + Maintenance", icon: FluidIcon, color: "teal", keywords: ["dehydration", "deficit", "maintenance", "holliday", "segar", "rehydration", "ivf", "fluids"] },
   };
 
   const widgets = widgetOrder.map(id => widgetDefs[id]).filter(Boolean);
