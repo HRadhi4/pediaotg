@@ -4462,72 +4462,12 @@ const DrugsPage = ({ onBack }) => {
           const firstDose = drug.doses?.[firstDoseKey];
           
           return (
-      indication: "Skin/soft tissue, osteomyelitis, anaerobes, MRSA",
-      notes: "Good bone penetration. Risk of C. diff colitis."
-    },
-    {
-      id: "metronidazole",
-      name: "Metronidazole",
-      category: "Antibiotic",
-      route: "IV/PO",
-      doses: {
-        standard: { label: "Standard", value: "7.5", unit: "mg/kg/dose q8h" },
-        cdiff: { label: "C. diff", value: "7.5", unit: "mg/kg/dose q6h PO" }
-      },
-      max: "500 mg/dose",
-      indication: "Anaerobes, C. diff, H. pylori, giardia",
-      notes: "Avoid alcohol. Metallic taste common."
-    },
-    {
-      id: "tmp-smx",
-      name: "TMP-SMX (Bactrim)",
-      category: "Antibiotic",
-      route: "IV/PO",
-      doses: {
-        uti: { label: "UTI", value: "4-6", unit: "mg TMP/kg/day divided q12h" },
-        pcp: { label: "PCP Treatment", value: "15-20", unit: "mg TMP/kg/day divided q6-8h" }
-      },
-      max: "320 mg TMP/dose",
-      indication: "UTI, PCP, MRSA skin infections, Nocardia",
-      notes: "Dose based on TMP component. Adequate hydration required."
-    },
-    // ===== ANALGESICS & SEDATIVES =====
-    {
-      id: "paracetamol",
-      name: "Paracetamol (Acetaminophen)",
-      category: "Analgesic",
-      route: "PO/PR/IV",
-      doses: {
-        po: { label: "PO/PR", value: "15", unit: "mg/kg/dose q4-6h" },
-        iv: { label: "IV", value: "15", unit: "mg/kg/dose q6h (7.5 if <10kg)" }
-      },
-      max: "75 mg/kg/day (max 4g/day)",
-      indication: "Pain, fever",
-      notes: "PR loading: 20-25 mg/kg. IV: 7.5 mg/kg if <10kg."
-    },
-    {
-      id: "ibuprofen",
-      name: "Ibuprofen",
-      category: "Analgesic",
-      route: "PO",
-      doses: {
-        standard: { label: "Standard", value: "5-10", unit: "mg/kg/dose q6-8h" }
-      },
-      max: "40 mg/kg/day (max 2.4g/day)",
-      indication: "Pain, fever, inflammation",
-      notes: "Avoid if dehydrated, renal impairment, GI bleed risk."
-    },
-    {
-      id: "morphine",
-      name: "Morphine",
-      category: "Opioid",
-      route: "IV/PO",
-      doses: {
-        iv: { label: "IV", value: "0.05-0.1", unit: "mg/kg/dose q2-4h" },
-        po: { label: "PO", value: "0.2-0.5", unit: "mg/kg/dose q4h" }
-      },
-      max: "0.1-0.2 mg/kg/dose IV",
-      indication: "Moderate-severe pain",
+            <Card 
+              key={drug.id} 
+              className="nightingale-card cursor-pointer hover:border-blue-300 dark:hover:border-blue-700 transition-colors"
+              onClick={() => setExpandedDrug(isExpanded ? null : drug.id)}
+            >
+              <CardContent className="p-3">
       notes: "Start low, titrate. Monitor respiratory status. PO:IV = 3:1."
     },
     {
