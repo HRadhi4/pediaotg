@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Menu, X, Moon, Sun, Info, Home, Baby, Users } from "lucide-react";
+import { Menu, X, Moon, Sun, Info, Home, Baby, Users, User, Shield, CreditCard, LogOut, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Badge } from "@/components/ui/badge";
+import { useAuth } from "@/contexts/AuthContext";
 
 const APP_VERSION = "1.0.0";
 
