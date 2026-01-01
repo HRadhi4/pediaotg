@@ -2903,6 +2903,7 @@ const DrugsPage = ({ onBack }) => {
   const [weight, setWeight] = useState("");
   const [height, setHeight] = useState("");
   const [creatinine, setCreatinine] = useState("");
+  const [ageCategory, setAgeCategory] = useState("child"); // "preterm", "term", "child", "adolescentM", "adolescentF"
   const [expandedDrug, setExpandedDrug] = useState(null);
   const [showGFRCalc, setShowGFRCalc] = useState(false);
   
@@ -2910,11 +2911,39 @@ const DrugsPage = ({ onBack }) => {
   const h = parseFloat(height) || 0;
   const scr = parseFloat(creatinine) || 0;
 
-  // Bedside Schwartz GFR calculation (using µmol/L)
-  // Formula: eGFR = 36.5 × Height(cm) / SCr(µmol/L)
+  // Schwartz GFR calculation (using µmol/L)
+  // Original Schwartz: eGFR = k × Height(cm) / SCr(mg/dL)
+  // For µmol/L: multiply k by 88.4 (conversion factor)
+  // k values: Preterm=0.33, Term infant=0.45, Child(1-13y)=0.55, Adolescent Male=0.70, Adolescent Female=0.55
+  const getKValue = () => {
+    switch(ageCategory) {
+      case "preterm": return 0.33;
+      case "term": return 0.45;
+      case "child": return 0.55;
+      case "adolescentM": return 0.70;
+      case "adolescentF": return 0.55;
+      default: return 0.55;
+    }
+  };
+
+  const getAgeCategoryLabel = () => {
+    switch(ageCategory) {
+      case "preterm": return "Preterm infant";
+      case "term": return "Term infant (<1 year)";
+      case "child": return "Child (1-13 years)";
+      case "adolescentM": return "Adolescent male (>13 years)";
+      case "adolescentF": return "Adolescent female (>13 years)";
+      default: return "Child";
+    }
+  };
+
   const calculateGFR = () => {
     if (h > 0 && scr > 0) {
-      return (36.5 * h / scr).toFixed(1);
+      const k = getKValue();
+      // Formula: eGFR = (k × 88.4) × Height(cm) / SCr(µmol/L)
+      // This is equivalent to k × Height / (SCr/88.4) where SCr is in µmol/L
+      const kAdjusted = k * 88.4;
+      return (kAdjusted * h / scr).toFixed(1);
     }
     return null;
   };
