@@ -4,13 +4,16 @@ import base64
 from datetime import datetime
 from PIL import Image, ImageDraw, ImageFont
 import io
+import json
 
-class NICUBackendTester:
+class PediaOTGBackendTester:
     def __init__(self, base_url="https://medsuite-peds.preview.emergentagent.com"):
         self.base_url = base_url
         self.tests_run = 0
         self.tests_passed = 0
         self.test_image_base64 = self.create_test_image()
+        self.admin_token = None
+        self.user_token = None
 
     def create_test_image(self):
         """Create a test image with blood gas values for OCR testing"""
