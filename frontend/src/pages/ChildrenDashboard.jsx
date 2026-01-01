@@ -4468,26 +4468,166 @@ const DrugsPage = ({ onBack }) => {
               onClick={() => setExpandedDrug(isExpanded ? null : drug.id)}
             >
               <CardContent className="p-3">
-      route: "IV",
-      doses: {
-        loading: { label: "Loading", value: "20", unit: "mg PE/kg" },
-        maintenance: { label: "Maintenance", value: "5-7", unit: "mg/kg/day divided q8-12h" }
-      },
-      max: "1500 mg load",
-      indication: "Status epilepticus, seizure prophylaxis",
-      notes: "Fosphenytoin preferred (less irritation). Monitor levels, cardiac."
-    },
-    {
-      id: "phenobarbital",
-      name: "Phenobarbital",
-      category: "Anticonvulsant",
-      route: "IV/PO",
-      doses: {
-        loading: { label: "Loading", value: "20", unit: "mg/kg" },
-        maintenance: { label: "Maintenance", value: "3-5", unit: "mg/kg/day" }
-      },
-      max: "40 mg/kg total load",
-      indication: "Neonatal seizures, status epilepticus",
+                {/* Drug Header */}
+                <div className="flex items-start justify-between">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2">
+                      <h3 className="font-semibold text-sm">{drug.name}</h3>
+                      <span className="text-[10px] px-1.5 py-0.5 rounded bg-gray-100 dark:bg-gray-800 text-muted-foreground">
+                        {drug.category}
+                      </span>
+                    </div>
+                    {/* Show first dose type */}
+                    {firstDose && (
+                      <div className="flex flex-wrap gap-1 mt-1">
+                        <span className="text-[9px] px-1 py-0.5 rounded bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400">
+                          {firstDose.label}: {firstDose.value} {firstDose.unit}
+                        </span>
+                      </div>
+                    )}
+                    {/* Age-based dosing indicator */}
+                    {drug.ageDosing && (
+                      <span className="text-[9px] px-1 py-0.5 rounded bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400 mt-1 inline-block">
+                        Age-based dosing
+                      </span>
+                    )}
+                  </div>
+                  {w > 0 && firstDose && (
+                    <div className="text-right ml-2">
+                      <p className="text-[11px] font-mono">
+                        <span className="font-bold text-blue-600">{calculateDose(firstDose.value, w)}</span>
+                      </p>
+                    </div>
+                  )}
+                </div>
+
+                {/* Expanded Content */}
+                {isExpanded && (
+                  <div className="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700 space-y-3">
+                    {/* Age-Based Dosing Table */}
+                    {drug.ageDosing && (
+                      <div className="p-2 rounded bg-purple-50 dark:bg-purple-900/20">
+                        <p className="text-[10px] font-medium text-purple-700 dark:text-purple-300 uppercase tracking-wide mb-1">Age-Based Dosing</p>
+                        <div className="space-y-1">
+                          {drug.ageDosing.map((ad, idx) => (
+                            <div key={idx} className="flex justify-between text-xs">
+                              <span className="text-muted-foreground">{ad.age}:</span>
+                              <span className="font-mono">{ad.dose}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* All Calculated Doses */}
+                    {w > 0 && (
+                      <div>
+                        <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide mb-1">Calculated Doses ({w}kg)</p>
+                        <div className="grid grid-cols-2 gap-2">
+                          {doseKeys.map(key => (
+                            <div key={key} className="p-2 rounded bg-blue-50 dark:bg-blue-900/20">
+                              <p className="text-[10px] text-muted-foreground">{drug.doses[key].label}</p>
+                              <p className="font-mono font-bold text-blue-600">{calculateDose(drug.doses[key].value, w)}</p>
+                              <p className="text-[9px] text-muted-foreground">{drug.doses[key].unit}</p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Dose Table (when no weight) */}
+                    {!w && (
+                      <div>
+                        <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide mb-1">Dosing</p>
+                        <div className="space-y-1">
+                          {doseKeys.map(key => (
+                            <div key={key} className="text-xs">
+                              <span className="font-medium">{drug.doses[key].label}:</span> {drug.doses[key].value} {drug.doses[key].unit}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Route */}
+                    <div>
+                      <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">Route</p>
+                      <p className="text-xs">{drug.route}</p>
+                    </div>
+
+                    {/* Max Dose */}
+                    <div>
+                      <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">Max Dose</p>
+                      <p className="text-xs font-medium text-red-600">{drug.max}</p>
+                    </div>
+
+                    {/* Indication */}
+                    <div>
+                      <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">Indication</p>
+                      <p className="text-xs">{drug.indication}</p>
+                    </div>
+
+                    {/* Renal Adjustment */}
+                    {drug.renalAdjust && (
+                      <div className="p-2 rounded bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800">
+                        <p className="text-[10px] font-medium text-amber-700 dark:text-amber-300 uppercase tracking-wide mb-1">⚠️ Renal Dose Adjustment</p>
+                        <div className="grid grid-cols-2 gap-1 text-[10px]">
+                          <div><span className="text-muted-foreground">GFR 30-50:</span> <span className="font-mono">{drug.renalAdjust.gfr50}</span></div>
+                          <div><span className="text-muted-foreground">GFR 10-30:</span> <span className="font-mono">{drug.renalAdjust.gfr30}</span></div>
+                          <div><span className="text-muted-foreground">GFR &lt;10:</span> <span className="font-mono">{drug.renalAdjust.gfr10}</span></div>
+                          <div><span className="text-muted-foreground">HD:</span> <span className="font-mono">{drug.renalAdjust.hd}</span></div>
+                        </div>
+                        {gfr && (
+                          <div className="mt-2 pt-2 border-t border-amber-200 dark:border-amber-700">
+                            <p className="text-[10px] text-amber-700 dark:text-amber-300">
+                              <span className="font-medium">Current GFR ({gfr}):</span>{" "}
+                              {parseFloat(gfr) >= 50 && drug.renalAdjust.gfr50}
+                              {parseFloat(gfr) >= 30 && parseFloat(gfr) < 50 && drug.renalAdjust.gfr50}
+                              {parseFloat(gfr) >= 10 && parseFloat(gfr) < 30 && drug.renalAdjust.gfr30}
+                              {parseFloat(gfr) < 10 && drug.renalAdjust.gfr10}
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Notes */}
+                    <div className="p-2 bg-gray-50 dark:bg-gray-800/50 rounded text-[10px] text-muted-foreground">
+                      <p className="font-medium text-foreground mb-0.5">Notes:</p>
+                      <p>{drug.notes}</p>
+                    </div>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          );
+        })}
+      </div>
+
+      {/* Empty State */}
+      {filteredDrugs.length === 0 && (
+        <Card className="nightingale-card">
+          <CardContent className="py-8 text-center">
+            <p className="text-muted-foreground text-sm">No drugs found matching "{searchTerm}"</p>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Reference */}
+      <Card className="nightingale-card">
+        <CardContent className="pt-4 text-xs text-muted-foreground">
+          <p className="font-medium text-foreground mb-1">Reference: Harriet Lane Handbook 23rd Ed (2023)</p>
+          <p>• Always verify doses and adjust for renal/hepatic function</p>
+          <p>• Monitor drug levels for aminoglycosides, vancomycin</p>
+          <p>• Check for drug interactions and allergies</p>
+          <p>• GFR calculation uses Bedside Schwartz equation (ages 1-17)</p>
+        </CardContent>
+      </Card>
+    </div>
+  );
+};
+
+// ==================== FLUID REPLACEMENT PAGE ====================
       notes: "Causes sedation. Additional 10 mg/kg loads PRN to max 40 mg/kg."
     },
     // ===== STEROIDS =====
