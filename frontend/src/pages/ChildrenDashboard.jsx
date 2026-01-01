@@ -4628,76 +4628,7 @@ const DrugsPage = ({ onBack }) => {
 };
 
 // ==================== FLUID REPLACEMENT PAGE ====================
-      notes: "Causes sedation. Additional 10 mg/kg loads PRN to max 40 mg/kg."
-    },
-    // ===== STEROIDS =====
-    {
-      id: "dexamethasone",
-      name: "Dexamethasone",
-      category: "Steroid",
-      route: "IV/PO",
-      doses: {
-        croup: { label: "Croup", value: "0.6", unit: "mg/kg single dose" },
-        meningitis: { label: "Meningitis", value: "0.15", unit: "mg/kg q6h x2 days" },
-        airway: { label: "Airway Edema", value: "0.5-1", unit: "mg/kg q6h" }
-      },
-      max: "10 mg/dose",
-      indication: "Croup, meningitis, airway edema, asthma",
-      notes: "Give before/with first abx dose for meningitis."
-    },
-    {
-      id: "prednisolone",
-      name: "Prednisolone/Prednisone",
-      category: "Steroid",
-      route: "PO",
-      doses: {
-        asthma: { label: "Asthma", value: "1-2", unit: "mg/kg/day divided q12-24h" },
-        immunosupp: { label: "Immunosuppression", value: "2", unit: "mg/kg/day" }
-      },
-      max: "60 mg/day",
-      indication: "Asthma exacerbation, nephrotic syndrome",
-      notes: "Give with food. Taper if >5 days."
-    },
-    {
-      id: "hydrocortisone",
-      name: "Hydrocortisone",
-      category: "Steroid",
-      route: "IV",
-      doses: {
-        stress: { label: "Stress Dose", value: "50-100", unit: "mg/m² or 1-2 mg/kg" },
-        shock: { label: "Shock", value: "1-2", unit: "mg/kg q6h" }
-      },
-      max: "100 mg/dose",
-      indication: "Adrenal insufficiency, shock",
-      notes: "Stress dosing for illness/surgery in adrenal insufficiency."
-    },
-    // ===== CARDIOVASCULAR =====
-    {
-      id: "adrenaline",
-      name: "Epinephrine (Adrenaline)",
-      category: "Vasoactive",
-      route: "IV/IM/ETT",
-      doses: {
-        arrest: { label: "Cardiac Arrest", value: "0.01", unit: "mg/kg (0.1 ml/kg of 1:10,000) q3-5min" },
-        anaphylaxis: { label: "Anaphylaxis IM", value: "0.01", unit: "mg/kg (0.01 ml/kg of 1:1,000)" },
-        infusion: { label: "Infusion", value: "0.01-1", unit: "mcg/kg/min" }
-      },
-      max: "1 mg/dose arrest, 0.5 mg IM",
-      indication: "Cardiac arrest, anaphylaxis, shock",
-      notes: "ETT: 0.1 mg/kg (10x IV dose). IM for anaphylaxis."
-    },
-    {
-      id: "adenosine",
-      name: "Adenosine",
-      category: "Antiarrhythmic",
-      route: "IV rapid push",
-      doses: {
-        first: { label: "1st Dose", value: "0.1", unit: "mg/kg rapid push" },
-        second: { label: "2nd Dose", value: "0.2", unit: "mg/kg if needed" }
-      },
-      max: "6 mg first, 12 mg subsequent",
-      indication: "SVT",
-      notes: "Give rapid IV push followed by saline flush. May cause brief asystole."
+const FluidReplacementPage = ({ onBack }) => {
     },
     {
       id: "amiodarone",
