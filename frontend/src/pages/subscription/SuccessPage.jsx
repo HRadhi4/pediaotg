@@ -14,10 +14,6 @@ const SubscriptionSuccessPage = () => {
   const [status, setStatus] = useState('processing'); // processing, success, error
   const [message, setMessage] = useState('Completing your subscription...');
 
-  useEffect(() => {
-    capturePayment();
-  }, []);
-
   const capturePayment = async () => {
     try {
       // Get order info from URL or localStorage
@@ -73,6 +69,11 @@ const SubscriptionSuccessPage = () => {
       setMessage('An error occurred. Please contact support.');
     }
   };
+
+  useEffect(() => {
+    capturePayment();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-teal-50 to-blue-50 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4">
