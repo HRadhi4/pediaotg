@@ -2910,10 +2910,11 @@ const DrugsPage = ({ onBack }) => {
   const h = parseFloat(height) || 0;
   const scr = parseFloat(creatinine) || 0;
 
-  // Bedside Schwartz GFR calculation
+  // Bedside Schwartz GFR calculation (using µmol/L)
+  // Formula: eGFR = 36.5 × Height(cm) / SCr(µmol/L)
   const calculateGFR = () => {
     if (h > 0 && scr > 0) {
-      return (0.413 * h / scr).toFixed(1);
+      return (36.5 * h / scr).toFixed(1);
     }
     return null;
   };
