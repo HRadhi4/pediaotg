@@ -162,6 +162,26 @@ const SidePanel = ({ isOpen, onClose, theme, toggleTheme }) => {
 
           {/* Settings */}
           <div className="p-4 border-t space-y-2">
+            {/* My Account */}
+            <button
+              onClick={() => handleNavigate('/account')}
+              className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+            >
+              <CreditCard className="h-5 w-5" />
+              <span className="font-medium">My Account</span>
+            </button>
+
+            {/* Admin Dashboard (Admin Only) */}
+            {isAdmin && (
+              <button
+                onClick={() => handleNavigate('/admin')}
+                className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-purple-50 dark:hover:bg-purple-900/20 text-purple-600 transition-colors"
+              >
+                <Shield className="h-5 w-5" />
+                <span className="font-medium">Admin Dashboard</span>
+              </button>
+            )}
+
             {/* Theme Toggle */}
             <button
               onClick={toggleTheme}
@@ -188,6 +208,17 @@ const SidePanel = ({ isOpen, onClose, theme, toggleTheme }) => {
               <Info className="h-5 w-5" />
               <span className="font-medium">About</span>
             </button>
+
+            {/* Logout */}
+            {user && (
+              <button
+                onClick={handleLogout}
+                className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-red-50 dark:hover:bg-red-900/20 text-red-500 transition-colors"
+              >
+                <LogOut className="h-5 w-5" />
+                <span className="font-medium">Sign Out</span>
+              </button>
+            )}
           </div>
         </div>
       </div>
