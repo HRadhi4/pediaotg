@@ -2904,6 +2904,7 @@ const DrugsPage = ({ onBack }) => {
   const [height, setHeight] = useState("");
   const [creatinine, setCreatinine] = useState("");
   const [ageCategory, setAgeCategory] = useState("child"); // "preterm", "term", "child", "adolescentM", "adolescentF"
+  const [schwartzType, setSchwartzType] = useState("revised"); // "revised" or "original"
   const [expandedDrug, setExpandedDrug] = useState(null);
   const [showGFRCalc, setShowGFRCalc] = useState(false);
   
@@ -2911,9 +2912,7 @@ const DrugsPage = ({ onBack }) => {
   const h = parseFloat(height) || 0;
   const scr = parseFloat(creatinine) || 0;
 
-  // Schwartz GFR calculation (using µmol/L)
-  // Original Schwartz: eGFR = k × Height(cm) / SCr(mg/dL)
-  // For µmol/L: multiply k by 88.4 (conversion factor)
+  // Original Schwartz k values by age
   // k values: Preterm=0.33, Term infant=0.45, Child(1-13y)=0.55, Adolescent Male=0.70, Adolescent Female=0.55
   const getKValue = () => {
     switch(ageCategory) {
@@ -2937,13 +2936,21 @@ const DrugsPage = ({ onBack }) => {
     }
   };
 
+  // GFR Calculation
+  // Revised Schwartz (2009): eGFR = 0.413 × Height(cm) / SCr(mg/dL) = 36.5 × Height(cm) / SCr(µmol/L)
+  // Original Schwartz: eGFR = k × Height(cm) / SCr(mg/dL) = k × 88.4 × Height(cm) / SCr(µmol/L)
   const calculateGFR = () => {
     if (h > 0 && scr > 0) {
-      const k = getKValue();
-      // Formula: eGFR = (k × 88.4) × Height(cm) / SCr(µmol/L)
-      // This is equivalent to k × Height / (SCr/88.4) where SCr is in µmol/L
-      const kAdjusted = k * 88.4;
-      return (kAdjusted * h / scr).toFixed(1);
+      if (schwartzType === "revised") {
+        // Revised Schwartz (Bedside): single k=0.413 for all ages 1-17
+        // For µmol/L: 0.413 × 88.4 = 36.5
+        return (36.5 * h / scr).toFixed(1);
+      } else {
+        // Original Schwartz: age-specific k values
+        const k = getKValue();
+        const kAdjusted = k * 88.4;
+        return (kAdjusted * h / scr).toFixed(1);
+      }
     }
     return null;
   };
