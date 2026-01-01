@@ -283,6 +283,8 @@ const ChildrenDashboard = ({ theme, toggleTheme }) => {
                 isEditMode={isEditMode}
                 onClick={goToPage}
                 getColorClass={getColorClass}
+                isFavorite={isFavorite(widget.id)}
+                onToggleFavorite={toggleFavorite}
               />
             ))}
           </div>
