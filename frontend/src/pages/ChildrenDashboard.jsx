@@ -3309,4 +3309,282 @@ const DrugsPage = ({ onBack }) => {
   );
 };
 
+// ==================== FLUID REPLACEMENT PAGE ====================
+const FluidReplacementPage = ({ onBack }) => {
+  const [weight, setWeight] = useState("");
+  const [ageGroup, setAgeGroup] = useState("children"); // "infant" or "children"
+  const [dehydrationLevel, setDehydrationLevel] = useState("moderate");
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  const w = parseFloat(weight) || 0;
+
+  // Maintenance fluid calculation (Holliday-Segar formula)
+  const calculateMaintenance = (kg) => {
+    if (kg <= 0) return 0;
+    if (kg <= 10) return kg * 100;
+    if (kg <= 20) return 1000 + (kg - 10) * 50;
+    return 1500 + (kg - 20) * 20;
+  };
+
+  // Deficit percentages
+  const deficitTable = {
+    infant: { mild: 5, moderate: 10, severe: 15 },
+    children: { mild: 3, moderate: 6, severe: 9 }
+  };
+
+  // Calculate all values
+  const maintenance24h = calculateMaintenance(w);
+  const deficitPercent = deficitTable[ageGroup][dehydrationLevel];
+  const deficitMlPerKg = deficitPercent * 10; // Convert % to ml/kg
+  const totalDeficit = w * deficitMlPerKg;
+
+  // First 8 hours: 1/3 maintenance + 1/2 deficit
+  const maint8h = maintenance24h / 3;
+  const deficit8h = totalDeficit / 2;
+  const total8h = maint8h + deficit8h;
+  const rate8h = total8h / 8;
+
+  // Next 16 hours: 2/3 maintenance + 1/2 deficit
+  const maint16h = (maintenance24h * 2) / 3;
+  const deficit16h = totalDeficit / 2;
+  const total16h = maint16h + deficit16h;
+  const rate16h = total16h / 16;
+
+  // Total 24h (capped at 2500ml)
+  const total24h = Math.min(total8h + total16h, 2500);
+  const exceeds2500 = (total8h + total16h) > 2500;
+
+  return (
+    <div className="space-y-4 pt-4 pb-24">
+      {/* Input Card */}
+      <Card className="nightingale-card">
+        <CardContent className="pt-4 space-y-4">
+          {/* Weight Input */}
+          <div className="space-y-2">
+            <Label className="text-sm font-medium">Weight (kg)</Label>
+            <Input
+              type="number"
+              placeholder="Enter weight in kg"
+              value={weight}
+              onChange={(e) => setWeight(e.target.value)}
+              className="font-mono text-lg"
+            />
+          </div>
+
+          {/* Age Group Selection */}
+          <div className="space-y-2">
+            <Label className="text-sm font-medium">Age Group</Label>
+            <div className="grid grid-cols-2 gap-2">
+              <Button
+                variant={ageGroup === "infant" ? "default" : "outline"}
+                onClick={() => setAgeGroup("infant")}
+                className="text-sm"
+              >
+                Infant (&lt;1 year)
+              </Button>
+              <Button
+                variant={ageGroup === "children" ? "default" : "outline"}
+                onClick={() => setAgeGroup("children")}
+                className="text-sm"
+              >
+                Children (&gt;1 year)
+              </Button>
+            </div>
+          </div>
+
+          {/* Dehydration Level */}
+          <div className="space-y-2">
+            <Label className="text-sm font-medium">Dehydration Level</Label>
+            <div className="grid grid-cols-3 gap-2">
+              <Button
+                variant={dehydrationLevel === "mild" ? "default" : "outline"}
+                onClick={() => setDehydrationLevel("mild")}
+                className="text-xs"
+              >
+                Mild
+              </Button>
+              <Button
+                variant={dehydrationLevel === "moderate" ? "default" : "outline"}
+                onClick={() => setDehydrationLevel("moderate")}
+                className="text-xs"
+              >
+                Moderate
+              </Button>
+              <Button
+                variant={dehydrationLevel === "severe" ? "default" : "outline"}
+                onClick={() => setDehydrationLevel("severe")}
+                className="text-xs"
+              >
+                Severe
+              </Button>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Deficit Reference Table */}
+      <Card className="nightingale-card">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-sm">Deficit Reference</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="overflow-x-auto">
+            <table className="w-full text-xs">
+              <thead>
+                <tr className="bg-gray-50 dark:bg-gray-800/50">
+                  <th className="py-2 px-2 text-left font-medium">Age Group</th>
+                  <th className="py-2 px-2 text-center font-medium">Mild</th>
+                  <th className="py-2 px-2 text-center font-medium">Moderate</th>
+                  <th className="py-2 px-2 text-center font-medium">Severe</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr className="border-t">
+                  <td className="py-2 px-2 font-medium">Infants</td>
+                  <td className="py-2 px-2 text-center">5% (50 ml/kg)</td>
+                  <td className="py-2 px-2 text-center">10% (100 ml/kg)</td>
+                  <td className="py-2 px-2 text-center">15% (150 ml/kg)</td>
+                </tr>
+                <tr className="border-t">
+                  <td className="py-2 px-2 font-medium">Children</td>
+                  <td className="py-2 px-2 text-center">3% (30 ml/kg)</td>
+                  <td className="py-2 px-2 text-center">6% (60 ml/kg)</td>
+                  <td className="py-2 px-2 text-center">9% (90 ml/kg)</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Results */}
+      {w > 0 && (
+        <>
+          {/* Calculated Values */}
+          <Card className="nightingale-card">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm">Calculated Values</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <div className="grid grid-cols-2 gap-3">
+                <div className="p-3 rounded-lg bg-teal-50 dark:bg-teal-900/20">
+                  <p className="text-[10px] text-muted-foreground uppercase">Maintenance (24h)</p>
+                  <p className="font-mono font-bold text-lg text-teal-600">{maintenance24h.toFixed(0)} ml</p>
+                </div>
+                <div className="p-3 rounded-lg bg-blue-50 dark:bg-blue-900/20">
+                  <p className="text-[10px] text-muted-foreground uppercase">Deficit ({deficitPercent}%)</p>
+                  <p className="font-mono font-bold text-lg text-blue-600">{totalDeficit.toFixed(0)} ml</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* First 8 Hours */}
+          <Card className="nightingale-card border-l-4 border-l-amber-500">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm flex items-center gap-2">
+                <span className="px-2 py-0.5 bg-amber-100 dark:bg-amber-900/30 rounded text-amber-700 dark:text-amber-400 text-xs">0-8 hrs</span>
+                First 8 Hours
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              <div className="text-xs space-y-1">
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">1/3 Maintenance:</span>
+                  <span className="font-mono">{maint8h.toFixed(0)} ml</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">1/2 Deficit:</span>
+                  <span className="font-mono">{deficit8h.toFixed(0)} ml</span>
+                </div>
+                <div className="flex justify-between font-semibold border-t pt-1 mt-1">
+                  <span>Total:</span>
+                  <span className="font-mono text-amber-600">{total8h.toFixed(0)} ml</span>
+                </div>
+              </div>
+              <div className="p-2 bg-amber-50 dark:bg-amber-900/20 rounded-lg">
+                <p className="text-xs text-muted-foreground">Rate:</p>
+                <p className="font-mono font-bold text-lg text-amber-600">{rate8h.toFixed(1)} ml/hr</p>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Next 16 Hours */}
+          <Card className="nightingale-card border-l-4 border-l-green-500">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm flex items-center gap-2">
+                <span className="px-2 py-0.5 bg-green-100 dark:bg-green-900/30 rounded text-green-700 dark:text-green-400 text-xs">8-24 hrs</span>
+                Next 16 Hours
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              <div className="text-xs space-y-1">
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">2/3 Maintenance:</span>
+                  <span className="font-mono">{maint16h.toFixed(0)} ml</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">1/2 Deficit:</span>
+                  <span className="font-mono">{deficit16h.toFixed(0)} ml</span>
+                </div>
+                <div className="flex justify-between font-semibold border-t pt-1 mt-1">
+                  <span>Total:</span>
+                  <span className="font-mono text-green-600">{total16h.toFixed(0)} ml</span>
+                </div>
+              </div>
+              <div className="p-2 bg-green-50 dark:bg-green-900/20 rounded-lg">
+                <p className="text-xs text-muted-foreground">Rate:</p>
+                <p className="font-mono font-bold text-lg text-green-600">{rate16h.toFixed(1)} ml/hr</p>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* 24h Total */}
+          <Card className={`nightingale-card ${exceeds2500 ? 'border-red-500 border-2' : ''}`}>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm">24 Hour Total</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="p-3 rounded-lg bg-gray-50 dark:bg-gray-800/50">
+                <p className="font-mono font-bold text-2xl text-center">
+                  {total24h.toFixed(0)} ml
+                </p>
+                {exceeds2500 && (
+                  <div className="mt-2 p-2 bg-red-100 dark:bg-red-900/30 rounded text-red-700 dark:text-red-400 text-xs text-center">
+                    ⚠️ Capped at 2500 ml/day (original: {(total8h + total16h).toFixed(0)} ml)
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Formula Reference */}
+          <Card className="nightingale-card">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm">Formula</CardTitle>
+            </CardHeader>
+            <CardContent className="text-xs text-muted-foreground space-y-2">
+              <div className="p-2 bg-gray-50 dark:bg-gray-800/50 rounded">
+                <p className="font-medium text-foreground mb-1">Maintenance (Holliday-Segar):</p>
+                <p>• First 10kg: 100 ml/kg/day</p>
+                <p>• Next 10kg: 50 ml/kg/day</p>
+                <p>• Each kg &gt;20kg: 20 ml/kg/day</p>
+              </div>
+              <div className="p-2 bg-gray-50 dark:bg-gray-800/50 rounded">
+                <p className="font-medium text-foreground mb-1">Distribution:</p>
+                <p>• 0-8h: 1/3 Maintenance + 1/2 Deficit</p>
+                <p>• 8-24h: 2/3 Maintenance + 1/2 Deficit</p>
+                <p>• Max: 2500 ml/day</p>
+              </div>
+            </CardContent>
+          </Card>
+        </>
+      )}
+    </div>
+  );
+};
+
 export default ChildrenDashboard;
