@@ -56,7 +56,7 @@ import { arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, r
 import { CSS } from '@dnd-kit/utilities';
 
 // Sortable Widget Component for NICU drag and drop
-const SortableNICUWidget = ({ widget, isEditMode, onClick, getWidgetIcon }) => {
+const SortableNICUWidget = ({ widget, isEditMode, onClick, getWidgetIcon, isFavorite, onToggleFavorite }) => {
   const {
     attributes,
     listeners,
@@ -84,6 +84,17 @@ const SortableNICUWidget = ({ widget, isEditMode, onClick, getWidgetIcon }) => {
       data-testid={`widget-${widget.id}`}
     >
       <CardContent className="p-3 relative h-full flex items-center justify-center">
+        {/* Favorite star - top left */}
+        <button
+          onClick={(e) => onToggleFavorite(widget.id, e)}
+          className={`absolute top-2 left-2 p-1 rounded-full transition-all ${
+            isFavorite 
+              ? 'text-amber-500' 
+              : 'text-gray-300 dark:text-gray-600 hover:text-amber-400'
+          }`}
+        >
+          <Star className={`h-4 w-4 ${isFavorite ? 'fill-amber-500' : ''}`} />
+        </button>
         {isEditMode && (
           <div
             {...attributes}
