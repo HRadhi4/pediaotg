@@ -4468,66 +4468,6 @@ const DrugsPage = ({ onBack }) => {
               onClick={() => setExpandedDrug(isExpanded ? null : drug.id)}
             >
               <CardContent className="p-3">
-      notes: "Start low, titrate. Monitor respiratory status. PO:IV = 3:1."
-    },
-    {
-      id: "fentanyl",
-      name: "Fentanyl",
-      category: "Opioid",
-      route: "IV/IN",
-      doses: {
-        iv: { label: "IV Bolus", value: "0.5-2", unit: "mcg/kg/dose q1-2h" },
-        infusion: { label: "Infusion", value: "1-3", unit: "mcg/kg/hr" }
-      },
-      max: "4 mcg/kg/dose",
-      indication: "Procedural sedation, severe pain, intubation",
-      notes: "Rapid onset (1-2 min), short duration. IN: 1.5-2 mcg/kg."
-    },
-    {
-      id: "ketamine",
-      name: "Ketamine",
-      category: "Sedative",
-      route: "IV/IM",
-      doses: {
-        iv: { label: "IV", value: "1-2", unit: "mg/kg" },
-        im: { label: "IM", value: "4-5", unit: "mg/kg" }
-      },
-      max: "4 mg/kg IV, 10 mg/kg IM",
-      indication: "Procedural sedation, analgesia",
-      notes: "Dissociative. Causes salivation - consider glycopyrrolate."
-    },
-    {
-      id: "midazolam",
-      name: "Midazolam",
-      category: "Sedative",
-      route: "IV/IN/PO",
-      doses: {
-        iv: { label: "IV", value: "0.05-0.1", unit: "mg/kg" },
-        intranasal: { label: "Intranasal", value: "0.2-0.5", unit: "mg/kg" },
-        po: { label: "PO", value: "0.25-0.5", unit: "mg/kg" }
-      },
-      max: "0.5 mg/kg IN, 10 mg IV",
-      indication: "Anxiolysis, procedural sedation, seizures",
-      notes: "Short-acting benzo. Reversal: flumazenil."
-    },
-    // ===== ANTICONVULSANTS =====
-    {
-      id: "levetiracetam",
-      name: "Levetiracetam (Keppra)",
-      category: "Anticonvulsant",
-      route: "IV/PO",
-      doses: {
-        loading: { label: "Loading", value: "20-60", unit: "mg/kg" },
-        maintenance: { label: "Maintenance", value: "20-30", unit: "mg/kg/day divided q12h" }
-      },
-      max: "3000 mg/day",
-      indication: "Seizures, status epilepticus",
-      notes: "No drug interactions. Can cause behavioral changes."
-    },
-    {
-      id: "phenytoin",
-      name: "Phenytoin/Fosphenytoin",
-      category: "Anticonvulsant",
       route: "IV",
       doses: {
         loading: { label: "Loading", value: "20", unit: "mg PE/kg" },
