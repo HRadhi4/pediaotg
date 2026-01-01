@@ -3425,6 +3425,767 @@ const DrugsPage = ({ onBack }) => {
       max: "2 g/dose",
       indication: "Hypomagnesemia, severe asthma, torsades",
       notes: "Monitor for hypotension, bradycardia. Slow infusion."
+    },
+    // ===== ADDITIONAL ANTIBIOTICS =====
+    {
+      id: "penicillinG",
+      name: "Penicillin G",
+      category: "Antibiotic",
+      route: "IV",
+      doses: {
+        standard: { label: "Standard", value: "50000", unit: "units/kg/dose q4-6h" },
+        meningitis: { label: "Meningitis", value: "75000", unit: "units/kg/dose q4h" }
+      },
+      max: "4 MU/dose",
+      indication: "Strep infections, syphilis, rheumatic fever",
+      notes: "300,000-400,000 units/kg/day for meningitis."
+    },
+    {
+      id: "cefuroxime",
+      name: "Cefuroxime",
+      category: "Antibiotic",
+      route: "IV/PO",
+      doses: {
+        iv: { label: "IV", value: "25-50", unit: "mg/kg/dose q8h" },
+        po: { label: "PO", value: "10-15", unit: "mg/kg/dose q12h" }
+      },
+      max: "1.5 g IV, 500 mg PO",
+      indication: "CAP, UTI, skin infections, surgical prophylaxis",
+      notes: "2nd gen cephalosporin. Take PO with food."
+    },
+    {
+      id: "cephalexin",
+      name: "Cephalexin",
+      category: "Antibiotic",
+      route: "PO",
+      doses: {
+        standard: { label: "Standard", value: "25-50", unit: "mg/kg/day divided q6-8h" },
+        severe: { label: "Severe", value: "50-100", unit: "mg/kg/day divided q6h" }
+      },
+      max: "4 g/day",
+      indication: "Skin infections, UTI, strep pharyngitis",
+      notes: "1st gen cephalosporin. Good for outpatient SSTI."
+    },
+    {
+      id: "erythromycin",
+      name: "Erythromycin",
+      category: "Antibiotic",
+      route: "PO/IV",
+      doses: {
+        po: { label: "PO", value: "30-50", unit: "mg/kg/day divided q6-8h" },
+        iv: { label: "IV", value: "15-20", unit: "mg/kg/day divided q6h" }
+      },
+      max: "4 g/day PO, 4 g/day IV",
+      indication: "Atypical pneumonia, pertussis, GI motility",
+      notes: "Multiple drug interactions. GI upset common."
+    },
+    {
+      id: "clarithromycin",
+      name: "Clarithromycin",
+      category: "Antibiotic",
+      route: "PO",
+      doses: {
+        standard: { label: "Standard", value: "7.5", unit: "mg/kg/dose q12h" }
+      },
+      max: "500 mg/dose",
+      indication: "CAP, H. pylori, MAC prophylaxis",
+      notes: "Macrolide. Less GI upset than erythromycin."
+    },
+    {
+      id: "ciprofloxacin",
+      name: "Ciprofloxacin",
+      category: "Antibiotic",
+      route: "PO/IV",
+      doses: {
+        po: { label: "PO", value: "10-20", unit: "mg/kg/dose q12h" },
+        iv: { label: "IV", value: "10-15", unit: "mg/kg/dose q8-12h" }
+      },
+      max: "750 mg PO, 400 mg IV",
+      indication: "Pseudomonas, complicated UTI, anthrax",
+      notes: "Fluoroquinolone - avoid in children <18y unless necessary."
+    },
+    {
+      id: "linezolid",
+      name: "Linezolid",
+      category: "Antibiotic",
+      route: "PO/IV",
+      doses: {
+        standard: { label: "Standard", value: "10", unit: "mg/kg/dose q8h" }
+      },
+      max: "600 mg/dose",
+      indication: "VRE, MRSA, resistant gram-positive",
+      notes: "Oxazolidinone. Monitor CBC for myelosuppression."
+    },
+    {
+      id: "doxycycline",
+      name: "Doxycycline",
+      category: "Antibiotic",
+      route: "PO/IV",
+      doses: {
+        standard: { label: "Standard", value: "2-4", unit: "mg/kg/day divided q12h" }
+      },
+      max: "200 mg/day",
+      indication: "Rickettsial infections, Lyme, MRSA, acne",
+      notes: "Tetracycline - use in children ≥8 years. Take with food."
+    },
+    // ===== ANTIVIRALS =====
+    {
+      id: "acyclovir",
+      name: "Acyclovir",
+      category: "Antiviral",
+      route: "IV/PO",
+      doses: {
+        iv: { label: "IV (HSV/VZV)", value: "10-20", unit: "mg/kg/dose q8h" },
+        po: { label: "PO (Chickenpox)", value: "20", unit: "mg/kg/dose q6h x5 days" }
+      },
+      max: "800 mg PO, 20 mg/kg IV",
+      indication: "HSV, VZV, chickenpox, encephalitis",
+      notes: "HSV encephalitis: 20 mg/kg q8h x21 days. Hydrate well."
+    },
+    {
+      id: "oseltamivir",
+      name: "Oseltamivir (Tamiflu)",
+      category: "Antiviral",
+      route: "PO",
+      doses: {
+        infant: { label: "<1 year", value: "3", unit: "mg/kg/dose q12h x5 days" },
+        weight: { label: "≤15kg", value: "30", unit: "mg q12h; >15-23kg: 45mg; >23-40kg: 60mg; >40kg: 75mg" }
+      },
+      max: "75 mg/dose",
+      indication: "Influenza treatment and prophylaxis",
+      notes: "Start within 48h of symptoms. Prophylaxis: once daily."
+    },
+    {
+      id: "valacyclovir",
+      name: "Valacyclovir",
+      category: "Antiviral",
+      route: "PO",
+      doses: {
+        chickenpox: { label: "Chickenpox ≥2y", value: "20", unit: "mg/kg/dose q8h x5 days" },
+        herpes: { label: "Herpes Simplex", value: "20", unit: "mg/kg/dose q12h" }
+      },
+      max: "1 g/dose",
+      indication: "HSV, VZV, chickenpox",
+      notes: "Prodrug of acyclovir with better oral bioavailability."
+    },
+    // ===== ANTIFUNGALS =====
+    {
+      id: "fluconazole",
+      name: "Fluconazole",
+      category: "Antifungal",
+      route: "PO/IV",
+      doses: {
+        loading: { label: "Loading", value: "12", unit: "mg/kg day 1" },
+        maintenance: { label: "Maintenance", value: "6-12", unit: "mg/kg/day once daily" }
+      },
+      max: "400 mg/day",
+      indication: "Candidiasis (oral, esophageal, systemic)",
+      notes: "Oral thrush: 6 mg/kg day 1, then 3 mg/kg/day x14 days."
+    },
+    {
+      id: "nystatin",
+      name: "Nystatin",
+      category: "Antifungal",
+      route: "PO/Topical",
+      doses: {
+        oral: { label: "Oral Thrush", value: "100000-500000", unit: "units q6h swish & swallow" },
+        infant: { label: "Infants", value: "100000", unit: "units to each cheek q6h" }
+      },
+      max: "500,000 units/dose",
+      indication: "Oral thrush, candidal diaper dermatitis",
+      notes: "Topical only - not absorbed systemically."
+    },
+    {
+      id: "amphotericinB",
+      name: "Amphotericin B",
+      category: "Antifungal",
+      route: "IV",
+      doses: {
+        conventional: { label: "Conventional", value: "0.5-1", unit: "mg/kg/day over 2-6h" },
+        lipid: { label: "Liposomal", value: "3-5", unit: "mg/kg/day" }
+      },
+      max: "1.5 mg/kg/day conventional",
+      indication: "Severe systemic fungal infections, mucormycosis",
+      notes: "Premedicate with antipyretic/antihistamine. Monitor renal function."
+    },
+    // ===== ANTIHISTAMINES =====
+    {
+      id: "diphenhydramine",
+      name: "Diphenhydramine",
+      category: "Antihistamine",
+      route: "PO/IV/IM",
+      doses: {
+        standard: { label: "Standard", value: "1-1.25", unit: "mg/kg/dose q4-6h" }
+      },
+      max: "5 mg/kg/day or 300 mg/day",
+      indication: "Allergic reactions, anaphylaxis, pruritus, sleep",
+      notes: "Sedating antihistamine. Causes drowsiness."
+    },
+    {
+      id: "cetirizine",
+      name: "Cetirizine (Zyrtec)",
+      category: "Antihistamine",
+      route: "PO",
+      doses: {
+        infant: { label: "6-12 months", value: "2.5", unit: "mg once daily" },
+        child: { label: "1-5 years", value: "2.5-5", unit: "mg once daily" },
+        older: { label: "≥6 years", value: "5-10", unit: "mg once daily" }
+      },
+      max: "10 mg/day",
+      indication: "Allergic rhinitis, urticaria",
+      notes: "2nd gen antihistamine. Less sedating."
+    },
+    {
+      id: "loratadine",
+      name: "Loratadine (Claritin)",
+      category: "Antihistamine",
+      route: "PO",
+      doses: {
+        child: { label: "2-5 years", value: "5", unit: "mg once daily" },
+        older: { label: "≥6 years", value: "10", unit: "mg once daily" }
+      },
+      max: "10 mg/day",
+      indication: "Allergic rhinitis, urticaria",
+      notes: "Non-sedating. Take without regard to food."
+    },
+    {
+      id: "hydroxyzine",
+      name: "Hydroxyzine",
+      category: "Antihistamine",
+      route: "PO/IM",
+      doses: {
+        antipruritic: { label: "Antipruritic", value: "0.5-1", unit: "mg/kg/dose q6h" },
+        anxiolytic: { label: "Anxiolytic", value: "0.5", unit: "mg/kg/dose" }
+      },
+      max: "100 mg/dose",
+      indication: "Pruritus, anxiety, preoperative sedation",
+      notes: "Sedating. Good for atopic dermatitis itch."
+    },
+    // ===== ANTIHYPERTENSIVES =====
+    {
+      id: "amlodipine",
+      name: "Amlodipine",
+      category: "Antihypertensive",
+      route: "PO",
+      doses: {
+        standard: { label: "Standard", value: "0.05-0.1", unit: "mg/kg/day once daily" },
+        max: { label: "Max", value: "0.4-0.6", unit: "mg/kg/day" }
+      },
+      max: "10 mg/day",
+      indication: "Hypertension",
+      notes: "Calcium channel blocker. Peripheral edema possible."
+    },
+    {
+      id: "enalapril",
+      name: "Enalapril",
+      category: "Antihypertensive",
+      route: "PO",
+      doses: {
+        standard: { label: "Standard", value: "0.08-0.1", unit: "mg/kg/day once daily" },
+        max: { label: "Max", value: "0.5", unit: "mg/kg/day divided q12-24h" }
+      },
+      max: "40 mg/day",
+      indication: "Hypertension, heart failure",
+      notes: "ACE inhibitor. Monitor K+ and creatinine."
+    },
+    {
+      id: "labetalol",
+      name: "Labetalol",
+      category: "Antihypertensive",
+      route: "IV/PO",
+      doses: {
+        iv: { label: "IV Bolus", value: "0.2-1", unit: "mg/kg/dose (max 40mg)" },
+        infusion: { label: "IV Infusion", value: "0.25-3", unit: "mg/kg/hr" },
+        po: { label: "PO", value: "1-3", unit: "mg/kg/dose q8-12h" }
+      },
+      max: "40 mg IV bolus, 300 mg PO",
+      indication: "Hypertensive urgency/emergency",
+      notes: "Alpha/beta blocker. Avoid in asthma, heart block."
+    },
+    {
+      id: "hydralazine",
+      name: "Hydralazine",
+      category: "Antihypertensive",
+      route: "IV/PO",
+      doses: {
+        iv: { label: "IV", value: "0.1-0.2", unit: "mg/kg/dose q4-6h" },
+        po: { label: "PO", value: "0.75-1", unit: "mg/kg/day divided q6-8h" }
+      },
+      max: "20 mg IV, 200 mg/day PO",
+      indication: "Hypertensive emergency",
+      notes: "Direct vasodilator. Reflex tachycardia common."
+    },
+    {
+      id: "nifedipine",
+      name: "Nifedipine",
+      category: "Antihypertensive",
+      route: "PO",
+      doses: {
+        standard: { label: "Standard", value: "0.25-0.5", unit: "mg/kg/dose q4-6h" },
+        er: { label: "Extended Release", value: "0.25-0.5", unit: "mg/kg/day" }
+      },
+      max: "3 mg/kg/day or 120 mg/day",
+      indication: "Hypertension, Raynaud's",
+      notes: "Avoid in acute MI. ER formulation preferred."
+    },
+    // ===== NEUROMUSCULAR BLOCKERS & SEDATION =====
+    {
+      id: "rocuronium",
+      name: "Rocuronium",
+      category: "Neuromuscular Blocker",
+      route: "IV",
+      doses: {
+        intubation: { label: "RSI Intubation", value: "0.6-1.2", unit: "mg/kg" },
+        maintenance: { label: "Maintenance", value: "0.1-0.2", unit: "mg/kg PRN" }
+      },
+      max: "1.2 mg/kg for RSI",
+      indication: "Rapid sequence intubation, paralysis",
+      notes: "Non-depolarizing. Onset 60-90 sec. Reversal: sugammadex."
+    },
+    {
+      id: "vecuronium",
+      name: "Vecuronium",
+      category: "Neuromuscular Blocker",
+      route: "IV",
+      doses: {
+        intubation: { label: "Intubation", value: "0.1", unit: "mg/kg" },
+        infusion: { label: "Infusion", value: "0.8-1.7", unit: "mcg/kg/min" }
+      },
+      max: "0.15 mg/kg bolus",
+      indication: "Intubation, mechanical ventilation",
+      notes: "Non-depolarizing. Longer onset than rocuronium."
+    },
+    {
+      id: "succinylcholine",
+      name: "Succinylcholine",
+      category: "Neuromuscular Blocker",
+      route: "IV/IM",
+      doses: {
+        iv: { label: "IV", value: "1-2", unit: "mg/kg" },
+        im: { label: "IM", value: "4-5", unit: "mg/kg (max 150mg)" }
+      },
+      max: "150 mg",
+      indication: "Rapid sequence intubation",
+      notes: "Depolarizing. Avoid in hyperkalemia, burns, crush injury."
+    },
+    {
+      id: "propofol",
+      name: "Propofol",
+      category: "Sedative",
+      route: "IV",
+      doses: {
+        induction: { label: "Induction", value: "2-3", unit: "mg/kg" },
+        infusion: { label: "Sedation Infusion", value: "50-200", unit: "mcg/kg/min" }
+      },
+      max: "4 mg/kg/hr for >48h",
+      indication: "Procedural sedation, induction, ICU sedation",
+      notes: "Avoid prolonged use in children (PRIS). Contains egg/soy."
+    },
+    {
+      id: "dexmedetomidine",
+      name: "Dexmedetomidine",
+      category: "Sedative",
+      route: "IV",
+      doses: {
+        loading: { label: "Loading (optional)", value: "0.5-1", unit: "mcg/kg over 10 min" },
+        infusion: { label: "Infusion", value: "0.2-0.7", unit: "mcg/kg/hr" }
+      },
+      max: "1.4 mcg/kg/hr",
+      indication: "ICU sedation, procedural sedation",
+      notes: "Alpha-2 agonist. Less respiratory depression. Bradycardia possible."
+    },
+    {
+      id: "lorazepam",
+      name: "Lorazepam",
+      category: "Sedative",
+      route: "IV/PO",
+      doses: {
+        seizure: { label: "Status Epilepticus", value: "0.05-0.1", unit: "mg/kg (max 4mg)" },
+        sedation: { label: "Sedation", value: "0.02-0.05", unit: "mg/kg q4-8h" }
+      },
+      max: "4 mg/dose",
+      indication: "Status epilepticus, sedation, anxiety",
+      notes: "Benzodiazepine. Contains propylene glycol (IV)."
+    },
+    {
+      id: "diazepam",
+      name: "Diazepam",
+      category: "Sedative",
+      route: "IV/PR/PO",
+      doses: {
+        seizure: { label: "Status Epilepticus", value: "0.1-0.3", unit: "mg/kg IV (max 10mg)" },
+        rectal: { label: "Rectal", value: "0.5", unit: "mg/kg PR (max 20mg)" }
+      },
+      max: "10 mg IV, 20 mg PR",
+      indication: "Status epilepticus, seizure rescue, muscle spasm",
+      notes: "Long-acting benzo. PR gel for home seizure rescue."
+    },
+    // ===== ADDITIONAL ANTICONVULSANTS =====
+    {
+      id: "valproicacid",
+      name: "Valproic Acid",
+      category: "Anticonvulsant",
+      route: "PO/IV",
+      doses: {
+        loading: { label: "Loading", value: "20-40", unit: "mg/kg" },
+        maintenance: { label: "Maintenance", value: "30-60", unit: "mg/kg/day divided q8-12h" }
+      },
+      max: "60 mg/kg/day",
+      indication: "Seizures, status epilepticus, bipolar",
+      notes: "Monitor LFTs, ammonia. Teratogenic - avoid in pregnancy."
+    },
+    {
+      id: "carbamazepine",
+      name: "Carbamazepine",
+      category: "Anticonvulsant",
+      route: "PO",
+      doses: {
+        initial: { label: "Initial", value: "5-10", unit: "mg/kg/day divided q12h" },
+        maintenance: { label: "Maintenance", value: "10-30", unit: "mg/kg/day divided q8-12h" }
+      },
+      max: "35 mg/kg/day or 1200 mg/day",
+      indication: "Partial seizures, trigeminal neuralgia",
+      notes: "Many drug interactions. HLA-B*1502 testing in Asians."
+    },
+    {
+      id: "topiramate",
+      name: "Topiramate",
+      category: "Anticonvulsant",
+      route: "PO",
+      doses: {
+        initial: { label: "Initial", value: "1-3", unit: "mg/kg/day" },
+        maintenance: { label: "Maintenance", value: "5-9", unit: "mg/kg/day divided q12h" }
+      },
+      max: "400 mg/day",
+      indication: "Epilepsy, migraine prophylaxis",
+      notes: "Titrate slowly. Risk of kidney stones, cognitive effects."
+    },
+    // ===== GI MEDICATIONS =====
+    {
+      id: "ranitidine",
+      name: "Ranitidine",
+      category: "H2 Blocker",
+      route: "PO/IV",
+      doses: {
+        po: { label: "PO", value: "2-4", unit: "mg/kg/dose q12h" },
+        iv: { label: "IV", value: "1-2", unit: "mg/kg/dose q6-8h" }
+      },
+      max: "300 mg/day PO, 200 mg/day IV",
+      indication: "GERD, stress ulcer prophylaxis",
+      notes: "H2 receptor antagonist. (Note: withdrawn in many countries due to NDMA)"
+    },
+    {
+      id: "lansoprazole",
+      name: "Lansoprazole",
+      category: "PPI",
+      route: "PO",
+      doses: {
+        infant: { label: "<10 weeks", value: "0.2-0.3", unit: "mg/kg/day" },
+        child: { label: "<30kg", value: "15", unit: "mg once daily" },
+        older: { label: ">30kg", value: "30", unit: "mg once daily" }
+      },
+      max: "30 mg/day",
+      indication: "GERD, H. pylori",
+      notes: "PPI. Give 30 min before meals. Do not crush capsule."
+    },
+    {
+      id: "metoclopramide",
+      name: "Metoclopramide",
+      category: "Prokinetic",
+      route: "PO/IV",
+      doses: {
+        standard: { label: "Standard", value: "0.1-0.2", unit: "mg/kg/dose q6-8h" }
+      },
+      max: "0.5 mg/kg/day",
+      indication: "GERD, gastroparesis, nausea",
+      notes: "Risk of extrapyramidal symptoms. Black box warning - tardive dyskinesia."
+    },
+    {
+      id: "lactulose",
+      name: "Lactulose",
+      category: "Laxative",
+      route: "PO/PR",
+      doses: {
+        constipation: { label: "Constipation", value: "1-3", unit: "mL/kg/day divided q12-24h" },
+        encephalopathy: { label: "Hepatic Encephalopathy", value: "0.5-1", unit: "mL/kg q6-8h" }
+      },
+      max: "60 mL/dose",
+      indication: "Constipation, hepatic encephalopathy",
+      notes: "Goal 2-3 soft stools/day. Abdominal cramping common."
+    },
+    {
+      id: "polyethyleneglycol",
+      name: "Polyethylene Glycol (Miralax)",
+      category: "Laxative",
+      route: "PO",
+      doses: {
+        maintenance: { label: "Maintenance", value: "0.5-1", unit: "g/kg/day" },
+        disimpaction: { label: "Disimpaction", value: "1-1.5", unit: "g/kg/day x3-6 days" }
+      },
+      max: "17 g/day maintenance",
+      indication: "Constipation, fecal impaction",
+      notes: "Mix in any liquid. Adjust dose for soft daily BM."
+    },
+    // ===== ADDITIONAL CARDIOVASCULAR =====
+    {
+      id: "dopamine",
+      name: "Dopamine",
+      category: "Vasoactive",
+      route: "IV Infusion",
+      doses: {
+        low: { label: "Low (renal)", value: "2-5", unit: "mcg/kg/min" },
+        medium: { label: "Medium (cardiac)", value: "5-10", unit: "mcg/kg/min" },
+        high: { label: "High (pressor)", value: "10-20", unit: "mcg/kg/min" }
+      },
+      max: "20 mcg/kg/min",
+      indication: "Shock, hypotension",
+      notes: "Central line preferred. Titrate to effect."
+    },
+    {
+      id: "dobutamine",
+      name: "Dobutamine",
+      category: "Vasoactive",
+      route: "IV Infusion",
+      doses: {
+        standard: { label: "Standard", value: "2-20", unit: "mcg/kg/min" }
+      },
+      max: "40 mcg/kg/min",
+      indication: "Cardiogenic shock, low cardiac output",
+      notes: "Inotrope with minimal vasoconstriction."
+    },
+    {
+      id: "norepinephrine",
+      name: "Norepinephrine",
+      category: "Vasoactive",
+      route: "IV Infusion",
+      doses: {
+        standard: { label: "Standard", value: "0.05-2", unit: "mcg/kg/min" }
+      },
+      max: "2 mcg/kg/min",
+      indication: "Septic shock, vasodilatory shock",
+      notes: "Potent vasoconstrictor. Central line required."
+    },
+    {
+      id: "milrinone",
+      name: "Milrinone",
+      category: "Vasoactive",
+      route: "IV Infusion",
+      doses: {
+        loading: { label: "Loading (optional)", value: "50", unit: "mcg/kg over 15 min" },
+        infusion: { label: "Infusion", value: "0.25-0.75", unit: "mcg/kg/min" }
+      },
+      max: "0.75 mcg/kg/min",
+      indication: "Low cardiac output, post-cardiac surgery",
+      notes: "Inodilator. Reduce dose in renal impairment."
+    },
+    {
+      id: "lidocaine",
+      name: "Lidocaine",
+      category: "Antiarrhythmic",
+      route: "IV",
+      doses: {
+        bolus: { label: "VF/pVT", value: "1", unit: "mg/kg bolus" },
+        infusion: { label: "Infusion", value: "20-50", unit: "mcg/kg/min" }
+      },
+      max: "100 mg bolus",
+      indication: "Ventricular arrhythmias, local anesthesia",
+      notes: "Class IB antiarrhythmic. Monitor for CNS toxicity."
+    },
+    // ===== RESPIRATORY =====
+    {
+      id: "budesonide",
+      name: "Budesonide (Nebulized)",
+      category: "Steroid",
+      route: "Nebulizer",
+      doses: {
+        croup: { label: "Croup", value: "2", unit: "mg nebulized once" },
+        maintenance: { label: "Asthma Maintenance", value: "0.25-0.5", unit: "mg q12h" }
+      },
+      max: "2 mg/dose",
+      indication: "Croup, asthma maintenance",
+      notes: "Inhaled steroid. Rinse mouth after use."
+    },
+    {
+      id: "montelukast",
+      name: "Montelukast",
+      category: "Leukotriene Inhibitor",
+      route: "PO",
+      doses: {
+        infant: { label: "6mo-5y", value: "4", unit: "mg once daily" },
+        child: { label: "6-14y", value: "5", unit: "mg once daily" },
+        adult: { label: "≥15y", value: "10", unit: "mg once daily" }
+      },
+      max: "10 mg/day",
+      indication: "Asthma, allergic rhinitis",
+      notes: "Leukotriene receptor antagonist. Give in evening."
+    },
+    {
+      id: "racemicepinephrine",
+      name: "Racemic Epinephrine",
+      category: "Bronchodilator",
+      route: "Nebulizer",
+      doses: {
+        croup: { label: "Croup/Stridor", value: "0.5", unit: "mL of 2.25% in 3mL NS" }
+      },
+      max: "0.5 mL/dose",
+      indication: "Croup, post-extubation stridor",
+      notes: "Observe 2-4h for rebound. May repeat q20min x3."
+    },
+    // ===== ELECTROLYTES & SUPPLEMENTS =====
+    {
+      id: "potassiumchloride",
+      name: "Potassium Chloride",
+      category: "Electrolyte",
+      route: "PO/IV",
+      doses: {
+        po: { label: "PO Supplement", value: "1-2", unit: "mEq/kg/day divided" },
+        iv: { label: "IV (diluted)", value: "0.5-1", unit: "mEq/kg over 1-2h" }
+      },
+      max: "40 mEq/dose IV (max 0.5 mEq/kg/hr peripheral)",
+      indication: "Hypokalemia",
+      notes: "Never IV push. Cardiac monitoring for IV infusion."
+    },
+    {
+      id: "sodiumbicarbonate",
+      name: "Sodium Bicarbonate",
+      category: "Electrolyte",
+      route: "IV",
+      doses: {
+        acidosis: { label: "Metabolic Acidosis", value: "1-2", unit: "mEq/kg slow IV" },
+        arrest: { label: "Cardiac Arrest", value: "1", unit: "mEq/kg" }
+      },
+      max: "50 mEq/dose",
+      indication: "Severe metabolic acidosis, hyperkalemia, TCA overdose",
+      notes: "Dilute before use. Do not mix with calcium."
+    },
+    {
+      id: "dextrose",
+      name: "Dextrose",
+      category: "Electrolyte",
+      route: "IV",
+      doses: {
+        hypoglycemia: { label: "Hypoglycemia", value: "0.25-0.5", unit: "g/kg (D10: 2.5-5 mL/kg)" },
+        hyperkalemia: { label: "Hyperkalemia", value: "0.5", unit: "g/kg with insulin" }
+      },
+      max: "25 g/dose",
+      indication: "Hypoglycemia, hyperkalemia (with insulin)",
+      notes: "D10 for peripheral, D25 for central line."
+    },
+    {
+      id: "insulin",
+      name: "Insulin (Regular)",
+      category: "Antidiabetic",
+      route: "IV/SQ",
+      doses: {
+        dka: { label: "DKA Infusion", value: "0.05-0.1", unit: "units/kg/hr" },
+        hyperkalemia: { label: "Hyperkalemia", value: "0.1", unit: "units/kg with dextrose" }
+      },
+      max: "10 units/dose for hyperkalemia",
+      indication: "DKA, hyperglycemia, hyperkalemia",
+      notes: "Monitor glucose hourly. Give with dextrose for hyperkalemia."
+    },
+    {
+      id: "vitamink",
+      name: "Vitamin K (Phytonadione)",
+      category: "Vitamin",
+      route: "IM/IV/PO",
+      doses: {
+        newborn: { label: "Newborn Prophylaxis", value: "0.5-1", unit: "mg IM once" },
+        bleeding: { label: "Bleeding/Reversal", value: "1-5", unit: "mg IV/PO" }
+      },
+      max: "10 mg/dose",
+      indication: "VKDB prophylaxis, warfarin reversal",
+      notes: "IM preferred for newborns. IV: slow infusion (risk of anaphylaxis)."
+    },
+    {
+      id: "ferroussulfate",
+      name: "Ferrous Sulfate",
+      category: "Supplement",
+      route: "PO",
+      doses: {
+        treatment: { label: "Iron Deficiency", value: "3-6", unit: "mg elemental Fe/kg/day divided q8-12h" },
+        prophylaxis: { label: "Prophylaxis", value: "1-2", unit: "mg elemental Fe/kg/day" }
+      },
+      max: "6 mg/kg/day elemental iron",
+      indication: "Iron deficiency anemia",
+      notes: "Give between meals with vitamin C. Stool discoloration."
+    },
+    {
+      id: "vitamind",
+      name: "Vitamin D (Cholecalciferol)",
+      category: "Vitamin",
+      route: "PO",
+      doses: {
+        prophylaxis: { label: "Prophylaxis", value: "400-600", unit: "IU/day" },
+        deficiency: { label: "Deficiency", value: "1000-5000", unit: "IU/day x8-12 weeks" }
+      },
+      max: "10,000 IU/day",
+      indication: "Rickets prevention, vitamin D deficiency",
+      notes: "All breastfed infants need 400 IU/day."
+    },
+    // ===== MISCELLANEOUS =====
+    {
+      id: "naloxone",
+      name: "Naloxone",
+      category: "Opioid Antagonist",
+      route: "IV/IM/IN/ETT",
+      doses: {
+        reversal: { label: "Opioid Reversal", value: "0.01-0.1", unit: "mg/kg (max 2mg)" },
+        fullReversal: { label: "Full Reversal", value: "0.1", unit: "mg/kg" }
+      },
+      max: "2 mg/dose (may repeat)",
+      indication: "Opioid overdose/reversal",
+      notes: "Short duration (30-90 min). May need repeat doses or infusion."
+    },
+    {
+      id: "flumazenil",
+      name: "Flumazenil",
+      category: "Benzodiazepine Antagonist",
+      route: "IV",
+      doses: {
+        reversal: { label: "Reversal", value: "0.01", unit: "mg/kg (max 0.2mg/dose)" }
+      },
+      max: "0.2 mg/dose, 1 mg total",
+      indication: "Benzodiazepine overdose/reversal",
+      notes: "May precipitate seizures. Avoid in chronic benzo use."
+    },
+    {
+      id: "charcoal",
+      name: "Activated Charcoal",
+      category: "Antidote",
+      route: "PO/NG",
+      doses: {
+        standard: { label: "Standard", value: "1-2", unit: "g/kg" }
+      },
+      max: "50-100 g",
+      indication: "Poisoning/ingestion within 1-2 hours",
+      notes: "Not effective for metals, alcohols, hydrocarbons."
+    },
+    {
+      id: "nacetylcysteine",
+      name: "N-Acetylcysteine",
+      category: "Antidote",
+      route: "PO/IV",
+      doses: {
+        loading: { label: "Loading", value: "140", unit: "mg/kg PO or 150 mg/kg IV" },
+        maintenance: { label: "Maintenance", value: "70", unit: "mg/kg q4h x17 doses PO" }
+      },
+      max: "See protocol",
+      indication: "Acetaminophen overdose, mucolytic",
+      notes: "Start within 8h of ingestion for best efficacy. IV protocol available."
+    },
+    {
+      id: "albuterolinhaler",
+      name: "Albuterol MDI",
+      category: "Bronchodilator",
+      route: "Inhaler",
+      doses: {
+        acute: { label: "Acute", value: "4-8", unit: "puffs q20min x3, then q1-4h" },
+        maintenance: { label: "Maintenance", value: "2", unit: "puffs q4-6h PRN" }
+      },
+      max: "8 puffs/dose acute",
+      indication: "Asthma, bronchospasm",
+      notes: "Use with spacer. 1 puff = 90 mcg. Shake well."
     }
   ];
 
