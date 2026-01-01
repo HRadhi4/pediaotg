@@ -4416,7 +4416,7 @@ const DrugsPage = ({ onBack }) => {
                   />
                 </div>
                 <div>
-                  <Label className="text-[10px] text-muted-foreground">Creatinine (mg/dL)</Label>
+                  <Label className="text-[10px] text-muted-foreground">Creatinine (µmol/L)</Label>
                   <Input
                     type="number"
                     step="0.1"
