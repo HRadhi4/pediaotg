@@ -4442,7 +4442,7 @@ const DrugsPage = ({ onBack }) => {
                   </p>
                 </div>
               )}
-              <p className="text-[8px] text-muted-foreground">Formula: eGFR = 0.413 × Height(cm) / SCr(mg/dL)</p>
+              <p className="text-[8px] text-muted-foreground">Formula: eGFR = 36.5 × Height(cm) / SCr(µmol/L)</p>
             </div>
           )}
         </CardContent>
