@@ -4629,75 +4629,14 @@ const DrugsPage = ({ onBack }) => {
 
 // ==================== FLUID REPLACEMENT PAGE ====================
 const FluidReplacementPage = ({ onBack }) => {
-    },
-    {
-      id: "amiodarone",
-      name: "Amiodarone",
-      category: "Antiarrhythmic",
-      route: "IV",
-      doses: {
-        arrest: { label: "VF/pVT Arrest", value: "5", unit: "mg/kg bolus" },
-        other: { label: "Other Arrhythmias", value: "5", unit: "mg/kg over 20-60 min" }
-      },
-      max: "300 mg/dose",
-      indication: "VF, pVT, refractory SVT",
-      notes: "May repeat x2 in arrest. Loading then infusion for non-arrest."
-    },
-    {
-      id: "atropine",
-      name: "Atropine",
-      category: "Anticholinergic",
-      route: "IV/IM/ETT",
-      doses: {
-        bradycardia: { label: "Bradycardia", value: "0.02", unit: "mg/kg" },
-        premedication: { label: "Pre-intubation", value: "0.02", unit: "mg/kg" }
-      },
-      max: "0.5 mg child, 1 mg adolescent",
-      indication: "Symptomatic bradycardia, RSI premedication",
-      notes: "Min dose 0.1 mg (paradoxical bradycardia). ETT: 2-3x IV dose."
-    },
-    // ===== RESPIRATORY =====
-    {
-      id: "salbutamol",
-      name: "Salbutamol (Albuterol)",
-      category: "Bronchodilator",
-      route: "Nebulizer/MDI",
-      doses: {
-        neb: { label: "Nebulizer", value: "0.15", unit: "mg/kg (min 2.5mg, max 5mg) q20min x3" },
-        mdi: { label: "MDI", value: "4-8", unit: "puffs q20min x3" }
-      },
-      max: "5 mg/neb, continuous if severe",
-      indication: "Asthma, bronchospasm",
-      notes: "May give continuous neb in severe asthma. Monitor HR, K+."
-    },
-    {
-      id: "ipratropium",
-      name: "Ipratropium",
-      category: "Bronchodilator",
-      route: "Nebulizer/MDI",
-      doses: {
-        neb: { label: "Nebulizer", value: "250-500", unit: "mcg q20min x3" },
-        mdi: { label: "MDI", value: "4-8", unit: "puffs" }
-      },
-      max: "500 mcg/dose",
-      indication: "Moderate-severe asthma (with salbutamol)",
-      notes: "Use with salbutamol for first 3 doses in severe asthma."
-    },
-    // ===== GI =====
-    {
-      id: "ondansetron",
-      name: "Ondansetron",
-      category: "Antiemetic",
-      route: "IV/PO",
-      doses: {
-        standard: { label: "Standard", value: "0.1-0.15", unit: "mg/kg/dose q8h" }
-      },
-      max: "4 mg (<40kg), 8 mg (>40kg)",
-      indication: "Nausea, vomiting",
-      notes: "QT prolongation risk. Max 3 doses/day."
-    },
-    {
-      id: "omeprazole",
+  const [weight, setWeight] = useState("");
+  const [ageGroup, setAgeGroup] = useState("children"); // "infant" or "children"
+  const [dehydrationLevel, setDehydrationLevel] = useState("moderate");
+  const [calculationType, setCalculationType] = useState("dehydration"); // "maintenance" or "dehydration"
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
       name: "Omeprazole",
       category: "PPI",
       route: "PO/IV",
