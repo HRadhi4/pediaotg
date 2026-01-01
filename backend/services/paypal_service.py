@@ -59,7 +59,7 @@ class PayPalService:
                     'Authorization': f'Basic {auth_base64}',
                     'Content-Type': 'application/x-www-form-urlencoded'
                 },
-                data={'grant_type': 'client-credentials'}
+                data={'grant_type': 'client_credentials'}
             )
             
             if response.status_code != 200:
