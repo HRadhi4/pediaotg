@@ -334,6 +334,8 @@ const NICUCalculator = ({ theme, toggleTheme }) => {
                         isEditMode={isEditMode}
                         onClick={handleWidgetClick}
                         getWidgetIcon={getWidgetIcon}
+                        isFavorite={isFavorite(widget.id)}
+                        onToggleFavorite={toggleFavorite}
                       />
                     ))}
                   </div>
