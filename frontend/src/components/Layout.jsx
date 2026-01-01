@@ -126,6 +126,24 @@ const SidePanel = ({ isOpen, onClose, theme, toggleTheme }) => {
 
           {/* Navigation */}
           <nav className="flex-1 p-4 space-y-2">
+            {/* User Info */}
+            {user && (
+              <div className="p-3 mb-4 rounded-xl bg-gray-50 dark:bg-gray-800">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-[#00d9c5]/10 flex items-center justify-center">
+                    <User className="h-5 w-5 text-[#00d9c5]" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-medium text-sm truncate">{user.name}</p>
+                    <p className="text-xs text-muted-foreground truncate">{user.email}</p>
+                  </div>
+                </div>
+                <div className="mt-2 flex items-center justify-between">
+                  {getSubscriptionBadge()}
+                </div>
+              </div>
+            )}
+
             {menuItems.map((item) => (
               <button
                 key={item.id}
