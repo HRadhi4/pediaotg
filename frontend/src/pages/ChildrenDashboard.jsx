@@ -3641,6 +3641,8 @@ const FluidReplacementPage = ({ onBack }) => {
               </div>
             </CardContent>
           </Card>
+            </>
+          )}
         </>
       )}
     </div>
