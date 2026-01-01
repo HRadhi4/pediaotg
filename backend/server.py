@@ -428,8 +428,18 @@ async def analyze_blood_gas(request: BloodGasAnalysisRequest):
     
     return analysis
 
+# Import authentication and subscription routes
+from routes.auth import router as auth_router
+from routes.subscription import router as subscription_router
+from routes.layouts import router as layouts_router
+from routes.admin import router as admin_router
+
 # Include the router in the main app
 app.include_router(api_router)
+app.include_router(auth_router, prefix="/api")
+app.include_router(subscription_router, prefix="/api")
+app.include_router(layouts_router, prefix="/api")
+app.include_router(admin_router, prefix="/api")
 
 app.add_middleware(
     CORSMiddleware,
