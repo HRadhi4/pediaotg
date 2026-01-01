@@ -4960,24 +4960,6 @@ const FluidReplacementPage = ({ onBack }) => {
 };
 
 export default ChildrenDashboard;
-      notes: "Tetracycline - use in children ≥8 years. Take with food."
-    },
-    // ===== ANTIVIRALS =====
-    {
-      id: "acyclovir",
-      name: "Acyclovir",
-      category: "Antiviral",
-      route: "IV/PO",
-      doses: {
-        iv: { label: "IV (HSV/VZV)", value: "10-20", unit: "mg/kg/dose q8h" },
-        po: { label: "PO (Chickenpox)", value: "20", unit: "mg/kg/dose q6h x5 days" }
-      },
-      max: "800 mg PO, 20 mg/kg IV",
-      indication: "HSV, VZV, chickenpox, encephalitis",
-      notes: "HSV encephalitis: 20 mg/kg q8h x21 days. Hydrate well."
-    },
-    {
-      id: "oseltamivir",
       name: "Oseltamivir (Tamiflu)",
       category: "Antiviral",
       route: "PO",
