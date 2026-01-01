@@ -115,7 +115,7 @@ const ChildrenDashboard = ({ theme, toggleTheme }) => {
   const [activeId, setActiveId] = useState(null);
   const [widgetOrder, setWidgetOrder] = useState(() => {
     const saved = localStorage.getItem("childrenWidgetOrder");
-    return saved ? JSON.parse(saved) : ["bp", "infusions", "intubation", "scoring", "cpr", "approaches", "drugs", "fluidReplacement"];
+    return saved ? JSON.parse(saved) : ["fluidReplacement", "drugs", "bp", "infusions", "intubation", "scoring", "cpr", "approaches"];
   });
 
   // DnD sensors
