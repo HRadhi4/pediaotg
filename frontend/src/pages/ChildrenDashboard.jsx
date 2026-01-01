@@ -4431,8 +4431,57 @@ const DrugsPage = ({ onBack }) => {
 
           {/* GFR Calculator */}
           {showGFRCalc && (
-            <div className="p-3 rounded border border-amber-200 dark:border-amber-800 bg-amber-50/50 dark:bg-amber-900/10 space-y-2">
-              <p className="text-[10px] text-muted-foreground font-medium">Bedside Schwartz Equation (Ages 1-17)</p>
+            <div className="p-3 rounded border border-amber-200 dark:border-amber-800 bg-amber-50/50 dark:bg-amber-900/10 space-y-3">
+              <p className="text-[10px] text-muted-foreground font-medium">Schwartz Equation for Pediatric GFR</p>
+              
+              {/* Age Category Selection */}
+              <div>
+                <Label className="text-[10px] text-muted-foreground mb-1 block">Age Category (affects k value)</Label>
+                <div className="grid grid-cols-2 gap-1">
+                  <button
+                    onClick={() => setAgeCategory("preterm")}
+                    className={`px-2 py-1.5 text-[10px] rounded transition-colors ${
+                      ageCategory === "preterm" ? "bg-amber-500 text-white" : "bg-white dark:bg-gray-800 border"
+                    }`}
+                  >
+                    Preterm (k=0.33)
+                  </button>
+                  <button
+                    onClick={() => setAgeCategory("term")}
+                    className={`px-2 py-1.5 text-[10px] rounded transition-colors ${
+                      ageCategory === "term" ? "bg-amber-500 text-white" : "bg-white dark:bg-gray-800 border"
+                    }`}
+                  >
+                    Term &lt;1y (k=0.45)
+                  </button>
+                  <button
+                    onClick={() => setAgeCategory("child")}
+                    className={`px-2 py-1.5 text-[10px] rounded transition-colors ${
+                      ageCategory === "child" ? "bg-amber-500 text-white" : "bg-white dark:bg-gray-800 border"
+                    }`}
+                  >
+                    Child 1-13y (k=0.55)
+                  </button>
+                  <button
+                    onClick={() => setAgeCategory("adolescentM")}
+                    className={`px-2 py-1.5 text-[10px] rounded transition-colors ${
+                      ageCategory === "adolescentM" ? "bg-amber-500 text-white" : "bg-white dark:bg-gray-800 border"
+                    }`}
+                  >
+                    Adol. Male &gt;13y (k=0.70)
+                  </button>
+                  <button
+                    onClick={() => setAgeCategory("adolescentF")}
+                    className={`col-span-2 px-2 py-1.5 text-[10px] rounded transition-colors ${
+                      ageCategory === "adolescentF" ? "bg-amber-500 text-white" : "bg-white dark:bg-gray-800 border"
+                    }`}
+                  >
+                    Adol. Female &gt;13y (k=0.55)
+                  </button>
+                </div>
+              </div>
+
+              {/* Height and Creatinine Inputs */}
               <div className="grid grid-cols-2 gap-2">
                 <div>
                   <Label className="text-[10px] text-muted-foreground">Height (cm)</Label>
@@ -4448,7 +4497,7 @@ const DrugsPage = ({ onBack }) => {
                   <Label className="text-[10px] text-muted-foreground">Creatinine (µmol/L)</Label>
                   <Input
                     type="number"
-                    step="0.1"
+                    step="1"
                     placeholder="SCr"
                     value={creatinine}
                     onChange={(e) => setCreatinine(e.target.value)}
@@ -4456,12 +4505,21 @@ const DrugsPage = ({ onBack }) => {
                   />
                 </div>
               </div>
+
+              {/* GFR Result */}
               {gfr && (
                 <div className="p-2 rounded bg-white dark:bg-gray-800 border">
-                  <p className="text-[10px] text-muted-foreground">Estimated GFR</p>
-                  <p className={`text-lg font-bold font-mono ${getGFRColor()}`}>
-                    {gfr} <span className="text-xs font-normal">mL/min/1.73m²</span>
-                  </p>
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <p className="text-[10px] text-muted-foreground">Estimated GFR ({getAgeCategoryLabel()})</p>
+                      <p className={`text-lg font-bold font-mono ${getGFRColor()}`}>
+                        {gfr} <span className="text-xs font-normal">mL/min/1.73m²</span>
+                      </p>
+                    </div>
+                    <span className="text-[9px] px-1.5 py-0.5 rounded bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300">
+                      k={getKValue()}
+                    </span>
+                  </div>
                   <p className="text-[9px] text-muted-foreground mt-1">
                     {parseFloat(gfr) >= 90 && "Normal kidney function"}
                     {parseFloat(gfr) >= 60 && parseFloat(gfr) < 90 && "Mildly decreased (CKD Stage 2)"}
@@ -4471,7 +4529,13 @@ const DrugsPage = ({ onBack }) => {
                   </p>
                 </div>
               )}
-              <p className="text-[8px] text-muted-foreground">Formula: eGFR = 36.5 × Height(cm) / SCr(µmol/L)</p>
+
+              {/* Formula Reference */}
+              <div className="text-[8px] text-muted-foreground space-y-0.5 pt-1 border-t border-amber-200 dark:border-amber-700">
+                <p className="font-medium">Formula: eGFR = k × Height(cm) × 88.4 / SCr(µmol/L)</p>
+                <p>k values: Preterm=0.33, Term=0.45, Child=0.55, Adol.♂=0.70, Adol.♀=0.55</p>
+                <p className="text-amber-600 dark:text-amber-400">Ref: Schwartz GJ et al. JASN 2009</p>
+              </div>
             </div>
           )}
         </CardContent>
