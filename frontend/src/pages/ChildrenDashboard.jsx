@@ -4552,13 +4552,15 @@ const DrugsPage = ({ onBack }) => {
                 <div className="p-2 rounded bg-white dark:bg-gray-800 border">
                   <div className="flex justify-between items-start">
                     <div>
-                      <p className="text-[10px] text-muted-foreground">Estimated GFR ({getAgeCategoryLabel()})</p>
+                      <p className="text-[10px] text-muted-foreground">
+                        Estimated GFR {schwartzType === "original" ? `(${getAgeCategoryLabel()})` : "(Ages 1-17)"}
+                      </p>
                       <p className={`text-lg font-bold font-mono ${getGFRColor()}`}>
                         {gfr} <span className="text-xs font-normal">mL/min/1.73m²</span>
                       </p>
                     </div>
                     <span className="text-[9px] px-1.5 py-0.5 rounded bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300">
-                      k={getKValue()}
+                      k={schwartzType === "revised" ? "0.413" : getKValue()}
                     </span>
                   </div>
                   <p className="text-[9px] text-muted-foreground mt-1">
@@ -4573,9 +4575,22 @@ const DrugsPage = ({ onBack }) => {
 
               {/* Formula Reference */}
               <div className="text-[8px] text-muted-foreground space-y-0.5 pt-1 border-t border-amber-200 dark:border-amber-700">
-                <p className="font-medium">Formula: eGFR = k × Height(cm) × 88.4 / SCr(µmol/L)</p>
-                <p>k values: Preterm=0.33, Term=0.45, Child=0.55, Adol.♂=0.70, Adol.♀=0.55</p>
-                <p className="text-amber-600 dark:text-amber-400">Ref: Schwartz GJ et al. JASN 2009</p>
+                {schwartzType === "revised" ? (
+                  <>
+                    <p className="font-medium">Revised (Bedside) Schwartz Formula:</p>
+                    <p>eGFR = 0.413 × Height(cm) / SCr(mg/dL)</p>
+                    <p>eGFR = 36.5 × Height(cm) / SCr(µmol/L)</p>
+                    <p className="text-amber-600 dark:text-amber-400">Ref: Schwartz GJ et al. JASN 2009 (CKiD study)</p>
+                  </>
+                ) : (
+                  <>
+                    <p className="font-medium">Original Schwartz Formula:</p>
+                    <p>eGFR = k × Height(cm) / SCr(mg/dL)</p>
+                    <p>eGFR = k × 88.4 × Height(cm) / SCr(µmol/L)</p>
+                    <p>k: Preterm=0.33, Term=0.45, Child=0.55, Adol.♂=0.70, Adol.♀=0.55</p>
+                    <p className="text-amber-600 dark:text-amber-400">Ref: Schwartz GJ et al. J Pediatr 1976</p>
+                  </>
+                )}
               </div>
             </div>
           )}
