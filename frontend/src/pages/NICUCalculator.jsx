@@ -155,6 +155,34 @@ const NICUCalculator = ({ theme, toggleTheme }) => {
     { id: "growth", title: "Growth Charts", icon: "growth", color: "teal", enabled: true },
     { id: "drugs", title: "Drugs", icon: "drugs", color: "blue", enabled: true }
   ]);
+  
+  // Favorites management
+  const [favorites, setFavorites] = useState(() => {
+    const saved = localStorage.getItem("pediAssistFavorites");
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  // Toggle favorite for a widget
+  const toggleFavorite = (widgetId, e) => {
+    e.stopPropagation();
+    const favKey = `nicu-${widgetId}`;
+    setFavorites(prev => {
+      let newFavorites;
+      if (prev.includes(favKey)) {
+        newFavorites = prev.filter(f => f !== favKey);
+      } else {
+        if (prev.length >= 4) {
+          newFavorites = [...prev.slice(1), favKey];
+        } else {
+          newFavorites = [...prev, favKey];
+        }
+      }
+      localStorage.setItem("pediAssistFavorites", JSON.stringify(newFavorites));
+      return newFavorites;
+    });
+  };
+
+  const isFavorite = (widgetId) => favorites.includes(`nicu-${widgetId}`);
 
   // DnD sensors
   const sensors = useSensors(
