@@ -78,18 +78,18 @@ const LandingPage = ({ theme, toggleTheme }) => {
     const colorClass = colorClasses[color] || colorClasses.teal;
     
     switch(icon) {
-      case "bp": return <BPIcon className={`h-5 w-5 ${colorClass}`} />;
+      case "bp": return <BloodPressureIcon className={`h-5 w-5 ${colorClass}`} />;
       case "infusion": return <InfusionIcon className={`h-5 w-5 ${colorClass}`} />;
       case "intubation": return <IntubationIcon className={`h-5 w-5 ${colorClass}`} />;
       case "scoring": return <ScoringIcon className={`h-5 w-5 ${colorClass}`} />;
-      case "cpr": return <CPRIcon className={`h-5 w-5 ${colorClass}`} />;
+      case "cpr": return <HeartIcon className={`h-5 w-5 ${colorClass}`} />;
       case "approaches": return <ApproachesIcon className={`h-5 w-5 ${colorClass}`} />;
       case "fluid": return <FluidIcon className={`h-5 w-5 ${colorClass}`} />;
-      case "fluidReplacement": return <FluidReplacementIcon className={`h-5 w-5 ${colorClass}`} />;
+      case "fluidReplacement": return <FluidIcon className={`h-5 w-5 ${colorClass}`} />;
       case "nrp": return <ResuscitationIcon className={`h-5 w-5 ${colorClass}`} />;
-      case "ett": return <ETTIcon className={`h-5 w-5 ${colorClass}`} />;
-      case "rsi": return <RSIIcon className={`h-5 w-5 ${colorClass}`} />;
-      case "vitals": return <VitalSignsIcon className={`h-5 w-5 ${colorClass}`} />;
+      case "ett": return <CatheterIcon className={`h-5 w-5 ${colorClass}`} />;
+      case "rsi": return <IntubationIcon className={`h-5 w-5 ${colorClass}`} />;
+      case "vitals": return <ActivityIcon className={`h-5 w-5 ${colorClass}`} />;
       case "growth": return <GrowthChartIcon className={`h-5 w-5 ${colorClass}`} />;
       case "drugs": return <DrugsIcon className={`h-5 w-5 ${colorClass}`} />;
       default: return <Star className={`h-5 w-5 ${colorClass}`} />;
