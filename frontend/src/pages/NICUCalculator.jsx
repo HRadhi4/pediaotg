@@ -17,7 +17,7 @@
 
 import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Check, Clock, Plus, Trash2, ChevronUp, ChevronDown, Droplets, Search } from "lucide-react";
+import { Check, Clock, Plus, Trash2, ChevronUp, ChevronDown, Droplets, Search, Star } from "lucide-react";
 import { 
   FluidIcon as HealthFluidIcon, 
   IntubationIcon as HealthIntubationIcon, 
