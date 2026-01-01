@@ -68,7 +68,11 @@ class BloodGasAnalysisRequest(BaseModel):
 # Add routes
 @api_router.get("/")
 async def root():
-    return {"message": "Pediatrics to Go API"}
+    return {"message": "PediaOTG API"}
+
+@api_router.get("/health")
+async def health_check():
+    return {"status": "healthy", "service": "pediaotg-api"}
 
 @api_router.post("/status", response_model=StatusCheck)
 async def create_status_check(input: StatusCheckCreate):
