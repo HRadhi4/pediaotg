@@ -105,8 +105,11 @@ class PediaOTGBackendTester:
     
     def test_auth_signup(self):
         """Test user signup with trial subscription"""
+        import time
+        unique_email = f"newuser{int(time.time())}@test.com"
+        
         test_data = {
-            "email": "newuser@test.com",
+            "email": unique_email,
             "password": "testpass123",
             "name": "New User"
         }
