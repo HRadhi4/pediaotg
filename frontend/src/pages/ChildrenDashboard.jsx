@@ -4683,41 +4683,283 @@ const FluidReplacementPage = ({ onBack }) => {
   return (
     <div className="space-y-4 pt-4 pb-24">
       {/* Input Card */}
-    {
-      id: "ciprofloxacin",
-      name: "Ciprofloxacin",
-      category: "Antibiotic",
-      route: "PO/IV",
-      doses: {
-        po: { label: "PO", value: "10-20", unit: "mg/kg/dose q12h" },
-        iv: { label: "IV", value: "10-15", unit: "mg/kg/dose q8-12h" }
-      },
-      max: "750 mg PO, 400 mg IV",
-      indication: "Pseudomonas, complicated UTI, anthrax",
-      notes: "Fluoroquinolone - avoid in children <18y unless necessary."
-    },
-    {
-      id: "linezolid",
-      name: "Linezolid",
-      category: "Antibiotic",
-      route: "PO/IV",
-      doses: {
-        standard: { label: "Standard", value: "10", unit: "mg/kg/dose q8h" }
-      },
-      max: "600 mg/dose",
-      indication: "VRE, MRSA, resistant gram-positive",
-      notes: "Oxazolidinone. Monitor CBC for myelosuppression."
-    },
-    {
-      id: "doxycycline",
-      name: "Doxycycline",
-      category: "Antibiotic",
-      route: "PO/IV",
-      doses: {
-        standard: { label: "Standard", value: "2-4", unit: "mg/kg/day divided q12h" }
-      },
-      max: "200 mg/day",
-      indication: "Rickettsial infections, Lyme, MRSA, acne",
+      <Card className="nightingale-card">
+        <CardContent className="pt-4 space-y-4">
+          {/* Calculation Type Toggle */}
+          <div>
+            <Label className="text-[10px] text-muted-foreground mb-2 block">Calculation Type</Label>
+            <div className="flex rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+              <button
+                onClick={() => setCalculationType("maintenance")}
+                className={`flex-1 px-3 py-2 text-sm font-medium transition-colors ${
+                  calculationType === "maintenance"
+                    ? "bg-blue-500 text-white"
+                    : "bg-gray-50 dark:bg-gray-800 text-muted-foreground hover:bg-gray-100"
+                }`}
+              >
+                Maintenance Only
+              </button>
+              <button
+                onClick={() => setCalculationType("dehydration")}
+                className={`flex-1 px-3 py-2 text-sm font-medium transition-colors ${
+                  calculationType === "dehydration"
+                    ? "bg-blue-500 text-white"
+                    : "bg-gray-50 dark:bg-gray-800 text-muted-foreground hover:bg-gray-100"
+                }`}
+              >
+                + Dehydration
+              </button>
+            </div>
+          </div>
+
+          {/* Weight Input */}
+          <div>
+            <Label className="text-[10px] text-muted-foreground">Weight (kg)</Label>
+            <Input
+              type="number"
+              placeholder="Enter weight in kg"
+              value={weight}
+              onChange={(e) => setWeight(e.target.value)}
+              className="font-mono text-lg h-12"
+            />
+          </div>
+
+          {/* Age Group - Only show for dehydration calculation */}
+          {includeDeficit && (
+            <div>
+              <Label className="text-[10px] text-muted-foreground mb-2 block">Age Group</Label>
+              <div className="flex rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+                <button
+                  onClick={() => setAgeGroup("infant")}
+                  className={`flex-1 px-3 py-2 text-sm font-medium transition-colors ${
+                    ageGroup === "infant"
+                      ? "bg-blue-500 text-white"
+                      : "bg-gray-50 dark:bg-gray-800 text-muted-foreground"
+                  }`}
+                >
+                  Infant (&lt;1 year)
+                </button>
+                <button
+                  onClick={() => setAgeGroup("children")}
+                  className={`flex-1 px-3 py-2 text-sm font-medium transition-colors ${
+                    ageGroup === "children"
+                      ? "bg-blue-500 text-white"
+                      : "bg-gray-50 dark:bg-gray-800 text-muted-foreground"
+                  }`}
+                >
+                  Children (&gt;1 year)
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Dehydration Level - Only show for dehydration calculation */}
+          {includeDeficit && (
+            <div>
+              <Label className="text-[10px] text-muted-foreground mb-2 block">Dehydration Level</Label>
+              <div className="flex rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+                <button
+                  onClick={() => setDehydrationLevel("mild")}
+                  className={`flex-1 px-2 py-2 text-xs font-medium transition-colors ${
+                    dehydrationLevel === "mild"
+                      ? "bg-yellow-500 text-white"
+                      : "bg-gray-50 dark:bg-gray-800 text-muted-foreground"
+                  }`}
+                >
+                  Mild
+                </button>
+                <button
+                  onClick={() => setDehydrationLevel("moderate")}
+                  className={`flex-1 px-2 py-2 text-xs font-medium transition-colors ${
+                    dehydrationLevel === "moderate"
+                      ? "bg-orange-500 text-white"
+                      : "bg-gray-50 dark:bg-gray-800 text-muted-foreground"
+                  }`}
+                >
+                  Moderate
+                </button>
+                <button
+                  onClick={() => setDehydrationLevel("severe")}
+                  className={`flex-1 px-2 py-2 text-xs font-medium transition-colors ${
+                    dehydrationLevel === "severe"
+                      ? "bg-red-500 text-white"
+                      : "bg-gray-50 dark:bg-gray-800 text-muted-foreground"
+                  }`}
+                >
+                  Severe
+                </button>
+              </div>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Deficit Reference Table - Only show for dehydration calculation */}
+      {includeDeficit && (
+        <Card className="nightingale-card">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm">Deficit Reference (% body weight)</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="overflow-x-auto">
+              <table className="w-full text-xs">
+                <thead>
+                  <tr className="border-b">
+                    <th className="text-left py-1 px-2">Severity</th>
+                    <th className="text-center py-1 px-2">Infant (&lt;1y)</th>
+                    <th className="text-center py-1 px-2">Children</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr className="border-b">
+                    <td className="py-1 px-2 font-medium text-yellow-600">Mild</td>
+                    <td className="text-center py-1 px-2">5%</td>
+                    <td className="text-center py-1 px-2">3%</td>
+                  </tr>
+                  <tr className="border-b">
+                    <td className="py-1 px-2 font-medium text-orange-600">Moderate</td>
+                    <td className="text-center py-1 px-2">10%</td>
+                    <td className="text-center py-1 px-2">6%</td>
+                  </tr>
+                  <tr>
+                    <td className="py-1 px-2 font-medium text-red-600">Severe</td>
+                    <td className="text-center py-1 px-2">15%</td>
+                    <td className="text-center py-1 px-2">9%</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Results */}
+      {w > 0 && (
+        <>
+          {/* Maintenance Only Results */}
+          {!includeDeficit && (
+            <Card className="nightingale-card border-blue-200 dark:border-blue-800">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm text-blue-600">Maintenance Fluids</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="p-3 rounded bg-blue-50 dark:bg-blue-900/20">
+                    <p className="text-[10px] text-muted-foreground">24-Hour Total</p>
+                    <p className="text-2xl font-bold font-mono text-blue-600">{maintenance24h.toFixed(0)}</p>
+                    <p className="text-[10px] text-muted-foreground">mL/24hr</p>
+                  </div>
+                  <div className="p-3 rounded bg-blue-50 dark:bg-blue-900/20">
+                    <p className="text-[10px] text-muted-foreground">Hourly Rate</p>
+                    <p className="text-2xl font-bold font-mono text-blue-600">{maintenanceHourlyRate.toFixed(1)}</p>
+                    <p className="text-[10px] text-muted-foreground">mL/hr</p>
+                  </div>
+                </div>
+                <div className="p-2 rounded bg-gray-50 dark:bg-gray-800/50 text-[10px] text-muted-foreground">
+                  <p className="font-medium text-foreground">Holliday-Segar Formula:</p>
+                  <p>• First 10 kg: 100 mL/kg/day</p>
+                  <p>• Next 10 kg: 50 mL/kg/day</p>
+                  <p>• Each kg &gt;20: 20 mL/kg/day</p>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Dehydration + Maintenance Results */}
+          {includeDeficit && (
+            <>
+              <Card className="nightingale-card border-amber-200 dark:border-amber-800">
+                <CardHeader className="pb-2">
+                  <div className="flex justify-between items-center">
+                    <CardTitle className="text-sm">
+                      <span className="text-amber-600 dark:text-amber-400 text-xs">0-8 hrs</span>
+                      First 8 Hours
+                    </CardTitle>
+                    <span className="text-xl font-bold font-mono text-amber-600">{rate8h.toFixed(1)} mL/hr</span>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-3 gap-2 text-center text-xs">
+                    <div className="p-2 rounded bg-blue-50 dark:bg-blue-900/20">
+                      <p className="text-[10px] text-muted-foreground">Maintenance</p>
+                      <p className="font-bold">{maint8h.toFixed(0)} mL</p>
+                    </div>
+                    <div className="p-2 rounded bg-orange-50 dark:bg-orange-900/20">
+                      <p className="text-[10px] text-muted-foreground">Deficit</p>
+                      <p className="font-bold">{deficit8h.toFixed(0)} mL</p>
+                    </div>
+                    <div className="p-2 rounded bg-green-50 dark:bg-green-900/20">
+                      <p className="text-[10px] text-muted-foreground">Total</p>
+                      <p className="font-bold text-green-600">{total8h.toFixed(0)} mL</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="nightingale-card border-teal-200 dark:border-teal-800">
+                <CardHeader className="pb-2">
+                  <div className="flex justify-between items-center">
+                    <CardTitle className="text-sm">
+                      <span className="text-teal-600 dark:text-teal-400 text-xs">8-24 hrs</span>
+                      Next 16 Hours
+                    </CardTitle>
+                    <span className="text-xl font-bold font-mono text-teal-600">{rate16h.toFixed(1)} mL/hr</span>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-3 gap-2 text-center text-xs">
+                    <div className="p-2 rounded bg-blue-50 dark:bg-blue-900/20">
+                      <p className="text-[10px] text-muted-foreground">Maintenance</p>
+                      <p className="font-bold">{maint16h.toFixed(0)} mL</p>
+                    </div>
+                    <div className="p-2 rounded bg-orange-50 dark:bg-orange-900/20">
+                      <p className="text-[10px] text-muted-foreground">Deficit</p>
+                      <p className="font-bold">{deficit16h.toFixed(0)} mL</p>
+                    </div>
+                    <div className="p-2 rounded bg-green-50 dark:bg-green-900/20">
+                      <p className="text-[10px] text-muted-foreground">Total</p>
+                      <p className="font-bold text-green-600">{total16h.toFixed(0)} mL</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className={`nightingale-card ${exceeds2500 ? "border-red-300 dark:border-red-700" : "border-green-300 dark:border-green-700"}`}>
+                <CardContent className="py-4">
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <p className="text-sm font-medium">Total 24-Hour Fluids</p>
+                      {exceeds2500 && (
+                        <p className="text-[10px] text-red-600">Capped at 2500 mL (was {(total8h + total16h).toFixed(0)} mL)</p>
+                      )}
+                    </div>
+                    <p className={`text-2xl font-bold font-mono ${exceeds2500 ? "text-red-600" : "text-green-600"}`}>
+                      {total24h.toFixed(0)} mL
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+            </>
+          )}
+        </>
+      )}
+
+      {/* Reference Card */}
+      <Card className="nightingale-card">
+        <CardContent className="pt-4 text-xs text-muted-foreground">
+          <p className="font-medium text-foreground mb-1">Fluid Replacement Guidelines</p>
+          <p>• Maintenance: Holliday-Segar formula (4-2-1 rule)</p>
+          <p>• Deficit: % dehydration × weight (kg) × 10 = mL deficit</p>
+          <p>• First 8h: 1/3 maintenance + 1/2 deficit</p>
+          <p>• Next 16h: 2/3 maintenance + 1/2 deficit</p>
+          <p>• Maximum 2500 mL/day for safety</p>
+        </CardContent>
+      </Card>
+    </div>
+  );
+};
+
+export default ChildrenDashboard;
       notes: "Tetracycline - use in children ≥8 years. Take with food."
     },
     // ===== ANTIVIRALS =====
