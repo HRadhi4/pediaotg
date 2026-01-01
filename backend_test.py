@@ -59,10 +59,18 @@ class PediaOTGBackendTester:
             # Return a minimal base64 encoded 1x1 pixel image as fallback
             return "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg=="
 
-    def run_test(self, name, method, endpoint, expected_status, data=None):
+    def run_test(self, name, method, endpoint, expected_status, data=None, headers=None, auth_token=None):
         """Run a single API test"""
         url = f"{self.base_url}/{endpoint}"
-        headers = {'Content-Type': 'application/json'}
+        test_headers = {'Content-Type': 'application/json'}
+        
+        # Add authorization header if token provided
+        if auth_token:
+            test_headers['Authorization'] = f'Bearer {auth_token}'
+        
+        # Merge additional headers
+        if headers:
+            test_headers.update(headers)
 
         self.tests_run += 1
         print(f"\n🔍 Testing {name}...")
@@ -70,9 +78,9 @@ class PediaOTGBackendTester:
         
         try:
             if method == 'GET':
-                response = requests.get(url, headers=headers, timeout=10)
+                response = requests.get(url, headers=test_headers, timeout=10)
             elif method == 'POST':
-                response = requests.post(url, json=data, headers=headers, timeout=10)
+                response = requests.post(url, json=data, headers=test_headers, timeout=10)
 
             success = response.status_code == expected_status
             if success:
@@ -80,7 +88,7 @@ class PediaOTGBackendTester:
                 print(f"✅ Passed - Status: {response.status_code}")
                 try:
                     response_data = response.json()
-                    print(f"Response: {response_data}")
+                    print(f"Response: {json.dumps(response_data, indent=2, default=str)[:300]}...")
                 except:
                     print(f"Response: {response.text[:200]}")
             else:
