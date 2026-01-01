@@ -6,7 +6,7 @@ from PIL import Image, ImageDraw, ImageFont
 import io
 
 class NICUBackendTester:
-    def __init__(self, base_url="https://pedi-assist.preview.emergentagent.com"):
+    def __init__(self, base_url="https://medsuite-peds.preview.emergentagent.com"):
         self.base_url = base_url
         self.tests_run = 0
         self.tests_passed = 0
