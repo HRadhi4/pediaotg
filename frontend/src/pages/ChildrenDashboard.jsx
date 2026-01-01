@@ -54,6 +54,8 @@ import BloodProductsDialog from "@/components/BloodProductsDialog";
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, DragOverlay } from '@dnd-kit/core';
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, rectSortingStrategy } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import DrugsPage from './children/DrugsPage';
+import FluidReplacementPage from './children/FluidReplacementPage';
 
 // Sortable Widget Component for drag and drop
 const SortableWidget = ({ widget, isEditMode, onClick, getColorClass, isFavorite, onToggleFavorite }) => {
