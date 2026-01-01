@@ -4441,52 +4441,86 @@ const DrugsPage = ({ onBack }) => {
             <div className="p-3 rounded border border-amber-200 dark:border-amber-800 bg-amber-50/50 dark:bg-amber-900/10 space-y-3">
               <p className="text-[10px] text-muted-foreground font-medium">Schwartz Equation for Pediatric GFR</p>
               
-              {/* Age Category Selection */}
+              {/* Equation Type Toggle */}
               <div>
-                <Label className="text-[10px] text-muted-foreground mb-1 block">Age Category (affects k value)</Label>
-                <div className="grid grid-cols-2 gap-1">
+                <Label className="text-[10px] text-muted-foreground mb-1 block">Equation Type</Label>
+                <div className="flex rounded-lg border border-amber-300 dark:border-amber-700 overflow-hidden">
                   <button
-                    onClick={() => setAgeCategory("preterm")}
-                    className={`px-2 py-1.5 text-[10px] rounded transition-colors ${
-                      ageCategory === "preterm" ? "bg-amber-500 text-white" : "bg-white dark:bg-gray-800 border"
+                    onClick={() => setSchwartzType("revised")}
+                    className={`flex-1 px-2 py-1.5 text-[10px] font-medium transition-colors ${
+                      schwartzType === "revised"
+                        ? "bg-amber-500 text-white"
+                        : "bg-white dark:bg-gray-800 text-muted-foreground"
                     }`}
                   >
-                    Preterm (k=0.33)
+                    Revised (2009)
                   </button>
                   <button
-                    onClick={() => setAgeCategory("term")}
-                    className={`px-2 py-1.5 text-[10px] rounded transition-colors ${
-                      ageCategory === "term" ? "bg-amber-500 text-white" : "bg-white dark:bg-gray-800 border"
+                    onClick={() => setSchwartzType("original")}
+                    className={`flex-1 px-2 py-1.5 text-[10px] font-medium transition-colors ${
+                      schwartzType === "original"
+                        ? "bg-amber-500 text-white"
+                        : "bg-white dark:bg-gray-800 text-muted-foreground"
                     }`}
                   >
-                    Term &lt;1y (k=0.45)
-                  </button>
-                  <button
-                    onClick={() => setAgeCategory("child")}
-                    className={`px-2 py-1.5 text-[10px] rounded transition-colors ${
-                      ageCategory === "child" ? "bg-amber-500 text-white" : "bg-white dark:bg-gray-800 border"
-                    }`}
-                  >
-                    Child 1-13y (k=0.55)
-                  </button>
-                  <button
-                    onClick={() => setAgeCategory("adolescentM")}
-                    className={`px-2 py-1.5 text-[10px] rounded transition-colors ${
-                      ageCategory === "adolescentM" ? "bg-amber-500 text-white" : "bg-white dark:bg-gray-800 border"
-                    }`}
-                  >
-                    Adol. Male &gt;13y (k=0.70)
-                  </button>
-                  <button
-                    onClick={() => setAgeCategory("adolescentF")}
-                    className={`col-span-2 px-2 py-1.5 text-[10px] rounded transition-colors ${
-                      ageCategory === "adolescentF" ? "bg-amber-500 text-white" : "bg-white dark:bg-gray-800 border"
-                    }`}
-                  >
-                    Adol. Female &gt;13y (k=0.55)
+                    Original
                   </button>
                 </div>
+                <p className="text-[8px] text-muted-foreground mt-1">
+                  {schwartzType === "revised" 
+                    ? "Bedside Schwartz: single k=0.413 for ages 1-17 (CKiD study)" 
+                    : "Original: age-specific k values for all pediatric ages"}
+                </p>
               </div>
+
+              {/* Age Category Selection - Only show for Original Schwartz */}
+              {schwartzType === "original" && (
+                <div>
+                  <Label className="text-[10px] text-muted-foreground mb-1 block">Age Category (affects k value)</Label>
+                  <div className="grid grid-cols-2 gap-1">
+                    <button
+                      onClick={() => setAgeCategory("preterm")}
+                      className={`px-2 py-1.5 text-[10px] rounded transition-colors ${
+                        ageCategory === "preterm" ? "bg-amber-500 text-white" : "bg-white dark:bg-gray-800 border"
+                      }`}
+                    >
+                      Preterm (k=0.33)
+                    </button>
+                    <button
+                      onClick={() => setAgeCategory("term")}
+                      className={`px-2 py-1.5 text-[10px] rounded transition-colors ${
+                        ageCategory === "term" ? "bg-amber-500 text-white" : "bg-white dark:bg-gray-800 border"
+                      }`}
+                    >
+                      Term &lt;1y (k=0.45)
+                    </button>
+                    <button
+                      onClick={() => setAgeCategory("child")}
+                      className={`px-2 py-1.5 text-[10px] rounded transition-colors ${
+                        ageCategory === "child" ? "bg-amber-500 text-white" : "bg-white dark:bg-gray-800 border"
+                      }`}
+                    >
+                      Child 1-13y (k=0.55)
+                    </button>
+                    <button
+                      onClick={() => setAgeCategory("adolescentM")}
+                      className={`px-2 py-1.5 text-[10px] rounded transition-colors ${
+                        ageCategory === "adolescentM" ? "bg-amber-500 text-white" : "bg-white dark:bg-gray-800 border"
+                      }`}
+                    >
+                      Adol. Male &gt;13y (k=0.70)
+                    </button>
+                    <button
+                      onClick={() => setAgeCategory("adolescentF")}
+                      className={`col-span-2 px-2 py-1.5 text-[10px] rounded transition-colors ${
+                        ageCategory === "adolescentF" ? "bg-amber-500 text-white" : "bg-white dark:bg-gray-800 border"
+                      }`}
+                    >
+                      Adol. Female &gt;13y (k=0.55)
+                    </button>
+                  </div>
+                </div>
+              )}
 
               {/* Height and Creatinine Inputs */}
               <div className="grid grid-cols-2 gap-2">
