@@ -1173,6 +1173,10 @@ const IntubationPage = ({ onBack }) => {
 const ScoringPage = ({ onBack }) => {
   const [activeScore, setActiveScore] = useState("gcs");
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
     <div className="space-y-4 pt-4 pb-8">
       <div className="flex gap-2 overflow-x-auto pb-2">
