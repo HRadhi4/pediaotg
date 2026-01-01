@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
-import { Baby, Users } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Baby, Users, Star } from "lucide-react";
 import Layout from "@/components/Layout";
 import BloodGasDialog from "@/components/BloodGasDialog";
 import ElectrolytesDialog from "@/components/ElectrolytesDialog";
@@ -13,7 +13,21 @@ import {
   ElectrolytesIcon, 
   BloodProductsIcon, 
   GIRIcon, 
-  JaundiceNavIcon 
+  JaundiceNavIcon,
+  BPIcon,
+  InfusionIcon,
+  IntubationIcon,
+  ScoringIcon,
+  CPRIcon,
+  ApproachesIcon,
+  FluidIcon,
+  ResuscitationIcon,
+  ETTIcon,
+  RSIIcon,
+  VitalSignsIcon,
+  GrowthChartIcon,
+  DrugsIcon,
+  FluidReplacementIcon
 } from "@/components/HealthIcons";
 
 const LandingPage = ({ theme, toggleTheme }) => {
@@ -24,6 +38,72 @@ const LandingPage = ({ theme, toggleTheme }) => {
   const [girOpen, setGirOpen] = useState(false);
   const [bloodProductsOpen, setBloodProductsOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("home");
+  const [favorites, setFavorites] = useState([]);
+
+  // Load favorites from localStorage
+  useEffect(() => {
+    const saved = localStorage.getItem("pediAssistFavorites");
+    if (saved) {
+      setFavorites(JSON.parse(saved));
+    }
+  }, []);
+
+  // Widget definitions for favorites display
+  const allWidgets = {
+    // Children Dashboard widgets
+    "children-fluidReplacement": { id: "fluidReplacement", title: "Fluid Replacement", icon: "fluidReplacement", color: "blue", dashboard: "children" },
+    "children-drugs": { id: "drugs", title: "Drugs", icon: "drugs", color: "purple", dashboard: "children" },
+    "children-bp": { id: "bp", title: "Blood Pressure", icon: "bp", color: "red", dashboard: "children" },
+    "children-infusions": { id: "infusions", title: "Infusions", icon: "infusion", color: "blue", dashboard: "children" },
+    "children-intubation": { id: "intubation", title: "Intubation", icon: "intubation", color: "teal", dashboard: "children" },
+    "children-scoring": { id: "scoring", title: "Scoring", icon: "scoring", color: "amber", dashboard: "children" },
+    "children-cpr": { id: "cpr", title: "CPR", icon: "cpr", color: "red", dashboard: "children" },
+    "children-approaches": { id: "approaches", title: "Approaches", icon: "approaches", color: "purple", dashboard: "children" },
+    // NICU Dashboard widgets
+    "nicu-fluid": { id: "fluid", title: "Fluid Calculator", icon: "fluid", color: "teal", dashboard: "nicu" },
+    "nicu-nrp": { id: "nrp", title: "NRP Checklist", icon: "nrp", color: "red", dashboard: "nicu" },
+    "nicu-ett": { id: "ett", title: "ETT/UAC/UVC", icon: "ett", color: "blue", dashboard: "nicu" },
+    "nicu-rsi": { id: "rsi", title: "RSI Checklist", icon: "rsi", color: "purple", dashboard: "nicu" },
+    "nicu-vitals": { id: "vitals", title: "Vital Signs", icon: "vitals", color: "amber", dashboard: "nicu" },
+    "nicu-growth": { id: "growth", title: "Growth Charts", icon: "growth", color: "teal", dashboard: "nicu" },
+    "nicu-drugs": { id: "drugs", title: "Drugs", icon: "drugs", color: "blue", dashboard: "nicu" }
+  };
+
+  const getWidgetIcon = (icon, color) => {
+    const colorClasses = {
+      teal: "text-[#00d9c5]",
+      blue: "text-blue-500",
+      red: "text-red-500",
+      purple: "text-purple-500",
+      amber: "text-amber-500"
+    };
+    const colorClass = colorClasses[color] || colorClasses.teal;
+    
+    switch(icon) {
+      case "bp": return <BPIcon className={`h-5 w-5 ${colorClass}`} />;
+      case "infusion": return <InfusionIcon className={`h-5 w-5 ${colorClass}`} />;
+      case "intubation": return <IntubationIcon className={`h-5 w-5 ${colorClass}`} />;
+      case "scoring": return <ScoringIcon className={`h-5 w-5 ${colorClass}`} />;
+      case "cpr": return <CPRIcon className={`h-5 w-5 ${colorClass}`} />;
+      case "approaches": return <ApproachesIcon className={`h-5 w-5 ${colorClass}`} />;
+      case "fluid": return <FluidIcon className={`h-5 w-5 ${colorClass}`} />;
+      case "fluidReplacement": return <FluidReplacementIcon className={`h-5 w-5 ${colorClass}`} />;
+      case "nrp": return <ResuscitationIcon className={`h-5 w-5 ${colorClass}`} />;
+      case "ett": return <ETTIcon className={`h-5 w-5 ${colorClass}`} />;
+      case "rsi": return <RSIIcon className={`h-5 w-5 ${colorClass}`} />;
+      case "vitals": return <VitalSignsIcon className={`h-5 w-5 ${colorClass}`} />;
+      case "growth": return <GrowthChartIcon className={`h-5 w-5 ${colorClass}`} />;
+      case "drugs": return <DrugsIcon className={`h-5 w-5 ${colorClass}`} />;
+      default: return <Star className={`h-5 w-5 ${colorClass}`} />;
+    }
+  };
+
+  const handleFavoriteClick = (favKey) => {
+    const widget = allWidgets[favKey];
+    if (widget) {
+      navigate(`/${widget.dashboard}/${widget.id}`);
+    }
+  };
 
   const handleTabClick = (tab) => {
     setActiveTab(tab);
