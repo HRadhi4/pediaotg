@@ -117,6 +117,33 @@ const ChildrenDashboard = ({ theme, toggleTheme }) => {
     const saved = localStorage.getItem("childrenWidgetOrder");
     return saved ? JSON.parse(saved) : ["fluidReplacement", "drugs", "bp", "infusions", "intubation", "scoring", "cpr", "approaches"];
   });
+  const [favorites, setFavorites] = useState(() => {
+    const saved = localStorage.getItem("pediAssistFavorites");
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  // Toggle favorite for a widget
+  const toggleFavorite = (widgetId, e) => {
+    e.stopPropagation();
+    const favKey = `children-${widgetId}`;
+    setFavorites(prev => {
+      let newFavorites;
+      if (prev.includes(favKey)) {
+        newFavorites = prev.filter(f => f !== favKey);
+      } else {
+        if (prev.length >= 4) {
+          // Remove oldest favorite to make room
+          newFavorites = [...prev.slice(1), favKey];
+        } else {
+          newFavorites = [...prev, favKey];
+        }
+      }
+      localStorage.setItem("pediAssistFavorites", JSON.stringify(newFavorites));
+      return newFavorites;
+    });
+  };
+
+  const isFavorite = (widgetId) => favorites.includes(`children-${widgetId}`);
 
   // DnD sensors
   const sensors = useSensors(
