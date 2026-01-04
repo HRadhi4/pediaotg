@@ -85,12 +85,17 @@ class PayPalService:
         """
         token = await self._get_access_token()
         
-        # Determine price based on plan
+        # BHD to USD conversion rate (1 BHD ≈ 2.65 USD)
+        BHD_TO_USD = 2.65
+        
+        # Determine price based on plan and convert to USD
         if plan_name == 'monthly':
-            amount = self.monthly_price
+            amount_bhd = self.monthly_price
+            amount_usd = round(amount_bhd * BHD_TO_USD, 2)  # 1 BHD = $2.65
             description = 'PediaOTG Monthly Subscription'
         elif plan_name == 'annual':
-            amount = self.annual_price
+            amount_bhd = self.annual_price
+            amount_usd = round(amount_bhd * BHD_TO_USD, 2)  # 10 BHD = $26.50
             description = 'PediaOTG Annual Subscription'
         else:
             raise ValueError(f"Invalid plan: {plan_name}")
@@ -101,8 +106,8 @@ class PayPalService:
                 'reference_id': f"{user_id}_{plan_name}_{datetime.now(timezone.utc).isoformat()}",
                 'description': description,
                 'amount': {
-                    'currency_code': 'USD',  # PayPal doesn't support BHD, using USD equivalent
-                    'value': str(amount)  # 1 BHD ≈ 2.65 USD, but keeping same number for simplicity
+                    'currency_code': 'USD',  # PayPal doesn't support BHD, converting to USD
+                    'value': str(amount_usd)  # Converted from BHD to USD
                 },
                 'custom_id': user_id
             }],
