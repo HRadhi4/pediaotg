@@ -926,12 +926,24 @@ const FluidCalculatorPage = () => {
                     </div>
                     <div className="mt-2 space-y-2">
                       <div className="flex justify-between items-center p-2 rounded-lg bg-white dark:bg-gray-800">
-                        <span className="text-sm text-muted-foreground">Without Feed (IV only):</span>
+                        <div>
+                          <span className="text-sm text-muted-foreground">Without Feed (IV Dextrose only):</span>
+                          {results.dextroseBreakdown.length > 1 && (
+                            <div className="text-xs text-muted-foreground mt-0.5">
+                              Includes: {results.dextroseBreakdown.map(d => d.type).join(' + ')}
+                            </div>
+                          )}
+                        </div>
                         <span className="text-lg font-bold font-mono text-cyan-600 dark:text-cyan-400">{results.girWithoutFeed} mg/kg/min</span>
                       </div>
                       {results.hasFeed && (
                         <div className="flex justify-between items-center p-2 rounded-lg bg-white dark:bg-gray-800">
-                          <span className="text-sm text-muted-foreground">With Feed (IV + Feed):</span>
+                          <div>
+                            <span className="text-sm text-muted-foreground">With Feed (IV + Feed):</span>
+                            <div className="text-xs text-muted-foreground mt-0.5">
+                              All Dextrose + {results.feedType === 'ebm' ? 'EBM' : 'Formula'} carbs
+                            </div>
+                          </div>
                           <span className="text-lg font-bold font-mono text-teal-600 dark:text-teal-400">{results.girWithFeed} mg/kg/min</span>
                         </div>
                       )}
