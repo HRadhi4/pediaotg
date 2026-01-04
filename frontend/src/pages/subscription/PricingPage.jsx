@@ -196,11 +196,11 @@ const PricingPage = () => {
               <Button
                 onClick={() => handleSelectPlan('annual')}
                 className="w-full bg-[#00d9c5] hover:bg-[#00c4b0] text-white"
-                disabled={loading || hasSubscription}
+                disabled={loading || (user?.subscriptionStatus === 'active' && user?.subscriptionPlan === 'annual')}
               >
                 {loading && selectedPlan === 'annual' ? (
                   <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Processing...</>
-                ) : hasSubscription ? (
+                ) : (user?.subscriptionStatus === 'active' && user?.subscriptionPlan === 'annual') ? (
                   'Current Plan'
                 ) : (
                   'Choose Annual'
