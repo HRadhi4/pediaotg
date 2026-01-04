@@ -14,6 +14,10 @@ class PediaOTGBackendTester:
         self.test_image_base64 = self.create_test_image()
         self.admin_token = None
         self.user_token = None
+        self.admin_credentials = {
+            "email": "Admin@pediaotg.com",
+            "password": "SMC159951"
+        }
 
     def create_test_image(self):
         """Create a test image with blood gas values for OCR testing"""
