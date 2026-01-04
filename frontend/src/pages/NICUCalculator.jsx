@@ -916,6 +916,31 @@ const FluidCalculatorPage = () => {
                     </div>
                   </div>
                 )}
+
+                {/* GIR (Glucose Infusion Rate) */}
+                {parseFloat(results.dextrose24hr) > 0 && (
+                  <div className="p-3 rounded-lg bg-gradient-to-r from-cyan-100 to-teal-100 dark:from-cyan-950/50 dark:to-teal-950/50 border-2 border-cyan-300 dark:border-cyan-700">
+                    <div className="flex items-center gap-2">
+                      <span className="text-lg">⚡</span>
+                      <span className="font-bold text-cyan-700 dark:text-cyan-300">GIR (Glucose Infusion Rate):</span>
+                    </div>
+                    <div className="mt-2 space-y-2">
+                      <div className="flex justify-between items-center p-2 rounded-lg bg-white dark:bg-gray-800">
+                        <span className="text-sm text-muted-foreground">Without Feed (IV only):</span>
+                        <span className="text-lg font-bold font-mono text-cyan-600 dark:text-cyan-400">{results.girWithoutFeed} mg/kg/min</span>
+                      </div>
+                      {results.hasFeed && (
+                        <div className="flex justify-between items-center p-2 rounded-lg bg-white dark:bg-gray-800">
+                          <span className="text-sm text-muted-foreground">With Feed (IV + Feed):</span>
+                          <span className="text-lg font-bold font-mono text-teal-600 dark:text-teal-400">{results.girWithFeed} mg/kg/min</span>
+                        </div>
+                      )}
+                    </div>
+                    <div className="text-xs text-muted-foreground mt-2">
+                      Target GIR: 4-8 mg/kg/min (preterm: 6-8, term: 4-6)
+                    </div>
+                  </div>
+                )}
               </CardContent>
             </Card>
           )}
