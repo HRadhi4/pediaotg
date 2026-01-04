@@ -224,16 +224,17 @@ const AdminDashboard = () => {
                         <th className="text-left py-3 px-2 text-sm font-medium text-muted-foreground">Plan</th>
                         <th className="text-left py-3 px-2 text-sm font-medium text-muted-foreground">Status</th>
                         <th className="text-left py-3 px-2 text-sm font-medium text-muted-foreground">Joined</th>
+                        <th className="text-left py-3 px-2 text-sm font-medium text-muted-foreground">Actions</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {filteredUsers.map((user) => (
-                        <tr key={user.id} className="border-b hover:bg-gray-50 dark:hover:bg-gray-800">
+                      {filteredUsers.map((u) => (
+                        <tr key={u.id} className="border-b hover:bg-gray-50 dark:hover:bg-gray-800">
                           <td className="py-3 px-2">
                             <div>
-                              <p className="font-medium text-sm">{user.name}</p>
-                              <p className="text-xs text-muted-foreground">{user.email}</p>
-                              {user.is_admin && (
+                              <p className="font-medium text-sm">{u.name}</p>
+                              <p className="text-xs text-muted-foreground">{u.email}</p>
+                              {u.is_admin && (
                                 <Badge className="mt-1 bg-purple-100 text-purple-700 text-[10px]">
                                   Admin
                                 </Badge>
@@ -242,20 +243,37 @@ const AdminDashboard = () => {
                           </td>
                           <td className="py-3 px-2">
                             <span className="text-sm capitalize">
-                              {user.subscription?.plan || '-'}
+                              {u.subscription?.plan || '-'}
                             </span>
                           </td>
                           <td className="py-3 px-2">
-                            {user.subscription?.status ? (
-                              <Badge className={getStatusBadge(user.subscription.status)}>
-                                {user.subscription.status}
+                            {u.subscription?.status ? (
+                              <Badge className={getStatusBadge(u.subscription.status)}>
+                                {u.subscription.status}
                               </Badge>
                             ) : (
                               <span className="text-muted-foreground text-sm">-</span>
                             )}
                           </td>
                           <td className="py-3 px-2 text-sm text-muted-foreground">
-                            {formatDate(user.created_at)}
+                            {formatDate(u.created_at)}
+                          </td>
+                          <td className="py-3 px-2">
+                            {!u.is_admin && (
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => handleDeleteUser(u.id, u.email)}
+                                disabled={deletingUserId === u.id}
+                                className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                              >
+                                {deletingUserId === u.id ? (
+                                  <Loader2 className="h-4 w-4 animate-spin" />
+                                ) : (
+                                  <Trash2 className="h-4 w-4" />
+                                )}
+                              </Button>
+                            )}
                           </td>
                         </tr>
                       ))}
