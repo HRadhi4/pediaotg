@@ -141,11 +141,11 @@ const PricingPage = () => {
                 onClick={() => handleSelectPlan('monthly')}
                 className="w-full"
                 variant="outline"
-                disabled={loading || hasSubscription}
+                disabled={loading || (user?.subscriptionStatus === 'active' && user?.subscriptionPlan === 'monthly')}
               >
                 {loading && selectedPlan === 'monthly' ? (
                   <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Processing...</>
-                ) : hasSubscription ? (
+                ) : (user?.subscriptionStatus === 'active' && user?.subscriptionPlan === 'monthly') ? (
                   'Current Plan'
                 ) : (
                   'Choose Monthly'
