@@ -140,3 +140,38 @@ async def get_user_details(
         "subscription": subscription,
         "layouts": layouts
     }
+
+
+@router.delete("/user/{user_id}")
+async def delete_user(
+    user_id: str,
+    admin: UserResponse = Depends(require_admin)
+):
+    """
+    Delete a user and their related data (Admin only)
+    Cannot delete admin users
+    """
+    # Check if user exists
+    user = await db.users.find_one({'id': user_id})
+    
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    # Prevent deleting admin users
+    if user.get('is_admin', False):
+        raise HTTPException(status_code=403, detail="Cannot delete admin users")
+    
+    # Delete user's subscription
+    await db.subscriptions.delete_many({'user_id': user_id})
+    
+    # Delete user's layouts
+    await db.user_layouts.delete_many({'user_id': user_id})
+    
+    # Delete the user
+    result = await db.users.delete_one({'id': user_id})
+    
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=500, detail="Failed to delete user")
+    
+    return {"message": "User deleted successfully", "user_id": user_id}
+
