@@ -220,6 +220,127 @@ class PediaOTGBackendTester:
             
         return success, response
 
+    def test_admin_login(self):
+        """Test admin login functionality"""
+        success, response = self.run_test(
+            "Admin Login",
+            "POST",
+            "api/auth/login",
+            200,
+            data=self.admin_credentials
+        )
+        
+        if success and "access_token" in response:
+            self.admin_token = response["access_token"]
+            print(f"✅ Admin token obtained")
+            print(f"✅ Admin status: {response.get('user', {}).get('is_admin', False)}")
+        
+        return success, response
+
+    def test_auth_check(self):
+        """Test authentication check endpoint"""
+        if not self.admin_token:
+            print("❌ No admin token available for auth check")
+            return False, {}
+            
+        success, response = self.run_test(
+            "Authentication Check",
+            "GET",
+            "api/auth/check",
+            200,
+            auth_token=self.admin_token
+        )
+        
+        if success:
+            print(f"✅ Authenticated: {response.get('authenticated')}")
+            print(f"✅ Is Admin: {response.get('is_admin')}")
+            print(f"✅ Has Subscription: {response.get('has_subscription')}")
+        
+        return success, response
+
+    def test_subscription_pricing(self):
+        """Test subscription pricing endpoint"""
+        success, response = self.run_test(
+            "Subscription Pricing",
+            "GET",
+            "api/subscription/pricing",
+            200
+        )
+        
+        if success:
+            print(f"✅ Monthly Price: {response.get('monthly_price')} {response.get('currency')}")
+            print(f"✅ Annual Price: {response.get('annual_price')} {response.get('currency')}")
+            print(f"✅ Trial Days: {response.get('trial_days')}")
+            
+            # Verify expected pricing from review request
+            expected_monthly = 1.0
+            expected_annual = 10.0
+            expected_currency = "BHD"
+            
+            if (response.get('monthly_price') == expected_monthly and 
+                response.get('annual_price') == expected_annual and
+                response.get('currency') == expected_currency):
+                print("✅ Pricing matches expected values")
+            else:
+                print("❌ Pricing does not match expected values")
+                return False, response
+        
+        return success, response
+
+    def test_paypal_order_creation(self):
+        """Test PayPal order creation for monthly plan"""
+        if not self.admin_token:
+            print("❌ No admin token available for PayPal order creation")
+            return False, {}
+            
+        test_data = {
+            "plan_name": "monthly"
+        }
+        
+        success, response = self.run_test(
+            "PayPal Order Creation (Monthly)",
+            "POST",
+            "api/subscription/create-order",
+            200,
+            data=test_data,
+            auth_token=self.admin_token
+        )
+        
+        if success:
+            print(f"✅ Order ID: {response.get('order_id')}")
+            print(f"✅ Approval URL: {response.get('approval_url')}")
+            
+            # Verify response structure
+            required_fields = ["success", "order_id", "approval_url"]
+            missing_fields = [field for field in required_fields if field not in response]
+            
+            if missing_fields:
+                print(f"❌ Missing required fields: {missing_fields}")
+                return False, response
+        
+        return success, response
+
+    def test_subscription_status(self):
+        """Test subscription status endpoint"""
+        if not self.admin_token:
+            print("❌ No admin token available for subscription status")
+            return False, {}
+            
+        success, response = self.run_test(
+            "Subscription Status",
+            "GET",
+            "api/subscription/status",
+            200,
+            auth_token=self.admin_token
+        )
+        
+        if success:
+            print(f"✅ Has Subscription: {response.get('has_subscription')}")
+            print(f"✅ Status: {response.get('status')}")
+            print(f"✅ Plan: {response.get('plan')}")
+        
+        return success, response
+
 def main():
     print("🚀 Starting NICU Backend API Tests")
     print("=" * 50)
