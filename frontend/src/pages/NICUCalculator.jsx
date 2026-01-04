@@ -553,8 +553,10 @@ const FluidCalculatorPage = () => {
     // Calculate total dextrose calories
     // Dextrose provides 3.4 kcal/g, concentration is percentage g/100ml
     let dextroseCalories24hr = 0;
+    let totalDextroseGrams = 0;
     dextroseBreakdown.forEach(dex => {
       const dextroseGrams = (dex.percentage / 100) * dex.volume; // g of dextrose
+      totalDextroseGrams += dextroseGrams;
       dextroseCalories24hr += dextroseGrams * 3.4; // 3.4 kcal/g
     });
     const dextroseCaloriesPerKg = w > 0 ? dextroseCalories24hr / w : 0;
@@ -570,6 +572,39 @@ const FluidCalculatorPage = () => {
     // Total calories
     const totalCalories24hr = dextroseCalories24hr + feedCalories24hr + tpnCalories24hr;
     const totalCaloriesPerKg = w > 0 ? totalCalories24hr / w : 0;
+
+    // GIR Calculation
+    // GIR = (Dextrose % × IV Rate ml/hr × 0.167) / Weight kg
+    // For multiple dextrose types, we calculate weighted average dextrose %
+    // Alternative: GIR = (Total Dextrose g/day × 1000) / (Weight kg × 1440 min/day)
+    // GIR with feed: includes IV fluids + feed dextrose
+    // GIR without feed: only IV dextrose
+    
+    // Calculate IV fluid rate (excluding feed)
+    const ivFluid24hr = dextrose24hr + nacl24hr + tpn24hr;
+    const ivFluidRate = ivFluid24hr / 24; // ml/hr
+    
+    // Calculate weighted average dextrose % for IV fluids
+    let weightedDextrosePercent = 0;
+    if (dextrose24hr > 0) {
+      let totalWeightedPercent = 0;
+      dextroseBreakdown.forEach(dex => {
+        totalWeightedPercent += dex.percentage * dex.volume;
+      });
+      weightedDextrosePercent = totalWeightedPercent / dextrose24hr;
+    }
+    
+    // GIR without feed (only IV dextrose)
+    // Formula: GIR (mg/kg/min) = (Dextrose % × Rate ml/hr × 1000) / (Weight kg × 60 × 100)
+    // Simplified: GIR = (Dextrose g/day × 1000) / (Weight × 1440)
+    const girWithoutFeed = w > 0 ? (totalDextroseGrams * 1000) / (w * 1440) : 0;
+    
+    // GIR with feed (IV dextrose + feed contribution)
+    // Assuming feed has ~7g glucose per 100ml (approximate)
+    // EBM has about 7g/100ml carbs, Formula about 7-8g/100ml
+    const feedGlucoseGrams = feed24hr * 0.07; // ~7g/100ml
+    const totalGlucoseGrams = totalDextroseGrams + feedGlucoseGrams;
+    const girWithFeed = w > 0 ? (totalGlucoseGrams * 1000) / (w * 1440) : 0;
 
     return {
       weight: w,
@@ -600,7 +635,10 @@ const FluidCalculatorPage = () => {
       totalCaloriesPerKg: totalCaloriesPerKg.toFixed(1),
       remaining: remaining.toFixed(1),
       isOverLimit: remaining < -0.1,
-      useCombinedDextrose
+      useCombinedDextrose,
+      girWithoutFeed: girWithoutFeed.toFixed(2),
+      girWithFeed: girWithFeed.toFixed(2),
+      hasFeed: feed24hr > 0
     };
   };
 
