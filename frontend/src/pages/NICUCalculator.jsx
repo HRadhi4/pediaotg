@@ -815,6 +815,11 @@ const FluidCalculatorPage = () => {
                 {results.dextroseBreakdown.map((dex, idx) => (
                   <div key={idx} className="p-2 rounded-lg bg-amber-50 dark:bg-amber-950/30 border border-amber-200">
                     <span className="font-bold">{dex.type} ({dex.percentage}%):</span> <span className="text-amber-700 dark:text-amber-300 font-bold">{dex.volume.toFixed(1)} ml/24hr</span>
+                    {parseFloat(results.dextroseCalories24hr) > 0 && idx === results.dextroseBreakdown.length - 1 && (
+                      <div className="mt-1 text-orange-600 dark:text-orange-400 text-xs">
+                        🔥 {results.dextroseCalories24hr} kcal/24hr ({results.dextroseCaloriesPerKg} kcal/kg/day)
+                      </div>
+                    )}
                   </div>
                 ))}
 
