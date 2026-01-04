@@ -875,6 +875,23 @@ const FluidCalculatorPage = () => {
                     )}
                   </div>
                 )}
+
+                {/* Total Calories Summary */}
+                {parseFloat(results.totalCalories24hr) > 0 && (
+                  <div className="p-3 rounded-lg bg-gradient-to-r from-orange-100 to-amber-100 dark:from-orange-950/50 dark:to-amber-950/50 border-2 border-orange-300 dark:border-orange-700">
+                    <div className="flex items-center gap-2">
+                      <span className="text-lg">🔥</span>
+                      <span className="font-bold text-orange-700 dark:text-orange-300">Total Calories:</span>
+                    </div>
+                    <div className="text-xl font-bold text-orange-600 dark:text-orange-400 mt-1">
+                      {results.totalCalories24hr} kcal/24hr
+                      <span className="text-sm ml-2">({results.totalCaloriesPerKg} kcal/kg/day)</span>
+                    </div>
+                    <div className="text-xs text-muted-foreground mt-1">
+                      Dextrose: {results.dextroseCalories24hr} | Feed: {results.feedCalories24hr} | TPN: {results.tpnCalories24hr} kcal
+                    </div>
+                  </div>
+                )}
               </CardContent>
             </Card>
           )}
