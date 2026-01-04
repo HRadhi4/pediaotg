@@ -80,18 +80,38 @@
 2. ✅ **Pricing Data**: 1.0 BHD monthly, 10.0 BHD annual confirmed
 3. ✅ **PayPal Integration**: Order creation and approval URL generation working
 4. ✅ **API Health**: All core backend APIs operational
-   - Red: Severely below/above normal - implemented
-   - Color classes: text-green-600, text-orange-500, text-red-600
+## FRONTEND TESTING REQUIREMENTS (From Review Request)
 
-7. **Delete Functionality** ✅
-   - Trash icon button present for each entry
-   - Successfully removes entries from list
-   - Chart updates to remove deleted data points
+### Test Plan:
+1. **Pricing Page Fixes** (http://localhost:3000/pricing)
+   - Verify Annual plan card does NOT show "Priority support" feature
+   - Verify both Monthly and Annual plan buttons are aligned at the bottom
+   - Both cards should have equal height
 
-8. **Save Functionality** ✅
-   - "📷 Save" button visible and functional
-   - Downloads chart as PNG image with proper filename format
-   - Uses html2canvas for chart export
+2. **NICU Fluid Calculator** (http://localhost:3000/nicu/fluid)
+   - Test with sample data: Weight 1.5kg, Age 3 days, GA 32 weeks, TFI 100ml/kg/day
+   - Feed Volume 5ml/feed, Feed Type EBM, Feed Frequency q3h, Amino Acids 2g/kg/day
+   - Verify Total Calories section displays with breakdown (Dextrose | Feed | TPN)
+   - Verify GIR section appears with "Without Feed" and "With Feed" values
+   - Verify individual calorie displays do NOT appear under Feed and TPN sections
+
+3. **PayPal Payment Flow** (if possible)
+   - Login as admin (Admin@pediaotg.com / SMC159951)
+   - Navigate to /pricing
+   - Click "Choose Monthly" button
+   - Verify redirect to PayPal sandbox works
+
+### FRONTEND TESTING STATUS:
+❌ **NOT TESTED** - Frontend testing not performed due to system limitations
+- Testing agent focused on backend API verification only
+- Frontend testing requires browser automation or manual testing
+- All backend APIs supporting frontend functionality are working correctly
+
+### BACKEND SUPPORT FOR FRONTEND FEATURES:
+✅ **Pricing Data**: Backend provides correct pricing (1.0 BHD monthly, 10.0 BHD annual)
+✅ **PayPal Integration**: Backend creates PayPal orders with approval URLs
+✅ **Authentication**: Admin login credentials working for PayPal flow testing
+✅ **NICU Calculator**: Frontend-only calculations (no backend APIs required)
 
 ### REDESIGNED GROWTH CHART TESTING - December 29, 2024
 **Status: ALL REDESIGN FEATURES VERIFIED SUCCESSFULLY**
