@@ -512,6 +512,11 @@ const FluidCalculatorPage = () => {
     const feed24hr = feedVol * feedsPerDay;
     const feedPerKg = w > 0 ? feed24hr / w : 0;
     
+    // Caloric calculations - EBM: 20 kcal/oz (0.67 kcal/ml), Formula: 20 kcal/oz (0.67 kcal/ml) to 24 kcal/oz (0.8 kcal/ml)
+    const caloriesPerMl = feedType === "ebm" ? 0.67 : 0.8; // kcal/ml (EBM ~20cal/oz, Formula ~24cal/oz)
+    const feedCalories24hr = feed24hr * caloriesPerMl;
+    const feedCaloriesPerKg = w > 0 ? feedCalories24hr / w : 0;
+    
     // TPN calculations (10% Aminoplasmin = 10g/100ml, 20% Intralipids = 20g/100ml)
     const amino24hr = aminoG * w * 10; // ml (1g protein = 10ml of 10% solution)
     const lipid24hr = lipidG * w * 5;  // ml (1g lipid = 5ml of 20% solution)
