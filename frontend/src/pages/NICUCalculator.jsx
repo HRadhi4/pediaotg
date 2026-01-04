@@ -835,7 +835,7 @@ const FluidCalculatorPage = () => {
 
           {/* Order Summary Results */}
           {parseFloat(weight) > 0 && parseFloat(tfi) > 0 && (
-            <Card className={`rounded-2xl ${results.isOverLimit ? 'border-red-300 bg-red-50 dark:bg-red-950/30' : 'border-[#00d9c5]/30 bg-[#00d9c5]/5'}`}>
+            <Card className={`rounded-2xl ${results.isOverLimit ? 'border-red-300 bg-red-50 dark:bg-red-950/30' : 'border-gray-200 dark:border-gray-700'}`}>
               <CardHeader className="pb-2">
                 <CardTitle className="text-sm flex items-center gap-2">
                   <Check className="h-4 w-4 text-[#00d9c5]" />
@@ -844,32 +844,32 @@ const FluidCalculatorPage = () => {
               </CardHeader>
               <CardContent className="space-y-2 font-mono text-sm">
                 {/* TFI */}
-                <div className="p-2 rounded-lg bg-white dark:bg-gray-800 border">
+                <div className="p-2 rounded-lg bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700">
                   <span className="font-bold">TFI:</span> {results.tfi} ml/kg/day = <span className="text-[#00d9c5] font-bold">{results.totalFluid24hr} ml/24hr</span>
                   <span className="text-muted-foreground text-xs ml-2">({results.hourlyRate} ml/hr)</span>
                 </div>
 
                 {/* Dextrose */}
                 {results.dextroseBreakdown.map((dex, idx) => (
-                  <div key={idx} className="p-2 rounded-lg bg-amber-50 dark:bg-amber-950/30 border border-amber-200">
-                    <span className="font-bold">{dex.type} ({dex.percentage}%):</span> <span className="text-amber-700 dark:text-amber-300 font-bold">{dex.volume.toFixed(1)} ml/24hr</span>
+                  <div key={idx} className="p-2 rounded-lg bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700">
+                    <span className="font-bold">{dex.type} ({dex.percentage}%):</span> <span className="text-[#00d9c5] font-bold">{dex.volume.toFixed(1)} ml/24hr</span>
                   </div>
                 ))}
 
                 {/* 3% NaCl */}
                 {parseFloat(results.nacl24hr) > 0 && (
-                  <div className="p-2 rounded-lg bg-blue-50 dark:bg-blue-950/30 border border-blue-200">
-                    <span className="font-bold">3% NaCl:</span> <span className="text-blue-700 dark:text-blue-300 font-bold">{results.nacl24hr} ml/24hr</span>
+                  <div className="p-2 rounded-lg bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700">
+                    <span className="font-bold">3% NaCl:</span> <span className="text-[#00d9c5] font-bold">{results.nacl24hr} ml/24hr</span>
                     <span className="text-muted-foreground text-xs ml-2">({results.naclPerKg} ml/kg/day)</span>
                   </div>
                 )}
 
                 {/* Feed */}
                 {parseFloat(results.feed24hr) > 0 && (
-                  <div className="p-2 rounded-lg bg-green-50 dark:bg-green-950/30 border border-green-200">
+                  <div className="p-2 rounded-lg bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700">
                     <span className="font-bold">Total Feed ({results.feedType === 'ebm' ? 'EBM' : 'Formula'}):</span>
-                    <div className="pl-2 text-green-700 dark:text-green-300">
-                      {results.feedVol} ml q{results.feedFreq}h = <span className="font-bold">{results.feed24hr} ml/24hr</span>
+                    <div className="pl-2">
+                      {results.feedVol} ml q{results.feedFreq}h = <span className="text-[#00d9c5] font-bold">{results.feed24hr} ml/24hr</span>
                       <span className="text-muted-foreground text-xs ml-2">({results.feedPerKg} ml/kg/day)</span>
                     </div>
                   </div>
@@ -877,14 +877,14 @@ const FluidCalculatorPage = () => {
 
                 {/* TPN */}
                 {(parseFloat(results.amino24hr) > 0 || parseFloat(results.lipid24hr) > 0) && (
-                  <div className="p-2 rounded-lg bg-purple-50 dark:bg-purple-950/30 border border-purple-200">
+                  <div className="p-2 rounded-lg bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700">
                     <span className="font-bold">TPN:</span>
-                    <div className="pl-2 text-purple-700 dark:text-purple-300 space-y-1">
+                    <div className="pl-2 space-y-1">
                       {parseFloat(results.amino24hr) > 0 && (
-                        <div>10% Aminoplasmin ({results.aminoG}g/kg): <span className="font-bold">{results.amino24hr} ml/24hr</span></div>
+                        <div>10% Aminoplasmin ({results.aminoG}g/kg): <span className="text-[#00d9c5] font-bold">{results.amino24hr} ml/24hr</span></div>
                       )}
                       {parseFloat(results.lipid24hr) > 0 && (
-                        <div>20% Intralipids ({results.lipidG}g/kg): <span className="font-bold">{results.lipid24hr} ml/24hr</span></div>
+                        <div>20% Intralipids ({results.lipidG}g/kg): <span className="text-[#00d9c5] font-bold">{results.lipid24hr} ml/24hr</span></div>
                       )}
                     </div>
                   </div>
@@ -892,7 +892,7 @@ const FluidCalculatorPage = () => {
 
                 {/* Balance */}
                 {results.useCombinedDextrose && (
-                  <div className={`p-2 rounded-lg border ${parseFloat(results.remaining) < 0 ? 'bg-red-100 border-red-300 text-red-700' : 'bg-gray-50 dark:bg-gray-800 border-gray-200'}`}>
+                  <div className={`p-2 rounded-lg border ${parseFloat(results.remaining) < 0 ? 'bg-red-50 dark:bg-red-950/30 border-red-300 text-red-700 dark:text-red-400' : 'bg-gray-50 dark:bg-gray-800/50 border-gray-200 dark:border-gray-700'}`}>
                     <span className="font-bold">Remaining:</span> <span className="font-bold">{results.remaining} ml/24hr</span>
                     {parseFloat(results.remaining) < 0 && (
                       <span className="text-red-500 text-xs ml-2">(Over TFI limit!)</span>
@@ -902,14 +902,13 @@ const FluidCalculatorPage = () => {
 
                 {/* Total Calories Summary */}
                 {parseFloat(results.totalCalories24hr) > 0 && (
-                  <div className="p-3 rounded-lg bg-gradient-to-r from-orange-100 to-amber-100 dark:from-orange-950/50 dark:to-amber-950/50 border-2 border-orange-300 dark:border-orange-700">
+                  <div className="p-3 rounded-lg bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600">
                     <div className="flex items-center gap-2">
-                      <span className="text-lg">🔥</span>
-                      <span className="font-bold text-orange-700 dark:text-orange-300">Total Calories:</span>
+                      <span className="font-bold">Total Calories:</span>
                     </div>
-                    <div className="text-xl font-bold text-orange-600 dark:text-orange-400 mt-1">
+                    <div className="text-xl font-bold text-[#00d9c5] mt-1">
                       {results.totalCalories24hr} kcal/24hr
-                      <span className="text-sm ml-2">({results.totalCaloriesPerKg} kcal/kg/day)</span>
+                      <span className="text-sm ml-2 text-foreground">({results.totalCaloriesPerKg} kcal/kg/day)</span>
                     </div>
                     <div className="text-xs text-muted-foreground mt-1">
                       Dextrose: {results.dextroseCalories24hr} | Feed: {results.feedCalories24hr} | TPN: {results.tpnCalories24hr} kcal
@@ -919,32 +918,31 @@ const FluidCalculatorPage = () => {
 
                 {/* GIR (Glucose Infusion Rate) */}
                 {parseFloat(results.dextrose24hr) > 0 && (
-                  <div className="p-3 rounded-lg bg-gradient-to-r from-cyan-100 to-teal-100 dark:from-cyan-950/50 dark:to-teal-950/50 border-2 border-cyan-300 dark:border-cyan-700">
+                  <div className="p-3 rounded-lg bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600">
                     <div className="flex items-center gap-2">
-                      <span className="text-lg">⚡</span>
-                      <span className="font-bold text-cyan-700 dark:text-cyan-300">GIR (Glucose Infusion Rate):</span>
+                      <span className="font-bold">GIR (Glucose Infusion Rate):</span>
                     </div>
                     <div className="mt-2 space-y-2">
-                      <div className="flex justify-between items-center p-2 rounded-lg bg-white dark:bg-gray-800">
+                      <div className="flex justify-between items-center p-2 rounded-lg bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700">
                         <div>
-                          <span className="text-sm text-muted-foreground">Without Feed (IV Dextrose only):</span>
+                          <span className="text-sm">Without Feed (IV Dextrose only):</span>
                           {results.dextroseBreakdown.length > 1 && (
                             <div className="text-xs text-muted-foreground mt-0.5">
                               Includes: {results.dextroseBreakdown.map(d => d.type).join(' + ')}
                             </div>
                           )}
                         </div>
-                        <span className="text-lg font-bold font-mono text-cyan-600 dark:text-cyan-400">{results.girWithoutFeed} mg/kg/min</span>
+                        <span className="text-lg font-bold font-mono text-[#00d9c5]">{results.girWithoutFeed} mg/kg/min</span>
                       </div>
                       {results.hasFeed && (
-                        <div className="flex justify-between items-center p-2 rounded-lg bg-white dark:bg-gray-800">
+                        <div className="flex justify-between items-center p-2 rounded-lg bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700">
                           <div>
-                            <span className="text-sm text-muted-foreground">With Feed (IV + Feed):</span>
+                            <span className="text-sm">With Feed (IV + Feed):</span>
                             <div className="text-xs text-muted-foreground mt-0.5">
                               All Dextrose + {results.feedType === 'ebm' ? 'EBM' : 'Formula'} carbs
                             </div>
                           </div>
-                          <span className="text-lg font-bold font-mono text-teal-600 dark:text-teal-400">{results.girWithFeed} mg/kg/min</span>
+                          <span className="text-lg font-bold font-mono text-[#00d9c5]">{results.girWithFeed} mg/kg/min</span>
                         </div>
                       )}
                     </div>
