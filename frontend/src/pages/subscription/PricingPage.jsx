@@ -107,18 +107,18 @@ const PricingPage = () => {
         {/* Pricing Cards */}
         <div className="grid md:grid-cols-2 gap-6">
           {/* Monthly Plan */}
-          <Card className="relative overflow-hidden">
+          <Card className="relative overflow-hidden flex flex-col">
             <CardHeader>
               <CardTitle className="text-xl">Monthly</CardTitle>
               <CardDescription>Pay as you go</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-6">
+            <CardContent className="space-y-6 flex-1 flex flex-col">
               <div className="flex items-baseline gap-1">
                 <span className="text-4xl font-bold">{pricing?.monthly_price || 1}</span>
                 <span className="text-muted-foreground">BHD/month</span>
               </div>
 
-              <ul className="space-y-3">
+              <ul className="space-y-3 flex-1">
                 <li className="flex items-center gap-2 text-sm">
                   <CheckCircle className="h-4 w-4 text-[#00d9c5]" />
                   <span>All NICU calculators</span>
@@ -139,7 +139,7 @@ const PricingPage = () => {
 
               <Button
                 onClick={() => handleSelectPlan('monthly')}
-                className="w-full"
+                className="w-full mt-auto"
                 variant="outline"
                 disabled={loading || (user?.subscriptionStatus === 'active' && user?.subscriptionPlan === 'monthly')}
               >
@@ -155,7 +155,7 @@ const PricingPage = () => {
           </Card>
 
           {/* Annual Plan */}
-          <Card className="relative overflow-hidden border-[#00d9c5]">
+          <Card className="relative overflow-hidden border-[#00d9c5] flex flex-col">
             <div className="absolute top-0 right-0 bg-[#00d9c5] text-white px-3 py-1 text-xs font-medium rounded-bl-lg">
               <Crown className="h-3 w-3 inline mr-1" />
               Best Value
@@ -164,13 +164,13 @@ const PricingPage = () => {
               <CardTitle className="text-xl">Annual</CardTitle>
               <CardDescription>Save 17% vs monthly</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-6">
+            <CardContent className="space-y-6 flex-1 flex flex-col">
               <div className="flex items-baseline gap-1">
                 <span className="text-4xl font-bold">{pricing?.annual_price || 10}</span>
                 <span className="text-muted-foreground">BHD/year</span>
               </div>
 
-              <ul className="space-y-3">
+              <ul className="space-y-3 flex-1">
                 <li className="flex items-center gap-2 text-sm">
                   <CheckCircle className="h-4 w-4 text-[#00d9c5]" />
                   <span>All NICU calculators</span>
@@ -187,15 +187,11 @@ const PricingPage = () => {
                   <CheckCircle className="h-4 w-4 text-[#00d9c5]" />
                   <span>Save preferences</span>
                 </li>
-                <li className="flex items-center gap-2 text-sm">
-                  <CheckCircle className="h-4 w-4 text-[#00d9c5]" />
-                  <span className="font-medium">Priority support</span>
-                </li>
               </ul>
 
               <Button
                 onClick={() => handleSelectPlan('annual')}
-                className="w-full bg-[#00d9c5] hover:bg-[#00c4b0] text-white"
+                className="w-full bg-[#00d9c5] hover:bg-[#00c4b0] text-white mt-auto"
                 disabled={loading || (user?.subscriptionStatus === 'active' && user?.subscriptionPlan === 'annual')}
               >
                 {loading && selectedPlan === 'annual' ? (
