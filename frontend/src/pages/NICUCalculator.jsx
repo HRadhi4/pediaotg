@@ -858,6 +858,11 @@ const FluidCalculatorPage = () => {
                         <div>20% Intralipids ({results.lipidG}g/kg): <span className="font-bold">{results.lipid24hr} ml/24hr</span></div>
                       )}
                     </div>
+                    {parseFloat(results.tpnCalories24hr) > 0 && (
+                      <div className="mt-1 text-fuchsia-600 dark:text-fuchsia-400 text-xs">
+                        🔥 {results.tpnCalories24hr} kcal/24hr ({results.tpnCaloriesPerKg} kcal/kg/day)
+                      </div>
+                    )}
                   </div>
                 )}
 
