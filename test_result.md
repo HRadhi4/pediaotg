@@ -1564,3 +1564,30 @@ The implementation exceeds expectations with a sophisticated drug formulary, acc
 - **PayPal Integration**: Sandbox mode configured, order creation working
 - **Admin Dashboard**: User management, subscription stats
 - **Offline Storage**: IndexedDB with localStorage fallback for layouts
+
+## Update: NICU Fluid Calculator & Pricing Page Fixes (Jan 4, 2026)
+
+### Changes Made:
+
+#### 1. Pricing Page Fixes
+- **Removed "Priority Support"** from Annual plan features
+- **Aligned buttons to bottom** of cards using flexbox (`flex flex-col`, `flex-1`, `mt-auto`)
+- Both cards now have consistent height and button alignment
+
+#### 2. NICU Fluid Calculator Enhancements
+- **Simplified Calorie Display**: Removed individual calorie displays from Feed and TPN sections
+- **Added GIR (Glucose Infusion Rate) Calculation**:
+  - Shows "Without Feed" (IV fluids only): Uses only dextrose from IV
+  - Shows "With Feed" (IV + Feed): Includes both IV dextrose and feed carbohydrate contribution
+  - Target range reference: 4-8 mg/kg/min (preterm: 6-8, term: 4-6)
+- **Total Calories Summary** still shows breakdown (Dextrose | Feed | TPN)
+
+### Files Modified:
+- `/app/frontend/src/pages/subscription/PricingPage.jsx`
+- `/app/frontend/src/pages/NICUCalculator.jsx`
+
+### Testing Required:
+1. Pricing page - verify Priority Support removed and buttons aligned
+2. NICU Fluid Calculator - enter sample data and verify GIR calculation with and without feed
+3. PayPal payment flow - already tested working via curl
+
