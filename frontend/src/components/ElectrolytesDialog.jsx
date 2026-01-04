@@ -555,9 +555,9 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
             <div className="p-3 rounded-lg bg-background border">
               <p className="text-sm text-muted-foreground">Dose</p>
               <p className="text-xl font-mono font-bold text-primary">{results.dose}</p>
+              {results.doseDetail && <p className="text-sm text-muted-foreground">{results.doseDetail}</p>}
               {results.frequency && <p className="text-sm">Frequency: {results.frequency}</p>}
               {results.route && <p className="text-sm">Route: {results.route}</p>}
-              {results.duration && <p className="text-sm">Duration: {results.duration}</p>}
             </div>
           )}
           
@@ -565,13 +565,34 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
             <div className="text-sm"><strong>Available:</strong> {results.available}</div>
           )}
           {results.dilution && (
-            <div className="text-sm"><strong>Dilution:</strong> {results.dilution}</div>
+            <div className="p-3 rounded-lg bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800">
+              <p className="text-sm font-medium text-blue-700 dark:text-blue-300">Dilution</p>
+              <p className="text-sm text-blue-600 dark:text-blue-400">{results.dilution}</p>
+              {results.dilutionCalc && (
+                <p className="text-sm font-mono mt-1 text-blue-700 dark:text-blue-300">{results.dilutionCalc}</p>
+              )}
+            </div>
+          )}
+          {results.duration && (
+            <div className="p-3 rounded-lg bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-800">
+              <p className="text-sm font-medium text-green-700 dark:text-green-300">Duration & Rate</p>
+              <p className="text-sm text-green-600 dark:text-green-400">Duration: {results.duration}</p>
+              {results.rate && (
+                <p className="text-sm font-mono font-bold text-green-700 dark:text-green-300">Rate: {results.rate}</p>
+              )}
+            </div>
+          )}
+          {results.solutionCompat && (
+            <div className="text-sm"><strong>Compatible Solutions:</strong> {results.solutionCompat}</div>
           )}
           {results.peripheral && (
             <div className="text-sm"><strong>Peripheral:</strong> {results.peripheral}</div>
           )}
           {results.central && (
             <div className="text-sm"><strong>Central:</strong> {results.central}</div>
+          )}
+          {results.fluidRestriction && (
+            <div className="text-sm"><strong>Fluid Restriction:</strong> {results.fluidRestriction}</div>
           )}
           
           {results.sections?.map((section, i) => (
@@ -608,7 +629,7 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
           
           {results.incompatible && (
             <div className="p-3 rounded-lg bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800">
-              <p className="text-sm font-medium text-red-700 dark:text-red-300">Incompatible with:</p>
+              <p className="text-sm font-medium text-red-700 dark:text-red-300">⚠️ Drug Incompatibility:</p>
               <p className="text-sm text-red-600 dark:text-red-400">{results.incompatible}</p>
             </div>
           )}
