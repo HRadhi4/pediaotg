@@ -4,20 +4,21 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, Users, CreditCard, TrendingUp, Loader2, Search, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ArrowLeft, Users, CreditCard, TrendingUp, Loader2, Search, ChevronLeft, ChevronRight, Trash2 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || '';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
-  const { isAdmin, getAuthHeaders } = useAuth();
+  const { isAdmin, getAuthHeaders, user } = useAuth();
   const [stats, setStats] = useState(null);
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(0);
   const [total, setTotal] = useState(0);
   const [searchTerm, setSearchTerm] = useState('');
+  const [deletingUserId, setDeletingUserId] = useState(null);
   const limit = 20;
 
   useEffect(() => {
@@ -54,6 +55,41 @@ const AdminDashboard = () => {
       console.error('Failed to fetch admin data:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleDeleteUser = async (userId, userEmail) => {
+    // Don't allow deleting yourself or other admins
+    if (userId === user?.id) {
+      alert("You cannot delete your own account");
+      return;
+    }
+
+    if (!window.confirm(`Are you sure you want to delete user "${userEmail}"? This action cannot be undone.`)) {
+      return;
+    }
+
+    setDeletingUserId(userId);
+    try {
+      const response = await fetch(`${API_URL}/api/admin/user/${userId}`, {
+        method: 'DELETE',
+        credentials: 'include',
+        headers: getAuthHeaders()
+      });
+
+      if (response.ok) {
+        // Refresh the data
+        await fetchData();
+        alert('User deleted successfully');
+      } else {
+        const data = await response.json();
+        alert(data.detail || 'Failed to delete user');
+      }
+    } catch (error) {
+      console.error('Delete error:', error);
+      alert('An error occurred while deleting the user');
+    } finally {
+      setDeletingUserId(null);
     }
   };
 
