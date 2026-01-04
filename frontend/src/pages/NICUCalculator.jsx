@@ -693,22 +693,33 @@ const FluidCalculatorPage = () => {
                   <Input type="number" placeholder="5" value={feedVolume} onChange={(e) => setFeedVolume(e.target.value)} className="nightingale-input font-mono h-9" />
                 </div>
                 <div className="space-y-1">
-                  <Label className="text-xs">Feed Frequency</Label>
+                  <Label className="text-xs">Feed Type</Label>
                   <select
-                    value={feedFrequency}
-                    onChange={(e) => setFeedFrequency(e.target.value)}
+                    value={feedType}
+                    onChange={(e) => setFeedType(e.target.value)}
                     className="w-full h-9 rounded-xl bg-gray-50 dark:bg-gray-800/50 border-0 px-3 text-sm"
                   >
-                    <option value="1">q1h</option>
-                    <option value="2">q2h</option>
-                    <option value="3">q3h</option>
-                    <option value="4">q4h</option>
-                    <option value="6">q6h</option>
-                    <option value="8">q8h</option>
-                    <option value="12">q12h</option>
-                    <option value="24">q24h</option>
+                    <option value="ebm">EBM (20 kcal/oz)</option>
+                    <option value="formula">Formula (24 kcal/oz)</option>
                   </select>
                 </div>
+              </div>
+              <div className="space-y-1">
+                <Label className="text-xs">Feed Frequency</Label>
+                <select
+                  value={feedFrequency}
+                  onChange={(e) => setFeedFrequency(e.target.value)}
+                  className="w-full h-9 rounded-xl bg-gray-50 dark:bg-gray-800/50 border-0 px-3 text-sm"
+                >
+                  <option value="1">q1h</option>
+                  <option value="2">q2h</option>
+                  <option value="3">q3h</option>
+                  <option value="4">q4h</option>
+                  <option value="6">q6h</option>
+                  <option value="8">q8h</option>
+                  <option value="12">q12h</option>
+                  <option value="24">q24h</option>
+                </select>
               </div>
             </CardContent>
           </Card>
