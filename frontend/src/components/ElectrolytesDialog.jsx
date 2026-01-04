@@ -173,38 +173,34 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
     
     if (sodiumType === "hyponatremia") {
       if (hyponatremiaType === "severe") {
-        // 3% NaCl: 1-2 mEq/kg, then multiply by 2 to get ml
-        // 3% NaCl = 0.513 mEq/ml, so 1 mEq = ~2 ml (1/0.513 ≈ 1.95)
-        const minMEq = w * 1;
-        const maxMEq = w * 2;
-        const minDose = minMEq * 2; // Convert mEq to ml (multiply by 2)
-        const maxDose = maxMEq * 2;
+        // 3% NaCl given as ml/day (not multiplied by weight)
+        // Reference: Maintenance = 1-3 mEq/kg (1 mEq = 2ml)
         setResults({
           title: "Hyponatremia Correction (Severe)",
           subtitle: "Na < 125 with seizure or encephalopathy",
           sections: [
             { 
               subtitle: "3% NaCl Bolus", 
-              value: `${minMEq.toFixed(1)} - ${maxMEq.toFixed(1)} mEq`,
-              detail: `= ${minDose.toFixed(1)} - ${maxDose.toFixed(1)} ml (mEq × 2 = ml)`
+              value: `3-5 ml/kg`,
+              detail: "Over 15-30 mins"
             },
             { 
-              subtitle: "Administration", 
-              value: `Over 15-30 mins`,
-              detail: "Goal: increase Na by 6-8 mEq/L"
+              subtitle: "3% NaCl Infusion", 
+              value: `1-2 ml/kg/hr`,
+              detail: "Continuous infusion option"
             },
             { 
-              subtitle: "Alternative Infusion", 
-              value: `${(w * 1).toFixed(1)} - ${(w * 2).toFixed(1)} ml/hr of 3% NaCl`,
-              detail: "0.5-1 mEq/kg/hr (continuous)"
+              subtitle: "Goal", 
+              value: `Increase Na by 6-8 mEq/L`,
+              detail: "Check Na every 20 mins until symptoms resolve"
             }
           ],
           notes: [
+            "📌 Reference: Maintenance = 1-3 mEq/kg (1 mEq = 2 ml of 3% NaCl)",
             "3% NaCl = 0.513 mEq/ml (513 mEq/L)",
-            "1-2 mEq/kg × 2 = ml of 3% NaCl",
-            "Example: 3kg baby × 2 mEq/kg × 2 = 12 ml"
+            "May repeat bolus up to 2 times"
           ],
-          warnings: ["May repeat bolus twice", "Check Na every 20 mins until symptoms resolve"]
+          warnings: ["Do not exceed 10-12 mEq/L rise in 24 hours"]
         });
       } else {
         const naDeficit = w * 0.6 * (targetNaVal - na);
