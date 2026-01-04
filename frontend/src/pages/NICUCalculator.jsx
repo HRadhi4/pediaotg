@@ -550,6 +550,27 @@ const FluidCalculatorPage = () => {
     const remaining = totalFluid24hr - totalUsed;
     const hourlyRate = totalFluid24hr / 24;
 
+    // Calculate total dextrose calories
+    // Dextrose provides 3.4 kcal/g, concentration is percentage g/100ml
+    let dextroseCalories24hr = 0;
+    dextroseBreakdown.forEach(dex => {
+      const dextroseGrams = (dex.percentage / 100) * dex.volume; // g of dextrose
+      dextroseCalories24hr += dextroseGrams * 3.4; // 3.4 kcal/g
+    });
+    const dextroseCaloriesPerKg = w > 0 ? dextroseCalories24hr / w : 0;
+
+    // Calculate TPN calories
+    // Amino acids (protein): 4 kcal/g
+    // Lipids: 10 kcal/g (for 20% intralipids which is 2 kcal/ml)
+    const aminoCalories24hr = amino24hr * 0.1 * 4; // 10% amino = 0.1g/ml × volume × 4 kcal/g
+    const lipidCalories24hr = lipid24hr * 2; // 20% lipid = 2 kcal/ml
+    const tpnCalories24hr = aminoCalories24hr + lipidCalories24hr;
+    const tpnCaloriesPerKg = w > 0 ? tpnCalories24hr / w : 0;
+
+    // Total calories
+    const totalCalories24hr = dextroseCalories24hr + feedCalories24hr + tpnCalories24hr;
+    const totalCaloriesPerKg = w > 0 ? totalCalories24hr / w : 0;
+
     return {
       weight: w,
       tfi: tfiNum,
@@ -564,14 +585,19 @@ const FluidCalculatorPage = () => {
       feedPerKg: feedPerKg.toFixed(1),
       feedCalories24hr: feedCalories24hr.toFixed(1),
       feedCaloriesPerKg: feedCaloriesPerKg.toFixed(1),
-      caloriesPerMl,
       aminoG,
       amino24hr: amino24hr.toFixed(1),
       lipidG,
       lipid24hr: lipid24hr.toFixed(1),
       tpn24hr: tpn24hr.toFixed(1),
+      tpnCalories24hr: tpnCalories24hr.toFixed(1),
+      tpnCaloriesPerKg: tpnCaloriesPerKg.toFixed(1),
       dextroseBreakdown,
       dextrose24hr: dextrose24hr.toFixed(1),
+      dextroseCalories24hr: dextroseCalories24hr.toFixed(1),
+      dextroseCaloriesPerKg: dextroseCaloriesPerKg.toFixed(1),
+      totalCalories24hr: totalCalories24hr.toFixed(1),
+      totalCaloriesPerKg: totalCaloriesPerKg.toFixed(1),
       remaining: remaining.toFixed(1),
       isOverLimit: remaining < -0.1,
       useCombinedDextrose
