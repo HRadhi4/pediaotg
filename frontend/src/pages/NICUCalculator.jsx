@@ -872,10 +872,6 @@ const FluidCalculatorPage = () => {
                       {results.feedVol} ml q{results.feedFreq}h = <span className="font-bold">{results.feed24hr} ml/24hr</span>
                       <span className="text-muted-foreground text-xs ml-2">({results.feedPerKg} ml/kg/day)</span>
                     </div>
-                    <div className="pl-2 mt-1 text-amber-600 dark:text-amber-400 font-medium">
-                      🔥 Calories: <span className="font-bold">{results.feedCalories24hr} kcal/24hr</span>
-                      <span className="text-xs ml-2">({results.feedCaloriesPerKg} kcal/kg/day)</span>
-                    </div>
                   </div>
                 )}
 
