@@ -342,14 +342,14 @@ class PediaOTGBackendTester:
         return success, response
 
 def main():
-    print("🚀 Starting NICU Backend API Tests")
+    print("🚀 Starting PediaOTG Backend API Tests")
     print("=" * 50)
     
     # Setup
-    tester = NICUBackendTester()
+    tester = PediaOTGBackendTester()
 
     # Run tests
-    print("\n📡 Testing API Endpoints...")
+    print("\n📡 Testing Basic API Endpoints...")
     
     # Test root endpoint
     tester.test_root_endpoint()
@@ -359,6 +359,24 @@ def main():
     
     # Test getting status checks
     tester.test_get_status_checks()
+    
+    # Test authentication and subscription endpoints
+    print("\n🔐 Testing Authentication & Subscription...")
+    
+    # Test admin login (required for other tests)
+    tester.test_admin_login()
+    
+    # Test auth check
+    tester.test_auth_check()
+    
+    # Test subscription pricing
+    tester.test_subscription_pricing()
+    
+    # Test PayPal order creation
+    tester.test_paypal_order_creation()
+    
+    # Test subscription status
+    tester.test_subscription_status()
     
     # Test blood gas analysis
     print("\n🩸 Testing Blood Gas Analysis...")
