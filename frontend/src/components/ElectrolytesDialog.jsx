@@ -173,14 +173,36 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
     
     if (sodiumType === "hyponatremia") {
       if (hyponatremiaType === "severe") {
-        const minDose = w * 3;
-        const maxDose = w * 5;
+        // 3% NaCl: 1-2 mEq/kg, then multiply by 2 to get ml
+        // 3% NaCl = 0.513 mEq/ml, so 1 mEq = ~2 ml (1/0.513 ≈ 1.95)
+        const minMEq = w * 1;
+        const maxMEq = w * 2;
+        const minDose = minMEq * 2; // Convert mEq to ml (multiply by 2)
+        const maxDose = maxMEq * 2;
         setResults({
           title: "Hyponatremia Correction (Severe)",
           subtitle: "Na < 125 with seizure or encephalopathy",
           sections: [
-            { subtitle: "3% NaCl Bolus", value: `${minDose.toFixed(1)} - ${maxDose.toFixed(1)} ml`, detail: "3-5 ml/kg over 15-30 mins" },
-            { subtitle: "Infusion Option", value: `1-2 ml/kg/hr of 3% NaCl`, detail: "Goal: increase Na by 6-8 mEq/L" }
+            { 
+              subtitle: "3% NaCl Bolus", 
+              value: `${minMEq.toFixed(1)} - ${maxMEq.toFixed(1)} mEq`,
+              detail: `= ${minDose.toFixed(1)} - ${maxDose.toFixed(1)} ml (mEq × 2 = ml)`
+            },
+            { 
+              subtitle: "Administration", 
+              value: `Over 15-30 mins`,
+              detail: "Goal: increase Na by 6-8 mEq/L"
+            },
+            { 
+              subtitle: "Alternative Infusion", 
+              value: `${(w * 1).toFixed(1)} - ${(w * 2).toFixed(1)} ml/hr of 3% NaCl`,
+              detail: "0.5-1 mEq/kg/hr (continuous)"
+            }
+          ],
+          notes: [
+            "3% NaCl = 0.513 mEq/ml (513 mEq/L)",
+            "1-2 mEq/kg × 2 = ml of 3% NaCl",
+            "Example: 3kg baby × 2 mEq/kg × 2 = 12 ml"
           ],
           warnings: ["May repeat bolus twice", "Check Na every 20 mins until symptoms resolve"]
         });
