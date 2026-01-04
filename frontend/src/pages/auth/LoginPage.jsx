@@ -39,7 +39,7 @@ const LoginPage = () => {
             <Stethoscope className="h-8 w-8 text-[#00d9c5]" />
           </div>
           <CardTitle className="text-2xl font-bold">Welcome Back</CardTitle>
-          <CardDescription>Sign in to PediaOTG</CardDescription>
+          <CardDescription>Sign in to Pediatrics On The Go</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
