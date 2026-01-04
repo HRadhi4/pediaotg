@@ -438,6 +438,7 @@ const FluidCalculatorPage = () => {
   // Feed
   const [feedVolume, setFeedVolume] = useState("");
   const [feedFrequency, setFeedFrequency] = useState("2"); // q2h default
+  const [feedType, setFeedType] = useState("ebm"); // "ebm" or "formula"
   
   // TPN
   const [aminoGrams, setAminoGrams] = useState(""); // 1-3g limit
