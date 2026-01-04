@@ -7,13 +7,14 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Calculator, AlertCircle, Pill } from "lucide-react";
+import { Calculator, AlertCircle, Pill, Droplets, Clock, Beaker, AlertTriangle, CheckCircle } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 
 const ElectrolytesDialog = ({ open, onOpenChange }) => {
-  const [activeTab, setActiveTab] = useState("calcium");
+  const [activeTab, setActiveTab] = useState("infusions");
   const [weight, setWeight] = useState("");
   const [results, setResults] = useState(null);
+  const [selectedDrug, setSelectedDrug] = useState(null);
 
   // Specific state for each calculator
   const [calciumLevel, setCalciumLevel] = useState("");
@@ -31,14 +32,18 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
   
   // Phosphate states
   const [phosphateLevel, setPhosphateLevel] = useState("");
-  const [phosphateSeverity, setPhosphateSeverity] = useState("moderate"); // "moderate" or "severe"
+  const [phosphateSeverity, setPhosphateSeverity] = useState("moderate");
+
+  // KCl specific state
+  const [kclLineType, setKclLineType] = useState("peripheral");
+  const [kclConcentration, setKclConcentration] = useState("15"); // 15% or 10%
 
   const calculateCalcium = () => {
     const w = parseFloat(weight);
     if (!w) return;
     
-    const doseMl = Math.min(w * 1, 10); // 1 ml/kg, max 10ml
-    const doseMg = doseMl * 100; // 100mg/ml concentration
+    const doseMl = Math.min(w * 1, 10);
+    const doseMg = doseMl * 100;
     
     setResults({
       title: "Calcium Gluconate 10% IV",
@@ -61,14 +66,10 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
     const w = parseFloat(weight);
     if (!w) return;
     
-    // NICU: 0.1-0.2 ml/kg BD for 3 doses
     const nicuMinMl = w * 0.1;
     const nicuMaxMl = w * 0.2;
-    
-    // General: 25-50 mg/kg BD for 3 doses
     const minMg = w * 25;
     const maxMg = w * 50;
-    // 50% MgSulfate = 500mg/ml, so ml = mg/500
     const minMl = minMg / 500;
     const maxMl = maxMg / 500;
     
@@ -83,7 +84,7 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
         {
           subtitle: "General Ward (50% MgSulfate)",
           value: `${minMg.toFixed(0)} - ${maxMg.toFixed(0)} mg (${minMl.toFixed(2)} - ${maxMl.toFixed(2)} ml)`,
-          detail: "25-50 mg/kg BD for 3 doses. Divide dose by 60 for dilution."
+          detail: "25-50 mg/kg BD for 3 doses"
         },
         {
           subtitle: "Status Asthmaticus",
@@ -91,9 +92,7 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
           detail: "25-50 mg/kg over 20-30 mins"
         }
       ],
-      notes: [
-        "50% MgSulfate concentration: 500 mg/ml"
-      ]
+      notes: ["50% MgSulfate concentration: 500 mg/ml"]
     });
   };
 
@@ -101,7 +100,7 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
     const w = parseFloat(weight);
     if (!w) return;
     
-    const ivMax = 6; // mEq
+    const ivMax = 6;
     const poMin = w * 0.5;
     const poMax = Math.min(w * 1, 20);
     const bolusMin = w * 0.5;
@@ -110,25 +109,11 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
     setResults({
       title: "Potassium (Hypokalemia)",
       sections: [
-        {
-          subtitle: "IV",
-          value: `Max ${ivMax} mEq`
-        },
-        {
-          subtitle: "PO (KCl)",
-          value: `${poMin.toFixed(1)} - ${poMax.toFixed(1)} mEq`,
-          detail: "0.5-1 mEq/kg, Max 20 mEq. Can be given BD"
-        },
-        {
-          subtitle: "Bolus",
-          value: `${bolusMin.toFixed(1)} - ${bolusMax.toFixed(1)} mEq`,
-          detail: "0.5-1 mEq/kg over 1-2 hours (preferably 2 hours)"
-        }
+        { subtitle: "IV", value: `Max ${ivMax} mEq` },
+        { subtitle: "PO (KCl)", value: `${poMin.toFixed(1)} - ${poMax.toFixed(1)} mEq`, detail: "0.5-1 mEq/kg, Max 20 mEq. Can be given BD" },
+        { subtitle: "Bolus", value: `${bolusMin.toFixed(1)} - ${bolusMax.toFixed(1)} mEq`, detail: "0.5-1 mEq/kg over 1-2 hours" }
       ],
-      notes: [
-        "Dilution - ask ICU",
-        "NICU: For every 25 ml D10%, give 1 mEq KCl (in fluid/24 hrs)"
-      ]
+      notes: ["NICU: For every 25 ml D10%, give 1 mEq KCl"]
     });
   };
 
@@ -144,52 +129,36 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
       sections: [],
       notes: [
         "Normal HCO3 range: 18-22 mEq/L",
-        "Correct when:",
-        "  • HCO3 < 12 (must correct)",
-        "  • Symptomatic: non-responsive hypotension to inotropes",
-        "  • Rapid shallow breath (Kussmaul)",
-        "  • CNS/GI irritation",
-        "  • Drop from baseline (e.g., Bartter syndrome)"
+        "Correct when HCO3 < 12 or symptomatic"
       ],
       warnings: [
-        "Give in 2 halves: 1st half in first hour, 2nd half over 24 hours",
-        "In chronic acidotic disease with hypocalcemia: correct calcium FIRST",
-        "Rapid correction mobilizes ionized calcium → cardiac arrest risk"
+        "Give in 2 halves: 1st half in 1st hour, 2nd half over 24 hours",
+        "In chronic acidosis with hypocalcemia: correct calcium FIRST"
       ]
     };
     
-    // Method 1: Using HCO3
     if ((nahco3Method === "hco3" || nahco3Method === "both") && !isNaN(hco3)) {
       const desiredHCO3 = 20;
       const correction1 = (desiredHCO3 - hco3) * 0.3 * w;
       resultData.sections.push({
         subtitle: "Method 1: Using HCO3",
-        value: `(${desiredHCO3} - ${hco3}) × 0.3 × ${w} = ${correction1.toFixed(1)} mEq`,
-        detail: `1st half: ${(correction1/2).toFixed(1)} mEq (1st hour)\n2nd half: ${(correction1/2).toFixed(1)} mEq (next 24h)`
+        value: `${correction1.toFixed(1)} mEq`,
+        detail: `1st half: ${(correction1/2).toFixed(1)} mEq | 2nd half: ${(correction1/2).toFixed(1)} mEq`
       });
     }
     
-    // Method 2: Using BE
     if ((nahco3Method === "be" || nahco3Method === "both") && !isNaN(be)) {
       const correction2 = Math.abs(be) * 0.3 * w;
       resultData.sections.push({
         subtitle: "Method 2: Using Base Excess",
-        value: `|${be}| × 0.3 × ${w} = ${correction2.toFixed(1)} mEq`,
-        detail: `1st half: ${(correction2/2).toFixed(1)} mEq (1st hour)\n2nd half: ${(correction2/2).toFixed(1)} mEq (next 24h)`
+        value: `${correction2.toFixed(1)} mEq`,
+        detail: `1st half: ${(correction2/2).toFixed(1)} mEq | 2nd half: ${(correction2/2).toFixed(1)} mEq`
       });
     }
     
-    // Infusion rate
     resultData.sections.push({
       subtitle: "Persistent Low HCO3 - Infusion",
-      value: `${(w * 0.25).toFixed(2)} - ${(w * 2).toFixed(1)} mEq/hr`,
-      detail: "0.25-2 mEq/kg/hr"
-    });
-    
-    // Oral
-    resultData.sections.push({
-      subtitle: "Oral NaHCO3",
-      value: "600 mg tablet = 7 mEq"
+      value: `${(w * 0.25).toFixed(2)} - ${(w * 2).toFixed(1)} mEq/hr`
     });
     
     setResults(resultData);
@@ -204,331 +173,278 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
     
     if (sodiumType === "hyponatremia") {
       if (hyponatremiaType === "severe") {
-        // Severe: <125 with seizure/encephalopathy
         const minDose = w * 3;
         const maxDose = w * 5;
         setResults({
           title: "Hyponatremia Correction (Severe)",
           subtitle: "Na < 125 with seizure or encephalopathy",
           sections: [
-            {
-              subtitle: "3% NaCl Bolus",
-              value: `${minDose.toFixed(1)} - ${maxDose.toFixed(1)} ml`,
-              detail: "3-5 ml/kg over 15-30 mins"
-            },
-            {
-              subtitle: "Infusion Option",
-              value: `1-2 ml/kg/hr of 3% NaCl`,
-              detail: "Goal: increase Na by 6-8 mEq/L (not >10-12 mEq/L in 24h or >18 mEq/L in 48h)"
-            }
+            { subtitle: "3% NaCl Bolus", value: `${minDose.toFixed(1)} - ${maxDose.toFixed(1)} ml`, detail: "3-5 ml/kg over 15-30 mins" },
+            { subtitle: "Infusion Option", value: `1-2 ml/kg/hr of 3% NaCl`, detail: "Goal: increase Na by 6-8 mEq/L" }
           ],
-          warnings: [
-            "May repeat bolus twice if symptoms do not resolve",
-            "Check Na every 20 mins until symptoms resolve",
-            "Consider desmopressin 1-2 mcg every 4-6 hours"
-          ]
+          warnings: ["May repeat bolus twice", "Check Na every 20 mins until symptoms resolve"]
         });
       } else {
-        // Mild/Asymptomatic (125-134)
         const naDeficit = w * 0.6 * (targetNaVal - na);
-        const maintenance = w * 2; // 2-5 mEq/kg/day
-        const totalNa = naDeficit + maintenance;
-        
-        // Fluid types and Na content
-        const fluidTypes = {
-          NS: 154,
-          halfNS: 77,
-          threePercentNaCl: 513,
-          RL: 130
-        };
-        
+        const maintenance = w * 2;
         setResults({
-          title: "Hyponatremia Correction (Mild/Asymptomatic)",
-          subtitle: `Na ${na} mEq/L (125-134 range)`,
+          title: "Hyponatremia Correction (Mild)",
+          subtitle: `Na ${na} mEq/L`,
           sections: [
-            {
-              subtitle: "1. Na Deficit",
-              value: `Wt × 0.6 × (Target - Measured) = ${w} × 0.6 × (${targetNaVal} - ${na}) = ${naDeficit.toFixed(1)} mEq`
-            },
-            {
-              subtitle: "2. Na Maintenance",
-              value: `${w} × 2-5 = ${maintenance.toFixed(1)} - ${(w*5).toFixed(1)} mEq/day`
-            },
-            {
-              subtitle: "3. Total Na Needed",
-              value: `Deficit + Maintenance = ${totalNa.toFixed(1)} mEq`
-            },
-            {
-              subtitle: "4. Fluid Type Na Content",
-              value: `NS: 154 mEq/L | ½NS: 77 mEq/L | 3%NaCl: 513 mEq/L | RL: 130 mEq/L`
-            }
+            { subtitle: "Na Deficit", value: `${naDeficit.toFixed(1)} mEq` },
+            { subtitle: "Na Maintenance", value: `${maintenance.toFixed(1)} - ${(w*5).toFixed(1)} mEq/day` },
+            { subtitle: "Fluid Options", value: `NS: 154 | ½NS: 77 | 3%NaCl: 513 mEq/L` }
           ],
-          notes: [
-            "Correction no more than 10-12 mEq/day = 0.5 mEq/hr",
-            "Don't exceed 2.5L/day total volume",
-            "Usually D5% added (mix 450ml NS + 50ml D50%)"
-          ]
+          notes: ["Correction max 10-12 mEq/day = 0.5 mEq/hr"]
         });
       }
     } else {
-      // Hypernatremia
-      const fwd = 4 * w * (na - targetNaVal); // Free Water Deficit
-      const maintenance = w * 100; // ~100ml/kg/day for maintenance
+      const fwd = 4 * w * (na - targetNaVal);
+      const maintenance = w * 100;
       const totalFluid = maintenance + fwd;
-      
-      // Determine correction time based on Na level
-      let correctionHours = 24;
-      if (na >= 145 && na <= 157) correctionHours = 24;
-      else if (na >= 158 && na <= 170) correctionHours = 48;
-      else if (na >= 171 && na <= 183) correctionHours = 72;
-      else if (na >= 184) correctionHours = 84;
-      
+      let correctionHours = na >= 184 ? 84 : na >= 171 ? 72 : na >= 158 ? 48 : 24;
       const rate = totalFluid / correctionHours;
-      
-      // 3% NaCl in NS calculation for Na >170
-      const ml3Percent = na > 170 ? (1000 * (targetNaVal - 154)) / (513 - targetNaVal) : 0;
       
       setResults({
         title: "Hypernatremia Correction",
         subtitle: `Na ${na} mEq/L`,
         sections: [
-          {
-            subtitle: "1. Resuscitate",
-            value: "Give solution that won't drop Na >12 mEq/24hr"
-          },
-          {
-            subtitle: "2. Free Water Deficit (FWD)",
-            value: `4 × ${w} × (${na} - ${targetNaVal}) = ${fwd.toFixed(1)} ml`,
-            detail: "FWD = 4ml × Wt × (Serum Na - Desired Na)"
-          },
-          {
-            subtitle: "3. Total Fluid Volume",
-            value: `Maintenance (${maintenance.toFixed(0)}ml) + FWD (${fwd.toFixed(0)}ml) = ${totalFluid.toFixed(0)} ml`
-          },
-          {
-            subtitle: "4. Correction Time",
-            value: `${correctionHours} hours`,
-            detail: `Based on Na level: 145-157→24h, 158-170→48h, 171-183→72h, ≥184→84h`
-          },
-          {
-            subtitle: "5. Rate",
-            value: `${rate.toFixed(1)} ml/hr`,
-            detail: `${totalFluid.toFixed(0)} ml ÷ ${correctionHours} hrs`
-          }
+          { subtitle: "Free Water Deficit", value: `${fwd.toFixed(1)} ml` },
+          { subtitle: "Total Fluid", value: `${totalFluid.toFixed(0)} ml over ${correctionHours}h` },
+          { subtitle: "Rate", value: `${rate.toFixed(1)} ml/hr` }
         ],
-        notes: na > 170 ? [
-          `For Na >170 with NS bolus: Add 3%NaCl to 1L NS`,
-          `ml of 3% = 1000 × (desired Na - 154) / (513 - desired Na)`,
-          `Then: NS Bolus × 3%NaCl/1000 = amount to add to NS bolus`
-        ] : [],
-        warnings: [
-          "SFD (Solute Fluid Deficit) = Fluid Deficit - FWD",
-          "Na required = SFD ml + maintenance fluid × 14 mEq/100ml"
-        ]
+        warnings: ["Don't drop Na >12 mEq/24hr"]
       });
     }
   };
 
   const calculatePhosphate = () => {
     const w = parseFloat(weight);
-    const phos = parseFloat(phosphateLevel);
-    
     if (!w) return;
     
-    // Determine severity from level or selection
-    let severity = phosphateSeverity;
-    if (phos && phos < 1) {
-      severity = "severe";
-    } else if (phos && phos >= 1 && phos <= 2) {
-      severity = "moderate";
-    }
+    const range = phosphateSeverity === "severe" 
+      ? { min: 0.25, max: 0.5, label: "Severe (P < 1 mg/dL)" }
+      : { min: 0.08, max: 0.16, label: "Moderate (P 1-2 mg/dL)" };
     
-    // Dose ranges based on severity (mmol/kg)
-    const doseRanges = {
-      moderate: { min: 0.08, max: 0.16, label: "Low/Moderate (P 1-2 mg/dL)" },
-      severe: { min: 0.25, max: 0.5, label: "Severe (P < 1 mg/dL)" }
-    };
-    
-    const range = doseRanges[severity];
     const minDose = w * range.min;
-    const maxDose = w * range.max;
+    const maxDose = Math.min(w * range.max, 15);
     
-    // Maximum single dose: 15 mmol or 0.5 mmol/kg, whichever is less
-    const maxSingleDose = Math.min(15, w * 0.5);
-    const actualMaxDose = Math.min(maxDose, maxSingleDose);
-    
-    const resultData = {
+    setResults({
       title: "Phosphate Replacement (IV)",
       sections: [
-        {
-          subtitle: "Severity",
-          value: range.label
-        },
-        {
-          subtitle: "Recommended Dose",
-          value: `${minDose.toFixed(2)} - ${actualMaxDose.toFixed(2)} mmol`,
-          detail: `${range.min} - ${range.max} mmol/kg`
-        },
-        {
-          subtitle: "Maximum Single Dose",
-          value: `${maxSingleDose.toFixed(1)} mmol`,
-          detail: "15 mmol or 0.5 mmol/kg (whichever is less)"
-        },
-        {
-          subtitle: "Infusion Rate",
-          value: "Over 4-6 hours",
-          detail: "Slow infusion required"
-        }
+        { subtitle: "Severity", value: range.label },
+        { subtitle: "Dose", value: `${minDose.toFixed(2)} - ${maxDose.toFixed(2)} mmol` },
+        { subtitle: "Infusion", value: "Over 4-6 hours (slow)" }
       ],
-      notes: [
-        "Symptomatic/Severe: Serum P < 1-2 mg/dL",
-        "Rapid infusion can cause life-threatening hypocalcemia",
-        "Monitor calcium levels during infusion",
-        "Keep phosphate ≥2 in Neonate"
-      ],
-      warning: "Slow IV infusion over 4-6 hours. Rapid infusion can cause severe hypocalcemia!"
-    };
-    
-    setResults(resultData);
+      warning: "Rapid infusion can cause severe hypocalcemia!"
+    });
   };
 
+  // Enhanced Drug Infusion Calculator with better KCl dilution
   const calculateDrugInfusion = (drug) => {
     const w = parseFloat(weight);
     if (!w) {
-      setResults({ title: "Please enter weight first", sections: [] });
+      setResults({ 
+        title: "⚠️ Enter Weight First", 
+        sections: [{ subtitle: "Required", value: "Please enter patient weight above to calculate doses" }]
+      });
       return;
     }
     
+    setSelectedDrug(drug);
+    
     const drugs = {
-      mgso4: {
-        title: "Magnesium Sulfate",
-        dose: `${(w * 25).toFixed(0)} - ${(w * 50).toFixed(0)} mg`,
-        doseDetail: "25-50 mg/kg",
-        available: "50% MgSO4 = 500 mg/ml (1ml = 2mmol, 1ml = 4mEq)",
-        dilution: "60 mg/ml",
-        dilutionCalc: (() => {
-          const doseMin = w * 25;
-          const doseMax = w * 50;
-          const dilutionConc = 60; // mg/ml
-          const volumeMin = doseMin / dilutionConc;
-          const volumeMax = doseMax / dilutionConc;
-          return `Dose ÷ 60 = ${volumeMin.toFixed(1)} - ${volumeMax.toFixed(1)} ml total volume`;
-        })(),
-        duration: "2-4 Hours",
-        rate: (() => {
-          const doseMin = w * 25;
-          const doseMax = w * 50;
-          const dilutionConc = 60;
-          const volumeMin = doseMin / dilutionConc;
-          const volumeMax = doseMax / dilutionConc;
-          const rate2hr = volumeMax / 2;
-          const rate4hr = volumeMin / 4;
-          return `${rate4hr.toFixed(1)} - ${rate2hr.toFixed(1)} ml/hr`;
-        })(),
-        solutionCompat: "D5W, NS, LR",
-        incompatible: "Amiodarone, Amphotericin B, Calcium chloride, Cefepime, Sodium bicarbonate"
-      },
-      addiphos: {
-        title: "Addiphos (Phosphate)",
-        sections: [
-          { subtitle: "Infant/Children (<25kg)", value: `${(w * 0.5).toFixed(2)} - ${(w * 1.5).toFixed(2)} mmol/day (1ml = 2mmol)` },
-          { subtitle: "Children (25-45kg)", value: "0.5-1.0 mmol/kg/day" },
-          { subtitle: "Adult (>45kg)", value: "50-70 mmol/day" }
-        ],
-        peripheral: "0.05 mmol/ml",
-        central: "0.12 mmol/ml",
-        duration: "4-6 Hours (slow infusion required)",
-        incompatible: "Calcium Salts"
-      },
-      calciumGluconate: {
-        title: "Calcium Gluconate 10%",
-        dose: `${(w * 100).toFixed(0)} mg (${(w * 1).toFixed(1)} ml)`,
-        doseDetail: "100 mg/kg/dose = 1 ml/kg, Max 3g (30ml)",
-        available: "100 mg/ml, 0.45 mEq/ml",
-        dilution: "Dilute to 50 mg/ml (1:2 dilution)",
-        dilutionCalc: (() => {
-          const doseMl = Math.min(w * 1, 30); // 1 ml/kg, max 30ml
-          const finalVolume = doseMl * 2; // 1:2 dilution
-          return `${doseMl.toFixed(1)} ml drug + ${doseMl.toFixed(1)} ml diluent = ${finalVolume.toFixed(1)} ml total`;
-        })(),
-        duration: "Over 1 Hour",
-        rate: (() => {
-          const doseMl = Math.min(w * 1, 30);
-          const finalVolume = doseMl * 2;
-          return `${finalVolume.toFixed(1)} ml/hr`;
-        })(),
-        solutionCompat: "NS, D5W, D10W",
-        incompatible: "Amphotericin B, Ceftriaxone, Fluconazole, Meropenem, Methylprednisolone, Metoclopramide, Phosphate, Magnesium (when mixed directly)"
-      },
-      calciumChloride: {
-        title: "Calcium Chloride 10%",
-        dose: `${(w * 10).toFixed(0)} mg (${(w * 0.1).toFixed(2)} ml)`,
-        doseDetail: "10 mg/kg/dose = 0.1 ml/kg",
-        available: "100 mg/ml, 1.4 mEq/ml",
-        dilution: "Dilute to 20 mg/ml (1:5 dilution)",
-        dilutionCalc: (() => {
-          const doseMl = w * 0.1;
-          const finalVolume = doseMl * 5; // 1:5 dilution
-          return `${doseMl.toFixed(2)} ml drug + ${(doseMl * 4).toFixed(2)} ml diluent = ${finalVolume.toFixed(2)} ml total`;
-        })(),
-        duration: "Over 1 Hour",
-        rate: (() => {
-          const doseMl = w * 0.1;
-          const finalVolume = doseMl * 5;
-          return `${finalVolume.toFixed(2)} ml/hr`;
-        })(),
-        solutionCompat: "NS, D5W",
-        incompatible: "Phosphates, Sodium Bicarbonate, Sulphates, Amphotericin B"
-      },
-      kcl: {
-        title: "Potassium Chloride (KCl)",
-        dose: `${(w * 0.5).toFixed(2)} - ${(w * 1).toFixed(2)} mEq`,
-        doseDetail: "0.5-1 mEq/kg/dose",
-        available: "1ml = 2mEq (15% KCl) OR 1ml = 1.34 mEq (10% KCl)",
-        peripheral: "Max concentration: 80 mEq/L",
-        central: "Max concentration: 150 mEq/L (15 mEq/100ml)",
-        fluidRestriction: "In fluid restriction: 20 mEq/100ml",
-        dilutionCalc: (() => {
-          const doseMin = w * 0.5;
-          const doseMax = w * 1;
-          // Using 80 mEq/L for peripheral = 0.08 mEq/ml
-          const volumeMin = doseMin / 0.08;
-          const volumeMax = doseMax / 0.08;
-          return `For peripheral (80mEq/L): ${volumeMin.toFixed(0)} - ${volumeMax.toFixed(0)} ml minimum volume`;
-        })(),
-        duration: "Over 1-2 Hours (preferably 2 hours)",
-        rate: (() => {
-          const doseMax = w * 1;
-          const volumeMax = doseMax / 0.08;
-          const rate1hr = volumeMax;
-          const rate2hr = volumeMax / 2;
-          return `${rate2hr.toFixed(1)} - ${rate1hr.toFixed(1)} ml/hr`;
-        })(),
-        solutionCompat: "Most standard IV solutions (NS, D5W, LR)",
-        incompatible: "Amphotericin B, Diazepam, Phenytoin"
-      },
-      sodaBicarb: {
-        title: "Sodium Bicarbonate (NaHCO3)",
-        dose: `${(w * 1).toFixed(1)} - ${(w * 2).toFixed(1)} mEq`,
-        doseDetail: "1-2 mEq/kg/dose",
-        available: "8.4% solution = 1 mEq/ml",
-        dilution: "Dilute 1:1 (1 mEq in 2ml solution)",
-        dilutionCalc: (() => {
-          const doseMin = w * 1;
-          const doseMax = w * 2;
-          const finalVolumeMin = doseMin * 2; // 1:1 dilution
-          const finalVolumeMax = doseMax * 2;
-          return `${doseMin.toFixed(1)} - ${doseMax.toFixed(1)} ml drug + equal volume diluent = ${finalVolumeMin.toFixed(1)} - ${finalVolumeMax.toFixed(1)} ml total`;
-        })(),
-        duration: "Over 30 min - 1 Hour",
-        rate: (() => {
-          const doseMax = w * 2;
-          const finalVolumeMax = doseMax * 2;
-          return `${finalVolumeMax.toFixed(1)} ml over 30min-1hr (${(finalVolumeMax).toFixed(1)} - ${(finalVolumeMax*2).toFixed(1)} ml/hr)`;
-        })(),
-        solutionCompat: "NS, D5W, D10W",
-        incompatible: "Amiodarone, Ampicillin, Calcium chloride, Dobutamine, Dopamine, Epinephrine, Norepinephrine, Magnesium sulfate, Midazolam, Phenytoin, Cefotaxime, Imipenem"
-      }
+      calciumGluconate: (() => {
+        const doseMg = Math.min(w * 100, 3000); // 100mg/kg, max 3g
+        const doseMl = doseMg / 100; // 100mg/ml concentration
+        const diluentMl = doseMl; // 1:2 dilution means equal volume diluent
+        const totalVolume = doseMl + diluentMl;
+        const ratePerHour = totalVolume; // Over 1 hour
+        
+        return {
+          title: "💉 Calcium Gluconate 10%",
+          drugInfo: {
+            concentration: "100 mg/ml (0.45 mEq/ml)",
+            targetDilution: "50 mg/ml (1:2 dilution)"
+          },
+          calculation: {
+            dose: `${doseMg.toFixed(0)} mg`,
+            doseFormula: `${w} kg × 100 mg/kg = ${doseMg.toFixed(0)} mg`,
+            drugVolume: `${doseMl.toFixed(1)} ml`,
+            diluent: `${diluentMl.toFixed(1)} ml (NS or D5W)`,
+            totalVolume: `${totalVolume.toFixed(1)} ml`,
+            duration: "1 hour",
+            rate: `${ratePerHour.toFixed(1)} ml/hr`
+          },
+          preparation: `Draw ${doseMl.toFixed(1)} ml Ca Gluconate + ${diluentMl.toFixed(1)} ml NS = ${totalVolume.toFixed(1)} ml`,
+          compatible: "NS, D5W, D10W",
+          incompatible: "Amphotericin B, Ceftriaxone, Fluconazole, Meropenem, Methylprednisolone, Phosphate, Magnesium"
+        };
+      })(),
+      
+      kcl: (() => {
+        const doseMin = w * 0.5;
+        const doseMax = w * 1;
+        const mEqPerMl = kclConcentration === "15" ? 2 : 1.34; // 15% = 2mEq/ml, 10% = 1.34mEq/ml
+        const drugVolumeMin = doseMin / mEqPerMl;
+        const drugVolumeMax = doseMax / mEqPerMl;
+        
+        // Max concentrations
+        const maxConc = kclLineType === "peripheral" ? 0.08 : 0.15; // 80mEq/L or 150mEq/L
+        const maxConcLabel = kclLineType === "peripheral" ? "80 mEq/L" : "150 mEq/L";
+        
+        // Calculate minimum total volume needed for safe concentration
+        const minTotalVolumeMin = doseMin / maxConc;
+        const minTotalVolumeMax = doseMax / maxConc;
+        
+        // Diluent needed
+        const diluentMin = minTotalVolumeMin - drugVolumeMin;
+        const diluentMax = minTotalVolumeMax - drugVolumeMax;
+        
+        // Rate for 2 hour infusion (preferred)
+        const rate2hr = minTotalVolumeMax / 2;
+        const rate1hr = minTotalVolumeMax / 1;
+        
+        return {
+          title: "💉 Potassium Chloride (KCl)",
+          drugInfo: {
+            concentration: kclConcentration === "15" ? "15% KCl = 2 mEq/ml" : "10% KCl = 1.34 mEq/ml",
+            maxConcentration: `${kclLineType === "peripheral" ? "Peripheral" : "Central"}: ${maxConcLabel}`
+          },
+          calculation: {
+            dose: `${doseMin.toFixed(2)} - ${doseMax.toFixed(2)} mEq`,
+            doseFormula: `${w} kg × 0.5-1 mEq/kg`,
+            drugVolume: `${drugVolumeMin.toFixed(2)} - ${drugVolumeMax.toFixed(2)} ml`,
+            diluent: `${diluentMin.toFixed(0)} - ${diluentMax.toFixed(0)} ml (to achieve ${maxConcLabel})`,
+            totalVolume: `${minTotalVolumeMin.toFixed(0)} - ${minTotalVolumeMax.toFixed(0)} ml`,
+            duration: "1-2 hours (2 hours preferred)",
+            rate: `${rate2hr.toFixed(1)} ml/hr (2h) or ${rate1hr.toFixed(1)} ml/hr (1h)`
+          },
+          preparation: `For max dose: ${drugVolumeMax.toFixed(2)} ml KCl ${kclConcentration}% + ${diluentMax.toFixed(0)} ml NS = ${minTotalVolumeMax.toFixed(0)} ml`,
+          compatible: "NS, D5W, LR (most IV solutions)",
+          incompatible: "Amphotericin B, Diazepam, Phenytoin"
+        };
+      })(),
+      
+      mgso4: (() => {
+        const doseMin = w * 25;
+        const doseMax = w * 50;
+        const drugVolumeMin = doseMin / 500; // 50% = 500mg/ml
+        const drugVolumeMax = doseMax / 500;
+        const targetConc = 60; // 60mg/ml
+        const totalVolumeMin = doseMin / targetConc;
+        const totalVolumeMax = doseMax / targetConc;
+        const diluentMin = totalVolumeMin - drugVolumeMin;
+        const diluentMax = totalVolumeMax - drugVolumeMax;
+        const rate4hr = totalVolumeMin / 4;
+        const rate2hr = totalVolumeMax / 2;
+        
+        return {
+          title: "💉 Magnesium Sulfate 50%",
+          drugInfo: {
+            concentration: "500 mg/ml (2 mmol/ml, 4 mEq/ml)",
+            targetDilution: "60 mg/ml"
+          },
+          calculation: {
+            dose: `${doseMin.toFixed(0)} - ${doseMax.toFixed(0)} mg`,
+            doseFormula: `${w} kg × 25-50 mg/kg`,
+            drugVolume: `${drugVolumeMin.toFixed(2)} - ${drugVolumeMax.toFixed(2)} ml`,
+            diluent: `${diluentMin.toFixed(1)} - ${diluentMax.toFixed(1)} ml`,
+            totalVolume: `${totalVolumeMin.toFixed(1)} - ${totalVolumeMax.toFixed(1)} ml`,
+            duration: "2-4 hours",
+            rate: `${rate4hr.toFixed(1)} - ${rate2hr.toFixed(1)} ml/hr`
+          },
+          preparation: `Draw ${drugVolumeMax.toFixed(2)} ml MgSO4 50% + ${diluentMax.toFixed(1)} ml diluent = ${totalVolumeMax.toFixed(1)} ml`,
+          compatible: "D5W, NS, LR",
+          incompatible: "Amiodarone, Amphotericin B, Calcium chloride, Cefepime, Sodium bicarbonate"
+        };
+      })(),
+      
+      sodaBicarb: (() => {
+        const doseMin = w * 1;
+        const doseMax = w * 2;
+        const drugVolumeMin = doseMin; // 8.4% = 1mEq/ml
+        const drugVolumeMax = doseMax;
+        const diluentMin = drugVolumeMin; // 1:1 dilution
+        const diluentMax = drugVolumeMax;
+        const totalVolumeMin = drugVolumeMin + diluentMin;
+        const totalVolumeMax = drugVolumeMax + diluentMax;
+        const rate1hr = totalVolumeMax;
+        const rate30min = totalVolumeMax * 2;
+        
+        return {
+          title: "💉 Sodium Bicarbonate 8.4%",
+          drugInfo: {
+            concentration: "1 mEq/ml",
+            targetDilution: "0.5 mEq/ml (1:1 dilution)"
+          },
+          calculation: {
+            dose: `${doseMin.toFixed(1)} - ${doseMax.toFixed(1)} mEq`,
+            doseFormula: `${w} kg × 1-2 mEq/kg`,
+            drugVolume: `${drugVolumeMin.toFixed(1)} - ${drugVolumeMax.toFixed(1)} ml`,
+            diluent: `${diluentMin.toFixed(1)} - ${diluentMax.toFixed(1)} ml (equal volume)`,
+            totalVolume: `${totalVolumeMin.toFixed(1)} - ${totalVolumeMax.toFixed(1)} ml`,
+            duration: "30 min - 1 hour",
+            rate: `${rate1hr.toFixed(1)} ml/hr (1h) or ${rate30min.toFixed(1)} ml/hr (30min)`
+          },
+          preparation: `Draw ${drugVolumeMax.toFixed(1)} ml NaHCO3 + ${diluentMax.toFixed(1)} ml NS = ${totalVolumeMax.toFixed(1)} ml`,
+          compatible: "NS, D5W, D10W",
+          incompatible: "Amiodarone, Calcium salts, Dobutamine, Dopamine, Epinephrine, Norepinephrine, Magnesium sulfate, Midazolam, Phenytoin"
+        };
+      })(),
+      
+      calciumChloride: (() => {
+        const doseMg = w * 10; // 10mg/kg
+        const doseMl = doseMg / 100; // 100mg/ml
+        const diluentMl = doseMl * 4; // 1:5 dilution (20mg/ml target)
+        const totalVolume = doseMl + diluentMl;
+        const ratePerHour = totalVolume;
+        
+        return {
+          title: "💉 Calcium Chloride 10%",
+          drugInfo: {
+            concentration: "100 mg/ml (1.4 mEq/ml)",
+            targetDilution: "20 mg/ml (1:5 dilution)"
+          },
+          calculation: {
+            dose: `${doseMg.toFixed(0)} mg`,
+            doseFormula: `${w} kg × 10 mg/kg`,
+            drugVolume: `${doseMl.toFixed(2)} ml`,
+            diluent: `${diluentMl.toFixed(2)} ml`,
+            totalVolume: `${totalVolume.toFixed(2)} ml`,
+            duration: "1 hour",
+            rate: `${ratePerHour.toFixed(2)} ml/hr`
+          },
+          preparation: `Draw ${doseMl.toFixed(2)} ml CaCl2 + ${diluentMl.toFixed(2)} ml NS = ${totalVolume.toFixed(2)} ml`,
+          compatible: "NS, D5W",
+          incompatible: "Phosphates, Sodium Bicarbonate, Sulphates, Amphotericin B"
+        };
+      })(),
+      
+      addiphos: (() => {
+        const doseMin = w * 0.5;
+        const doseMax = Math.min(w * 1.5, 15);
+        const volumeMin = doseMin / 2; // 1ml = 2mmol
+        const volumeMax = doseMax / 2;
+        
+        return {
+          title: "💉 Addiphos (Phosphate)",
+          drugInfo: {
+            concentration: "1 ml = 2 mmol phosphate",
+            maxConcentration: "Peripheral: 0.05 mmol/ml | Central: 0.12 mmol/ml"
+          },
+          calculation: {
+            dose: `${doseMin.toFixed(1)} - ${doseMax.toFixed(1)} mmol/day`,
+            doseFormula: `${w} kg × 0.5-1.5 mmol/kg/day`,
+            drugVolume: `${volumeMin.toFixed(2)} - ${volumeMax.toFixed(2)} ml/day`,
+            duration: "4-6 hours (slow infusion)",
+            rate: "Divide into 2-4 doses per day"
+          },
+          preparation: `For peripheral: dilute to 0.05 mmol/ml minimum`,
+          compatible: "Most IV fluids",
+          incompatible: "Calcium salts (precipitation risk)"
+        };
+      })()
     };
     
     if (drugs[drug]) {
@@ -536,8 +452,110 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
     }
   };
 
+  // Render enhanced results with step-by-step preparation
+  const renderInfusionResults = () => {
+    if (!results || !results.calculation) return null;
+    
+    return (
+      <Card className="mt-4 border-2 border-primary/30 bg-gradient-to-br from-primary/5 to-transparent">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-lg">{results.title}</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {/* Drug Info */}
+          {results.drugInfo && (
+            <div className="p-3 rounded-lg bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800">
+              <p className="text-xs font-semibold text-blue-700 dark:text-blue-300 mb-1">📋 Drug Information</p>
+              <p className="text-sm"><strong>Stock:</strong> {results.drugInfo.concentration}</p>
+              {results.drugInfo.targetDilution && (
+                <p className="text-sm"><strong>Target:</strong> {results.drugInfo.targetDilution}</p>
+              )}
+              {results.drugInfo.maxConcentration && (
+                <p className="text-sm"><strong>Max Conc:</strong> {results.drugInfo.maxConcentration}</p>
+              )}
+            </div>
+          )}
+          
+          {/* Step by Step Calculation */}
+          <div className="p-3 rounded-lg bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-800">
+            <p className="text-xs font-semibold text-green-700 dark:text-green-300 mb-2">📊 Calculation</p>
+            <div className="space-y-2 text-sm">
+              <div className="flex justify-between items-center border-b border-green-200 dark:border-green-700 pb-1">
+                <span className="text-muted-foreground">1. Dose:</span>
+                <span className="font-bold text-green-700 dark:text-green-300">{results.calculation.dose}</span>
+              </div>
+              <div className="text-xs text-muted-foreground pl-4">({results.calculation.doseFormula})</div>
+              
+              <div className="flex justify-between items-center border-b border-green-200 dark:border-green-700 pb-1">
+                <span className="text-muted-foreground">2. Drug Volume:</span>
+                <span className="font-bold">{results.calculation.drugVolume}</span>
+              </div>
+              
+              <div className="flex justify-between items-center border-b border-green-200 dark:border-green-700 pb-1">
+                <span className="text-muted-foreground">3. Diluent:</span>
+                <span className="font-bold">{results.calculation.diluent}</span>
+              </div>
+              
+              <div className="flex justify-between items-center border-b border-green-200 dark:border-green-700 pb-1">
+                <span className="text-muted-foreground">4. Total Volume:</span>
+                <span className="font-bold text-lg">{results.calculation.totalVolume}</span>
+              </div>
+            </div>
+          </div>
+          
+          {/* Duration and Rate - Highlighted */}
+          <div className="p-3 rounded-lg bg-amber-50 dark:bg-amber-950/30 border-2 border-amber-300 dark:border-amber-700">
+            <div className="flex items-center gap-2 mb-2">
+              <Clock className="h-4 w-4 text-amber-600" />
+              <p className="text-xs font-semibold text-amber-700 dark:text-amber-300">⏱️ Administration</p>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <p className="text-xs text-muted-foreground">Duration</p>
+                <p className="text-lg font-bold text-amber-700 dark:text-amber-300">{results.calculation.duration}</p>
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground">Rate</p>
+                <p className="text-lg font-bold text-amber-700 dark:text-amber-300">{results.calculation.rate}</p>
+              </div>
+            </div>
+          </div>
+          
+          {/* Preparation Instructions */}
+          {results.preparation && (
+            <div className="p-3 rounded-lg bg-purple-50 dark:bg-purple-950/30 border border-purple-200 dark:border-purple-800">
+              <p className="text-xs font-semibold text-purple-700 dark:text-purple-300 mb-1">🧪 Preparation</p>
+              <p className="text-sm font-mono bg-white dark:bg-gray-900 p-2 rounded">{results.preparation}</p>
+            </div>
+          )}
+          
+          {/* Compatibility */}
+          <div className="grid grid-cols-2 gap-2">
+            <div className="p-2 rounded bg-green-100 dark:bg-green-900/30">
+              <p className="text-xs font-semibold text-green-700 dark:text-green-400 flex items-center gap-1">
+                <CheckCircle className="h-3 w-3" /> Compatible
+              </p>
+              <p className="text-xs mt-1">{results.compatible}</p>
+            </div>
+            <div className="p-2 rounded bg-red-100 dark:bg-red-900/30">
+              <p className="text-xs font-semibold text-red-700 dark:text-red-400 flex items-center gap-1">
+                <AlertTriangle className="h-3 w-3" /> Incompatible
+              </p>
+              <p className="text-xs mt-1">{results.incompatible}</p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  };
+
   const renderResults = () => {
     if (!results) return null;
+    
+    // Use enhanced rendering for drug infusions
+    if (results.calculation) {
+      return renderInfusionResults();
+    }
     
     return (
       <Card className="mt-4 border-primary/30 bg-primary/5">
@@ -546,60 +564,22 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
             <Calculator className="h-4 w-4" />
             {results.title}
           </CardTitle>
-          {results.subtitle && (
-            <CardDescription>{results.subtitle}</CardDescription>
-          )}
+          {results.subtitle && <CardDescription>{results.subtitle}</CardDescription>}
         </CardHeader>
         <CardContent className="space-y-3">
           {results.dose && (
             <div className="p-3 rounded-lg bg-background border">
               <p className="text-sm text-muted-foreground">Dose</p>
               <p className="text-xl font-mono font-bold text-primary">{results.dose}</p>
-              {results.doseDetail && <p className="text-sm text-muted-foreground">{results.doseDetail}</p>}
               {results.frequency && <p className="text-sm">Frequency: {results.frequency}</p>}
-              {results.route && <p className="text-sm">Route: {results.route}</p>}
             </div>
-          )}
-          
-          {results.available && (
-            <div className="text-sm"><strong>Available:</strong> {results.available}</div>
-          )}
-          {results.dilution && (
-            <div className="p-3 rounded-lg bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800">
-              <p className="text-sm font-medium text-blue-700 dark:text-blue-300">Dilution</p>
-              <p className="text-sm text-blue-600 dark:text-blue-400">{results.dilution}</p>
-              {results.dilutionCalc && (
-                <p className="text-sm font-mono mt-1 text-blue-700 dark:text-blue-300">{results.dilutionCalc}</p>
-              )}
-            </div>
-          )}
-          {results.duration && (
-            <div className="p-3 rounded-lg bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-800">
-              <p className="text-sm font-medium text-green-700 dark:text-green-300">Duration & Rate</p>
-              <p className="text-sm text-green-600 dark:text-green-400">Duration: {results.duration}</p>
-              {results.rate && (
-                <p className="text-sm font-mono font-bold text-green-700 dark:text-green-300">Rate: {results.rate}</p>
-              )}
-            </div>
-          )}
-          {results.solutionCompat && (
-            <div className="text-sm"><strong>Compatible Solutions:</strong> {results.solutionCompat}</div>
-          )}
-          {results.peripheral && (
-            <div className="text-sm"><strong>Peripheral:</strong> {results.peripheral}</div>
-          )}
-          {results.central && (
-            <div className="text-sm"><strong>Central:</strong> {results.central}</div>
-          )}
-          {results.fluidRestriction && (
-            <div className="text-sm"><strong>Fluid Restriction:</strong> {results.fluidRestriction}</div>
           )}
           
           {results.sections?.map((section, i) => (
             <div key={i} className="p-3 rounded-lg bg-background border">
               <p className="text-sm text-muted-foreground">{section.subtitle}</p>
-              <p className="text-lg font-mono font-bold whitespace-pre-wrap">{section.value}</p>
-              {section.detail && <p className="text-sm text-muted-foreground mt-1 whitespace-pre-wrap">{section.detail}</p>}
+              <p className="text-lg font-mono font-bold">{section.value}</p>
+              {section.detail && <p className="text-sm text-muted-foreground mt-1">{section.detail}</p>}
             </div>
           ))}
           
@@ -608,7 +588,7 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
               <p className="text-sm font-medium text-blue-700 dark:text-blue-300 mb-1">Notes</p>
               <ul className="text-sm space-y-1">
                 {results.notes.map((note, i) => (
-                  <li key={i} className="text-blue-600 dark:text-blue-400 whitespace-pre-wrap">{note}</li>
+                  <li key={i} className="text-blue-600 dark:text-blue-400">{note}</li>
                 ))}
               </ul>
             </div>
@@ -627,19 +607,11 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
             </div>
           )}
           
-          {results.incompatible && (
-            <div className="p-3 rounded-lg bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800">
-              <p className="text-sm font-medium text-red-700 dark:text-red-300">⚠️ Drug Incompatibility:</p>
-              <p className="text-sm text-red-600 dark:text-red-400">{results.incompatible}</p>
-            </div>
-          )}
-          
           {results.warning && (
-            <div className="p-3 rounded-lg bg-red-100 dark:bg-red-950/50 border border-red-300 dark:border-red-800">
+            <div className="p-3 rounded-lg bg-red-100 dark:bg-red-950/50 border border-red-300">
               <p className="text-sm font-bold text-red-700 dark:text-red-300 flex items-center gap-1">
-                <AlertCircle className="h-4 w-4" /> Warning
+                <AlertCircle className="h-4 w-4" /> {results.warning}
               </p>
-              <p className="text-sm text-red-600 dark:text-red-400 mt-1">{results.warning}</p>
             </div>
           )}
         </CardContent>
@@ -652,313 +624,264 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="font-heading text-xl flex items-center gap-2">
-            <Pill className="h-5 w-5" />
+            <Pill className="h-5 w-5 text-primary" />
             Electrolytes Calculator
           </DialogTitle>
         </DialogHeader>
 
-        {/* Weight Input */}
-        <Card>
+        {/* Weight Input - More Prominent */}
+        <Card className="border-2 border-primary/50 bg-primary/5">
           <CardContent className="pt-4">
-            <div className="space-y-2">
-              <Label>Weight (kg)</Label>
-              <Input
-                type="number"
-                step="0.1"
-                placeholder="e.g., 3.5"
-                value={weight}
-                onChange={(e) => setWeight(e.target.value)}
-                className="font-mono"
-                data-testid="electrolyte-weight"
-              />
+            <div className="flex items-center gap-4">
+              <div className="flex-1">
+                <Label className="text-base font-semibold">Patient Weight (kg)</Label>
+                <Input
+                  type="number"
+                  step="0.1"
+                  placeholder="Enter weight..."
+                  value={weight}
+                  onChange={(e) => { setWeight(e.target.value); setResults(null); }}
+                  className="font-mono text-lg h-12 mt-1"
+                  data-testid="electrolyte-weight"
+                />
+              </div>
+              {weight && (
+                <div className="text-center">
+                  <p className="text-xs text-muted-foreground">Weight</p>
+                  <p className="text-2xl font-bold text-primary">{weight} kg</p>
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>
 
-        <Tabs value={activeTab} onValueChange={(v) => { setActiveTab(v); setResults(null); }} className="w-full">
-          <TabsList className="grid grid-cols-3 lg:grid-cols-6 h-auto">
-            <TabsTrigger value="calcium" className="text-xs py-2">Calcium</TabsTrigger>
-            <TabsTrigger value="magnesium" className="text-xs py-2">Magnesium</TabsTrigger>
-            <TabsTrigger value="potassium" className="text-xs py-2">Potassium</TabsTrigger>
-            <TabsTrigger value="nahco3" className="text-xs py-2">NaHCO3</TabsTrigger>
-            <TabsTrigger value="sodium" className="text-xs py-2">Sodium</TabsTrigger>
-            <TabsTrigger value="phosphate" className="text-xs py-2">Phosphate</TabsTrigger>
+        <Tabs value={activeTab} onValueChange={(v) => { setActiveTab(v); setResults(null); setSelectedDrug(null); }} className="w-full">
+          <TabsList className="grid grid-cols-2 h-auto">
+            <TabsTrigger value="infusions" className="py-2 flex items-center gap-1">
+              <Beaker className="h-4 w-4" />
+              <span>IV Infusions</span>
+            </TabsTrigger>
+            <TabsTrigger value="corrections" className="py-2 flex items-center gap-1">
+              <Calculator className="h-4 w-4" />
+              <span>Corrections</span>
+            </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="calcium" className="space-y-4">
+          {/* IV Infusions Tab - New Primary Tab */}
+          <TabsContent value="infusions" className="space-y-4">
             <Card>
-              <CardHeader className="pb-3">
-                <CardTitle className="text-base">Calcium Gluconate 10%</CardTitle>
-                <CardDescription>Hypocalcemia correction</CardDescription>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-base">Select Electrolyte</CardTitle>
+                <CardDescription>Click to calculate dilution and rate</CardDescription>
               </CardHeader>
               <CardContent className="space-y-3">
-                <div className="space-y-2">
-                  <Label>Current Calcium Level (optional)</Label>
-                  <Input
-                    type="number"
-                    step="0.1"
-                    placeholder="mg/dL"
-                    value={calciumLevel}
-                    onChange={(e) => setCalciumLevel(e.target.value)}
-                    className="font-mono"
-                  />
+                {/* Drug Selection Buttons */}
+                <div className="grid grid-cols-2 gap-2">
+                  <Button 
+                    variant={selectedDrug === 'calciumGluconate' ? 'default' : 'outline'} 
+                    className="h-16 flex-col"
+                    onClick={() => calculateDrugInfusion('calciumGluconate')}
+                  >
+                    <span className="text-lg">Ca²⁺</span>
+                    <span className="text-xs">Calcium Gluconate</span>
+                  </Button>
+                  <Button 
+                    variant={selectedDrug === 'kcl' ? 'default' : 'outline'} 
+                    className="h-16 flex-col"
+                    onClick={() => calculateDrugInfusion('kcl')}
+                  >
+                    <span className="text-lg">K⁺</span>
+                    <span className="text-xs">Potassium Chloride</span>
+                  </Button>
+                  <Button 
+                    variant={selectedDrug === 'mgso4' ? 'default' : 'outline'} 
+                    className="h-16 flex-col"
+                    onClick={() => calculateDrugInfusion('mgso4')}
+                  >
+                    <span className="text-lg">Mg²⁺</span>
+                    <span className="text-xs">Magnesium Sulfate</span>
+                  </Button>
+                  <Button 
+                    variant={selectedDrug === 'sodaBicarb' ? 'default' : 'outline'} 
+                    className="h-16 flex-col"
+                    onClick={() => calculateDrugInfusion('sodaBicarb')}
+                  >
+                    <span className="text-lg">HCO₃⁻</span>
+                    <span className="text-xs">Sodium Bicarbonate</span>
+                  </Button>
+                  <Button 
+                    variant={selectedDrug === 'calciumChloride' ? 'default' : 'outline'} 
+                    className="h-16 flex-col"
+                    onClick={() => calculateDrugInfusion('calciumChloride')}
+                  >
+                    <span className="text-lg">CaCl₂</span>
+                    <span className="text-xs">Calcium Chloride</span>
+                  </Button>
+                  <Button 
+                    variant={selectedDrug === 'addiphos' ? 'default' : 'outline'} 
+                    className="h-16 flex-col"
+                    onClick={() => calculateDrugInfusion('addiphos')}
+                  >
+                    <span className="text-lg">PO₄³⁻</span>
+                    <span className="text-xs">Addiphos</span>
+                  </Button>
                 </div>
-                <Button onClick={calculateCalcium} className="w-full">Calculate Calcium</Button>
-              </CardContent>
-            </Card>
-          </TabsContent>
 
-          <TabsContent value="magnesium" className="space-y-4">
-            <Card>
-              <CardHeader className="pb-3">
-                <CardTitle className="text-base">Magnesium Replacement</CardTitle>
-                <CardDescription>Hypomagnesemia / Status Asthmaticus</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <div className="space-y-2">
-                  <Label>Current Mg Level (optional)</Label>
-                  <Input
-                    type="number"
-                    step="0.1"
-                    placeholder="mg/dL"
-                    value={magnesiumLevel}
-                    onChange={(e) => setMagnesiumLevel(e.target.value)}
-                    className="font-mono"
-                  />
-                </div>
-                <Button onClick={calculateMagnesium} className="w-full">Calculate Magnesium</Button>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="potassium" className="space-y-4">
-            <Card>
-              <CardHeader className="pb-3">
-                <CardTitle className="text-base">Potassium Replacement</CardTitle>
-                <CardDescription>Hypokalemia correction</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <div className="space-y-2">
-                  <Label>Current K Level (optional)</Label>
-                  <Input
-                    type="number"
-                    step="0.1"
-                    placeholder="mEq/L"
-                    value={potassiumLevel}
-                    onChange={(e) => setPotassiumLevel(e.target.value)}
-                    className="font-mono"
-                  />
-                </div>
-                <Button onClick={calculatePotassium} className="w-full">Calculate Potassium</Button>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="nahco3" className="space-y-4">
-            <Card>
-              <CardHeader className="pb-3">
-                <CardTitle className="text-base">NaHCO3 (Sodium Bicarbonate)</CardTitle>
-                <CardDescription>Metabolic acidosis correction</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <div className="space-y-2">
-                  <Label>Calculation Method</Label>
-                  <RadioGroup value={nahco3Method} onValueChange={setNahco3Method} className="flex gap-4">
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="hco3" id="hco3" />
-                      <Label htmlFor="hco3">HCO3</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="be" id="be" />
-                      <Label htmlFor="be">Base Excess</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="both" id="both" />
-                      <Label htmlFor="both">Both</Label>
-                    </div>
-                  </RadioGroup>
-                </div>
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="space-y-2">
-                    <Label>Current HCO3</Label>
-                    <Input
-                      type="number"
-                      step="0.1"
-                      placeholder="mEq/L"
-                      value={hco3Level}
-                      onChange={(e) => setHco3Level(e.target.value)}
-                      className="font-mono"
-                      disabled={nahco3Method === "be"}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Base Excess (BE)</Label>
-                    <Input
-                      type="number"
-                      step="0.1"
-                      placeholder="e.g., -10"
-                      value={baseExcess}
-                      onChange={(e) => setBaseExcess(e.target.value)}
-                      className="font-mono"
-                      disabled={nahco3Method === "hco3"}
-                    />
-                  </div>
-                </div>
-                <Button onClick={calculateNaHCO3} className="w-full">Calculate NaHCO3</Button>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="sodium" className="space-y-4">
-            <Card>
-              <CardHeader className="pb-3">
-                <CardTitle className="text-base">Sodium Correction</CardTitle>
-                <CardDescription>Hyponatremia / Hypernatremia</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <div className="space-y-2">
-                  <Label>Type</Label>
-                  <RadioGroup value={sodiumType} onValueChange={setSodiumType} className="flex gap-4">
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="hyponatremia" id="hypo" />
-                      <Label htmlFor="hypo">Hyponatremia</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="hypernatremia" id="hyper" />
-                      <Label htmlFor="hyper">Hypernatremia</Label>
-                    </div>
-                  </RadioGroup>
-                </div>
-                
-                {sodiumType === "hyponatremia" && (
-                  <div className="space-y-2">
-                    <Label>Severity</Label>
-                    <RadioGroup value={hyponatremiaType} onValueChange={setHyponatremiaType} className="flex gap-4">
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="mild" id="mild" />
-                        <Label htmlFor="mild">Mild (125-134)</Label>
+                {/* KCl Options */}
+                {selectedDrug === 'kcl' && (
+                  <div className="p-3 rounded-lg bg-gray-50 dark:bg-gray-800/50 space-y-3">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <Label className="text-xs">Line Type</Label>
+                        <Select value={kclLineType} onValueChange={(v) => { setKclLineType(v); calculateDrugInfusion('kcl'); }}>
+                          <SelectTrigger className="h-8">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="peripheral">Peripheral (80 mEq/L max)</SelectItem>
+                            <SelectItem value="central">Central (150 mEq/L max)</SelectItem>
+                          </SelectContent>
+                        </Select>
                       </div>
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="severe" id="severe" />
-                        <Label htmlFor="severe">Severe (&lt;125 + seizure)</Label>
+                      <div>
+                        <Label className="text-xs">KCl Concentration</Label>
+                        <Select value={kclConcentration} onValueChange={(v) => { setKclConcentration(v); calculateDrugInfusion('kcl'); }}>
+                          <SelectTrigger className="h-8">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="15">15% (2 mEq/ml)</SelectItem>
+                            <SelectItem value="10">10% (1.34 mEq/ml)</SelectItem>
+                          </SelectContent>
+                        </Select>
                       </div>
-                    </RadioGroup>
+                    </div>
                   </div>
                 )}
-                
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Corrections Tab */}
+          <TabsContent value="corrections" className="space-y-4">
+            <Tabs defaultValue="calcium" className="w-full">
+              <TabsList className="grid grid-cols-3 lg:grid-cols-6 h-auto">
+                <TabsTrigger value="calcium" className="text-xs py-1.5">Calcium</TabsTrigger>
+                <TabsTrigger value="magnesium" className="text-xs py-1.5">Magnesium</TabsTrigger>
+                <TabsTrigger value="potassium" className="text-xs py-1.5">Potassium</TabsTrigger>
+                <TabsTrigger value="nahco3" className="text-xs py-1.5">NaHCO3</TabsTrigger>
+                <TabsTrigger value="sodium" className="text-xs py-1.5">Sodium</TabsTrigger>
+                <TabsTrigger value="phosphate" className="text-xs py-1.5">Phosphate</TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="calcium" className="space-y-3 pt-3">
+                <div className="space-y-2">
+                  <Label>Current Calcium (optional)</Label>
+                  <Input type="number" step="0.1" placeholder="mg/dL" value={calciumLevel} onChange={(e) => setCalciumLevel(e.target.value)} className="font-mono" />
+                </div>
+                <Button onClick={calculateCalcium} className="w-full">Calculate</Button>
+              </TabsContent>
+
+              <TabsContent value="magnesium" className="space-y-3 pt-3">
+                <div className="space-y-2">
+                  <Label>Current Mg Level (optional)</Label>
+                  <Input type="number" step="0.1" placeholder="mg/dL" value={magnesiumLevel} onChange={(e) => setMagnesiumLevel(e.target.value)} className="font-mono" />
+                </div>
+                <Button onClick={calculateMagnesium} className="w-full">Calculate</Button>
+              </TabsContent>
+
+              <TabsContent value="potassium" className="space-y-3 pt-3">
+                <div className="space-y-2">
+                  <Label>Current K Level (optional)</Label>
+                  <Input type="number" step="0.1" placeholder="mEq/L" value={potassiumLevel} onChange={(e) => setPotassiumLevel(e.target.value)} className="font-mono" />
+                </div>
+                <Button onClick={calculatePotassium} className="w-full">Calculate</Button>
+              </TabsContent>
+
+              <TabsContent value="nahco3" className="space-y-3 pt-3">
+                <RadioGroup value={nahco3Method} onValueChange={setNahco3Method} className="flex gap-4">
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="hco3" id="hco3" />
+                    <Label htmlFor="hco3">HCO3</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="be" id="be" />
+                    <Label htmlFor="be">Base Excess</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="both" id="both" />
+                    <Label htmlFor="both">Both</Label>
+                  </div>
+                </RadioGroup>
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-2">
+                    <Label>HCO3 (mEq/L)</Label>
+                    <Input type="number" step="0.1" value={hco3Level} onChange={(e) => setHco3Level(e.target.value)} className="font-mono" disabled={nahco3Method === "be"} />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Base Excess</Label>
+                    <Input type="number" step="0.1" placeholder="e.g., -10" value={baseExcess} onChange={(e) => setBaseExcess(e.target.value)} className="font-mono" disabled={nahco3Method === "hco3"} />
+                  </div>
+                </div>
+                <Button onClick={calculateNaHCO3} className="w-full">Calculate</Button>
+              </TabsContent>
+
+              <TabsContent value="sodium" className="space-y-3 pt-3">
+                <RadioGroup value={sodiumType} onValueChange={setSodiumType} className="flex gap-4">
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="hyponatremia" id="hypo" />
+                    <Label htmlFor="hypo">Hyponatremia</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="hypernatremia" id="hyper" />
+                    <Label htmlFor="hyper">Hypernatremia</Label>
+                  </div>
+                </RadioGroup>
+                {sodiumType === "hyponatremia" && (
+                  <RadioGroup value={hyponatremiaType} onValueChange={setHyponatremiaType} className="flex gap-4">
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="mild" id="mild" />
+                      <Label htmlFor="mild">Mild (125-134)</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="severe" id="severe" />
+                      <Label htmlFor="severe">Severe (&lt;125)</Label>
+                    </div>
+                  </RadioGroup>
+                )}
                 <div className="grid grid-cols-2 gap-3">
                   <div className="space-y-2">
                     <Label>Current Na (mEq/L)</Label>
-                    <Input
-                      type="number"
-                      step="1"
-                      placeholder="e.g., 128"
-                      value={currentNa}
-                      onChange={(e) => setCurrentNa(e.target.value)}
-                      className="font-mono"
-                    />
+                    <Input type="number" value={currentNa} onChange={(e) => setCurrentNa(e.target.value)} className="font-mono" />
                   </div>
                   <div className="space-y-2">
                     <Label>Target Na (mEq/L)</Label>
-                    <Input
-                      type="number"
-                      step="1"
-                      placeholder="e.g., 140"
-                      value={targetNa}
-                      onChange={(e) => setTargetNa(e.target.value)}
-                      className="font-mono"
-                    />
+                    <Input type="number" placeholder="140" value={targetNa} onChange={(e) => setTargetNa(e.target.value)} className="font-mono" />
                   </div>
                 </div>
-                <Button onClick={calculateSodium} className="w-full">Calculate Sodium</Button>
-              </CardContent>
-            </Card>
-          </TabsContent>
+                <Button onClick={calculateSodium} className="w-full">Calculate</Button>
+              </TabsContent>
 
-          <TabsContent value="phosphate" className="space-y-4">
-            <Card>
-              <CardHeader className="pb-3">
-                <CardTitle className="text-base">Phosphate Replacement (IV)</CardTitle>
-                <CardDescription>Symptomatic/Severe Hypophosphatemia (P &lt; 1-2 mg/dL)</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-3">
+              <TabsContent value="phosphate" className="space-y-3 pt-3">
                 <div className="space-y-2">
-                  <Label>Current Phosphate Level (mg/dL)</Label>
-                  <Input
-                    type="number"
-                    step="0.1"
-                    placeholder="e.g., 1.5"
-                    value={phosphateLevel}
-                    onChange={(e) => setPhosphateLevel(e.target.value)}
-                    className="font-mono"
-                  />
+                  <Label>Phosphate Level (mg/dL)</Label>
+                  <Input type="number" step="0.1" value={phosphateLevel} onChange={(e) => setPhosphateLevel(e.target.value)} className="font-mono" />
                 </div>
-                
-                <div className="space-y-2">
-                  <Label>Severity</Label>
-                  <RadioGroup 
-                    value={phosphateSeverity} 
-                    onValueChange={setPhosphateSeverity}
-                    className="flex gap-4"
-                  >
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="moderate" id="phos-moderate" />
-                      <Label htmlFor="phos-moderate" className="cursor-pointer text-sm">Low/Moderate (P 1-2)</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="severe" id="phos-severe" />
-                      <Label htmlFor="phos-severe" className="cursor-pointer text-sm">Severe (P &lt;1)</Label>
-                    </div>
-                  </RadioGroup>
-                </div>
-
-                {/* Reference Table */}
-                <div className="p-3 rounded-lg bg-gray-50 dark:bg-gray-800/50">
-                  <p className="text-xs font-medium mb-2">IV Dose Reference:</p>
-                  <table className="w-full text-xs">
-                    <thead>
-                      <tr className="border-b">
-                        <th className="text-left py-1">Severity</th>
-                        <th className="text-right py-1">Dose (mmol/kg)</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr className="border-b">
-                        <td className="py-1">Low/Moderate</td>
-                        <td className="text-right font-mono">0.08 - 0.16</td>
-                      </tr>
-                      <tr>
-                        <td className="py-1">Severe</td>
-                        <td className="text-right font-mono">0.25 - 0.50</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                  <p className="text-xs text-muted-foreground mt-2">Max single dose: 15 mmol or 0.5 mmol/kg</p>
-                </div>
-
-                <Button onClick={calculatePhosphate} className="w-full">Calculate Phosphate</Button>
-              </CardContent>
-            </Card>
+                <RadioGroup value={phosphateSeverity} onValueChange={setPhosphateSeverity} className="flex gap-4">
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="moderate" id="phos-moderate" />
+                    <Label htmlFor="phos-moderate">Moderate (P 1-2)</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="severe" id="phos-severe" />
+                    <Label htmlFor="phos-severe">Severe (P &lt;1)</Label>
+                  </div>
+                </RadioGroup>
+                <Button onClick={calculatePhosphate} className="w-full">Calculate</Button>
+              </TabsContent>
+            </Tabs>
           </TabsContent>
         </Tabs>
-
-        {/* Drug Infusions - Moved to separate section */}
-        <Card className="mt-4">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-base">Drug Infusions Reference</CardTitle>
-            <CardDescription>Quick reference for dilutions and incompatibilities</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-3 gap-2">
-              <Button variant="outline" size="sm" onClick={() => calculateDrugInfusion('mgso4')}>MgSO4</Button>
-              <Button variant="outline" size="sm" onClick={() => calculateDrugInfusion('addiphos')}>Addiphos</Button>
-              <Button variant="outline" size="sm" onClick={() => calculateDrugInfusion('calciumGluconate')}>Ca Gluconate</Button>
-              <Button variant="outline" size="sm" onClick={() => calculateDrugInfusion('calciumChloride')}>Ca Chloride</Button>
-              <Button variant="outline" size="sm" onClick={() => calculateDrugInfusion('kcl')}>KCL</Button>
-              <Button variant="outline" size="sm" onClick={() => calculateDrugInfusion('sodaBicarb')}>SodaBicarb</Button>
-            </div>
-          </CardContent>
-        </Card>
 
         {renderResults()}
       </DialogContent>
