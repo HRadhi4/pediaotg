@@ -401,58 +401,133 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
     
     const drugs = {
       mgso4: {
-        title: "MgSO4 50%",
+        title: "Magnesium Sulfate",
         dose: `${(w * 25).toFixed(0)} - ${(w * 50).toFixed(0)} mg`,
-        available: "1ml = 2mmol, 1ml = 500mg, 1ml = 4mEq",
+        doseDetail: "25-50 mg/kg",
+        available: "50% MgSO4 = 500 mg/ml (1ml = 2mmol, 1ml = 4mEq)",
         dilution: "60 mg/ml",
+        dilutionCalc: (() => {
+          const doseMin = w * 25;
+          const doseMax = w * 50;
+          const dilutionConc = 60; // mg/ml
+          const volumeMin = doseMin / dilutionConc;
+          const volumeMax = doseMax / dilutionConc;
+          return `Dose ÷ 60 = ${volumeMin.toFixed(1)} - ${volumeMax.toFixed(1)} ml total volume`;
+        })(),
         duration: "2-4 Hours",
-        incompatible: "Salicylates, Dobutamine, SodaBicarb, Clindamycin, Amphotericin B, Cefipime, Ketamine"
+        rate: (() => {
+          const doseMin = w * 25;
+          const doseMax = w * 50;
+          const dilutionConc = 60;
+          const volumeMin = doseMin / dilutionConc;
+          const volumeMax = doseMax / dilutionConc;
+          const rate2hr = volumeMax / 2;
+          const rate4hr = volumeMin / 4;
+          return `${rate4hr.toFixed(1)} - ${rate2hr.toFixed(1)} ml/hr`;
+        })(),
+        solutionCompat: "D5W, NS, LR",
+        incompatible: "Amiodarone, Amphotericin B, Calcium chloride, Cefepime, Sodium bicarbonate"
       },
       addiphos: {
-        title: "Addiphos",
+        title: "Addiphos (Phosphate)",
         sections: [
-          { subtitle: "Infant/Children (<25kg)", value: `${(w * 0.5).toFixed(2)} - ${(w * 1.5).toFixed(2)} mmol/kg/day (1ml = 2mmol)` },
+          { subtitle: "Infant/Children (<25kg)", value: `${(w * 0.5).toFixed(2)} - ${(w * 1.5).toFixed(2)} mmol/day (1ml = 2mmol)` },
           { subtitle: "Children (25-45kg)", value: "0.5-1.0 mmol/kg/day" },
           { subtitle: "Adult (>45kg)", value: "50-70 mmol/day" }
         ],
-        peripheral: "0.05 mmol/1ml",
-        central: "0.12 mmol/1ml",
-        duration: "6 Hours",
+        peripheral: "0.05 mmol/ml",
+        central: "0.12 mmol/ml",
+        duration: "4-6 Hours (slow infusion required)",
         incompatible: "Calcium Salts"
       },
       calciumGluconate: {
-        title: "Calcium Gluconate",
-        dose: `${(w * 100).toFixed(0)} mg (100 mg/kg/dose, Max 3g)`,
-        available: "100 mg/ml, 0.45 mEq/1ml",
-        dilution: "50 mg/1ml (1:2)",
-        duration: "1 Hour",
-        incompatible: "Dobutamine, Methylprednisolone, SodaBicarb"
+        title: "Calcium Gluconate 10%",
+        dose: `${(w * 100).toFixed(0)} mg (${(w * 1).toFixed(1)} ml)`,
+        doseDetail: "100 mg/kg/dose = 1 ml/kg, Max 3g (30ml)",
+        available: "100 mg/ml, 0.45 mEq/ml",
+        dilution: "Dilute to 50 mg/ml (1:2 dilution)",
+        dilutionCalc: (() => {
+          const doseMl = Math.min(w * 1, 30); // 1 ml/kg, max 30ml
+          const finalVolume = doseMl * 2; // 1:2 dilution
+          return `${doseMl.toFixed(1)} ml drug + ${doseMl.toFixed(1)} ml diluent = ${finalVolume.toFixed(1)} ml total`;
+        })(),
+        duration: "Over 1 Hour",
+        rate: (() => {
+          const doseMl = Math.min(w * 1, 30);
+          const finalVolume = doseMl * 2;
+          return `${finalVolume.toFixed(1)} ml/hr`;
+        })(),
+        solutionCompat: "NS, D5W, D10W",
+        incompatible: "Amphotericin B, Ceftriaxone, Fluconazole, Meropenem, Methylprednisolone, Metoclopramide, Phosphate, Magnesium (when mixed directly)"
       },
       calciumChloride: {
-        title: "Calcium Chloride",
-        dose: `${(w * 10).toFixed(0)} mg (10 mg/kg/dose)`,
-        available: "100 mg/1ml, 1.4 mEq/1ml",
-        dilution: "20 mg/1ml",
-        duration: "1 Hour",
-        incompatible: "Phosphates, SodiumBicarb, Sulphates, Amphotericin B"
+        title: "Calcium Chloride 10%",
+        dose: `${(w * 10).toFixed(0)} mg (${(w * 0.1).toFixed(2)} ml)`,
+        doseDetail: "10 mg/kg/dose = 0.1 ml/kg",
+        available: "100 mg/ml, 1.4 mEq/ml",
+        dilution: "Dilute to 20 mg/ml (1:5 dilution)",
+        dilutionCalc: (() => {
+          const doseMl = w * 0.1;
+          const finalVolume = doseMl * 5; // 1:5 dilution
+          return `${doseMl.toFixed(2)} ml drug + ${(doseMl * 4).toFixed(2)} ml diluent = ${finalVolume.toFixed(2)} ml total`;
+        })(),
+        duration: "Over 1 Hour",
+        rate: (() => {
+          const doseMl = w * 0.1;
+          const finalVolume = doseMl * 5;
+          return `${finalVolume.toFixed(2)} ml/hr`;
+        })(),
+        solutionCompat: "NS, D5W",
+        incompatible: "Phosphates, Sodium Bicarbonate, Sulphates, Amphotericin B"
       },
       kcl: {
-        title: "KCL",
-        dose: `${(w * 0.5).toFixed(2)} - ${(w * 1).toFixed(2)} mEq/kg/dose`,
-        available: "1ml = 2mEq OR 1ml = 1.34 mEq",
-        peripheral: "80 mEq/L",
-        central: "15 mEq/100ml",
-        fluidRestriction: "20 mEq/100ml",
-        duration: "1-2 Hours",
-        incompatible: "Amphotericin B, Midazolam, Diazepam, Mannitol, Phenobarbitone, Phenytoin"
+        title: "Potassium Chloride (KCl)",
+        dose: `${(w * 0.5).toFixed(2)} - ${(w * 1).toFixed(2)} mEq`,
+        doseDetail: "0.5-1 mEq/kg/dose",
+        available: "1ml = 2mEq (15% KCl) OR 1ml = 1.34 mEq (10% KCl)",
+        peripheral: "Max concentration: 80 mEq/L",
+        central: "Max concentration: 150 mEq/L (15 mEq/100ml)",
+        fluidRestriction: "In fluid restriction: 20 mEq/100ml",
+        dilutionCalc: (() => {
+          const doseMin = w * 0.5;
+          const doseMax = w * 1;
+          // Using 80 mEq/L for peripheral = 0.08 mEq/ml
+          const volumeMin = doseMin / 0.08;
+          const volumeMax = doseMax / 0.08;
+          return `For peripheral (80mEq/L): ${volumeMin.toFixed(0)} - ${volumeMax.toFixed(0)} ml minimum volume`;
+        })(),
+        duration: "Over 1-2 Hours (preferably 2 hours)",
+        rate: (() => {
+          const doseMax = w * 1;
+          const volumeMax = doseMax / 0.08;
+          const rate1hr = volumeMax;
+          const rate2hr = volumeMax / 2;
+          return `${rate2hr.toFixed(1)} - ${rate1hr.toFixed(1)} ml/hr`;
+        })(),
+        solutionCompat: "Most standard IV solutions (NS, D5W, LR)",
+        incompatible: "Amphotericin B, Diazepam, Phenytoin"
       },
       sodaBicarb: {
-        title: "SodaBicarb",
-        dose: `${(w * 1).toFixed(1)} - ${(w * 2).toFixed(1)} mEq/kg/dose`,
-        available: "1 mEq/1ml",
-        dilution: "1:1 (1 mEq/1ml)",
-        duration: "30min-1 Hour",
-        incompatible: "Calcium Salts, Dobutamine, Epinephrine, Norepinephrine, Scoline, Sulphates, Insulin, Labetalol"
+        title: "Sodium Bicarbonate (NaHCO3)",
+        dose: `${(w * 1).toFixed(1)} - ${(w * 2).toFixed(1)} mEq`,
+        doseDetail: "1-2 mEq/kg/dose",
+        available: "8.4% solution = 1 mEq/ml",
+        dilution: "Dilute 1:1 (1 mEq in 2ml solution)",
+        dilutionCalc: (() => {
+          const doseMin = w * 1;
+          const doseMax = w * 2;
+          const finalVolumeMin = doseMin * 2; // 1:1 dilution
+          const finalVolumeMax = doseMax * 2;
+          return `${doseMin.toFixed(1)} - ${doseMax.toFixed(1)} ml drug + equal volume diluent = ${finalVolumeMin.toFixed(1)} - ${finalVolumeMax.toFixed(1)} ml total`;
+        })(),
+        duration: "Over 30 min - 1 Hour",
+        rate: (() => {
+          const doseMax = w * 2;
+          const finalVolumeMax = doseMax * 2;
+          return `${finalVolumeMax.toFixed(1)} ml over 30min-1hr (${(finalVolumeMax).toFixed(1)} - ${(finalVolumeMax*2).toFixed(1)} ml/hr)`;
+        })(),
+        solutionCompat: "NS, D5W, D10W",
+        incompatible: "Amiodarone, Ampicillin, Calcium chloride, Dobutamine, Dopamine, Epinephrine, Norepinephrine, Magnesium sulfate, Midazolam, Phenytoin, Cefotaxime, Imipenem"
       }
     };
     
