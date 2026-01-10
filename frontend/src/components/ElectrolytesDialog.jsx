@@ -617,9 +617,16 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
     if (!results || !results.calculation) return null;
     
     return (
-      <Card className="mt-4 border-2 border-primary/30 bg-gradient-to-br from-primary/5 to-transparent">
+      <Card className={`mt-4 border-2 ${results.maxWarning ? 'border-amber-400 bg-gradient-to-br from-amber-50 to-transparent dark:from-amber-950/20' : 'border-primary/30 bg-gradient-to-br from-primary/5 to-transparent'}`}>
         <CardHeader className="pb-2">
           <CardTitle className="text-lg">{results.title}</CardTitle>
+          {results.maxWarning && (
+            <div className="mt-2 p-2 rounded-lg bg-amber-100 dark:bg-amber-900/50 border border-amber-300">
+              <p className="text-sm font-bold text-amber-700 dark:text-amber-300 flex items-center gap-1">
+                <AlertTriangle className="h-4 w-4" /> {results.maxWarning}
+              </p>
+            </div>
+          )}
         </CardHeader>
         <CardContent className="space-y-4">
           {/* Drug Info */}
@@ -632,6 +639,9 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
               )}
               {results.drugInfo.maxConcentration && (
                 <p className="text-sm"><strong>Max Conc:</strong> {results.drugInfo.maxConcentration}</p>
+              )}
+              {results.drugInfo.maxDose && (
+                <p className="text-sm"><strong>Max Dose:</strong> <span className="text-red-600 dark:text-red-400 font-medium">{results.drugInfo.maxDose}</span></p>
               )}
             </div>
           )}
