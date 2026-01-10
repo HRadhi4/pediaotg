@@ -405,25 +405,14 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
         const drugVolumeMin = doseMin / mEqPerMl;
         const drugVolumeMax = doseMax / mEqPerMl;
         
-        // Max concentrations based on line type
-        // Peripheral: 80 mEq/L (0.08 mEq/ml)
-        // Central: 150 mEq/L (15 mEq/100ml = 0.15 mEq/ml)
-        // Central with fluid restriction: 200 mEq/L (20 mEq/100ml = 0.2 mEq/ml)
-        let maxConc, maxConcLabel;
-        if (kclLineType === "peripheral") {
-          maxConc = 0.08; // 80 mEq/L
-          maxConcLabel = "80 mEq/L (peripheral)";
-        } else if (kclLineType === "central_restricted") {
-          maxConc = 0.2; // 200 mEq/L = 20 mEq/100ml
-          maxConcLabel = "20 mEq/100ml (central, fluid restricted)";
-        } else {
-          maxConc = 0.15; // 150 mEq/L = 15 mEq/100ml
-          maxConcLabel = "15 mEq/100ml (central)";
-        }
+        // Target concentration in mEq/100ml (user selectable 1-6 mEq/100ml)
+        // Convert to mEq/ml for calculations
+        const targetConcPer100ml = parseFloat(kclLineType); // 1-6 mEq/100ml
+        const targetConc = targetConcPer100ml / 100; // Convert to mEq/ml
         
         // Calculate minimum total volume needed for safe concentration
-        const minTotalVolumeMin = doseMin / maxConc;
-        const minTotalVolumeMax = doseMax / maxConc;
+        const minTotalVolumeMin = doseMin / targetConc;
+        const minTotalVolumeMax = doseMax / targetConc;
         
         // Diluent needed
         const diluentMin = minTotalVolumeMin - drugVolumeMin;
@@ -433,18 +422,22 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
         const rate2hr = minTotalVolumeMax / 2;
         const rate1hr = minTotalVolumeMax / 1;
         
+        // Determine if peripheral safe (generally ≤80 mEq/L = 8 mEq/100ml)
+        const isPeripheralSafe = targetConcPer100ml <= 8;
+        
         return {
           title: "💉 Potassium Chloride (KCl)",
           drugInfo: {
             concentration: kclConcentration === "15" ? "15% KCl = 2 mEq/ml" : "10% KCl = 1.34 mEq/ml",
-            maxConcentration: maxConcLabel,
-            maxDose: `${maxDoseMEq} mEq/dose`
+            targetDilution: `${targetConcPer100ml} mEq/100ml (${(targetConcPer100ml * 10).toFixed(0)} mEq/L)`,
+            maxDose: `${maxDoseMEq} mEq/dose`,
+            lineRecommendation: isPeripheralSafe ? "✅ Safe for peripheral line" : "⚠️ Central line recommended"
           },
           calculation: {
             dose: `${doseMin.toFixed(2)} - ${doseMax.toFixed(2)} mEq${isMaxed ? ' (MAX)' : ''}`,
             doseFormula: `${w} kg × 0.5-1 mEq/kg${isMaxed ? ' → capped at ' + maxDoseMEq + ' mEq' : ''}`,
             drugVolume: `${drugVolumeMin.toFixed(2)} - ${drugVolumeMax.toFixed(2)} ml`,
-            diluent: `${diluentMin.toFixed(0)} - ${diluentMax.toFixed(0)} ml (to achieve ${maxConcLabel})`,
+            diluent: `${diluentMin.toFixed(0)} - ${diluentMax.toFixed(0)} ml (to achieve ${targetConcPer100ml} mEq/100ml)`,
             totalVolume: `${minTotalVolumeMin.toFixed(0)} - ${minTotalVolumeMax.toFixed(0)} ml`,
             duration: "1-2 hours (2 hours preferred)",
             rate: `${rate2hr.toFixed(1)} ml/hr (2h) or ${rate1hr.toFixed(1)} ml/hr (1h)`
@@ -452,7 +445,8 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
           preparation: `For max dose: ${drugVolumeMax.toFixed(2)} ml KCl ${kclConcentration}% + ${diluentMax.toFixed(0)} ml NS = ${minTotalVolumeMax.toFixed(0)} ml`,
           compatible: "NS, D5W, LR (most IV solutions)",
           incompatible: "Amphotericin B, Diazepam, Phenytoin",
-          ...(isMaxed && { maxWarning: "⚠️ Dose capped at maximum (40 mEq)" })
+          ...(isMaxed && { maxWarning: "⚠️ Dose capped at maximum (40 mEq)" }),
+          ...(!isPeripheralSafe && { warnings: ["⚠️ Concentration >8 mEq/100ml - Central line recommended"] })
         };
       })(),
       
