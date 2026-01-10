@@ -84,12 +84,13 @@ Build a full SaaS-style web app with user accounts and a PAID-ONLY subscription 
 - [x] SVG icons for all widgets (including Ballard & Postnatal)
 
 ### Recent Changes (Jan 10, 2025)
+- **CRITICAL: Refactoring Complete**: Fixed broken NICUCalculator.jsx refactoring
+  - Reduced main file from 3656 lines to 1726 lines (53% reduction)
+  - All 8 components successfully extracted and imported from `/pages/nicu/`
+  - Components: FluidCalculatorPage, BallardScorePage, NRPChecklistPage, CatheterCalculatorPage, IntubationPage, PRBCGuidelinePage, ExchangeCalculatorPage, BloodPressurePage
+  - Remaining in main file: GrowthChartPage, NICUDrugsPage (future extraction)
 - **Ballard Score Text Fix**: Adjusted button containers to 80px width with `min-h-[24px]` for proper text containment
 - **Added Approaches Widget**: New "Coming Soon" widget on NICU Dashboard with purple ApproachesIcon
-- **Created Refactored Component Files** (for future use, not yet integrated):
-  - `PRBCGuidelinePage.jsx` - PRBC transfusion calculator
-  - `ExchangeCalculatorPage.jsx` - Partial/whole blood exchange calculator
-  - `BloodPressurePage.jsx` - Blood pressure guidelines by gestational age
 - **Ballard Score SVG Diagrams**: Professional SVG illustrations for all 12 criteria
 - **Fixed Quick Access Favorites**: Ballard Score and Postnatal now show correctly
 
