@@ -77,9 +77,9 @@ const SortableNICUWidget = ({ widget, isEditMode, onClick, getWidgetIcon, isFavo
     <Card
       ref={setNodeRef}
       style={style}
-      onClick={() => !isEditMode && onClick(widget.id)}
+      onClick={() => !isEditMode && !widget.comingSoon && onClick(widget.id)}
       className={`nightingale-card transition-all duration-200 h-36 ${
-        isEditMode ? 'cursor-grab active:cursor-grabbing ring-2 ring-[#00d9c5]/30' : 'cursor-pointer hover:scale-[1.02]'
+        isEditMode ? 'cursor-grab active:cursor-grabbing ring-2 ring-[#00d9c5]/30' : widget.comingSoon ? 'cursor-not-allowed' : 'cursor-pointer hover:scale-[1.02]'
       } ${isDragging ? 'shadow-2xl scale-105' : ''} ${widget.comingSoon ? 'opacity-60' : ''}`}
       data-testid={`widget-${widget.id}`}
     >
