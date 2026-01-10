@@ -178,28 +178,51 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
       poIsMaxed = true;
     }
     
-    // Dilution for IV: 4 mEq/100ml (40 mEq/L) for peripheral
-    const targetConc = 0.04; // 4 mEq/100ml = 0.04 mEq/ml
+    // Dilution calculations for different line types
     const kclStock = 2; // 15% KCl = 2 mEq/ml
     const drugVolumeMin = bolusMin / kclStock;
     const drugVolumeMax = bolusMax / kclStock;
-    const totalVolumeMin = bolusMin / targetConc;
-    const totalVolumeMax = bolusMax / targetConc;
-    const diluentMin = totalVolumeMin - drugVolumeMin;
-    const diluentMax = totalVolumeMax - drugVolumeMax;
+    
+    // Peripheral: 80 mEq/L = 0.08 mEq/ml
+    const peripheralConc = 0.08;
+    const peripheralTotalMin = bolusMin / peripheralConc;
+    const peripheralTotalMax = bolusMax / peripheralConc;
+    const peripheralDiluentMin = peripheralTotalMin - drugVolumeMin;
+    const peripheralDiluentMax = peripheralTotalMax - drugVolumeMax;
+    
+    // Central: 15 mEq/100ml = 0.15 mEq/ml
+    const centralConc = 0.15;
+    const centralTotalMin = bolusMin / centralConc;
+    const centralTotalMax = bolusMax / centralConc;
+    const centralDiluentMin = centralTotalMin - drugVolumeMin;
+    const centralDiluentMax = centralTotalMax - drugVolumeMax;
+    
+    // Central fluid restricted: 20 mEq/100ml = 0.2 mEq/ml
+    const centralRestrictedConc = 0.2;
+    const centralRestrictedTotalMin = bolusMin / centralRestrictedConc;
+    const centralRestrictedTotalMax = bolusMax / centralRestrictedConc;
+    const centralRestrictedDiluentMin = centralRestrictedTotalMin - drugVolumeMin;
+    const centralRestrictedDiluentMax = centralRestrictedTotalMax - drugVolumeMax;
     
     setResults({
       title: "Potassium (Hypokalemia)",
       sections: [
         { 
           subtitle: "IV Bolus", 
-          value: `${bolusMin.toFixed(1)} - ${bolusMax.toFixed(1)} mEq`, 
+          value: `${bolusMin.toFixed(1)} - ${bolusMax.toFixed(1)} mEq (${drugVolumeMin.toFixed(2)} - ${drugVolumeMax.toFixed(2)} ml)`, 
           detail: `0.5 mEq/kg over 1hr | 1 mEq/kg over 2hr${ivIsMaxed ? ' (MAX REACHED)' : ''}` 
         },
         {
-          subtitle: "IV Dilution (at 4 mEq/100ml)",
-          value: `${drugVolumeMin.toFixed(2)}-${drugVolumeMax.toFixed(2)} ml + ${diluentMin.toFixed(0)}-${diluentMax.toFixed(0)} ml NS = ${totalVolumeMin.toFixed(0)}-${totalVolumeMax.toFixed(0)} ml`,
-          detail: "15% KCl = 2 mEq/ml"
+          subtitle: "Peripheral (80 mEq/L)",
+          value: `${drugVolumeMin.toFixed(2)}-${drugVolumeMax.toFixed(2)} ml + ${peripheralDiluentMin.toFixed(0)}-${peripheralDiluentMax.toFixed(0)} ml NS = ${peripheralTotalMin.toFixed(0)}-${peripheralTotalMax.toFixed(0)} ml`
+        },
+        {
+          subtitle: "Central (15 mEq/100ml)",
+          value: `${drugVolumeMin.toFixed(2)}-${drugVolumeMax.toFixed(2)} ml + ${centralDiluentMin.toFixed(0)}-${centralDiluentMax.toFixed(0)} ml NS = ${centralTotalMin.toFixed(0)}-${centralTotalMax.toFixed(0)} ml`
+        },
+        {
+          subtitle: "Central - Fluid Restricted (20 mEq/100ml)",
+          value: `${drugVolumeMin.toFixed(2)}-${drugVolumeMax.toFixed(2)} ml + ${centralRestrictedDiluentMin.toFixed(0)}-${centralRestrictedDiluentMax.toFixed(0)} ml NS = ${centralRestrictedTotalMin.toFixed(0)}-${centralRestrictedTotalMax.toFixed(0)} ml`
         },
         { 
           subtitle: "PO (KCl)", 
@@ -209,7 +232,7 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
       ],
       notes: [
         `IV max: ${ivMaxDose} mEq/dose | PO max: ${poMaxDose} mEq/dose`,
-        "Peripheral ≤80 mEq/L | Central 15-20 mEq/100ml",
+        "Stock: 15% KCl = 2 mEq/ml",
         "Compatible: NS, D5W, LR",
         "Monitor ECG if giving >0.5 mEq/kg/hr"
       ],
