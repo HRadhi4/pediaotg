@@ -440,8 +440,18 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
       })(),
       
       mgso4: (() => {
-        const doseMin = w * 25;
-        const doseMax = w * 50;
+        // Harriet Lane: 25-50 mg/kg, max 2000 mg (2g) per dose
+        const maxDoseMg = 2000;
+        let doseMin = w * 25;
+        let doseMax = w * 50;
+        let isMaxed = false;
+        
+        if (doseMax > maxDoseMg) {
+          doseMax = maxDoseMg;
+          doseMin = Math.min(doseMin, maxDoseMg);
+          isMaxed = true;
+        }
+        
         const drugVolumeMin = doseMin / 500; // 50% = 500mg/ml
         const drugVolumeMax = doseMax / 500;
         const targetConc = 60; // 60mg/ml
@@ -456,11 +466,12 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
           title: "💉 Magnesium Sulfate 50%",
           drugInfo: {
             concentration: "500 mg/ml (2 mmol/ml, 4 mEq/ml)",
-            targetDilution: "60 mg/ml"
+            targetDilution: "60 mg/ml",
+            maxDose: `${maxDoseMg} mg (${maxDoseMg/500} ml)`
           },
           calculation: {
-            dose: `${doseMin.toFixed(0)} - ${doseMax.toFixed(0)} mg`,
-            doseFormula: `${w} kg × 25-50 mg/kg`,
+            dose: `${doseMin.toFixed(0)} - ${doseMax.toFixed(0)} mg${isMaxed ? ' (MAX)' : ''}`,
+            doseFormula: `${w} kg × 25-50 mg/kg${isMaxed ? ' → capped at ' + maxDoseMg + ' mg' : ''}`,
             drugVolume: `${drugVolumeMin.toFixed(2)} - ${drugVolumeMax.toFixed(2)} ml`,
             diluent: `${diluentMin.toFixed(1)} - ${diluentMax.toFixed(1)} ml`,
             totalVolume: `${totalVolumeMin.toFixed(1)} - ${totalVolumeMax.toFixed(1)} ml`,
@@ -469,7 +480,8 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
           },
           preparation: `Draw ${drugVolumeMax.toFixed(2)} ml MgSO4 50% + ${diluentMax.toFixed(1)} ml diluent = ${totalVolumeMax.toFixed(1)} ml`,
           compatible: "D5W, NS, LR",
-          incompatible: "Amiodarone, Amphotericin B, Calcium chloride, Cefepime, Sodium bicarbonate"
+          incompatible: "Amiodarone, Amphotericin B, Calcium chloride, Cefepime, Sodium bicarbonate",
+          ...(isMaxed && { maxWarning: "⚠️ Dose capped at maximum (2g)" })
         };
       })(),
       
