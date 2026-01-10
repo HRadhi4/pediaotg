@@ -954,24 +954,37 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
                   <div className="p-3 rounded-lg bg-gray-50 dark:bg-gray-800/50 space-y-3">
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <Label className="text-xs">Target Concentration (mEq/100ml)</Label>
+                        <Label className="text-xs">Line Type / Concentration</Label>
                         <Select value={kclLineType} onValueChange={(v) => { setKclLineType(v); calculateDrugInfusion('kcl'); }}>
                           <SelectTrigger className="h-8">
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="1">1 mEq/100ml (10 mEq/L)</SelectItem>
-                            <SelectItem value="2">2 mEq/100ml (20 mEq/L)</SelectItem>
-                            <SelectItem value="3">3 mEq/100ml (30 mEq/L)</SelectItem>
-                            <SelectItem value="4">4 mEq/100ml (40 mEq/L)</SelectItem>
-                            <SelectItem value="5">5 mEq/100ml (50 mEq/L)</SelectItem>
-                            <SelectItem value="6">6 mEq/100ml (60 mEq/L)</SelectItem>
-                            <SelectItem value="8">8 mEq/100ml (80 mEq/L) - Peripheral max</SelectItem>
-                            <SelectItem value="15">15 mEq/100ml (Central)</SelectItem>
-                            <SelectItem value="20">20 mEq/100ml (Central - Fluid restricted)</SelectItem>
+                            <SelectItem value="peripheral">Peripheral (80 mEq/L)</SelectItem>
+                            <SelectItem value="central">Central (15 mEq/100ml)</SelectItem>
+                            <SelectItem value="central_restricted">Central - Fluid Restricted (20 mEq/100ml)</SelectItem>
+                            <SelectItem value="custom">Custom (1-6 mEq/100ml)</SelectItem>
                           </SelectContent>
                         </Select>
                       </div>
+                      {kclLineType === "custom" && (
+                        <div>
+                          <Label className="text-xs">Custom Concentration (1-6 mEq/100ml)</Label>
+                          <Select value={kclCustomConc} onValueChange={(v) => { setKclCustomConc(v); calculateDrugInfusion('kcl'); }}>
+                            <SelectTrigger className="h-8">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="1">1 mEq/100ml</SelectItem>
+                              <SelectItem value="2">2 mEq/100ml</SelectItem>
+                              <SelectItem value="3">3 mEq/100ml</SelectItem>
+                              <SelectItem value="4">4 mEq/100ml</SelectItem>
+                              <SelectItem value="5">5 mEq/100ml</SelectItem>
+                              <SelectItem value="6">6 mEq/100ml</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      )}
                       <div>
                         <Label className="text-xs">KCl Concentration</Label>
                         <Select value={kclConcentration} onValueChange={(v) => { setKclConcentration(v); calculateDrugInfusion('kcl'); }}>
