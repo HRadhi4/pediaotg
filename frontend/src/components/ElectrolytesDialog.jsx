@@ -297,21 +297,36 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
     const w = parseFloat(weight);
     if (!w) return;
     
+    // Harriet Lane: Phosphate 0.08-0.5 mmol/kg, max 15 mmol/dose
+    const maxDose = 15; // mmol
+    
     const range = phosphateSeverity === "severe" 
       ? { min: 0.25, max: 0.5, label: "Severe (P < 1 mg/dL)" }
       : { min: 0.08, max: 0.16, label: "Moderate (P 1-2 mg/dL)" };
     
-    const minDose = w * range.min;
-    const maxDose = Math.min(w * range.max, 15);
+    let minDose = w * range.min;
+    let maxDoseCalc = w * range.max;
+    let isMaxed = false;
+    
+    if (maxDoseCalc > maxDose) {
+      maxDoseCalc = maxDose;
+      minDose = Math.min(minDose, maxDose);
+      isMaxed = true;
+    }
     
     setResults({
       title: "Phosphate Replacement (IV)",
       sections: [
         { subtitle: "Severity", value: range.label },
-        { subtitle: "Dose", value: `${minDose.toFixed(2)} - ${maxDose.toFixed(2)} mmol` },
+        { subtitle: "Dose", value: `${minDose.toFixed(2)} - ${maxDoseCalc.toFixed(2)} mmol` },
         { subtitle: "Infusion", value: "Over 4-6 hours (slow)" }
       ],
-      warning: "Rapid infusion can cause severe hypocalcemia!"
+      notes: [
+        `Max single dose: ${maxDose} mmol`,
+        "Recheck phosphate 2-4 hours after infusion"
+      ],
+      warning: "Rapid infusion can cause severe hypocalcemia!",
+      ...(isMaxed && { warnings: ["⚠️ Dose capped at maximum (15 mmol)"] })
     });
   };
 
