@@ -38,7 +38,9 @@ import {
   SettingsIcon,
   CloseIcon,
   GripIcon,
-  DrugsIcon as HealthDrugsIcon
+  DrugsIcon as HealthDrugsIcon,
+  BallardIcon,
+  PostnatalIcon
 } from "@/components/HealthIcons";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
