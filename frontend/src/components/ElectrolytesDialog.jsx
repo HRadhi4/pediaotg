@@ -155,28 +155,13 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
       poIsMaxed = true;
     }
     
-    // Dilution for IV: Using 4 mEq/100ml (40 mEq/L) as default safe concentration
-    const targetConc = 0.04; // 4 mEq/100ml = 0.04 mEq/ml
-    const kclStock = 2; // 15% KCl = 2 mEq/ml
-    const drugVolumeMin = bolusMin / kclStock;
-    const drugVolumeMax = bolusMax / kclStock;
-    const totalVolumeMin = bolusMin / targetConc;
-    const totalVolumeMax = bolusMax / targetConc;
-    const diluentMin = totalVolumeMin - drugVolumeMin;
-    const diluentMax = totalVolumeMax - drugVolumeMax;
-    
     setResults({
       title: "Potassium (Hypokalemia)",
       sections: [
         { 
           subtitle: "IV Bolus", 
           value: `${bolusMin.toFixed(1)} - ${bolusMax.toFixed(1)} mEq`, 
-          detail: `0.5-1 mEq/kg over 1-2 hours${ivIsMaxed ? ' (MAX REACHED)' : ''}` 
-        },
-        {
-          subtitle: "IV Dilution (at 4 mEq/100ml)",
-          value: `${drugVolumeMin.toFixed(2)}-${drugVolumeMax.toFixed(2)} ml KCl 15% + ${diluentMin.toFixed(0)}-${diluentMax.toFixed(0)} ml NS = ${totalVolumeMin.toFixed(0)}-${totalVolumeMax.toFixed(0)} ml`,
-          detail: "Peripheral safe ≤8 mEq/100ml, Central ≤20 mEq/100ml"
+          detail: `0.5 mEq/kg over 1hr | 1 mEq/kg over 2hr${ivIsMaxed ? ' (MAX REACHED)' : ''}` 
         },
         { 
           subtitle: "PO (KCl)", 
@@ -185,9 +170,9 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
         }
       ],
       notes: [
-        `IV max: ${ivMaxDose} mEq/dose`,
-        `PO max: ${poMaxDose} mEq/dose`,
-        "Stock: 15% KCl = 2 mEq/ml",
+        `IV max: ${ivMaxDose} mEq/dose | PO max: ${poMaxDose} mEq/dose`,
+        "Dilution: Peripheral ≤80 mEq/L | Central 15-20 mEq/100ml",
+        "Compatible: NS, D5W, LR",
         "NICU: For every 25 ml D10%, give 1 mEq KCl",
         "Monitor ECG if giving >0.5 mEq/kg/hr"
       ],
