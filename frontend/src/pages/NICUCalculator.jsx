@@ -61,7 +61,10 @@ import { CSS } from '@dnd-kit/utilities';
 import { 
   NRPChecklistPage, 
   CatheterCalculatorPage, 
-  IntubationPage 
+  IntubationPage,
+  PRBCGuidelinePage,
+  ExchangeCalculatorPage,
+  BloodPressurePage
 } from './nicu';
 
 // Sortable Widget Component for NICU drag and drop
