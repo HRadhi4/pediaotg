@@ -321,37 +321,17 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
       isMaxed = true;
     }
     
-    // Dilution: Addiphos 1ml = 2 mmol
-    // Peripheral: 0.05 mmol/ml, Central: 0.12 mmol/ml
-    const drugVolumeMin = minDose / 2; // Addiphos is 2 mmol/ml
-    const drugVolumeMax = maxDoseCalc / 2;
-    const targetConcPeripheral = 0.05; // mmol/ml
-    const targetConcCentral = 0.12; // mmol/ml
-    const totalVolPeripheralMin = minDose / targetConcPeripheral;
-    const totalVolPeripheralMax = maxDoseCalc / targetConcPeripheral;
-    const totalVolCentralMin = minDose / targetConcCentral;
-    const totalVolCentralMax = maxDoseCalc / targetConcCentral;
-    
     setResults({
       title: "Phosphate Replacement (IV)",
       sections: [
         { subtitle: "Severity", value: range.label },
         { subtitle: "Dose", value: `${minDose.toFixed(2)} - ${maxDoseCalc.toFixed(2)} mmol` },
-        { subtitle: "Drug Volume (Addiphos)", value: `${drugVolumeMin.toFixed(2)} - ${drugVolumeMax.toFixed(2)} ml` },
-        { 
-          subtitle: "Dilution - Peripheral (0.05 mmol/ml)", 
-          value: `Total: ${totalVolPeripheralMin.toFixed(0)} - ${totalVolPeripheralMax.toFixed(0)} ml`
-        },
-        { 
-          subtitle: "Dilution - Central (0.12 mmol/ml)", 
-          value: `Total: ${totalVolCentralMin.toFixed(0)} - ${totalVolCentralMax.toFixed(0)} ml`
-        },
         { subtitle: "Infusion", value: "Over 4-6 hours (slow)" }
       ],
       notes: [
-        "Stock: Addiphos 1 ml = 2 mmol phosphate",
         `Max single dose: ${maxDose} mmol`,
-        "Peripheral: 0.05 mmol/ml | Central: 0.12 mmol/ml",
+        "Dilution: Peripheral 0.05 mmol/ml | Central 0.12 mmol/ml",
+        "Compatible: NS, D5W",
         "Recheck phosphate 2-4 hours after infusion"
       ],
       warning: "Rapid infusion can cause severe hypocalcemia!",
