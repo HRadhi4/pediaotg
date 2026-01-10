@@ -42,9 +42,9 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
     const w = parseFloat(weight);
     if (!w) return;
     
-    // Harriet Lane: Calcium Gluconate 100 mg/kg, max 3000 mg (3g)
-    const maxDose = 3000; // mg
-    const maxMl = 30; // 10% = 100mg/ml, so 30ml max
+    // Harriet Lane: Calcium Gluconate 100 mg/kg, max 1000 mg (10 ml)
+    const maxDose = 1000; // mg
+    const maxMl = 10; // 10% = 100mg/ml, so 10ml max
     let doseMg = w * 100;
     let doseMl = doseMg / 100;
     let isMaxed = false;
@@ -70,7 +70,7 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
         "Concentration: 100 mg/ml",
         "Keep OD or BD according to level and need"
       ],
-      ...(isMaxed && { warnings: ["⚠️ Dose capped at maximum (3g)"] })
+      ...(isMaxed && { warnings: ["⚠️ Dose capped at maximum (1g / 10ml)"] })
     });
   };
 
