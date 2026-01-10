@@ -1874,13 +1874,26 @@ const DrugsPage = ({ onBack }) => {
                       <div>
                         <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide mb-1">Calculated Doses ({w}kg)</p>
                         <div className="grid grid-cols-2 gap-2">
-                          {doseKeys.map(key => (
-                            <div key={key} className="p-2 rounded bg-blue-50 dark:bg-blue-900/20">
-                              <p className="text-[10px] text-muted-foreground">{drug.doses[key].label}</p>
-                              <p className="font-mono font-bold text-blue-600">{calculateDose(drug.doses[key].value, w)}</p>
-                              <p className="text-[9px] text-muted-foreground">{drug.doses[key].unit}</p>
-                            </div>
-                          ))}
+                          {doseKeys.map(key => {
+                            const maxDoseValue = parseMaxDose(drug.max);
+                            const result = calculateDose(drug.doses[key].value, w, maxDoseValue);
+                            if (!result) return null;
+                            const doseResult = typeof result === 'string' ? { dose: result, isExceedingMax: false } : result;
+                            return (
+                              <div key={key} className={`p-2 rounded ${doseResult.isExceedingMax ? 'bg-amber-50 dark:bg-amber-900/20 border border-amber-300' : 'bg-blue-50 dark:bg-blue-900/20'}`}>
+                                <p className="text-[10px] text-muted-foreground">{drug.doses[key].label}</p>
+                                <p className={`font-mono font-bold ${doseResult.isExceedingMax ? 'text-amber-600' : 'text-blue-600'}`}>
+                                  {doseResult.dose}
+                                </p>
+                                <p className="text-[9px] text-muted-foreground">{drug.doses[key].unit}</p>
+                                {doseResult.isExceedingMax && (
+                                  <p className="text-[9px] text-amber-600 font-medium mt-1">
+                                    ⚠️ Capped at max: {doseResult.maxDisplay || drug.max}
+                                  </p>
+                                )}
+                              </div>
+                            );
+                          })}
                         </div>
                       </div>
                     )}
