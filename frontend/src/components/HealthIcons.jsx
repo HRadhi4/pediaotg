@@ -306,6 +306,30 @@ export const BabyIcon = ({ className }) => (
   </svg>
 );
 
+// Baby/Neonate Icon - for Ballard Score
+export const BallardIcon = ({ className }) => (
+  <svg className={className} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="24" cy="12" r="6" stroke="currentColor" strokeWidth="3"/>
+    <path d="M16 22C16 22 14 26 14 32C14 38 18 42 24 42C30 42 34 38 34 32C34 26 32 22 32 22" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
+    <path d="M18 28H30" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
+    <path d="M20 34H28" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
+    <path d="M10 26L14 24" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
+    <path d="M38 26L34 24" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
+  </svg>
+);
+
+// Clipboard/Checklist Icon - for Postnatal
+export const PostnatalIcon = ({ className }) => (
+  <svg className={className} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="8" y="6" width="32" height="38" rx="2" stroke="currentColor" strokeWidth="3"/>
+    <path d="M16 6V10H32V6" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M14 18H26" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
+    <path d="M14 26H34" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
+    <path d="M14 34H30" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
+    <circle cx="34" cy="18" r="2" fill="currentColor"/>
+  </svg>
+);
+
 export default {
   // Navigation
   HomeIcon,
@@ -335,5 +359,7 @@ export default {
   BrainIcon,
   DefibrillatorIcon,
   LungsIcon,
-  BabyIcon
+  BabyIcon,
+  BallardIcon,
+  PostnatalIcon
 };
