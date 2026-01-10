@@ -51,8 +51,11 @@ Build a full SaaS-style web app with user accounts and a PAID-ONLY subscription 
         │   ├── nicu/                  # Refactored NICU components
         │   │   ├── FluidCalculatorPage.jsx
         │   │   ├── BallardScorePage.jsx
+        │   │   ├── NRPChecklistPage.jsx
+        │   │   ├── CatheterCalculatorPage.jsx
+        │   │   ├── IntubationPage.jsx
         │   │   └── index.js
-        │   └── NICUCalculator.jsx     # Main NICU dashboard
+        │   └── NICUCalculator.jsx     # Main NICU dashboard (reduced from 4154 to 3648 lines)
         └── App.js
 ```
 
