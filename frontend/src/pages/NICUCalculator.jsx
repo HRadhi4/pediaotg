@@ -3568,7 +3568,7 @@ const NICUDrugsPage = () => {
       {filteredDrugs.length === 0 && (
         <Card className="nightingale-card">
           <CardContent className="py-8 text-center">
-            <p className="text-muted-foreground text-sm">No drugs found matching "{searchTerm}"</p>
+            <p className="text-muted-foreground text-sm">No drugs found matching &quot;{searchTerm}&quot;</p>
           </CardContent>
         </Card>
       )}
