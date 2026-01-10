@@ -40,7 +40,8 @@ import {
   GripIcon,
   DrugsIcon as HealthDrugsIcon,
   BallardIcon,
-  PostnatalIcon
+  PostnatalIcon,
+  ApproachesIcon
 } from "@/components/HealthIcons";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
