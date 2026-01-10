@@ -1831,9 +1831,22 @@ const DrugsPage = ({ onBack }) => {
                   </div>
                   {w > 0 && firstDose && (
                     <div className="text-right ml-2">
-                      <p className="text-[11px] font-mono">
-                        <span className="font-bold text-blue-600">{calculateDose(firstDose.value, w)}</span>
-                      </p>
+                      {(() => {
+                        const maxDoseValue = parseMaxDose(drug.max);
+                        const result = calculateDose(firstDose.value, w, maxDoseValue);
+                        if (!result) return null;
+                        const doseResult = typeof result === 'string' ? { dose: result, isExceedingMax: false } : result;
+                        return (
+                          <div>
+                            <p className={`text-[11px] font-mono font-bold ${doseResult.isExceedingMax ? 'text-amber-600' : 'text-blue-600'}`}>
+                              {doseResult.dose}
+                            </p>
+                            {doseResult.isExceedingMax && (
+                              <p className="text-[9px] text-amber-600 font-medium">⚠️ Max capped</p>
+                            )}
+                          </div>
+                        );
+                      })()}
                     </div>
                   )}
                 </div>
