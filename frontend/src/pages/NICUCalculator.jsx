@@ -5,11 +5,11 @@
  * - Lines 1-60: Imports and Custom Icons
  * - Lines 60-285: Main NICUCalculator Component (Dashboard & Navigation)
  * - Lines 286-678: FluidCalculatorPage
- * - Lines 681-910: NRPChecklistPage
- * - Lines 913-991: CatheterCalculatorPage (UVC/UAC)
+ * - Lines 681-910: NRPChecklistPage (EXTRACTED to /pages/nicu/)
+ * - Lines 913-991: CatheterCalculatorPage (EXTRACTED to /pages/nicu/)
  * - Lines 994-1377: PRBCGuidelinePage
  * - Lines 1380-1605: ExchangeCalculatorPage
- * - Lines 1608-1802: IntubationPage
+ * - Lines 1608-1802: IntubationPage (EXTRACTED to /pages/nicu/)
  * - Lines 1805-2009: BloodPressurePage
  * 
  * Future Refactoring: Each page component can be extracted to /pages/nicu/
