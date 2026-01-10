@@ -531,7 +531,16 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
       })(),
       
       calciumChloride: (() => {
-        const doseMg = w * 10; // 10mg/kg
+        // Harriet Lane: 10-20 mg/kg, max 1000 mg (1g) per dose
+        const maxDoseMg = 1000;
+        let doseMg = w * 10; // Using lower dose 10mg/kg
+        let isMaxed = false;
+        
+        if (doseMg > maxDoseMg) {
+          doseMg = maxDoseMg;
+          isMaxed = true;
+        }
+        
         const doseMl = doseMg / 100; // 100mg/ml
         const diluentMl = doseMl * 4; // 1:5 dilution (20mg/ml target)
         const totalVolume = doseMl + diluentMl;
@@ -541,11 +550,12 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
           title: "💉 Calcium Chloride 10%",
           drugInfo: {
             concentration: "100 mg/ml (1.4 mEq/ml)",
-            targetDilution: "20 mg/ml (1:5 dilution)"
+            targetDilution: "20 mg/ml (1:5 dilution)",
+            maxDose: `${maxDoseMg} mg (${maxDoseMg/100} ml)`
           },
           calculation: {
-            dose: `${doseMg.toFixed(0)} mg`,
-            doseFormula: `${w} kg × 10 mg/kg`,
+            dose: `${doseMg.toFixed(0)} mg${isMaxed ? ' (MAX)' : ''}`,
+            doseFormula: `${w} kg × 10 mg/kg${isMaxed ? ' → capped at ' + maxDoseMg + ' mg' : ''}`,
             drugVolume: `${doseMl.toFixed(2)} ml`,
             diluent: `${diluentMl.toFixed(2)} ml`,
             totalVolume: `${totalVolume.toFixed(2)} ml`,
@@ -554,13 +564,24 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
           },
           preparation: `Draw ${doseMl.toFixed(2)} ml CaCl2 + ${diluentMl.toFixed(2)} ml NS = ${totalVolume.toFixed(2)} ml`,
           compatible: "NS, D5W",
-          incompatible: "Phosphates, Sodium Bicarbonate, Sulphates, Amphotericin B"
+          incompatible: "Phosphates, Sodium Bicarbonate, Sulphates, Amphotericin B",
+          ...(isMaxed && { maxWarning: "⚠️ Dose capped at maximum (1g)" })
         };
       })(),
       
       addiphos: (() => {
-        const doseMin = w * 0.5;
-        const doseMax = Math.min(w * 1.5, 15);
+        // Harriet Lane: 0.5-1.5 mmol/kg/day, max 15 mmol/dose
+        const maxDose = 15; // mmol
+        let doseMin = w * 0.5;
+        let doseMax = w * 1.5;
+        let isMaxed = false;
+        
+        if (doseMax > maxDose) {
+          doseMax = maxDose;
+          doseMin = Math.min(doseMin, maxDose);
+          isMaxed = true;
+        }
+        
         const volumeMin = doseMin / 2; // 1ml = 2mmol
         const volumeMax = doseMax / 2;
         
@@ -568,18 +589,20 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
           title: "💉 Addiphos (Phosphate)",
           drugInfo: {
             concentration: "1 ml = 2 mmol phosphate",
-            maxConcentration: "Peripheral: 0.05 mmol/ml | Central: 0.12 mmol/ml"
+            maxConcentration: "Peripheral: 0.05 mmol/ml | Central: 0.12 mmol/ml",
+            maxDose: `${maxDose} mmol/dose`
           },
           calculation: {
-            dose: `${doseMin.toFixed(1)} - ${doseMax.toFixed(1)} mmol/day`,
-            doseFormula: `${w} kg × 0.5-1.5 mmol/kg/day`,
+            dose: `${doseMin.toFixed(1)} - ${doseMax.toFixed(1)} mmol/day${isMaxed ? ' (MAX)' : ''}`,
+            doseFormula: `${w} kg × 0.5-1.5 mmol/kg/day${isMaxed ? ' → capped at ' + maxDose + ' mmol' : ''}`,
             drugVolume: `${volumeMin.toFixed(2)} - ${volumeMax.toFixed(2)} ml/day`,
             duration: "4-6 hours (slow infusion)",
             rate: "Divide into 2-4 doses per day"
           },
           preparation: `For peripheral: dilute to 0.05 mmol/ml minimum`,
           compatible: "Most IV fluids",
-          incompatible: "Calcium salts (precipitation risk)"
+          incompatible: "Calcium salts (precipitation risk)",
+          ...(isMaxed && { maxWarning: "⚠️ Dose capped at maximum (15 mmol)" })
         };
       })()
     };
