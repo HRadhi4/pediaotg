@@ -276,6 +276,7 @@ const NICUCalculator = ({ theme, toggleTheme }) => {
       case "drugs": return <span className={colorClass}><HealthDrugsIcon className="h-6 w-6" /></span>;
       case "ballard": return <span className={colorClass}><BallardIcon className="h-6 w-6" /></span>;
       case "postnatal": return <span className={colorClass}><PostnatalIcon className="h-6 w-6" /></span>;
+      case "approaches": return <span className={colorClass}><ApproachesIcon className="h-6 w-6" /></span>;
       default: return <span className={colorClass}><HealthStethoscopeIcon className="h-6 w-6" /></span>;
     }
   };
