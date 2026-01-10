@@ -963,6 +963,24 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
                     </div>
                   </div>
                 )}
+
+                {/* Addiphos Options */}
+                {selectedDrug === 'addiphos' && (
+                  <div className="p-3 rounded-lg bg-gray-50 dark:bg-gray-800/50 space-y-3">
+                    <div>
+                      <Label className="text-xs">Line Type</Label>
+                      <Select value={addiphosLineType} onValueChange={(v) => { setAddiphosLineType(v); calculateDrugInfusion('addiphos'); }}>
+                        <SelectTrigger className="h-8">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="peripheral">Peripheral (0.05 mmol/ml)</SelectItem>
+                          <SelectItem value="central">Central (0.12 mmol/ml)</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                )}
               </CardContent>
             </Card>
           </TabsContent>
