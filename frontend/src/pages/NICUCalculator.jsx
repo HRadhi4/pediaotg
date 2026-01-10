@@ -433,11 +433,7 @@ const NICUCalculator = ({ theme, toggleTheme }) => {
   );
 };
 
-// Enhanced Fluid Calculator Page with Order Summary
-const FluidCalculatorPage = () => {
-  const [weight, setWeight] = useState("");
-  const [age, setAge] = useState("");
-  const [gestationalAge, setGestationalAge] = useState("");
+// NRP Checklist Page
   const [tfi, setTfi] = useState("");
   
   
