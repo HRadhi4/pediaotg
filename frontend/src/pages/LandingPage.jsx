@@ -107,8 +107,8 @@ const LandingPage = ({ theme, toggleTheme }) => {
       case "drugs": return <DrugsIcon className={`h-5 w-5 ${colorClass}`} />;
       case "ballard": return <BallardIcon className={`h-5 w-5 ${colorClass}`} />;
       case "postnatal": return <PostnatalIcon className={`h-5 w-5 ${colorClass}`} />;
-      case "prbc": return <HealthBloodIcon className={`h-5 w-5 ${colorClass}`} />;
-      case "exchange": return <HealthExchangeIcon className={`h-5 w-5 ${colorClass}`} />;
+      case "prbc": return <BloodDropIcon className={`h-5 w-5 ${colorClass}`} />;
+      case "exchange": return <ExchangeIcon className={`h-5 w-5 ${colorClass}`} />;
       default: return <Star className={`h-5 w-5 ${colorClass}`} />;
     }
   };
