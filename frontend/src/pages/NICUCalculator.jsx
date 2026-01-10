@@ -432,5 +432,3 @@ const NICUCalculator = ({ theme, toggleTheme }) => {
 };
 
 export default NICUCalculator;
-
-export default NICUCalculator;
