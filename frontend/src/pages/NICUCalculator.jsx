@@ -3671,6 +3671,98 @@ const HeelToEarSVG = ({ score }) => {
   );
 };
 
+// Physical Maturity SVG Diagrams
+const SkinSVG = ({ score }) => {
+  // Show skin texture progression from sticky/transparent to leathery
+  const patterns = {
+    '-1': { opacity: 0.2, lines: 0, color: '#ef4444' }, // Sticky, transparent
+    0: { opacity: 0.3, lines: 0, color: '#f97316' },    // Gelatinous, red
+    1: { opacity: 0.5, lines: 1, color: '#fbbf24' },    // Smooth, pink
+    2: { opacity: 0.6, lines: 2, color: '#84cc16' },    // Peeling
+    3: { opacity: 0.7, lines: 3, color: '#22c55e' },    // Cracking
+    4: { opacity: 0.85, lines: 4, color: '#06b6d4' },   // Parchment
+    5: { opacity: 1, lines: 5, color: '#6366f1' }       // Leathery
+  };
+  const p = patterns[score] || patterns[0];
+  return (
+    <svg viewBox="0 0 60 40" className="w-full h-8">
+      <rect x="10" y="5" width="40" height="30" rx="4" fill={p.color} fillOpacity={p.opacity} stroke="currentColor" strokeWidth="1"/>
+      {[...Array(p.lines)].map((_, i) => (
+        <line key={i} x1={15 + i*8} y1="10" x2={15 + i*8} y2="30" stroke="currentColor" strokeWidth="0.5" strokeDasharray="2"/>
+      ))}
+    </svg>
+  );
+};
+
+const LanugoSVG = ({ score }) => {
+  // Show hair density from none to mostly bald
+  const density = { '-1': 0, 0: 2, 1: 6, 2: 4, 3: 2, 4: 1 };
+  const d = density[score] ?? 3;
+  return (
+    <svg viewBox="0 0 60 40" className="w-full h-8">
+      <ellipse cx="30" cy="20" rx="18" ry="14" fill="none" stroke="currentColor" strokeWidth="1.5"/>
+      {[...Array(d)].map((_, i) => (
+        <path key={i} d={`M${20 + i*6} 12 Q${22 + i*6} 8 ${24 + i*6} 12`} stroke="currentColor" strokeWidth="1" fill="none"/>
+      ))}
+    </svg>
+  );
+};
+
+const PlantarSurfaceSVG = ({ score }) => {
+  // Show foot sole with creases
+  const creases = { '-1': 0, 0: 0, 1: 1, 2: 2, 3: 3, 4: 5 };
+  const c = creases[score] ?? 0;
+  return (
+    <svg viewBox="0 0 60 40" className="w-full h-8">
+      <ellipse cx="30" cy="22" rx="12" ry="16" fill="none" stroke="currentColor" strokeWidth="1.5"/>
+      <ellipse cx="30" cy="6" rx="8" ry="4" fill="none" stroke="currentColor" strokeWidth="1"/>
+      {[...Array(c)].map((_, i) => (
+        <line key={i} x1="22" y1={14 + i*5} x2="38" y2={14 + i*5} stroke="currentColor" strokeWidth="1"/>
+      ))}
+    </svg>
+  );
+};
+
+const BreastSVG = ({ score }) => {
+  // Show breast bud development
+  const sizes = { '-1': 0, 0: 1, 1: 2, 2: 3, 3: 5, 4: 7 };
+  const s = sizes[score] ?? 2;
+  return (
+    <svg viewBox="0 0 60 40" className="w-full h-8">
+      <circle cx="30" cy="20" r="12" fill="none" stroke="currentColor" strokeWidth="1.5"/>
+      <circle cx="30" cy="20" r={s} fill="currentColor" fillOpacity="0.5"/>
+      {s > 2 && <circle cx="30" cy="20" r={s-1} fill="currentColor"/>}
+    </svg>
+  );
+};
+
+const EyeEarSVG = ({ score }) => {
+  // Show ear development from flat to stiff
+  const curves = { '-1': 0, 0: 2, 1: 4, 2: 6, 3: 8, 4: 10 };
+  const c = curves[score] ?? 4;
+  return (
+    <svg viewBox="0 0 60 40" className="w-full h-8">
+      <path d={`M25 10 Q${15+c} 20 25 30 Q${35-c/2} 20 25 10`} fill="none" stroke="currentColor" strokeWidth="1.5"/>
+      <circle cx="40" cy="20" rx="8" ry="6" fill="none" stroke="currentColor" strokeWidth="1.5"/>
+      {score >= 0 && <circle cx="40" cy="20" r="3" fill="currentColor"/>}
+    </svg>
+  );
+};
+
+const GenitalsSVG = ({ score }) => {
+  // Abstract representation showing maturity level
+  const levels = { '-1': 1, 0: 2, 1: 3, 2: 4, 3: 5, 4: 6 };
+  const l = levels[score] ?? 3;
+  return (
+    <svg viewBox="0 0 60 40" className="w-full h-8">
+      <rect x="20" y="30" width="20" height="4" fill="currentColor" fillOpacity="0.3"/>
+      {[...Array(l)].map((_, i) => (
+        <rect key={i} x={25 - i*2} y={28 - i*4} width={10 + i*4} height="3" rx="1" fill="currentColor" fillOpacity={0.2 + i*0.12}/>
+      ))}
+    </svg>
+  );
+};
+
 // Ballard Score Page with Neuromuscular and Physical Maturity Assessment
 const BallardScorePage = () => {
   const [neuromuscularScores, setNeuromuscularScores] = useState({
