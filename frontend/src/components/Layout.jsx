@@ -109,7 +109,7 @@ const SidePanel = ({ isOpen, onClose, theme, toggleTheme }) => {
           <div className="p-4 border-b flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-[#00d9c5]/10 flex items-center justify-center overflow-hidden p-1">
-                <img src="/logo.png" alt="Logo" className="w-full h-full object-contain" />
+                <img src="/icon.svg" alt="Logo" className="w-full h-full object-contain" />
               </div>
               <div>
                 <h2 className="font-heading font-bold text-sm">Pediatrics On The Go</h2>
@@ -229,7 +229,7 @@ const SidePanel = ({ isOpen, onClose, theme, toggleTheme }) => {
           <DialogHeader>
             <DialogTitle className="font-heading flex items-center gap-2">
               <div className="w-10 h-10 rounded-xl bg-[#00d9c5]/10 flex items-center justify-center overflow-hidden p-1">
-                <img src="/logo.png" alt="Logo" className="w-full h-full object-contain" />
+                <img src="/icon.svg" alt="Logo" className="w-full h-full object-contain" />
               </div>
               Pediatrics On The Go
             </DialogTitle>
