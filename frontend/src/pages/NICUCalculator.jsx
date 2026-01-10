@@ -57,15 +57,6 @@ import BloodProductsDialog from "@/components/BloodProductsDialog";
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, DragOverlay } from '@dnd-kit/core';
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, rectSortingStrategy } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-// Refactored page components
-import { 
-  NRPChecklistPage, 
-  CatheterCalculatorPage, 
-  IntubationPage,
-  PRBCGuidelinePage,
-  ExchangeCalculatorPage,
-  BloodPressurePage
-} from './nicu';
 
 // Sortable Widget Component for NICU drag and drop
 const SortableNICUWidget = ({ widget, isEditMode, onClick, getWidgetIcon, isFavorite, onToggleFavorite }) => {
