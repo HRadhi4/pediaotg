@@ -1,15 +1,12 @@
 /**
  * NICU Calculator Dashboard
  * 
- * Refactored Structure:
- * - Imports from ./nicu: FluidCalculatorPage, BallardScorePage, NRPChecklistPage, 
- *   CatheterCalculatorPage, IntubationPage, PRBCGuidelinePage, ExchangeCalculatorPage, BloodPressurePage
- * - Local Components: GrowthChartPage, NICUDrugsPage (to be extracted later)
+ * Fully Refactored - All page components extracted to ./nicu/ directory
  */
 
 import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Check, Clock, Plus, Trash2, ChevronUp, ChevronDown, Droplets, Search, Star } from "lucide-react";
+import { Star } from "lucide-react";
 import { 
   FluidIcon as HealthFluidIcon, 
   IntubationIcon as HealthIntubationIcon, 
@@ -35,12 +32,7 @@ import {
   PostnatalIcon,
   ApproachesIcon
 } from "@/components/HealthIcons";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Card, CardContent } from "@/components/ui/card";
 import BloodGasDialog from "@/components/BloodGasDialog";
 import ElectrolytesDialog from "@/components/ElectrolytesDialog";
 import JaundiceDialog from "@/components/JaundiceDialog";
@@ -49,7 +41,7 @@ import BloodProductsDialog from "@/components/BloodProductsDialog";
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, DragOverlay } from '@dnd-kit/core';
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, rectSortingStrategy } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-// Refactored page components
+// All page components - fully refactored
 import { 
   FluidCalculatorPage,
   BallardScorePage,
@@ -58,7 +50,9 @@ import {
   IntubationPage,
   PRBCGuidelinePage,
   ExchangeCalculatorPage,
-  BloodPressurePage
+  BloodPressurePage,
+  GrowthChartPage,
+  NICUDrugsPage
 } from './nicu';
 
 // Sortable Widget Component for NICU drag and drop
