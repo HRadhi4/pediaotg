@@ -78,11 +78,16 @@ Build a full SaaS-style web app with user accounts and a PAID-ONLY subscription 
 - [x] SVG icons for all widgets (including Ballard & Postnatal)
 
 ### Recent Changes (Jan 10, 2025)
+- **Ballard Score SVG Diagrams**: Added professional SVG illustrations for all neuromuscular criteria:
+  - Posture (stick figures with varying flexion)
+  - Square Window/Wrist (angle diagrams)
+  - Arm Recoil (arm position diagrams)
+  - Popliteal Angle (leg angle diagrams)
+  - Scarf Sign (torso with elbow positions)
+  - Heel to Ear (body with heel positions)
+- Removed all emoji characters from Ballard Score calculator
 - Fixed Ballard Score and Postnatal widget icons (replaced emojis with SVG icons)
-- Created refactored component files in `/app/frontend/src/pages/nicu/`:
-  - `FluidCalculatorPage.jsx`
-  - `BallardScorePage.jsx`
-  - `index.js`
+- Created refactored component files in `/app/frontend/src/pages/nicu/`
 
 ## Prioritized Backlog
 
@@ -90,7 +95,7 @@ Build a full SaaS-style web app with user accounts and a PAID-ONLY subscription 
 - None currently
 
 ### P1 - High Priority
-- Add diagram images to Ballard Score calculator for each scoring criterion
+- None currently (Ballard diagrams completed)
 
 ### P2 - Medium Priority
 - Complete refactoring of NICUCalculator.jsx (extract remaining components)
