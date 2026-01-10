@@ -59,8 +59,6 @@ import { arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, r
 import { CSS } from '@dnd-kit/utilities';
 // Refactored page components
 import { 
-  FluidCalculatorPage,
-  BallardScorePage,
   NRPChecklistPage, 
   CatheterCalculatorPage, 
   IntubationPage,
@@ -181,7 +179,6 @@ const NICUCalculator = ({ theme, toggleTheme }) => {
     { id: "drugs", title: "Drugs", icon: "drugs", color: "blue", enabled: true },
     { id: "ballard", title: "Ballard Score", icon: "ballard", color: "amber", enabled: true },
     { id: "postnatal", title: "Postnatal", icon: "postnatal", color: "teal", enabled: true, comingSoon: true },
-    { id: "approaches", title: "Approaches", icon: "approaches", color: "purple", enabled: true, comingSoon: true },
     { id: "approaches", title: "Approaches", icon: "approaches", color: "purple", enabled: true, comingSoon: true }
   ]);
   
@@ -446,7 +443,18 @@ const NICUCalculator = ({ theme, toggleTheme }) => {
   );
 };
 
-// Growth Chart Page - CDC/WHO Charts for Weight, Height, Head Circumference
+// Enhanced Fluid Calculator Page with Order Summary
+const FluidCalculatorPage = () => {
+  const [weight, setWeight] = useState("");
+  const [age, setAge] = useState("");
+  const [gestationalAge, setGestationalAge] = useState("");
+  const [tfi, setTfi] = useState("");
+  
+  
+  // NaCl
+  const [naclAmount, setNaclAmount] = useState("");
+  
+  // Feed
   const [feedVolume, setFeedVolume] = useState("");
   const [feedFrequency, setFeedFrequency] = useState("2"); // q2h default
   const [feedType, setFeedType] = useState("ebm"); // "ebm" or "formula"
@@ -3517,7 +3525,7 @@ const BallardScorePage = () => {
                   <button
                     key={opt.score}
                     onClick={() => setNeuromuscularScores(prev => ({ ...prev, [criterion.name]: opt.score }))}
-                    className={`flex-shrink-0 w-[80px] p-1.5 rounded-lg text-center transition-all border ${
+                    className={`flex-shrink-0 w-[72px] p-1.5 rounded-lg text-center transition-all border ${
                       neuromuscularScores[criterion.name] === opt.score
                         ? 'bg-amber-500 text-white border-amber-600 ring-2 ring-amber-300'
                         : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:border-amber-300'
@@ -3527,7 +3535,7 @@ const BallardScorePage = () => {
                       {renderNeuromuscularDiagram(criterion.name, opt.score)}
                     </div>
                     <div className="font-bold text-xs">{opt.score}</div>
-                    <div className="text-[8px] leading-tight text-muted-foreground mt-0.5 min-h-[24px] flex items-center justify-center px-0.5">{opt.desc}</div>
+                    <div className="text-[9px] leading-tight text-muted-foreground mt-0.5 h-6 flex items-center justify-center">{opt.desc}</div>
                   </button>
                 ))}
               </div>
@@ -3553,7 +3561,7 @@ const BallardScorePage = () => {
                   <button
                     key={opt.score}
                     onClick={() => setPhysicalScores(prev => ({ ...prev, [criterion.name]: opt.score }))}
-                    className={`flex-shrink-0 w-[80px] p-1.5 rounded-lg text-center transition-all border ${
+                    className={`flex-shrink-0 w-[72px] p-1.5 rounded-lg text-center transition-all border ${
                       physicalScores[criterion.name] === opt.score
                         ? 'bg-[#00d9c5] text-white border-[#00b8a6] ring-2 ring-[#00d9c5]/50'
                         : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:border-[#00d9c5]'
@@ -3563,7 +3571,7 @@ const BallardScorePage = () => {
                       {renderPhysicalDiagram(criterion.name, opt.score)}
                     </div>
                     <div className="font-bold text-xs">{opt.score}</div>
-                    <div className="text-[8px] leading-tight text-muted-foreground mt-0.5 min-h-[24px] flex items-center justify-center px-0.5">{opt.desc}</div>
+                    <div className="text-[9px] leading-tight text-muted-foreground mt-0.5 h-6 flex items-center justify-center">{opt.desc}</div>
                   </button>
                 ))}
               </div>
