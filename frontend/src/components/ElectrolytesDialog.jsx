@@ -58,19 +58,29 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
       isMaxed = true;
     }
     
+    // Dilution: Target 50 mg/ml
+    const targetConc = 50; // mg/ml
+    const totalVolume = doseMg / targetConc;
+    const diluentMl = totalVolume - doseMl;
+    
     setResults({
       title: "Calcium Gluconate 10% IV",
       sections: [
         {
           subtitle: "Dose",
           value: `${doseMg.toFixed(0)} mg (${doseMl.toFixed(1)} ml)`
+        },
+        {
+          subtitle: "Dilution (to 50 mg/ml)",
+          value: `${doseMl.toFixed(1)} ml drug + ${diluentMl.toFixed(1)} ml NS = ${totalVolume.toFixed(1)} ml`
         }
       ],
       frequency: calciumLevel && parseFloat(calciumLevel) < 7 ? "BD" : "OD",
       notes: [
         "Dose: 100 mg/kg (1 ml/kg)",
         `Max: ${maxDose} mg (${maxMl} ml)`,
-        "Concentration: 100 mg/ml",
+        "Stock: 100 mg/ml → Dilute to 50 mg/ml",
+        "Infuse over 1 hour",
         "Keep OD or BD according to level and need"
       ],
       ...(isMaxed && { warnings: ["⚠️ Dose capped at maximum (1g / 10ml)"] })
