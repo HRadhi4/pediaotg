@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { AlertCircle, Loader2, Stethoscope, CheckCircle } from 'lucide-react';
+import { AlertCircle, Loader2, CheckCircle } from 'lucide-react';
 
 const SignupPage = () => {
   const navigate = useNavigate();
@@ -48,8 +48,8 @@ const SignupPage = () => {
     <div className="min-h-screen bg-gradient-to-br from-teal-50 to-blue-50 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
-          <div className="mx-auto w-16 h-16 bg-[#00d9c5]/10 rounded-2xl flex items-center justify-center mb-4">
-            <Stethoscope className="h-8 w-8 text-[#00d9c5]" />
+          <div className="mx-auto w-16 h-16 rounded-2xl flex items-center justify-center mb-4 overflow-hidden">
+            <img src="/icon.svg" alt="Logo" className="w-full h-full object-contain" />
           </div>
           <CardTitle className="text-2xl font-bold">Create Account</CardTitle>
           <CardDescription>Start your 3-day free trial</CardDescription>
