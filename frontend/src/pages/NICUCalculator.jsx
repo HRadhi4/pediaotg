@@ -3553,7 +3553,7 @@ const BallardScorePage = () => {
                   <button
                     key={opt.score}
                     onClick={() => setPhysicalScores(prev => ({ ...prev, [criterion.name]: opt.score }))}
-                    className={`flex-shrink-0 w-[72px] p-1.5 rounded-lg text-center transition-all border ${
+                    className={`flex-shrink-0 w-[80px] p-1.5 rounded-lg text-center transition-all border ${
                       physicalScores[criterion.name] === opt.score
                         ? 'bg-[#00d9c5] text-white border-[#00b8a6] ring-2 ring-[#00d9c5]/50'
                         : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:border-[#00d9c5]'
@@ -3563,7 +3563,7 @@ const BallardScorePage = () => {
                       {renderPhysicalDiagram(criterion.name, opt.score)}
                     </div>
                     <div className="font-bold text-xs">{opt.score}</div>
-                    <div className="text-[9px] leading-tight text-muted-foreground mt-0.5 h-6 flex items-center justify-center">{opt.desc}</div>
+                    <div className="text-[8px] leading-tight text-muted-foreground mt-0.5 min-h-[24px] flex items-center justify-center px-0.5">{opt.desc}</div>
                   </button>
                 ))}
               </div>
