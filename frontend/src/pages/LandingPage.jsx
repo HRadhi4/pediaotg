@@ -25,7 +25,11 @@ import {
   CatheterIcon,
   ActivityIcon,
   GrowthChartIcon,
-  DrugsIcon
+  DrugsIcon,
+  BallardIcon,
+  PostnatalIcon,
+  HealthBloodIcon,
+  HealthExchangeIcon
 } from "@/components/HealthIcons";
 
 const LandingPage = ({ theme, toggleTheme }) => {
