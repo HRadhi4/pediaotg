@@ -3517,22 +3517,22 @@ const BallardScorePage = () => {
           {neuromuscularCriteria.map(criterion => (
             <div key={criterion.name} className="space-y-2">
               <Label className="text-sm font-medium">{criterion.label}</Label>
-              <div className="flex gap-2 overflow-x-auto pb-2">
+              <div className="flex gap-1.5 overflow-x-auto pb-2">
                 {criterion.options.map(opt => (
                   <button
                     key={opt.score}
                     onClick={() => setNeuromuscularScores(prev => ({ ...prev, [criterion.name]: opt.score }))}
-                    className={`flex-shrink-0 w-24 p-2 rounded-lg text-center transition-all border ${
+                    className={`flex-shrink-0 w-[72px] p-1.5 rounded-lg text-center transition-all border ${
                       neuromuscularScores[criterion.name] === opt.score
                         ? 'bg-amber-500 text-white border-amber-600 ring-2 ring-amber-300'
                         : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:border-amber-300'
                     }`}
                   >
-                    <div className="h-10 flex items-center justify-center text-current">
+                    <div className="h-9 flex items-center justify-center text-current">
                       {renderNeuromuscularDiagram(criterion.name, opt.score)}
                     </div>
-                    <div className="font-bold text-sm mt-1">{opt.score}</div>
-                    <div className="text-[10px] leading-snug text-muted-foreground mt-0.5">{opt.desc}</div>
+                    <div className="font-bold text-xs">{opt.score}</div>
+                    <div className="text-[9px] leading-tight text-muted-foreground mt-0.5 h-6 flex items-center justify-center">{opt.desc}</div>
                   </button>
                 ))}
               </div>
