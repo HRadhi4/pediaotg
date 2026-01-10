@@ -935,7 +935,7 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
                   <div className="p-3 rounded-lg bg-gray-50 dark:bg-gray-800/50 space-y-3">
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <Label className="text-xs">Line Type</Label>
+                        <Label className="text-xs">Target Concentration (mEq/100ml)</Label>
                         <Select value={kclLineType} onValueChange={(v) => { setKclLineType(v); calculateDrugInfusion('kcl'); }}>
                           <SelectTrigger className="h-8">
                             <SelectValue />
