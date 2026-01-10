@@ -13,7 +13,7 @@
 
 #### 1. Basic API Endpoints - ✅ VERIFIED
 **Root API Endpoint:**
-- ✅ Successfully connected to https://kidmed-calc.preview.emergentagent.com/api/
+- ✅ Successfully connected to https://pediaotg-sub.preview.emergentagent.com/api/
 - ✅ Returns proper API message: "PediaOTG API"
 
 **Status Check Endpoints:**

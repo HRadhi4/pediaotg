@@ -1,70 +1,86 @@
 <analysis>**original_problem_statement:**
-The user wants to enhance the Pediatrics on the go medical calculator application.
+The user requested to build a full SaaS-style web app with user accounts and a PAID-ONLY subscription model on top of the existing Pediatrics on the go medical calculator. The system must support mobile-friendly architecture, offline storage for user preferences, and integrate PayPal as the exclusive payment gateway. All users must subscribe after a 3-day trial, except for a special admin account with full access.
 
-Initial feature requests for this session were:
-1.  Complete the Growth Chart feature with plotting and save-to-gallery functionality.
-2.  Redesign the Growth Chart based on WHO/CDC standards, including age in months/years, optional measurements, and Z-score interpretation.
-3.  Refine the Growth Chart UI by making plotting dots smaller and simplifying the age input.
-4.  Correct the Blood Pressure calculator in the Children's section to accurately reflect Harriet Lane data structure and integrate PALS formulas.
-5.  Fix a navigation bug where sub-pages did not open at the top.
-6.  Redesign the Approaches page in the Children's Dashboard, adding content from a provided PDF.
-7.  Replace the offline OCR engine from Tesseract.js to PaddleOCR (Pivoted to server-side Tesseract).
-
-PRODUCT REQUIREMENTS (This Session):
-1.  Replace all application icons with a specific free open-source pack: .
-2.  Unify the size and styling of the navigation bar across all pages.
-3.  Redesign the Children > CPR page to be more user-friendly and less colorful, based on the PALS 2025 algorithm.
-4.  Iteratively adjust the design based on feedback:
-    -   Make icons thicker.
-    -   Adjust the color scheme of the CPR page, first adding more color, then simplifying it.
-    -   Make calculated values on the CPR page stand out, finally settling on red.
-    -   Replace the Glucose Infusion Rate (GIR) icon with a glucose meter icon.
+PRODUCT REQUIREMENTS:
+1.  **User Authentication & Data Separation:** Implement email/password signup/login, secure password hashing, and session management. All data must be filtered by .
+2.  **Admin Account:** Create a hardcoded admin account  /  that bypasses all subscription checks.
+3.  **Paid-Only Subscription Model:**
+    -   Offer two paid plans: Monthly (1 BHD/month) and Annual (10 BHD/year). No free tier.
+    -   New users get a 3-day trial, after which they are blocked until they subscribe.
+    -   Gate all app features behind an active subscription (or admin access).
+4.  **PayPal Integration:**
+    -   Integrate PayPal for monthly and annual subscriptions.
+    -   Create a pricing page and handle the full checkout flow.
+5.  **Billing & Account Management:**
+    -   Create a My Account page for users to view their plan, status, and cancel their subscription.
+    -   Provide an admin dashboard to view all users, their subscription status, and a feature to delete users.
+6.  **Offline Layout Storage:** Use  to save user widget arrangements.
+7.  **UI/UX & Feature Enhancements:**
+    -   Enhance the NICU Electrolytes calculator with automatic dilution calculations and max dose limits.
+    -   Enhance the NICU Fluid calculator to include GIR, total calories, and a cleaner UI.
+    -   Add maximum dose limits to the drug calculator based on Harriet Lane guidelines.
+    -   Add a Ballard Score calculator widget to the NICU dashboard.
+8.  **Bug Fix:** Fix critical errors blocking the subscription flow.
 
 **User's preferred language**: English
 
 **what currently exists?**
-The application is stable. The agent has successfully completed a major UI overhaul based on user requests. All icons across the application (widgets, navigation bars) in , , and  have been replaced with a consistent set from . These icons are managed through a new centralized component, .
-
-The navigation bars have been standardized for a uniform look and feel. The CPR page within the Children's Dashboard has been completely redesigned for a cleaner, more intuitive layout, with multiple iterative refinements to its color scheme and icon thickness based on user feedback.
+The application is a full-stack medical calculator with a functional SaaS subscription system. The critical payment bugs have been resolved, and the payment flow is working correctly with proper currency conversion. The UI has undergone significant enhancements based on user feedback, including:
+-   A cleaner, more professional color scheme in the NICU calculator's Order Summary.
+-   Implementation of maximum dose limits and warnings in both the general drug calculator and the electrolytes correction/infusion calculators.
+-   Revised and accurate dilution logic for multiple electrolytes (KCl, MgSO4, CaCl2, NaHCO3, etc.).
+-   Two new widgets on the NICU dashboard: a fully functional Ballard Score calculator and a Postnatal widget marked as Coming Soon.
 
 **Last working item**:
--   **Last item agent was working:** The agent finished a comprehensive, app-wide replacement of all icons with the  pack. It has visually confirmed the changes on the landing page and the Children's dashboard. The last step of this task is to verify the NICU dashboard.
+-   **Last item agent was working:** The agent was in the process of replacing emoji-based icons with professional SVG icons from . It successfully created and added  and  components to . The next step is to import and use these new icons in .
 -   **Status:** IN PROGRESS
 -   **Agent Testing Done:** N
--   **Which testing method agent to use?** screenshot tool
+-   **Which testing method agent to use?** screenshot tool to verify the new icons are correctly displayed on the NICU dashboard widgets.
 -   **User Testing Done:** N
 
 **All Pending/In progress Issue list**:
-There are no known bugs or blocking issues.
+There are no outstanding critical bugs. The primary focus is on completing the in-progress feature enhancements.
 
 **In progress Task List**:
--   **Task 1:** Verify the NICU Dashboard Icons (P0)
-    -   **Where to resume:** The agent's last action was taking a screenshot of the Children's dashboard after the final icon update. The next step is to take a screenshot of the NICU dashboard to confirm the new  icons are rendered correctly there as well.
-    -   **What will be achieved with this?** Final confirmation that the sitewide icon update is complete and consistent across all three main views.
+-   **Task 1:** Integrate New Widget Icons (P0)
+    -   **Where to resume:** Edit . Import the newly created  and  from  and use them in the  mapping, replacing the previous emoji strings.
+    -   **What will be achieved with this?** Fulfills the user's request for a more professional UI by using consistent, high-quality SVG icons instead of emojis for the dashboard widgets.
     -   **Status:** IN PROGRESS
     -   **Should Test frontend/backend/both after fix?** Frontend
-    -   **Blocked on something:** None
+    -   **Blocked on something:** None.
+-   **Task 2:** Add Diagram Images to Ballard Score Calculator (P1)
+    -   **Where to resume:** Edit the  component within . For each of the neuromuscular and physical maturity criteria, add a simple diagram/image that visually represents the score, as requested by the user. The agent has already performed a web search and has reference images.
+    -   **What will be achieved with this?** Make the Ballard Score calculator easier and faster for clinicians to use by providing clear visual aids for each scoring parameter.
+    -   **Status:** NOT STARTED
+    -   **Should Test frontend/backend/both after fix?** Frontend
+    -   **Blocked on something:** None.
 
 **Upcoming and Future Tasks**
-
--   **Upcoming Tasks:**
-    -   (P1) **User Notification on OCR Pivot:** Inform the user that their original request for **PaddleOCR** was attempted but failed due to high resource usage. Explain that a server-side **Tesseract OCR** was implemented as a stable and functional alternative. (This was deferred by the user).
 -   **Future Tasks:**
-    -   (P2) **Refactor Monolithic Components:** The core page files ( and ) are extremely large and should be broken down into smaller, single-responsibility components.
-    -   (P3) **Minor Linting Cleanup:** Address minor linting errors in legacy files like .
+    -   (P2) **Refactor :** This large monolithic component (over 4000 lines) should be broken down into smaller, manageable files (e.g., , , ). This is a critical piece of technical debt.
+    -   (P3) **Minor Linting Cleanup:** Address minor, non-blocking linting errors in legacy UI components like .
+    -   (P3) **Inform user about OCR Pivot:** The task to notify the user about the switch from PaddleOCR to Tesseract is still pending.
 
 **Completed work in this session**
--   Replaced all  icons and old custom SVGs with a unified set from the  pack.
--   Created a new central component  to manage all application icons.
--   Unified the navigation bar styling and icon sizes across , , and .
--   Completely redesigned the CPR page in  with a cleaner, minimalist UI based on PALS 2025 guidelines.
--   Iteratively refined the icon thickness and CPR page color scheme (highlighting calculated values in red) based on user feedback.
--   Fixed a Droplets is not defined crash in .
+-   **Critical Bug Fixes:**
+    -   Resolved the An error occurred bug on the pricing page, unblocking the entire subscription flow.
+    -   Fixed the PayPal integration to correctly convert BHD prices to USD.
+-   **Feature Implementation & Enhancement:**
+    -   **Maximum Dose Limits:** Integrated max dose capping with warnings into the  and  calculators.
+    -   **Ballard Score Widget:** Added a new widget and a complete, functional Ballard Score calculator page to the NICU dashboard.
+    -   **Postnatal Widget:** Added a placeholder Coming Soon widget to the NICU dashboard.
+    -   **Electrolyte Dilutions:** Implemented extensive, user-specified dilution logic for MgSO4, Calcium Gluconate, KCl, Sodium Bicarbonate, Addphose, and Calcium Chloride, including options for different line types and concentrations.
+    -   **NICU Fluid Calculator:** Simplified the calorie display and added a GIR calculation.
+-   **UI/UX Improvements:**
+    -   Removed the Made with Emergent badge from the application layout.
+    -   Simplified and cleaned up the color scheme of the Order Summary in the NICU calculator.
+    -   Corrected the feature list and button alignment on the .
+    -   Replaced emoji icons with SVG icons in  (implementation in progress).
 
 **Earlier issues found/mentioned but not fixed**
 -   **Issue 1: Minor Linting Errors**
-    -   **Debug checklist:** Run  on .
-    -   **Why to solve this issue and what will be achieved with this?** Low-priority code hygiene. Does not affect functionality.
+    -   **Debug checklist:** Run  on  and .
+    -   **Why to solve this issue and what will be achieved with this?** Code hygiene. Does not affect functionality.
     -   **Should Test frontend/backend/both after fix:** None
     -   **Is recurring issue?** Y
 
@@ -75,71 +91,79 @@ There are no known bugs or blocking issues.
 
 
 **Key Technical Concepts**
--   **Frontend:** React, TailwindCSS, .
--   **UI:** Replaced  icons with custom inline SVG React components.
--   **State Management:** , .
--   **Component Architecture:** Centralized all SVG icons into a single, reusable  component, replacing disparate implementations.
--   **DOM Manipulation:** Heavy modification of JSX within monolithic components to achieve UI redesigns.
+-   **Backend:** FastAPI, MongoDB, Pydantic, JWT, .
+-   **Frontend:** React, , TailwindCSS, React Context API, .
+-   **SaaS Architecture:** A subscription model with a 3-day trial controlled by a .
+-   **Technical Debt:**  is a super-monolith, containing the dashboard layout, multiple full-page components (Fluid Calculator, Drugs, Ballard Score), and routing logic. It urgently needs to be refactored.
 
 **key DB schema**
--   No database is used in this application.
+-   **users:** 
+-   **subscriptions:** 
+-   **user_layouts:** 
 
 **changes in tech stack**
--   None.
+-   No new libraries or fundamental stack changes were made in this session.
 
 **All files of reference**
--   : **New file.** Contains all the SVG icons sourced from  as individual React components.
--   : Heavily modified to replace widget/nav icons and completely redesign the  component.
--   : Modified to replace widget and navigation icons with the new .
--   : Modified to replace navigation icons for consistency.
--   : The user-specified source for all new icons.
+-   : **Primary file modified.** Contains the NICU dashboard, fluid calculator, and now the new Ballard Score page. It's the main source of technical debt.
+-   : **Heavily modified** with new dilution logic, max dose caps, and UI changes.
+-   : **Heavily modified** to implement maximum dose calculations and warnings.
+-   : New file created to store SVG icons for the application.
+-   : Updated to handle BHD to USD currency conversion.
+-   : Modified to remove the Made with Emergent badge.
+-   : Modified to fix UI alignment and content issues.
 
 **Areas that need refactoring**:
--   **** and **** remain monolithic and complex. Refactoring them into smaller, manageable components is critical for future maintainability.
+-   ****: **CRITICAL**. This single file has grown to over 4000 lines and contains at least four distinct, complex components/pages. It is unmaintainable and poses a high risk to future development. It must be broken down into separate files and components.
 
 **key api endpoints**
--   : For online OCR with Gemini.
--   : For offline OCR with server-side Tesseract.
+-   : Debugged and fixed.
+-   No new endpoints were added.
 
 **Critical Info for New Agent**
--   Your immediate task is to visually verify the NICU dashboard. The previous agent completed a sitewide icon replacement and confirmed it on two of the three main pages. The NICU page is the last one to check.
--   The user is highly focused on visual details. Use screenshots to verify UI changes and be prepared for iterative feedback on styling (e.g., icon thickness, colors).
--   All application icons are now managed in . Any future icon changes should be made in this central file.
+-   Your first task is to complete the icon integration by editing  to use the new SVG icons from .
+-   Your second task is to enhance the  by adding diagram images for each scoring criterion, making it more user-friendly.
+-   Be extremely cautious when editing . Due to its monolithic nature, small changes can have unintended side effects. Test thoroughly after any modification.
+-   The hardcoded admin credentials are **Email:** , **Password:** .
 
 **documents and test reports created in this job**
--    (updated by the agent)
--    (generated by the testing agent)
+-   
 
 **Last 10 User Messages and any pending HUMAN messages**
-1.  **User:** Always use this pack https://healthicons.org/ for icons change what ever necessary (Status: Implemented)
-2.  **User:** For the glucose infusion rate use a glucose meter icon (Status: Implemented)
-3.  **User:** make the icons little bit thicker in widgets and Navigation bar (Status: Implemented)
-4.  **User:** use only little bit less colors in cpr page (Status: Implemented)
-5.  **User:** let Calculated values stand out in red color (Status: Implemented)
-6.  **User:** Keep the icons in the widgets and Navigation bar little bit more thick...Keep little bit more colors in CPR page and keep a different color for the calculated numbers (Status: Implemented, then revised)
-7.  **User:** Fix the navigation bar size...in children use more user friendly interface... (Status: Implemented)
-8.  **User:** continue as before - change the icons depending on this free opensource pack https://healthicons.org/ (Status: Implemented)
+1.  **User:** Request to use proper icons from  for Ballard/Postnatal widgets and add diagram images to the Ballard score calculator. (Status: **IN PROGRESS**)
+2.  **User:** Request to add Ballard Score and Postnatal (coming soon) widgets to the NICU dashboard. (Status: **Completed**)
+3.  **User:** Request to add specific KCl dilution options and remove dilution from the sodium correction calculator. (Status: **Completed**)
+4.  **User:** Request to show the calculated dilution amount in the IV bolus dialog and remove the Made with Emergent badge. (Status: **Completed**)
+5.  **User:** Clarified KCl infusion rate and requested simplification of dilution info in the corrections tab. (Status: **Completed**)
+6.  **User:** Requested adding dilution calculations to the correction calculators and allowing a custom range for KCl infusion. (Status: **Completed**)
+7.  **User:** Corrected the requested Sodium Bicarbonate dilution to a 1:1 ratio. (Status: **Completed**)
+8.  **User:** Confirmed the Sodium Bicarbonate dilution should be 1mEq in 1ml. (Status: **Completed**)
+9.  **User:** Requested revised dilution values for multiple electrolytes (MgSO4, CaCl2, KCl, etc.) and research for reliable sources. (Status: **Completed**)
+10. **User:** Corrected the maximum dose for Calcium Gluconate to 10 ml. (Status: **Completed**)
 
 **Project Health Check:**
 -   **Broken:** None.
 -   **Mocked:** None.
--   **Note:** The OCR implementation uses  on the backend, which deviates from the user's original request for . This decision still needs to be communicated to the user at a later time.
+-   **Technical Debt:** **CRITICAL**. The  monolith is a major stability and maintainability risk.
 
 **3rd Party Integrations**
--   **Gemini Pro Vision:** Uses Emergent LLM Key (for online Blood Gas Analysis).
--   **Tesseract (Python):** Server-side OCR for offline analysis.
--   **@dnd-kit/core & @dnd-kit/sortable:** Frontend library for drag-and-drop.
--   **recharts:** Frontend library for charting.
--   **html2canvas:** Frontend library for capturing DOM elements as images.
+-   **PayPal:** For paid subscriptions (Sandbox mode).
+-   **Gemini Pro Vision:** Uses Emergent LLM Key.
+-   **Tesseract (Python):** Server-side OCR.
+-   **@dnd-kit/core & @dnd-kit/sortable:** For drag-and-drop UI.
+-   **recharts:** For charting.
+-   **html2canvas:** For capturing DOM elements.
 
 **Testing status**
 -   Testing agent used after significant changes: YES
 -   Troubleshoot agent used after agent stuck in loop: NO
 -   Test files created: []
--   Known regressions: []
+-   Known regressions: None.
 
 **Credentials to test flow:**
--   No credentials are required to test the application.
+-   **Admin User:**
+    -   Email: 
+    -   Password: 
 
 **What agent forgot to execute**
--   Nothing was forgotten. The agent systematically addressed all user requests from this session. The current task is the final verification step of the last user request.</analysis>
+-   The agent never informed the user about the backend pivot from PaddleOCR to Tesseract, a task pending from a previous session.</analysis>
