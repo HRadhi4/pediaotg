@@ -170,6 +170,7 @@ const NICUCalculator = ({ theme, toggleTheme }) => {
     { id: "drugs", title: "Drugs", icon: "drugs", color: "blue", enabled: true },
     { id: "ballard", title: "Ballard Score", icon: "ballard", color: "amber", enabled: true },
     { id: "postnatal", title: "Postnatal", icon: "postnatal", color: "teal", enabled: true, comingSoon: true },
+    { id: "approaches", title: "Approaches", icon: "approaches", color: "purple", enabled: true, comingSoon: true },
     { id: "approaches", title: "Approaches", icon: "approaches", color: "purple", enabled: true, comingSoon: true }
   ]);
   
