@@ -42,8 +42,18 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
     const w = parseFloat(weight);
     if (!w) return;
     
-    const doseMl = Math.min(w * 1, 10);
-    const doseMg = doseMl * 100;
+    // Harriet Lane: Calcium Gluconate 100 mg/kg, max 3000 mg (3g)
+    const maxDose = 3000; // mg
+    const maxMl = 30; // 10% = 100mg/ml, so 30ml max
+    let doseMg = w * 100;
+    let doseMl = doseMg / 100;
+    let isMaxed = false;
+    
+    if (doseMg > maxDose) {
+      doseMg = maxDose;
+      doseMl = maxMl;
+      isMaxed = true;
+    }
     
     setResults({
       title: "Calcium Gluconate 10% IV",
@@ -55,10 +65,12 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
       ],
       frequency: calciumLevel && parseFloat(calciumLevel) < 7 ? "BD" : "OD",
       notes: [
-        "1 ml/kg (max 10 ml)",
+        "Dose: 100 mg/kg (1 ml/kg)",
+        `Max: ${maxDose} mg (${maxMl} ml)`,
         "Concentration: 100 mg/ml",
         "Keep OD or BD according to level and need"
-      ]
+      ],
+      ...(isMaxed && { warnings: ["⚠️ Dose capped at maximum (3g)"] })
     });
   };
 
