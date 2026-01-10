@@ -35,8 +35,9 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
   const [phosphateSeverity, setPhosphateSeverity] = useState("moderate");
 
   // KCl specific state
-  const [kclLineType, setKclLineType] = useState("4"); // Default 4 mEq/100ml
+  const [kclLineType, setKclLineType] = useState("peripheral"); // peripheral, central, central_restricted, or custom (1-6)
   const [kclConcentration, setKclConcentration] = useState("15"); // 15% or 10%
+  const [kclCustomConc, setKclCustomConc] = useState("4"); // 1-6 mEq/100ml for custom
   
   // Addiphos specific state
   const [addiphosLineType, setAddiphosLineType] = useState("peripheral");
