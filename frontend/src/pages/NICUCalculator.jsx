@@ -53,6 +53,8 @@ import ElectrolytesDialog from "@/components/ElectrolytesDialog";
 import JaundiceDialog from "@/components/JaundiceDialog";
 import GIRDialog from "@/components/GIRDialog";
 import BloodProductsDialog from "@/components/BloodProductsDialog";
+// Refactored page imports
+import { FluidCalculatorPage, BallardScorePage } from "@/pages/nicu";
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, DragOverlay } from '@dnd-kit/core';
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, rectSortingStrategy } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
