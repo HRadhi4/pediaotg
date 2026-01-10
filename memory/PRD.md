@@ -105,7 +105,6 @@ Build a full SaaS-style web app with user accounts and a PAID-ONLY subscription 
 - None currently (Ballard diagrams completed)
 
 ### P2 - Medium Priority
-- Extract remaining components from NICUCalculator.jsx (GrowthChartPage, NICUDrugsPage)
 - Minor linting cleanup
 
 ### P3 - Low Priority
@@ -121,5 +120,5 @@ Build a full SaaS-style web app with user accounts and a PAID-ONLY subscription 
 
 ## Notes
 - Postnatal and Approaches widgets are marked as "Coming Soon"
-- NICUCalculator.jsx refactoring successfully completed - main file reduced to 1726 lines
-- GrowthChartPage and NICUDrugsPage remain in main file (candidate for future extraction)
+- NICUCalculator.jsx refactoring FULLY COMPLETED - main file reduced to 434 lines (88% reduction)
+- All 10 NICU page components now in separate modular files
