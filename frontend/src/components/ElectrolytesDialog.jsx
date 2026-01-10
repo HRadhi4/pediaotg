@@ -78,10 +78,21 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
     const w = parseFloat(weight);
     if (!w) return;
     
+    // Harriet Lane: MgSO4 25-50 mg/kg/dose, max 2000 mg (2g) per dose
+    const maxDose = 2000; // mg
+    
     const nicuMinMl = w * 0.1;
     const nicuMaxMl = w * 0.2;
-    const minMg = w * 25;
-    const maxMg = w * 50;
+    let minMg = w * 25;
+    let maxMg = w * 50;
+    let isMaxed = false;
+    
+    if (maxMg > maxDose) {
+      maxMg = maxDose;
+      minMg = Math.min(minMg, maxDose);
+      isMaxed = true;
+    }
+    
     const minMl = minMg / 500;
     const maxMl = maxMg / 500;
     
@@ -104,7 +115,11 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
           detail: "25-50 mg/kg over 20-30 mins"
         }
       ],
-      notes: ["50% MgSulfate concentration: 500 mg/ml"]
+      notes: [
+        "50% MgSulfate concentration: 500 mg/ml",
+        `Max single dose: ${maxDose} mg (${maxDose/500} ml)`
+      ],
+      ...(isMaxed && { warnings: ["⚠️ Dose capped at maximum (2g per dose)"] })
     });
   };
 
