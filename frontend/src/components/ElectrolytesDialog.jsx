@@ -345,7 +345,16 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
     
     const drugs = {
       calciumGluconate: (() => {
-        const doseMg = Math.min(w * 100, 3000); // 100mg/kg, max 3g
+        // Harriet Lane: 100 mg/kg, max 3000 mg (3g)
+        const maxDoseMg = 3000;
+        let doseMg = w * 100;
+        let isMaxed = false;
+        
+        if (doseMg > maxDoseMg) {
+          doseMg = maxDoseMg;
+          isMaxed = true;
+        }
+        
         const doseMl = doseMg / 100; // 100mg/ml concentration
         const diluentMl = doseMl; // 1:2 dilution means equal volume diluent
         const totalVolume = doseMl + diluentMl;
@@ -355,11 +364,12 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
           title: "💉 Calcium Gluconate 10%",
           drugInfo: {
             concentration: "100 mg/ml (0.45 mEq/ml)",
-            targetDilution: "50 mg/ml (1:2 dilution)"
+            targetDilution: "50 mg/ml (1:2 dilution)",
+            maxDose: `${maxDoseMg} mg (${maxDoseMg/100} ml)`
           },
           calculation: {
-            dose: `${doseMg.toFixed(0)} mg`,
-            doseFormula: `${w} kg × 100 mg/kg = ${doseMg.toFixed(0)} mg`,
+            dose: `${doseMg.toFixed(0)} mg${isMaxed ? ' (MAX)' : ''}`,
+            doseFormula: `${w} kg × 100 mg/kg = ${(w * 100).toFixed(0)} mg${isMaxed ? ' → capped at ' + maxDoseMg + ' mg' : ''}`,
             drugVolume: `${doseMl.toFixed(1)} ml`,
             diluent: `${diluentMl.toFixed(1)} ml (NS or D5W)`,
             totalVolume: `${totalVolume.toFixed(1)} ml`,
@@ -368,7 +378,8 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
           },
           preparation: `Draw ${doseMl.toFixed(1)} ml Ca Gluconate + ${diluentMl.toFixed(1)} ml NS = ${totalVolume.toFixed(1)} ml`,
           compatible: "NS, D5W, D10W",
-          incompatible: "Amphotericin B, Ceftriaxone, Fluconazole, Meropenem, Methylprednisolone, Phosphate, Magnesium"
+          incompatible: "Amphotericin B, Ceftriaxone, Fluconazole, Meropenem, Methylprednisolone, Phosphate, Magnesium",
+          ...(isMaxed && { maxWarning: "⚠️ Dose capped at maximum (3g)" })
         };
       })(),
       
