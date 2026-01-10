@@ -504,7 +504,8 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
       
       sodaBicarb: (() => {
         // Harriet Lane: 1-2 mEq/kg, max 50 mEq/dose (neonates), 100 mEq/dose (children)
-        // Concentration: 8.4% = 1 mEq/ml - Give undiluted or slow push
+        // Stock: 8.4% = 1 mEq/ml
+        // Dilution: 1:1 (every mEq diluted with same amount in ml)
         const maxDoseMEq = 50; // Using conservative neonatal max
         let doseMin = w * 1;
         let doseMax = w * 2;
@@ -518,27 +519,31 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
         
         const drugVolumeMin = doseMin; // 8.4% = 1mEq/ml
         const drugVolumeMax = doseMax;
-        // No dilution required - give at 1 mEq/ml
-        const rate1hr = drugVolumeMax;
-        const rate30min = drugVolumeMax * 2;
+        // 1:1 dilution - add equal volume of diluent
+        const diluentMin = doseMin; // Same as dose in ml
+        const diluentMax = doseMax;
+        const totalVolumeMin = drugVolumeMin + diluentMin;
+        const totalVolumeMax = drugVolumeMax + diluentMax;
+        const rate1hr = totalVolumeMax;
+        const rate30min = totalVolumeMax * 2;
         
         return {
           title: "💉 Sodium Bicarbonate 8.4%",
           drugInfo: {
             concentration: "1 mEq/ml (8.4%)",
-            targetDilution: "No dilution required - give undiluted",
+            targetDilution: "1:1 dilution (1 mEq in 2 ml final volume)",
             maxDose: `${maxDoseMEq} mEq/dose (neonates), 100 mEq (older children)`
           },
           calculation: {
             dose: `${doseMin.toFixed(1)} - ${doseMax.toFixed(1)} mEq${isMaxed ? ' (MAX)' : ''}`,
             doseFormula: `${w} kg × 1-2 mEq/kg${isMaxed ? ' → capped at ' + maxDoseMEq + ' mEq' : ''}`,
             drugVolume: `${drugVolumeMin.toFixed(1)} - ${drugVolumeMax.toFixed(1)} ml`,
-            diluent: `None required (give undiluted)`,
-            totalVolume: `${drugVolumeMin.toFixed(1)} - ${drugVolumeMax.toFixed(1)} ml`,
+            diluent: `${diluentMin.toFixed(1)} - ${diluentMax.toFixed(1)} ml (1:1 dilution)`,
+            totalVolume: `${totalVolumeMin.toFixed(1)} - ${totalVolumeMax.toFixed(1)} ml`,
             duration: "30 min - 1 hour",
             rate: `${rate1hr.toFixed(1)} ml/hr (1h) or ${rate30min.toFixed(1)} ml/hr (30min)`
           },
-          preparation: `Draw ${drugVolumeMax.toFixed(1)} ml NaHCO3 8.4% - give undiluted`,
+          preparation: `Draw ${drugVolumeMax.toFixed(1)} ml NaHCO3 + ${diluentMax.toFixed(1)} ml NS = ${totalVolumeMax.toFixed(1)} ml`,
           compatible: "NS, D5W, D10W",
           incompatible: "Amiodarone, Calcium salts, Dobutamine, Dopamine, Epinephrine, Norepinephrine, Magnesium sulfate, Midazolam, Phenytoin",
           ...(isMaxed && { maxWarning: "⚠️ Dose capped at maximum (50 mEq)" })
