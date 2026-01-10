@@ -174,7 +174,8 @@ const NICUCalculator = ({ theme, toggleTheme }) => {
     { id: "growth", title: "Growth Charts", icon: "growth", color: "teal", enabled: true },
     { id: "drugs", title: "Drugs", icon: "drugs", color: "blue", enabled: true },
     { id: "ballard", title: "Ballard Score", icon: "ballard", color: "amber", enabled: true },
-    { id: "postnatal", title: "Postnatal", icon: "postnatal", color: "teal", enabled: true, comingSoon: true }
+    { id: "postnatal", title: "Postnatal", icon: "postnatal", color: "teal", enabled: true, comingSoon: true },
+    { id: "approaches", title: "Approaches", icon: "approaches", color: "purple", enabled: true, comingSoon: true }
   ]);
   
   // Favorites management
