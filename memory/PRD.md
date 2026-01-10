@@ -78,15 +78,17 @@ Build a full SaaS-style web app with user accounts and a PAID-ONLY subscription 
 - [x] SVG icons for all widgets (including Ballard & Postnatal)
 
 ### Recent Changes (Jan 10, 2025)
+- **Ballard Score Text Readability**: Enlarged button containers from `w-16` to `w-24` for fully readable text
 - **Ballard Score SVG Diagrams**: Added professional SVG illustrations for all criteria:
   - **Neuromuscular Maturity** (6 criteria): Posture, Square Window, Arm Recoil, Popliteal Angle, Scarf Sign, Heel to Ear
   - **Physical Maturity** (6 criteria): Skin (color progression), Lanugo (hair density), Plantar Surface (foot creases), Breast (bud development), Eye/Ear (cartilage), Genitals (maturity bars)
 - **Fixed Quick Access Favorites**: Ballard Score and Postnatal now show correctly in Quick Access when favorited
-  - Added missing widget entries to `allWidgets` in LandingPage.jsx
-  - Added icon cases for `ballard`, `postnatal`, `prbc`, `exchange`, `catheter` to `getWidgetIcon`
+- **Major Refactoring**: Extracted 3 components from NICUCalculator.jsx (~506 lines removed):
+  - `NRPChecklistPage.jsx` - NRP resuscitation checklist with timers
+  - `CatheterCalculatorPage.jsx` - UVC/UAC length calculator
+  - `IntubationPage.jsx` - ETT sizing and depth calculator
 - Removed all emoji characters from Ballard Score calculator
 - Fixed Ballard Score and Postnatal widget icons (replaced emojis with SVG icons)
-- Created refactored component files in `/app/frontend/src/pages/nicu/`
 
 ## Prioritized Backlog
 
