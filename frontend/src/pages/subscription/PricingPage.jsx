@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { CheckCircle, Loader2, Stethoscope, Crown, Clock } from 'lucide-react';
+import { CheckCircle, Loader2, Crown, Clock } from 'lucide-react';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || '';
 
@@ -89,8 +89,8 @@ const PricingPage = () => {
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="text-center mb-10">
-          <div className="mx-auto w-16 h-16 bg-[#00d9c5]/10 rounded-2xl flex items-center justify-center mb-4">
-            <Stethoscope className="h-8 w-8 text-[#00d9c5]" />
+          <div className="mx-auto w-16 h-16 rounded-2xl flex items-center justify-center mb-4 overflow-hidden">
+            <img src="/icon.svg" alt="Logo" className="w-full h-full object-contain" />
           </div>
           <h1 className="text-3xl font-bold text-foreground mb-2">Choose Your Plan</h1>
           <p className="text-muted-foreground">Get full access to all PediaOTG tools</p>
