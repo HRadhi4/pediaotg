@@ -397,6 +397,7 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
       
       kcl: (() => {
         // Harriet Lane: 0.5-1 mEq/kg, max 40 mEq/dose IV
+        // 0.5 mEq/kg over 1 hour, 1 mEq/kg over 2 hours
         const maxDoseMEq = 40;
         let doseMin = w * 0.5;
         let doseMax = w * 1;
@@ -412,48 +413,59 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
         const drugVolumeMin = doseMin / mEqPerMl;
         const drugVolumeMax = doseMax / mEqPerMl;
         
-        // Target concentration in mEq/100ml (user selectable 1-6 mEq/100ml)
-        // Convert to mEq/ml for calculations
-        const targetConcPer100ml = parseFloat(kclLineType); // 1-6 mEq/100ml
-        const targetConc = targetConcPer100ml / 100; // Convert to mEq/ml
+        // Determine target concentration based on line type
+        let targetConc, targetConcLabel, lineRecommendation;
+        if (kclLineType === "peripheral") {
+          targetConc = 0.08; // 80 mEq/L = 8 mEq/100ml
+          targetConcLabel = "80 mEq/L (Peripheral)";
+          lineRecommendation = "✅ Peripheral line safe";
+        } else if (kclLineType === "central") {
+          targetConc = 0.15; // 150 mEq/L = 15 mEq/100ml
+          targetConcLabel = "15 mEq/100ml (Central)";
+          lineRecommendation = "Central line required";
+        } else if (kclLineType === "central_restricted") {
+          targetConc = 0.2; // 200 mEq/L = 20 mEq/100ml
+          targetConcLabel = "20 mEq/100ml (Central - Fluid restricted)";
+          lineRecommendation = "Central line required";
+        } else {
+          // Custom 1-6 mEq/100ml
+          const customConc = parseFloat(kclCustomConc) || 4;
+          targetConc = customConc / 100; // Convert to mEq/ml
+          targetConcLabel = `${customConc} mEq/100ml (Custom)`;
+          lineRecommendation = customConc <= 8 ? "✅ Peripheral line safe" : "Central line required";
+        }
         
-        // Calculate minimum total volume needed for safe concentration
+        // Calculate dilution
         const minTotalVolumeMin = doseMin / targetConc;
         const minTotalVolumeMax = doseMax / targetConc;
-        
-        // Diluent needed
         const diluentMin = minTotalVolumeMin - drugVolumeMin;
         const diluentMax = minTotalVolumeMax - drugVolumeMax;
         
-        // Rate for 2 hour infusion (preferred)
-        const rate2hr = minTotalVolumeMax / 2;
-        const rate1hr = minTotalVolumeMax / 1;
-        
-        // Determine if peripheral safe (generally ≤80 mEq/L = 8 mEq/100ml)
-        const isPeripheralSafe = targetConcPer100ml <= 8;
+        // Rate: 0.5 mEq/kg over 1hr, 1 mEq/kg over 2hr
+        const rate1hr = minTotalVolumeMin; // For 0.5 mEq/kg dose
+        const rate2hr = minTotalVolumeMax / 2; // For 1 mEq/kg dose
         
         return {
           title: "💉 Potassium Chloride (KCl)",
           drugInfo: {
             concentration: kclConcentration === "15" ? "15% KCl = 2 mEq/ml" : "10% KCl = 1.34 mEq/ml",
-            targetDilution: `${targetConcPer100ml} mEq/100ml (${(targetConcPer100ml * 10).toFixed(0)} mEq/L)`,
+            targetDilution: targetConcLabel,
             maxDose: `${maxDoseMEq} mEq/dose`,
-            lineRecommendation: isPeripheralSafe ? "✅ Safe for peripheral line" : "⚠️ Central line recommended"
+            lineRecommendation: lineRecommendation
           },
           calculation: {
             dose: `${doseMin.toFixed(2)} - ${doseMax.toFixed(2)} mEq${isMaxed ? ' (MAX)' : ''}`,
-            doseFormula: `${w} kg × 0.5-1 mEq/kg${isMaxed ? ' → capped at ' + maxDoseMEq + ' mEq' : ''}`,
+            doseFormula: `0.5 mEq/kg over 1hr | 1 mEq/kg over 2hr`,
             drugVolume: `${drugVolumeMin.toFixed(2)} - ${drugVolumeMax.toFixed(2)} ml`,
-            diluent: `${diluentMin.toFixed(0)} - ${diluentMax.toFixed(0)} ml (to achieve ${targetConcPer100ml} mEq/100ml)`,
+            diluent: `${diluentMin.toFixed(0)} - ${diluentMax.toFixed(0)} ml NS`,
             totalVolume: `${minTotalVolumeMin.toFixed(0)} - ${minTotalVolumeMax.toFixed(0)} ml`,
-            duration: "1-2 hours (2 hours preferred)",
-            rate: `${rate2hr.toFixed(1)} ml/hr (2h) or ${rate1hr.toFixed(1)} ml/hr (1h)`
+            duration: "1-2 hours",
+            rate: `${rate1hr.toFixed(1)} ml/hr (1h) | ${rate2hr.toFixed(1)} ml/hr (2h)`
           },
-          preparation: `For max dose: ${drugVolumeMax.toFixed(2)} ml KCl ${kclConcentration}% + ${diluentMax.toFixed(0)} ml NS = ${minTotalVolumeMax.toFixed(0)} ml`,
-          compatible: "NS, D5W, LR (most IV solutions)",
+          preparation: `${drugVolumeMax.toFixed(2)} ml KCl ${kclConcentration}% + ${diluentMax.toFixed(0)} ml NS = ${minTotalVolumeMax.toFixed(0)} ml`,
+          compatible: "NS, D5W, LR",
           incompatible: "Amphotericin B, Diazepam, Phenytoin",
-          ...(isMaxed && { maxWarning: "⚠️ Dose capped at maximum (40 mEq)" }),
-          ...(!isPeripheralSafe && { warnings: ["⚠️ Concentration >8 mEq/100ml - Central line recommended"] })
+          ...(isMaxed && { maxWarning: "⚠️ Dose capped at maximum (40 mEq)" })
         };
       })(),
       
