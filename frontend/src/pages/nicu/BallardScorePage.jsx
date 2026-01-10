@@ -3,185 +3,270 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 
+// SVG Diagram Components for Ballard Score
+const PostureSVG = ({ score }) => {
+  const diagrams = {
+    0: <svg viewBox="0 0 60 40" className="w-full h-8"><line x1="30" y1="5" x2="30" y2="20" stroke="currentColor" strokeWidth="2"/><line x1="30" y1="20" x2="15" y2="35" stroke="currentColor" strokeWidth="2"/><line x1="30" y1="20" x2="45" y2="35" stroke="currentColor" strokeWidth="2"/><line x1="30" y1="12" x2="10" y2="20" stroke="currentColor" strokeWidth="2"/><line x1="30" y1="12" x2="50" y2="20" stroke="currentColor" strokeWidth="2"/><circle cx="30" cy="5" r="4" fill="currentColor"/></svg>,
+    1: <svg viewBox="0 0 60 40" className="w-full h-8"><line x1="30" y1="5" x2="30" y2="20" stroke="currentColor" strokeWidth="2"/><line x1="30" y1="20" x2="18" y2="32" stroke="currentColor" strokeWidth="2"/><line x1="30" y1="20" x2="42" y2="32" stroke="currentColor" strokeWidth="2"/><line x1="30" y1="12" x2="12" y2="18" stroke="currentColor" strokeWidth="2"/><line x1="30" y1="12" x2="48" y2="18" stroke="currentColor" strokeWidth="2"/><circle cx="30" cy="5" r="4" fill="currentColor"/></svg>,
+    2: <svg viewBox="0 0 60 40" className="w-full h-8"><line x1="30" y1="5" x2="30" y2="20" stroke="currentColor" strokeWidth="2"/><line x1="30" y1="20" x2="20" y2="28" stroke="currentColor" strokeWidth="2"/><line x1="30" y1="20" x2="40" y2="28" stroke="currentColor" strokeWidth="2"/><line x1="30" y1="12" x2="15" y2="15" stroke="currentColor" strokeWidth="2"/><line x1="30" y1="12" x2="45" y2="15" stroke="currentColor" strokeWidth="2"/><circle cx="30" cy="5" r="4" fill="currentColor"/></svg>,
+    3: <svg viewBox="0 0 60 40" className="w-full h-8"><line x1="30" y1="5" x2="30" y2="20" stroke="currentColor" strokeWidth="2"/><path d="M30 20 Q25 28 22 25" stroke="currentColor" strokeWidth="2" fill="none"/><path d="M30 20 Q35 28 38 25" stroke="currentColor" strokeWidth="2" fill="none"/><line x1="30" y1="12" x2="18" y2="12" stroke="currentColor" strokeWidth="2"/><line x1="30" y1="12" x2="42" y2="12" stroke="currentColor" strokeWidth="2"/><circle cx="30" cy="5" r="4" fill="currentColor"/></svg>,
+    4: <svg viewBox="0 0 60 40" className="w-full h-8"><line x1="30" y1="5" x2="30" y2="18" stroke="currentColor" strokeWidth="2"/><path d="M30 18 Q22 26 24 22" stroke="currentColor" strokeWidth="2" fill="none"/><path d="M30 18 Q38 26 36 22" stroke="currentColor" strokeWidth="2" fill="none"/><path d="M30 12 Q20 14 22 10" stroke="currentColor" strokeWidth="2" fill="none"/><path d="M30 12 Q40 14 38 10" stroke="currentColor" strokeWidth="2" fill="none"/><circle cx="30" cy="5" r="4" fill="currentColor"/></svg>,
+  };
+  return diagrams[score] || diagrams[0];
+};
+
+const SquareWindowSVG = ({ score }) => {
+  const angles = { '-1': 100, 0: 90, 1: 60, 2: 45, 3: 30, 4: 0 };
+  const angle = angles[score] ?? 90;
+  const rad = (angle * Math.PI) / 180;
+  const handY = 25 - Math.cos(rad) * 15;
+  const handX = 30 + Math.sin(rad) * 15;
+  return (
+    <svg viewBox="0 0 60 40" className="w-full h-8">
+      <line x1="30" y1="35" x2="30" y2="25" stroke="currentColor" strokeWidth="3"/>
+      <line x1="30" y1="25" x2={handX} y2={handY} stroke="currentColor" strokeWidth="2"/>
+      <text x="45" y="20" fontSize="8" fill="currentColor">{angle}°</text>
+    </svg>
+  );
+};
+
+const ArmRecoilSVG = ({ score }) => {
+  const angles = { 0: 180, 1: 140, 2: 110, 3: 90, 4: 70 };
+  const angle = angles[score] ?? 180;
+  return (
+    <svg viewBox="0 0 60 40" className="w-full h-8">
+      <line x1="30" y1="20" x2="15" y2="20" stroke="currentColor" strokeWidth="2"/>
+      <line x1="15" y1="20" x2={15 + Math.cos((180-angle/2)*Math.PI/180)*12} y2={20 - Math.sin((180-angle/2)*Math.PI/180)*12} stroke="currentColor" strokeWidth="2"/>
+      <line x1="30" y1="20" x2="45" y2="20" stroke="currentColor" strokeWidth="2"/>
+      <line x1="45" y1="20" x2={45 - Math.cos((180-angle/2)*Math.PI/180)*12} y2={20 - Math.sin((180-angle/2)*Math.PI/180)*12} stroke="currentColor" strokeWidth="2"/>
+      <circle cx="30" cy="20" r="3" fill="currentColor"/>
+    </svg>
+  );
+};
+
+const PoplitealAngleSVG = ({ score }) => {
+  const angles = { '-1': 180, 0: 160, 1: 140, 2: 120, 3: 100, 4: 90, 5: 80 };
+  const angle = angles[score] ?? 180;
+  const rad = ((180 - angle) * Math.PI) / 180;
+  return (
+    <svg viewBox="0 0 60 40" className="w-full h-8">
+      <line x1="15" y1="35" x2="30" y2="20" stroke="currentColor" strokeWidth="2"/>
+      <line x1="30" y1="20" x2={30 + Math.cos(rad)*18} y2={20 - Math.sin(rad)*18} stroke="currentColor" strokeWidth="2"/>
+      <circle cx="30" cy="20" r="2" fill="currentColor"/>
+      <text x="42" y="35" fontSize="7" fill="currentColor">{angle}°</text>
+    </svg>
+  );
+};
+
+const ScarfSignSVG = ({ score }) => {
+  const positions = { '-1': 50, 0: 42, 1: 35, 2: 30, 3: 25, 4: 18 };
+  const elbowX = positions[score] ?? 30;
+  return (
+    <svg viewBox="0 0 60 40" className="w-full h-8">
+      <ellipse cx="30" cy="22" rx="12" ry="15" stroke="currentColor" strokeWidth="1.5" fill="none"/>
+      <circle cx="30" cy="8" r="5" fill="currentColor"/>
+      <line x1="18" y1="18" x2={elbowX} y2="18" stroke="currentColor" strokeWidth="2"/>
+      <line x1="18" y1="18" x2="18" y2="30" stroke="currentColor" strokeWidth="2"/>
+      <line x1="42" y1="18" x2="42" y2="30" stroke="currentColor" strokeWidth="2"/>
+      <line x1="30" y1="8" x2="30" y2="5" stroke="currentColor" strokeWidth="1" strokeDasharray="1"/>
+    </svg>
+  );
+};
+
+const HeelToEarSVG = ({ score }) => {
+  const heelY = { '-1': 8, 0: 12, 1: 16, 2: 20, 3: 26, 4: 32 };
+  const y = heelY[score] ?? 20;
+  return (
+    <svg viewBox="0 0 60 40" className="w-full h-8">
+      <ellipse cx="30" cy="25" rx="10" ry="12" stroke="currentColor" strokeWidth="1.5" fill="none"/>
+      <circle cx="30" cy="10" r="4" fill="currentColor"/>
+      <path d={`M38 30 Q45 ${y} 35 ${y}`} stroke="currentColor" strokeWidth="2" fill="none"/>
+      <circle cx="35" cy={y} r="2" fill="currentColor"/>
+    </svg>
+  );
+};
+
+// Physical Maturity SVG Diagrams
+const SkinSVG = ({ score }) => {
+  const patterns = {
+    '-1': { opacity: 0.2, lines: 0, color: '#ef4444' },
+    0: { opacity: 0.3, lines: 0, color: '#f97316' },
+    1: { opacity: 0.5, lines: 1, color: '#fbbf24' },
+    2: { opacity: 0.6, lines: 2, color: '#84cc16' },
+    3: { opacity: 0.7, lines: 3, color: '#22c55e' },
+    4: { opacity: 0.85, lines: 4, color: '#06b6d4' },
+    5: { opacity: 1, lines: 5, color: '#6366f1' }
+  };
+  const p = patterns[score] || patterns[0];
+  return (
+    <svg viewBox="0 0 60 40" className="w-full h-8">
+      <rect x="10" y="5" width="40" height="30" rx="4" fill={p.color} fillOpacity={p.opacity} stroke="currentColor" strokeWidth="1"/>
+      {[...Array(p.lines)].map((_, i) => (
+        <line key={i} x1={15 + i*8} y1="10" x2={15 + i*8} y2="30" stroke="currentColor" strokeWidth="0.5" strokeDasharray="2"/>
+      ))}
+    </svg>
+  );
+};
+
+const LanugoSVG = ({ score }) => {
+  const density = { '-1': 0, 0: 2, 1: 6, 2: 4, 3: 2, 4: 1 };
+  const d = density[score] ?? 3;
+  return (
+    <svg viewBox="0 0 60 40" className="w-full h-8">
+      <ellipse cx="30" cy="20" rx="18" ry="14" fill="none" stroke="currentColor" strokeWidth="1.5"/>
+      {[...Array(d)].map((_, i) => (
+        <path key={i} d={`M${20 + i*6} 12 Q${22 + i*6} 8 ${24 + i*6} 12`} stroke="currentColor" strokeWidth="1" fill="none"/>
+      ))}
+    </svg>
+  );
+};
+
+const PlantarSurfaceSVG = ({ score }) => {
+  const creases = { '-1': 0, 0: 0, 1: 1, 2: 2, 3: 3, 4: 5 };
+  const c = creases[score] ?? 0;
+  return (
+    <svg viewBox="0 0 60 40" className="w-full h-8">
+      <ellipse cx="30" cy="22" rx="12" ry="16" fill="none" stroke="currentColor" strokeWidth="1.5"/>
+      <ellipse cx="30" cy="6" rx="8" ry="4" fill="none" stroke="currentColor" strokeWidth="1"/>
+      {[...Array(c)].map((_, i) => (
+        <line key={i} x1="22" y1={14 + i*5} x2="38" y2={14 + i*5} stroke="currentColor" strokeWidth="1"/>
+      ))}
+    </svg>
+  );
+};
+
+const BreastSVG = ({ score }) => {
+  const sizes = { '-1': 0, 0: 1, 1: 2, 2: 3, 3: 5, 4: 7 };
+  const s = sizes[score] ?? 2;
+  return (
+    <svg viewBox="0 0 60 40" className="w-full h-8">
+      <circle cx="30" cy="20" r="12" fill="none" stroke="currentColor" strokeWidth="1.5"/>
+      <circle cx="30" cy="20" r={s} fill="currentColor" fillOpacity="0.5"/>
+      {s > 2 && <circle cx="30" cy="20" r={s-1} fill="currentColor"/>}
+    </svg>
+  );
+};
+
+const EyeEarSVG = ({ score }) => {
+  const curves = { '-1': 0, 0: 2, 1: 4, 2: 6, 3: 8, 4: 10 };
+  const c = curves[score] ?? 4;
+  return (
+    <svg viewBox="0 0 60 40" className="w-full h-8">
+      <path d={`M25 10 Q${15+c} 20 25 30 Q${35-c/2} 20 25 10`} fill="none" stroke="currentColor" strokeWidth="1.5"/>
+      <circle cx="40" cy="20" rx="8" ry="6" fill="none" stroke="currentColor" strokeWidth="1.5"/>
+      {score >= 0 && <circle cx="40" cy="20" r="3" fill="currentColor"/>}
+    </svg>
+  );
+};
+
+const GenitalsSVG = ({ score }) => {
+  const levels = { '-1': 1, 0: 2, 1: 3, 2: 4, 3: 5, 4: 6 };
+  const l = levels[score] ?? 3;
+  return (
+    <svg viewBox="0 0 60 40" className="w-full h-8">
+      <rect x="20" y="30" width="20" height="4" fill="currentColor" fillOpacity="0.3"/>
+      {[...Array(l)].map((_, i) => (
+        <rect key={i} x={25 - i*2} y={28 - i*4} width={10 + i*4} height="3" rx="1" fill="currentColor" fillOpacity={0.2 + i*0.12}/>
+      ))}
+    </svg>
+  );
+};
+
 const BallardScorePage = () => {
   const [neuromuscularScores, setNeuromuscularScores] = useState({
-    posture: -1,
-    squareWindow: -1,
-    armRecoil: -1,
-    poplitealAngle: -1,
-    scarfSign: -1,
-    heelToEar: -1
+    posture: -1, squareWindow: -1, armRecoil: -1,
+    poplitealAngle: -1, scarfSign: -1, heelToEar: -1
   });
   
   const [physicalScores, setPhysicalScores] = useState({
-    skin: -1,
-    lanugo: -1,
-    plantarSurface: -1,
-    breast: -1,
-    eyeEar: -1,
-    genitals: -1
+    skin: -1, lanugo: -1, plantarSurface: -1,
+    breast: -1, eyeEar: -1, genitals: -1
   });
 
-  // Neuromuscular maturity criteria with visual descriptions
+  const renderNeuromuscularDiagram = (criterionName, score) => {
+    switch(criterionName) {
+      case 'posture': return <PostureSVG score={score} />;
+      case 'squareWindow': return <SquareWindowSVG score={score} />;
+      case 'armRecoil': return <ArmRecoilSVG score={score} />;
+      case 'poplitealAngle': return <PoplitealAngleSVG score={score} />;
+      case 'scarfSign': return <ScarfSignSVG score={score} />;
+      case 'heelToEar': return <HeelToEarSVG score={score} />;
+      default: return null;
+    }
+  };
+
+  const renderPhysicalDiagram = (criterionName, score) => {
+    switch(criterionName) {
+      case 'skin': return <SkinSVG score={score} />;
+      case 'lanugo': return <LanugoSVG score={score} />;
+      case 'plantarSurface': return <PlantarSurfaceSVG score={score} />;
+      case 'breast': return <BreastSVG score={score} />;
+      case 'eyeEar': return <EyeEarSVG score={score} />;
+      case 'genitals': return <GenitalsSVG score={score} />;
+      default: return null;
+    }
+  };
+
   const neuromuscularCriteria = [
-    {
-      name: "posture",
-      label: "Posture",
-      options: [
-        { score: -1, desc: "Arms & legs extended", visual: "Fully extended" },
-        { score: 0, desc: "Slight flexion of hips & knees", visual: "Slight flex" },
-        { score: 1, desc: "Moderate flexion of hips & knees", visual: "Moderate" },
-        { score: 2, desc: "Legs flexed, arms extended", visual: "Legs flexed" },
-        { score: 3, desc: "Full flexion of arms & legs", visual: "Full flexion" },
-        { score: 4, desc: "Hypertonic flexion", visual: "Hypertonic" }
-      ]
-    },
-    {
-      name: "squareWindow",
-      label: "Square Window (Wrist)",
-      options: [
-        { score: -1, desc: ">90°", visual: ">90°" },
-        { score: 0, desc: "90°", visual: "90°" },
-        { score: 1, desc: "60°", visual: "60°" },
-        { score: 2, desc: "45°", visual: "45°" },
-        { score: 3, desc: "30°", visual: "30°" },
-        { score: 4, desc: "0°", visual: "0°" }
-      ]
-    },
-    {
-      name: "armRecoil",
-      label: "Arm Recoil",
-      options: [
-        { score: -1, desc: "No recoil (180°)", visual: "180°" },
-        { score: 0, desc: "Slow recoil (140-180°)", visual: "140-180°" },
-        { score: 1, desc: "Slow recoil (110-140°)", visual: "110-140°" },
-        { score: 2, desc: "Rapid recoil (90-110°)", visual: "90-110°" },
-        { score: 3, desc: "Brisk recoil (<90°)", visual: "<90°" },
-        { score: 4, desc: "Very brisk recoil", visual: "Very brisk" }
-      ]
-    },
-    {
-      name: "poplitealAngle",
-      label: "Popliteal Angle",
-      options: [
-        { score: -1, desc: "180°", visual: "180°" },
-        { score: 0, desc: "160°", visual: "160°" },
-        { score: 1, desc: "140°", visual: "140°" },
-        { score: 2, desc: "120°", visual: "120°" },
-        { score: 3, desc: "100°", visual: "100°" },
-        { score: 4, desc: "90°", visual: "90°" },
-        { score: 5, desc: "<90°", visual: "<90°" }
-      ]
-    },
-    {
-      name: "scarfSign",
-      label: "Scarf Sign",
-      options: [
-        { score: -1, desc: "Elbow past opposite axillary line", visual: "Past axilla" },
-        { score: 0, desc: "Elbow at opposite axillary line", visual: "At axilla" },
-        { score: 1, desc: "Elbow between midline & axilla", visual: "Mid-axilla" },
-        { score: 2, desc: "Elbow at midline", visual: "Midline" },
-        { score: 3, desc: "Elbow does not reach midline", visual: "Not midline" },
-        { score: 4, desc: "Elbow at ipsilateral axilla", visual: "Same axilla" }
-      ]
-    },
-    {
-      name: "heelToEar",
-      label: "Heel to Ear",
-      options: [
-        { score: -1, desc: "Heel touches ear easily", visual: "Easy touch" },
-        { score: 0, desc: "Heel almost touches ear", visual: "Almost" },
-        { score: 1, desc: "Heel approaches ear", visual: "Approaches" },
-        { score: 2, desc: "Heel at nose level", visual: "Nose level" },
-        { score: 3, desc: "Heel at chin level", visual: "Chin level" },
-        { score: 4, desc: "Heel at chest level", visual: "Chest level" }
-      ]
-    }
+    { name: "posture", label: "Posture", options: [
+      { score: 0, desc: "Arms & legs extended" }, { score: 1, desc: "Slight flexion" },
+      { score: 2, desc: "Moderate flexion" }, { score: 3, desc: "Legs flexed, arms extended" },
+      { score: 4, desc: "Full flexion" }
+    ]},
+    { name: "squareWindow", label: "Square Window (Wrist)", options: [
+      { score: -1, desc: ">90°" }, { score: 0, desc: "90°" }, { score: 1, desc: "60°" },
+      { score: 2, desc: "45°" }, { score: 3, desc: "30°" }, { score: 4, desc: "0°" }
+    ]},
+    { name: "armRecoil", label: "Arm Recoil", options: [
+      { score: 0, desc: "180°" }, { score: 1, desc: "140-180°" }, { score: 2, desc: "110-140°" },
+      { score: 3, desc: "90-110°" }, { score: 4, desc: "<90°" }
+    ]},
+    { name: "poplitealAngle", label: "Popliteal Angle", options: [
+      { score: -1, desc: "180°" }, { score: 0, desc: "160°" }, { score: 1, desc: "140°" },
+      { score: 2, desc: "120°" }, { score: 3, desc: "100°" }, { score: 4, desc: "90°" }, { score: 5, desc: "<90°" }
+    ]},
+    { name: "scarfSign", label: "Scarf Sign", options: [
+      { score: -1, desc: "Past axilla" }, { score: 0, desc: "At axilla" }, { score: 1, desc: "Mid-axilla" },
+      { score: 2, desc: "Midline" }, { score: 3, desc: "Not midline" }, { score: 4, desc: "Same side" }
+    ]},
+    { name: "heelToEar", label: "Heel to Ear", options: [
+      { score: -1, desc: "Touches ear" }, { score: 0, desc: "Near ear" }, { score: 1, desc: "Approaches" },
+      { score: 2, desc: "Nose level" }, { score: 3, desc: "Chin level" }, { score: 4, desc: "Chest level" }
+    ]}
   ];
 
-  // Physical maturity criteria
   const physicalCriteria = [
-    {
-      name: "skin",
-      label: "Skin",
-      options: [
-        { score: -1, desc: "Sticky, friable, transparent", visual: "Sticky" },
-        { score: 0, desc: "Gelatinous, red, translucent", visual: "Gelatinous" },
-        { score: 1, desc: "Smooth, pink, visible veins", visual: "Smooth pink" },
-        { score: 2, desc: "Superficial peeling, few veins", visual: "Peeling" },
-        { score: 3, desc: "Cracking, pale areas, rare veins", visual: "Cracking" },
-        { score: 4, desc: "Parchment, deep cracking", visual: "Parchment" },
-        { score: 5, desc: "Leathery, cracked, wrinkled", visual: "Leathery" }
-      ]
-    },
-    {
-      name: "lanugo",
-      label: "Lanugo",
-      options: [
-        { score: -1, desc: "None", visual: "None" },
-        { score: 0, desc: "Sparse", visual: "Sparse" },
-        { score: 1, desc: "Abundant", visual: "Abundant" },
-        { score: 2, desc: "Thinning", visual: "Thinning" },
-        { score: 3, desc: "Bald areas", visual: "Bald areas" },
-        { score: 4, desc: "Mostly bald", visual: "Mostly bald" }
-      ]
-    },
-    {
-      name: "plantarSurface",
-      label: "Plantar Surface",
-      options: [
-        { score: -1, desc: "Heel-toe <40mm, no crease", visual: "<40mm" },
-        { score: 0, desc: "Heel-toe 40-50mm, no crease", visual: "40-50mm" },
-        { score: 1, desc: "Faint red marks", visual: "Faint marks" },
-        { score: 2, desc: "Anterior transverse crease", visual: "Ant. crease" },
-        { score: 3, desc: "Creases on anterior 2/3", visual: "2/3 creases" },
-        { score: 4, desc: "Creases over entire sole", visual: "Full creases" }
-      ]
-    },
-    {
-      name: "breast",
-      label: "Breast",
-      options: [
-        { score: -1, desc: "Imperceptible", visual: "Imperceptible" },
-        { score: 0, desc: "Barely perceptible", visual: "Barely" },
-        { score: 1, desc: "Flat areola, no bud", visual: "Flat, no bud" },
-        { score: 2, desc: "Stippled areola, 1-2mm bud", visual: "1-2mm bud" },
-        { score: 3, desc: "Raised areola, 3-4mm bud", visual: "3-4mm bud" },
-        { score: 4, desc: "Full areola, 5-10mm bud", visual: "5-10mm bud" }
-      ]
-    },
-    {
-      name: "eyeEar",
-      label: "Eye/Ear",
-      options: [
-        { score: -1, desc: "Lids fused loosely (-1) or tightly (-2)", visual: "Fused" },
-        { score: 0, desc: "Lids open, pinna flat, stays folded", visual: "Flat pinna" },
-        { score: 1, desc: "Slightly curved pinna, slow recoil", visual: "Slow recoil" },
-        { score: 2, desc: "Well-curved pinna, soft, ready recoil", visual: "Ready recoil" },
-        { score: 3, desc: "Formed & firm, instant recoil", visual: "Instant recoil" },
-        { score: 4, desc: "Thick cartilage, ear stiff", visual: "Stiff" }
-      ]
-    },
-    {
-      name: "genitals",
-      label: "Genitals (Male/Female)",
-      options: [
-        { score: -1, desc: "♂ Scrotum flat | ♀ Clitoris prominent", visual: "Immature" },
-        { score: 0, desc: "♂ Scrotum empty | ♀ Labia flat", visual: "Very premature" },
-        { score: 1, desc: "♂ Testes in upper canal | ♀ Prominent clitoris", visual: "Premature" },
-        { score: 2, desc: "♂ Testes descending | ♀ Enlarging minora", visual: "Moderate" },
-        { score: 3, desc: "♂ Testes down, good rugae | ♀ Majora & minora equal", visual: "Near term" },
-        { score: 4, desc: "♂ Testes pendulous | ♀ Majora cover clitoris", visual: "Term" }
-      ]
-    }
+    { name: "skin", label: "Skin", options: [
+      { score: -1, desc: "Sticky, transparent" }, { score: 0, desc: "Gelatinous, red" },
+      { score: 1, desc: "Smooth, pink" }, { score: 2, desc: "Peeling, few veins" },
+      { score: 3, desc: "Cracking, pale" }, { score: 4, desc: "Parchment" }, { score: 5, desc: "Leathery" }
+    ]},
+    { name: "lanugo", label: "Lanugo", options: [
+      { score: -1, desc: "None" }, { score: 0, desc: "Sparse" }, { score: 1, desc: "Abundant" },
+      { score: 2, desc: "Thinning" }, { score: 3, desc: "Bald areas" }, { score: 4, desc: "Mostly bald" }
+    ]},
+    { name: "plantarSurface", label: "Plantar Surface", options: [
+      { score: -1, desc: "<40mm" }, { score: 0, desc: "40-50mm, no crease" }, { score: 1, desc: "Faint marks" },
+      { score: 2, desc: "Ant. crease" }, { score: 3, desc: "2/3 creases" }, { score: 4, desc: "Full creases" }
+    ]},
+    { name: "breast", label: "Breast", options: [
+      { score: -1, desc: "Imperceptible" }, { score: 0, desc: "Barely visible" }, { score: 1, desc: "Flat, no bud" },
+      { score: 2, desc: "1-2mm bud" }, { score: 3, desc: "3-4mm bud" }, { score: 4, desc: "5-10mm bud" }
+    ]},
+    { name: "eyeEar", label: "Eye/Ear", options: [
+      { score: -1, desc: "Lids fused" }, { score: 0, desc: "Flat pinna" }, { score: 1, desc: "Slow recoil" },
+      { score: 2, desc: "Ready recoil" }, { score: 3, desc: "Instant recoil" }, { score: 4, desc: "Stiff cartilage" }
+    ]},
+    { name: "genitals", label: "Genitals", options: [
+      { score: -1, desc: "Flat/Prominent" }, { score: 0, desc: "Empty/Labia flat" }, { score: 1, desc: "Upper canal" },
+      { score: 2, desc: "Descending" }, { score: 3, desc: "Down/Equal" }, { score: 4, desc: "Pendulous/Covered" }
+    ]}
   ];
 
-  // Calculate total score
   const totalNeuromuscular = Object.values(neuromuscularScores).reduce((sum, val) => sum + (val >= 0 ? val : 0), 0);
   const totalPhysical = Object.values(physicalScores).reduce((sum, val) => sum + (val >= 0 ? val : 0), 0);
   const totalScore = totalNeuromuscular + totalPhysical;
 
-  // Gestational age calculation based on Ballard score
   const getGestationalAge = (score) => {
     if (score <= -10) return { weeks: 20, interpretation: "Extremely premature" };
     if (score <= -5) return { weeks: 22, interpretation: "Extremely premature" };
@@ -201,19 +286,12 @@ const BallardScorePage = () => {
   const gestationalAge = getGestationalAge(totalScore);
 
   const resetScores = () => {
-    setNeuromuscularScores({
-      posture: -1, squareWindow: -1, armRecoil: -1,
-      poplitealAngle: -1, scarfSign: -1, heelToEar: -1
-    });
-    setPhysicalScores({
-      skin: -1, lanugo: -1, plantarSurface: -1,
-      breast: -1, eyeEar: -1, genitals: -1
-    });
+    setNeuromuscularScores({ posture: -1, squareWindow: -1, armRecoil: -1, poplitealAngle: -1, scarfSign: -1, heelToEar: -1 });
+    setPhysicalScores({ skin: -1, lanugo: -1, plantarSurface: -1, breast: -1, eyeEar: -1, genitals: -1 });
   };
 
   return (
     <div className="space-y-4 pt-4">
-      {/* Instructions */}
       <Card className="rounded-2xl border-amber-200 bg-amber-50 dark:bg-amber-950/20">
         <CardContent className="p-4">
           <h3 className="font-semibold text-amber-700 dark:text-amber-400 mb-2">How to Use</h3>
@@ -223,7 +301,6 @@ const BallardScorePage = () => {
         </CardContent>
       </Card>
 
-      {/* Neuromuscular Maturity */}
       <Card className="rounded-2xl">
         <CardHeader className="pb-2">
           <CardTitle className="text-base flex items-center gap-2">
@@ -235,19 +312,22 @@ const BallardScorePage = () => {
           {neuromuscularCriteria.map(criterion => (
             <div key={criterion.name} className="space-y-2">
               <Label className="text-sm font-medium">{criterion.label}</Label>
-              <div className="grid grid-cols-3 sm:grid-cols-6 gap-1">
+              <div className="flex gap-1.5 overflow-x-auto pb-2">
                 {criterion.options.map(opt => (
                   <button
                     key={opt.score}
                     onClick={() => setNeuromuscularScores(prev => ({ ...prev, [criterion.name]: opt.score }))}
-                    className={`p-2 rounded-lg text-xs text-center transition-all ${
+                    className={`flex-shrink-0 w-[80px] p-1.5 rounded-lg text-center transition-all border ${
                       neuromuscularScores[criterion.name] === opt.score
-                        ? 'bg-amber-500 text-white ring-2 ring-amber-300'
-                        : 'bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700'
+                        ? 'bg-amber-500 text-white border-amber-600 ring-2 ring-amber-300'
+                        : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:border-amber-300'
                     }`}
                   >
-                    <div className="font-bold">{opt.score}</div>
-                    <div className="text-[10px] leading-tight mt-1">{opt.visual}</div>
+                    <div className="h-9 flex items-center justify-center text-current">
+                      {renderNeuromuscularDiagram(criterion.name, opt.score)}
+                    </div>
+                    <div className="font-bold text-xs">{opt.score}</div>
+                    <div className="text-[8px] leading-tight text-muted-foreground mt-0.5 min-h-[24px] flex items-center justify-center px-0.5">{opt.desc}</div>
                   </button>
                 ))}
               </div>
@@ -256,7 +336,6 @@ const BallardScorePage = () => {
         </CardContent>
       </Card>
 
-      {/* Physical Maturity */}
       <Card className="rounded-2xl">
         <CardHeader className="pb-2">
           <CardTitle className="text-base flex items-center gap-2">
@@ -268,19 +347,22 @@ const BallardScorePage = () => {
           {physicalCriteria.map(criterion => (
             <div key={criterion.name} className="space-y-2">
               <Label className="text-sm font-medium">{criterion.label}</Label>
-              <div className="grid grid-cols-3 sm:grid-cols-6 gap-1">
+              <div className="flex gap-1.5 overflow-x-auto pb-2">
                 {criterion.options.map(opt => (
                   <button
                     key={opt.score}
                     onClick={() => setPhysicalScores(prev => ({ ...prev, [criterion.name]: opt.score }))}
-                    className={`p-2 rounded-lg text-xs text-center transition-all ${
+                    className={`flex-shrink-0 w-[80px] p-1.5 rounded-lg text-center transition-all border ${
                       physicalScores[criterion.name] === opt.score
-                        ? 'bg-[#00d9c5] text-white ring-2 ring-[#00d9c5]/50'
-                        : 'bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700'
+                        ? 'bg-[#00d9c5] text-white border-[#00b8a6] ring-2 ring-[#00d9c5]/50'
+                        : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:border-[#00d9c5]'
                     }`}
                   >
-                    <div className="font-bold">{opt.score}</div>
-                    <div className="text-[10px] leading-tight mt-1">{opt.visual}</div>
+                    <div className="h-9 flex items-center justify-center text-current">
+                      {renderPhysicalDiagram(criterion.name, opt.score)}
+                    </div>
+                    <div className="font-bold text-xs">{opt.score}</div>
+                    <div className="text-[8px] leading-tight text-muted-foreground mt-0.5 min-h-[24px] flex items-center justify-center px-0.5">{opt.desc}</div>
                   </button>
                 ))}
               </div>
@@ -289,7 +371,6 @@ const BallardScorePage = () => {
         </CardContent>
       </Card>
 
-      {/* Results */}
       <Card className="rounded-2xl border-2 border-[#00d9c5] bg-gradient-to-br from-[#00d9c5]/10 to-transparent">
         <CardHeader className="pb-2">
           <CardTitle className="text-base">Results</CardTitle>
@@ -327,13 +408,10 @@ const BallardScorePage = () => {
             </div>
           </div>
 
-          <Button onClick={resetScores} variant="outline" className="w-full">
-            Reset All Scores
-          </Button>
+          <Button onClick={resetScores} variant="outline" className="w-full">Reset All Scores</Button>
         </CardContent>
       </Card>
 
-      {/* Reference Table */}
       <Card className="rounded-2xl">
         <CardHeader className="pb-2">
           <CardTitle className="text-base">Score to Gestational Age Reference</CardTitle>
