@@ -592,6 +592,7 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
       
       addiphos: (() => {
         // Harriet Lane: 0.5-1.5 mmol/kg/day, max 15 mmol/dose
+        // Peripheral: 0.05 mmol/ml, Central: 0.12 mmol/ml
         const maxDose = 15; // mmol
         let doseMin = w * 0.5;
         let doseMax = w * 1.5;
@@ -603,24 +604,36 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
           isMaxed = true;
         }
         
-        const volumeMin = doseMin / 2; // 1ml = 2mmol
+        const volumeMin = doseMin / 2; // 1ml = 2mmol (stock concentration)
         const volumeMax = doseMax / 2;
+        
+        // Target concentration based on line type
+        const targetConc = addiphosLineType === "peripheral" ? 0.05 : 0.12; // mmol/ml
+        const targetConcLabel = addiphosLineType === "peripheral" ? "0.05 mmol/ml (peripheral)" : "0.12 mmol/ml (central)";
+        
+        // Calculate dilution needed
+        const totalVolumeMin = doseMin / targetConc;
+        const totalVolumeMax = doseMax / targetConc;
+        const diluentMin = totalVolumeMin - volumeMin;
+        const diluentMax = totalVolumeMax - volumeMax;
         
         return {
           title: "💉 Addiphos (Phosphate)",
           drugInfo: {
             concentration: "1 ml = 2 mmol phosphate",
-            maxConcentration: "Peripheral: 0.05 mmol/ml | Central: 0.12 mmol/ml",
+            targetDilution: targetConcLabel,
             maxDose: `${maxDose} mmol/dose`
           },
           calculation: {
             dose: `${doseMin.toFixed(1)} - ${doseMax.toFixed(1)} mmol/day${isMaxed ? ' (MAX)' : ''}`,
             doseFormula: `${w} kg × 0.5-1.5 mmol/kg/day${isMaxed ? ' → capped at ' + maxDose + ' mmol' : ''}`,
-            drugVolume: `${volumeMin.toFixed(2)} - ${volumeMax.toFixed(2)} ml/day`,
+            drugVolume: `${volumeMin.toFixed(2)} - ${volumeMax.toFixed(2)} ml`,
+            diluent: `${diluentMin.toFixed(0)} - ${diluentMax.toFixed(0)} ml (to achieve ${targetConcLabel})`,
+            totalVolume: `${totalVolumeMin.toFixed(0)} - ${totalVolumeMax.toFixed(0)} ml`,
             duration: "4-6 hours (slow infusion)",
             rate: "Divide into 2-4 doses per day"
           },
-          preparation: `For peripheral: dilute to 0.05 mmol/ml minimum`,
+          preparation: `For max dose: ${volumeMax.toFixed(2)} ml Addiphos + ${diluentMax.toFixed(0)} ml NS = ${totalVolumeMax.toFixed(0)} ml`,
           compatible: "Most IV fluids",
           incompatible: "Calcium salts (precipitation risk)",
           ...(isMaxed && { maxWarning: "⚠️ Dose capped at maximum (15 mmol)" })
