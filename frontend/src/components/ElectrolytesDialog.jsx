@@ -127,20 +127,50 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
     const w = parseFloat(weight);
     if (!w) return;
     
-    const ivMax = 6;
-    const poMin = w * 0.5;
-    const poMax = Math.min(w * 1, 20);
-    const bolusMin = w * 0.5;
-    const bolusMax = w * 1;
+    // Harriet Lane: KCl 0.5-1 mEq/kg/dose, max 40 mEq/dose for IV, max 20 mEq/dose for PO
+    const ivMaxDose = 40; // mEq
+    const poMaxDose = 20; // mEq
+    
+    let bolusMin = w * 0.5;
+    let bolusMax = w * 1;
+    let poMin = w * 0.5;
+    let poMax = w * 1;
+    let ivIsMaxed = false;
+    let poIsMaxed = false;
+    
+    if (bolusMax > ivMaxDose) {
+      bolusMax = ivMaxDose;
+      bolusMin = Math.min(bolusMin, ivMaxDose);
+      ivIsMaxed = true;
+    }
+    
+    if (poMax > poMaxDose) {
+      poMax = poMaxDose;
+      poMin = Math.min(poMin, poMaxDose);
+      poIsMaxed = true;
+    }
     
     setResults({
       title: "Potassium (Hypokalemia)",
       sections: [
-        { subtitle: "IV", value: `Max ${ivMax} mEq` },
-        { subtitle: "PO (KCl)", value: `${poMin.toFixed(1)} - ${poMax.toFixed(1)} mEq`, detail: "0.5-1 mEq/kg, Max 20 mEq. Can be given BD" },
-        { subtitle: "Bolus", value: `${bolusMin.toFixed(1)} - ${bolusMax.toFixed(1)} mEq`, detail: "0.5-1 mEq/kg over 1-2 hours" }
+        { 
+          subtitle: "IV Bolus", 
+          value: `${bolusMin.toFixed(1)} - ${bolusMax.toFixed(1)} mEq`, 
+          detail: `0.5-1 mEq/kg over 1-2 hours${ivIsMaxed ? ' (MAX REACHED)' : ''}` 
+        },
+        { 
+          subtitle: "PO (KCl)", 
+          value: `${poMin.toFixed(1)} - ${poMax.toFixed(1)} mEq`, 
+          detail: `0.5-1 mEq/kg, can be given BD${poIsMaxed ? ' (MAX REACHED)' : ''}` 
+        }
       ],
-      notes: ["NICU: For every 25 ml D10%, give 1 mEq KCl"]
+      notes: [
+        `IV max: ${ivMaxDose} mEq/dose`,
+        `PO max: ${poMaxDose} mEq/dose`,
+        "NICU: For every 25 ml D10%, give 1 mEq KCl",
+        "Monitor ECG if giving >0.5 mEq/kg/hr"
+      ],
+      ...((ivIsMaxed || poIsMaxed) && { warnings: ["⚠️ Dose capped at maximum per Harriet Lane"] })
     });
   };
 
