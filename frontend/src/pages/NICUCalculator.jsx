@@ -4067,8 +4067,11 @@ const BallardScorePage = () => {
                         : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:border-[#00d9c5]'
                     }`}
                   >
-                    <div className="font-bold text-sm">{opt.score}</div>
-                    <div className="text-[9px] leading-tight mt-1">{opt.desc}</div>
+                    <div className="h-10 flex items-center justify-center text-current">
+                      {renderPhysicalDiagram(criterion.name, opt.score)}
+                    </div>
+                    <div className="font-bold text-sm mt-1">{opt.score}</div>
+                    <div className="text-[9px] leading-tight text-muted-foreground">{opt.desc}</div>
                   </button>
                 ))}
               </div>
