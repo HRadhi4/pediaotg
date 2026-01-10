@@ -977,12 +977,7 @@ const FluidCalculatorPage = () => {
   );
 };
 
-// PRBC Transfusion Calculator Page - Based on Neonatal Guidelines
-const PRBCGuidelinePage = () => {
-  const [weight, setWeight] = useState("");
-  const [age, setAge] = useState("");
-  const [ga, setGa] = useState("");
-  const [hb, setHb] = useState("");
+// Growth Chart Page - CDC/WHO Charts for Weight, Height, Head Circumference
   const [hct, setHct] = useState("");
   const [hasRespSupport, setHasRespSupport] = useState(false);
   const [result, setResult] = useState(null);
