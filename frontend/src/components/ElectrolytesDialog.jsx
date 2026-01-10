@@ -486,8 +486,18 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
       })(),
       
       sodaBicarb: (() => {
-        const doseMin = w * 1;
-        const doseMax = w * 2;
+        // Harriet Lane: 1-2 mEq/kg, max 50 mEq/dose (neonates), 100 mEq/dose (children)
+        const maxDoseMEq = 50; // Using conservative neonatal max
+        let doseMin = w * 1;
+        let doseMax = w * 2;
+        let isMaxed = false;
+        
+        if (doseMax > maxDoseMEq) {
+          doseMax = maxDoseMEq;
+          doseMin = Math.min(doseMin, maxDoseMEq);
+          isMaxed = true;
+        }
+        
         const drugVolumeMin = doseMin; // 8.4% = 1mEq/ml
         const drugVolumeMax = doseMax;
         const diluentMin = drugVolumeMin; // 1:1 dilution
@@ -501,11 +511,12 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
           title: "💉 Sodium Bicarbonate 8.4%",
           drugInfo: {
             concentration: "1 mEq/ml",
-            targetDilution: "0.5 mEq/ml (1:1 dilution)"
+            targetDilution: "0.5 mEq/ml (1:1 dilution)",
+            maxDose: `${maxDoseMEq} mEq/dose (neonates), 100 mEq (older children)`
           },
           calculation: {
-            dose: `${doseMin.toFixed(1)} - ${doseMax.toFixed(1)} mEq`,
-            doseFormula: `${w} kg × 1-2 mEq/kg`,
+            dose: `${doseMin.toFixed(1)} - ${doseMax.toFixed(1)} mEq${isMaxed ? ' (MAX)' : ''}`,
+            doseFormula: `${w} kg × 1-2 mEq/kg${isMaxed ? ' → capped at ' + maxDoseMEq + ' mEq' : ''}`,
             drugVolume: `${drugVolumeMin.toFixed(1)} - ${drugVolumeMax.toFixed(1)} ml`,
             diluent: `${diluentMin.toFixed(1)} - ${diluentMax.toFixed(1)} ml (equal volume)`,
             totalVolume: `${totalVolumeMin.toFixed(1)} - ${totalVolumeMax.toFixed(1)} ml`,
@@ -514,7 +525,8 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
           },
           preparation: `Draw ${drugVolumeMax.toFixed(1)} ml NaHCO3 + ${diluentMax.toFixed(1)} ml NS = ${totalVolumeMax.toFixed(1)} ml`,
           compatible: "NS, D5W, D10W",
-          incompatible: "Amiodarone, Calcium salts, Dobutamine, Dopamine, Epinephrine, Norepinephrine, Magnesium sulfate, Midazolam, Phenytoin"
+          incompatible: "Amiodarone, Calcium salts, Dobutamine, Dopamine, Epinephrine, Norepinephrine, Magnesium sulfate, Midazolam, Phenytoin",
+          ...(isMaxed && { maxWarning: "⚠️ Dose capped at maximum (50 mEq)" })
         };
       })(),
       
