@@ -1485,8 +1485,8 @@ const DrugsPage = ({ onBack }) => {
     drug.indication.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Calculate dose helper
-  const calculateDose = (doseStr, weight) => {
+  // Calculate dose helper with maximum dose limits (Harriet Lane)
+  const calculateDose = (doseStr, weight, maxDose = null, maxUnit = "mg") => {
     if (!weight || !doseStr) return null;
     if (doseStr.includes("See age")) return doseStr;
     const parts = doseStr.split("-");
@@ -1495,14 +1495,83 @@ const DrugsPage = ({ onBack }) => {
     
     if (isNaN(min)) return null;
     
+    let calculatedMin = min * weight;
+    let calculatedMax = max * weight;
+    let unit = "mg";
+    let isExceedingMax = false;
+    let maxDisplay = null;
+    
     if (doseStr.includes("mcg")) {
-      return `${(min * weight).toFixed(1)}${max !== min ? ` - ${(max * weight).toFixed(1)}` : ''} mcg`;
+      unit = "mcg";
+      // For mcg, maxDose would be in mcg
+      if (maxDose) {
+        if (calculatedMax > maxDose) {
+          isExceedingMax = true;
+          maxDisplay = `${maxDose} ${unit}`;
+          calculatedMax = maxDose;
+          calculatedMin = Math.min(calculatedMin, maxDose);
+        }
+      }
+      return {
+        dose: `${calculatedMin.toFixed(1)}${calculatedMax !== calculatedMin ? ` - ${calculatedMax.toFixed(1)}` : ''} ${unit}`,
+        isExceedingMax,
+        maxDisplay
+      };
     }
+    
     if (doseStr.includes("units")) {
       const multiplier = doseStr.includes("50000") || doseStr.includes("75000") ? 1000 : 1;
-      return `${((min * weight) / multiplier).toFixed(0)}K${max !== min ? ` - ${((max * weight) / multiplier).toFixed(0)}K` : ''} units`;
+      calculatedMin = (min * weight) / multiplier;
+      calculatedMax = (max * weight) / multiplier;
+      unit = "K units";
+      return {
+        dose: `${calculatedMin.toFixed(0)}${calculatedMax !== calculatedMin ? ` - ${calculatedMax.toFixed(0)}` : ''} ${unit}`,
+        isExceedingMax: false,
+        maxDisplay: null
+      };
     }
-    return `${(min * weight).toFixed(1)}${max !== min ? ` - ${(max * weight).toFixed(1)}` : ''} mg`;
+    
+    // Standard mg calculation with max dose check
+    if (maxDose) {
+      if (calculatedMax > maxDose) {
+        isExceedingMax = true;
+        maxDisplay = `${maxDose} ${maxUnit}`;
+        calculatedMax = maxDose;
+        calculatedMin = Math.min(calculatedMin, maxDose);
+      }
+    }
+    
+    return {
+      dose: `${calculatedMin.toFixed(1)}${calculatedMax !== calculatedMin ? ` - ${calculatedMax.toFixed(1)}` : ''} ${unit}`,
+      isExceedingMax,
+      maxDisplay
+    };
+  };
+
+  // Parse max dose string from drug data (e.g., "800 mg PO, 20 mg/kg IV" -> extract first number)
+  const parseMaxDose = (maxStr, route = null) => {
+    if (!maxStr || maxStr === "See protocol") return null;
+    
+    // Try to extract numeric max dose
+    // Common formats: "800 mg", "3 g/day", "1.5 g/day", "6 mg first"
+    const patterns = [
+      /(\d+(?:\.\d+)?)\s*g\/day/i,  // "3 g/day" -> 3000 mg
+      /(\d+(?:\.\d+)?)\s*g(?!\/)(?!r)/i,  // "3 g" -> 3000 mg (not g/day, not gr)
+      /(\d+(?:\.\d+)?)\s*mg/i,  // "800 mg"
+      /(\d+(?:\.\d+)?)\s*mcg/i,  // mcg doses
+    ];
+    
+    for (const pattern of patterns) {
+      const match = maxStr.match(pattern);
+      if (match) {
+        let value = parseFloat(match[1]);
+        if (maxStr.toLowerCase().includes('g/day') || (maxStr.toLowerCase().includes('g') && !maxStr.toLowerCase().includes('mg') && !maxStr.toLowerCase().includes('mcg'))) {
+          value = value * 1000; // Convert g to mg
+        }
+        return value;
+      }
+    }
+    return null;
   };
 
   // GFR category colors
