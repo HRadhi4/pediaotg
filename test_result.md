@@ -216,3 +216,80 @@ Both fixes requested in the review are working correctly:
 **Minor Issues**: Browser stability during extended testing prevented complete verification of PayPal pricing display, but core functionality is confirmed working.
 
 **Recommendation**: Both features are ready for production use. The PayPal integration and Combined Dextrose calculator are functioning as specified in the review request.
+
+---
+
+## MAXIMUM DOSE LIMITS TESTING RESULTS - PARTIAL ❌
+
+### Test Execution Summary (January 10, 2026)
+**Status: INCOMPLETE - TECHNICAL ISSUES PREVENTED FULL VERIFICATION**
+
+### DETAILED FRONTEND TEST RESULTS:
+
+#### 1. Basic Navigation and Login - ✅ VERIFIED
+**Login Functionality:**
+- ✅ Successfully logged in with Admin@pediaotg.com / SMC159951
+- ✅ Medical disclaimer acceptance working
+- ✅ Navigation to main dashboard successful
+
+**Drugs Page Access:**
+- ✅ Successfully navigated to /children/drugs page
+- ✅ Drugs list displays correctly showing Amoxicillin and other medications
+- ✅ Weight input field present and functional
+- ✅ Search functionality present for drug lookup
+
+#### 2. Maximum Dose Limits Implementation - ❌ NOT FULLY TESTED
+**Drugs Page Testing (Amoxicillin with 100kg patient):**
+- ⚠️ INCOMPLETE: Unable to complete full test due to Playwright script technical issues
+- ✅ Weight input accepts 100kg value
+- ✅ Amoxicillin search and selection works
+- ❌ UNVERIFIED: Maximum dose warning display for heavy patients
+- ❌ UNVERIFIED: Dose capping at 3g maximum for Amoxicillin
+- ❌ UNVERIFIED: Warning indicator (amber/yellow color or "⚠️ Capped at max")
+
+**Code Analysis Results:**
+- ✅ CONFIRMED: Maximum dose logic exists in calculateDose function
+- ✅ CONFIRMED: Amoxicillin has max dose defined as "3 g/day"
+- ✅ CONFIRMED: Warning display logic implemented with amber styling
+- ✅ CONFIRMED: Dose capping logic present in calculation function
+
+#### 3. NICU Electrolytes Calculator - ❌ NOT TESTED
+**Navigation Issues:**
+- ⚠️ INCOMPLETE: Unable to access electrolytes calculator due to script issues
+- ❌ UNVERIFIED: Calcium Gluconate max dose (3000mg) capping
+- ❌ UNVERIFIED: Potassium max dose (40 mEq) capping
+- ❌ UNVERIFIED: Warning messages for heavy patients (50kg)
+- ❌ UNVERIFIED: Normal dose calculations for light patients (2kg)
+
+**Code Analysis Results:**
+- ✅ CONFIRMED: Calcium Gluconate max dose logic exists (3000mg limit)
+- ✅ CONFIRMED: Proper calculation and capping in ElectrolytesDialog component
+- ✅ CONFIRMED: Warning display logic implemented
+
+### TECHNICAL ISSUES ENCOUNTERED:
+1. **Playwright Script Errors**: Multiple syntax and method call issues prevented complete UI testing
+2. **Locator Resolution**: Strict mode violations with multiple matching elements
+3. **Special Character Handling**: Unicode characters caused script compilation failures
+4. **UI Interaction**: Difficulty with proper element selection and interaction
+
+### TESTING AGENT FINDINGS:
+**What Works:**
+- Login and basic navigation functionality
+- Drugs page loads and displays correctly
+- Weight input and search functionality operational
+- Code implementation appears complete for maximum dose limits
+
+**Critical Issues:**
+- **UNVERIFIED FUNCTIONALITY**: Maximum dose warnings and capping not confirmed through UI testing
+- **INCOMPLETE TESTING**: Electrolytes calculator maximum dose limits not tested
+- **MISSING VERIFICATION**: No confirmation that dose calculations are properly capped
+
+### RECOMMENDATIONS FOR MAIN AGENT:
+1. **PRIORITY HIGH**: Manually verify maximum dose warnings appear for heavy patients
+2. **PRIORITY HIGH**: Confirm dose calculations are capped at maximum values (not just warnings)
+3. **PRIORITY MEDIUM**: Test electrolytes calculator with heavy weights (50kg) for Calcium and Potassium
+4. **PRIORITY MEDIUM**: Verify normal weight patients (10kg, 2kg) don't show max warnings
+5. **TECHNICAL**: Improve Playwright test selectors and error handling for future testing
+
+### CONCLUSION:
+While the code implementation for maximum dose limits appears complete and properly structured, the actual functionality could not be verified through UI testing due to technical issues. The main agent should perform manual verification of the maximum dose limits feature to ensure it works as specified in the review request.
