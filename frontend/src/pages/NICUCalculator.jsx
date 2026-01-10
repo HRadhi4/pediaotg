@@ -3796,6 +3796,19 @@ const BallardScorePage = () => {
     }
   };
 
+  // Render SVG diagram for physical maturity criteria
+  const renderPhysicalDiagram = (criterionName, score) => {
+    switch(criterionName) {
+      case 'skin': return <SkinSVG score={score} />;
+      case 'lanugo': return <LanugoSVG score={score} />;
+      case 'plantarSurface': return <PlantarSurfaceSVG score={score} />;
+      case 'breast': return <BreastSVG score={score} />;
+      case 'eyeEar': return <EyeEarSVG score={score} />;
+      case 'genitals': return <GenitalsSVG score={score} />;
+      default: return null;
+    }
+  };
+
   // Neuromuscular maturity criteria
   const neuromuscularCriteria = [
     {
