@@ -230,7 +230,8 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
       notes: [
         "Normal HCO3 range: 18-22 mEq/L",
         "Correct when HCO3 < 12 or symptomatic",
-        "Dilution: 1:1 with NS or D5W"
+        "Stock: 8.4% = 1 mEq/ml",
+        "Compatible: NS, D5W"
       ],
       warnings: [
         "Give in 2 halves: 1st half in 1st hour, 2nd half over 24 hours",
@@ -241,20 +242,36 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
     if ((nahco3Method === "hco3" || nahco3Method === "both") && !isNaN(hco3)) {
       const desiredHCO3 = 20;
       const correction1 = (desiredHCO3 - hco3) * 0.3 * w;
+      const drugVol1 = correction1; // 1 mEq/ml
+      const diluentVol1 = correction1; // 1:1 dilution
+      const totalVol1 = drugVol1 + diluentVol1;
       resultData.sections.push({
         subtitle: "Method 1: Using HCO3",
         value: `${correction1.toFixed(1)} mEq`,
         detail: `1st half: ${(correction1/2).toFixed(1)} mEq | 2nd half: ${(correction1/2).toFixed(1)} mEq`
       });
+      resultData.sections.push({
+        subtitle: "Dilution (1:1)",
+        value: `${drugVol1.toFixed(1)} ml + ${diluentVol1.toFixed(1)} ml NS = ${totalVol1.toFixed(1)} ml`
+      });
     }
     
     if ((nahco3Method === "be" || nahco3Method === "both") && !isNaN(be)) {
       const correction2 = Math.abs(be) * 0.3 * w;
+      const drugVol2 = correction2;
+      const diluentVol2 = correction2;
+      const totalVol2 = drugVol2 + diluentVol2;
       resultData.sections.push({
         subtitle: "Method 2: Using Base Excess",
         value: `${correction2.toFixed(1)} mEq`,
         detail: `1st half: ${(correction2/2).toFixed(1)} mEq | 2nd half: ${(correction2/2).toFixed(1)} mEq`
       });
+      if (nahco3Method === "be") {
+        resultData.sections.push({
+          subtitle: "Dilution (1:1)",
+          value: `${drugVol2.toFixed(1)} ml + ${diluentVol2.toFixed(1)} ml NS = ${totalVol2.toFixed(1)} ml`
+        });
+      }
     }
     
     resultData.sections.push({
