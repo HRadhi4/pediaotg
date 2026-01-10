@@ -48,7 +48,7 @@ Build a full SaaS-style web app with user accounts and a PAID-ONLY subscription 
         │   ├── HealthIcons.jsx        # SVG icons collection
         │   └── ElectrolytesDialog.jsx
         ├── pages/
-        │   ├── nicu/                  # FULLY REFACTORED NICU components
+        │   ├── nicu/                  # FULLY REFACTORED - All 10 NICU components
         │   │   ├── FluidCalculatorPage.jsx    (499 lines)
         │   │   ├── BallardScorePage.jsx       (441 lines) - with SVG diagrams
         │   │   ├── NRPChecklistPage.jsx       (237 lines)
@@ -57,8 +57,10 @@ Build a full SaaS-style web app with user accounts and a PAID-ONLY subscription 
         │   │   ├── PRBCGuidelinePage.jsx      (328 lines)
         │   │   ├── ExchangeCalculatorPage.jsx (192 lines)
         │   │   ├── BloodPressurePage.jsx      (202 lines)
+        │   │   ├── GrowthChartPage.jsx        (621 lines) - NEW
+        │   │   ├── NICUDrugsPage.jsx          (577 lines) - NEW
         │   │   └── index.js
-        │   └── NICUCalculator.jsx     # Main NICU dashboard (1726 lines - reduced 53% from 3656)
+        │   └── NICUCalculator.jsx     # Main NICU dashboard (434 lines - 88% reduction from 3656!)
         └── App.js
 ```
 
