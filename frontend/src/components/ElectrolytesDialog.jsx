@@ -941,9 +941,15 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="peripheral">Peripheral (80 mEq/L)</SelectItem>
-                            <SelectItem value="central">Central (15 mEq/100ml)</SelectItem>
-                            <SelectItem value="central_restricted">Central - Fluid Restricted (20 mEq/100ml)</SelectItem>
+                            <SelectItem value="1">1 mEq/100ml (10 mEq/L)</SelectItem>
+                            <SelectItem value="2">2 mEq/100ml (20 mEq/L)</SelectItem>
+                            <SelectItem value="3">3 mEq/100ml (30 mEq/L)</SelectItem>
+                            <SelectItem value="4">4 mEq/100ml (40 mEq/L)</SelectItem>
+                            <SelectItem value="5">5 mEq/100ml (50 mEq/L)</SelectItem>
+                            <SelectItem value="6">6 mEq/100ml (60 mEq/L)</SelectItem>
+                            <SelectItem value="8">8 mEq/100ml (80 mEq/L) - Peripheral max</SelectItem>
+                            <SelectItem value="15">15 mEq/100ml (Central)</SelectItem>
+                            <SelectItem value="20">20 mEq/100ml (Central - Fluid restricted)</SelectItem>
                           </SelectContent>
                         </Select>
                       </div>
