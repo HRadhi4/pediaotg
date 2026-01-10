@@ -384,8 +384,18 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
       })(),
       
       kcl: (() => {
-        const doseMin = w * 0.5;
-        const doseMax = w * 1;
+        // Harriet Lane: 0.5-1 mEq/kg, max 40 mEq/dose IV
+        const maxDoseMEq = 40;
+        let doseMin = w * 0.5;
+        let doseMax = w * 1;
+        let isMaxed = false;
+        
+        if (doseMax > maxDoseMEq) {
+          doseMax = maxDoseMEq;
+          doseMin = Math.min(doseMin, maxDoseMEq);
+          isMaxed = true;
+        }
+        
         const mEqPerMl = kclConcentration === "15" ? 2 : 1.34; // 15% = 2mEq/ml, 10% = 1.34mEq/ml
         const drugVolumeMin = doseMin / mEqPerMl;
         const drugVolumeMax = doseMax / mEqPerMl;
@@ -410,11 +420,12 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
           title: "💉 Potassium Chloride (KCl)",
           drugInfo: {
             concentration: kclConcentration === "15" ? "15% KCl = 2 mEq/ml" : "10% KCl = 1.34 mEq/ml",
-            maxConcentration: `${kclLineType === "peripheral" ? "Peripheral" : "Central"}: ${maxConcLabel}`
+            maxConcentration: `${kclLineType === "peripheral" ? "Peripheral" : "Central"}: ${maxConcLabel}`,
+            maxDose: `${maxDoseMEq} mEq/dose`
           },
           calculation: {
-            dose: `${doseMin.toFixed(2)} - ${doseMax.toFixed(2)} mEq`,
-            doseFormula: `${w} kg × 0.5-1 mEq/kg`,
+            dose: `${doseMin.toFixed(2)} - ${doseMax.toFixed(2)} mEq${isMaxed ? ' (MAX)' : ''}`,
+            doseFormula: `${w} kg × 0.5-1 mEq/kg${isMaxed ? ' → capped at ' + maxDoseMEq + ' mEq' : ''}`,
             drugVolume: `${drugVolumeMin.toFixed(2)} - ${drugVolumeMax.toFixed(2)} ml`,
             diluent: `${diluentMin.toFixed(0)} - ${diluentMax.toFixed(0)} ml (to achieve ${maxConcLabel})`,
             totalVolume: `${minTotalVolumeMin.toFixed(0)} - ${minTotalVolumeMax.toFixed(0)} ml`,
@@ -423,7 +434,8 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
           },
           preparation: `For max dose: ${drugVolumeMax.toFixed(2)} ml KCl ${kclConcentration}% + ${diluentMax.toFixed(0)} ml NS = ${minTotalVolumeMax.toFixed(0)} ml`,
           compatible: "NS, D5W, LR (most IV solutions)",
-          incompatible: "Amphotericin B, Diazepam, Phenytoin"
+          incompatible: "Amphotericin B, Diazepam, Phenytoin",
+          ...(isMaxed && { maxWarning: "⚠️ Dose capped at maximum (40 mEq)" })
         };
       })(),
       
