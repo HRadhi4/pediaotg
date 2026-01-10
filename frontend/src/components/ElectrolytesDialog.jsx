@@ -345,8 +345,8 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
     
     const drugs = {
       calciumGluconate: (() => {
-        // Harriet Lane: 100 mg/kg, max 3000 mg (3g)
-        const maxDoseMg = 3000;
+        // Harriet Lane: 100 mg/kg, max 1000 mg (10 ml)
+        const maxDoseMg = 1000;
         let doseMg = w * 100;
         let isMaxed = false;
         
@@ -379,7 +379,7 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
           preparation: `Draw ${doseMl.toFixed(1)} ml Ca Gluconate + ${diluentMl.toFixed(1)} ml NS = ${totalVolume.toFixed(1)} ml`,
           compatible: "NS, D5W, D10W",
           incompatible: "Amphotericin B, Ceftriaxone, Fluconazole, Meropenem, Methylprednisolone, Phosphate, Magnesium",
-          ...(isMaxed && { maxWarning: "⚠️ Dose capped at maximum (3g)" })
+          ...(isMaxed && { maxWarning: "⚠️ Dose capped at maximum (1g / 10ml)" })
         };
       })(),
       
