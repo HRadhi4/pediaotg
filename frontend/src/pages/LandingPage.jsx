@@ -28,8 +28,8 @@ import {
   DrugsIcon,
   BallardIcon,
   PostnatalIcon,
-  HealthBloodIcon,
-  HealthExchangeIcon
+  BloodDropIcon,
+  ExchangeIcon
 } from "@/components/HealthIcons";
 
 const LandingPage = ({ theme, toggleTheme }) => {
