@@ -544,6 +544,9 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
       
       calciumChloride: (() => {
         // Harriet Lane: 10-20 mg/kg, max 1000 mg (1g) per dose
+        // Stock: 10% = 100 mg/ml
+        // Central line preferred - highly vesicant
+        // For peripheral: dilute to ~15-20 mg/ml and give slowly
         const maxDoseMg = 1000;
         let doseMg = w * 10; // Using lower dose 10mg/kg
         let isMaxed = false;
@@ -553,30 +556,33 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
           isMaxed = true;
         }
         
-        const doseMl = doseMg / 100; // 100mg/ml
-        const diluentMl = doseMl * 4; // 1:5 dilution (20mg/ml target)
-        const totalVolume = doseMl + diluentMl;
+        const doseMl = doseMg / 100; // 100mg/ml stock
+        // Dilute to 15 mg/ml for peripheral use (1:5.7 dilution approximately)
+        const targetConc = 15; // 15 mg/ml for peripheral
+        const totalVolume = doseMg / targetConc;
+        const diluentMl = totalVolume - doseMl;
         const ratePerHour = totalVolume;
         
         return {
           title: "💉 Calcium Chloride 10%",
           drugInfo: {
             concentration: "100 mg/ml (1.4 mEq/ml)",
-            targetDilution: "20 mg/ml (1:5 dilution)",
+            targetDilution: "15-20 mg/ml (peripheral) or undiluted (central)",
             maxDose: `${maxDoseMg} mg (${maxDoseMg/100} ml)`
           },
           calculation: {
             dose: `${doseMg.toFixed(0)} mg${isMaxed ? ' (MAX)' : ''}`,
             doseFormula: `${w} kg × 10 mg/kg${isMaxed ? ' → capped at ' + maxDoseMg + ' mg' : ''}`,
             drugVolume: `${doseMl.toFixed(2)} ml`,
-            diluent: `${diluentMl.toFixed(2)} ml`,
-            totalVolume: `${totalVolume.toFixed(2)} ml`,
-            duration: "1 hour",
-            rate: `${ratePerHour.toFixed(2)} ml/hr`
+            diluent: `${diluentMl.toFixed(1)} ml (for peripheral at 15 mg/ml)`,
+            totalVolume: `${totalVolume.toFixed(1)} ml`,
+            duration: "1 hour (≥10 min minimum)",
+            rate: `${ratePerHour.toFixed(1)} ml/hr`
           },
-          preparation: `Draw ${doseMl.toFixed(2)} ml CaCl2 + ${diluentMl.toFixed(2)} ml NS = ${totalVolume.toFixed(2)} ml`,
+          preparation: `Draw ${doseMl.toFixed(2)} ml CaCl2 + ${diluentMl.toFixed(1)} ml NS = ${totalVolume.toFixed(1)} ml`,
           compatible: "NS, D5W",
-          incompatible: "Phosphates, Sodium Bicarbonate, Sulphates, Amphotericin B",
+          incompatible: "Phosphates, Sodium Bicarbonate, Sulphates, Amphotericin B, Ceftriaxone",
+          warnings: ["⚠️ CENTRAL LINE PREFERRED - Highly vesicant!", "If peripheral: use large vein, dilute well, infuse slowly"],
           ...(isMaxed && { maxWarning: "⚠️ Dose capped at maximum (1g)" })
         };
       })(),
