@@ -64,11 +64,19 @@ const LandingPage = ({ theme, toggleTheme }) => {
     // NICU Dashboard widgets
     "nicu-fluid": { id: "fluid", title: "Fluid Calculator", icon: "fluid", color: "teal", dashboard: "nicu" },
     "nicu-nrp": { id: "nrp", title: "NRP Checklist", icon: "nrp", color: "red", dashboard: "nicu" },
-    "nicu-ett": { id: "ett", title: "ETT/UAC/UVC", icon: "ett", color: "blue", dashboard: "nicu" },
-    "nicu-rsi": { id: "rsi", title: "RSI Checklist", icon: "rsi", color: "purple", dashboard: "nicu" },
-    "nicu-vitals": { id: "vitals", title: "Vital Signs", icon: "vitals", color: "amber", dashboard: "nicu" },
+    "nicu-catheter": { id: "catheter", title: "UVC/UAC Calculator", icon: "catheter", color: "blue", dashboard: "nicu" },
+    "nicu-intubation": { id: "intubation", title: "Intubation", icon: "intubation", color: "purple", dashboard: "nicu" },
+    "nicu-bp": { id: "bp", title: "Blood Pressure", icon: "bp", color: "red", dashboard: "nicu" },
+    "nicu-prbc": { id: "prbc", title: "PRBC Transfusion", icon: "prbc", color: "red", dashboard: "nicu" },
+    "nicu-exchange": { id: "exchange", title: "Exchange Transfusion", icon: "exchange", color: "purple", dashboard: "nicu" },
     "nicu-growth": { id: "growth", title: "Growth Charts", icon: "growth", color: "teal", dashboard: "nicu" },
-    "nicu-drugs": { id: "drugs", title: "Drugs", icon: "drugs", color: "blue", dashboard: "nicu" }
+    "nicu-drugs": { id: "drugs", title: "Drugs", icon: "drugs", color: "blue", dashboard: "nicu" },
+    "nicu-ballard": { id: "ballard", title: "Ballard Score", icon: "ballard", color: "amber", dashboard: "nicu" },
+    "nicu-postnatal": { id: "postnatal", title: "Postnatal", icon: "postnatal", color: "teal", dashboard: "nicu" },
+    // Legacy keys for backwards compatibility
+    "nicu-ett": { id: "catheter", title: "ETT/UAC/UVC", icon: "catheter", color: "blue", dashboard: "nicu" },
+    "nicu-rsi": { id: "intubation", title: "RSI Checklist", icon: "intubation", color: "purple", dashboard: "nicu" },
+    "nicu-vitals": { id: "bp", title: "Vital Signs", icon: "bp", color: "amber", dashboard: "nicu" }
   };
 
   const getWidgetIcon = (icon, color) => {
