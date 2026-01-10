@@ -100,10 +100,15 @@ const LandingPage = ({ theme, toggleTheme }) => {
       case "fluidReplacement": return <FluidIcon className={`h-5 w-5 ${colorClass}`} />;
       case "nrp": return <ResuscitationIcon className={`h-5 w-5 ${colorClass}`} />;
       case "ett": return <CatheterIcon className={`h-5 w-5 ${colorClass}`} />;
+      case "catheter": return <CatheterIcon className={`h-5 w-5 ${colorClass}`} />;
       case "rsi": return <IntubationIcon className={`h-5 w-5 ${colorClass}`} />;
       case "vitals": return <ActivityIcon className={`h-5 w-5 ${colorClass}`} />;
       case "growth": return <GrowthChartIcon className={`h-5 w-5 ${colorClass}`} />;
       case "drugs": return <DrugsIcon className={`h-5 w-5 ${colorClass}`} />;
+      case "ballard": return <BallardIcon className={`h-5 w-5 ${colorClass}`} />;
+      case "postnatal": return <PostnatalIcon className={`h-5 w-5 ${colorClass}`} />;
+      case "prbc": return <HealthBloodIcon className={`h-5 w-5 ${colorClass}`} />;
+      case "exchange": return <HealthExchangeIcon className={`h-5 w-5 ${colorClass}`} />;
       default: return <Star className={`h-5 w-5 ${colorClass}`} />;
     }
   };
