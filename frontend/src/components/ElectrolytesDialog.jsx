@@ -346,6 +346,7 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
     const drugs = {
       calciumGluconate: (() => {
         // Harriet Lane: 100 mg/kg, max 1000 mg (10 ml)
+        // Target dilution: 50 mg/ml
         const maxDoseMg = 1000;
         let doseMg = w * 100;
         let isMaxed = false;
@@ -355,16 +356,17 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
           isMaxed = true;
         }
         
-        const doseMl = doseMg / 100; // 100mg/ml concentration
-        const diluentMl = doseMl; // 1:2 dilution means equal volume diluent
-        const totalVolume = doseMl + diluentMl;
+        const doseMl = doseMg / 100; // 100mg/ml concentration (stock)
+        const targetConc = 50; // 50 mg/ml target dilution
+        const totalVolume = doseMg / targetConc; // Total volume after dilution
+        const diluentMl = totalVolume - doseMl; // Diluent needed
         const ratePerHour = totalVolume; // Over 1 hour
         
         return {
           title: "💉 Calcium Gluconate 10%",
           drugInfo: {
             concentration: "100 mg/ml (0.45 mEq/ml)",
-            targetDilution: "50 mg/ml (1:2 dilution)",
+            targetDilution: "50 mg/ml",
             maxDose: `${maxDoseMg} mg (${maxDoseMg/100} ml)`
           },
           calculation: {
@@ -372,7 +374,7 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
             doseFormula: `${w} kg × 100 mg/kg = ${(w * 100).toFixed(0)} mg${isMaxed ? ' → capped at ' + maxDoseMg + ' mg' : ''}`,
             drugVolume: `${doseMl.toFixed(1)} ml`,
             diluent: `${diluentMl.toFixed(1)} ml (NS or D5W)`,
-            totalVolume: `${totalVolume.toFixed(1)} ml`,
+            totalVolume: `${totalVolume.toFixed(1)} ml (at 50 mg/ml)`,
             duration: "1 hour",
             rate: `${ratePerHour.toFixed(1)} ml/hr`
           },
