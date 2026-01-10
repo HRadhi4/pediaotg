@@ -358,18 +358,38 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
       isMaxed = true;
     }
     
+    // Dilution: Addiphos 1ml = 2 mmol
+    // Peripheral: 0.05 mmol/ml, Central: 0.12 mmol/ml
+    const drugVolumeMin = minDose / 2;
+    const drugVolumeMax = maxDoseCalc / 2;
+    const totalVolPeripheralMin = minDose / 0.05;
+    const totalVolPeripheralMax = maxDoseCalc / 0.05;
+    const totalVolCentralMin = minDose / 0.12;
+    const totalVolCentralMax = maxDoseCalc / 0.12;
+    const diluentPeripheralMin = totalVolPeripheralMin - drugVolumeMin;
+    const diluentPeripheralMax = totalVolPeripheralMax - drugVolumeMax;
+    const diluentCentralMin = totalVolCentralMin - drugVolumeMin;
+    const diluentCentralMax = totalVolCentralMax - drugVolumeMax;
+    
     setResults({
       title: "Phosphate Replacement (IV)",
       sections: [
         { subtitle: "Severity", value: range.label },
-        { subtitle: "Dose", value: `${minDose.toFixed(2)} - ${maxDoseCalc.toFixed(2)} mmol` },
+        { subtitle: "Dose", value: `${minDose.toFixed(2)} - ${maxDoseCalc.toFixed(2)} mmol (${drugVolumeMin.toFixed(2)} - ${drugVolumeMax.toFixed(2)} ml Addiphos)` },
+        { 
+          subtitle: "Dilution - Peripheral (0.05 mmol/ml)", 
+          value: `${drugVolumeMin.toFixed(2)}-${drugVolumeMax.toFixed(2)} ml + ${diluentPeripheralMin.toFixed(0)}-${diluentPeripheralMax.toFixed(0)} ml NS = ${totalVolPeripheralMin.toFixed(0)}-${totalVolPeripheralMax.toFixed(0)} ml`
+        },
+        { 
+          subtitle: "Dilution - Central (0.12 mmol/ml)", 
+          value: `${drugVolumeMin.toFixed(2)}-${drugVolumeMax.toFixed(2)} ml + ${diluentCentralMin.toFixed(0)}-${diluentCentralMax.toFixed(0)} ml NS = ${totalVolCentralMin.toFixed(0)}-${totalVolCentralMax.toFixed(0)} ml`
+        },
         { subtitle: "Infusion", value: "Over 4-6 hours (slow)" }
       ],
       notes: [
+        "Stock: Addiphos 1 ml = 2 mmol",
         `Max single dose: ${maxDose} mmol`,
-        "Dilution: Peripheral 0.05 mmol/ml | Central 0.12 mmol/ml",
-        "Compatible: NS, D5W",
-        "Recheck phosphate 2-4 hours after infusion"
+        "Compatible: NS, D5W"
       ],
       warning: "Rapid infusion can cause severe hypocalcemia!",
       ...(isMaxed && { warnings: ["⚠️ Dose capped at maximum (15 mmol)"] })
