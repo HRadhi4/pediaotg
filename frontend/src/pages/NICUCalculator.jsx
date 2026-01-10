@@ -978,16 +978,7 @@ const FluidCalculatorPage = () => {
 };
 
 // Growth Chart Page - CDC/WHO Charts for Weight, Height, Head Circumference
-  const [hct, setHct] = useState("");
-  const [hasRespSupport, setHasRespSupport] = useState(false);
-  const [result, setResult] = useState(null);
-
-
-  const UNIT_VOLUME = 280; // 1 unit = 280 ml
-
-  // Transfusion thresholds based on guidelines
-  const getThresholds = (category, ageGroup, respSupport) => {
-    // Category 1: BW < 1.5 Kg, GA ≤ 32 weeks
+const GrowthChartPage = () => {
     const pretermThresholds = {
       "1-7": { resp: { hct: 35, hb: 12 }, noResp: { hct: 33, hb: 11 } },
       "8-14": { resp: { hct: 33, hb: 11 }, noResp: { hct: 27, hb: 9 } },
