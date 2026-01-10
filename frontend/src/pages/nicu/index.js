@@ -7,8 +7,5 @@ export { default as IntubationPage } from './IntubationPage';
 export { default as PRBCGuidelinePage } from './PRBCGuidelinePage';
 export { default as ExchangeCalculatorPage } from './ExchangeCalculatorPage';
 export { default as BloodPressurePage } from './BloodPressurePage';
-
-// Note: The following components are still in the main NICUCalculator.jsx file
-// and will be migrated in future refactoring:
-// - GrowthChartPage
-// - NICUDrugsPage
+export { default as GrowthChartPage } from './GrowthChartPage';
+export { default as NICUDrugsPage } from './NICUDrugsPage';
