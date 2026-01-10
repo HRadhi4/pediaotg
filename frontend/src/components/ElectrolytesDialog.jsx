@@ -37,6 +37,9 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
   // KCl specific state
   const [kclLineType, setKclLineType] = useState("peripheral");
   const [kclConcentration, setKclConcentration] = useState("15"); // 15% or 10%
+  
+  // Addiphos specific state
+  const [addiphosLineType, setAddiphosLineType] = useState("peripheral");
 
   const calculateCalcium = () => {
     const w = parseFloat(weight);
