@@ -400,9 +400,21 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
         const drugVolumeMin = doseMin / mEqPerMl;
         const drugVolumeMax = doseMax / mEqPerMl;
         
-        // Max concentrations
-        const maxConc = kclLineType === "peripheral" ? 0.08 : 0.15; // 80mEq/L or 150mEq/L
-        const maxConcLabel = kclLineType === "peripheral" ? "80 mEq/L" : "150 mEq/L";
+        // Max concentrations based on line type
+        // Peripheral: 80 mEq/L (0.08 mEq/ml)
+        // Central: 150 mEq/L (15 mEq/100ml = 0.15 mEq/ml)
+        // Central with fluid restriction: 200 mEq/L (20 mEq/100ml = 0.2 mEq/ml)
+        let maxConc, maxConcLabel;
+        if (kclLineType === "peripheral") {
+          maxConc = 0.08; // 80 mEq/L
+          maxConcLabel = "80 mEq/L (peripheral)";
+        } else if (kclLineType === "central_restricted") {
+          maxConc = 0.2; // 200 mEq/L = 20 mEq/100ml
+          maxConcLabel = "20 mEq/100ml (central, fluid restricted)";
+        } else {
+          maxConc = 0.15; // 150 mEq/L = 15 mEq/100ml
+          maxConcLabel = "15 mEq/100ml (central)";
+        }
         
         // Calculate minimum total volume needed for safe concentration
         const minTotalVolumeMin = doseMin / maxConc;
@@ -420,7 +432,7 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
           title: "💉 Potassium Chloride (KCl)",
           drugInfo: {
             concentration: kclConcentration === "15" ? "15% KCl = 2 mEq/ml" : "10% KCl = 1.34 mEq/ml",
-            maxConcentration: `${kclLineType === "peripheral" ? "Peripheral" : "Central"}: ${maxConcLabel}`,
+            maxConcentration: maxConcLabel,
             maxDose: `${maxDoseMEq} mEq/dose`
           },
           calculation: {
