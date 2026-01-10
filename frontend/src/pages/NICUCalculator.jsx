@@ -3517,7 +3517,7 @@ const BallardScorePage = () => {
                   <button
                     key={opt.score}
                     onClick={() => setNeuromuscularScores(prev => ({ ...prev, [criterion.name]: opt.score }))}
-                    className={`flex-shrink-0 w-[72px] p-1.5 rounded-lg text-center transition-all border ${
+                    className={`flex-shrink-0 w-[80px] p-1.5 rounded-lg text-center transition-all border ${
                       neuromuscularScores[criterion.name] === opt.score
                         ? 'bg-amber-500 text-white border-amber-600 ring-2 ring-amber-300'
                         : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:border-amber-300'
@@ -3527,7 +3527,7 @@ const BallardScorePage = () => {
                       {renderNeuromuscularDiagram(criterion.name, opt.score)}
                     </div>
                     <div className="font-bold text-xs">{opt.score}</div>
-                    <div className="text-[9px] leading-tight text-muted-foreground mt-0.5 h-6 flex items-center justify-center">{opt.desc}</div>
+                    <div className="text-[8px] leading-tight text-muted-foreground mt-0.5 min-h-[24px] flex items-center justify-center px-0.5">{opt.desc}</div>
                   </button>
                 ))}
               </div>
