@@ -110,6 +110,13 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
     const minMl = minMg / 500; // 50% = 500mg/ml
     const maxMl = maxMg / 500;
     
+    // Dilution: Target 60 mg/ml with NS or D5W
+    const targetConc = 60; // mg/ml
+    const totalVolumeMin = minMg / targetConc;
+    const totalVolumeMax = maxMg / targetConc;
+    const diluentMin = totalVolumeMin - minMl;
+    const diluentMax = totalVolumeMax - maxMl;
+    
     setResults({
       title: "Magnesium Replacement",
       sections: [
@@ -124,6 +131,11 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
           detail: "25-50 mg/kg BD for 3 doses"
         },
         {
+          subtitle: "Dilution",
+          value: `${minMl.toFixed(2)}-${maxMl.toFixed(2)} ml + ${diluentMin.toFixed(1)}-${diluentMax.toFixed(1)} ml NS = ${totalVolumeMin.toFixed(1)}-${totalVolumeMax.toFixed(1)} ml`,
+          detail: "Target: 60 mg/ml"
+        },
+        {
           subtitle: "Status Asthmaticus",
           value: `${minMg.toFixed(0)} - ${maxMg.toFixed(0)} mg`,
           detail: "25-50 mg/kg over 20-30 mins"
@@ -131,8 +143,8 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
       ],
       notes: [
         "Stock: 50% MgSulfate = 500 mg/ml",
-        "Dilution: 60 mg/ml with NS or D5W",
         `Max single dose: ${maxDose} mg (${maxDose/500} ml)`,
+        "Compatible: NS, D5W",
         "Infuse over 2-4 hours"
       ],
       ...(isMaxed && { warnings: ["⚠️ Dose capped at maximum (2g per dose)"] })
