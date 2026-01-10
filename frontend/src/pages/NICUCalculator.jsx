@@ -164,7 +164,9 @@ const NICUCalculator = ({ theme, toggleTheme }) => {
     { id: "prbc", title: "PRBC Transfusion", icon: "blood", color: "red", enabled: true },
     { id: "exchange", title: "Exchange Transfusion", icon: "repeat", color: "purple", enabled: true },
     { id: "growth", title: "Growth Charts", icon: "growth", color: "teal", enabled: true },
-    { id: "drugs", title: "Drugs", icon: "drugs", color: "blue", enabled: true }
+    { id: "drugs", title: "Drugs", icon: "drugs", color: "blue", enabled: true },
+    { id: "ballard", title: "Ballard Score", icon: "ballard", color: "amber", enabled: true },
+    { id: "postnatal", title: "Postnatal", icon: "postnatal", color: "teal", enabled: true, comingSoon: true }
   ]);
   
   // Favorites management
