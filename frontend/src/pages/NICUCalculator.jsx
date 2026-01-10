@@ -431,52 +431,7 @@ const NICUCalculator = ({ theme, toggleTheme }) => {
   );
 };
 
-// Growth Chart Page - CDC/WHO Charts for Weight, Height, Head Circumference
-const GrowthChartPage = () => {
-  const [chartType, setChartType] = useState("WHO"); // CDC or WHO
-  const [gender, setGender] = useState("male");
-  const [activeChart, setActiveChart] = useState("weight"); // weight, length, hc
-  const [entries, setEntries] = useState([]);
-  const [newEntry, setNewEntry] = useState({
-    date: new Date().toISOString().split('T')[0],
-    ageValue: "",
-    weight: "",
-    length: "",
-    hc: ""
-  });
-  const chartRef = React.useRef(null);
-
-
-  // Check if WHO or CDC is selected
-  const isWHO = chartType === "WHO";
-
-  const addEntry = () => {
-    if (newEntry.date && newEntry.ageValue) {
-      // Convert to months: WHO uses months directly, CDC uses years
-      const ageInMonths = isWHO 
-        ? parseFloat(newEntry.ageValue) || 0
-        : (parseFloat(newEntry.ageValue) || 0) * 12;
-      
-      setEntries([...entries, { 
-        ...newEntry, 
-        id: Date.now(),
-        ageInMonths,
-        ageUnit: isWHO ? 'months' : 'years',
-        chartTypeUsed: chartType
-      }]);
-      setNewEntry({
-        date: new Date().toISOString().split('T')[0],
-        ageValue: "",
-        weight: "",
-        length: "",
-        hc: ""
-      });
-    }
-  };
-
-  const removeEntry = (id) => {
-    setEntries(entries.filter(e => e.id !== id));
-  };
+export default NICUCalculator;
 
   // WHO Growth Standards Data (Birth to 2 years - 0-24 months)
   // Based on WHO Child Growth Standards
