@@ -73,6 +73,7 @@ const LandingPage = ({ theme, toggleTheme }) => {
     "nicu-drugs": { id: "drugs", title: "Drugs", icon: "drugs", color: "blue", dashboard: "nicu" },
     "nicu-ballard": { id: "ballard", title: "Ballard Score", icon: "ballard", color: "amber", dashboard: "nicu" },
     "nicu-postnatal": { id: "postnatal", title: "Postnatal", icon: "postnatal", color: "teal", dashboard: "nicu" },
+    "nicu-approaches": { id: "approaches", title: "Approaches", icon: "approaches", color: "purple", dashboard: "nicu" },
     // Legacy keys for backwards compatibility
     "nicu-ett": { id: "catheter", title: "ETT/UAC/UVC", icon: "catheter", color: "blue", dashboard: "nicu" },
     "nicu-rsi": { id: "intubation", title: "RSI Checklist", icon: "intubation", color: "purple", dashboard: "nicu" },
