@@ -4056,22 +4056,22 @@ const BallardScorePage = () => {
           {physicalCriteria.map(criterion => (
             <div key={criterion.name} className="space-y-2">
               <Label className="text-sm font-medium">{criterion.label}</Label>
-              <div className="flex gap-1 overflow-x-auto pb-2">
+              <div className="flex gap-2 overflow-x-auto pb-2">
                 {criterion.options.map(opt => (
                   <button
                     key={opt.score}
                     onClick={() => setPhysicalScores(prev => ({ ...prev, [criterion.name]: opt.score }))}
-                    className={`flex-shrink-0 w-16 p-1.5 rounded-lg text-center transition-all border overflow-hidden ${
+                    className={`flex-shrink-0 w-24 p-2 rounded-lg text-center transition-all border ${
                       physicalScores[criterion.name] === opt.score
                         ? 'bg-[#00d9c5] text-white border-[#00b8a6] ring-2 ring-[#00d9c5]/50'
                         : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:border-[#00d9c5]'
                     }`}
                   >
-                    <div className="h-8 flex items-center justify-center text-current">
+                    <div className="h-10 flex items-center justify-center text-current">
                       {renderPhysicalDiagram(criterion.name, opt.score)}
                     </div>
-                    <div className="font-bold text-xs">{opt.score}</div>
-                    <div className="text-[8px] leading-tight text-muted-foreground truncate px-0.5">{opt.desc}</div>
+                    <div className="font-bold text-sm mt-1">{opt.score}</div>
+                    <div className="text-[10px] leading-snug text-muted-foreground mt-0.5">{opt.desc}</div>
                   </button>
                 ))}
               </div>
