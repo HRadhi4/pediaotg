@@ -1927,7 +1927,7 @@ const DrugsPage = ({ onBack }) => {
                         <div className="grid grid-cols-2 gap-2">
                           {doseKeys.map(key => {
                             const maxDoseValue = parseMaxDose(drug.max);
-                            const result = calculateDose(drug.doses[key].value, w, maxDoseValue);
+                            const result = calculateDose(drug.doses[key].value, w, maxDoseValue, "mg", drug.doses[key].unit);
                             if (!result) return null;
                             const doseResult = typeof result === 'string' ? { dose: result, isExceedingMax: false } : result;
                             return (
