@@ -138,6 +138,15 @@ const LandingPage = ({ theme, toggleTheme }) => {
       <main className="fixed inset-0 flex items-center justify-center px-4 md:px-6" style={{ top: '64px', bottom: '100px' }}>
         {/* Department Selection - Stacked Rectangular Cards */}
         <div className="flex flex-col gap-4 w-full max-w-md">
+          {/* Welcome Message */}
+          {user && user.name && (
+            <div className="text-center mb-2">
+              <p className="text-lg font-medium text-foreground">
+                Welcome back, <span className="text-[#00d9c5] font-semibold">{user.name}</span>.
+              </p>
+            </div>
+          )}
+          
           {/* NICU Card */}
           <div 
             onClick={() => navigate("/nicu")}
