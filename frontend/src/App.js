@@ -53,6 +53,8 @@ function App() {
             {/* Public Auth Routes */}
             <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<SignupPage />} />
+            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+            <Route path="/reset-password" element={<ResetPasswordPage />} />
 
             {/* Subscription Routes (Auth required, no subscription required) */}
             <Route path="/pricing" element={
