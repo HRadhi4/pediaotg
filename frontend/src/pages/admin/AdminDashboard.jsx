@@ -318,6 +318,7 @@ const AdminDashboard = () => {
                                 onClick={() => handleDeleteUser(u.id, u.email)}
                                 disabled={deletingUserId === u.id}
                                 className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                                data-testid={`delete-user-${u.id}`}
                               >
                                 {deletingUserId === u.id ? (
                                   <Loader2 className="h-4 w-4 animate-spin" />
