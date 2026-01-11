@@ -246,14 +246,24 @@ const AdminDashboard = () => {
                     <CardTitle>Users</CardTitle>
                     <CardDescription>{total} total users</CardDescription>
                   </div>
-                  <div className="relative">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      placeholder="Search users..."
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                      className="pl-9 w-full md:w-64"
-                    />
+                  <div className="flex items-center gap-3">
+                    <Button 
+                      onClick={() => setShowAddUser(true)}
+                      className="bg-teal-500 hover:bg-teal-600 text-white"
+                      data-testid="add-user-btn"
+                    >
+                      <UserPlus className="h-4 w-4 mr-2" />
+                      Add User
+                    </Button>
+                    <div className="relative">
+                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                      <Input
+                        placeholder="Search users..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="pl-9 w-full md:w-64"
+                      />
+                    </div>
                   </div>
                 </div>
               </CardHeader>
