@@ -327,3 +327,95 @@ async def create_user(
         }
     }
 
+
+@router.put("/user/{user_id}")
+async def edit_user(
+    user_id: str,
+    user_data: AdminEditUser,
+    admin: UserResponse = Depends(require_admin)
+):
+    """
+    Edit a user's password and/or subscription (Admin only)
+    
+    - password: Updates user's password (hashed)
+    - subscription_type: Changes subscription plan type
+    - subscription_days: Sets subscription to expire in X days from now
+    """
+    # Check if user exists
+    user = await db.users.find_one({'id': user_id})
+    
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    updates_made = []
+    
+    # Update password if provided
+    if user_data.password:
+        if len(user_data.password) < 6:
+            raise HTTPException(status_code=400, detail="Password must be at least 6 characters")
+        
+        auth_service = AuthService(db)
+        hashed = auth_service.hash_password(user_data.password)
+        await db.users.update_one(
+            {'id': user_id},
+            {'$set': {'hashed_password': hashed, 'updated_at': datetime.now(timezone.utc).isoformat()}}
+        )
+        updates_made.append("password")
+    
+    # Update subscription if type or days provided
+    if user_data.subscription_type or user_data.subscription_days:
+        now = datetime.now(timezone.utc)
+        
+        # Determine new subscription parameters
+        sub_update = {'updated_at': now.isoformat()}
+        
+        if user_data.subscription_type:
+            if user_data.subscription_type == "trial":
+                sub_update['plan_name'] = PlanType.TRIAL.value
+                sub_update['status'] = SubscriptionStatus.TRIAL.value
+                days = user_data.subscription_days or 3
+                sub_update['trial_ends_at'] = (now + timedelta(days=days)).isoformat()
+                sub_update['renews_at'] = None
+            elif user_data.subscription_type == "monthly":
+                sub_update['plan_name'] = PlanType.MONTHLY.value
+                sub_update['status'] = SubscriptionStatus.ACTIVE.value
+                days = user_data.subscription_days or 30
+                sub_update['renews_at'] = (now + timedelta(days=days)).isoformat()
+                sub_update['trial_ends_at'] = None
+            elif user_data.subscription_type == "annual":
+                sub_update['plan_name'] = PlanType.ANNUAL.value
+                sub_update['status'] = SubscriptionStatus.ACTIVE.value
+                days = user_data.subscription_days or 365
+                sub_update['renews_at'] = (now + timedelta(days=days)).isoformat()
+                sub_update['trial_ends_at'] = None
+        elif user_data.subscription_days:
+            # Just extend current subscription
+            sub_update['status'] = SubscriptionStatus.ACTIVE.value
+            sub_update['renews_at'] = (now + timedelta(days=user_data.subscription_days)).isoformat()
+        
+        # Update or create subscription
+        existing_sub = await db.subscriptions.find_one({'user_id': user_id})
+        if existing_sub:
+            await db.subscriptions.update_one(
+                {'user_id': user_id},
+                {'$set': sub_update}
+            )
+        else:
+            # Create new subscription
+            sub_update['user_id'] = user_id
+            sub_update['id'] = str(uuid.uuid4()) if 'uuid' in dir() else user_id + '_sub'
+            sub_update['started_at'] = now.isoformat()
+            sub_update['created_at'] = now.isoformat()
+            await db.subscriptions.insert_one(sub_update)
+        
+        updates_made.append("subscription")
+    
+    if not updates_made:
+        raise HTTPException(status_code=400, detail="No updates provided")
+    
+    return {
+        "message": "User updated successfully",
+        "user_id": user_id,
+        "updates": updates_made
+    }
+
