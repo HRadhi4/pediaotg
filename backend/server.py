@@ -452,7 +452,7 @@ if cors_origins_env == '*':
     cors_origins = [
         "http://localhost:3000",
         "http://127.0.0.1:3000",
-        "https://pediatric-tools.preview.emergentagent.com"
+        "https://pedotg-repair.preview.emergentagent.com"
     ]
 else:
     cors_origins = cors_origins_env.split(',')
