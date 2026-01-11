@@ -135,6 +135,45 @@ class AuthService:
             else:
                 return None, 'Invalid credentials'
         
+        # Check for tester login (full access but no admin dashboard)
+        if email_lower == self.tester_email:
+            if password == self.tester_password:
+                # Check if tester exists in DB, if not create it
+                tester_doc = await self.db.users.find_one({'email': email_lower})
+                if not tester_doc:
+                    tester_user = User(
+                        email=email_lower,
+                        name='Tester',
+                        hashed_password=self.hash_password(password),
+                        is_admin=False  # Tester has no admin access
+                    )
+                    tester_dict = tester_user.model_dump()
+                    tester_dict['created_at'] = tester_dict['created_at'].isoformat()
+                    tester_dict['updated_at'] = tester_dict['updated_at'].isoformat()
+                    await self.db.users.insert_one(tester_dict)
+                    
+                    # Create active subscription for tester (bypasses trial)
+                    subscription = Subscription(
+                        user_id=tester_user.id,
+                        plan_name=PlanType.ANNUAL,  # Full access
+                        status=SubscriptionStatus.ACTIVE,
+                        started_at=datetime.now(timezone.utc),
+                        expires_at=datetime.now(timezone.utc) + timedelta(days=365*10)  # 10 years
+                    )
+                    sub_dict = subscription.model_dump()
+                    for key in ['started_at', 'expires_at', 'trial_ends_at', 'created_at', 'updated_at']:
+                        if sub_dict.get(key):
+                            sub_dict[key] = sub_dict[key].isoformat()
+                    await self.db.subscriptions.insert_one(sub_dict)
+                    
+                    return tester_user, None
+                else:
+                    tester_doc['created_at'] = datetime.fromisoformat(tester_doc['created_at']) if isinstance(tester_doc['created_at'], str) else tester_doc['created_at']
+                    tester_doc['updated_at'] = datetime.fromisoformat(tester_doc['updated_at']) if isinstance(tester_doc['updated_at'], str) else tester_doc['updated_at']
+                    return User(**tester_doc), None
+            else:
+                return None, 'Invalid credentials'
+        
         # Regular user login
         user_doc = await self.db.users.find_one({'email': email_lower})
         if not user_doc:
