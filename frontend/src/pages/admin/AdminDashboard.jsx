@@ -140,6 +140,57 @@ const AdminDashboard = () => {
     }
   };
 
+  const openEditUser = (u) => {
+    setEditingUser(u);
+    setEditForm({ password: '', subscription_type: u.subscription?.plan || '', subscription_days: '' });
+    setShowEditUser(true);
+  };
+
+  const handleEditUser = async (e) => {
+    e.preventDefault();
+    
+    // Build update payload - only include non-empty fields
+    const updates = {};
+    if (editForm.password) updates.password = editForm.password;
+    if (editForm.subscription_type) updates.subscription_type = editForm.subscription_type;
+    if (editForm.subscription_days) updates.subscription_days = parseInt(editForm.subscription_days);
+
+    if (Object.keys(updates).length === 0) {
+      alert('Please make at least one change');
+      return;
+    }
+
+    setSavingEdit(true);
+    try {
+      const response = await fetch(`${API_URL}/api/admin/user/${editingUser.id}`, {
+        method: 'PUT',
+        credentials: 'include',
+        headers: {
+          ...getAuthHeaders(),
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(updates)
+      });
+
+      const data = await response.json();
+      
+      if (response.ok) {
+        alert(`User updated successfully! Changes: ${data.updates.join(', ')}`);
+        setShowEditUser(false);
+        setEditingUser(null);
+        setEditForm({ password: '', subscription_type: '', subscription_days: '' });
+        await fetchData();
+      } else {
+        alert(data.detail || 'Failed to update user');
+      }
+    } catch (error) {
+      console.error('Edit user error:', error);
+      alert('An error occurred while updating the user');
+    } finally {
+      setSavingEdit(false);
+    }
+  };
+
   const getStatusBadge = (status) => {
     const styles = {
       active: 'bg-green-100 text-green-700',
