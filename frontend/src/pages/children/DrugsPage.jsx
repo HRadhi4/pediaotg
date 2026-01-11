@@ -1532,9 +1532,9 @@ const DrugsPage = ({ onBack }) => {
     let isExceedingMax = false;
     let maxDisplay = null;
     
-    // Check for mL unit (e.g., Racemic Epinephrine)
-    if (doseUnit.includes("mL") || doseUnit.includes("ml")) {
-      unit = "mL";
+    // Check for g unit (e.g., Dextrose) - check this before mL since some g/kg units mention mL
+    if (doseUnit.includes("g/kg") && !doseUnit.includes("mg") && !doseUnit.includes("mcg")) {
+      unit = "g";
       return {
         dose: `${calculatedMin.toFixed(2)}${calculatedMax !== calculatedMin ? ` - ${calculatedMax.toFixed(2)}` : ''} ${unit}`,
         isExceedingMax: false,
@@ -1542,9 +1542,9 @@ const DrugsPage = ({ onBack }) => {
       };
     }
     
-    // Check for g unit (e.g., Dextrose)
-    if (doseUnit.includes("g/kg") && !doseUnit.includes("mg") && !doseUnit.includes("mcg")) {
-      unit = "g";
+    // Check for mL unit (e.g., Racemic Epinephrine) - only pure mL dosing
+    if ((doseUnit.includes("mL") || doseUnit.includes("ml")) && !doseUnit.includes("g/kg")) {
+      unit = "mL";
       return {
         dose: `${calculatedMin.toFixed(2)}${calculatedMax !== calculatedMin ? ` - ${calculatedMax.toFixed(2)}` : ''} ${unit}`,
         isExceedingMax: false,
