@@ -228,8 +228,8 @@ class AuthService:
                 is_active=user.is_active,
                 created_at=user.created_at,
                 has_active_subscription=True,
-                subscription_plan='Tester',
-                subscription_status='active'
+                subscription_plan=None,
+                subscription_status=None
             )
         
         # Get subscription
