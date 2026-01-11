@@ -182,25 +182,6 @@ const BloodProductsDialog = ({ open, onOpenChange }) => {
     return (
       <Card className="border-[#00d9c5]/30 bg-[#00d9c5]/5 rounded-2xl">
         <CardContent className="pt-6 space-y-4">
-          {/* PRBC Indication Status */}
-          {results.type === "prbc" && results.indicationReason && (
-            <div className={`p-3 rounded-xl border ${results.transfusionIndicated 
-              ? 'bg-red-50 dark:bg-red-950/30 border-red-200' 
-              : 'bg-amber-50 dark:bg-amber-950/30 border-amber-200'}`}>
-              <div className="flex items-start gap-2">
-                <AlertCircle className={`h-4 w-4 mt-0.5 ${results.transfusionIndicated ? 'text-red-500' : 'text-amber-500'}`} />
-                <div>
-                  <p className={`text-sm font-medium ${results.transfusionIndicated ? 'text-red-700' : 'text-amber-700'}`}>
-                    {results.transfusionIndicated ? 'Transfusion Indicated' : 'Review Indication'}
-                  </p>
-                  <p className={`text-xs ${results.transfusionIndicated ? 'text-red-600' : 'text-amber-600'}`}>
-                    {results.indicationReason}
-                  </p>
-                </div>
-              </div>
-            </div>
-          )}
-
           <div className="text-center p-4 rounded-xl bg-white dark:bg-gray-800">
             <p className="text-sm text-muted-foreground">Recommended Dose</p>
             <p className="text-3xl font-mono font-bold text-[#00d9c5]">
@@ -237,12 +218,10 @@ const BloodProductsDialog = ({ open, onOpenChange }) => {
             </div>
           )}
 
-          {results.indication && (
-            <div className="p-3 rounded-xl bg-blue-50 dark:bg-blue-950/30 border border-blue-200">
-              <p className="text-xs font-medium text-blue-700 dark:text-blue-300 mb-1">Indication</p>
-              <p className="text-sm text-blue-600">{results.indication}</p>
-            </div>
-          )}
+          <div className="p-3 rounded-xl bg-blue-50 dark:bg-blue-950/30 border border-blue-200">
+            <p className="text-xs font-medium text-blue-700 dark:text-blue-300 mb-1">Indication</p>
+            <p className="text-sm text-blue-600">{results.indication}</p>
+          </div>
 
           {results.notes?.length > 0 && (
             <div className="space-y-1">
