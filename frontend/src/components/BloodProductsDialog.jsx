@@ -353,12 +353,80 @@ const BloodProductsDialog = ({ open, onOpenChange }) => {
             <Card className="nightingale-card">
               <CardHeader className="pb-3">
                 <CardTitle className="text-base">Packed Red Blood Cells</CardTitle>
-                <CardDescription>Blood transfusion for anemia (Hb &lt; 7 g/dL)</CardDescription>
+                <CardDescription>Blood transfusion for low hemoglobin</CardDescription>
               </CardHeader>
-              <CardContent>
-                <Button onClick={calculatePRBC} className="w-full nightingale-btn-primary">
+              <CardContent className="space-y-4">
+                {/* Patient Category Selection */}
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium">Patient Category</Label>
+                  <div className="grid grid-cols-3 gap-2">
+                    <Button
+                      type="button"
+                      variant={patientCategory === "stable" ? "default" : "outline"}
+                      onClick={() => setPatientCategory("stable")}
+                      className="text-xs py-2 h-auto flex flex-col items-center"
+                      data-testid="prbc-cat-stable"
+                    >
+                      <span>Stable</span>
+                      <span className="text-[10px] opacity-70">Hb ≤7</span>
+                    </Button>
+                    <Button
+                      type="button"
+                      variant={patientCategory === "symptomatic" ? "default" : "outline"}
+                      onClick={() => setPatientCategory("symptomatic")}
+                      className="text-xs py-2 h-auto flex flex-col items-center"
+                      data-testid="prbc-cat-symptomatic"
+                    >
+                      <span>Symptomatic</span>
+                      <span className="text-[10px] opacity-70">Hb ≤8</span>
+                    </Button>
+                    <Button
+                      type="button"
+                      variant={patientCategory === "critical" ? "default" : "outline"}
+                      onClick={() => setPatientCategory("critical")}
+                      className="text-xs py-2 h-auto flex flex-col items-center"
+                      data-testid="prbc-cat-critical"
+                    >
+                      <span>Critical/ICU</span>
+                      <span className="text-[10px] opacity-70">Hb ≤10</span>
+                    </Button>
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    {PRBC_THRESHOLDS[patientCategory].description}
+                  </p>
+                </div>
+
+                {/* Hemoglobin Inputs */}
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-2">
+                    <Label className="text-sm">Current Hb (g/dL)</Label>
+                    <Input
+                      type="number"
+                      step="0.1"
+                      placeholder="e.g., 6.5"
+                      value={currentHb}
+                      onChange={(e) => setCurrentHb(e.target.value)}
+                      className="nightingale-input font-mono"
+                      data-testid="prbc-current-hb"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-sm">Target Hb (g/dL)</Label>
+                    <Input
+                      type="number"
+                      step="0.1"
+                      placeholder="e.g., 10"
+                      value={targetHb}
+                      onChange={(e) => setTargetHb(e.target.value)}
+                      className="nightingale-input font-mono"
+                      data-testid="prbc-target-hb"
+                    />
+                  </div>
+                </div>
+
+                <Button onClick={calculatePRBC} className="w-full nightingale-btn-primary" data-testid="prbc-calculate">
                   <Calculator className="h-4 w-4 mr-2" />
-                  Calculate PRBC (15 ml/kg)
+                  Calculate PRBC Dose
                 </Button>
               </CardContent>
             </Card>
