@@ -1,124 +1,79 @@
-# Pediatrics On The Go - Product Requirements Document
+# Pediatrics on the Go - PRD
 
 ## Original Problem Statement
-Build a full SaaS-style web app with user accounts and a PAID-ONLY subscription model on top of the existing "Pediatrics on the go" medical calculator. The system must support mobile-friendly architecture, offline storage for user preferences, and integrate PayPal as the exclusive payment gateway.
+Build a full SaaS-style web app "Pediatrics on the Go" with:
+- User accounts with paid-only subscription model using PayPal
+- Admin account for managing users
+- Medical calculators for NICU and Pediatric ward
+- Offline storage capabilities
 
-## Core Requirements
+## Current Implementation Status
 
-### 1. User Authentication & Data Separation
-- Email/password signup/login with secure password hashing
-- Session management with JWT tokens
-- All data filtered by `user_id`
+### Core Features (Completed)
+- ✅ User authentication (JWT-based)
+- ✅ Admin authentication with hardcoded credentials
+- ✅ Tester account with full access (no admin dashboard)
+- ✅ PayPal subscription integration
+- ✅ Trial subscription (3 days)
+- ✅ Medical disclaimer popup
+- ✅ Welcome back [username] message on landing page
 
-### 2. Admin Account
-- Hardcoded admin: `Admin@pediaotg.com` / `SMC159951`
-- Bypasses all subscription checks
+### NICU Calculator (Completed - Refactored)
+- ✅ Fluid Calculator
+- ✅ Ballard Score
+- ✅ Growth Charts
+- ✅ Blood Gas Analysis
+- ✅ TPN Calculator
+- ✅ Phototherapy Guidelines
+- ✅ Drug Calculator
+- ✅ Ventilator Settings
+- ✅ Feeding Calculator
+- ✅ Bilirubin Management
 
-### 3. Paid-Only Subscription Model
-- Monthly: 1 BHD/month
-- Annual: 10 BHD/year
-- 3-day trial for new users
-- All features gated behind active subscription
+### Children Calculator (Completed)
+- ✅ Fluid Replacement
+- ✅ Drugs Page (97 drugs with max dose capping)
+- ✅ Blood Pressure
+- ✅ Infusions
+- ✅ Intubation
+- ✅ Scoring/Calculators
+- ✅ CPR
+- ✅ Approaches
 
-### 4. PayPal Integration
-- Sandbox mode for subscriptions
-- BHD to USD currency conversion
+### Admin Dashboard (Completed)
+- ✅ User listing with pagination
+- ✅ Add User functionality
+- ✅ Delete User functionality
+- ✅ Subscription stats
+- ✅ Search users
+
+### Branding
+- ✅ Custom app icon/logo
+- ✅ Updated favicon
+
+## User Accounts
+- Admin: `admin@pedotg.com` / `SMC159951`
+- Tester: `test@pedotg.com` / `SMC2000` (full app access, no admin dashboard)
 
 ## Tech Stack
-- **Backend:** FastAPI, MongoDB, Pydantic, JWT, bcrypt
-- **Frontend:** React, react-router-dom, TailwindCSS, Context API, localStorage
-- **Integrations:** PayPal, Gemini Pro Vision, Tesseract OCR
-
-## DB Schema
-- **users:** `{ _id, email, hashed_password, name, created_at, updated_at, is_admin }`
-- **subscriptions:** `{ _id, user_id, plan_name, status, started_at, trial_ends_at, ... }`
-- **user_layouts:** `{ _id, user_id, layout_type, layout_config, ... }`
-
-## Code Architecture
-```
-/app/
-├── backend/
-│   ├── models/
-│   ├── routes/
-│   ├── services/
-│   └── server.py
-└── frontend/
-    └── src/
-        ├── components/
-        │   ├── HealthIcons.jsx        # SVG icons collection
-        │   └── ElectrolytesDialog.jsx
-        ├── pages/
-        │   ├── nicu/                  # FULLY REFACTORED - All 10 NICU components
-        │   │   ├── FluidCalculatorPage.jsx    (499 lines)
-        │   │   ├── BallardScorePage.jsx       (441 lines) - with SVG diagrams
-        │   │   ├── NRPChecklistPage.jsx       (237 lines)
-        │   │   ├── CatheterCalculatorPage.jsx (86 lines)
-        │   │   ├── IntubationPage.jsx         (202 lines)
-        │   │   ├── PRBCGuidelinePage.jsx      (328 lines)
-        │   │   ├── ExchangeCalculatorPage.jsx (192 lines)
-        │   │   ├── BloodPressurePage.jsx      (202 lines)
-        │   │   ├── GrowthChartPage.jsx        (621 lines) - NEW
-        │   │   ├── NICUDrugsPage.jsx          (577 lines) - NEW
-        │   │   └── index.js
-        │   └── NICUCalculator.jsx     # Main NICU dashboard (434 lines - 88% reduction from 3656!)
-        └── App.js
-```
-
-## What's Been Implemented
-
-### Completed Features
-- [x] User authentication system (signup/login)
-- [x] PayPal subscription integration
-- [x] Admin dashboard
-- [x] NICU Calculator Dashboard with widgets
-- [x] Fluid Calculator with GIR, calories
-- [x] NRP Checklist
-- [x] UVC/UAC Calculator
-- [x] PRBC Transfusion Calculator
-- [x] Exchange Transfusion Calculator
-- [x] Intubation Guide
-- [x] Blood Pressure Reference
-- [x] Growth Charts (WHO/CDC)
-- [x] NICU Drugs Reference
-- [x] Ballard Score Calculator
-- [x] Electrolytes Dialog with dilution calculations
-- [x] Maximum dose limits with warnings
-- [x] SVG icons for all widgets (including Ballard & Postnatal)
-
-### Recent Changes (Jan 10, 2025)
-- **COMPLETE: Full Refactoring of NICUCalculator.jsx**
-  - Reduced main file from 3656 lines to 434 lines (88% reduction!)
-  - All 10 NICU components extracted to `/pages/nicu/` directory
-  - Components: FluidCalculatorPage, BallardScorePage, NRPChecklistPage, CatheterCalculatorPage, IntubationPage, PRBCGuidelinePage, ExchangeCalculatorPage, BloodPressurePage, GrowthChartPage, NICUDrugsPage
-  - Total component files: 3,385 lines across 10 files
-- **Ballard Score Text Fix**: Adjusted button containers to 80px width with `min-h-[24px]` for proper text containment
-- **Added Approaches Widget**: New "Coming Soon" widget on NICU Dashboard with purple ApproachesIcon
-- **Ballard Score SVG Diagrams**: Professional SVG illustrations for all 12 criteria
-- **Fixed Quick Access Favorites**: Ballard Score and Postnatal now show correctly
-
-## Prioritized Backlog
-
-### P0 - Critical
-- None currently
-
-### P1 - High Priority
-- None currently (Ballard diagrams completed)
-
-### P2 - Medium Priority
-- Minor linting cleanup
-
-### P3 - Low Priority
-- Inform user about OCR pivot (PaddleOCR → Tesseract)
-
-## Test Credentials
-- **Admin:** Email: `Admin@pediaotg.com`, Password: `SMC159951`
+- Frontend: React, Shadcn/UI, TailwindCSS
+- Backend: FastAPI, Python
+- Database: MongoDB
+- Payment: PayPal Sandbox
 
 ## 3rd Party Integrations
-- PayPal (Sandbox mode)
-- Gemini Pro Vision (Emergent LLM Key)
-- Tesseract (Python) for OCR
+- PayPal (subscription payments)
+- Gemini Pro Vision (OCR - pivoted from PaddleOCR)
+- Tesseract (backup OCR)
+- recharts (charts)
+- html2canvas
 
-## Notes
-- Postnatal and Approaches widgets are marked as "Coming Soon"
-- NICUCalculator.jsx refactoring FULLY COMPLETED - main file reduced to 434 lines (88% reduction)
-- All 10 NICU page components now in separate modular files
+## Backlog / Future Tasks
+- [ ] Add more drug entries
+- [ ] Implement Postnatal widget
+- [ ] Implement Approaches widget content
+- [ ] Address minor linting errors
+- [ ] Production deployment prep
+
+## Last Updated
+January 11, 2026
