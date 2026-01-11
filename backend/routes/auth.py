@@ -98,12 +98,21 @@ async def signup(user_data: UserCreate, response: Response):
     
     - Creates user with hashed password
     - Automatically creates 3-day trial subscription
+    - Sends welcome email
     - Returns access and refresh tokens
     """
     user, error = await auth_service.create_user(user_data)
     
     if error:
         raise HTTPException(status_code=400, detail=error)
+    
+    # Send welcome email (non-blocking)
+    try:
+        from services.email_service import email_service
+        email_service.send_welcome_email(user.email, user.name)
+    except Exception as e:
+        # Log error but don't fail registration
+        print(f"Failed to send welcome email: {e}")
     
     # Generate tokens
     access_token = auth_service.create_access_token(user.id, user.is_admin)
