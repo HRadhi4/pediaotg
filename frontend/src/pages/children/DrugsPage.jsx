@@ -1514,19 +1514,55 @@ const DrugsPage = ({ onBack }) => {
   // Sort drugs alphabetically by name
   const sortedDrugs = [...drugs].sort((a, b) => a.name.localeCompare(b.name));
 
-  // Filter drugs based on search
+  // Filter drugs based on search term (searches name, category, and indication)
   const filteredDrugs = sortedDrugs.filter(drug => 
     drug.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     drug.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
     drug.indication.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Calculate dose helper with maximum dose limits (Harriet Lane)
+  /**
+   * ==========================================================================
+   * CALCULATE DOSE - Weight-based pediatric dose calculator
+   * ==========================================================================
+   * 
+   * Calculates appropriate dose based on patient weight and drug specifications.
+   * Handles different unit types and enforces maximum dose limits.
+   * 
+   * UNIT HANDLING:
+   * - Rate-based (mcg/kg/min): Returns rate as-is (NOT multiplied by weight)
+   *   Example: Dopamine 2-5 mcg/kg/min -> displays "2 - 5" with unit shown separately
+   * 
+   * - g/kg: Returns dose in grams (multiplied by weight)
+   *   Example: Dextrose 0.5 g/kg for 10kg -> displays "5.00 g"
+   * 
+   * - mL: Returns dose in milliliters (multiplied by weight)
+   *   Example: Racemic Epi 0.5 mL for 10kg -> displays "5.00 mL"
+   * 
+   * - mcg: Returns dose in micrograms (multiplied by weight)
+   *   Example: Fentanyl 1 mcg/kg for 10kg -> displays "10.0 mcg"
+   * 
+   * - mg (default): Returns dose in milligrams with max dose capping
+   *   Example: Ibuprofen 10 mg/kg for 100kg -> capped at max 2400mg/day
+   * 
+   * @param {string} doseStr - Dose value as string (e.g., "5-10", "0.5")
+   * @param {number} weight - Patient weight in kg
+   * @param {number|null} maxDose - Maximum dose limit (optional)
+   * @param {string} maxUnit - Unit for max dose display (default: "mg")
+   * @param {string} doseUnit - Unit string from drug data (e.g., "mg/kg/dose q8h")
+   * 
+   * @returns {Object} { dose: string, isExceedingMax: boolean, maxDisplay: string|null }
+   * ==========================================================================
+   */
   const calculateDose = (doseStr, weight, maxDose = null, maxUnit = "mg", doseUnit = "") => {
     if (!weight || !doseStr) return null;
     if (doseStr.includes("See age")) return doseStr;
     
-    // For rate-based dosing (mcg/kg/min, etc.), don't multiply by weight - just show the rate
+    // ========================================================================
+    // RATE-BASED DOSING (mcg/kg/min, mcg/kg/hr)
+    // For continuous infusions like Dopamine, Dobutamine, Epinephrine infusion
+    // These are rates - do NOT multiply by weight, just display the rate range
+    // ========================================================================
     if (doseUnit.includes("/min") || doseUnit.includes("/hr") || doseUnit.includes("/hour")) {
       const parts = doseStr.split("-");
       const min = parseFloat(parts[0]);
