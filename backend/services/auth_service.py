@@ -155,10 +155,29 @@ class AuthService:
         return user, None
     
     async def authenticate_user(self, email: str, password: str) -> Tuple[Optional[User], Optional[str]]:
-        """Authenticate a user by email and password"""
+        """
+        Authenticate a user by email and password.
+        
+        AUTHENTICATION FLOW:
+        1. Check if admin account -> validate against hardcoded credentials
+        2. Check if tester account -> validate against hardcoded credentials  
+        3. Regular user -> validate against database hashed password
+        
+        Args:
+            email: User's email (case-insensitive)
+            password: Plain text password
+            
+        Returns:
+            Tuple of (User object, error message)
+            - Success: (User, None)
+            - Failure: (None, "Invalid credentials")
+        """
         email_lower = email.lower()
         
-        # Check for admin login
+        # =================================================================
+        # ADMIN LOGIN - Hardcoded bypass for admin account
+        # Admin has full access including admin dashboard
+        # =================================================================
         if email_lower == self.admin_email:
             if password == self.admin_password:
                 # Check if admin exists in DB, if not create it
