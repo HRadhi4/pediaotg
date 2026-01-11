@@ -1,3 +1,22 @@
+"""
+=============================================================================
+AUTH SERVICE - Authentication & User Management
+=============================================================================
+This service handles all authentication-related operations including:
+- User registration and login
+- Password hashing and verification (bcrypt)
+- JWT token generation and validation
+- Subscription status checking
+- Special account handling (Admin, Tester)
+
+SPECIAL ACCOUNTS:
+- Admin (admin@pedotg.com): Full access + admin dashboard
+- Tester (test@pedotg.com): Full app access, NO admin dashboard, NO subscription needed
+
+CONFIGURATION: All settings loaded from environment variables in .env file
+=============================================================================
+"""
+
 from datetime import datetime, timedelta, timezone
 from typing import Optional, Tuple
 import os
@@ -9,20 +28,48 @@ from models.subscription import Subscription, SubscriptionStatus, PlanType
 
 
 class AuthService:
+    """
+    Main authentication service class.
+    Instantiated with a MongoDB database connection.
+    """
+    
     def __init__(self, db: AsyncIOMotorDatabase):
+        """
+        Initialize AuthService with database and configuration.
+        
+        Args:
+            db: MongoDB database instance (async motor client)
+        
+        Configuration loaded from environment:
+            - JWT_SECRET_KEY: Secret for signing tokens
+            - JWT_ALGORITHM: Algorithm for JWT (default: HS256)
+            - ACCESS_TOKEN_EXPIRE_MINUTES: Token expiry (default: 30)
+            - ADMIN_EMAIL/PASSWORD: Hardcoded admin credentials
+            - TESTER_EMAIL/PASSWORD: Hardcoded tester credentials
+            - TRIAL_DAYS: Trial subscription length (default: 3)
+        """
         self.db = db
         self.jwt_secret = os.environ.get('JWT_SECRET_KEY', 'default-secret-key')
         self.jwt_algorithm = os.environ.get('JWT_ALGORITHM', 'HS256')
         self.access_token_expire = int(os.environ.get('ACCESS_TOKEN_EXPIRE_MINUTES', 30))
         self.refresh_token_expire = int(os.environ.get('REFRESH_TOKEN_EXPIRE_DAYS', 7))
+        # Admin account - hardcoded bypass, has full admin access
         self.admin_email = os.environ.get('ADMIN_EMAIL', 'admin@pedotg.com').lower()
         self.admin_password = os.environ.get('ADMIN_PASSWORD', 'SMC159951')
+        # Tester account - hardcoded bypass, full app access but NO admin dashboard
         self.tester_email = os.environ.get('TESTER_EMAIL', 'test@pedotg.com').lower()
         self.tester_password = os.environ.get('TESTER_PASSWORD', 'SMC2000')
         self.trial_days = int(os.environ.get('TRIAL_DAYS', 3))
     
     def hash_password(self, password: str) -> str:
-        """Hash a password using bcrypt"""
+        """
+        Hash a password using bcrypt with auto-generated salt.
+        
+        Args:
+            password: Plain text password
+        Returns:
+            Hashed password string
+        """
         salt = bcrypt.gensalt()
         return bcrypt.hashpw(password.encode('utf-8'), salt).decode('utf-8')
     
