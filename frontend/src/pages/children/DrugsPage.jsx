@@ -1,11 +1,29 @@
 /**
- * Children's Drugs Page - Pediatric Drug Formulary
+ * =============================================================================
+ * CHILDREN'S DRUGS PAGE - Pediatric Drug Formulary
+ * =============================================================================
  * 
- * Comprehensive drug database with:
- * - Weight-based dose calculations
- * - GFR calculator (Schwartz equations)
- * - Renal dose adjustments
- * - Based on Harriet Lane Handbook 23rd Edition
+ * PURPOSE: Comprehensive drug database with weight-based dose calculations
+ * 
+ * KEY FEATURES:
+ * - 97+ pediatric drugs with dosing information
+ * - Weight-based dose calculations with max dose capping
+ * - GFR calculator (Schwartz equations - revised & original)
+ * - Renal dose adjustments for drugs cleared by kidneys
+ * - Search and filter functionality
+ * 
+ * DOSE CALCULATION UNITS:
+ * - mg: Standard medication doses (e.g., antibiotics)
+ * - g: Larger doses like Dextrose
+ * - mL: Volume-based like Racemic Epinephrine
+ * - mcg: Micrograms for potent drugs
+ * - mcg/kg/min: Rate-based infusions (Dopamine, Dobutamine) - NOT multiplied by weight
+ * - K units: Large unit doses (Penicillin)
+ * 
+ * DATA SOURCE: Based on Harriet Lane Handbook 23rd Edition
+ * 
+ * DRUG NAME FORMAT: Generic Name (Brand Name) - e.g., Ceftriaxone (Rocephin)
+ * =============================================================================
  */
 
 import { useState, useEffect } from "react";
@@ -17,15 +35,19 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 const DrugsPage = ({ onBack }) => {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [weight, setWeight] = useState("");
-  const [height, setHeight] = useState("");
-  const [creatinine, setCreatinine] = useState("");
-  const [ageCategory, setAgeCategory] = useState("child"); // "preterm", "term", "child", "adolescentM", "adolescentF"
-  const [schwartzType, setSchwartzType] = useState("revised"); // "revised" or "original"
-  const [expandedDrug, setExpandedDrug] = useState(null);
-  const [showGFRCalc, setShowGFRCalc] = useState(false);
+  // ==========================================================================
+  // STATE MANAGEMENT
+  // ==========================================================================
+  const [searchTerm, setSearchTerm] = useState("");      // Drug search filter
+  const [weight, setWeight] = useState("");              // Patient weight in kg
+  const [height, setHeight] = useState("");              // Patient height in cm (for GFR)
+  const [creatinine, setCreatinine] = useState("");      // Serum creatinine µmol/L (for GFR)
+  const [ageCategory, setAgeCategory] = useState("child"); // Age category for original Schwartz
+  const [schwartzType, setSchwartzType] = useState("revised"); // GFR equation type
+  const [expandedDrug, setExpandedDrug] = useState(null);  // Currently expanded drug card
+  const [showGFRCalc, setShowGFRCalc] = useState(false);   // GFR calculator visibility
   
+  // Parsed numeric values for calculations
   const w = parseFloat(weight) || 0;
   const h = parseFloat(height) || 0;
   const scr = parseFloat(creatinine) || 0;
