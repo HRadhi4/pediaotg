@@ -528,6 +528,97 @@ const AdminDashboard = () => {
           </Card>
         </div>
       )}
+
+      {/* Edit User Modal */}
+      {showEditUser && editingUser && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <Card className="w-full max-w-md">
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle className="text-lg">Edit User</CardTitle>
+                  <CardDescription>{editingUser.email}</CardDescription>
+                </div>
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  onClick={() => { setShowEditUser(false); setEditingUser(null); }}
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleEditUser} className="space-y-4">
+                <div>
+                  <Label htmlFor="edit-password">New Password (leave blank to keep current)</Label>
+                  <Input
+                    id="edit-password"
+                    type="password"
+                    value={editForm.password}
+                    onChange={(e) => setEditForm({ ...editForm, password: e.target.value })}
+                    placeholder="Enter new password"
+                    minLength={6}
+                    data-testid="edit-user-password"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="edit-subscription">Subscription Type</Label>
+                  <select
+                    id="edit-subscription"
+                    value={editForm.subscription_type}
+                    onChange={(e) => setEditForm({ ...editForm, subscription_type: e.target.value })}
+                    className="w-full h-10 px-3 rounded-md border border-input bg-background text-sm"
+                    data-testid="edit-user-subscription"
+                  >
+                    <option value="">-- Keep Current --</option>
+                    <option value="trial">Trial</option>
+                    <option value="monthly">Monthly</option>
+                    <option value="annual">Annual</option>
+                  </select>
+                </div>
+                <div>
+                  <Label htmlFor="edit-days">Subscription Days</Label>
+                  <Input
+                    id="edit-days"
+                    type="number"
+                    value={editForm.subscription_days}
+                    onChange={(e) => setEditForm({ ...editForm, subscription_days: e.target.value })}
+                    placeholder="e.g., 30, 365"
+                    min={1}
+                    data-testid="edit-user-days"
+                  />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Sets subscription to expire in X days from now
+                  </p>
+                </div>
+                <div className="flex gap-3 pt-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="flex-1"
+                    onClick={() => { setShowEditUser(false); setEditingUser(null); }}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    type="submit"
+                    className="flex-1 bg-blue-500 hover:bg-blue-600"
+                    disabled={savingEdit}
+                    data-testid="edit-user-submit"
+                  >
+                    {savingEdit ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      'Save Changes'
+                    )}
+                  </Button>
+                </div>
+              </form>
+            </CardContent>
+          </Card>
+        </div>
+      )}
     </div>
   );
 };
