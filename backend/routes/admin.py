@@ -1,14 +1,24 @@
 from fastapi import APIRouter, HTTPException, Depends
-from typing import List
-from datetime import datetime, timezone
+from pydantic import BaseModel, EmailStr
+from typing import List, Optional
+from datetime import datetime, timezone, timedelta
 import os
 import sys
 sys.path.insert(0, '/app/backend')
 
 from routes.auth import require_admin
-from models.user import UserResponse
+from models.user import UserResponse, User
+from models.subscription import Subscription, SubscriptionStatus, PlanType
 from services.subscription_service import SubscriptionService
+from services.auth_service import AuthService
 from motor.motor_asyncio import AsyncIOMotorClient
+
+
+class AdminCreateUser(BaseModel):
+    email: EmailStr
+    name: str
+    password: str
+    subscription_type: Optional[str] = "trial"  # trial, monthly, annual
 
 router = APIRouter(prefix="/admin", tags=["Admin"])
 
