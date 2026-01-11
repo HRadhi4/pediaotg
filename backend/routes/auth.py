@@ -285,3 +285,108 @@ async def check_auth(request: Request, credentials: HTTPAuthorizationCredentials
         "email": user.email,
         "name": user.name
     }
+
+
+
+# =============================================================================
+# PASSWORD RESET ENDPOINTS
+# =============================================================================
+
+from pydantic import BaseModel, EmailStr
+import secrets
+from services.email_service import email_service
+
+class ForgotPasswordRequest(BaseModel):
+    email: EmailStr
+
+class ResetPasswordRequest(BaseModel):
+    token: str
+    new_password: str
+
+
+@router.post("/forgot-password")
+async def forgot_password(request_data: ForgotPasswordRequest):
+    """
+    Request a password reset email.
+    
+    - Generates a secure reset token (valid for 1 hour)
+    - Sends email with reset link
+    - Returns success even if email not found (security)
+    """
+    email_lower = request_data.email.lower()
+    
+    # Find user
+    user = await db.users.find_one({'email': email_lower})
+    
+    if user:
+        # Generate secure token
+        reset_token = secrets.token_urlsafe(32)
+        expires_at = datetime.now(timezone.utc).isoformat()
+        
+        # Store token in database (expires in 1 hour)
+        from datetime import timedelta
+        expires = (datetime.now(timezone.utc) + timedelta(hours=1)).isoformat()
+        
+        await db.password_resets.delete_many({'user_id': user['id']})  # Remove old tokens
+        await db.password_resets.insert_one({
+            'user_id': user['id'],
+            'token': reset_token,
+            'email': email_lower,
+            'expires_at': expires,
+            'created_at': datetime.now(timezone.utc).isoformat()
+        })
+        
+        # Get frontend URL from environment or use default
+        frontend_url = os.environ.get('FRONTEND_URL', 'https://pedotg-repair.preview.emergentagent.com')
+        
+        # Send email
+        email_service.send_password_reset_email(
+            to_email=email_lower,
+            user_name=user.get('name', 'User'),
+            reset_token=reset_token,
+            frontend_url=frontend_url
+        )
+    
+    # Always return success to prevent email enumeration
+    return {"message": "If an account exists with this email, a password reset link has been sent."}
+
+
+@router.post("/reset-password")
+async def reset_password(request_data: ResetPasswordRequest):
+    """
+    Reset password using token from email.
+    
+    - Validates token and expiration
+    - Updates user password
+    - Deletes used token
+    """
+    # Find valid token
+    reset_record = await db.password_resets.find_one({'token': request_data.token})
+    
+    if not reset_record:
+        raise HTTPException(status_code=400, detail="Invalid or expired reset token")
+    
+    # Check expiration
+    expires_at = datetime.fromisoformat(reset_record['expires_at'].replace('Z', '+00:00'))
+    if datetime.now(timezone.utc) > expires_at:
+        await db.password_resets.delete_one({'token': request_data.token})
+        raise HTTPException(status_code=400, detail="Reset token has expired")
+    
+    # Validate password
+    if len(request_data.new_password) < 6:
+        raise HTTPException(status_code=400, detail="Password must be at least 6 characters")
+    
+    # Update password
+    hashed = auth_service.hash_password(request_data.new_password)
+    result = await db.users.update_one(
+        {'id': reset_record['user_id']},
+        {'$set': {'hashed_password': hashed, 'updated_at': datetime.now(timezone.utc).isoformat()}}
+    )
+    
+    if result.modified_count == 0:
+        raise HTTPException(status_code=500, detail="Failed to update password")
+    
+    # Delete used token
+    await db.password_resets.delete_one({'token': request_data.token})
+    
+    return {"message": "Password reset successfully. You can now log in with your new password."}
