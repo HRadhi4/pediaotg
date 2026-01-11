@@ -12,6 +12,8 @@ import ChildrenDashboard from "@/pages/ChildrenDashboard";
 // Auth Pages
 import LoginPage from "@/pages/auth/LoginPage";
 import SignupPage from "@/pages/auth/SignupPage";
+import ForgotPasswordPage from "@/pages/auth/ForgotPasswordPage";
+import ResetPasswordPage from "@/pages/auth/ResetPasswordPage";
 
 // Subscription Pages
 import PricingPage from "@/pages/subscription/PricingPage";
