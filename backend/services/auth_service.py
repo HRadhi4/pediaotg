@@ -15,8 +15,10 @@ class AuthService:
         self.jwt_algorithm = os.environ.get('JWT_ALGORITHM', 'HS256')
         self.access_token_expire = int(os.environ.get('ACCESS_TOKEN_EXPIRE_MINUTES', 30))
         self.refresh_token_expire = int(os.environ.get('REFRESH_TOKEN_EXPIRE_DAYS', 7))
-        self.admin_email = os.environ.get('ADMIN_EMAIL', 'Admin@pediaotg.com').lower()
+        self.admin_email = os.environ.get('ADMIN_EMAIL', 'admin@pedotg.com').lower()
         self.admin_password = os.environ.get('ADMIN_PASSWORD', 'SMC159951')
+        self.tester_email = os.environ.get('TESTER_EMAIL', 'test@pedotg.com').lower()
+        self.tester_password = os.environ.get('TESTER_PASSWORD', 'SMC2000')
         self.trial_days = int(os.environ.get('TRIAL_DAYS', 3))
     
     def hash_password(self, password: str) -> str:
