@@ -12,35 +12,87 @@ const BloodProductsDialog = ({ open, onOpenChange }) => {
   const [weight, setWeight] = useState("");
   const [results, setResults] = useState(null);
 
+  // PRBC-specific states
+  const [currentHb, setCurrentHb] = useState("");
+  const [targetHb, setTargetHb] = useState("10");
+  const [patientCategory, setPatientCategory] = useState("stable");
+
   // Coagulation states
   const [ptType, setPtType] = useState("infant");
   const [fibrinogen, setFibrinogen] = useState("");
   const [platelets, setPlatelets] = useState("");
 
+  /**
+   * ==========================================================================
+   * PRBC TRANSFUSION THRESHOLDS (Low Hemoglobin Indications)
+   * ==========================================================================
+   * Based on AABB guidelines and pediatric transfusion protocols
+   * 
+   * Categories:
+   * - Stable: Non-ICU, no symptoms, chronic anemia
+   * - Symptomatic: Tachycardia, fatigue, poor feeding
+   * - Critical: ICU, respiratory support, active bleeding, hemodynamic instability
+   * ==========================================================================
+   */
+  const PRBC_THRESHOLDS = {
+    stable: { threshold: 7, label: "Stable/Chronic Anemia", description: "Non-ICU, asymptomatic" },
+    symptomatic: { threshold: 8, label: "Symptomatic Anemia", description: "Tachycardia, fatigue, poor feeding" },
+    critical: { threshold: 10, label: "Critical/ICU", description: "Respiratory support, active bleeding, hemodynamic instability" }
+  };
+
   const calculatePRBC = () => {
     const w = parseFloat(weight);
+    const hb = parseFloat(currentHb);
+    const target = parseFloat(targetHb);
+    
     if (!w) {
       setResults({ error: "Please enter weight" });
       return;
     }
 
-    // Simple: 15 ml/kg, max 1 unit (280 ml)
-    const dose = w * 15;
-    const maxDose = 280;
-    const actualDose = Math.min(dose, maxDose);
+    const threshold = PRBC_THRESHOLDS[patientCategory];
+    let transfusionIndicated = false;
+    let indicationReason = "";
+
+    // Check if transfusion is indicated based on current Hb and category
+    if (hb && hb <= threshold.threshold) {
+      transfusionIndicated = true;
+      indicationReason = `Hb ${hb} g/dL ≤ ${threshold.threshold} g/dL (${threshold.label})`;
+    } else if (hb && hb > threshold.threshold) {
+      indicationReason = `Hb ${hb} g/dL > ${threshold.threshold} g/dL - Transfusion may not be indicated for ${threshold.label.toLowerCase()} patients`;
+    }
+
+    // Calculate dose: 10-15 ml/kg OR formula-based if Hb provided
+    let dose, calculation;
+    
+    if (hb && target && hb < target) {
+      // Formula: Volume (ml) = Weight (kg) × (Target Hb - Current Hb) × 3
+      // Factor of 3 because 1 ml/kg PRBC raises Hb by ~0.33 g/dL
+      const calculatedDose = w * (target - hb) * 3;
+      dose = Math.min(calculatedDose, 280); // Max 1 unit
+      calculation = `${w} kg × (${target} - ${hb}) × 3 = ${calculatedDose.toFixed(0)} ml`;
+    } else {
+      // Standard: 10-15 ml/kg
+      dose = Math.min(w * 15, 280);
+      calculation = `${w} kg × 15 ml/kg = ${(w * 15).toFixed(0)} ml`;
+    }
 
     setResults({
       type: "prbc",
-      dose: `${actualDose.toFixed(0)} ml`,
-      calculation: `${w} kg × 15 ml/kg = ${dose.toFixed(0)} ml`,
-      capped: dose > maxDose,
+      dose: `${dose.toFixed(0)} ml`,
+      calculation,
+      capped: dose >= 280,
       duration: "3-4 hours",
       maxDose: "1 unit (280 ml)",
+      transfusionIndicated,
+      indicationReason,
+      currentCategory: threshold,
       notes: [
-        "Indication: Hb < 7 g/dL",
-        "15 ml/kg raises Hb by approximately 2-3 g/dL",
-        "Max: 1 unit (280 ml)",
-        "Use leukocyte-reduced, irradiated blood for neonates"
+        `Threshold for ${threshold.label}: Hb ≤ ${threshold.threshold} g/dL`,
+        "10-15 ml/kg raises Hb by approximately 2-3 g/dL",
+        "Max: 1 unit (280 ml) per transfusion",
+        "Use leukocyte-reduced, irradiated blood for immunocompromised/neonates",
+        "Check post-transfusion Hb after 1-4 hours"
       ]
     });
   };
