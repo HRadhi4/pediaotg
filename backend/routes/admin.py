@@ -1,3 +1,23 @@
+"""
+=============================================================================
+ADMIN ROUTES - Administrative Dashboard API Endpoints
+=============================================================================
+This module provides admin-only endpoints for user management:
+
+ENDPOINTS:
+- GET  /api/admin/users          - List all users with pagination
+- GET  /api/admin/subscriptions  - List all subscriptions
+- GET  /api/admin/stats          - Get subscription statistics
+- GET  /api/admin/user/{id}      - Get detailed user info
+- POST /api/admin/user           - Create new user with subscription
+- DELETE /api/admin/user/{id}    - Delete user and related data
+
+AUTHORIZATION: All endpoints require admin authentication via require_admin dependency
+
+NOTE: Admin users cannot be deleted through the API for security
+=============================================================================
+"""
+
 from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel, EmailStr
 from typing import List, Optional
@@ -14,21 +34,43 @@ from services.auth_service import AuthService
 from motor.motor_asyncio import AsyncIOMotorClient
 
 
+# =============================================================================
+# REQUEST/RESPONSE MODELS
+# =============================================================================
+
 class AdminCreateUser(BaseModel):
+    """
+    Request model for creating a new user via admin dashboard.
+    
+    Attributes:
+        email: Valid email address (validated by EmailStr)
+        name: User's display name
+        password: Plain text password (will be hashed)
+        subscription_type: One of "trial", "monthly", "annual"
+    """
     email: EmailStr
     name: str
     password: str
     subscription_type: Optional[str] = "trial"  # trial, monthly, annual
 
+
+# =============================================================================
+# ROUTER SETUP & DATABASE CONNECTION
+# =============================================================================
+
 router = APIRouter(prefix="/admin", tags=["Admin"])
 
-# Database connection
+# Database connection - uses environment variables
 mongo_url = os.environ.get('MONGO_URL', 'mongodb://localhost:27017')
 client = AsyncIOMotorClient(mongo_url)
 db = client[os.environ.get('DB_NAME', 'test_database')]
 
 subscription_service = SubscriptionService(db)
 
+
+# =============================================================================
+# ADMIN ENDPOINTS
+# =============================================================================
 
 @router.get("/users")
 async def get_all_users(
