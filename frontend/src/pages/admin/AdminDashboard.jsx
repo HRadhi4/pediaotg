@@ -97,6 +97,44 @@ const AdminDashboard = () => {
     }
   };
 
+  const handleAddUser = async (e) => {
+    e.preventDefault();
+    
+    if (!newUser.name || !newUser.email || !newUser.password) {
+      alert('Please fill in all required fields');
+      return;
+    }
+
+    setAddingUser(true);
+    try {
+      const response = await fetch(`${API_URL}/api/admin/user`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          ...getAuthHeaders(),
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(newUser)
+      });
+
+      const data = await response.json();
+      
+      if (response.ok) {
+        alert(`User ${data.user.email} created successfully!`);
+        setShowAddUser(false);
+        setNewUser({ name: '', email: '', password: '', subscription_type: 'trial' });
+        await fetchData();
+      } else {
+        alert(data.detail || 'Failed to create user');
+      }
+    } catch (error) {
+      console.error('Add user error:', error);
+      alert('An error occurred while creating the user');
+    } finally {
+      setAddingUser(false);
+    }
+  };
+
   const getStatusBadge = (status) => {
     const styles = {
       active: 'bg-green-100 text-green-700',
