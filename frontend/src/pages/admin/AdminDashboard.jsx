@@ -368,20 +368,31 @@ const AdminDashboard = () => {
                           </td>
                           <td className="py-3 px-2">
                             {!u.is_admin && (
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => handleDeleteUser(u.id, u.email)}
-                                disabled={deletingUserId === u.id}
-                                className="text-red-500 hover:text-red-700 hover:bg-red-50"
-                                data-testid={`delete-user-${u.id}`}
-                              >
-                                {deletingUserId === u.id ? (
-                                  <Loader2 className="h-4 w-4 animate-spin" />
-                                ) : (
-                                  <Trash2 className="h-4 w-4" />
-                                )}
-                              </Button>
+                              <div className="flex items-center gap-1">
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => openEditUser(u)}
+                                  className="text-blue-500 hover:text-blue-700 hover:bg-blue-50"
+                                  data-testid={`edit-user-${u.id}`}
+                                >
+                                  <Pencil className="h-4 w-4" />
+                                </Button>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => handleDeleteUser(u.id, u.email)}
+                                  disabled={deletingUserId === u.id}
+                                  className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                                  data-testid={`delete-user-${u.id}`}
+                                >
+                                  {deletingUserId === u.id ? (
+                                    <Loader2 className="h-4 w-4 animate-spin" />
+                                  ) : (
+                                    <Trash2 className="h-4 w-4" />
+                                  )}
+                                </Button>
+                              </div>
                             )}
                           </td>
                         </tr>
