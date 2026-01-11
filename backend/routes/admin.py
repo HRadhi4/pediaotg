@@ -185,3 +185,89 @@ async def delete_user(
     
     return {"message": "User deleted successfully", "user_id": user_id}
 
+
+@router.post("/user")
+async def create_user(
+    user_data: AdminCreateUser,
+    admin: UserResponse = Depends(require_admin)
+):
+    """
+    Create a new user with subscription (Admin only)
+    """
+    email_lower = user_data.email.lower()
+    
+    # Check if user already exists
+    existing = await db.users.find_one({'email': email_lower})
+    if existing:
+        raise HTTPException(status_code=400, detail="Email already registered")
+    
+    # Create auth service instance for password hashing
+    auth_service = AuthService(db)
+    
+    # Create user
+    user = User(
+        email=email_lower,
+        name=user_data.name,
+        hashed_password=auth_service.hash_password(user_data.password),
+        is_admin=False
+    )
+    
+    user_dict = user.model_dump()
+    user_dict['created_at'] = user_dict['created_at'].isoformat()
+    user_dict['updated_at'] = user_dict['updated_at'].isoformat()
+    
+    await db.users.insert_one(user_dict)
+    
+    # Create subscription based on type
+    now = datetime.now(timezone.utc)
+    
+    if user_data.subscription_type == "trial":
+        subscription = Subscription(
+            user_id=user.id,
+            plan_name=PlanType.TRIAL,
+            status=SubscriptionStatus.TRIAL,
+            started_at=now,
+            trial_ends_at=now + timedelta(days=3)
+        )
+    elif user_data.subscription_type == "monthly":
+        subscription = Subscription(
+            user_id=user.id,
+            plan_name=PlanType.MONTHLY,
+            status=SubscriptionStatus.ACTIVE,
+            started_at=now,
+            renews_at=now + timedelta(days=30)
+        )
+    elif user_data.subscription_type == "annual":
+        subscription = Subscription(
+            user_id=user.id,
+            plan_name=PlanType.ANNUAL,
+            status=SubscriptionStatus.ACTIVE,
+            started_at=now,
+            renews_at=now + timedelta(days=365)
+        )
+    else:
+        # Default to trial
+        subscription = Subscription(
+            user_id=user.id,
+            plan_name=PlanType.TRIAL,
+            status=SubscriptionStatus.TRIAL,
+            started_at=now,
+            trial_ends_at=now + timedelta(days=3)
+        )
+    
+    sub_dict = subscription.model_dump()
+    for key in ['started_at', 'trial_ends_at', 'renews_at', 'created_at', 'updated_at']:
+        if sub_dict.get(key):
+            sub_dict[key] = sub_dict[key].isoformat()
+    await db.subscriptions.insert_one(sub_dict)
+    
+    return {
+        "message": "User created successfully",
+        "user": {
+            "id": user.id,
+            "email": user.email,
+            "name": user.name,
+            "subscription_type": user_data.subscription_type
+        }
+    }
+
