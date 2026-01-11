@@ -1503,6 +1503,29 @@ const DrugsPage = ({ onBack }) => {
   const calculateDose = (doseStr, weight, maxDose = null, maxUnit = "mg") => {
     if (!weight || !doseStr) return null;
     if (doseStr.includes("See age")) return doseStr;
+    
+    // For rate-based dosing (mcg/kg/min, etc.), don't multiply by weight - just show the rate
+    if (doseStr.includes("/min") || doseStr.includes("/hr") || doseStr.includes("/hour")) {
+      // This is a rate - just return the rate range without calculation
+      const parts = doseStr.split("-");
+      const min = parseFloat(parts[0]);
+      const max = parseFloat(parts[1]) || min;
+      
+      if (isNaN(min)) return null;
+      
+      let unit = "mcg/kg/min";
+      if (doseStr.includes("mcg/kg/hr") || doseStr.includes("mcg/kg/hour")) unit = "mcg/kg/hr";
+      if (doseStr.includes("mg/kg/min")) unit = "mg/kg/min";
+      if (doseStr.includes("mg/kg/hr") || doseStr.includes("mg/kg/hour")) unit = "mg/kg/hr";
+      
+      return {
+        dose: `${min}${max !== min ? ` - ${max}` : ''} ${unit}`,
+        isExceedingMax: false,
+        maxDisplay: null,
+        isRate: true
+      };
+    }
+    
     const parts = doseStr.split("-");
     const min = parseFloat(parts[0]);
     const max = parseFloat(parts[1]) || min;
@@ -1535,7 +1558,7 @@ const DrugsPage = ({ onBack }) => {
       };
     }
     
-    // Check for mcg unit (e.g., Dopamine, vasoactives)
+    // Check for mcg unit (e.g., bolus doses)
     if (doseStr.includes("mcg")) {
       unit = "mcg";
       // For mcg, maxDose would be in mcg
