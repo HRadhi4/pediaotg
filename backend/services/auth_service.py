@@ -218,6 +218,20 @@ class AuthService:
                 subscription_status='active'
             )
         
+        # Tester account has permanent full access (no subscription needed)
+        if user.email == self.tester_email:
+            return UserResponse(
+                id=user.id,
+                email=user.email,
+                name=user.name,
+                is_admin=False,
+                is_active=user.is_active,
+                created_at=user.created_at,
+                has_active_subscription=True,
+                subscription_plan='Tester',
+                subscription_status='active'
+            )
+        
         # Get subscription
         sub_doc = await self.db.subscriptions.find_one(
             {'user_id': user_id},
