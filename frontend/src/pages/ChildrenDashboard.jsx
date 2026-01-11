@@ -1746,7 +1746,7 @@ const CPRPage = ({ onBack }) => {
   };
 
   return (
-    <div className="space-y-4 pt-4 pb-8">
+    <div className="space-y-4 pb-8">
       {/* Header Card - Weight Input */}
       <Card className="nightingale-card border-red-200 dark:border-red-800/50">
         <CardContent className="pt-4">
