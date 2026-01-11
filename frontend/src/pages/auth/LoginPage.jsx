@@ -32,16 +32,16 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-teal-50 to-blue-50 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4 sm:p-4 py-6 sm:py-4">
-      <Card className="w-full max-w-md my-auto">
-        <CardHeader className="text-center">
-          <div className="mx-auto w-16 h-16 rounded-2xl flex items-center justify-center mb-4 overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-teal-50 to-blue-50 dark:from-gray-900 dark:to-gray-800 flex items-start sm:items-center justify-center px-4 pt-8 sm:pt-4 pb-4">
+      <Card className="w-full max-w-md">
+        <CardHeader className="text-center pb-4">
+          <div className="mx-auto w-14 h-14 sm:w-16 sm:h-16 rounded-2xl flex items-center justify-center mb-3 overflow-hidden">
             <img src="/icon.svg" alt="Logo" className="w-full h-full object-contain" />
           </div>
-          <CardTitle className="text-2xl font-bold">Welcome Back</CardTitle>
-          <CardDescription>Sign in to Pediatrics On The Go</CardDescription>
+          <CardTitle className="text-xl sm:text-2xl font-bold">Welcome Back</CardTitle>
+          <CardDescription className="text-sm">Sign in to Pediatrics On The Go</CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="pt-0">
           <form onSubmit={handleSubmit} className="space-y-4">
             {error && (
               <div className="flex items-center gap-2 p-3 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-lg text-sm">
