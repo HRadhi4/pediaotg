@@ -1685,8 +1685,12 @@ const CPRPage = ({ onBack }) => {
   const [weight, setWeight] = useState("");
   const w = parseFloat(weight) || 0;
 
-  // Scroll to top when page loads
+  // Scroll to top when page loads - target the scrollable container
   useEffect(() => {
+    const scrollContainer = document.querySelector('.native-scroll');
+    if (scrollContainer) {
+      scrollContainer.scrollTo(0, 0);
+    }
     window.scrollTo(0, 0);
   }, []);
 
