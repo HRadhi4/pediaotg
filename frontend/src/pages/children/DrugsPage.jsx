@@ -334,6 +334,20 @@ const DrugsPage = ({ onBack }) => {
       renalAdjust: { gfr50: "q12h", gfr30: "q24h", gfr10: "q24h (50% dose)", hd: "Give after HD" }
     },
     {
+      id: "cefixime",
+      name: "Cefixime (Suprax)",
+      category: "Antibiotic",
+      route: "PO",
+      doses: {
+        standard: { label: "Standard", value: "8", unit: "mg/kg/day once daily or divided q12h" },
+        uti: { label: "UTI", value: "8", unit: "mg/kg/day" }
+      },
+      max: "400 mg/day",
+      indication: "UTI, otitis media, pharyngitis, gonorrhea",
+      notes: "3rd gen oral cephalosporin. Take with or without food.",
+      renalAdjust: { gfr50: "No change", gfr30: "75% dose", gfr10: "50% dose", hd: "No supplement" }
+    },
+    {
       id: "cefotaxime",
       name: "Cefotaxime (Claforan)",
       category: "Antibiotic",
