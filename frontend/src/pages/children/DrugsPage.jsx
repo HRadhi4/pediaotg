@@ -1884,7 +1884,7 @@ const DrugsPage = ({ onBack }) => {
                     <div className="text-right ml-2">
                       {(() => {
                         const maxDoseValue = parseMaxDose(drug.max);
-                        const result = calculateDose(firstDose.value, w, maxDoseValue);
+                        const result = calculateDose(firstDose.value, w, maxDoseValue, "mg", firstDose.unit);
                         if (!result) return null;
                         const doseResult = typeof result === 'string' ? { dose: result, isExceedingMax: false } : result;
                         return (
