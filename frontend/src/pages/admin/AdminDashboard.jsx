@@ -4,8 +4,9 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, Users, CreditCard, TrendingUp, Loader2, Search, ChevronLeft, ChevronRight, Trash2 } from 'lucide-react';
+import { ArrowLeft, Users, CreditCard, TrendingUp, Loader2, Search, ChevronLeft, ChevronRight, Trash2, UserPlus, X } from 'lucide-react';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || '';
 
@@ -19,6 +20,9 @@ const AdminDashboard = () => {
   const [total, setTotal] = useState(0);
   const [searchTerm, setSearchTerm] = useState('');
   const [deletingUserId, setDeletingUserId] = useState(null);
+  const [showAddUser, setShowAddUser] = useState(false);
+  const [addingUser, setAddingUser] = useState(false);
+  const [newUser, setNewUser] = useState({ name: '', email: '', password: '', subscription_type: 'trial' });
   const limit = 20;
 
   useEffect(() => {
