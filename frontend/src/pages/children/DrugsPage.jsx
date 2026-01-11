@@ -1501,6 +1501,27 @@ const DrugsPage = ({ onBack }) => {
     let isExceedingMax = false;
     let maxDisplay = null;
     
+    // Check for mL unit (e.g., Racemic Epinephrine)
+    if (doseStr.includes("mL") || doseStr.includes("ml")) {
+      unit = "mL";
+      return {
+        dose: `${calculatedMin.toFixed(2)}${calculatedMax !== calculatedMin ? ` - ${calculatedMax.toFixed(2)}` : ''} ${unit}`,
+        isExceedingMax: false,
+        maxDisplay: null
+      };
+    }
+    
+    // Check for g unit (e.g., Dextrose)
+    if (doseStr.includes("g/kg") && !doseStr.includes("mg") && !doseStr.includes("mcg")) {
+      unit = "g";
+      return {
+        dose: `${calculatedMin.toFixed(2)}${calculatedMax !== calculatedMin ? ` - ${calculatedMax.toFixed(2)}` : ''} ${unit}`,
+        isExceedingMax: false,
+        maxDisplay: null
+      };
+    }
+    
+    // Check for mcg unit (e.g., Dopamine, vasoactives)
     if (doseStr.includes("mcg")) {
       unit = "mcg";
       // For mcg, maxDose would be in mcg
