@@ -1500,26 +1500,20 @@ const DrugsPage = ({ onBack }) => {
   );
 
   // Calculate dose helper with maximum dose limits (Harriet Lane)
-  const calculateDose = (doseStr, weight, maxDose = null, maxUnit = "mg") => {
+  const calculateDose = (doseStr, weight, maxDose = null, maxUnit = "mg", doseUnit = "") => {
     if (!weight || !doseStr) return null;
     if (doseStr.includes("See age")) return doseStr;
     
     // For rate-based dosing (mcg/kg/min, etc.), don't multiply by weight - just show the rate
-    if (doseStr.includes("/min") || doseStr.includes("/hr") || doseStr.includes("/hour")) {
-      // This is a rate - just return the rate range without calculation
+    if (doseUnit.includes("/min") || doseUnit.includes("/hr") || doseUnit.includes("/hour")) {
       const parts = doseStr.split("-");
       const min = parseFloat(parts[0]);
       const max = parseFloat(parts[1]) || min;
       
       if (isNaN(min)) return null;
       
-      let unit = "mcg/kg/min";
-      if (doseStr.includes("mcg/kg/hr") || doseStr.includes("mcg/kg/hour")) unit = "mcg/kg/hr";
-      if (doseStr.includes("mg/kg/min")) unit = "mg/kg/min";
-      if (doseStr.includes("mg/kg/hr") || doseStr.includes("mg/kg/hour")) unit = "mg/kg/hr";
-      
       return {
-        dose: `${min}${max !== min ? ` - ${max}` : ''} ${unit}`,
+        dose: `${min}${max !== min ? ` - ${max}` : ''}`,
         isExceedingMax: false,
         maxDisplay: null,
         isRate: true
@@ -1539,7 +1533,7 @@ const DrugsPage = ({ onBack }) => {
     let maxDisplay = null;
     
     // Check for mL unit (e.g., Racemic Epinephrine)
-    if (doseStr.includes("mL") || doseStr.includes("ml")) {
+    if (doseUnit.includes("mL") || doseUnit.includes("ml")) {
       unit = "mL";
       return {
         dose: `${calculatedMin.toFixed(2)}${calculatedMax !== calculatedMin ? ` - ${calculatedMax.toFixed(2)}` : ''} ${unit}`,
@@ -1549,7 +1543,7 @@ const DrugsPage = ({ onBack }) => {
     }
     
     // Check for g unit (e.g., Dextrose)
-    if (doseStr.includes("g/kg") && !doseStr.includes("mg") && !doseStr.includes("mcg")) {
+    if (doseUnit.includes("g/kg") && !doseUnit.includes("mg") && !doseUnit.includes("mcg")) {
       unit = "g";
       return {
         dose: `${calculatedMin.toFixed(2)}${calculatedMax !== calculatedMin ? ` - ${calculatedMax.toFixed(2)}` : ''} ${unit}`,
@@ -1559,9 +1553,8 @@ const DrugsPage = ({ onBack }) => {
     }
     
     // Check for mcg unit (e.g., bolus doses)
-    if (doseStr.includes("mcg")) {
+    if (doseUnit.includes("mcg") && !doseUnit.includes("/min") && !doseUnit.includes("/hr")) {
       unit = "mcg";
-      // For mcg, maxDose would be in mcg
       if (maxDose) {
         if (calculatedMax > maxDose) {
           isExceedingMax = true;
@@ -1577,7 +1570,7 @@ const DrugsPage = ({ onBack }) => {
       };
     }
     
-    if (doseStr.includes("units")) {
+    if (doseUnit.includes("units") || doseStr.includes("units")) {
       const multiplier = doseStr.includes("50000") || doseStr.includes("75000") ? 1000 : 1;
       calculatedMin = (min * weight) / multiplier;
       calculatedMax = (max * weight) / multiplier;
