@@ -42,7 +42,7 @@ const LoginPage = () => {
           <CardDescription className="text-sm">Sign in to Pediatrics On The Go</CardDescription>
         </CardHeader>
         <CardContent className="pt-0">
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-3">
             {error && (
               <div className="flex items-center gap-2 p-3 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-lg text-sm">
                 <AlertCircle className="h-4 w-4 flex-shrink-0" />
