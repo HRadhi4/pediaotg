@@ -146,13 +146,7 @@ async def login(credentials: UserLogin, response: Response):
     - Returns access and refresh tokens
     - Sets HTTP-only cookies for web clients
     """
-    # Debug log
-    print(f"[LOGIN] Attempting login for: {credentials.email}")
-    print(f"[LOGIN] Admin email in service: {auth_service.admin_email}")
-    
     user, error = await auth_service.authenticate_user(credentials.email, credentials.password)
-    
-    print(f"[LOGIN] Result: user={user is not None}, error={error}")
     
     if error:
         raise HTTPException(status_code=401, detail=error)
