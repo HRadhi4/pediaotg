@@ -335,7 +335,7 @@ const DrugsPage = ({ onBack }) => {
     },
     {
       id: "cefotaxime",
-      name: "Cefotaxime",
+      name: "Cefotaxime (Claforan)",
       category: "Antibiotic",
       route: "IV/IM",
       doses: {
@@ -363,7 +363,7 @@ const DrugsPage = ({ onBack }) => {
     },
     {
       id: "ceftriaxone",
-      name: "Ceftriaxone",
+      name: "Ceftriaxone (Rocephin)",
       category: "Antibiotic",
       route: "IV/IM",
       doses: {
@@ -377,7 +377,7 @@ const DrugsPage = ({ onBack }) => {
     },
     {
       id: "cefuroxime",
-      name: "Cefuroxime",
+      name: "Cefuroxime (Zinnat/Zinacef)",
       category: "Antibiotic",
       route: "IV/PO",
       doses: {
