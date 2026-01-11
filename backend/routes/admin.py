@@ -54,6 +54,20 @@ class AdminCreateUser(BaseModel):
     subscription_type: Optional[str] = "trial"  # trial, monthly, annual
 
 
+class AdminEditUser(BaseModel):
+    """
+    Request model for editing a user via admin dashboard.
+    
+    Attributes:
+        password: New password (optional, will be hashed if provided)
+        subscription_type: One of "trial", "monthly", "annual" (optional)
+        subscription_days: Number of days to set/extend subscription (optional)
+    """
+    password: Optional[str] = None
+    subscription_type: Optional[str] = None  # trial, monthly, annual
+    subscription_days: Optional[int] = None  # Days to add/set
+
+
 # =============================================================================
 # ROUTER SETUP & DATABASE CONNECTION
 # =============================================================================
