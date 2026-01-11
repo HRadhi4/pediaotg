@@ -162,9 +162,6 @@ const BloodProductsDialog = ({ open, onOpenChange }) => {
 
   const reset = () => {
     setWeight("");
-    setCurrentHb("");
-    setTargetHb("10");
-    setPatientCategory("stable");
     setFibrinogen("");
     setPlatelets("");
     setResults(null);
