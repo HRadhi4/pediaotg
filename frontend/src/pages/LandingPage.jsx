@@ -35,6 +35,7 @@ import {
 
 const LandingPage = ({ theme, toggleTheme }) => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [bloodGasOpen, setBloodGasOpen] = useState(false);
   const [electrolytesOpen, setElectrolytesOpen] = useState(false);
   const [jaundiceOpen, setJaundiceOpen] = useState(false);
