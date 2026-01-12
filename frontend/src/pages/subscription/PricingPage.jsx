@@ -51,11 +51,16 @@ const PricingPage = () => {
       const data = await response.json();
 
       if (data.success && data.approval_url) {
-        // Store order info for later
+        // Store order info AND state token for use when returning from PayPal
+        // The state token allows us to re-authenticate after PayPal redirect
         localStorage.setItem('pending_order', JSON.stringify({
           order_id: data.order_id,
-          plan_name: planName
+          plan_name: planName,
+          state_token: data.state_token  // Critical: Used to restore auth after redirect
         }));
+        
+        console.log('Redirecting to PayPal with order:', data.order_id);
+        
         // Redirect to PayPal
         window.location.href = data.approval_url;
       } else {
