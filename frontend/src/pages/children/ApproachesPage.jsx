@@ -2625,9 +2625,8 @@ const ApproachesPage = ({ onBack }) => {
             onClick={() => toggleSection('vitals')}
             className="w-full flex items-center justify-between"
           >
-            <span className={`transform transition-transform ${expandedSections['vitals'] ? 'rotate-180' : ''}`}>▼</span>
             <CardTitle className="text-sm">Pediatric Vital Signs Reference</CardTitle>
-            <span className="w-4"></span>
+            <span className={`transform transition-transform ${expandedSections['vitals'] ? 'rotate-180' : ''}`}>▼</span>
           </button>
         </CardHeader>
         {expandedSections['vitals'] && (
