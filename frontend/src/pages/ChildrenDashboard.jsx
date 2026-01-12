@@ -2151,14 +2151,42 @@ const ApproachesPage = ({ onBack }) => {
   const [activeTab, setActiveTab] = useState("sepsis");
   const [weight, setWeight] = useState("");
   const [age, setAge] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
   const [expandedSections, setExpandedSections] = useState({});
   const w = parseFloat(weight) || 0;
   const ageNum = parseFloat(age) || 0;
+
+  // Define all approach tabs with search keywords
+  const approachTabs = [
+    { id: "sepsis", label: "Septic Shock", keywords: ["sepsis", "septic", "shock", "cold", "warm", "vasopressor", "fluid", "bolus"] },
+    { id: "seizure", label: "Status Epilepticus", keywords: ["seizure", "epilepsy", "convulsion", "phenytoin", "diazepam", "midazolam", "levetiracetam"] },
+    { id: "asthma", label: "Status Asthmaticus", keywords: ["asthma", "wheeze", "bronchospasm", "salbutamol", "ventolin", "magnesium", "respiratory"] },
+    { id: "tbi", label: "TBI", keywords: ["trauma", "brain", "injury", "head", "concussion", "intracranial", "cushing"] },
+    { id: "dka", label: "DKA", keywords: ["diabetic", "ketoacidosis", "diabetes", "insulin", "glucose", "acidosis"] },
+    { id: "adrenal", label: "Adrenal Crisis", keywords: ["adrenal", "insufficiency", "cortisol", "hydrocortisone", "addison"] },
+    { id: "anaphylaxis", label: "Anaphylaxis", keywords: ["anaphylaxis", "allergic", "allergy", "epinephrine", "adrenaline", "urticaria", "hives", "angioedema"] },
+    { id: "thrombocytopenia", label: "Thrombocytopenia", keywords: ["platelet", "thrombocytopenia", "itp", "bleeding", "purpura", "petechiae", "low platelet"] },
+  ];
+
+  // Filter tabs based on search query
+  const filteredTabs = searchQuery.trim() === "" 
+    ? approachTabs 
+    : approachTabs.filter(tab => 
+        tab.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        tab.keywords.some(kw => kw.toLowerCase().includes(searchQuery.toLowerCase()))
+      );
 
   // Scroll to top when page loads
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  // Auto-select first matching tab when search changes
+  useEffect(() => {
+    if (filteredTabs.length > 0 && !filteredTabs.find(t => t.id === activeTab)) {
+      setActiveTab(filteredTabs[0].id);
+    }
+  }, [searchQuery, filteredTabs, activeTab]);
 
   const toggleSection = (section) => {
     setExpandedSections(prev => ({ ...prev, [section]: !prev[section] }));
@@ -2183,6 +2211,29 @@ const ApproachesPage = ({ onBack }) => {
 
   return (
     <div className="space-y-4 pt-4 pb-32">
+      {/* Search Bar */}
+      <div className="relative">
+        <Input
+          type="text"
+          placeholder="Search approaches (e.g., sepsis, seizure, platelet...)"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="pl-10 nightingale-input"
+          data-testid="approaches-search"
+        />
+        <svg className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+        {searchQuery && (
+          <button
+            onClick={() => setSearchQuery("")}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+          >
+            ✕
+          </button>
+        )}
+      </div>
+
       {/* Patient Info Input */}
       <Card className="border-slate-200 dark:border-slate-700">
         <CardContent className="pt-4">
@@ -2215,14 +2266,20 @@ const ApproachesPage = ({ onBack }) => {
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <div className="overflow-x-auto">
           <TabsList className="inline-flex w-max min-w-full h-auto p-1">
-            <TabsTrigger value="sepsis" className="text-xs py-2 px-3 whitespace-nowrap">Septic Shock</TabsTrigger>
-            <TabsTrigger value="seizure" className="text-xs py-2 px-3 whitespace-nowrap">Status Epilepticus</TabsTrigger>
-            <TabsTrigger value="asthma" className="text-xs py-2 px-3 whitespace-nowrap">Status Asthmaticus</TabsTrigger>
-            <TabsTrigger value="tbi" className="text-xs py-2 px-3 whitespace-nowrap">TBI</TabsTrigger>
-            <TabsTrigger value="dka" className="text-xs py-2 px-3 whitespace-nowrap">DKA</TabsTrigger>
-            <TabsTrigger value="adrenal" className="text-xs py-2 px-3 whitespace-nowrap">Adrenal Crisis</TabsTrigger>
+            {filteredTabs.map(tab => (
+              <TabsTrigger key={tab.id} value={tab.id} className="text-xs py-2 px-3 whitespace-nowrap">
+                {tab.label}
+              </TabsTrigger>
+            ))}
           </TabsList>
         </div>
+        
+        {filteredTabs.length === 0 && (
+          <div className="text-center py-8 text-muted-foreground">
+            <p>No approaches found for "{searchQuery}"</p>
+            <button onClick={() => setSearchQuery("")} className="text-[#00d9c5] mt-2 hover:underline">Clear search</button>
+          </div>
+        )}
 
         {/* SEPTIC SHOCK TAB */}
         <TabsContent value="sepsis" className="space-y-3 mt-4">
