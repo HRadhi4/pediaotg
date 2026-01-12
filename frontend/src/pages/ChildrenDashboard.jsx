@@ -3605,6 +3605,708 @@ const ApproachesPage = ({ onBack }) => {
             </CardContent>
           </Card>
         </TabsContent>
+
+        {/* DECREASED LEVEL OF CONSCIOUSNESS TAB */}
+        <TabsContent value="dloc" className="space-y-3 mt-4">
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-base">Decreased Level of Consciousness</CardTitle>
+              <CardDescription className="text-xs">Systematic approach using Pediatric GCS</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {/* Definition */}
+              <Section id="dloc-def" title="Definition & Grades" defaultOpen={true}>
+                <p className="text-xs text-muted-foreground mb-3">
+                  Decreased level of consciousness (DLOC) is a state in which a child exhibits a diminished ability to respond to verbal, physical, or painful stimuli.
+                </p>
+                <div className="grid grid-cols-2 gap-2">
+                  <div className="p-2 bg-green-50 dark:bg-green-900/20 rounded text-xs">
+                    <p className="font-semibold text-green-700">Lethargy</p>
+                    <p className="text-muted-foreground">Drowsy but arousable with light stimulation</p>
+                  </div>
+                  <div className="p-2 bg-yellow-50 dark:bg-yellow-900/20 rounded text-xs">
+                    <p className="font-semibold text-yellow-700">Obtundation</p>
+                    <p className="text-muted-foreground">Slowed responses, needs loud voice/shaking</p>
+                  </div>
+                  <div className="p-2 bg-orange-50 dark:bg-orange-900/20 rounded text-xs">
+                    <p className="font-semibold text-orange-700">Stupor</p>
+                    <p className="text-muted-foreground">Only responds to painful stimuli</p>
+                  </div>
+                  <div className="p-2 bg-red-50 dark:bg-red-900/20 rounded text-xs">
+                    <p className="font-semibold text-red-700">Coma</p>
+                    <p className="text-muted-foreground">No meaningful response at all</p>
+                  </div>
+                </div>
+              </Section>
+
+              {/* Pediatric GCS */}
+              <Section id="dloc-gcs" title="Pediatric Glasgow Coma Scale">
+                <div className="overflow-x-auto -mx-2">
+                  <table className="w-full text-[10px] min-w-[400px]">
+                    <thead>
+                      <tr className="border-b bg-gray-50 dark:bg-gray-800/50">
+                        <th className="text-left py-2 px-2 font-semibold">Response</th>
+                        <th className="text-center py-2 px-2 font-semibold">Score</th>
+                        <th className="text-left py-2 px-2 font-semibold">Verbal Child</th>
+                        <th className="text-left py-2 px-2 font-semibold">Pre-verbal</th>
+                      </tr>
+                    </thead>
+                    <tbody className="text-muted-foreground">
+                      <tr className="border-b"><td className="py-1 px-2 font-medium" rowSpan={4}>Eye</td><td className="py-1 px-2 text-center">4</td><td className="py-1 px-2">Spontaneous</td><td className="py-1 px-2">Spontaneous</td></tr>
+                      <tr className="border-b"><td className="py-1 px-2 text-center">3</td><td className="py-1 px-2">To voice</td><td className="py-1 px-2">To voice</td></tr>
+                      <tr className="border-b"><td className="py-1 px-2 text-center">2</td><td className="py-1 px-2">To pain</td><td className="py-1 px-2">To pain</td></tr>
+                      <tr className="border-b"><td className="py-1 px-2 text-center">1</td><td className="py-1 px-2">None</td><td className="py-1 px-2">None</td></tr>
+                      <tr className="border-b"><td className="py-1 px-2 font-medium" rowSpan={5}>Verbal</td><td className="py-1 px-2 text-center">5</td><td className="py-1 px-2">Oriented</td><td className="py-1 px-2">Coos, babbles</td></tr>
+                      <tr className="border-b"><td className="py-1 px-2 text-center">4</td><td className="py-1 px-2">Confused</td><td className="py-1 px-2">Irritable cry</td></tr>
+                      <tr className="border-b"><td className="py-1 px-2 text-center">3</td><td className="py-1 px-2">Inappropriate words</td><td className="py-1 px-2">Cries to pain</td></tr>
+                      <tr className="border-b"><td className="py-1 px-2 text-center">2</td><td className="py-1 px-2">Incomprehensible</td><td className="py-1 px-2">Moans to pain</td></tr>
+                      <tr className="border-b"><td className="py-1 px-2 text-center">1</td><td className="py-1 px-2">None</td><td className="py-1 px-2">None</td></tr>
+                      <tr className="border-b"><td className="py-1 px-2 font-medium" rowSpan={6}>Motor</td><td className="py-1 px-2 text-center">6</td><td className="py-1 px-2">Obeys commands</td><td className="py-1 px-2">Normal movements</td></tr>
+                      <tr className="border-b"><td className="py-1 px-2 text-center">5</td><td className="py-1 px-2">Localizes pain</td><td className="py-1 px-2">Withdraws to touch</td></tr>
+                      <tr className="border-b"><td className="py-1 px-2 text-center">4</td><td className="py-1 px-2">Withdraws to pain</td><td className="py-1 px-2">Withdraws to pain</td></tr>
+                      <tr className="border-b"><td className="py-1 px-2 text-center">3</td><td className="py-1 px-2">Flexion to pain</td><td className="py-1 px-2">Abnormal flexion</td></tr>
+                      <tr className="border-b"><td className="py-1 px-2 text-center">2</td><td className="py-1 px-2">Extension to pain</td><td className="py-1 px-2">Extension</td></tr>
+                      <tr><td className="py-1 px-2 text-center">1</td><td className="py-1 px-2">None</td><td className="py-1 px-2">None</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div className="mt-2 p-2 bg-blue-50 dark:bg-blue-900/20 rounded text-xs">
+                  <p className="font-medium text-blue-700">GCS Monitoring Frequency:</p>
+                  <p className="text-muted-foreground">• GCS &lt;12 → Assess every 15 minutes</p>
+                  <p className="text-muted-foreground">• GCS 12-14 → Assess every 1 hour</p>
+                </div>
+              </Section>
+
+              {/* Initial Stabilization */}
+              <Section id="dloc-stabilize" title="Initial Stabilization">
+                <div className="space-y-2 text-xs">
+                  <div className="p-2 bg-red-50 dark:bg-red-900/20 rounded border border-red-200">
+                    <p className="font-semibold text-red-700">Airway</p>
+                    <p className="text-muted-foreground">Intubate if: Deteriorating GCS, SpO₂ &lt;92% despite oxygen, CO₂ retention</p>
+                  </div>
+                  <div className="p-2 bg-blue-50 dark:bg-blue-900/20 rounded">
+                    <p className="font-semibold text-blue-700">Breathing</p>
+                    <p className="text-muted-foreground">100% oxygen if SpO₂ &lt;94%</p>
+                  </div>
+                  <div className="p-2 bg-purple-50 dark:bg-purple-900/20 rounded">
+                    <p className="font-semibold text-purple-700">Circulation</p>
+                    <p className="text-muted-foreground">Isotonic fluid bolus 20 mL/kg if in shock</p>
+                    {w > 0 && <p className="font-mono text-purple-600 mt-1">→ {(w * 20).toFixed(0)} mL bolus</p>}
+                  </div>
+                </div>
+              </Section>
+
+              {/* Core Investigations */}
+              <Section id="dloc-investigations" title="Core Investigations">
+                <div className="grid grid-cols-2 gap-2 text-xs">
+                  <div className="space-y-1 text-muted-foreground">
+                    <p>• Capillary blood glucose</p>
+                    <p>• Blood gas</p>
+                    <p>• Urea & Electrolytes</p>
+                    <p>• Serum glucose</p>
+                    <p>• Liver function tests</p>
+                  </div>
+                  <div className="space-y-1 text-muted-foreground">
+                    <p>• Full blood count</p>
+                    <p>• Blood culture + CRP</p>
+                    <p>• Ammonia & Lactate</p>
+                    <p>• Urine routine + toxicology</p>
+                  </div>
+                </div>
+              </Section>
+
+              {/* Algorithm */}
+              <Section id="dloc-algorithm" title="Diagnostic Algorithm">
+                <div className="space-y-3">
+                  <div className="p-3 bg-amber-50 dark:bg-amber-900/20 rounded-lg">
+                    <p className="font-semibold text-amber-700 text-sm mb-2">After History, Examination & Core Investigations:</p>
+                    <div className="grid grid-cols-2 gap-2">
+                      <div className="p-2 bg-white dark:bg-gray-900 rounded text-xs">
+                        <p className="font-medium text-red-600">Possible Neurological OR Unclear Cause</p>
+                        <p className="text-muted-foreground mt-1">→ CT Brain</p>
+                      </div>
+                      <div className="p-2 bg-white dark:bg-gray-900 rounded text-xs">
+                        <p className="font-medium text-green-600">Clear Non-neurological Cause</p>
+                        <p className="text-muted-foreground mt-1">→ Treat accordingly</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                    <p className="font-semibold text-blue-700 text-sm mb-2">CT Brain Results:</p>
+                    <div className="space-y-2 text-xs">
+                      <div className="p-2 bg-white dark:bg-gray-900 rounded">
+                        <p className="font-medium text-red-600">Abnormal (Hydrocephalus, Edema, Hemorrhage, Mass)</p>
+                        <p className="text-muted-foreground">→ Neurosurgery consult</p>
+                      </div>
+                      <div className="p-2 bg-white dark:bg-gray-900 rounded">
+                        <p className="font-medium text-gray-600">Normal</p>
+                        <p className="text-muted-foreground">→ Consider Lumbar Puncture → Neurology consult</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </Section>
+
+              {/* Neurological Differentials */}
+              <Section id="dloc-neuro-ddx" title="Neurological Differentials">
+                <div className="space-y-2 text-xs">
+                  <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
+                    <p className="font-medium">Focal Seizures with Impaired Consciousness</p>
+                    <p className="text-muted-foreground">Eyes open/staring, abnormal movements, postictal behavior</p>
+                    <p className="text-blue-600 mt-1">→ Follow seizure guidelines, inform Neurology</p>
+                  </div>
+                  <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
+                    <p className="font-medium">ADEM (Acute Disseminated Encephalomyelitis)</p>
+                    <p className="text-muted-foreground">Recent viral illness, rapid decline, multifocal neuro signs</p>
+                    <p className="text-blue-600 mt-1">→ Methylprednisolone 30 mg/kg/day (max 1g/day)</p>
+                    {w > 0 && <p className="font-mono text-blue-600">→ {Math.min(w * 30, 1000).toFixed(0)} mg/day</p>}
+                  </div>
+                  <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
+                    <p className="font-medium">PRES Syndrome</p>
+                    <p className="text-muted-foreground">Chronic illness, HTN, headache, seizures</p>
+                    <p className="text-blue-600 mt-1">→ BP management, treat underlying cause</p>
+                  </div>
+                  <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
+                    <p className="font-medium">Increased ICP</p>
+                    <p className="text-muted-foreground">Headache, vomiting, papilledema</p>
+                    <p className="text-blue-600 mt-1">→ PICU / Neurosurgery</p>
+                  </div>
+                </div>
+              </Section>
+
+              {/* Non-neurological Differentials */}
+              <Section id="dloc-nonneuro-ddx" title="Non-Neurological Differentials">
+                <div className="grid grid-cols-2 gap-2 text-xs">
+                  <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
+                    <p className="font-medium">Hypoglycemia</p>
+                    <p className="text-muted-foreground">Check glucose immediately</p>
+                  </div>
+                  <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
+                    <p className="font-medium">CNS Infection</p>
+                    <p className="text-muted-foreground">Fever, meningism → LP</p>
+                  </div>
+                  <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
+                    <p className="font-medium">Shock</p>
+                    <p className="text-muted-foreground">Hypoperfusion signs</p>
+                  </div>
+                  <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
+                    <p className="font-medium">Electrolyte Imbalance</p>
+                    <p className="text-muted-foreground">Na, K, Ca abnormalities</p>
+                  </div>
+                  <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
+                    <p className="font-medium">Metabolic Illness</p>
+                    <p className="text-muted-foreground">Known metabolic disease, ↑ammonia</p>
+                  </div>
+                  <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
+                    <p className="font-medium">Medications/Toxins</p>
+                    <p className="text-muted-foreground">Drug ingestion history</p>
+                  </div>
+                </div>
+              </Section>
+
+              {/* Drug Antidotes */}
+              <Section id="dloc-antidotes" title="Drug Antidotes">
+                <div className="overflow-x-auto -mx-2">
+                  <table className="w-full text-[10px] min-w-[350px]">
+                    <thead>
+                      <tr className="border-b bg-gray-50 dark:bg-gray-800/50">
+                        <th className="text-left py-2 px-2 font-semibold">Drug</th>
+                        <th className="text-left py-2 px-2 font-semibold">Signs</th>
+                        <th className="text-left py-2 px-2 font-semibold">Antidote</th>
+                      </tr>
+                    </thead>
+                    <tbody className="text-muted-foreground">
+                      <tr className="border-b"><td className="py-1 px-2">Opioid</td><td className="py-1 px-2">Pinpoint pupils, resp. depression</td><td className="py-1 px-2 text-green-600 font-medium">Naloxone</td></tr>
+                      <tr className="border-b"><td className="py-1 px-2">Benzodiazepines</td><td className="py-1 px-2">Dilated pupils, hypotension</td><td className="py-1 px-2 text-green-600 font-medium">Flumazenil</td></tr>
+                      <tr className="border-b"><td className="py-1 px-2">Phenobarbitone</td><td className="py-1 px-2">Pinpoint pupils, hypotension</td><td className="py-1 px-2">Supportive care</td></tr>
+                      <tr><td className="py-1 px-2">Anti-seizure meds</td><td className="py-1 px-2">↓ LOC</td><td className="py-1 px-2">Supportive (monitor levels)</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+                <p className="text-[10px] text-amber-600 mt-2">Note: Phenytoin & Levetiracetam do NOT reduce consciousness</p>
+              </Section>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* HEADACHE TAB */}
+        <TabsContent value="headache" className="space-y-3 mt-4">
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-base">Pediatric Headache</CardTitle>
+              <CardDescription className="text-xs">Diagnostic approach based on duration and red flags</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {/* Red Flags */}
+              <Section id="headache-redflags" title="Red Flags" defaultOpen={true}>
+                <div className="p-3 bg-red-50 dark:bg-red-950/30 rounded-lg border border-red-200">
+                  <p className="font-semibold text-red-700 text-sm mb-2">Urgent Investigation Required:</p>
+                  <ul className="text-xs text-muted-foreground space-y-1">
+                    <li>• <strong>Early morning or night headache</strong></li>
+                    <li>• <strong>Progressive headache</strong> in frequency, duration or severity</li>
+                    <li>• <strong>Neurologic signs:</strong> altered mental status, gait abnormality, seizures</li>
+                    <li>• <strong>Papilledema</strong></li>
+                  </ul>
+                  <p className="text-red-600 font-medium mt-2 text-xs">→ CT Brain indicated if any red flag present</p>
+                </div>
+              </Section>
+
+              {/* Algorithm */}
+              <Section id="headache-algorithm" title="Diagnostic Algorithm">
+                <div className="space-y-3">
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                      <p className="font-semibold text-blue-700 text-center">Acute (≤7 days)</p>
+                      <div className="text-xs text-muted-foreground mt-2 space-y-1">
+                        <p>• 1st onset: CT Brain</p>
+                        <p>• Episodic: Check red flags</p>
+                      </div>
+                    </div>
+                    <div className="p-3 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
+                      <p className="font-semibold text-purple-700 text-center">Chronic (&gt;7 days)</p>
+                      <div className="text-xs text-muted-foreground mt-2 space-y-1">
+                        <p>• CT Brain</p>
+                        <p>• If normal: Check for papilledema</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="p-3 bg-amber-50 dark:bg-amber-900/20 rounded-lg text-xs">
+                    <p className="font-semibold text-amber-700">CT Normal + Chronic Headache:</p>
+                    <p className="text-muted-foreground mt-1">→ Ophthalmology consult for papilledema</p>
+                    <p className="text-muted-foreground">• Papilledema present: Admit for IIH workup</p>
+                    <p className="text-muted-foreground">• No papilledema: Neurology consult</p>
+                  </div>
+                </div>
+              </Section>
+
+              {/* Migraine vs Tension */}
+              <Section id="headache-comparison" title="Migraine vs Tension Headache">
+                <div className="overflow-x-auto -mx-2">
+                  <table className="w-full text-[10px] min-w-[350px]">
+                    <thead>
+                      <tr className="border-b bg-gray-50 dark:bg-gray-800/50">
+                        <th className="text-left py-2 px-2 font-semibold">Feature</th>
+                        <th className="text-left py-2 px-2 font-semibold">Migraine</th>
+                        <th className="text-left py-2 px-2 font-semibold">Tension</th>
+                      </tr>
+                    </thead>
+                    <tbody className="text-muted-foreground">
+                      <tr className="border-b"><td className="py-1 px-2 font-medium">Location</td><td className="py-1 px-2">Unilateral/Bilateral</td><td className="py-1 px-2">Frontal</td></tr>
+                      <tr className="border-b"><td className="py-1 px-2 font-medium">Duration</td><td className="py-1 px-2">2-72 hours</td><td className="py-1 px-2">Hours to days</td></tr>
+                      <tr className="border-b"><td className="py-1 px-2 font-medium">Character</td><td className="py-1 px-2">Pulsating/throbbing</td><td className="py-1 px-2">Squeezing/pressure</td></tr>
+                      <tr className="border-b"><td className="py-1 px-2 font-medium">Severity</td><td className="py-1 px-2">Moderate-severe</td><td className="py-1 px-2">Mild-moderate</td></tr>
+                      <tr className="border-b"><td className="py-1 px-2 font-medium">Associations</td><td className="py-1 px-2">Nausea, vomiting, photo/phonophobia</td><td className="py-1 px-2">None</td></tr>
+                      <tr className="border-b"><td className="py-1 px-2 font-medium">Trigger</td><td className="py-1 px-2">Activity</td><td className="py-1 px-2">Stress</td></tr>
+                      <tr><td className="py-1 px-2 font-medium">Family Hx</td><td className="py-1 px-2">Yes</td><td className="py-1 px-2">No</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </Section>
+
+              {/* Acute Migraine Management */}
+              <Section id="headache-acute" title="Acute Migraine Management">
+                <div className="space-y-2 text-xs">
+                  <div className="p-2 bg-green-50 dark:bg-green-900/20 rounded">
+                    <p className="font-semibold text-green-700">First Line - Analgesics</p>
+                    <div className="grid grid-cols-2 gap-2 mt-1">
+                      <div>
+                        <p className="text-muted-foreground">Paracetamol: 10-15 mg/kg/dose</p>
+                        {w > 0 && <p className="font-mono text-green-600">{(w * 10).toFixed(0)}-{(w * 15).toFixed(0)} mg</p>}
+                      </div>
+                      <div>
+                        <p className="text-muted-foreground">Ibuprofen: 5-10 mg/kg/dose</p>
+                        {w > 0 && <p className="font-mono text-green-600">{(w * 5).toFixed(0)}-{(w * 10).toFixed(0)} mg</p>}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
+                    <p className="font-semibold">Naproxen: 5-7 mg/kg/dose</p>
+                    {w > 0 && <p className="font-mono text-gray-600">{(w * 5).toFixed(0)}-{(w * 7).toFixed(0)} mg</p>}
+                  </div>
+                  <div className="p-2 bg-amber-50 dark:bg-amber-900/20 rounded">
+                    <p className="font-semibold text-amber-700">Triptans (Specialist use only)</p>
+                    <p className="text-muted-foreground">Rarely used in pediatrics - consult Neurology</p>
+                  </div>
+                </div>
+              </Section>
+
+              {/* Chronic Migraine Prophylaxis */}
+              <Section id="headache-prophylaxis" title="Migraine Prophylaxis (Chronic)">
+                <div className="p-2 bg-blue-50 dark:bg-blue-900/20 rounded text-xs mb-2">
+                  <p className="font-medium text-blue-700">Indications:</p>
+                  <p className="text-muted-foreground">• ≥1 headache/week or &gt;3/month • Prolonged severe attacks • Abortive treatment fails</p>
+                </div>
+                <div className="space-y-2 text-xs">
+                  <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
+                    <p className="font-medium">Propranolol</p>
+                    <p className="text-muted-foreground">&lt;35kg: 10-20mg TDS | ≥35kg: 20-40mg TDS</p>
+                  </div>
+                  <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
+                    <p className="font-medium">Cyproheptadine</p>
+                    <p className="text-muted-foreground">0.25-0.4 mg/kg/day BD-TDS</p>
+                    {w > 0 && <p className="font-mono text-gray-600">{(w * 0.25).toFixed(1)}-{(w * 0.4).toFixed(1)} mg/day</p>}
+                  </div>
+                  <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
+                    <p className="font-medium">Amitriptyline</p>
+                    <p className="text-muted-foreground">0.1-0.25 mg/kg/dose HS (max 2mg/kg/day)</p>
+                  </div>
+                </div>
+              </Section>
+
+              {/* IIH */}
+              <Section id="headache-iih" title="Idiopathic Intracranial Hypertension (IIH)">
+                <div className="space-y-2">
+                  <div className="p-2 bg-purple-50 dark:bg-purple-900/20 rounded text-xs">
+                    <p className="font-semibold text-purple-700">Clinical Features:</p>
+                    <p className="text-muted-foreground">Daily headache, diplopia, transient visual obscurations</p>
+                  </div>
+                  <div className="p-2 bg-red-50 dark:bg-red-900/20 rounded text-xs">
+                    <p className="font-semibold text-red-700">Examination:</p>
+                    <p className="text-muted-foreground">Papilledema, Abducent nerve palsy (CN VI)</p>
+                  </div>
+                  <div className="p-2 bg-blue-50 dark:bg-blue-900/20 rounded text-xs">
+                    <p className="font-semibold text-blue-700">Diagnosis:</p>
+                    <p className="text-muted-foreground">LP with opening pressure: ICP &gt;25 cmH₂O (normal CSF)</p>
+                  </div>
+                  <div className="p-2 bg-green-50 dark:bg-green-900/20 rounded text-xs">
+                    <p className="font-semibold text-green-700">Treatment - Acetazolamide:</p>
+                    <p className="text-muted-foreground">Children: 25 mg/kg/day, increase by 25 mg/kg/day (max 100 mg/kg/day)</p>
+                    {w > 0 && <p className="font-mono text-green-600">Start: {(w * 25).toFixed(0)} mg/day</p>}
+                    <p className="text-muted-foreground mt-1">+ Weight loss + Stop triggering medications</p>
+                  </div>
+                </div>
+              </Section>
+
+              {/* Non-neurological DDx */}
+              <Section id="headache-nonneuro" title="Non-Neurological Causes">
+                <div className="grid grid-cols-2 gap-2 text-xs">
+                  <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
+                    <p className="font-medium">URTI</p>
+                    <p className="text-muted-foreground">Cough, congestion</p>
+                  </div>
+                  <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
+                    <p className="font-medium">Sinusitis</p>
+                    <p className="text-muted-foreground">↑ with position, facial tenderness</p>
+                  </div>
+                  <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
+                    <p className="font-medium">Meningitis</p>
+                    <p className="text-muted-foreground">Fever, photophobia, neck rigidity</p>
+                  </div>
+                  <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
+                    <p className="font-medium">Refractive Errors</p>
+                    <p className="text-muted-foreground">Reduced visual acuity</p>
+                  </div>
+                  <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
+                    <p className="font-medium">Dental Caries</p>
+                    <p className="text-muted-foreground">Tooth pain</p>
+                  </div>
+                  <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
+                    <p className="font-medium">Malignant HTN</p>
+                    <p className="text-muted-foreground">High BP, risk factors</p>
+                  </div>
+                </div>
+              </Section>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* ACUTE WEAKNESS TAB */}
+        <TabsContent value="weakness" className="space-y-3 mt-4">
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-base">Approach to Acute Weakness</CardTitle>
+              <CardDescription className="text-xs">Algorithm for neurological and non-neurological causes</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {/* Definition */}
+              <Section id="weakness-def" title="Definition & Assessment" defaultOpen={true}>
+                <p className="text-xs text-muted-foreground mb-2">
+                  Acute weakness refers to sudden onset muscle weakness that may be unilateral or bilateral, and can indicate serious neurological conditions.
+                </p>
+                <div className="p-2 bg-blue-50 dark:bg-blue-900/20 rounded text-xs">
+                  <p className="font-medium text-blue-700">Muscle Power Scale (MRC):</p>
+                  <div className="grid grid-cols-2 gap-1 mt-1 text-muted-foreground">
+                    <span>0 = No movement</span>
+                    <span>1 = Flicker only</span>
+                    <span>2 = Movement (gravity eliminated)</span>
+                    <span>3 = Against gravity only</span>
+                    <span>4 = Against resistance</span>
+                    <span>5 = Normal power</span>
+                  </div>
+                </div>
+              </Section>
+
+              {/* Algorithm */}
+              <Section id="weakness-algorithm" title="Diagnostic Algorithm">
+                <div className="space-y-3">
+                  <div className="p-3 bg-red-50 dark:bg-red-950/30 rounded-lg border border-red-200">
+                    <p className="font-semibold text-red-700 text-sm">Unilateral Weakness ± Headache</p>
+                    <p className="text-xs text-muted-foreground mt-1">→ CT Brain (suspect stroke)</p>
+                    <p className="text-xs text-muted-foreground">• +ve: Stroke or other brain insult → Neurology</p>
+                    <p className="text-xs text-muted-foreground">• -ve: Consider other DDx</p>
+                  </div>
+                  <div className="p-3 bg-purple-50 dark:bg-purple-950/30 rounded-lg">
+                    <p className="font-semibold text-purple-700 text-sm">Progressive Bilateral LL Weakness + Areflexia</p>
+                    <div className="text-xs text-muted-foreground mt-1 space-y-1">
+                      <p><strong>± Sphincter impairment / Back pain:</strong></p>
+                      <p>→ Emergency MRI Spine</p>
+                      <p>• +ve: Spinal compression → Neurosurgery</p>
+                      <p>• -ve: Transverse myelitis → Steroids/IVIG</p>
+                    </div>
+                  </div>
+                  <div className="p-3 bg-amber-50 dark:bg-amber-950/30 rounded-lg">
+                    <p className="font-semibold text-amber-700 text-sm">Diurnal Variation (Worse evenings)</p>
+                    <p className="text-xs text-muted-foreground mt-1">→ Suspect Myasthenia Gravis</p>
+                  </div>
+                  <div className="p-3 bg-green-50 dark:bg-green-950/30 rounded-lg">
+                    <p className="font-semibold text-green-700 text-sm">Bilateral Calf Tenderness</p>
+                    <p className="text-xs text-muted-foreground mt-1">→ Check CK levels</p>
+                    <p className="text-xs text-muted-foreground">• High CK: Myositis</p>
+                  </div>
+                </div>
+              </Section>
+
+              {/* Neurological DDx */}
+              <Section id="weakness-neuro-ddx" title="Neurological Differentials">
+                <div className="space-y-2 text-xs">
+                  <div className="p-2 bg-red-50 dark:bg-red-900/20 rounded border border-red-200">
+                    <p className="font-semibold text-red-700">Ischemic Stroke</p>
+                    <p className="text-muted-foreground">Sudden onset, unilateral weakness/numbness, speech difficulty</p>
+                    <p className="text-blue-600 mt-1">Tx: Aspirin 3-5 mg/kg OD</p>
+                    {w > 0 && <p className="font-mono text-blue-600">{(w * 3).toFixed(0)}-{(w * 5).toFixed(0)} mg daily</p>}
+                  </div>
+                  <div className="p-2 bg-purple-50 dark:bg-purple-900/20 rounded">
+                    <p className="font-semibold text-purple-700">Transverse Myelitis</p>
+                    <p className="text-muted-foreground">Bilateral LL weakness, sensory level, sphincter dysfunction</p>
+                    <p className="text-blue-600 mt-1">Tx: Methylprednisolone 30 mg/kg IV × 3-5 days</p>
+                    {w > 0 && <p className="font-mono text-blue-600">{(w * 30).toFixed(0)} mg IV daily</p>}
+                  </div>
+                  <div className="p-2 bg-amber-50 dark:bg-amber-900/20 rounded">
+                    <p className="font-semibold text-amber-700">Guillain-Barré Syndrome (GBS)</p>
+                    <p className="text-muted-foreground">Ascending weakness, areflexia, post-infection (1-4 weeks)</p>
+                    <p className="text-blue-600 mt-1">Tx: IV Immunoglobulin 2 g/kg total</p>
+                    {w > 0 && <p className="font-mono text-blue-600">{(w * 2).toFixed(0)} g total (over 2-5 days)</p>}
+                  </div>
+                  <div className="p-2 bg-teal-50 dark:bg-teal-900/20 rounded">
+                    <p className="font-semibold text-teal-700">Myasthenia Gravis</p>
+                    <p className="text-muted-foreground">Fatiguable weakness, ptosis, diplopia, diurnal variation</p>
+                    <p className="text-blue-600 mt-1">Tx: Pyridostigmine, IVIG in crisis</p>
+                  </div>
+                  <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
+                    <p className="font-semibold">Postictal Todd Paralysis</p>
+                    <p className="text-muted-foreground">Transient weakness after seizure, resolves in hours</p>
+                  </div>
+                </div>
+              </Section>
+
+              {/* Non-neurological DDx */}
+              <Section id="weakness-nonneuro-ddx" title="Non-Neurological Differentials">
+                <div className="grid grid-cols-2 gap-2 text-xs">
+                  <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
+                    <p className="font-medium">Viral Myositis</p>
+                    <p className="text-muted-foreground">Calf tenderness, often post-influenza</p>
+                    <p className="text-blue-600">High CK</p>
+                  </div>
+                  <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
+                    <p className="font-medium">Spinal Cord Compression</p>
+                    <p className="text-muted-foreground">Back pain, sensory level</p>
+                    <p className="text-blue-600">MRI Spine → Neurosurgery</p>
+                  </div>
+                  <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
+                    <p className="font-medium">Arthritis</p>
+                    <p className="text-muted-foreground">Localized pain, ↓ROM</p>
+                    <p className="text-blue-600">High ESR/CRP</p>
+                  </div>
+                  <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
+                    <p className="font-medium">Conversion Disorder</p>
+                    <p className="text-muted-foreground">Stress, normal reflexes</p>
+                    <p className="text-blue-600">Diagnosis of exclusion</p>
+                  </div>
+                </div>
+              </Section>
+
+              {/* When to Escalate */}
+              <Section id="weakness-escalate" title="When to Escalate">
+                <div className="grid grid-cols-2 gap-2 text-xs">
+                  <div className="p-2 bg-red-50 dark:bg-red-900/20 rounded">
+                    <p className="font-semibold text-red-700">Contact PICU:</p>
+                    <ul className="text-muted-foreground mt-1 space-y-0.5">
+                      <li>• Respiratory compromise</li>
+                      <li>• Bulbar weakness</li>
+                      <li>• Rapid progression</li>
+                    </ul>
+                  </div>
+                  <div className="p-2 bg-blue-50 dark:bg-blue-900/20 rounded">
+                    <p className="font-semibold text-blue-700">Contact Neurology:</p>
+                    <ul className="text-muted-foreground mt-1 space-y-0.5">
+                      <li>• Suspected stroke</li>
+                      <li>• GBS / Transverse Myelitis</li>
+                      <li>• Myasthenia Gravis</li>
+                    </ul>
+                  </div>
+                </div>
+              </Section>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* ABNORMAL GAIT TAB */}
+        <TabsContent value="gait" className="space-y-3 mt-4">
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-base">Pediatric Abnormal Gait</CardTitle>
+              <CardDescription className="text-xs">Identification and evaluation of gait disorders</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {/* Important Note */}
+              <Section id="gait-note" title="Important Notes" defaultOpen={true}>
+                <div className="p-3 bg-amber-50 dark:bg-amber-900/20 rounded-lg text-xs">
+                  <p className="font-semibold text-amber-700 mb-2">Key Points:</p>
+                  <ul className="text-muted-foreground space-y-1">
+                    <li>• <strong>Hemiplegic, Waddling, and Neuropathic gaits are NOT acute</strong></li>
+                    <li>• Don't label anyone with ataxia unless <strong>afebrile</strong> and <strong>fully conscious</strong></li>
+                    <li>• Ataxia in febrile/drowsy child = <strong>Pseudo-ataxia</strong> (treat underlying cause)</li>
+                  </ul>
+                </div>
+              </Section>
+
+              {/* Gait Types */}
+              <Section id="gait-types" title="Gait Types Recognition">
+                <div className="space-y-2 text-xs">
+                  <div className="p-2 bg-blue-50 dark:bg-blue-900/20 rounded">
+                    <p className="font-semibold text-blue-700">Limping Gait</p>
+                    <p className="text-muted-foreground">Avoids bearing weight, musculoskeletal pain, trauma</p>
+                    <p className="text-blue-600 mt-1">Ix: CRP, ESR, X-ray, US joint → Orthopedics/Rheumatology</p>
+                  </div>
+                  <div className="p-2 bg-purple-50 dark:bg-purple-900/20 rounded">
+                    <p className="font-semibold text-purple-700">Ataxic Gait</p>
+                    <p className="text-muted-foreground">Wide-based, can't walk heel-to-toe, unsteady, tremors</p>
+                    <p className="text-blue-600 mt-1">Ix: CT Brain → Normal: Neurology | Abnormal: Neurosurgery</p>
+                  </div>
+                  <div className="p-2 bg-amber-50 dark:bg-amber-900/20 rounded">
+                    <p className="font-semibold text-amber-700">Waddling Gait (Not Acute)</p>
+                    <p className="text-muted-foreground">Trunk weakness, delayed milestones, Gower sign +ve</p>
+                    <p className="text-blue-600 mt-1">Ix: High CK → Neurology</p>
+                  </div>
+                  <div className="p-2 bg-teal-50 dark:bg-teal-900/20 rounded">
+                    <p className="font-semibold text-teal-700">Neuropathic Gait (Not Acute)</p>
+                    <p className="text-muted-foreground">High steppage (toes touch first), sensory loss hands/feet</p>
+                    <p className="text-blue-600 mt-1">Ix: CT (hemispheric asymmetry) → Neurology</p>
+                  </div>
+                  <div className="p-2 bg-red-50 dark:bg-red-900/20 rounded">
+                    <p className="font-semibold text-red-700">Hemiplegic Gait (Not Acute)</p>
+                    <p className="text-muted-foreground">Weakness/stiffness one side, birth asphyxia, prematurity</p>
+                    <p className="text-blue-600 mt-1">→ Neurology</p>
+                  </div>
+                  <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
+                    <p className="font-semibold">Malingering/Psychogenic</p>
+                    <p className="text-muted-foreground">Stressful event, inconsistent findings, all tests normal</p>
+                    <p className="text-blue-600 mt-1">→ Psychology (diagnosis of exclusion)</p>
+                  </div>
+                </div>
+              </Section>
+
+              {/* Red Flags */}
+              <Section id="gait-redflags" title="Red Flag Features">
+                <div className="p-3 bg-red-50 dark:bg-red-950/30 rounded-lg border border-red-200 text-xs">
+                  <ul className="text-muted-foreground space-y-1">
+                    <li>• <strong>Signs of raised ICP</strong> → CT Brain</li>
+                    <li>• <strong>Focal neurology</strong> → CT Brain</li>
+                    <li>• <strong>Altered conscious state</strong> → CT Brain ± LP</li>
+                    <li>• <strong>Meningism</strong> → LP (after ruling out ↑ICP)</li>
+                    <li>• <strong>Bilateral LL weakness</strong> → Think GBS, inform Neurology</li>
+                    <li>• <strong>Abnormal deep tendon reflexes</strong> → Think GBS</li>
+                    <li>• <strong>Loss of proprioception/vibration</strong> → Think GBS</li>
+                  </ul>
+                </div>
+              </Section>
+
+              {/* Non-neurological Ataxia */}
+              <Section id="gait-ataxia-causes" title="Non-Neurological Causes of Ataxia">
+                <p className="text-xs text-muted-foreground mb-2">
+                  Think non-neurological if: fever, ↓consciousness, trauma, headaches, medications, ear pain
+                </p>
+                <div className="space-y-2 text-xs">
+                  <div className="p-2 bg-red-50 dark:bg-red-900/20 rounded">
+                    <p className="font-semibold text-red-700">Cerebellar Tumor</p>
+                    <p className="text-muted-foreground">Headaches, vomiting, papilledema, focal deficits</p>
+                    <p className="text-blue-600">CT: Posterior fossa mass → Oncology/Neurosurgery</p>
+                  </div>
+                  <div className="p-2 bg-purple-50 dark:bg-purple-900/20 rounded">
+                    <p className="font-semibold text-purple-700">Neuroblastoma (with OMAS)</p>
+                    <p className="text-muted-foreground">Bone pain, abdominal mass crossing midline</p>
+                    <p className="text-blue-600">Ix: Urine VMA/HVA, MIBG scan → Oncology</p>
+                  </div>
+                  <div className="p-2 bg-amber-50 dark:bg-amber-900/20 rounded">
+                    <p className="font-semibold text-amber-700">Traumatic</p>
+                    <p className="text-muted-foreground">History of trauma, skull tenderness</p>
+                    <p className="text-blue-600">CT: Fracture/hemorrhage → Neurosurgery</p>
+                  </div>
+                  <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
+                    <p className="font-semibold">Intoxication</p>
+                    <p className="text-muted-foreground">Access to medications, altered GCS</p>
+                    <p className="text-blue-600">Toxicology screen → Pediatrics</p>
+                  </div>
+                </div>
+              </Section>
+
+              {/* OMAS */}
+              <Section id="gait-omas" title="Opsoclonus-Myoclonus-Ataxia Syndrome (OMAS)">
+                <div className="p-3 bg-purple-50 dark:bg-purple-900/20 rounded-lg text-xs">
+                  <p className="font-semibold text-purple-700 mb-2">Autoimmune disorder - Think Neuroblastoma!</p>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div>
+                      <p className="font-medium">Symptoms:</p>
+                      <ul className="text-muted-foreground space-y-0.5">
+                        <li>• Opsoclonus (rapid involuntary eye movements)</li>
+                        <li>• Myoclonus (muscle twitching)</li>
+                        <li>• Ataxia</li>
+                        <li>• Behavioral changes</li>
+                      </ul>
+                    </div>
+                    <div>
+                      <p className="font-medium">Investigations:</p>
+                      <ul className="text-muted-foreground space-y-0.5">
+                        <li>• Urine VMA/HVA</li>
+                        <li>• CT/MRI chest, abdomen, pelvis</li>
+                        <li>• MIBG nuclear scan</li>
+                      </ul>
+                    </div>
+                  </div>
+                  <p className="text-blue-600 mt-2">Tx: Immunomodulators, surgical removal if neuroblastoma found</p>
+                </div>
+              </Section>
+
+              {/* Ataxia vs Pseudo-ataxia */}
+              <Section id="gait-pseudo" title="Ataxia vs Pseudo-Ataxia">
+                <div className="grid grid-cols-2 gap-3 text-xs">
+                  <div className="p-2 bg-blue-50 dark:bg-blue-900/20 rounded">
+                    <p className="font-semibold text-blue-700">True Ataxia</p>
+                    <ul className="text-muted-foreground mt-1 space-y-0.5">
+                      <li>• Fully alert child</li>
+                      <li>• Afebrile</li>
+                      <li>• Imbalance, incoordination</li>
+                      <li>• Slurred speech</li>
+                      <li>• Wide-based gait</li>
+                    </ul>
+                    <p className="text-blue-600 mt-1">→ Follow ataxia guidelines</p>
+                  </div>
+                  <div className="p-2 bg-amber-50 dark:bg-amber-900/20 rounded">
+                    <p className="font-semibold text-amber-700">Pseudo-Ataxia</p>
+                    <ul className="text-muted-foreground mt-1 space-y-0.5">
+                      <li>• Drowsy/inactive child</li>
+                      <li>• Often febrile</li>
+                      <li>• Tiredness, fatigability</li>
+                      <li>• Mild degree of ataxia</li>
+                      <li>• Part of systemic illness</li>
+                    </ul>
+                    <p className="text-amber-600 mt-1">→ Treat underlying cause (URTI, sepsis)</p>
+                  </div>
+                </div>
+              </Section>
+            </CardContent>
+          </Card>
+        </TabsContent>
       </Tabs>
 
       {/* Vital Signs Reference - Collapsible at bottom */}
