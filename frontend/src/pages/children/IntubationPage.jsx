@@ -5,13 +5,9 @@
  * - Uncuffed: (age/4) + 4
  * - Cuffed: (age/4) + 3.5
  * - Depth (oral): (age/2) + 12 cm
- * - Blade: Age-based selection (Miller/Macintosh)
+ * - Blade: Age-based selection
  * 
- * RSI Checklist includes:
- * - Pre-oxygenation steps
- * - Equipment check
- * - Drug preparation
- * - Team briefing
+ * RSI Checklist includes pre-oxygenation, equipment, drugs, team briefing
  */
 
 import { useState } from "react";
@@ -23,6 +19,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ArrowLeftIcon, IntubationIcon } from "@/components/HealthIcons";
 
+const IntubationPage = ({ onBack }) => {
   const [activeTab, setActiveTab] = useState("calculator");
   const [age, setAge] = useState("");
   const [weight, setWeight] = useState("");
