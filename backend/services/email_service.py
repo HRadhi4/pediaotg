@@ -115,7 +115,7 @@ class EmailService:
             to_email: User's email address
             user_name: User's display name
         """
-        subject = f"Welcome to {self.app_name}! 🎉"
+        subject = f"Welcome to {self.app_name}!"
         
         html_body = f"""
         <!DOCTYPE html>
@@ -125,29 +125,21 @@ class EmailService:
                 body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; }}
                 .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
                 .header {{ background: linear-gradient(135deg, #00d9c5 0%, #00b4a0 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }}
-                .header h1 {{ color: white; margin: 0; font-size: 24px; }}
+                .header img {{ width: 60px; height: 60px; margin-bottom: 10px; }}
+                .header h1 {{ color: white; margin: 0; font-size: 22px; }}
                 .content {{ background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }}
-                .button {{ display: inline-block; background: #00d9c5; color: white; padding: 12px 30px; text-decoration: none; border-radius: 25px; margin: 20px 0; }}
                 .footer {{ text-align: center; padding: 20px; color: #666; font-size: 12px; }}
             </style>
         </head>
         <body>
             <div class="container">
                 <div class="header">
+                    <img src="{self.logo_url}" alt="Logo" />
                     <h1>Welcome to {self.app_name}!</h1>
                 </div>
                 <div class="content">
                     <p>Hi <strong>{user_name}</strong>,</p>
-                    <p>Thank you for joining {self.app_name}! We're excited to have you on board.</p>
-                    <p>Our app provides essential pediatric medical calculators and tools designed to help healthcare professionals deliver the best care for children.</p>
-                    <p><strong>What you can do:</strong></p>
-                    <ul>
-                        <li>Access NICU calculators (fluid, TPN, growth charts)</li>
-                        <li>Use pediatric drug dosing calculators</li>
-                        <li>Calculate IV infusions and blood products</li>
-                        <li>Reference CPR/PALS algorithms</li>
-                    </ul>
-                    <p>If you have any questions, feel free to reach out to our support team.</p>
+                    <p>Thank you for joining! You now have access to pediatric medical calculators for NICU and Children's ward.</p>
                     <p>Best regards,<br>The {self.app_name} Team</p>
                 </div>
                 <div class="footer">
@@ -163,9 +155,7 @@ class EmailService:
         
         Hi {user_name},
         
-        Thank you for joining {self.app_name}! We're excited to have you on board.
-        
-        Our app provides essential pediatric medical calculators and tools designed to help healthcare professionals deliver the best care for children.
+        Thank you for joining! You now have access to pediatric medical calculators for NICU and Children's ward.
         
         Best regards,
         The {self.app_name} Team
