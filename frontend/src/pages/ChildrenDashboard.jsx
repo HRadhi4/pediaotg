@@ -3236,6 +3236,371 @@ const ApproachesPage = ({ onBack }) => {
             </CardContent>
           </Card>
         </TabsContent>
+
+        {/* HYPOCALCEMIA & RICKETS TAB */}
+        <TabsContent value="hypocalcemia" className="space-y-3 mt-4">
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-base">Approach to Hypocalcemia & Rickets</CardTitle>
+              <CardDescription className="text-xs">Diagnostic flowchart and biochemical findings</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {/* Initial Assessment - Low Ca */}
+              <Section id="hypoca-initial" title="Diagnostic Approach (Low Calcium)" defaultOpen={true}>
+                <div className="p-3 bg-red-50 dark:bg-red-950/30 rounded-lg border border-red-200 mb-3">
+                  <p className="font-semibold text-red-700 dark:text-red-300 text-center">Low Ca</p>
+                  <p className="text-xs text-center text-muted-foreground mt-1">Starting point for evaluation</p>
+                </div>
+                <div className="space-y-2 text-xs">
+                  <p className="font-medium">Check iPTH (Intact Parathyroid Hormone)</p>
+                  <div className="grid grid-cols-2 gap-3 mt-2">
+                    <div className="p-2 bg-blue-50 dark:bg-blue-900/20 rounded">
+                      <p className="font-medium text-blue-700">PTH ↓ or Low</p>
+                      <p className="text-muted-foreground mt-1">Check Magnesium</p>
+                    </div>
+                    <div className="p-2 bg-amber-50 dark:bg-amber-900/20 rounded">
+                      <p className="font-medium text-amber-700">PTH ↑ or Normal</p>
+                      <p className="text-muted-foreground mt-1">Check Phosphate & 25OHD</p>
+                    </div>
+                  </div>
+                </div>
+              </Section>
+
+              {/* Low PTH Pathway - Magnesium Branch */}
+              <Section id="hypoca-mg-branch" title="Low PTH Pathway (Check Mg)">
+                <div className="space-y-3">
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="p-3 bg-purple-50 dark:bg-purple-950/30 rounded-lg">
+                      <p className="font-semibold text-purple-700 dark:text-purple-300">Mg ↓ (Low)</p>
+                      <p className="text-xs text-muted-foreground mt-1 font-semibold">→ Hypomagnesemia</p>
+                      <p className="text-xs text-muted-foreground mt-1">Can cause functional hypoparathyroidism</p>
+                    </div>
+                    <div className="p-3 bg-teal-50 dark:bg-teal-950/30 rounded-lg">
+                      <p className="font-semibold text-teal-700 dark:text-teal-300">Mg Normal</p>
+                      <p className="text-xs text-muted-foreground mt-1 font-semibold">→ Hypoparathyroidism</p>
+                      <p className="text-xs text-muted-foreground mt-1">Primary PTH deficiency</p>
+                    </div>
+                  </div>
+                </div>
+              </Section>
+
+              {/* High PTH Pathway - Phosphate/Creatinine Branch */}
+              <Section id="hypoca-phos-branch" title="High PTH Pathway (Check Phos & Creatinine)">
+                <div className="space-y-3">
+                  <div className="p-3 bg-orange-50 dark:bg-orange-950/30 rounded-lg">
+                    <p className="font-semibold text-orange-700 dark:text-orange-300 mb-2">Phosphate ↑ + Creatinine ↑</p>
+                    <p className="text-xs text-muted-foreground font-semibold">→ Renal Failure</p>
+                    <ul className="text-xs text-muted-foreground mt-1 space-y-0.5">
+                      <li>• Impaired phosphate excretion</li>
+                      <li>• Impaired 1,25(OH)₂D synthesis</li>
+                    </ul>
+                  </div>
+                  <div className="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                    <p className="font-semibold mb-2">Phosphate ↑ + Creatinine Normal</p>
+                    <p className="text-xs text-muted-foreground font-semibold">→ Pseudohypoparathyroidism</p>
+                    <p className="text-xs text-muted-foreground mt-1">PTH resistance (PTH present but tissues don't respond)</p>
+                  </div>
+                </div>
+              </Section>
+
+              {/* Vitamin D Assessment */}
+              <Section id="hypoca-vitd" title="Vitamin D Assessment (25OHD₃)">
+                <div className="space-y-3">
+                  <div className="p-3 bg-red-50 dark:bg-red-950/30 rounded-lg">
+                    <p className="font-semibold text-red-700 dark:text-red-300 mb-2">25OHD₃ ↓ (Low)</p>
+                    <p className="text-xs text-muted-foreground mb-2">Causes of Vitamin D Deficiency:</p>
+                    <div className="grid grid-cols-2 gap-2">
+                      <div className="p-2 bg-white dark:bg-gray-900 rounded text-xs">
+                        <p className="font-medium">Dietary deficiency</p>
+                      </div>
+                      <div className="p-2 bg-white dark:bg-gray-900 rounded text-xs">
+                        <p className="font-medium">Malabsorption</p>
+                      </div>
+                      <div className="p-2 bg-white dark:bg-gray-900 rounded text-xs">
+                        <p className="font-medium">Anticonvulsants</p>
+                      </div>
+                      <div className="p-2 bg-white dark:bg-gray-900 rounded text-xs">
+                        <p className="font-medium">Lack of sun exposure</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="p-3 bg-green-50 dark:bg-green-950/30 rounded-lg">
+                    <p className="font-semibold text-green-700 dark:text-green-300 mb-2">25OHD₃ Normal → Check 1,25(OH)₂D₃</p>
+                    <div className="grid grid-cols-2 gap-2 mt-2">
+                      <div className="p-2 bg-white dark:bg-gray-900 rounded text-xs">
+                        <p className="font-medium text-blue-600">1,25(OH)₂D₃ ↓</p>
+                        <p className="text-muted-foreground mt-1">Vit-D Dependency (Type 1)</p>
+                        <p className="text-[10px] text-muted-foreground">1α-hydroxylase deficiency</p>
+                      </div>
+                      <div className="p-2 bg-white dark:bg-gray-900 rounded text-xs">
+                        <p className="font-medium text-purple-600">1,25(OH)₂D₃ ↑↑</p>
+                        <p className="text-muted-foreground mt-1">Vit-D Resistance (Type 2)</p>
+                        <p className="text-[10px] text-muted-foreground">Receptor resistance</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </Section>
+
+              {/* Vitamin D Activation Pathway */}
+              <Section id="hypoca-vitd-pathway" title="Vitamin D Activation Pathway">
+                <div className="space-y-2">
+                  {/* Sources */}
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="p-2 bg-green-50 dark:bg-green-900/20 rounded text-xs text-center">
+                      <p className="font-medium text-green-700">Vit D2 & D3 from Diet</p>
+                    </div>
+                    <div className="p-2 bg-green-50 dark:bg-green-900/20 rounded text-xs text-center">
+                      <p className="font-medium text-green-700">UVB → D3 in skin</p>
+                    </div>
+                  </div>
+                  <div className="flex justify-center">
+                    <span className="text-blue-500">↓</span>
+                  </div>
+                  {/* Liver */}
+                  <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg text-center">
+                    <p className="font-semibold text-blue-700 dark:text-blue-300">Liver</p>
+                    <p className="text-xs text-muted-foreground">Activates to Calcidiol (25-OH Vit D)</p>
+                  </div>
+                  <div className="flex justify-center items-center gap-2">
+                    <span className="text-blue-500">↓</span>
+                    <div className="p-2 bg-orange-50 dark:bg-orange-900/20 rounded text-[10px] text-orange-600">
+                      Deficiency → Vit D Dependent Rickets Type 1
+                    </div>
+                  </div>
+                  {/* Kidney */}
+                  <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg text-center">
+                    <p className="font-semibold text-blue-700 dark:text-blue-300">Kidney (1α-Hydroxylase)</p>
+                    <p className="text-xs text-muted-foreground">Activates to Calcitriol (1,25-dihydroxy Vit D)</p>
+                  </div>
+                  <div className="flex justify-center items-center gap-2">
+                    <span className="text-blue-500">↓</span>
+                    <div className="p-2 bg-orange-50 dark:bg-orange-900/20 rounded text-[10px] text-orange-600">
+                      Receptor resistance → Vit D Dependent Rickets Type 2
+                    </div>
+                  </div>
+                  {/* Target */}
+                  <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg text-center">
+                    <p className="font-semibold text-blue-700 dark:text-blue-300">Action on Peripheral Tissues</p>
+                    <p className="text-xs text-muted-foreground">Bone mineralization, Ca/Phos absorption</p>
+                  </div>
+                </div>
+              </Section>
+
+              {/* Suspected Rickets Flowchart */}
+              <Section id="hypoca-rickets-dx" title="Diagnostic Approach in Suspected Rickets">
+                <div className="space-y-3">
+                  {/* Suspicion */}
+                  <div className="p-3 bg-amber-50 dark:bg-amber-950/30 rounded-lg border border-amber-200">
+                    <p className="font-semibold text-amber-700 dark:text-amber-300 text-sm">Suspected Rickets:</p>
+                    <ul className="text-xs text-muted-foreground mt-2 space-y-1">
+                      <li>• <span className="text-red-600 font-medium">Elevated alkaline phosphatase activity</span></li>
+                      <li>• <span className="text-red-600 font-medium">Clinical or radiographic findings</span></li>
+                    </ul>
+                  </div>
+                  {/* Measure */}
+                  <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg text-center">
+                    <p className="font-medium text-blue-700">Measure serum</p>
+                    <p className="text-sm font-semibold text-red-600 mt-1">PTH, Pi (Phosphate), and Ca</p>
+                  </div>
+                  {/* Classification */}
+                  <div className="grid grid-cols-1 gap-3">
+                    <div className="p-3 bg-purple-50 dark:bg-purple-950/30 rounded-lg">
+                      <p className="font-semibold text-purple-700 dark:text-purple-300">Calcipenic (Hypocalcemic) Rickets*</p>
+                      <div className="grid grid-cols-3 gap-1 mt-2 text-xs text-center">
+                        <div className="p-1 bg-white dark:bg-gray-900 rounded">
+                          <p className="text-red-600 font-bold">PTH ↑</p>
+                        </div>
+                        <div className="p-1 bg-white dark:bg-gray-900 rounded">
+                          <p>Pi N or ↓</p>
+                        </div>
+                        <div className="p-1 bg-white dark:bg-gray-900 rounded">
+                          <p>Ca N or ↓</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="p-3 bg-teal-50 dark:bg-teal-950/30 rounded-lg">
+                      <p className="font-semibold text-teal-700 dark:text-teal-300">Phosphopenic (Hypophosphatemic) Rickets¶</p>
+                      <div className="grid grid-cols-3 gap-1 mt-2 text-xs text-center">
+                        <div className="p-1 bg-white dark:bg-gray-900 rounded">
+                          <p>PTH N or slightly ↑</p>
+                        </div>
+                        <div className="p-1 bg-white dark:bg-gray-900 rounded">
+                          <p className="text-red-600 font-bold">Pi ↓</p>
+                        </div>
+                        <div className="p-1 bg-white dark:bg-gray-900 rounded">
+                          <p>Ca Normal</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="p-3 bg-gray-100 dark:bg-gray-800 rounded-lg">
+                      <p className="font-semibold">Consider other causes:</p>
+                      <div className="grid grid-cols-3 gap-1 mt-2 text-xs text-center">
+                        <div className="p-1 bg-white dark:bg-gray-900 rounded">
+                          <p>PTH Normal</p>
+                        </div>
+                        <div className="p-1 bg-white dark:bg-gray-900 rounded">
+                          <p>Pi Normal</p>
+                        </div>
+                        <div className="p-1 bg-white dark:bg-gray-900 rounded">
+                          <p>Ca Normal</p>
+                        </div>
+                      </div>
+                      <p className="text-xs text-muted-foreground mt-2">→ Early/transient disease, hypophosphatasiaΔ, or primary bone disorder</p>
+                    </div>
+                  </div>
+                </div>
+              </Section>
+
+              {/* Biochemical Findings Table */}
+              <Section id="hypoca-biochem" title="Biochemical Findings in Rickets">
+                <div className="overflow-x-auto -mx-2">
+                  <table className="w-full text-[9px] min-w-[600px]">
+                    <thead>
+                      <tr className="border-b bg-gray-50 dark:bg-gray-800/50">
+                        <th className="text-left py-2 px-1 font-semibold">Type</th>
+                        <th className="text-center py-2 px-1 font-semibold">Ca</th>
+                        <th className="text-center py-2 px-1 font-semibold">Phos</th>
+                        <th className="text-center py-2 px-1 font-semibold">ALP</th>
+                        <th className="text-center py-2 px-1 font-semibold">PTH</th>
+                        <th className="text-center py-2 px-1 font-semibold">25OHD</th>
+                        <th className="text-center py-2 px-1 font-semibold">1,25D</th>
+                        <th className="text-center py-2 px-1 font-semibold">UCa</th>
+                      </tr>
+                    </thead>
+                    <tbody className="text-muted-foreground">
+                      {/* Calcipenic Section */}
+                      <tr className="bg-purple-50/50 dark:bg-purple-950/20">
+                        <td colSpan={8} className="py-1 px-1 font-semibold text-purple-700 dark:text-purple-300">Calcipenic Rickets</td>
+                      </tr>
+                      <tr className="border-b border-gray-100 dark:border-gray-800">
+                        <td className="py-1 px-1">Vit D-deficient</td>
+                        <td className="py-1 px-1 text-center">↓/N</td>
+                        <td className="py-1 px-1 text-center">↓/N</td>
+                        <td className="py-1 px-1 text-center">↑/↑↑</td>
+                        <td className="py-1 px-1 text-center">↑</td>
+                        <td className="py-1 px-1 text-center text-red-600">↓</td>
+                        <td className="py-1 px-1 text-center">↑/N/↓</td>
+                        <td className="py-1 px-1 text-center">↓/N</td>
+                      </tr>
+                      <tr className="border-b border-gray-100 dark:border-gray-800">
+                        <td className="py-1 px-1">Type I (1α-hydroxylase def)*</td>
+                        <td className="py-1 px-1 text-center">↓</td>
+                        <td className="py-1 px-1 text-center">↓/N</td>
+                        <td className="py-1 px-1 text-center">↑↑</td>
+                        <td className="py-1 px-1 text-center">↑</td>
+                        <td className="py-1 px-1 text-center">N</td>
+                        <td className="py-1 px-1 text-center text-red-600">↓</td>
+                        <td className="py-1 px-1 text-center">↓</td>
+                      </tr>
+                      <tr className="border-b border-gray-100 dark:border-gray-800">
+                        <td className="py-1 px-1">Type II (Vit D resistance)¶</td>
+                        <td className="py-1 px-1 text-center">↓</td>
+                        <td className="py-1 px-1 text-center">↓/N</td>
+                        <td className="py-1 px-1 text-center">↑↑</td>
+                        <td className="py-1 px-1 text-center">↑</td>
+                        <td className="py-1 px-1 text-center">N</td>
+                        <td className="py-1 px-1 text-center text-red-600">↑↑</td>
+                        <td className="py-1 px-1 text-center">↓</td>
+                      </tr>
+                      <tr className="border-b border-gray-100 dark:border-gray-800">
+                        <td className="py-1 px-1">↑ Vit D catabolism</td>
+                        <td className="py-1 px-1 text-center">↓</td>
+                        <td className="py-1 px-1 text-center">↓</td>
+                        <td className="py-1 px-1 text-center">↑↑</td>
+                        <td className="py-1 px-1 text-center">↑</td>
+                        <td className="py-1 px-1 text-center">↓</td>
+                        <td className="py-1 px-1 text-center">↓</td>
+                        <td className="py-1 px-1 text-center">↓</td>
+                      </tr>
+                      {/* Phosphopenic Section */}
+                      <tr className="bg-teal-50/50 dark:bg-teal-950/20">
+                        <td colSpan={8} className="py-1 px-1 font-semibold text-teal-700 dark:text-teal-300">Phosphopenic Rickets (Vit D Resistant)</td>
+                      </tr>
+                      <tr className="border-b border-gray-100 dark:border-gray-800">
+                        <td className="py-1 px-1">X-linked hypophosphatemia</td>
+                        <td className="py-1 px-1 text-center">N</td>
+                        <td className="py-1 px-1 text-center text-red-600">↓↓</td>
+                        <td className="py-1 px-1 text-center">↑</td>
+                        <td className="py-1 px-1 text-center">N/↑</td>
+                        <td className="py-1 px-1 text-center">N</td>
+                        <td className="py-1 px-1 text-center">N/↓</td>
+                        <td className="py-1 px-1 text-center">↓</td>
+                      </tr>
+                      <tr className="border-b border-gray-100 dark:border-gray-800">
+                        <td className="py-1 px-1">Hereditary + hypercalciuria</td>
+                        <td className="py-1 px-1 text-center">N</td>
+                        <td className="py-1 px-1 text-center">↓/↓↓</td>
+                        <td className="py-1 px-1 text-center">↑</td>
+                        <td className="py-1 px-1 text-center">N/↓</td>
+                        <td className="py-1 px-1 text-center">N</td>
+                        <td className="py-1 px-1 text-center">↑</td>
+                        <td className="py-1 px-1 text-center text-red-600">↑</td>
+                      </tr>
+                      <tr className="border-b border-gray-100 dark:border-gray-800">
+                        <td className="py-1 px-1">Nutritional Pi deprivation</td>
+                        <td className="py-1 px-1 text-center">↑/N</td>
+                        <td className="py-1 px-1 text-center">↓/↓↓</td>
+                        <td className="py-1 px-1 text-center">↑/↑↑</td>
+                        <td className="py-1 px-1 text-center">↑</td>
+                        <td className="py-1 px-1 text-center">N</td>
+                        <td className="py-1 px-1 text-center">↑</td>
+                        <td className="py-1 px-1 text-center">↑/N</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div className="mt-2 text-[10px] text-muted-foreground space-y-1">
+                  <p>ALP: Alkaline Phosphatase | UCa: Urine Calcium | N: Normal | ↑: Increased | ↓: Decreased</p>
+                  <p>* 1α-hydroxylase def = Vit D-dependent rickets type I (pseudo-Vit D deficiency)</p>
+                  <p>¶ Hereditary Vit D resistance = Vit D-dependent rickets type II</p>
+                </div>
+              </Section>
+
+              {/* Key Differentiating Features */}
+              <Section id="hypoca-key" title="Key Differentiating Features">
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="p-3 bg-purple-50 dark:bg-purple-950/30 rounded-lg text-xs">
+                    <p className="font-semibold text-purple-700 dark:text-purple-300 mb-2">Calcipenic Rickets</p>
+                    <ul className="text-muted-foreground space-y-1">
+                      <li>• PTH usually elevated</li>
+                      <li>• Calcium low or normal</li>
+                      <li>• Vitamin D pathway issue</li>
+                      <li>• May have tetany/seizures</li>
+                    </ul>
+                  </div>
+                  <div className="p-3 bg-teal-50 dark:bg-teal-950/30 rounded-lg text-xs">
+                    <p className="font-semibold text-teal-700 dark:text-teal-300 mb-2">Phosphopenic Rickets</p>
+                    <ul className="text-muted-foreground space-y-1">
+                      <li>• PTH normal or slightly ↑</li>
+                      <li>• Phosphate markedly low</li>
+                      <li>• FGF23-mediated disorders</li>
+                      <li>• Often genetic cause</li>
+                    </ul>
+                  </div>
+                </div>
+              </Section>
+
+              {/* Key Abbreviations */}
+              <Section id="hypoca-abbrev" title="Key Abbreviations">
+                <div className="grid grid-cols-2 gap-2 text-xs">
+                  <div className="space-y-1">
+                    <p><strong>PTH:</strong> Parathyroid Hormone</p>
+                    <p><strong>25OHD:</strong> 25-hydroxyvitamin D</p>
+                    <p><strong>1,25(OH)₂D:</strong> 1,25-dihydroxyvitamin D (Calcitriol)</p>
+                    <p><strong>Ca:</strong> Calcium</p>
+                  </div>
+                  <div className="space-y-1">
+                    <p><strong>Pi/Phos:</strong> Phosphate</p>
+                    <p><strong>ALP:</strong> Alkaline Phosphatase</p>
+                    <p><strong>FGF23:</strong> Fibroblast Growth Factor 23</p>
+                    <p><strong>TRP:</strong> Tubular Reabsorption of Phosphorus</p>
+                  </div>
+                </div>
+              </Section>
+            </CardContent>
+          </Card>
+        </TabsContent>
       </Tabs>
 
       {/* Vital Signs Reference - Collapsible at bottom */}
