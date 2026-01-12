@@ -2,32 +2,23 @@
  * Approaches Page - Clinical Approach Algorithms
  * 
  * Contains 15 clinical approach tabs:
- * 1. Septic Shock - Cold/Warm shock algorithm, fluid/vasopressor dosing
- * 2. Status Epilepticus - Seizure management protocol
- * 3. Status Asthmaticus - Asthma emergency management
- * 4. TBI - Traumatic brain injury protocol
- * 5. DKA - Diabetic ketoacidosis management
+ * 1. Septic Shock - Cold/Warm shock algorithm
+ * 2. Status Epilepticus - Seizure management
+ * 3. Status Asthmaticus - Asthma emergency
+ * 4. TBI - Traumatic brain injury
+ * 5. DKA - Diabetic ketoacidosis
  * 6. Adrenal Crisis - Acute adrenal insufficiency
- * 7. Anaphylaxis - Allergic reaction management
- * 8. Thrombocytopenia - Platelet disorder workup
+ * 7. Anaphylaxis - Allergic reaction
+ * 8. Thrombocytopenia - Platelet disorders
  * 9. Hypocalcemia - Calcium disorders & rickets
- * 10. Decreased LOC - Glasgow Coma Scale, DDx
+ * 10. Decreased LOC - GCS, differentials
  * 11. Headache - Migraine, IIH, red flags
  * 12. Acute Weakness - Stroke, GBS, myasthenia
  * 13. Abnormal Gait - Ataxia, gait disorders
- * 14. Hyperkalemia - ECG changes, treatment steps
+ * 14. Hyperkalemia - ECG changes, treatment
  * 15. Upper GI Bleed - UGIB management
  * 
- * Each approach includes:
- * - Diagnostic algorithm/flowchart
- * - Treatment protocols with doses
- * - Differential diagnosis
- * - Weight-based calculations where applicable
- * 
- * Features:
- * - Search bar to filter approaches
- * - Collapsible sections for each topic
- * - Vital signs reference table
+ * Features: Search bar, collapsible sections, vital signs reference
  */
 
 import { useState } from "react";
@@ -39,6 +30,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ArrowLeftIcon, ApproachesIcon } from "@/components/HealthIcons";
 import { AlertTriangle, ChevronDown } from "lucide-react";
 
+const ApproachesPage = ({ onBack }) => {
   const [activeTab, setActiveTab] = useState("sepsis");
   const [weight, setWeight] = useState("");
   const [age, setAge] = useState("");
