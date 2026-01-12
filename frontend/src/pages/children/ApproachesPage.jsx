@@ -2620,13 +2620,13 @@ const ApproachesPage = ({ onBack }) => {
         </TabsContent>
       </Tabs>
       <Card className="border-slate-200 dark:border-slate-700">
-        <CardHeader className="pb-0">
+        <CardHeader className="pb-0 py-4">
           <button
             onClick={() => toggleSection('vitals')}
-            className="w-full flex items-center justify-between"
+            className="w-full h-10 flex items-center justify-between px-2"
           >
-            <CardTitle className="text-sm">Pediatric Vital Signs Reference</CardTitle>
-            <span className={`transform transition-transform ${expandedSections['vitals'] ? 'rotate-180' : ''}`}>▼</span>
+            <CardTitle className="text-sm flex items-center h-full">Pediatric Vital Signs Reference</CardTitle>
+            <span className={`transform transition-transform flex items-center h-full ${expandedSections['vitals'] ? 'rotate-180' : ''}`}>▼</span>
           </button>
         </CardHeader>
         {expandedSections['vitals'] && (
