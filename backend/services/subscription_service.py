@@ -202,8 +202,9 @@ class SubscriptionService:
     
     async def cancel_subscription(self, user_id: str) -> Tuple[bool, str]:
         """
-        Cancel a user's subscription
-        The subscription remains active until the current period ends
+        Cancel a user's subscription.
+        The subscription remains active until the current period ends.
+        Sends cancellation confirmation email to user.
         """
         sub = await self.get_user_subscription(user_id)
         
@@ -215,6 +216,9 @@ class SubscriptionService:
         
         now = datetime.now(timezone.utc)
         
+        # Determine when access ends
+        access_until = sub.renews_at or sub.trial_ends_at or now
+        
         await self.db.subscriptions.update_one(
             {'id': sub.id},
             {'$set': {
@@ -223,6 +227,23 @@ class SubscriptionService:
                 'updated_at': now.isoformat()
             }}
         )
+        
+        # Send cancellation email
+        try:
+            user_doc = await self.db.users.find_one(
+                {'id': user_id}, 
+                {'_id': 0, 'email': 1, 'name': 1}
+            )
+            if user_doc:
+                access_until_str = access_until.strftime("%B %d, %Y") if access_until else "N/A"
+                email_service.send_subscription_canceled_email(
+                    to_email=user_doc.get('email'),
+                    user_name=user_doc.get('name', 'User'),
+                    access_until=access_until_str
+                )
+                logger.info(f"Cancellation email sent to {user_doc.get('email')}")
+        except Exception as e:
+            logger.error(f"Failed to send cancellation email: {e}")
         
         return True, 'Subscription canceled. Access continues until current period ends.'
     
