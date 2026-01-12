@@ -5,12 +5,16 @@ EMAIL SERVICE - SMTP Email Functionality
 This service handles all email-related operations including:
 - Welcome emails for new user registration
 - Password reset emails with secure tokens
+- Subscription change notifications
 - General email sending via SMTP
 
 CONFIGURATION: Uses Microsoft Exchange SMTP via GoDaddy
-- SMTP_SERVER: smtp-mail.outlook.com
+- SMTP_SERVER: smtp.office365.com
 - SMTP_PORT: 587 (STARTTLS)
-- SMTP_EMAIL: noreply@pedotg.com
+- SMTP_USERNAME: admin@pedotg.com (for authentication)
+- SMTP_EMAIL: noreply@pedotg.com (for sending/From address)
+
+NOTE: Authentication uses SMTP_USERNAME, but emails are sent FROM SMTP_EMAIL (alias)
 =============================================================================
 """
 
@@ -27,21 +31,33 @@ logger = logging.getLogger(__name__)
 class EmailService:
     """
     Email service for sending transactional emails via SMTP.
+    Supports authentication with a primary account while sending from an alias.
     """
     
     def __init__(self):
         """
         Initialize EmailService with SMTP configuration from environment.
+        
+        Environment Variables:
+            - SMTP_SERVER: SMTP server address (default: smtp.office365.com)
+            - SMTP_PORT: SMTP port (default: 587 for STARTTLS)
+            - SMTP_USERNAME: Account for authentication (e.g., admin@pedotg.com)
+            - SMTP_EMAIL: Alias/address to send from (e.g., noreply@pedotg.com)
+            - SMTP_PASSWORD: Password for SMTP_USERNAME account
         """
-        self.smtp_server = os.environ.get('SMTP_SERVER', 'smtp-mail.outlook.com')
+        self.smtp_server = os.environ.get('SMTP_SERVER', 'smtp.office365.com')
         self.smtp_port = int(os.environ.get('SMTP_PORT', 587))
-        self.smtp_email = os.environ.get('SMTP_EMAIL', 'noreply@pedotg.com')
+        self.smtp_username = os.environ.get('SMTP_USERNAME', 'admin@pedotg.com')  # For authentication
+        self.smtp_email = os.environ.get('SMTP_EMAIL', 'noreply@pedotg.com')  # For sending (From address)
         self.smtp_password = os.environ.get('SMTP_PASSWORD', '')
         self.app_name = "Pediatrics On The Go"
     
     def _send_email(self, to_email: str, subject: str, html_body: str, text_body: str = None) -> bool:
         """
         Send an email via SMTP.
+        
+        Authentication: Uses SMTP_USERNAME + SMTP_PASSWORD
+        Sending From: Uses SMTP_EMAIL (alias)
         
         Args:
             to_email: Recipient email address
@@ -60,7 +76,7 @@ class EmailService:
             # Create message
             msg = MIMEMultipart('alternative')
             msg['Subject'] = subject
-            msg['From'] = f"{self.app_name} <{self.smtp_email}>"
+            msg['From'] = f"{self.app_name} <{self.smtp_email}>"  # Send FROM alias
             msg['To'] = to_email
             
             # Add plain text and HTML parts
@@ -71,7 +87,9 @@ class EmailService:
             # Connect and send
             with smtplib.SMTP(self.smtp_server, self.smtp_port) as server:
                 server.starttls()  # Enable STARTTLS
-                server.login(self.smtp_email, self.smtp_password)
+                # Authenticate with primary account (SMTP_USERNAME)
+                server.login(self.smtp_username, self.smtp_password)
+                # Send from alias (SMTP_EMAIL)
                 server.sendmail(self.smtp_email, to_email, msg.as_string())
             
             logger.info(f"Email sent successfully to {to_email}")
@@ -131,7 +149,7 @@ class EmailService:
                     <p>Best regards,<br>The {self.app_name} Team</p>
                 </div>
                 <div class="footer">
-                    <p>© 2024 {self.app_name}. All rights reserved.</p>
+                    <p>© 2026 {self.app_name}. All rights reserved.</p>
                 </div>
             </div>
         </body>
@@ -149,6 +167,8 @@ class EmailService:
         
         Best regards,
         The {self.app_name} Team
+        
+        © 2026 {self.app_name}. All rights reserved.
         """
         
         return self._send_email(to_email, subject, html_body, text_body)
@@ -202,7 +222,7 @@ class EmailService:
                 <div class="footer">
                     <p>If the button doesn't work, copy and paste this link into your browser:</p>
                     <p style="word-break: break-all;">{reset_link}</p>
-                    <p>© 2024 {self.app_name}. All rights reserved.</p>
+                    <p>© 2026 {self.app_name}. All rights reserved.</p>
                 </div>
             </div>
         </body>
@@ -225,6 +245,100 @@ class EmailService:
         
         Best regards,
         The {self.app_name} Team
+        
+        © 2026 {self.app_name}. All rights reserved.
+        """
+        
+        return self._send_email(to_email, subject, html_body, text_body)
+    
+    def send_subscription_change_email(self, to_email: str, user_name: str, plan_name: str, renews_at: str) -> bool:
+        """
+        Send a subscription change notification email.
+        
+        Args:
+            to_email: User's email address
+            user_name: User's display name
+            plan_name: Name of the subscription plan (e.g., "Monthly", "Annual")
+            renews_at: Formatted renewal date string (e.g., "January 15, 2026")
+        """
+        subject = f"Subscription Confirmed - {self.app_name}"
+        
+        html_body = f"""
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <style>
+                body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; }}
+                .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
+                .header {{ background: linear-gradient(135deg, #00d9c5 0%, #00b4a0 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }}
+                .header h1 {{ color: white; margin: 0; font-size: 24px; }}
+                .content {{ background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }}
+                .plan-box {{ background: white; border: 2px solid #00d9c5; border-radius: 10px; padding: 20px; margin: 20px 0; text-align: center; }}
+                .plan-name {{ font-size: 24px; font-weight: bold; color: #00d9c5; margin-bottom: 10px; }}
+                .plan-detail {{ color: #666; font-size: 14px; }}
+                .footer {{ text-align: center; padding: 20px; color: #666; font-size: 12px; }}
+                .checkmark {{ color: #00d9c5; font-size: 48px; margin-bottom: 10px; }}
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="header">
+                    <h1>Subscription Confirmed!</h1>
+                </div>
+                <div class="content">
+                    <p>Hi <strong>{user_name}</strong>,</p>
+                    <p>Thank you for your subscription! Your account has been successfully updated.</p>
+                    
+                    <div class="plan-box">
+                        <div class="checkmark">✓</div>
+                        <div class="plan-name">{plan_name} Plan</div>
+                        <div class="plan-detail">Renews on: <strong>{renews_at}</strong></div>
+                    </div>
+                    
+                    <p><strong>What's included:</strong></p>
+                    <ul>
+                        <li>Full access to all NICU calculators</li>
+                        <li>Complete pediatric drug database</li>
+                        <li>IV infusions and blood product calculators</li>
+                        <li>CPR/PALS algorithms and references</li>
+                        <li>Regular updates and new features</li>
+                    </ul>
+                    
+                    <p>If you have any questions about your subscription, please don't hesitate to contact us.</p>
+                    <p>Best regards,<br>The {self.app_name} Team</p>
+                </div>
+                <div class="footer">
+                    <p>© 2026 {self.app_name}. All rights reserved.</p>
+                    <p>You can manage your subscription in the app settings.</p>
+                </div>
+            </div>
+        </body>
+        </html>
+        """
+        
+        text_body = f"""
+        Subscription Confirmed!
+        
+        Hi {user_name},
+        
+        Thank you for your subscription! Your account has been successfully updated.
+        
+        Plan: {plan_name}
+        Renews on: {renews_at}
+        
+        What's included:
+        - Full access to all NICU calculators
+        - Complete pediatric drug database
+        - IV infusions and blood product calculators
+        - CPR/PALS algorithms and references
+        - Regular updates and new features
+        
+        If you have any questions about your subscription, please don't hesitate to contact us.
+        
+        Best regards,
+        The {self.app_name} Team
+        
+        © 2026 {self.app_name}. All rights reserved.
         """
         
         return self._send_email(to_email, subject, html_body, text_body)
