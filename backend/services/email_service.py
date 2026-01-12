@@ -257,7 +257,8 @@ class EmailService:
                 body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; }}
                 .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
                 .header {{ background: linear-gradient(135deg, #00d9c5 0%, #00b4a0 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }}
-                .header h1 {{ color: white; margin: 0; font-size: 24px; }}
+                .header img {{ width: 60px; height: 60px; margin-bottom: 10px; }}
+                .header h1 {{ color: white; margin: 0; font-size: 22px; }}
                 .content {{ background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }}
                 .plan-box {{ background: white; border: 2px solid #00d9c5; border-radius: 10px; padding: 20px; margin: 20px 0; text-align: center; }}
                 .plan-name {{ font-size: 24px; font-weight: bold; color: #00d9c5; margin-bottom: 10px; }}
@@ -269,33 +270,23 @@ class EmailService:
         <body>
             <div class="container">
                 <div class="header">
+                    <img src="{self.logo_url}" alt="Logo" />
                     <h1>Subscription Confirmed!</h1>
                 </div>
                 <div class="content">
                     <p>Hi <strong>{user_name}</strong>,</p>
-                    <p>Thank you for your subscription! Your account has been successfully updated.</p>
+                    <p>Your subscription has been activated.</p>
                     
                     <div class="plan-box">
                         <div class="checkmark">✓</div>
                         <div class="plan-name">{plan_name} Plan</div>
-                        <div class="plan-detail">Renews on: <strong>{renews_at}</strong></div>
+                        <div class="plan-detail">Renews: <strong>{renews_at}</strong></div>
                     </div>
                     
-                    <p><strong>What's included:</strong></p>
-                    <ul>
-                        <li>Full access to all NICU calculators</li>
-                        <li>Complete pediatric drug database</li>
-                        <li>IV infusions and blood product calculators</li>
-                        <li>CPR/PALS algorithms and references</li>
-                        <li>Regular updates and new features</li>
-                    </ul>
-                    
-                    <p>If you have any questions about your subscription, please don't hesitate to contact us.</p>
-                    <p>Best regards,<br>The {self.app_name} Team</p>
+                    <p>Thank you for subscribing!</p>
                 </div>
                 <div class="footer">
                     <p>© 2026 {self.app_name}. All rights reserved.</p>
-                    <p>You can manage your subscription in the app settings.</p>
                 </div>
             </div>
         </body>
@@ -303,26 +294,16 @@ class EmailService:
         """
         
         text_body = f"""
-        Subscription Confirmed!
+        Subscription Confirmed - {self.app_name}
         
         Hi {user_name},
         
-        Thank you for your subscription! Your account has been successfully updated.
+        Your subscription has been activated.
         
         Plan: {plan_name}
-        Renews on: {renews_at}
+        Renews: {renews_at}
         
-        What's included:
-        - Full access to all NICU calculators
-        - Complete pediatric drug database
-        - IV infusions and blood product calculators
-        - CPR/PALS algorithms and references
-        - Regular updates and new features
-        
-        If you have any questions about your subscription, please don't hesitate to contact us.
-        
-        Best regards,
-        The {self.app_name} Team
+        Thank you for subscribing!
         
         © 2026 {self.app_name}. All rights reserved.
         """
