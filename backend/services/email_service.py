@@ -186,7 +186,8 @@ class EmailService:
                 body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; }}
                 .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
                 .header {{ background: linear-gradient(135deg, #00d9c5 0%, #00b4a0 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }}
-                .header h1 {{ color: white; margin: 0; font-size: 24px; }}
+                .header img {{ width: 60px; height: 60px; margin-bottom: 10px; }}
+                .header h1 {{ color: white; margin: 0; font-size: 22px; }}
                 .content {{ background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }}
                 .button {{ display: inline-block; background: #00d9c5; color: white; padding: 12px 30px; text-decoration: none; border-radius: 25px; margin: 20px 0; font-weight: bold; }}
                 .footer {{ text-align: center; padding: 20px; color: #666; font-size: 12px; }}
@@ -196,24 +197,22 @@ class EmailService:
         <body>
             <div class="container">
                 <div class="header">
-                    <h1>Password Reset Request</h1>
+                    <img src="{self.logo_url}" alt="Logo" />
+                    <h1>Password Reset</h1>
                 </div>
                 <div class="content">
                     <p>Hi <strong>{user_name}</strong>,</p>
-                    <p>We received a request to reset your password for your {self.app_name} account.</p>
                     <p>Click the button below to reset your password:</p>
                     <p style="text-align: center;">
                         <a href="{reset_link}" class="button">Reset Password</a>
                     </p>
                     <div class="warning">
-                        <strong>⚠️ Important:</strong> This link will expire in 1 hour for security reasons.
+                        <strong>⚠️</strong> This link expires in 1 hour.
                     </div>
-                    <p>If you didn't request a password reset, you can safely ignore this email. Your password will remain unchanged.</p>
-                    <p>Best regards,<br>The {self.app_name} Team</p>
+                    <p>If you didn't request this, ignore this email.</p>
                 </div>
                 <div class="footer">
-                    <p>If the button doesn't work, copy and paste this link into your browser:</p>
-                    <p style="word-break: break-all;">{reset_link}</p>
+                    <p style="word-break: break-all; font-size: 10px;">{reset_link}</p>
                     <p>© 2026 {self.app_name}. All rights reserved.</p>
                 </div>
             </div>
@@ -222,21 +221,16 @@ class EmailService:
         """
         
         text_body = f"""
-        Password Reset Request
+        Password Reset - {self.app_name}
         
         Hi {user_name},
-        
-        We received a request to reset your password for your {self.app_name} account.
         
         Click this link to reset your password:
         {reset_link}
         
-        This link will expire in 1 hour for security reasons.
+        This link expires in 1 hour.
         
-        If you didn't request a password reset, you can safely ignore this email.
-        
-        Best regards,
-        The {self.app_name} Team
+        If you didn't request this, ignore this email.
         
         © 2026 {self.app_name}. All rights reserved.
         """
