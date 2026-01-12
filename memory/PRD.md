@@ -13,7 +13,7 @@ Build a full SaaS-style web app "Pediatrics on the Go" with:
 - ✅ User authentication (JWT-based)
 - ✅ Admin authentication with hardcoded credentials
 - ✅ Tester account with full access (no admin dashboard)
-- ✅ PayPal subscription integration
+- ✅ PayPal subscription integration (with state-based auth for redirect flow)
 - ✅ Trial subscription (3 days)
 - ✅ Medical disclaimer popup
 - ✅ Welcome back [username] message on landing page
@@ -44,12 +44,21 @@ Build a full SaaS-style web app "Pediatrics on the Go" with:
 - ✅ User listing with pagination
 - ✅ Add User functionality
 - ✅ Delete User functionality
+- ✅ Edit User (password, subscription)
 - ✅ Subscription stats
 - ✅ Search users
 
 ### Branding
 - ✅ Custom app icon/logo
 - ✅ Updated favicon
+
+### PayPal Integration (Fixed January 12, 2026)
+- ✅ State-based authentication for PayPal redirect flow
+- ✅ `/create-order` returns state_token stored in localStorage before redirect
+- ✅ `/capture-order-with-state` endpoint authenticates using state_token
+- ✅ Returns new JWT tokens after payment capture to restore user session
+- ✅ 30-minute state token expiry for security
+- ✅ Email notifications for subscription changes
 
 ## User Accounts
 - Admin: `admin@pedotg.com` / `SMC159951`
@@ -67,6 +76,7 @@ Build a full SaaS-style web app "Pediatrics on the Go" with:
 - Tesseract (backup OCR)
 - recharts (charts)
 - html2canvas
+- GoDaddy/Microsoft Exchange SMTP (emails)
 
 ## Backlog / Future Tasks
 - [ ] Add more drug entries
@@ -76,4 +86,4 @@ Build a full SaaS-style web app "Pediatrics on the Go" with:
 - [ ] Production deployment prep
 
 ## Last Updated
-January 11, 2026
+January 12, 2026
