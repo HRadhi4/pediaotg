@@ -139,7 +139,7 @@ class EmailService:
                 </div>
                 <div class="content">
                     <p>Hi <strong>{user_name}</strong>,</p>
-                    <p>Thank you for joining! You now have access to pediatric medical calculators for NICU and Children's ward.</p>
+                    <p>Thank you for joining! You now have access to pediatric medical calculators for NICU and Children's ER/Ward.</p>
                     <p>Best regards,<br>The {self.app_name} Team</p>
                 </div>
                 <div class="footer">
@@ -155,7 +155,7 @@ class EmailService:
         
         Hi {user_name},
         
-        Thank you for joining! You now have access to pediatric medical calculators for NICU and Children's ward.
+        Thank you for joining! You now have access to pediatric medical calculators for NICU and Children's ER/Ward.
         
         Best regards,
         The {self.app_name} Team

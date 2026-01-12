@@ -1,5 +1,5 @@
 /**
- * Children Dashboard - Pediatric Ward Calculator
+ * Children Dashboard - ER/Pediatric Ward Calculator
  * 
  * File Structure:
  * - Lines 1-60: Imports
@@ -336,7 +336,7 @@ const ChildrenDashboard = ({ theme, toggleTheme }) => {
                 {currentPage === "main" ? "Children" : widgets.find(w => w.id === currentPage)?.title || "Children"}
               </h1>
               <p className="text-xs text-muted-foreground hidden sm:block">
-                {currentPage === "main" ? "Pediatric Ward" : "Tap arrow to go back"}
+                {currentPage === "main" ? "ER/Pediatric Ward" : "Tap arrow to go back"}
               </p>
             </div>
           </div>

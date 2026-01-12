@@ -181,7 +181,7 @@ const LandingPage = ({ theme, toggleTheme }) => {
                   Children
                 </h2>
                 <p className="text-muted-foreground">
-                  Pediatric Ward
+                  ER/Pediatric Ward
                 </p>
               </div>
             </div>
