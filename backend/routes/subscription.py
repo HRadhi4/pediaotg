@@ -23,10 +23,11 @@ FLOW:
 
 from fastapi import APIRouter, HTTPException, Depends, Request
 from typing import Optional
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 import os
 import sys
 import logging
+import secrets
 
 sys.path.insert(0, '/app/backend')
 
@@ -34,11 +35,13 @@ from models.subscription import PlanType, PayPalOrderCreate, PayPalOrderCapture,
 from services.paypal_service import PayPalService
 from services.subscription_service import SubscriptionService
 from routes.auth import require_auth, require_subscription
+from services.auth_service import AuthService
 from models.user import UserResponse
 from motor.motor_asyncio import AsyncIOMotorClient
 from pydantic import BaseModel
 
 logger = logging.getLogger(__name__)
+auth_service = AuthService()
 
 router = APIRouter(prefix="/subscription", tags=["Subscription"])
 
@@ -111,10 +114,26 @@ async def create_paypal_order(
     """
     Create a PayPal order for subscription.
     Returns the approval URL to redirect user to PayPal.
+    
+    Also creates a state token that can be used to authenticate the user
+    when they return from PayPal (since cookies/tokens may be lost during redirect).
     """
     logger.info(f"Creating order for user {user.id}, plan: {order_data.plan_name}")
     
     try:
+        # Create a state token for authentication when user returns from PayPal
+        state_token = secrets.token_urlsafe(32)
+        
+        # Store state token in database with user info
+        await db.paypal_states.insert_one({
+            'state_token': state_token,
+            'user_id': user.id,
+            'plan_name': order_data.plan_name,
+            'created_at': datetime.now(timezone.utc).isoformat(),
+            'expires_at': (datetime.now(timezone.utc) + timedelta(minutes=30)).isoformat()
+        })
+        logger.info(f"Created state token for user {user.id}")
+        
         result = await paypal_service.create_order(
             plan_name=order_data.plan_name,
             user_id=user.id
@@ -122,10 +141,17 @@ async def create_paypal_order(
         
         logger.info(f"Order created successfully: {result['order_id']}")
         
+        # Store order_id with state for verification
+        await db.paypal_states.update_one(
+            {'state_token': state_token},
+            {'$set': {'order_id': result['order_id']}}
+        )
+        
         return {
             "success": True,
             "order_id": result['order_id'],
-            "approval_url": result['approval_url']
+            "approval_url": result['approval_url'],
+            "state_token": state_token  # Frontend stores this for use on return
         }
     except ValueError as e:
         # Invalid plan name
