@@ -4309,9 +4309,433 @@ const ApproachesPage = ({ onBack }) => {
             </CardContent>
           </Card>
         </TabsContent>
-      </Tabs>
 
-      {/* Vital Signs Reference - Collapsible at bottom */}
+        {/* HYPERKALEMIA TAB */}
+        <TabsContent value="hyperkalemia" className="space-y-3 mt-4">
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-base">Approach to Hyperkalemia</CardTitle>
+              <CardDescription className="text-xs">ECG findings, causes, and management</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {/* Clinical Features */}
+              <Section id="hyperk-clinical" title="Clinical Features" defaultOpen={true}>
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="p-2 bg-yellow-50 dark:bg-yellow-900/20 rounded text-xs">
+                    <p className="font-semibold text-yellow-700">K⁺ 5-7 mEq/L</p>
+                    <p className="text-muted-foreground">Generally asymptomatic</p>
+                  </div>
+                  <div className="p-2 bg-red-50 dark:bg-red-900/20 rounded text-xs">
+                    <p className="font-semibold text-red-700">K⁺ &gt;7 mEq/L</p>
+                    <p className="text-muted-foreground">Muscle weakness, paralysis, cardiac changes, arrhythmias. <strong>Sudden arrest may occur.</strong></p>
+                  </div>
+                </div>
+              </Section>
+
+              {/* Causes */}
+              <Section id="hyperk-causes" title="Causes">
+                <div className="space-y-2 text-xs">
+                  <div className="p-2 bg-amber-50 dark:bg-amber-900/20 rounded">
+                    <p className="font-semibold text-amber-700">Pseudohyperkalemia</p>
+                    <p className="text-muted-foreground">Most common cause in children - due to hemolysis of blood specimen. Not true hyperkalemia.</p>
+                  </div>
+                  <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
+                    <p className="font-semibold">Increased K⁺ Release from Cells:</p>
+                    <ul className="text-muted-foreground mt-1 space-y-0.5">
+                      <li>• Rhabdomyolysis (crush injury, prolonged seizure, hyperthermia)</li>
+                      <li>• Tumor lysis syndrome</li>
+                      <li>• Massive transfusion</li>
+                      <li>• Metabolic acidosis</li>
+                    </ul>
+                  </div>
+                  <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
+                    <p className="font-semibold">Reduced Urinary K⁺ Excretion:</p>
+                    <ul className="text-muted-foreground mt-1 space-y-0.5">
+                      <li>• Severe hypovolemia</li>
+                      <li>• Impaired kidney function</li>
+                      <li>• Hypoaldosteronism (eg, adrenal insufficiency)</li>
+                    </ul>
+                  </div>
+                </div>
+              </Section>
+
+              {/* ECG Changes */}
+              <Section id="hyperk-ecg" title="ECG Changes (Progression)">
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-full bg-yellow-100 dark:bg-yellow-900 flex items-center justify-center text-yellow-700 font-bold text-sm">1</div>
+                    <div className="flex-1 p-2 bg-yellow-50 dark:bg-yellow-900/20 rounded text-xs">
+                      <p className="font-medium text-yellow-700">Peaked T waves</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-full bg-orange-100 dark:bg-orange-900 flex items-center justify-center text-orange-700 font-bold text-sm">2</div>
+                    <div className="flex-1 p-2 bg-orange-50 dark:bg-orange-900/20 rounded text-xs">
+                      <p className="font-medium text-orange-700">Prolonged PR & QRS intervals, small P waves</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-full bg-red-100 dark:bg-red-900 flex items-center justify-center text-red-700 font-bold text-sm">3</div>
+                    <div className="flex-1 p-2 bg-red-50 dark:bg-red-900/20 rounded text-xs">
+                      <p className="font-medium text-red-700">Loss of P wave, "sine wave" pattern, conduction block</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-full bg-red-200 dark:bg-red-800 flex items-center justify-center text-red-800 font-bold text-sm">4</div>
+                    <div className="flex-1 p-2 bg-red-100 dark:bg-red-950/30 rounded text-xs border border-red-300">
+                      <p className="font-medium text-red-800">Ventricular fibrillation or asystole</p>
+                    </div>
+                  </div>
+                </div>
+              </Section>
+
+              {/* Initial Management */}
+              <Section id="hyperk-initial" title="Initial Management">
+                <div className="space-y-2 text-xs">
+                  <div className="p-2 bg-blue-50 dark:bg-blue-900/20 rounded">
+                    <p className="font-semibold text-blue-700">1. Confirm True Hyperkalemia</p>
+                    <p className="text-muted-foreground">Obtain non-hemolyzed venous or arterial blood sample</p>
+                  </div>
+                  <div className="p-2 bg-blue-50 dark:bg-blue-900/20 rounded">
+                    <p className="font-semibold text-blue-700">2. ECG + Cardiac Monitor</p>
+                    <p className="text-muted-foreground">Place patient on continuous cardiac monitoring</p>
+                  </div>
+                </div>
+              </Section>
+
+              {/* Stabilize Cardiac Membranes */}
+              <Section id="hyperk-calcium" title="Step 1: Stabilize Cardiac Membranes">
+                <div className="p-3 bg-red-50 dark:bg-red-950/30 rounded-lg border border-red-200 mb-2">
+                  <p className="font-semibold text-red-700 text-xs">Indication:</p>
+                  <p className="text-xs text-muted-foreground">K⁺ ≥7 mEq/L OR significant ECG changes (QRS widening, loss of P waves) OR severe arrhythmias</p>
+                </div>
+                <div className="space-y-2 text-xs">
+                  <div className="p-2 bg-green-50 dark:bg-green-900/20 rounded">
+                    <p className="font-semibold text-green-700">Calcium Gluconate 10% (Perfusing Patients)</p>
+                    <p className="text-muted-foreground">60 mg/kg (0.6 mL/kg) diluted in equal volume D5W/NS, IV over 5 min</p>
+                    {w > 0 && <p className="font-mono text-green-600 mt-1">{(w * 60).toFixed(0)} mg ({(w * 0.6).toFixed(1)} mL) | Max: 2g (20mL)</p>}
+                    <p className="text-muted-foreground mt-1">Onset: Immediate | May repeat in 10 min if needed</p>
+                  </div>
+                  <div className="p-2 bg-amber-50 dark:bg-amber-900/20 rounded">
+                    <p className="font-semibold text-amber-700">Calcium Chloride 10% (Cardiac Arrest)</p>
+                    <p className="text-muted-foreground">20 mg/kg (0.2 mL/kg) via central line or IO push</p>
+                    {w > 0 && <p className="font-mono text-amber-600 mt-1">{(w * 20).toFixed(0)} mg ({(w * 0.2).toFixed(1)} mL) | Max: 2g (20mL)</p>}
+                    <p className="text-red-600 mt-1">⚠️ Do NOT give peripherally</p>
+                  </div>
+                </div>
+                <p className="text-[10px] text-red-600 mt-2">⚠️ Do NOT give calcium in same IV line as sodium bicarbonate (precipitation)</p>
+              </Section>
+
+              {/* Shift K into Cells */}
+              <Section id="hyperk-shift" title="Step 2: Shift K⁺ into Cells">
+                <div className="space-y-2 text-xs">
+                  <div className="p-2 bg-blue-50 dark:bg-blue-900/20 rounded">
+                    <p className="font-semibold text-blue-700">Insulin + Glucose (Onset: 10-20 min)</p>
+                    <p className="text-muted-foreground">Regular Insulin: 0.1 units/kg (max 10 units)</p>
+                    {w > 0 && <p className="font-mono text-blue-600">{Math.min(w * 0.1, 10).toFixed(1)} units</p>}
+                    <p className="text-muted-foreground mt-1">Dextrose: 0.5 g/kg over 30 min</p>
+                    <p className="text-muted-foreground">• &lt;5 yrs: D10 at 5 mL/kg | ≥5 yrs: D25 at 2 mL/kg</p>
+                    {w > 0 && <p className="font-mono text-blue-600">{(w * 0.5).toFixed(1)} g dextrose</p>}
+                    <p className="text-amber-600 mt-1">Monitor glucose closely - hypoglycemia risk!</p>
+                  </div>
+                  <div className="p-2 bg-purple-50 dark:bg-purple-900/20 rounded">
+                    <p className="font-semibold text-purple-700">Nebulized Albuterol (Onset: 20-30 min)</p>
+                    <ul className="text-muted-foreground mt-1 space-y-0.5">
+                      <li>• Neonates: 0.4 mg in 2 mL NS</li>
+                      <li>• &lt;25 kg: 2.5 mg in 2 mL NS</li>
+                      <li>• 25-50 kg: 5 mg in 2 mL NS</li>
+                      <li>• &gt;50 kg: 10 mg in 2-4 mL NS</li>
+                    </ul>
+                    <p className="text-muted-foreground mt-1">May repeat after 20 minutes</p>
+                  </div>
+                  <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
+                    <p className="font-semibold">Sodium Bicarbonate (Onset: 15 min)</p>
+                    <p className="text-muted-foreground">1 mEq/kg (max 50 mEq) over 10-15 min</p>
+                    {w > 0 && <p className="font-mono text-gray-600">{Math.min(w, 50).toFixed(0)} mEq</p>}
+                    <p className="text-muted-foreground">• &gt;6 mo: 1 mL/kg of 8.4% | &lt;6 mo: 2 mL/kg of 4.2%</p>
+                    <p className="text-amber-600 mt-1">Minimal effect - should NOT be sole therapy</p>
+                  </div>
+                </div>
+              </Section>
+
+              {/* Remove K */}
+              <Section id="hyperk-remove" title="Step 3: Remove K⁺ from Body">
+                <div className="space-y-2 text-xs">
+                  <div className="p-2 bg-red-50 dark:bg-red-900/20 rounded">
+                    <p className="font-semibold text-red-700">Stop All Potassium Intake</p>
+                  </div>
+                  <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
+                    <p className="font-semibold">Loop Diuretic - Furosemide (Onset: 1-2 hr)</p>
+                    <p className="text-muted-foreground">1 mg/kg IV (max 40 mg)</p>
+                    {w > 0 && <p className="font-mono text-gray-600">{Math.min(w, 40).toFixed(0)} mg IV</p>}
+                    <p className="text-muted-foreground">May repeat after 6 hours. Replace fluid losses.</p>
+                  </div>
+                  <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
+                    <p className="font-semibold">Sodium Polystyrene Sulfonate (Kayexalate)</p>
+                    <p className="text-muted-foreground">1 g/kg (max 30 g) PO, NG, or PR</p>
+                    {w > 0 && <p className="font-mono text-gray-600">{Math.min(w, 30).toFixed(0)} g</p>}
+                    <p className="text-muted-foreground">Onset: 1-2 hr | May repeat after 4-6 hr</p>
+                    <p className="text-red-600 mt-1">⚠️ Avoid in: preterm neonates, NEC risk, ileus, bowel obstruction</p>
+                  </div>
+                  <div className="p-2 bg-blue-50 dark:bg-blue-900/20 rounded">
+                    <p className="font-semibold text-blue-700">Hemodialysis</p>
+                    <p className="text-muted-foreground">For refractory cases or severe renal impairment</p>
+                    <p className="text-muted-foreground">Fastest and most controlled method for K⁺ removal</p>
+                  </div>
+                </div>
+              </Section>
+
+              {/* Lab Testing */}
+              <Section id="hyperk-labs" title="Laboratory Evaluation">
+                <div className="grid grid-cols-2 gap-2 text-xs">
+                  <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
+                    <p className="font-medium">All Patients:</p>
+                    <ul className="text-muted-foreground space-y-0.5">
+                      <li>• BUN, Creatinine</li>
+                      <li>• Blood glucose</li>
+                      <li>• Serum electrolytes</li>
+                      <li>• Urinalysis, Urine electrolytes</li>
+                    </ul>
+                  </div>
+                  <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
+                    <p className="font-medium">If Rhabdomyolysis Suspected:</p>
+                    <ul className="text-muted-foreground space-y-0.5">
+                      <li>• Serum CK, LDH</li>
+                      <li>• Urine myoglobin</li>
+                      <li>• Blood gas</li>
+                    </ul>
+                  </div>
+                </div>
+              </Section>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* UPPER GI BLEED TAB */}
+        <TabsContent value="ugib" className="space-y-3 mt-4">
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-base">Upper GI Bleeding (UGIB)</CardTitle>
+              <CardDescription className="text-xs">Assessment, stabilization, and management</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {/* Definition */}
+              <Section id="ugib-def" title="Definition & Presentation" defaultOpen={true}>
+                <p className="text-xs text-muted-foreground mb-2">
+                  UGIB presents as hematemesis (bright red or coffee-ground material) or melena (black tarry stools).
+                </p>
+                <div className="grid grid-cols-2 gap-2 text-xs">
+                  <div className="p-2 bg-red-50 dark:bg-red-900/20 rounded">
+                    <p className="font-semibold text-red-700">Hematemesis</p>
+                    <p className="text-muted-foreground">Bright red: active bleeding</p>
+                    <p className="text-muted-foreground">Coffee-ground: slower/older bleeding</p>
+                  </div>
+                  <div className="p-2 bg-gray-800 dark:bg-gray-900 rounded">
+                    <p className="font-semibold text-gray-200">Melena</p>
+                    <p className="text-gray-400">Black, tarry, foul-smelling stool</p>
+                    <p className="text-gray-400">Indicates UGI source</p>
+                  </div>
+                </div>
+              </Section>
+
+              {/* Rapid Assessment */}
+              <Section id="ugib-rapid" title="Rapid Assessment">
+                <div className="p-3 bg-red-50 dark:bg-red-950/30 rounded-lg border border-red-200">
+                  <p className="font-semibold text-red-700 text-sm mb-2">Signs of Hemodynamic Instability (Shock):</p>
+                  <div className="grid grid-cols-2 gap-2 text-xs text-muted-foreground">
+                    <span>• Tachycardia</span>
+                    <span>• Hypotension/Orthostasis</span>
+                    <span>• Poor capillary refill</span>
+                    <span>• Cold extremities</span>
+                    <span>• Altered mental status</span>
+                    <span>• Mottled skin</span>
+                  </div>
+                </div>
+              </Section>
+
+              {/* Unstable Patient */}
+              <Section id="ugib-unstable" title="Hemodynamically UNSTABLE">
+                <div className="space-y-2 text-xs">
+                  <div className="p-2 bg-red-50 dark:bg-red-900/20 rounded border border-red-200">
+                    <p className="font-semibold text-red-700">Immediate Actions:</p>
+                    <ul className="text-muted-foreground mt-1 space-y-0.5">
+                      <li>• Fluid resuscitation (crystalloid ± blood)</li>
+                      <li>• Intubate if unable to protect airway</li>
+                      <li>• Place 2 large-bore IVs</li>
+                      <li>• Type & crossmatch; transfuse as indicated</li>
+                      <li>• Intensive monitoring of vitals</li>
+                      <li>• Stabilize before further management</li>
+                    </ul>
+                  </div>
+                  <div className="p-2 bg-blue-50 dark:bg-blue-900/20 rounded">
+                    <p className="font-semibold text-blue-700">Consult:</p>
+                    <p className="text-muted-foreground">Gastroenterology, Surgery, Critical Care (PICU)</p>
+                  </div>
+                </div>
+              </Section>
+
+              {/* Stable Patient Evaluation */}
+              <Section id="ugib-stable" title="Hemodynamically STABLE - Initial Evaluation">
+                <div className="space-y-2 text-xs">
+                  <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
+                    <p className="font-medium">1. Estimate Severity of Bleeding</p>
+                  </div>
+                  <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
+                    <p className="font-medium">2. CBC if more than minor bleeding</p>
+                  </div>
+                  <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
+                    <p className="font-medium">3. Focused History:</p>
+                    <ul className="text-muted-foreground mt-1 space-y-0.5">
+                      <li>• Known liver disease or varices?</li>
+                      <li>• Bleeding diathesis?</li>
+                      <li>• NSAID use?</li>
+                      <li>• Vomiting before hematemesis? (Mallory-Weiss)</li>
+                    </ul>
+                  </div>
+                  <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
+                    <p className="font-medium">4. Focused Physical Exam:</p>
+                    <ul className="text-muted-foreground mt-1 space-y-0.5">
+                      <li>• Hepatosplenomegaly (portal HTN → varices)</li>
+                      <li>• Epistaxis (blood source may be nasal)</li>
+                      <li>• Bruising, petechiae (bleeding disorder)</li>
+                    </ul>
+                  </div>
+                  <div className="p-2 bg-amber-50 dark:bg-amber-900/20 rounded">
+                    <p className="font-medium text-amber-700">5. Exclude Mimics of UGIB:</p>
+                    <ul className="text-muted-foreground mt-1 space-y-0.5">
+                      <li>• Epistaxis with swallowed blood</li>
+                      <li>• Swallowed maternal blood (neonates)</li>
+                      <li>• Red food colorings (tomatoes, beets)</li>
+                      <li>• Iron supplements (black stools)</li>
+                    </ul>
+                  </div>
+                </div>
+              </Section>
+
+              {/* Concerning Features */}
+              <Section id="ugib-concerning" title="Features Suggesting Severe UGIB">
+                <div className="p-3 bg-red-50 dark:bg-red-950/30 rounded-lg border border-red-200 text-xs">
+                  <ul className="text-muted-foreground space-y-1">
+                    <li>• <strong>Presented with hemodynamic instability</strong></li>
+                    <li>• <strong>Melena or large hematochezia</strong></li>
+                    <li>• <strong>Large-volume hematemesis</strong></li>
+                    <li>• <strong>Known/suspected esophageal varices</strong> (liver disease, splenomegaly)</li>
+                    <li>• <strong>Significant anemia</strong> (Hgb &gt;20% below normal, or needs transfusion)</li>
+                  </ul>
+                  <p className="text-red-600 font-medium mt-2">→ Requires aggressive management</p>
+                </div>
+              </Section>
+
+              {/* Management - Large Volume */}
+              <Section id="ugib-large" title="Large-Volume UGIB Management">
+                <div className="space-y-2 text-xs">
+                  <div className="p-2 bg-blue-50 dark:bg-blue-900/20 rounded">
+                    <p className="font-semibold text-blue-700">IV Access & Monitoring</p>
+                    <p className="text-muted-foreground">Maintain IV access, intensive monitoring in PICU</p>
+                  </div>
+                  <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
+                    <p className="font-medium">Blood Tests:</p>
+                    <ul className="text-muted-foreground mt-1 space-y-0.5">
+                      <li>• CBC with platelets, PT/PTT, INR</li>
+                      <li>• Type & screen</li>
+                      <li>• Electrolytes, BUN, Creatinine</li>
+                      <li>• ALT, AST (if cause unclear)</li>
+                    </ul>
+                  </div>
+                  <div className="p-2 bg-red-50 dark:bg-red-900/20 rounded">
+                    <p className="font-semibold text-red-700">Transfuse if:</p>
+                    <p className="text-muted-foreground">Hgb &lt;8 g/dL or hemodynamically unstable</p>
+                  </div>
+                  <div className="p-2 bg-purple-50 dark:bg-purple-900/20 rounded">
+                    <p className="font-semibold text-purple-700">IV PPI (Acid Suppression)</p>
+                    <p className="text-muted-foreground">Omeprazole or Pantoprazole</p>
+                  </div>
+                  <div className="p-2 bg-green-50 dark:bg-green-900/20 rounded">
+                    <p className="font-semibold text-green-700">Correct Coagulopathy</p>
+                    <p className="text-muted-foreground">Vitamin K for liver disease, FFP/platelets if needed</p>
+                  </div>
+                  <div className="p-2 bg-amber-50 dark:bg-amber-900/20 rounded">
+                    <p className="font-semibold text-amber-700">Octreotide (for Variceal Bleeding)</p>
+                    <p className="text-muted-foreground">Used to control bleeding prior to endoscopy</p>
+                  </div>
+                </div>
+              </Section>
+
+              {/* Endoscopy */}
+              <Section id="ugib-endoscopy" title="Upper Endoscopy">
+                <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                  <p className="font-semibold text-blue-700 text-sm">Within 24 hours when stable:</p>
+                  <ul className="text-xs text-muted-foreground mt-2 space-y-1">
+                    <li>• For diagnosis AND therapy</li>
+                    <li>• If cause unknown or bleeding continues</li>
+                    <li>• All large-volume or concerning UGIB</li>
+                  </ul>
+                  <p className="text-xs text-muted-foreground mt-2"><strong>Note:</strong> NG tube not routinely necessary. If gastric clearance needed, <strong>erythromycin</strong> is preferred over NG lavage.</p>
+                </div>
+              </Section>
+
+              {/* Small Volume Management */}
+              <Section id="ugib-small" title="Small-Volume UGIB (Benign Etiology)">
+                <div className="space-y-2 text-xs">
+                  <div className="p-2 bg-green-50 dark:bg-green-900/20 rounded">
+                    <p className="font-semibold text-green-700">Likely causes: Mallory-Weiss tear, mild gastritis</p>
+                    <ul className="text-muted-foreground mt-1 space-y-0.5">
+                      <li>• No routine lab testing required</li>
+                      <li>• Treatment directed to etiology</li>
+                    </ul>
+                  </div>
+                  <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
+                    <p className="font-semibold">Mallory-Weiss Tear:</p>
+                    <p className="text-muted-foreground">Coffee-ground emesis after vigorous vomiting</p>
+                    <p className="text-blue-600 mt-1">Tx: Antiemetic (ondansetron) + short course PPI</p>
+                  </div>
+                  <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
+                    <p className="font-semibold">NSAID-Related UGIB:</p>
+                    <p className="text-blue-600">Tx: Stop NSAID + course of PPI</p>
+                  </div>
+                </div>
+              </Section>
+
+              {/* Physical Exam Findings */}
+              <Section id="ugib-pe" title="Physical Exam Findings & Implications">
+                <div className="overflow-x-auto -mx-2">
+                  <table className="w-full text-[10px] min-w-[350px]">
+                    <thead>
+                      <tr className="border-b bg-gray-50 dark:bg-gray-800/50">
+                        <th className="text-left py-2 px-2 font-semibold">Finding</th>
+                        <th className="text-left py-2 px-2 font-semibold">Consider</th>
+                      </tr>
+                    </thead>
+                    <tbody className="text-muted-foreground">
+                      <tr className="border-b"><td className="py-1 px-2">Hepatosplenomegaly, ascites</td><td className="py-1 px-2">Portal HTN → Esophageal varices</td></tr>
+                      <tr className="border-b"><td className="py-1 px-2">Bruising, petechiae</td><td className="py-1 px-2">Bleeding disorder</td></tr>
+                      <tr className="border-b"><td className="py-1 px-2">Vascular malformations</td><td className="py-1 px-2">Hereditary hemorrhagic telangiectasia</td></tr>
+                      <tr className="border-b"><td className="py-1 px-2">Mucocutaneous pigmentation</td><td className="py-1 px-2">Peutz-Jeghers syndrome</td></tr>
+                      <tr><td className="py-1 px-2">Blood in nares/pharynx</td><td className="py-1 px-2">Epistaxis (mimic)</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </Section>
+
+              {/* Abbreviations */}
+              <Section id="ugib-abbrev" title="Key Abbreviations">
+                <div className="grid grid-cols-2 gap-2 text-[10px]">
+                  <div className="space-y-0.5">
+                    <p><strong>UGIB:</strong> Upper GI Bleeding</p>
+                    <p><strong>PPI:</strong> Proton Pump Inhibitor</p>
+                    <p><strong>NG:</strong> Nasogastric</p>
+                  </div>
+                  <div className="space-y-0.5">
+                    <p><strong>INR:</strong> International Normalized Ratio</p>
+                    <p><strong>FFP:</strong> Fresh Frozen Plasma</p>
+                    <p><strong>Hgb:</strong> Hemoglobin</p>
+                  </div>
+                </div>
+              </Section>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
       <Card className="border-slate-200 dark:border-slate-700">
         <CardHeader className="pb-0">
           <button
