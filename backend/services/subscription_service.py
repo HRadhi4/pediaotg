@@ -131,6 +131,9 @@ class SubscriptionService:
             existing.gateway_customer_id = gateway_customer_id
             existing.gateway_subscription_id = capture_id
             
+            # Send subscription confirmation email
+            await self._send_subscription_email(user_id, plan_name, renews_at)
+            
             return existing
         else:
             # Create new subscription
@@ -151,7 +154,51 @@ class SubscriptionService:
                     sub_dict[key] = sub_dict[key].isoformat()
             
             await self.db.subscriptions.insert_one(sub_dict)
+            
+            # Send subscription confirmation email
+            await self._send_subscription_email(user_id, plan_name, renews_at)
+            
             return subscription
+    
+    async def _send_subscription_email(self, user_id: str, plan_name: PlanType, renews_at: datetime) -> None:
+        """
+        Send subscription confirmation email to user.
+        
+        Args:
+            user_id: User's ID
+            plan_name: Subscription plan type
+            renews_at: Renewal date
+        """
+        try:
+            # Fetch user details
+            user = await self.db.users.find_one({'id': user_id}, {'_id': 0, 'email': 1, 'name': 1})
+            
+            if not user:
+                logger.warning(f"User not found for subscription email: {user_id}")
+                return
+            
+            # Format plan name for display
+            plan_display = plan_name.value.capitalize() if hasattr(plan_name, 'value') else str(plan_name).capitalize()
+            
+            # Format renewal date (e.g., "January 15, 2026")
+            renews_at_str = renews_at.strftime("%B %d, %Y")
+            
+            # Send email
+            success = email_service.send_subscription_change_email(
+                to_email=user['email'],
+                user_name=user.get('name', 'User'),
+                plan_name=plan_display,
+                renews_at=renews_at_str
+            )
+            
+            if success:
+                logger.info(f"Subscription email sent to {user['email']}")
+            else:
+                logger.warning(f"Failed to send subscription email to {user['email']}")
+                
+        except Exception as e:
+            # Log error but don't break subscription creation
+            logger.error(f"Error sending subscription email: {e}")
     
     async def cancel_subscription(self, user_id: str) -> Tuple[bool, str]:
         """
