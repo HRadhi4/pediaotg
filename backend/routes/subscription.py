@@ -41,7 +41,6 @@ from motor.motor_asyncio import AsyncIOMotorClient
 from pydantic import BaseModel
 
 logger = logging.getLogger(__name__)
-auth_service = AuthService()
 
 router = APIRouter(prefix="/subscription", tags=["Subscription"])
 
@@ -52,6 +51,7 @@ db = client[os.environ.get('DB_NAME', 'test_database')]
 
 paypal_service = PayPalService()
 subscription_service = SubscriptionService(db)
+auth_service = AuthService(db)
 
 
 class PricingResponse(BaseModel):
