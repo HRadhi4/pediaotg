@@ -10,26 +10,30 @@ const API_URL = process.env.REACT_APP_BACKEND_URL || '';
 const SubscriptionSuccessPage = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const { refreshAuth, getAuthHeaders } = useAuth();
+  const { refreshAuth, getAuthHeaders, setTokens } = useAuth();
   const [status, setStatus] = useState('processing'); // processing, success, error
   const [message, setMessage] = useState('Completing your subscription...');
 
   const capturePayment = async () => {
     try {
-      // Get order info from URL or localStorage
-      const token = searchParams.get('token'); // PayPal order ID
+      // Get order info from URL and localStorage
+      const token = searchParams.get('token'); // PayPal order ID from URL
       const plan = searchParams.get('plan');
       
-      // Also check localStorage for pending order
+      console.log('PayPal return - URL token:', token, 'plan:', plan);
+      
+      // Get pending order from localStorage (includes state_token)
       const pendingOrder = localStorage.getItem('pending_order');
       let orderId = token;
       let planName = plan;
+      let stateToken = null;
       
       if (pendingOrder) {
         const parsed = JSON.parse(pendingOrder);
+        console.log('Pending order from localStorage:', parsed);
         orderId = orderId || parsed.order_id;
         planName = planName || parsed.plan_name;
-        localStorage.removeItem('pending_order');
+        stateToken = parsed.state_token;
       }
 
       if (!orderId) {
@@ -38,33 +42,86 @@ const SubscriptionSuccessPage = () => {
         return;
       }
 
-      // Capture the payment
-      const response = await fetch(`${API_URL}/api/subscription/capture-order`, {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-          ...getAuthHeaders()
-        },
-        body: JSON.stringify({
-          order_id: orderId,
-          plan_name: planName || 'monthly'
-        })
-      });
+      // Use state-based capture if we have a state token (handles lost auth)
+      // This is the key fix - we don't need auth headers since we use state token
+      if (stateToken) {
+        console.log('Using state-based capture (auth may be lost after redirect)');
+        
+        const response = await fetch(`${API_URL}/api/subscription/capture-order-with-state`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            order_id: orderId,
+            state_token: stateToken
+          })
+        });
 
-      const data = await response.json();
+        const data = await response.json();
+        console.log('Capture response:', data);
 
-      if (data.success) {
-        setStatus('success');
-        setMessage('Your subscription is now active!');
-        // Refresh auth to update subscription status
-        await refreshAuth();
+        // Clean up localStorage regardless of outcome
+        localStorage.removeItem('pending_order');
+
+        if (data.success) {
+          // Store new auth tokens returned from the capture endpoint
+          if (data.access_token && data.refresh_token) {
+            console.log('Restoring auth tokens after PayPal redirect');
+            // Use setTokens if available, otherwise store directly
+            if (setTokens) {
+              setTokens(data.access_token, data.refresh_token);
+            } else {
+              localStorage.setItem('access_token', data.access_token);
+              localStorage.setItem('refresh_token', data.refresh_token);
+            }
+          }
+          
+          setStatus('success');
+          setMessage('Your subscription is now active!');
+          
+          // Refresh auth to update user context with new subscription status
+          try {
+            await refreshAuth();
+          } catch (e) {
+            console.log('Auth refresh after subscription:', e);
+          }
+        } else {
+          setStatus('error');
+          setMessage(data.detail || 'Failed to activate subscription. Please contact support.');
+        }
       } else {
-        setStatus('error');
-        setMessage(data.detail || 'Failed to activate subscription. Please contact support.');
+        // Fallback to original auth-based capture (if user is still logged in)
+        console.log('Using auth-based capture (no state token)');
+        
+        const response = await fetch(`${API_URL}/api/subscription/capture-order`, {
+          method: 'POST',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+            ...getAuthHeaders()
+          },
+          body: JSON.stringify({
+            order_id: orderId,
+            plan_name: planName || 'monthly'
+          })
+        });
+
+        const data = await response.json();
+        localStorage.removeItem('pending_order');
+
+        if (data.success) {
+          setStatus('success');
+          setMessage('Your subscription is now active!');
+          await refreshAuth();
+        } else {
+          setStatus('error');
+          setMessage(data.detail || 'Failed to activate subscription. Please contact support.');
+        }
       }
     } catch (error) {
       console.error('Capture error:', error);
+      localStorage.removeItem('pending_order');
       setStatus('error');
       setMessage('An error occurred. Please contact support.');
     }
@@ -97,6 +154,7 @@ const SubscriptionSuccessPage = () => {
               <Button
                 onClick={() => navigate('/')}
                 className="bg-[#00d9c5] hover:bg-[#00c4b0] text-white"
+                data-testid="start-using-app-btn"
               >
                 Start Using the App
               </Button>
@@ -114,6 +172,7 @@ const SubscriptionSuccessPage = () => {
                 <Button
                   onClick={() => navigate('/pricing')}
                   className="w-full bg-[#00d9c5] hover:bg-[#00c4b0] text-white"
+                  data-testid="try-again-btn"
                 >
                   Try Again
                 </Button>
@@ -121,6 +180,7 @@ const SubscriptionSuccessPage = () => {
                   onClick={() => navigate('/')}
                   variant="outline"
                   className="w-full"
+                  data-testid="back-to-app-btn"
                 >
                   Back to App
                 </Button>
