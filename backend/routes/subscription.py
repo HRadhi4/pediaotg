@@ -276,6 +276,145 @@ async def capture_paypal_order(
         raise HTTPException(status_code=500, detail=str(e))
 
 
+class CaptureWithStateRequest(BaseModel):
+    """Request body for capturing order with state token (no auth required)"""
+    order_id: str
+    state_token: str
+
+
+@router.post("/capture-order-with-state")
+async def capture_paypal_order_with_state(request_data: CaptureWithStateRequest):
+    """
+    Capture a PayPal order after user approval using state token.
+    
+    This endpoint is used when returning from PayPal redirect where
+    authentication cookies/tokens may have been lost. The state token
+    (stored before redirect) is used to verify the user and complete the payment.
+    
+    Returns new auth tokens so the user can be re-authenticated.
+    """
+    logger.info(f"Capturing order {request_data.order_id} with state token")
+    
+    try:
+        # Verify state token and get user info
+        state_doc = await db.paypal_states.find_one({'state_token': request_data.state_token})
+        
+        if not state_doc:
+            logger.error(f"Invalid state token: {request_data.state_token[:20]}...")
+            raise HTTPException(status_code=400, detail="Invalid or expired state token. Please try subscribing again.")
+        
+        # Check expiration
+        expires_at = datetime.fromisoformat(state_doc['expires_at'])
+        if datetime.now(timezone.utc) > expires_at:
+            await db.paypal_states.delete_one({'state_token': request_data.state_token})
+            logger.error(f"State token expired for user {state_doc.get('user_id')}")
+            raise HTTPException(status_code=400, detail="Session expired. Please try subscribing again.")
+        
+        user_id = state_doc['user_id']
+        plan_name = state_doc['plan_name']
+        stored_order_id = state_doc.get('order_id')
+        
+        # Verify order ID matches if stored
+        if stored_order_id and stored_order_id != request_data.order_id:
+            logger.warning(f"Order ID mismatch: stored={stored_order_id}, received={request_data.order_id}")
+            # Use the order from URL (PayPal's token) as it's more reliable
+        
+        logger.info(f"State verified for user {user_id}, plan: {plan_name}")
+        
+        # Verify the order status with PayPal
+        order_details = await paypal_service.get_order_details(request_data.order_id)
+        order_status = order_details.get('status')
+        logger.info(f"Order {request_data.order_id} status: {order_status}")
+        
+        if order_status != 'APPROVED':
+            logger.error(f"Order not approved. Status: {order_status}")
+            raise HTTPException(
+                status_code=400,
+                detail=f"Payment not approved by PayPal. Current status: {order_status}. Please complete the PayPal approval."
+            )
+        
+        # Capture the payment
+        capture_result = await paypal_service.capture_order(request_data.order_id)
+        logger.info(f"Capture result: status={capture_result['status']}")
+        
+        if capture_result['status'] != 'COMPLETED':
+            logger.error(f"Payment not completed: {capture_result}")
+            raise HTTPException(
+                status_code=400,
+                detail=f"Payment not completed. Status: {capture_result['status']}"
+            )
+        
+        # Fetch user details
+        user_doc = await db.users.find_one({'id': user_id}, {'_id': 0})
+        if not user_doc:
+            logger.error(f"User not found: {user_id}")
+            raise HTTPException(status_code=404, detail="User not found")
+        
+        # Create/update subscription
+        subscription = await subscription_service.create_paid_subscription(
+            user_id=user_id,
+            plan_name=plan_name,
+            gateway_order_id=request_data.order_id,
+            gateway_customer_id=capture_result.get('payer_id'),
+            capture_id=capture_result.get('capture_id')
+        )
+        
+        logger.info(f"Subscription created/updated: {subscription.id}")
+        
+        # Update user's active subscription status
+        await db.users.update_one(
+            {'id': user_id},
+            {'$set': {
+                'has_active_subscription': True,
+                'updated_at': datetime.now(timezone.utc).isoformat()
+            }}
+        )
+        logger.info(f"User {user_id} has_active_subscription set to True")
+        
+        # Delete used state token
+        await db.paypal_states.delete_one({'state_token': request_data.state_token})
+        logger.info(f"State token cleaned up for user {user_id}")
+        
+        # Send confirmation email
+        try:
+            from services.email_service import email_service
+            renews_at_str = subscription.renews_at.strftime("%B %d, %Y") if subscription.renews_at else "N/A"
+            plan_display = subscription.plan_name.value.capitalize() if hasattr(subscription.plan_name, 'value') else str(subscription.plan_name).capitalize()
+            
+            email_service.send_subscription_change_email(
+                to_email=user_doc.get('email'),
+                user_name=user_doc.get('name', 'User'),
+                plan_name=plan_display,
+                renews_at=renews_at_str
+            )
+            logger.info(f"Subscription confirmation email sent to {user_doc.get('email')}")
+        except Exception as e:
+            logger.error(f"Failed to send subscription email: {e}")
+        
+        # Generate new authentication tokens for the user
+        access_token = auth_service.create_access_token(user_id, user_doc.get('is_admin', False))
+        refresh_token = auth_service.create_refresh_token(user_id)
+        
+        return {
+            "success": True,
+            "message": "Subscription activated successfully",
+            "access_token": access_token,
+            "refresh_token": refresh_token,
+            "subscription": {
+                "id": subscription.id,
+                "plan": subscription.plan_name.value if hasattr(subscription.plan_name, 'value') else str(subscription.plan_name),
+                "status": subscription.status.value if hasattr(subscription.status, 'value') else str(subscription.status),
+                "renews_at": subscription.renews_at.isoformat() if subscription.renews_at else None
+            }
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error capturing PayPal order with state: {str(e)}", exc_info=True)
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 @router.post("/cancel")
 async def cancel_subscription(user: UserResponse = Depends(require_auth)):
     """
