@@ -3,15 +3,10 @@
  * 
  * Includes multiple pediatric scoring systems:
  * - GCS (Glasgow Coma Scale) - Adult & Pediatric versions
- * - PRAM (Pediatric Respiratory Assessment Measure) for asthma
+ * - PRAM (Pediatric Respiratory Assessment Measure)
  * - Westley Croup Score
  * - OI (Oxygenation Index) Calculator
  * - IWL (Insensible Water Loss) Calculator
- * 
- * Each score includes:
- * - Interactive calculation
- * - Interpretation guide
- * - Clinical recommendations
  */
 
 import { useState } from "react";
@@ -22,6 +17,7 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ArrowLeftIcon, ScoringIcon } from "@/components/HealthIcons";
 
+const ScoringPage = ({ onBack }) => {
   const [activeScore, setActiveScore] = useState("gcs");
 
   useEffect(() => {
