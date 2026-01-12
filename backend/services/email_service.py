@@ -309,6 +309,76 @@ class EmailService:
         """
         
         return self._send_email(to_email, subject, html_body, text_body)
+    
+    def send_subscription_canceled_email(self, to_email: str, user_name: str, access_until: str) -> bool:
+        """
+        Send a subscription cancellation confirmation email.
+        
+        Args:
+            to_email: User's email address
+            user_name: User's display name
+            access_until: Date when access ends (e.g., "January 15, 2026")
+        """
+        subject = f"Subscription Canceled - {self.app_name}"
+        
+        html_body = f"""
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <style>
+                body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; }}
+                .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
+                .header {{ background: linear-gradient(135deg, #ff6b6b 0%, #ee5a5a 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }}
+                .header img {{ width: 60px; height: 60px; margin-bottom: 10px; }}
+                .header h1 {{ color: white; margin: 0; font-size: 22px; }}
+                .content {{ background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }}
+                .info-box {{ background: #fff3cd; border: 1px solid #ffc107; border-radius: 10px; padding: 20px; margin: 20px 0; text-align: center; }}
+                .footer {{ text-align: center; padding: 20px; color: #666; font-size: 12px; }}
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="header">
+                    <img src="{self.logo_url}" alt="Logo" />
+                    <h1>Subscription Canceled</h1>
+                </div>
+                <div class="content">
+                    <p>Hi <strong>{user_name}</strong>,</p>
+                    <p>Your subscription has been canceled as requested.</p>
+                    
+                    <div class="info-box">
+                        <p style="margin: 0; font-weight: bold;">You will retain access until:</p>
+                        <p style="margin: 10px 0 0 0; font-size: 20px; color: #333;">{access_until}</p>
+                    </div>
+                    
+                    <p>You can resubscribe anytime from the app to regain full access.</p>
+                    <p>We hope to see you again!</p>
+                </div>
+                <div class="footer">
+                    <p>© 2026 {self.app_name}. All rights reserved.</p>
+                </div>
+            </div>
+        </body>
+        </html>
+        """
+        
+        text_body = f"""
+        Subscription Canceled - {self.app_name}
+        
+        Hi {user_name},
+        
+        Your subscription has been canceled as requested.
+        
+        You will retain access until: {access_until}
+        
+        You can resubscribe anytime from the app to regain full access.
+        
+        We hope to see you again!
+        
+        © 2026 {self.app_name}. All rights reserved.
+        """
+        
+        return self._send_email(to_email, subject, html_body, text_body)
 
 
 # Singleton instance
