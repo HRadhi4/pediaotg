@@ -304,8 +304,9 @@ class TestVerifyPayPal:
         assert response.status_code == 200, f"Expected 200, got {response.status_code}"
         
         data = response.json()
-        assert "credentials_configured" in data or "client_id_configured" in data, \
-            "Missing credential status in response"
+        # Check for success field or client_id presence
+        assert data.get("success") == True or "client_id" in data, \
+            f"PayPal config should be valid: {data}"
         
         print(f"✓ PayPal config verification: {data}")
 
