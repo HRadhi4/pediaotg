@@ -2,7 +2,11 @@ from datetime import datetime, timedelta, timezone
 from typing import Optional, Tuple, List
 from motor.motor_asyncio import AsyncIOMotorDatabase
 from models.subscription import Subscription, SubscriptionStatus, PlanType, SubscriptionResponse
+from services.email_service import email_service
 import os
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class SubscriptionService:
