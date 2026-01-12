@@ -176,6 +176,16 @@ export const AuthProvider = ({ children }) => {
     return {};
   };
 
+  // Function to manually set tokens (used after PayPal redirect)
+  const updateTokens = (accessToken, refreshToken) => {
+    const newTokens = {
+      access_token: accessToken,
+      refresh_token: refreshToken
+    };
+    setTokens(newTokens);
+    localStorage.setItem('auth_tokens', JSON.stringify(newTokens));
+  };
+
   const value = {
     user,
     loading,
@@ -187,7 +197,8 @@ export const AuthProvider = ({ children }) => {
     logout,
     refreshAuth,
     getAuthHeaders,
-    tokens
+    tokens,
+    setTokens: updateTokens  // Expose for PayPal redirect flow
   };
 
   return (
