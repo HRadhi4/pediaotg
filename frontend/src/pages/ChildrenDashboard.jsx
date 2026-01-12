@@ -2919,6 +2919,322 @@ const ApproachesPage = ({ onBack }) => {
             </CardContent>
           </Card>
         </TabsContent>
+
+        {/* ANAPHYLAXIS VS ALLERGIC REACTION TAB */}
+        <TabsContent value="anaphylaxis" className="space-y-3 mt-4">
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-base">Anaphylaxis vs Allergic Reaction</CardTitle>
+              <CardDescription className="text-xs">Decision flowchart for diagnosis and treatment</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {/* Initial Presentation */}
+              <Section id="anaph-presentation" title="Initial Presentation" defaultOpen={true}>
+                <div className="p-3 bg-orange-50 dark:bg-orange-950/30 rounded-lg">
+                  <p className="font-semibold text-orange-700 dark:text-orange-300 text-sm">Urticarial rash involves skin or mucosal tissue:</p>
+                  <ul className="text-xs text-muted-foreground mt-2 space-y-1">
+                    <li>• Generalized hives, pruritus or flushing</li>
+                    <li>• Swollen lips, tongue or uvula</li>
+                    <li>• Or both</li>
+                  </ul>
+                </div>
+              </Section>
+
+              {/* Decision Point */}
+              <Section id="anaph-decision" title="Key Decision Point" defaultOpen={true}>
+                <div className="p-3 bg-teal-50 dark:bg-teal-950/30 rounded-lg">
+                  <p className="font-semibold text-teal-700 dark:text-teal-300 text-sm mb-2">At least one of the following involved:</p>
+                  <ul className="text-xs space-y-2">
+                    <li className="flex items-start gap-2">
+                      <span className="text-red-500">●</span>
+                      <span><strong>Airway compromise</strong> (stridor, hoarseness, difficulty breathing)</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-red-500">●</span>
+                      <span><strong>Reduced BP</strong> or associated symptoms of end-organ dysfunction (dizziness, syncope)</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-red-500">●</span>
+                      <span><strong>GI symptoms</strong> (Abdominal pain, Vomiting)</span>
+                    </li>
+                  </ul>
+                </div>
+                <div className="grid grid-cols-2 gap-3 mt-3">
+                  <div className="p-3 bg-red-50 dark:bg-red-950/30 rounded-lg border-2 border-red-200">
+                    <p className="font-bold text-red-700 dark:text-red-300 text-center">YES</p>
+                    <p className="text-center text-sm font-semibold mt-1">Anaphylactic Reaction</p>
+                  </div>
+                  <div className="p-3 bg-green-50 dark:bg-green-950/30 rounded-lg border-2 border-green-200">
+                    <p className="font-bold text-green-700 dark:text-green-300 text-center">NO</p>
+                    <p className="text-center text-sm font-semibold mt-1">Allergic Reaction</p>
+                  </div>
+                </div>
+              </Section>
+
+              {/* Anaphylaxis Treatment */}
+              <Section id="anaph-treatment" title="Anaphylaxis Treatment">
+                <div className="space-y-3">
+                  {/* Primary Treatment */}
+                  <div className="p-3 bg-red-50 dark:bg-red-950/30 rounded-lg border border-red-200">
+                    <p className="font-bold text-red-700 dark:text-red-300 flex items-center gap-2">
+                      <span className="bg-red-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">1</span>
+                      Epinephrine (First-line)
+                    </p>
+                    <div className="mt-2 space-y-2 text-xs">
+                      <div className="grid grid-cols-2 gap-2">
+                        <div className="p-2 bg-white dark:bg-gray-900 rounded">
+                          <p className="text-muted-foreground">Dose</p>
+                          <p className="font-mono font-semibold">0.01 mg/kg IM</p>
+                        </div>
+                        <div className="p-2 bg-white dark:bg-gray-900 rounded">
+                          <p className="text-muted-foreground">Concentration</p>
+                          <p className="font-mono font-semibold">1:1000 (1mg/ml)</p>
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-2 gap-2">
+                        <div className="p-2 bg-white dark:bg-gray-900 rounded">
+                          <p className="text-muted-foreground">Prepubertal Max</p>
+                          <p className="font-mono font-semibold text-blue-600">0.3 mg</p>
+                        </div>
+                        <div className="p-2 bg-white dark:bg-gray-900 rounded">
+                          <p className="text-muted-foreground">Adolescent Max</p>
+                          <p className="font-mono font-semibold text-blue-600">0.5 mg</p>
+                        </div>
+                      </div>
+                      <p className="text-muted-foreground">Repeat Q5-15 min PRN</p>
+                      {w > 0 && (
+                        <div className="p-2 bg-blue-50 dark:bg-blue-950/30 rounded border border-blue-200">
+                          <p className="font-mono text-blue-600 font-semibold">
+                            For {w}kg: {Math.min(w * 0.01, 0.5).toFixed(2)} mg IM
+                          </p>
+                        </div>
+                      )}
+                      <div className="p-2 bg-amber-50 dark:bg-amber-900/20 rounded border border-amber-200">
+                        <p className="text-amber-700 dark:text-amber-300 font-medium">Note for CPR:</p>
+                        <p className="text-muted-foreground">1:10,000 (0.1mg/ml) used IV in CPR</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Adjunct Treatment */}
+                  <div className="p-3 bg-blue-50 dark:bg-blue-950/30 rounded-lg border border-blue-200">
+                    <p className="font-bold text-blue-700 dark:text-blue-300 flex items-center gap-2">
+                      <span className="bg-blue-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">2</span>
+                      Adjunct Treatments
+                    </p>
+                    <div className="mt-2 space-y-2 text-xs">
+                      {/* Hydrocortisone */}
+                      <div className="p-2 bg-white dark:bg-gray-900 rounded">
+                        <p className="font-medium">Glucocorticoid (Hydrocortisone)</p>
+                        <p className="text-muted-foreground">2-5 mg/kg IV/IM (Max 100 mg)</p>
+                        <p className="text-muted-foreground">Then 1-5 mg/kg/dose Q6h or 10-15 mg/m²/day divided</p>
+                        {w > 0 && (
+                          <p className="font-mono text-blue-600 mt-1">
+                            For {w}kg: {Math.min(w * 2, 100).toFixed(0)}-{Math.min(w * 5, 100).toFixed(0)} mg IV/IM
+                          </p>
+                        )}
+                      </div>
+                      {/* Diphenhydramine */}
+                      <div className="p-2 bg-white dark:bg-gray-900 rounded">
+                        <p className="font-medium">Diphenhydramine</p>
+                        <p className="text-muted-foreground">1-2 mg/kg/dose Q6h (Max 50mg/dose, 300mg/24hr)</p>
+                        <p className="text-muted-foreground">Route: IV/IM/PO</p>
+                        {w > 0 && (
+                          <p className="font-mono text-blue-600 mt-1">
+                            For {w}kg: {Math.min(w * 1, 50).toFixed(0)}-{Math.min(w * 2, 50).toFixed(0)} mg Q6h
+                          </p>
+                        )}
+                        <p className="text-red-600 text-[10px] mt-1">CI: MAO inhibitors, BA, GI/Urinary obstruction, Neonate</p>
+                      </div>
+                      {/* Ventolin */}
+                      <div className="p-2 bg-white dark:bg-gray-900 rounded">
+                        <p className="font-medium">Ventolin (for bronchospasm)</p>
+                        <p className="text-muted-foreground">Nebulized salbutamol for wheezing</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </Section>
+
+              {/* Allergic Reaction Treatment */}
+              <Section id="anaph-allergic" title="Allergic Reaction Treatment (No systemic signs)">
+                <div className="p-3 bg-green-50 dark:bg-green-950/30 rounded-lg border border-green-200">
+                  <p className="font-semibold text-green-700 dark:text-green-300">Treatment:</p>
+                  <p className="text-sm mt-1">Antihistamine alone</p>
+                  <p className="text-xs text-muted-foreground mt-2">
+                    Examples: Cetirizine, Diphenhydramine, Loratadine
+                  </p>
+                </div>
+              </Section>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* THROMBOCYTOPENIA TAB */}
+        <TabsContent value="thrombocytopenia" className="space-y-3 mt-4">
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-base">Approach to Thrombocytopenia</CardTitle>
+              <CardDescription className="text-xs">Diagnostic flowchart based on patient status and platelet characteristics</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {/* Initial Assessment */}
+              <Section id="thrombo-assess" title="Initial Assessment" defaultOpen={true}>
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="p-3 bg-green-50 dark:bg-green-950/30 rounded-lg border-2 border-green-200">
+                    <p className="font-bold text-green-700 dark:text-green-300 text-center">WELL</p>
+                    <p className="text-xs text-center text-muted-foreground mt-1">Clinically stable</p>
+                  </div>
+                  <div className="p-3 bg-red-50 dark:bg-red-950/30 rounded-lg border-2 border-red-200">
+                    <p className="font-bold text-red-700 dark:text-red-300 text-center">ILL</p>
+                    <p className="text-xs text-center text-muted-foreground mt-1">Clinically unwell</p>
+                  </div>
+                </div>
+              </Section>
+
+              {/* Well Patient */}
+              <Section id="thrombo-well" title="WELL Patient Pathway">
+                <div className="space-y-3">
+                  {/* Large PLT */}
+                  <div className="p-3 bg-blue-50 dark:bg-blue-950/30 rounded-lg">
+                    <p className="font-semibold text-blue-700 dark:text-blue-300 mb-2">Large Platelets + Normal Hb & WBC</p>
+                    <p className="text-xs text-muted-foreground mb-2">→ Suggests Consumption</p>
+                    <div className="grid grid-cols-2 gap-2 text-xs">
+                      <div className="p-2 bg-white dark:bg-gray-900 rounded">
+                        <p className="font-medium text-purple-600">Immune</p>
+                        <ul className="text-muted-foreground mt-1 space-y-0.5">
+                          <li>• ITP</li>
+                          <li>• 2° to SLE, HIV</li>
+                          <li>• Drug induced</li>
+                        </ul>
+                      </div>
+                      <div className="p-2 bg-white dark:bg-gray-900 rounded">
+                        <p className="font-medium text-orange-600">Non-immune</p>
+                        <ul className="text-muted-foreground mt-1 space-y-0.5">
+                          <li>• Maternal ITP</li>
+                          <li>• NAIT</li>
+                          <li>• Type 2B/Platelet VWD</li>
+                          <li>• Hereditary Thrombocytopenia</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Small PLT */}
+                  <div className="p-3 bg-amber-50 dark:bg-amber-950/30 rounded-lg">
+                    <p className="font-semibold text-amber-700 dark:text-amber-300 mb-2">Small Platelets + Congenital anomalies / ↑MCV</p>
+                    <p className="text-xs text-muted-foreground mb-2">→ Suggests Decreased Synthesis</p>
+                    <div className="grid grid-cols-2 gap-2 text-xs">
+                      <div className="p-2 bg-white dark:bg-gray-900 rounded">
+                        <p className="font-medium text-teal-600">Congenital</p>
+                        <ul className="text-muted-foreground mt-1 space-y-0.5">
+                          <li>• TAR syndrome</li>
+                          <li>• Wiskott-Aldrich (WAS)</li>
+                          <li>• X-linked Amegakaryocytic</li>
+                          <li>• Fanconi Anemia</li>
+                        </ul>
+                      </div>
+                      <div className="p-2 bg-white dark:bg-gray-900 rounded">
+                        <p className="font-medium text-gray-600">Acquired</p>
+                        <ul className="text-muted-foreground mt-1 space-y-0.5">
+                          <li>• Medication</li>
+                          <li>• Toxin</li>
+                          <li>• Radiation</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </Section>
+
+              {/* Ill Patient */}
+              <Section id="thrombo-ill" title="ILL Patient Pathway">
+                <div className="space-y-3">
+                  {/* Large PLT - Consumption */}
+                  <div className="p-3 bg-red-50 dark:bg-red-950/30 rounded-lg">
+                    <p className="font-semibold text-red-700 dark:text-red-300 mb-2">Large Platelets + ↓Fibrinogen + ↑Fibrin degradation products</p>
+                    <p className="text-xs text-muted-foreground mb-2">→ Suggests Consumption (Microangiopathy)</p>
+                    <div className="p-2 bg-white dark:bg-gray-900 rounded text-xs">
+                      <ul className="text-muted-foreground space-y-1">
+                        <li>• <strong>DIC</strong> (Disseminated Intravascular Coagulation)</li>
+                        <li>• <strong>HUS</strong> (Hemolytic Uremic Syndrome)</li>
+                        <li>• <strong>TTP</strong> (Thrombotic Thrombocytopenic Purpura)</li>
+                        <li>• NEC (Necrotizing Enterocolitis)</li>
+                        <li>• Respiratory distress</li>
+                        <li>• Thrombosis / UAC</li>
+                        <li>• Sepsis</li>
+                        <li>• Viral infection</li>
+                      </ul>
+                    </div>
+                  </div>
+
+                  {/* Small PLT - Sequestration/Synthesis */}
+                  <div className="p-3 bg-purple-50 dark:bg-purple-950/30 rounded-lg">
+                    <p className="font-semibold text-purple-700 dark:text-purple-300 mb-2">Small Platelets</p>
+                    <div className="grid grid-cols-2 gap-2 text-xs">
+                      <div className="p-2 bg-white dark:bg-gray-900 rounded">
+                        <p className="font-medium text-purple-600">+ HSM → Sequestration</p>
+                        <ul className="text-muted-foreground mt-1 space-y-0.5">
+                          <li>• Hemangioma</li>
+                          <li>• Hypersplenism</li>
+                        </ul>
+                      </div>
+                      <div className="p-2 bg-white dark:bg-gray-900 rounded">
+                        <p className="font-medium text-gray-600">→ ↓Synthesis</p>
+                        <ul className="text-muted-foreground mt-1 space-y-0.5">
+                          <li>• Malignancy</li>
+                          <li>• Storage disease</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </Section>
+
+              {/* Key Abbreviations */}
+              <Section id="thrombo-abbrev" title="Key Abbreviations">
+                <div className="grid grid-cols-2 gap-2 text-xs">
+                  <div className="space-y-1">
+                    <p><strong>ITP:</strong> Immune Thrombocytopenic Purpura</p>
+                    <p><strong>NAIT:</strong> Neonatal Alloimmune Thrombocytopenia</p>
+                    <p><strong>TAR:</strong> Thrombocytopenia-Absent Radius</p>
+                    <p><strong>WAS:</strong> Wiskott-Aldrich Syndrome</p>
+                  </div>
+                  <div className="space-y-1">
+                    <p><strong>DIC:</strong> Disseminated Intravascular Coagulation</p>
+                    <p><strong>HUS:</strong> Hemolytic Uremic Syndrome</p>
+                    <p><strong>TTP:</strong> Thrombotic Thrombocytopenic Purpura</p>
+                    <p><strong>HSM:</strong> Hepatosplenomegaly</p>
+                  </div>
+                </div>
+              </Section>
+
+              {/* Initial Workup */}
+              <Section id="thrombo-workup" title="Initial Workup">
+                <div className="space-y-2 text-xs">
+                  <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
+                    <p className="font-medium">Laboratory Studies:</p>
+                    <ul className="text-muted-foreground mt-1 space-y-0.5">
+                      <li>• CBC with peripheral smear (platelet size, morphology)</li>
+                      <li>• Reticulocyte count</li>
+                      <li>• PT/PTT, Fibrinogen, D-dimer</li>
+                      <li>• LDH, Haptoglobin, Bilirubin (hemolysis screen)</li>
+                      <li>• Blood type and Coombs test</li>
+                    </ul>
+                  </div>
+                  <div className="p-2 bg-blue-50 dark:bg-blue-900/20 rounded">
+                    <p className="font-medium text-blue-700">Consider:</p>
+                    <ul className="text-muted-foreground mt-1 space-y-0.5">
+                      <li>• Bone marrow aspiration if decreased synthesis suspected</li>
+                      <li>• Genetic testing for congenital syndromes</li>
+                      <li>• HIV, Hepatitis B/C if immune causes suspected</li>
+                    </ul>
+                  </div>
+                </div>
+              </Section>
+            </CardContent>
+          </Card>
+        </TabsContent>
       </Tabs>
 
       {/* Vital Signs Reference - Collapsible at bottom */}
