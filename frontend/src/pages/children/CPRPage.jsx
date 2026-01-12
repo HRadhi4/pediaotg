@@ -3,19 +3,10 @@
  * 
  * Includes:
  * - Cardiac Arrest Algorithm (VF/pVT, Asystole/PEA)
- * - Bradycardia Algorithm
- * - Tachycardia Algorithm (SVT, VT)
+ * - Bradycardia & Tachycardia Algorithms
  * - Drug Dosing Calculator with weight input
  * 
- * Drug doses include:
- * - Epinephrine (cardiac arrest & anaphylaxis)
- * - Amiodarone
- * - Adenosine
- * - Atropine
- * - Calcium (gluconate & chloride)
- * - Glucose (D10, D25, D50)
- * - Sodium Bicarbonate
- * - Defibrillation/Cardioversion joules
+ * Drugs: Epinephrine, Amiodarone, Adenosine, Atropine, Calcium, Glucose, etc.
  */
 
 import { useState } from "react";
@@ -27,6 +18,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ArrowLeftIcon, HeartIcon } from "@/components/HealthIcons";
 import { AlertTriangle } from "lucide-react";
 
+const CPRPage = ({ onBack }) => {
   const [activeTab, setActiveTab] = useState("arrest");
   const [weight, setWeight] = useState("");
   const w = parseFloat(weight) || 0;
