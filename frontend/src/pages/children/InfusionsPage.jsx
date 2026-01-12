@@ -2,11 +2,7 @@
  * IV Infusions Calculator Page
  * 
  * Calculates weight-based infusion rates for common pediatric drugs:
- * - Dopamine (mcg/kg/min)
- * - Dobutamine (mcg/kg/min)
- * - Epinephrine (mcg/kg/min)
- * - Norepinephrine (mcg/kg/min)
- * - Milrinone (mcg/kg/min)
+ * - Dopamine, Dobutamine, Epinephrine, Norepinephrine, Milrinone
  * 
  * Features weight input with calculation display
  */
@@ -18,6 +14,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ArrowLeftIcon, InfusionIcon } from "@/components/HealthIcons";
 
+const InfusionsPage = ({ onBack }) => {
   const [weight, setWeight] = useState("");
   const w = parseFloat(weight) || 0;
 
