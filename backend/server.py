@@ -12,7 +12,7 @@ from datetime import datetime, timezone
 import base64
 
 # Import local OCR service (100% local, no HTTP calls)
-# Using Tesseract for production stability (Chandra requires ~5GB which exceeds pod limits)
+# Using Tesseract for production stability (Tesseract requires ~5GB which exceeds pod limits)
 from services.paddle_ocr_service import (
     perform_paddle_ocr, 
     parse_blood_gas_from_ocr_text,
@@ -105,7 +105,7 @@ async def get_status_checks():
 # - Lightweight and production-ready
 # - Supports: English ('en'), Arabic ('arabic'), Multilingual
 # 
-# Note: Chandra OCR (datalab-to/chandra) service available but requires ~5GB
+# Note: Tesseract OCR (datalab-to/chandra) service available but requires ~5GB
 # which exceeds typical pod limits. Using Tesseract for production stability.
 #
 # Workflow:
@@ -122,14 +122,14 @@ async def get_status_checks():
 class OCRRequest(BaseModel):
     """Request model for generic OCR endpoint"""
     image_base64: str
-    language: str = "en"  # Chandra supports multilingual
+    language: str = "en"  # Tesseract supports multilingual
     return_bboxes: bool = False
 
 
 @api_router.post("/ocr")
 async def perform_ocr(request: OCRRequest):
     """
-    Generic OCR endpoint using 100% local Chandra OCR.
+    Generic OCR endpoint using 100% local Tesseract OCR.
     
     No external services, HTTP calls, or cloud dependencies.
     Returns extracted text with confidence scores.
@@ -159,7 +159,7 @@ async def perform_ocr(request: OCRRequest):
             "confidence_avg": 0.0,
             "error_message": result.error_message,
             "quality": quality,
-            "engine": "chandra_local"
+            "engine": "tesseract_local"
         }
     
     # Add low confidence warning
@@ -171,7 +171,7 @@ async def perform_ocr(request: OCRRequest):
         "avg_confidence": result.avg_confidence,
         "confidence_avg": result.avg_confidence,
         "quality": quality,
-        "engine": "chandra_local"
+        "engine": "tesseract_local"
     }
     
     if result.avg_confidence < LOW_CONFIDENCE_THRESHOLD:
@@ -183,12 +183,12 @@ async def perform_ocr(request: OCRRequest):
 @api_router.post("/blood-gas/analyze-image-offline")
 async def analyze_blood_gas_image_offline(request: BloodGasInput):
     """
-    Analyze blood gas image using 100% local Chandra OCR.
+    Analyze blood gas image using 100% local Tesseract OCR.
     
     No external API calls, no cloud dependencies.
     
     Workflow:
-    1. Image → Local Chandra OCR → extract raw text
+    1. Image → Local Tesseract OCR → extract raw text
     2. Parse blood gas values from raw text
     3. Return structured values for analysis
     
@@ -198,7 +198,7 @@ async def analyze_blood_gas_image_offline(request: BloodGasInput):
         raise HTTPException(status_code=400, detail="Image is required")
     
     try:
-        # Perform OCR using 100% local Chandra OCR
+        # Perform OCR using 100% local Tesseract OCR
         ocr_result = await perform_paddle_ocr(
             image_base64=request.image_base64,
             language="en",
@@ -214,7 +214,7 @@ async def analyze_blood_gas_image_offline(request: BloodGasInput):
                 "raw_text": "",
                 "error_message": ocr_result.error_message,
                 "quality": quality,
-                "engine": "chandra_local"
+                "engine": "tesseract_local"
             }
         
         # Parse blood gas values from OCR text
@@ -228,7 +228,7 @@ async def analyze_blood_gas_image_offline(request: BloodGasInput):
             "avg_confidence": ocr_result.avg_confidence,
             "confidence_avg": ocr_result.avg_confidence,
             "quality": quality,
-            "engine": "chandra_local"
+            "engine": "tesseract_local"
         }
         
         # Add low confidence warning
@@ -238,28 +238,28 @@ async def analyze_blood_gas_image_offline(request: BloodGasInput):
         return response
     
     except Exception as e:
-        logging.error(f"Chandra OCR error: {str(e)}")
+        logging.error(f"Tesseract OCR error: {str(e)}")
         raise HTTPException(status_code=500, detail=f"OCR processing failed: {str(e)}")
 
 
 @api_router.post("/blood-gas/analyze-image")
 async def analyze_blood_gas_image(request: BloodGasInput):
     """
-    Analyze blood gas image using 100% local Chandra OCR + optional LLM parsing.
+    Analyze blood gas image using 100% local Tesseract OCR + optional LLM parsing.
     
     Workflow:
-    1. Image → Local Chandra OCR → extract raw text (100% LOCAL)
+    1. Image → Local Tesseract OCR → extract raw text (100% LOCAL)
     2. Parse blood gas values from raw text
     3. If basic parsing fails AND LLM available, use LLM for text parsing only
     
     Note: LLM is used for TEXT parsing only, NOT for OCR (stays 100% local).
-    No cloud fallback for OCR - always local Chandra OCR.
+    No cloud fallback for OCR - always local Tesseract OCR.
     """
     if not request.image_base64:
         raise HTTPException(status_code=400, detail="Image is required")
     
     try:
-        # Step 1: Perform OCR using 100% local Chandra OCR
+        # Step 1: Perform OCR using 100% local Tesseract OCR
         ocr_result = await perform_paddle_ocr(
             image_base64=request.image_base64,
             language="en",
@@ -274,7 +274,7 @@ async def analyze_blood_gas_image(request: BloodGasInput):
                 "values": {},
                 "error_message": ocr_result.error_message,
                 "quality": quality,
-                "engine": "chandra_local"
+                "engine": "tesseract_local"
             }
         
         # Step 2: Parse blood gas values from OCR text
@@ -290,7 +290,7 @@ async def analyze_blood_gas_image(request: BloodGasInput):
                 "avg_confidence": ocr_result.avg_confidence,
                 "confidence_avg": ocr_result.avg_confidence,
                 "quality": quality,
-                "engine": "chandra_local"
+                "engine": "tesseract_local"
             }
             if ocr_result.avg_confidence < LOW_CONFIDENCE_THRESHOLD:
                 response["low_confidence_warning"] = f"OCR confidence: {ocr_result.avg_confidence:.0%}. Consider taking a clearer photo."
