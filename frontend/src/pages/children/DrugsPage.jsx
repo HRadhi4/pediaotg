@@ -1678,21 +1678,18 @@ const DrugsPage = ({ onBack }) => {
     if (!maxStr || maxStr === "See protocol") return null;
     
     // Try to extract numeric max dose
-    // Common formats: "800 mg", "3 g/day", "1.5 g/day", "6 mg first"
+    // Common formats: "800 mg", "3 g/day", "1.5 g/day", "6 mg first", "1.2g IV/dose"
     const patterns = [
-      /(\d+(?:\.\d+)?)\s*g\/day/i,  // "3 g/day" -> 3000 mg
-      /(\d+(?:\.\d+)?)\s*g(?!\/)(?!r)/i,  // "3 g" -> 3000 mg (not g/day, not gr)
-      /(\d+(?:\.\d+)?)\s*mg/i,  // "800 mg"
-      /(\d+(?:\.\d+)?)\s*mcg/i,  // mcg doses
+      { regex: /(\d+(?:\.\d+)?)\s*g\/day/i, multiplier: 1000 },  // "3 g/day" -> 3000 mg
+      { regex: /(\d+(?:\.\d+)?)\s*mg/i, multiplier: 1 },  // "800 mg" - check mg BEFORE g
+      { regex: /(\d+(?:\.\d+)?)\s*g(?!r)/i, multiplier: 1000 },  // "3 g" or "1.2g" -> mg (not gr)
+      { regex: /(\d+(?:\.\d+)?)\s*mcg/i, multiplier: 1 },  // mcg doses
     ];
     
-    for (const pattern of patterns) {
-      const match = maxStr.match(pattern);
+    for (const { regex, multiplier } of patterns) {
+      const match = maxStr.match(regex);
       if (match) {
-        let value = parseFloat(match[1]);
-        if (maxStr.toLowerCase().includes('g/day') || (maxStr.toLowerCase().includes('g') && !maxStr.toLowerCase().includes('mg') && !maxStr.toLowerCase().includes('mcg'))) {
-          value = value * 1000; // Convert g to mg
-        }
+        let value = parseFloat(match[1]) * multiplier;
         return value;
       }
     }
