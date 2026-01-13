@@ -1,28 +1,27 @@
 """
-Local PaddleOCR Service - 100% Local Implementation
-====================================================
+Local OCR Service - 100% Local Implementation using Tesseract
+==============================================================
 
-This module provides OCR using PaddleOCR Python library directly,
+This module provides OCR using pytesseract (Tesseract OCR) directly,
 with NO external HTTP calls, Docker, or cloud dependencies.
 
 DEVELOPER NOTES:
 ----------------
-- OCR runs entirely within this Python process using PaddleOCR library
-- Models are downloaded once on first use (~100MB, cached locally)
-- Supports English ('en'), Arabic ('arabic'), and multilingual
-- Uses PP-OCRv4 for best accuracy on noisy/scan images
-- GPU acceleration auto-enabled if CUDA available
+- OCR runs entirely within this Python process using Tesseract
+- No network calls, no cloud dependencies
+- Supports English and Arabic languages
+- Uses Tesseract 5.x with LSTM engine for best accuracy
 
 Usage in Workflows:
 -------------------
 Old: User uploads image → Gemini Vision → extracted text → clinical reasoning
-New: User uploads image → LocalPaddleOCR → ocr_text → existing clinical reasoning prompts
+New: User uploads image → LocalOCR (Tesseract) → ocr_text → existing clinical reasoning prompts
 
 Available Variables for Downstream Prompts:
 -------------------------------------------
 - ocr_text: The full extracted text string
 - ocr_blocks: List of text blocks with confidence scores
-- avg_confidence: Average confidence across all blocks (0-1)
+- avg_confidence: Average confidence across all blocks (0-100 scale, converted to 0-1)
 - success: Boolean indicating if OCR succeeded
 
 Quality Guidelines:
@@ -40,55 +39,6 @@ from dataclasses import dataclass, asdict, field
 
 logger = logging.getLogger(__name__)
 
-# Lazy-loaded OCR engine (singleton pattern)
-_ocr_engines: Dict[str, Any] = {}
-
-
-def _get_ocr_engine(language: str = 'en'):
-    """
-    Get or create PaddleOCR engine for the specified language.
-    Uses lazy initialization - models download on first use.
-    """
-    global _ocr_engines
-    
-    if language not in _ocr_engines:
-        try:
-            from paddleocr import PaddleOCR
-            import os
-            
-            # Disable model source check for faster startup
-            os.environ['DISABLE_MODEL_SOURCE_CHECK'] = 'True'
-            
-            # Map language codes
-            lang_map = {
-                'en': 'en',
-                'english': 'en',
-                'ar': 'ar',
-                'arabic': 'ar',
-                'en+ar': 'en',  # Use English, works for mixed
-                'multilingual': 'en'
-            }
-            paddle_lang = lang_map.get(language.lower(), 'en')
-            
-            logger.info(f"Initializing PaddleOCR engine for language: {paddle_lang}")
-            
-            # Initialize PaddleOCR with PP-OCRv4
-            _ocr_engines[language] = PaddleOCR(
-                lang=paddle_lang,
-                use_doc_orientation_classify=False,
-                use_doc_unwarping=False,
-                use_textline_orientation=True,
-                ocr_version='PP-OCRv4'
-            )
-            
-            logger.info(f"PaddleOCR engine initialized successfully for {language}")
-            
-        except Exception as e:
-            logger.error(f"Failed to initialize PaddleOCR: {e}")
-            raise
-    
-    return _ocr_engines[language]
-
 
 @dataclass
 class OCRBlock:
@@ -100,7 +50,7 @@ class OCRBlock:
 
 @dataclass
 class OCRResult:
-    """Result from local PaddleOCR"""
+    """Result from local OCR"""
     success: bool
     ocr_text: str
     ocr_blocks: List[OCRBlock]
@@ -118,25 +68,25 @@ class OCRResult:
         }
 
 
-def local_paddle_ocr(
+def local_tesseract_ocr(
     image_base64: str,
     language: str = 'en'
 ) -> OCRResult:
     """
-    Local PaddleOCR extraction from base64 image.
+    Local OCR extraction from base64 image using Tesseract.
     
     100% local - no HTTP calls, no cloud dependencies.
     
     Args:
         image_base64: Base64 encoded image (with or without data URL prefix)
-        language: Language code - 'en', 'arabic', or 'multilingual'
+        language: Language code - 'en', 'arabic', or 'en+ar'
         
     Returns:
         OCRResult with extracted text, blocks, and confidence
     """
     try:
+        import pytesseract
         from PIL import Image
-        import numpy as np
         
         # Clean base64 if it has data URL prefix
         if "," in image_base64:
@@ -146,7 +96,6 @@ def local_paddle_ocr(
         try:
             image_data = base64.b64decode(image_base64)
             image = Image.open(io.BytesIO(image_data)).convert('RGB')
-            image_np = np.array(image)
         except Exception as e:
             logger.error(f"Failed to decode image: {e}")
             return OCRResult(
@@ -157,22 +106,49 @@ def local_paddle_ocr(
                 error_message="Could not read image. Please ensure the image is valid."
             )
         
-        # Get OCR engine
-        try:
-            ocr_engine = _get_ocr_engine(language)
-        except Exception as e:
-            logger.error(f"OCR engine initialization failed: {e}")
-            return OCRResult(
-                success=False,
-                ocr_text="",
-                ocr_blocks=[],
-                avg_confidence=0.0,
-                error_message="OCR engine unavailable. Please try again."
-            )
+        # Map language codes to Tesseract codes
+        lang_map = {
+            'en': 'eng',
+            'english': 'eng',
+            'ar': 'ara',
+            'arabic': 'ara',
+            'en+ar': 'eng+ara',
+            'multilingual': 'eng+ara'
+        }
+        tess_lang = lang_map.get(language.lower(), 'eng')
         
-        # Run OCR
+        # Run OCR with detailed output
         try:
-            result = ocr_engine.ocr(image_np, cls=True)
+            # Get detailed data with confidence scores
+            data = pytesseract.image_to_data(image, lang=tess_lang, output_type=pytesseract.Output.DICT)
+            
+            # Parse results
+            blocks = []
+            full_text = []
+            confidences = []
+            
+            n_boxes = len(data['text'])
+            for i in range(n_boxes):
+                text = data['text'][i].strip()
+                conf = float(data['conf'][i])
+                
+                if text and conf > 0:  # Filter out empty and low-confidence
+                    full_text.append(text)
+                    
+                    # Get bounding box
+                    x, y, w, h = data['left'][i], data['top'][i], data['width'][i], data['height'][i]
+                    bbox = [float(x), float(y), float(x + w), float(y + h)]
+                    
+                    blocks.append(OCRBlock(
+                        text=text,
+                        confidence=conf / 100.0,  # Convert to 0-1 scale
+                        bbox=bbox
+                    ))
+                    confidences.append(conf / 100.0)
+            
+            # Also get plain text for completeness
+            plain_text = pytesseract.image_to_string(image, lang=tess_lang)
+            
         except Exception as e:
             logger.error(f"OCR processing failed: {e}")
             return OCRResult(
@@ -183,51 +159,14 @@ def local_paddle_ocr(
                 error_message="Could not process image. Try brighter lighting, steady hand, full text visible."
             )
         
-        # Parse results
-        blocks = []
-        full_text = []
-        total_conf = 0.0
-        count = 0
-        
-        if result and result[0]:
-            for line in result[0]:
-                if line and len(line) >= 2:
-                    # line format: [[bbox_points], (text, confidence)]
-                    bbox_points = line[0] if len(line) > 0 else []
-                    text_conf = line[1] if len(line) > 1 else ("", 0.0)
-                    
-                    if isinstance(text_conf, (list, tuple)) and len(text_conf) >= 2:
-                        text = str(text_conf[0])
-                        conf = float(text_conf[1])
-                    else:
-                        continue
-                    
-                    if text.strip():
-                        full_text.append(text)
-                        
-                        # Convert bbox to simple format [x1, y1, x2, y2]
-                        bbox = []
-                        if bbox_points and len(bbox_points) >= 4:
-                            try:
-                                x_coords = [p[0] for p in bbox_points]
-                                y_coords = [p[1] for p in bbox_points]
-                                bbox = [min(x_coords), min(y_coords), max(x_coords), max(y_coords)]
-                            except:
-                                bbox = []
-                        
-                        blocks.append(OCRBlock(
-                            text=text,
-                            confidence=conf,
-                            bbox=bbox
-                        ))
-                        total_conf += conf
-                        count += 1
-        
         # Calculate average confidence
-        avg_conf = total_conf / count if count > 0 else 0.0
+        avg_conf = sum(confidences) / len(confidences) if confidences else 0.0
+        
+        # Use plain text if structured parsing gave empty result
+        final_text = ' '.join(full_text) if full_text else plain_text.strip()
         
         # Check for empty result
-        if not full_text:
+        if not final_text:
             return OCRResult(
                 success=False,
                 ocr_text="",
@@ -238,13 +177,13 @@ def local_paddle_ocr(
         
         return OCRResult(
             success=True,
-            ocr_text='\n'.join(full_text),
+            ocr_text=final_text,
             ocr_blocks=blocks,
             avg_confidence=avg_conf
         )
         
     except ImportError as e:
-        logger.error(f"PaddleOCR import error: {e}")
+        logger.error(f"Tesseract import error: {e}")
         return OCRResult(
             success=False,
             ocr_text="",
@@ -269,10 +208,13 @@ async def perform_paddle_ocr(
     return_bboxes: bool = False
 ) -> OCRResult:
     """
-    Async wrapper for local PaddleOCR.
+    Async wrapper for local OCR (using Tesseract).
     
     This is the main entry point for OCR in the application.
     Runs OCR in a thread pool to avoid blocking the event loop.
+    
+    Note: Function name kept as perform_paddle_ocr for API compatibility,
+    but now uses Tesseract internally for better stability.
     
     Args:
         image_base64: Base64 encoded image
@@ -290,7 +232,7 @@ async def perform_paddle_ocr(
     with ThreadPoolExecutor(max_workers=1) as executor:
         result = await loop.run_in_executor(
             executor,
-            local_paddle_ocr,
+            local_tesseract_ocr,
             image_base64,
             language
         )
