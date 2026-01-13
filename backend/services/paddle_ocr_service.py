@@ -54,6 +54,10 @@ def _get_ocr_engine(language: str = 'en'):
     if language not in _ocr_engines:
         try:
             from paddleocr import PaddleOCR
+            import os
+            
+            # Disable model source check for faster startup
+            os.environ['DISABLE_MODEL_SOURCE_CHECK'] = 'True'
             
             # Map language codes
             lang_map = {
@@ -68,13 +72,13 @@ def _get_ocr_engine(language: str = 'en'):
             
             logger.info(f"Initializing PaddleOCR engine for language: {paddle_lang}")
             
-            # Initialize with PP-OCRv4 for best accuracy
+            # Initialize PaddleOCR with PP-OCRv4
             _ocr_engines[language] = PaddleOCR(
-                use_angle_cls=True,
                 lang=paddle_lang,
-                use_gpu=False,  # CPU mode for compatibility
-                show_log=False,
-                # PP-OCRv4 is the default in recent versions
+                use_doc_orientation_classify=False,
+                use_doc_unwarping=False,
+                use_textline_orientation=True,
+                ocr_version='PP-OCRv4'
             )
             
             logger.info(f"PaddleOCR engine initialized successfully for {language}")
