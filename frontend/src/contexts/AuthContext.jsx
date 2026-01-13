@@ -119,7 +119,18 @@ export const AuthProvider = ({ children }) => {
         body: JSON.stringify({ email, password, name })
       });
 
-      const data = await response.json();
+      // Clone response to avoid "Body is disturbed or locked" error
+      const responseClone = response.clone();
+      
+      let data;
+      try {
+        data = await response.json();
+      } catch (jsonError) {
+        // If JSON parsing fails, try to get text
+        const text = await responseClone.text();
+        console.error('Signup response parsing error:', jsonError, 'Response text:', text);
+        throw new Error('Server response error. Please try again.');
+      }
 
       if (!response.ok) {
         throw new Error(data.detail || 'Signup failed');
@@ -146,6 +157,7 @@ export const AuthProvider = ({ children }) => {
 
       return { success: true };
     } catch (error) {
+      console.error('Signup error:', error);
       return { success: false, error: error.message };
     }
   };
