@@ -146,10 +146,11 @@ const BloodGasDialog = ({ open, onOpenChange }) => {
     if (!file) return;
     
     if (useOfflineOCR) {
+      // Pure PaddleOCR mode (no LLM assistance)
       return handleOfflineOCR(file);
     }
     
-    // Original Gemini-based OCR
+    // PaddleOCR with optional LLM-assisted parsing for complex cases
     setIsLoading(true);
     try {
       const reader = new FileReader();
@@ -157,6 +158,7 @@ const BloodGasDialog = ({ open, onOpenChange }) => {
         const base64 = reader.result;
         
         try {
+          // Uses PaddleOCR for OCR, with optional LLM for parsing assistance
           const response = await axios.post(`${API}/blood-gas/analyze-image`, {
             image_base64: base64
           });
@@ -175,9 +177,11 @@ const BloodGasDialog = ({ open, onOpenChange }) => {
               lactate: response.data.values.lactate?.toString() || "",
               Hb: response.data.values.Hb?.toString() || ""
             });
-            toast.success("Values extracted! Please verify and edit if needed.");
+            const engine = response.data.engine || "paddle_ocr";
+            toast.success(`Values extracted (${engine})! Please verify and edit if needed.`);
           } else {
-            toast.error("Could not extract values from image");
+            const errorMsg = response.data.error_message || "Could not extract values from image";
+            toast.error(errorMsg);
           }
         } catch (err) {
           toast.error("Error analyzing image: " + (err.response?.data?.detail || err.message));
