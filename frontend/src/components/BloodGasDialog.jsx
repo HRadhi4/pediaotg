@@ -75,7 +75,9 @@ const BloodGasDialog = ({ open, onOpenChange }) => {
     return values;
   };
 
-  // Offline OCR using PaddleOCR (backend)
+  // OCR using local PaddleOCR service (backend)
+  // Both online and offline modes now use PaddleOCR - the toggle controls
+  // whether to use LLM-assisted parsing for complex cases
   const handleOfflineOCR = async (file) => {
     setIsLoading(true);
     setOcrProgress(10);
@@ -87,6 +89,7 @@ const BloodGasDialog = ({ open, onOpenChange }) => {
         setOcrProgress(30);
         
         try {
+          // Uses local PaddleOCR service (no external API for OCR)
           const response = await axios.post(`${API}/blood-gas/analyze-image-offline`, {
             image_base64: base64
           });
@@ -111,15 +114,19 @@ const BloodGasDialog = ({ open, onOpenChange }) => {
                 lactate: parsedValues.lactate?.toString() || prev.lactate,
                 Hb: parsedValues.Hb?.toString() || prev.Hb
               }));
-              toast.success(`Extracted ${Object.keys(parsedValues).length} values (PaddleOCR)! Please verify.`);
+              const engine = response.data.engine || "paddle_ocr";
+              toast.success(`Extracted ${Object.keys(parsedValues).length} values (${engine})! Please verify.`);
             } else {
-              toast.error("Could not extract values. Try clearer image or manual entry.");
+              // Check for specific error message from PaddleOCR service
+              const errorMsg = response.data.error_message || "Could not extract values. Try clearer image or manual entry.";
+              toast.error(errorMsg);
             }
           } else {
-            toast.error("Could not extract values from image");
+            const errorMsg = response.data.error_message || "Could not extract values from image";
+            toast.error(errorMsg);
           }
         } catch (err) {
-          console.error("Offline OCR Error:", err);
+          console.error("PaddleOCR Error:", err);
           toast.error("OCR failed: " + (err.response?.data?.detail || err.message));
         }
         
