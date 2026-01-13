@@ -95,39 +95,38 @@ async def get_status_checks():
     return status_checks
 
 # ============================================================================
-# OCR ENDPOINTS - 100% Local PaddleOCR (No External Services)
+# OCR ENDPOINTS - 100% Local Chandra OCR (No External Services)
 # ============================================================================
 # 
 # DEVELOPER NOTES:
-# - All OCR runs LOCALLY using PaddleOCR Python library
-# - NO HTTP calls, NO Docker, NO cloud dependencies
-# - Models download once on first use (~100MB, cached)
-# - Supports: English ('en'), Arabic ('arabic'), Multilingual
-# - Uses PP-OCRv4 for best accuracy on noisy/scan images
+# - All OCR runs LOCALLY using Chandra Vision2Seq model (datalab-to/chandra)
+# - NO HTTP calls, NO Docker, NO cloud dependencies after model download
+# - Model downloads once on first use (~1-2GB, cached)
+# - Supports: Multilingual document OCR with markdown output
+# - Uses HuggingFace transformers for inference
 # 
 # Workflow:
-# Old: User uploads image → Gemini Vision → extracted text → clinical reasoning
-# New: User uploads image → LocalPaddleOCR → ocr_text → clinical reasoning
+# User uploads image → ChandraOCR → ocr_text → clinical reasoning
 #
 # Quality Guidelines:
 # - avg_confidence >= 0.7: Good quality, proceed
 # - avg_confidence < 0.7: Suggest clearer photo
 # - Empty result: Show error, stay 100% local (no fallback)
 #
-# See /app/backend/services/paddle_ocr_service.py for full documentation
+# See /app/backend/services/chandra_ocr_service.py for full documentation
 # ============================================================================
 
 class OCRRequest(BaseModel):
     """Request model for generic OCR endpoint"""
     image_base64: str
-    language: str = "en"  # "en", "arabic", or "multilingual"
+    language: str = "en"  # Chandra supports multilingual
     return_bboxes: bool = False
 
 
 @api_router.post("/ocr")
 async def perform_ocr(request: OCRRequest):
     """
-    Generic OCR endpoint using 100% local PaddleOCR.
+    Generic OCR endpoint using 100% local Chandra OCR.
     
     No external services, HTTP calls, or cloud dependencies.
     Returns extracted text with confidence scores.
@@ -157,18 +156,19 @@ async def perform_ocr(request: OCRRequest):
             "confidence_avg": 0.0,
             "error_message": result.error_message,
             "quality": quality,
-            "engine": "paddle_ocr_local"
+            "engine": "chandra_local"
         }
     
     # Add low confidence warning
     response = {
         "success": True,
         "ocr_text": result.ocr_text,
+        "ocr_markdown": getattr(result, 'ocr_markdown', result.ocr_text),
         "ocr_blocks": [{"text": b.text, "bbox": b.bbox, "confidence": b.confidence} for b in result.ocr_blocks],
         "avg_confidence": result.avg_confidence,
         "confidence_avg": result.avg_confidence,
         "quality": quality,
-        "engine": "paddle_ocr_local"
+        "engine": "chandra_local"
     }
     
     if result.avg_confidence < LOW_CONFIDENCE_THRESHOLD:
