@@ -153,11 +153,11 @@ const BloodGasDialog = ({ open, onOpenChange }) => {
     if (!file) return;
     
     if (useOfflineOCR) {
-      // Pure PaddleOCR mode (no LLM assistance)
+      // Pure local PaddleOCR mode (no LLM assistance)
       return handleOfflineOCR(file);
     }
     
-    // PaddleOCR with optional LLM-assisted parsing for complex cases
+    // Smart mode: PaddleOCR + LLM text parsing for complex cases
     setIsLoading(true);
     try {
       const reader = new FileReader();
@@ -165,7 +165,7 @@ const BloodGasDialog = ({ open, onOpenChange }) => {
         const base64 = reader.result;
         
         try {
-          // Uses PaddleOCR for OCR, with optional LLM for parsing assistance
+          // 100% local PaddleOCR for OCR, optional LLM for text parsing
           const response = await axios.post(`${API}/blood-gas/analyze-image`, {
             image_base64: base64
           });
@@ -184,10 +184,19 @@ const BloodGasDialog = ({ open, onOpenChange }) => {
               lactate: response.data.values.lactate?.toString() || "",
               Hb: response.data.values.Hb?.toString() || ""
             });
-            const engine = response.data.engine || "paddle_ocr";
-            toast.success(`Values extracted (${engine})! Please verify and edit if needed.`);
+            
+            // Show confidence info
+            const confidence = response.data.avg_confidence || response.data.confidence_avg || 0;
+            const confidencePercent = Math.round(confidence * 100);
+            
+            if (response.data.low_confidence_warning) {
+              toast.warning(response.data.low_confidence_warning);
+            } else {
+              const engine = response.data.engine || "paddle_ocr_local";
+              toast.success(`Values extracted (${confidencePercent}% confidence). Please verify.`);
+            }
           } else {
-            const errorMsg = response.data.error_message || "Could not extract values from image";
+            const errorMsg = response.data.error_message || "Could not read image. Try brighter lighting, steady hand, full text visible.";
             toast.error(errorMsg);
           }
         } catch (err) {
