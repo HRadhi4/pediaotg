@@ -51,7 +51,7 @@ class EmailService:
         self.smtp_email = os.environ.get('SMTP_EMAIL', 'noreply@pedotg.com')  # For sending (From address)
         self.smtp_password = os.environ.get('SMTP_PASSWORD', '')
         self.app_name = "Pediatrics On The Go"
-        self.frontend_url = os.environ.get('FRONTEND_URL', 'https://pediatricdash.preview.emergentagent.com')
+        self.frontend_url = os.environ.get('FRONTEND_URL', 'https://pedotg-saas.preview.emergentagent.com')
         self.logo_url = f"{self.frontend_url}/icon.svg"
     
     def _send_email(self, to_email: str, subject: str, html_body: str, text_body: str = None) -> bool:
