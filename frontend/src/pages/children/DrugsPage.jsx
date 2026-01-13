@@ -319,12 +319,12 @@ const DrugsPage = ({ onBack }) => {
       category: "Electrolyte",
       route: "IV",
       doses: {
-        hypocalcemia: { label: "Hypocalcemia", value: "50-100", unit: "mg/kg (0.5-1 ml/kg of 10%)" },
-        arrest: { label: "Cardiac Arrest", value: "60-100", unit: "mg/kg" }
+        hypocalcemia: { label: "Hypocalcemia", value: "50-100", unit: "mg/kg (0.5-1 ml/kg of 10%)", maxDose: 1000 },
+        arrest: { label: "Cardiac Arrest", value: "60-100", unit: "mg/kg", maxDose: 1000 }
       },
       max: "1 g/dose (10 mL of 10%)",
       indication: "Hypocalcemia, hyperkalemia, calcium channel blocker OD",
-      notes: "Give slowly over 10-30 min. Monitor for extravasation.",
+      notes: "Give slowly over 10-30 min. Monitor for extravasation. Max 1g/dose per Harriet Lane.",
       renalAdjust: { gfr50: "No change", gfr30: "Use with caution", gfr10: "Monitor Ca2+ closely", hd: "No supplement" }
     },
     {
