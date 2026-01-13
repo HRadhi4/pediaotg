@@ -146,3 +146,4 @@ yarl==1.22.0
 zipp==3.23.0
 pytesseract==0.3.10
 Pillow==10.4.0
+httpx==0.28.1
