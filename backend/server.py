@@ -96,25 +96,27 @@ async def get_status_checks():
     return status_checks
 
 # ============================================================================
-# OCR ENDPOINTS - 100% Local Chandra OCR (No External Services)
+# OCR ENDPOINTS - 100% Local Tesseract OCR (No External Services)
 # ============================================================================
 # 
 # DEVELOPER NOTES:
-# - All OCR runs LOCALLY using Chandra Vision2Seq model (datalab-to/chandra)
-# - NO HTTP calls, NO Docker, NO cloud dependencies after model download
-# - Model downloads once on first use (~1-2GB, cached)
-# - Supports: Multilingual document OCR with markdown output
-# - Uses HuggingFace transformers for inference
+# - All OCR runs LOCALLY using Tesseract (pytesseract)
+# - NO HTTP calls, NO Docker, NO cloud dependencies
+# - Lightweight and production-ready
+# - Supports: English ('en'), Arabic ('arabic'), Multilingual
 # 
+# Note: Chandra OCR (datalab-to/chandra) service available but requires ~5GB
+# which exceeds typical pod limits. Using Tesseract for production stability.
+#
 # Workflow:
-# User uploads image → ChandraOCR → ocr_text → clinical reasoning
+# User uploads image → Tesseract OCR → ocr_text → clinical reasoning
 #
 # Quality Guidelines:
 # - avg_confidence >= 0.7: Good quality, proceed
 # - avg_confidence < 0.7: Suggest clearer photo
 # - Empty result: Show error, stay 100% local (no fallback)
 #
-# See /app/backend/services/chandra_ocr_service.py for full documentation
+# See /app/backend/services/paddle_ocr_service.py for documentation
 # ============================================================================
 
 class OCRRequest(BaseModel):
