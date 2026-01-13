@@ -11,10 +11,9 @@ import uuid
 from datetime import datetime, timezone
 import base64
 
-# Import local OCR service (100% local, no HTTP calls)
-# Using Tesseract for production stability (Tesseract requires ~5GB which exceeds pod limits)
-from services.paddle_ocr_service import (
-    perform_paddle_ocr, 
+# Import optimized Tesseract OCR service (100% local, medical-grade preprocessing)
+from services.ocr_service import (
+    perform_ocr as perform_paddle_ocr,
     parse_blood_gas_from_ocr_text,
     check_ocr_quality,
     OCRResult,
