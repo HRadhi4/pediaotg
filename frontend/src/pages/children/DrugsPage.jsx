@@ -1578,6 +1578,15 @@ const DrugsPage = ({ onBack }) => {
       };
     }
     
+    // ========================================================================
+    // DETERMINE IF THIS IS A PER-DOSE OR PER-DAY MEDICATION
+    // Per-dose: mg/kg/dose, mg/kg q8h (no "divided" or "day")
+    // Per-day: mg/kg/day divided q8h
+    // ========================================================================
+    const isPerDose = doseUnit.includes("/dose") || 
+                      (doseUnit.includes("q") && !doseUnit.includes("day") && !doseUnit.includes("divided"));
+    const isPerDay = doseUnit.includes("/day") || doseUnit.includes("divided");
+    
     const parts = doseStr.split("-");
     const min = parseFloat(parts[0]);
     const max = parseFloat(parts[1]) || min;
