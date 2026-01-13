@@ -264,10 +264,10 @@ const BloodGasDialog = ({ open, onOpenChange }) => {
                     )}
                     <div>
                       <p className="text-sm font-medium">
-                        {useOfflineOCR ? "Offline OCR" : "AI-Powered OCR"}
+                        {useOfflineOCR ? "Local OCR Only" : "Smart OCR"}
                       </p>
                       <p className="text-xs text-muted-foreground">
-                        {useOfflineOCR ? "Server-side Tesseract (no external API)" : "Uses Gemini Vision (more accurate)"}
+                        {useOfflineOCR ? "PaddleOCR only (no external API)" : "PaddleOCR + LLM-assisted parsing"}
                       </p>
                     </div>
                   </div>
@@ -277,7 +277,7 @@ const BloodGasDialog = ({ open, onOpenChange }) => {
                     onClick={() => setUseOfflineOCR(!useOfflineOCR)}
                     className="text-xs"
                   >
-                    {useOfflineOCR ? "Switch to AI" : "Use Offline"}
+                    {useOfflineOCR ? "Use Smart" : "Use Local Only"}
                   </Button>
                 </div>
 
