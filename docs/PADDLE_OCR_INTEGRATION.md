@@ -1,16 +1,16 @@
-# PaddleOCR Integration Documentation
+# Local PaddleOCR Integration - 100% Local Implementation
 
 ## Overview
 
-This document describes the OCR integration changes made to replace Gemini/Tesseract OCR with a local PaddleOCR HTTP service.
+All OCR in this application now uses **PaddleOCR Python library directly** - no external HTTP services, Docker containers, or cloud dependencies.
 
-## Updated Workflow
+## Architecture
 
 ```
-┌─────────────────┐     ┌──────────────────┐     ┌─────────────────┐
-│  User uploads   │ ──► │  LocalPaddleOCR  │ ──► │  LLM Reasoning  │
-│  image          │     │  (text extract)  │     │  (if needed)    │
-└─────────────────┘     └──────────────────┘     └─────────────────┘
+┌─────────────────┐     ┌──────────────────────┐     ┌─────────────────┐
+│  User uploads   │ ──► │  Local PaddleOCR     │ ──► │  LLM Reasoning  │
+│  image          │     │  (Python library)    │     │  (text only)    │
+└─────────────────┘     └──────────────────────┘     └─────────────────┘
                                │
                                ▼
                         ┌──────────────┐
@@ -20,7 +20,17 @@ This document describes the OCR integration changes made to replace Gemini/Tesse
                         └──────────────┘
 ```
 
-**Key Change**: OCR is now done by a local PaddleOCR service, NOT by Gemini or Tesseract.
+**Key Points:**
+- OCR runs entirely within the Python process
+- No external HTTP calls for OCR
+- Models download once on first use (~100MB, cached)
+- LLM (Gemini) used only for text parsing, NOT for OCR
+
+## Installation
+
+```bash
+pip install paddlepaddle paddleocr pillow numpy
+```
 
 ## Tool Definition
 
@@ -29,35 +39,41 @@ This document describes the OCR integration changes made to replace Gemini/Tesse
 | Property | Value |
 |----------|-------|
 | **Name** | LocalPaddleOCR |
-| **Method** | POST |
-| **URL (Dev)** | http://localhost:8081/ocr |
-| **URL (Prod)** | Configure via `PADDLE_OCR_URL` env var |
+| **Type** | Python function (not HTTP) |
+| **Library** | paddleocr |
+| **Languages** | 'en', 'arabic', 'multilingual' |
 
-### Request Fields
+### Function Signature
+
+```python
+def local_paddle_ocr(
+    image_base64: str,
+    language: str = 'en'
+) -> OCRResult
+```
+
+### Parameters
 
 | Field | Type | Description |
 |-------|------|-------------|
 | `image_base64` | string | Base64 encoded image (with or without data URL prefix) |
-| `language` | string | `"en"`, `"ar"`, or `"en+ar"` |
-| `return_bboxes` | boolean | Whether to return bounding box information |
+| `language` | string | `'en'`, `'arabic'`, or `'multilingual'` |
 
 ### Response Fields
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `text` | string | Full extracted text as a single string |
-| `blocks` | array | Array of text blocks with bbox and confidence |
-| `blocks[].text` | string | Text content of the block |
-| `blocks[].bbox` | array | Bounding box `[x1, y1, x2, y2]` |
-| `blocks[].confidence` | float | Confidence score (0-1) |
+| `success` | boolean | Whether OCR succeeded |
+| `ocr_text` | string | Full extracted text (newline-separated lines) |
+| `ocr_blocks` | array | Array of text blocks with confidence |
+| `avg_confidence` | float | Average confidence across all blocks (0-1) |
+| `error_message` | string | Error message if failed |
 
-## Backend Endpoints
+## API Endpoints
 
-### 1. Generic OCR Endpoint
+### 1. Generic OCR
 
 **`POST /api/ocr`**
-
-General-purpose OCR endpoint using local PaddleOCR service.
 
 ```json
 // Request
@@ -71,133 +87,92 @@ General-purpose OCR endpoint using local PaddleOCR service.
 {
   "success": true,
   "ocr_text": "extracted text...",
-  "ocr_blocks": [...],
-  "confidence_avg": 0.95,
-  "engine": "paddle_ocr"
+  "ocr_blocks": [
+    {"text": "line 1", "confidence": 0.95, "bbox": [x1, y1, x2, y2]}
+  ],
+  "avg_confidence": 0.95,
+  "quality": {"quality": "good", "should_retry": false},
+  "engine": "paddle_ocr_local"
 }
 ```
 
-### 2. Blood Gas Image Analysis (Local Only)
+### 2. Blood Gas Analysis (Local Only)
 
 **`POST /api/blood-gas/analyze-image-offline`**
 
-Pure PaddleOCR mode - no external API calls.
+Pure local PaddleOCR - no LLM assistance.
 
-### 3. Blood Gas Image Analysis (Smart Mode)
+### 3. Blood Gas Analysis (Smart Mode)
 
 **`POST /api/blood-gas/analyze-image`**
 
-PaddleOCR + optional LLM-assisted parsing for complex cases.
+Local PaddleOCR + optional LLM text parsing for complex cases.
 
-**Note**: LLM is used for **parsing assistance only**, NOT for OCR.
+## Quality Guidelines
 
-## Replaced OCR Steps
+| Confidence | Quality | Action |
+|------------|---------|--------|
+| ≥ 0.7 | Good | Proceed with processing |
+| < 0.7 | Low | Show warning to take clearer photo |
+| 0 | Failed | Show error message |
+
+## Replaced Workflows
 
 | Original | New |
 |----------|-----|
-| Tesseract OCR (server-side) | LocalPaddleOCR |
-| Gemini Vision (image to text) | LocalPaddleOCR |
-| LLM-based OCR | LocalPaddleOCR → LLM parsing (text only) |
+| Gemini Vision (image OCR) | Local PaddleOCR |
+| Tesseract OCR | Local PaddleOCR |
+| Cloud OCR services | Local PaddleOCR |
 
-## Available Variables for Downstream Prompts
-
-| Variable | Type | Description |
-|----------|------|-------------|
-| `ocr_text` | string | Full extracted text from PaddleOCR |
-| `ocr_blocks` | array | Text blocks with bounding boxes and confidence |
-| `ocr_success` | boolean | Whether OCR succeeded |
-| `confidence_avg` | float | Average confidence across all blocks |
+**LLM is now used ONLY for:**
+- Text parsing (when basic regex fails)
+- Clinical reasoning
+- NOT for image-to-text OCR
 
 ## Error Handling
-
-When PaddleOCR fails, the API returns:
 
 ```json
 {
   "success": false,
   "ocr_text": "",
-  "ocr_blocks": [],
-  "confidence_avg": 0.0,
-  "error_message": "The local OCR engine could not read this image. Please try a clearer photo or different angle."
+  "error_message": "Could not read image. Try brighter lighting, steady hand, full text visible."
 }
 ```
 
-Error scenarios:
-- **Service unavailable**: PaddleOCR service not running
-- **Timeout**: Image processing took too long
-- **Empty result**: No text detected in image
-- **Connection error**: Cannot reach the service
-
-## Configuration
-
-### Environment Variables
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `PADDLE_OCR_URL` | `http://localhost:8081/ocr` | PaddleOCR service URL |
-| `PADDLE_OCR_TIMEOUT` | `30` | Request timeout in seconds |
-
-### Production Setup
-
-For production, update `PADDLE_OCR_URL` to point to your internal PaddleOCR service:
-
-```bash
-PADDLE_OCR_URL=http://paddleocr-service.internal:8081/ocr
-```
+**No cloud fallback** - OCR stays 100% local.
 
 ## Files Modified
 
 | File | Changes |
 |------|---------|
-| `/app/backend/services/paddle_ocr_service.py` | **NEW** - PaddleOCR client service |
-| `/app/backend/server.py` | Replaced Tesseract/Gemini OCR with PaddleOCR |
-| `/app/backend/.env` | Added `PADDLE_OCR_URL` configuration |
-| `/app/frontend/src/components/BloodGasDialog.jsx` | Updated UI labels and endpoints |
+| `/app/backend/services/paddle_ocr_service.py` | Complete rewrite - local PaddleOCR |
+| `/app/backend/server.py` | Updated all OCR endpoints |
+| `/app/frontend/src/components/BloodGasDialog.jsx` | Updated UI and confidence display |
+| `/app/backend/requirements.txt` | Added paddlepaddle, paddleocr |
 
-## Running PaddleOCR Service
+## Performance Notes
 
-The PaddleOCR service should expose:
+- **First run**: Models download (~100MB, one-time)
+- **Subsequent runs**: Fast, no network required
+- **GPU**: Auto-enabled if CUDA available (10x faster)
+- **CPU**: Works fine, slightly slower
 
-```
-POST http://localhost:8081/ocr
-```
+## Language Support
 
-Example Docker setup:
-
-```bash
-docker run -p 8081:8081 your-paddleocr-image
-```
-
-Or Python service:
-
-```python
-from flask import Flask, request, jsonify
-from paddleocr import PaddleOCR
-
-app = Flask(__name__)
-ocr = PaddleOCR(use_angle_cls=True, lang='en')
-
-@app.route('/ocr', methods=['POST'])
-def perform_ocr():
-    data = request.json
-    image_base64 = data['image_base64']
-    # ... process image with PaddleOCR
-    return jsonify({
-        "text": "...",
-        "blocks": [...]
-    })
-```
+| Code | Language | Use Case |
+|------|----------|----------|
+| `en` | English | Prescriptions, reports |
+| `arabic` | Arabic | Arabic prescriptions |
+| `multilingual` | Mixed | English + Arabic text |
 
 ## Testing
 
-Test the OCR endpoint:
-
 ```bash
+# Health check
+curl http://localhost:8001/api/health
+
+# Test OCR endpoint (will fail without valid image)
 curl -X POST http://localhost:8001/api/ocr \
   -H "Content-Type: application/json" \
-  -d '{
-    "image_base64": "YOUR_BASE64_IMAGE",
-    "language": "en",
-    "return_bboxes": false
-  }'
+  -d '{"image_base64": "...", "language": "en"}'
 ```
