@@ -49,21 +49,33 @@ const FluidReplacementPage = ({ onBack }) => {
   const deficitMlPerKg = deficitPercent * 10; // Convert % to ml/kg
   const totalDeficit = w * deficitMlPerKg;
 
+  // Daily cap for safety
+  const dailyCap = 2500;
+
   // First 8 hours: 1/3 maintenance + 1/2 deficit
   const maint8h = maintenance24h / 3;
   const deficit8h = includeDeficit ? totalDeficit / 2 : 0;
-  const total8h = maint8h + deficit8h;
+  const rawTotal8h = maint8h + deficit8h;
+  // Cap 8h total at proportional share of daily cap (8/24 = 1/3 of 2500 = ~833ml)
+  const maxFor8h = dailyCap / 3;
+  const total8h = Math.min(rawTotal8h, maxFor8h);
+  const is8hCapped = rawTotal8h > maxFor8h;
   const rate8h = total8h / 8;
 
   // Next 16 hours: 2/3 maintenance + 1/2 deficit
   const maint16h = (maintenance24h * 2) / 3;
   const deficit16h = includeDeficit ? totalDeficit / 2 : 0;
-  const total16h = maint16h + deficit16h;
+  const rawTotal16h = maint16h + deficit16h;
+  // Cap 16h total at proportional share of daily cap (16/24 = 2/3 of 2500 = ~1667ml)
+  const maxFor16h = (dailyCap * 2) / 3;
+  const total16h = Math.min(rawTotal16h, maxFor16h);
+  const is16hCapped = rawTotal16h > maxFor16h;
   const rate16h = total16h / 16;
 
   // Total 24h (capped at 2500ml)
-  const total24h = Math.min(total8h + total16h, 2500);
-  const exceeds2500 = (total8h + total16h) > 2500;
+  const rawTotal24h = rawTotal8h + rawTotal16h;
+  const total24h = Math.min(total8h + total16h, dailyCap);
+  const exceeds2500 = rawTotal24h > dailyCap;
 
   // Maintenance only hourly rate
   const maintenanceHourlyRate = maintenance24h / 24;
@@ -256,15 +268,18 @@ const FluidReplacementPage = ({ onBack }) => {
           {/* Dehydration + Maintenance Results */}
           {includeDeficit && (
             <>
-              <Card className="nightingale-card border-amber-200 dark:border-amber-800">
+              <Card className={`nightingale-card ${is8hCapped ? "border-red-200 dark:border-red-800" : "border-amber-200 dark:border-amber-800"}`}>
                 <CardHeader className="pb-2">
                   <div className="flex justify-between items-center">
                     <CardTitle className="text-sm">
-                      <span className="text-amber-600 dark:text-amber-400 text-xs">0-8 hrs</span>
+                      <span className={`${is8hCapped ? "text-red-600 dark:text-red-400" : "text-amber-600 dark:text-amber-400"} text-xs`}>0-8 hrs</span>
                       First 8 Hours
                     </CardTitle>
-                    <span className="text-xl font-bold font-mono text-amber-600">{rate8h.toFixed(1)} mL/hr</span>
+                    <span className={`text-xl font-bold font-mono ${is8hCapped ? "text-red-600" : "text-amber-600"}`}>{rate8h.toFixed(1)} mL/hr</span>
                   </div>
+                  {is8hCapped && (
+                    <p className="text-[10px] text-red-600">⚠️ Capped at {maxFor8h.toFixed(0)} mL (was {rawTotal8h.toFixed(0)} mL)</p>
+                  )}
                 </CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-3 gap-2 text-center text-xs">
@@ -276,23 +291,26 @@ const FluidReplacementPage = ({ onBack }) => {
                       <p className="text-[10px] text-muted-foreground">Deficit</p>
                       <p className="font-bold">{deficit8h.toFixed(0)} mL</p>
                     </div>
-                    <div className="p-2 rounded bg-green-50 dark:bg-green-900/20">
+                    <div className={`p-2 rounded ${is8hCapped ? "bg-red-50 dark:bg-red-900/20" : "bg-green-50 dark:bg-green-900/20"}`}>
                       <p className="text-[10px] text-muted-foreground">Total</p>
-                      <p className="font-bold text-green-600">{total8h.toFixed(0)} mL</p>
+                      <p className={`font-bold ${is8hCapped ? "text-red-600" : "text-green-600"}`}>{total8h.toFixed(0)} mL</p>
                     </div>
                   </div>
                 </CardContent>
               </Card>
 
-              <Card className="nightingale-card border-teal-200 dark:border-teal-800">
+              <Card className={`nightingale-card ${is16hCapped ? "border-red-200 dark:border-red-800" : "border-teal-200 dark:border-teal-800"}`}>
                 <CardHeader className="pb-2">
                   <div className="flex justify-between items-center">
                     <CardTitle className="text-sm">
-                      <span className="text-teal-600 dark:text-teal-400 text-xs">8-24 hrs</span>
+                      <span className={`${is16hCapped ? "text-red-600 dark:text-red-400" : "text-teal-600 dark:text-teal-400"} text-xs`}>8-24 hrs</span>
                       Next 16 Hours
                     </CardTitle>
-                    <span className="text-xl font-bold font-mono text-teal-600">{rate16h.toFixed(1)} mL/hr</span>
+                    <span className={`text-xl font-bold font-mono ${is16hCapped ? "text-red-600" : "text-teal-600"}`}>{rate16h.toFixed(1)} mL/hr</span>
                   </div>
+                  {is16hCapped && (
+                    <p className="text-[10px] text-red-600">⚠️ Capped at {maxFor16h.toFixed(0)} mL (was {rawTotal16h.toFixed(0)} mL)</p>
+                  )}
                 </CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-3 gap-2 text-center text-xs">
@@ -304,9 +322,9 @@ const FluidReplacementPage = ({ onBack }) => {
                       <p className="text-[10px] text-muted-foreground">Deficit</p>
                       <p className="font-bold">{deficit16h.toFixed(0)} mL</p>
                     </div>
-                    <div className="p-2 rounded bg-green-50 dark:bg-green-900/20">
+                    <div className={`p-2 rounded ${is16hCapped ? "bg-red-50 dark:bg-red-900/20" : "bg-green-50 dark:bg-green-900/20"}`}>
                       <p className="text-[10px] text-muted-foreground">Total</p>
-                      <p className="font-bold text-green-600">{total16h.toFixed(0)} mL</p>
+                      <p className={`font-bold ${is16hCapped ? "text-red-600" : "text-green-600"}`}>{total16h.toFixed(0)} mL</p>
                     </div>
                   </div>
                 </CardContent>
