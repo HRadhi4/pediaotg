@@ -75,9 +75,9 @@ const BloodGasDialog = ({ open, onOpenChange }) => {
     return values;
   };
 
-  // OCR using local PaddleOCR service (backend)
-  // Both online and offline modes now use PaddleOCR - the toggle controls
-  // whether to use LLM-assisted parsing for complex cases
+  // OCR using 100% local PaddleOCR (no external services)
+  // Local Only mode: Pure PaddleOCR
+  // Smart mode: PaddleOCR + LLM text parsing for complex cases
   const handleOfflineOCR = async (file) => {
     setIsLoading(true);
     setOcrProgress(10);
@@ -89,7 +89,7 @@ const BloodGasDialog = ({ open, onOpenChange }) => {
         setOcrProgress(30);
         
         try {
-          // Uses local PaddleOCR service (no external API for OCR)
+          // 100% local PaddleOCR (no external API)
           const response = await axios.post(`${API}/blood-gas/analyze-image-offline`, {
             image_base64: base64
           });
@@ -114,15 +114,22 @@ const BloodGasDialog = ({ open, onOpenChange }) => {
                 lactate: parsedValues.lactate?.toString() || prev.lactate,
                 Hb: parsedValues.Hb?.toString() || prev.Hb
               }));
-              const engine = response.data.engine || "paddle_ocr";
-              toast.success(`Extracted ${Object.keys(parsedValues).length} values (${engine})! Please verify.`);
+              
+              // Show confidence info
+              const confidence = response.data.avg_confidence || response.data.confidence_avg || 0;
+              const confidencePercent = Math.round(confidence * 100);
+              
+              if (response.data.low_confidence_warning) {
+                toast.warning(response.data.low_confidence_warning);
+              } else {
+                toast.success(`Extracted ${Object.keys(parsedValues).length} values (${confidencePercent}% confidence). Please verify.`);
+              }
             } else {
-              // Check for specific error message from PaddleOCR service
-              const errorMsg = response.data.error_message || "Could not extract values. Try clearer image or manual entry.";
+              const errorMsg = response.data.error_message || "Could not extract values. Try brighter lighting, steady hand, full text visible.";
               toast.error(errorMsg);
             }
           } else {
-            const errorMsg = response.data.error_message || "Could not extract values from image";
+            const errorMsg = response.data.error_message || "Could not read image. Try brighter lighting, steady hand, full text visible.";
             toast.error(errorMsg);
           }
         } catch (err) {
