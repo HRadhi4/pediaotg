@@ -340,7 +340,7 @@ const BloodGasDialog = ({ open, onOpenChange }) => {
                 {extractedValues && (
                   <div className="p-3 bg-[#00d9c5]/10 rounded-xl border border-[#00d9c5]/30">
                     <p className="text-sm font-medium text-[#00d9c5] mb-2">
-                      ✓ Values extracted{useOfflineOCR ? " (offline)" : ""} - Edit if needed:
+                      ✓ Values extracted{useOfflineOCR ? " (local)" : ""} - Edit if needed:
                     </p>
                   </div>
                 )}
