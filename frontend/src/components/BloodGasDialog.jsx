@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Camera, Upload, PenLine, Loader2, AlertTriangle, CheckCircle, Wifi, WifiOff } from "lucide-react";
+import { Camera, Upload, PenLine, Loader2, AlertTriangle, CheckCircle } from "lucide-react";
 import { toast } from "sonner";
 import axios from "axios";
 
@@ -16,7 +16,6 @@ const BloodGasDialog = ({ open, onOpenChange }) => {
   const [activeTab, setActiveTab] = useState("auto");
   const [isLoading, setIsLoading] = useState(false);
   const [ocrProgress, setOcrProgress] = useState(0);
-  const [useOfflineOCR, setUseOfflineOCR] = useState(false);
   const [extractedValues, setExtractedValues] = useState(null);
   const [analysis, setAnalysis] = useState(null);
   const [manualValues, setManualValues] = useState({
