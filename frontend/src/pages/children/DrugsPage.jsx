@@ -2008,7 +2008,7 @@ const DrugsPage = ({ onBack }) => {
                               <div key={key} className={`p-2 rounded ${doseResult.isExceedingMax ? 'bg-amber-50 dark:bg-amber-900/20 border border-amber-300' : 'bg-blue-50 dark:bg-blue-900/20'}`}>
                                 <p className="text-[10px] text-muted-foreground">{drug.doses[key].label}</p>
                                 <p className={`font-mono font-bold ${doseResult.isExceedingMax ? 'text-amber-600' : 'text-blue-600'}`}>
-                                  {doseResult.dose}
+                                  {doseResult.dose}{doseResult.doseLabel && <span className="text-[9px] text-muted-foreground ml-0.5">{doseResult.doseLabel}</span>}
                                 </p>
                                 <p className="text-[9px] text-muted-foreground">{drug.doses[key].unit}</p>
                                 {doseResult.isExceedingMax && (
