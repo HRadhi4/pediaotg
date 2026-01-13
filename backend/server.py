@@ -11,9 +11,10 @@ import uuid
 from datetime import datetime, timezone
 import base64
 
-# Import Chandra OCR service (100% local, no HTTP calls)
-from services.chandra_ocr_service import (
-    perform_chandra_ocr as perform_paddle_ocr,  # Alias for compatibility
+# Import local OCR service (100% local, no HTTP calls)
+# Using Tesseract for production stability (Chandra requires ~5GB which exceeds pod limits)
+from services.paddle_ocr_service import (
+    perform_paddle_ocr, 
     parse_blood_gas_from_ocr_text,
     check_ocr_quality,
     OCRResult,
