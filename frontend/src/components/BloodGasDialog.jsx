@@ -74,10 +74,10 @@ const BloodGasDialog = ({ open, onOpenChange }) => {
     return values;
   };
 
-  // OCR using 100% local PaddleOCR (no external services)
-  // Local Only mode: Pure PaddleOCR
-  // Smart mode: PaddleOCR + LLM text parsing for complex cases
-  const handleOfflineOCR = async (file) => {
+  // Local OCR using Tesseract (100% local, no external services)
+  const handleImageUpload = async (file) => {
+    if (!file) return;
+    
     setIsLoading(true);
     setOcrProgress(10);
     
@@ -88,7 +88,7 @@ const BloodGasDialog = ({ open, onOpenChange }) => {
         setOcrProgress(30);
         
         try {
-          // 100% local PaddleOCR (no external API)
+          // 100% local OCR (no external API)
           const response = await axios.post(`${API}/blood-gas/analyze-image-offline`, {
             image_base64: base64
           });
@@ -132,7 +132,7 @@ const BloodGasDialog = ({ open, onOpenChange }) => {
             toast.error(errorMsg);
           }
         } catch (err) {
-          console.error("PaddleOCR Error:", err);
+          console.error("OCR Error:", err);
           toast.error("OCR failed: " + (err.response?.data?.detail || err.message));
         }
         
@@ -147,37 +147,6 @@ const BloodGasDialog = ({ open, onOpenChange }) => {
       setOcrProgress(0);
     }
   };
-
-  const handleImageUpload = async (file) => {
-    if (!file) return;
-    
-    if (useOfflineOCR) {
-      // Pure local PaddleOCR mode (no LLM assistance)
-      return handleOfflineOCR(file);
-    }
-    
-    // Smart mode: PaddleOCR + LLM text parsing for complex cases
-    setIsLoading(true);
-    try {
-      const reader = new FileReader();
-      reader.onloadend = async () => {
-        const base64 = reader.result;
-        
-        try {
-          // 100% local PaddleOCR for OCR, optional LLM for text parsing
-          const response = await axios.post(`${API}/blood-gas/analyze-image`, {
-            image_base64: base64
-          });
-          
-          if (response.data.success && response.data.values) {
-            setExtractedValues(response.data.values);
-            setManualValues({
-              pH: response.data.values.pH?.toString() || "",
-              pCO2: response.data.values.pCO2?.toString() || "",
-              pO2: response.data.values.pO2?.toString() || "",
-              HCO3: response.data.values.HCO3?.toString() || "",
-              BE: response.data.values.BE?.toString() || "",
-              Na: response.data.values.Na?.toString() || "",
               K: response.data.values.K?.toString() || "",
               Cl: response.data.values.Cl?.toString() || "",
               lactate: response.data.values.lactate?.toString() || "",
