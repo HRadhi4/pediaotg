@@ -336,7 +336,7 @@ const FluidReplacementPage = ({ onBack }) => {
                     <div>
                       <p className="text-sm font-medium">Total 24-Hour Fluids</p>
                       {exceeds2500 && (
-                        <p className="text-[10px] text-red-600">Capped at 2500 mL (was {(total8h + total16h).toFixed(0)} mL)</p>
+                        <p className="text-[10px] text-red-600">⚠️ Capped at {dailyCap} mL/day (calculated: {rawTotal24h.toFixed(0)} mL)</p>
                       )}
                     </div>
                     <p className={`text-2xl font-bold font-mono ${exceeds2500 ? "text-red-600" : "text-green-600"}`}>
