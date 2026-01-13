@@ -1645,7 +1645,8 @@ const DrugsPage = ({ onBack }) => {
       return {
         dose: `${calculatedMin.toFixed(0)}${calculatedMax !== calculatedMin ? ` - ${calculatedMax.toFixed(0)}` : ''} ${unit}`,
         isExceedingMax: false,
-        maxDisplay: null
+        maxDisplay: null,
+        isPerDose: false
       };
     }
     
@@ -1659,10 +1660,16 @@ const DrugsPage = ({ onBack }) => {
       }
     }
     
+    // Add dosing type label
+    const doseLabel = isPerDose ? "/dose" : isPerDay ? "/day" : "";
+    
     return {
       dose: `${calculatedMin.toFixed(1)}${calculatedMax !== calculatedMin ? ` - ${calculatedMax.toFixed(1)}` : ''} ${unit}`,
       isExceedingMax,
-      maxDisplay
+      maxDisplay,
+      isPerDose,
+      isPerDay,
+      doseLabel
     };
   };
 
