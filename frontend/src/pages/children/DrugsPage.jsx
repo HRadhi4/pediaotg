@@ -1997,7 +1997,9 @@ const DrugsPage = ({ onBack }) => {
                         <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide mb-1">Calculated Doses ({w}kg)</p>
                         <div className="grid grid-cols-2 gap-2">
                           {doseKeys.map(key => {
-                            const maxDoseValue = parseMaxDose(drug.max);
+                            // Use per-dose maxDose if available, otherwise fall back to global max
+                            const doseSpecificMax = drug.doses[key].maxDose;
+                            const maxDoseValue = doseSpecificMax || parseMaxDose(drug.max);
                             const result = calculateDose(drug.doses[key].value, w, maxDoseValue, "mg", drug.doses[key].unit);
                             if (!result) return null;
                             const doseResult = typeof result === 'string' ? { dose: result, isExceedingMax: false } : result;
@@ -2010,7 +2012,7 @@ const DrugsPage = ({ onBack }) => {
                                 <p className="text-[9px] text-muted-foreground">{drug.doses[key].unit}</p>
                                 {doseResult.isExceedingMax && (
                                   <p className="text-[9px] text-amber-600 font-medium mt-1">
-                                    ⚠️ Capped at max: {doseResult.maxDisplay || drug.max}
+                                    ⚠️ Capped at max: {doseSpecificMax ? `${doseSpecificMax} mg` : drug.max}
                                   </p>
                                 )}
                               </div>
