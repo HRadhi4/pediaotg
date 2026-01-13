@@ -147,37 +147,6 @@ const BloodGasDialog = ({ open, onOpenChange }) => {
       setOcrProgress(0);
     }
   };
-              K: response.data.values.K?.toString() || "",
-              Cl: response.data.values.Cl?.toString() || "",
-              lactate: response.data.values.lactate?.toString() || "",
-              Hb: response.data.values.Hb?.toString() || ""
-            });
-            
-            // Show confidence info
-            const confidence = response.data.avg_confidence || response.data.confidence_avg || 0;
-            const confidencePercent = Math.round(confidence * 100);
-            
-            if (response.data.low_confidence_warning) {
-              toast.warning(response.data.low_confidence_warning);
-            } else {
-              const engine = response.data.engine || "paddle_ocr_local";
-              toast.success(`Values extracted (${confidencePercent}% confidence). Please verify.`);
-            }
-          } else {
-            const errorMsg = response.data.error_message || "Could not read image. Try brighter lighting, steady hand, full text visible.";
-            toast.error(errorMsg);
-          }
-        } catch (err) {
-          toast.error("Error analyzing image: " + (err.response?.data?.detail || err.message));
-        }
-        setIsLoading(false);
-      };
-      reader.readAsDataURL(file);
-    } catch (error) {
-      toast.error("Error reading file");
-      setIsLoading(false);
-    }
-  };
 
   const handleAnalyze = async () => {
     const values = {};
