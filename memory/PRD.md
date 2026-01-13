@@ -72,18 +72,29 @@ Build a full SaaS-style web app "Pediatrics on the Go" with:
 
 ## 3rd Party Integrations
 - PayPal (subscription payments)
-- Gemini Pro Vision (OCR - pivoted from PaddleOCR)
-- Tesseract (backup OCR)
+- Pytesseract (100% local OCR - replaced Gemini cloud OCR)
 - recharts (charts)
 - html2canvas
 - GoDaddy/Microsoft Exchange SMTP (emails)
 
+## Recent Changes (January 13, 2026)
+- ✅ **Fluid Replacement 2500ml Cap**: Applied to individual 8h and 16h periods, not just 24h total
+- ✅ **Calcium Dose Max**: Capped at 1g (10mL) in Hyperkalemia approach and DrugsPage
+- ✅ **Approaches Scroll Fix**: Expanding sections now scrolls to show the expanded content
+- ✅ **BloodGasDialog OCR Toggle Removed**: Simplified UI with single local OCR method
+- ✅ **BloodGasDialog Syntax Error Fixed**: Removed corrupted code causing frontend build failure
+
 ## Backlog / Future Tasks
 - [ ] Add more drug entries
 - [ ] Implement Postnatal widget
-- [ ] Implement Approaches widget content
-- [ ] Address minor linting errors
+- [ ] Address minor linting errors in /pages/children/ components
+- [ ] Subscription renewal reminder email (3 days before expiry)
 - [ ] Production deployment prep
+- [ ] Break down ApproachesPage.jsx (~2700 lines) into smaller sub-components
+
+## Pending User Verification
+- [ ] Registration bug fix ("Body is disturbed or locked" error in AuthContext.jsx)
+- [ ] Vital Signs table header alignment
 
 ## Last Updated
-January 12, 2026
+January 13, 2026
