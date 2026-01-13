@@ -283,7 +283,7 @@ const BloodGasDialog = ({ open, onOpenChange }) => {
                         {useOfflineOCR ? "Local OCR Only" : "Smart OCR"}
                       </p>
                       <p className="text-xs text-muted-foreground">
-                        {useOfflineOCR ? "PaddleOCR only (no external API)" : "PaddleOCR + LLM-assisted parsing"}
+                        {useOfflineOCR ? "100% local PaddleOCR (no cloud)" : "Local OCR + LLM text parsing"}
                       </p>
                     </div>
                   </div>
