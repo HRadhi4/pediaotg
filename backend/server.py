@@ -10,9 +10,13 @@ from typing import List, Optional
 import uuid
 from datetime import datetime, timezone
 import base64
-import tempfile
-import asyncio
-from concurrent.futures import ThreadPoolExecutor
+
+# Import local PaddleOCR service
+from services.paddle_ocr_service import (
+    perform_paddle_ocr, 
+    parse_blood_gas_from_ocr_text,
+    OCRResult
+)
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
