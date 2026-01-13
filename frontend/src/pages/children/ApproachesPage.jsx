@@ -2296,13 +2296,13 @@ const ApproachesPage = ({ onBack }) => {
                   <div className="p-2 bg-green-50 dark:bg-green-900/20 rounded">
                     <p className="font-semibold text-green-700">Calcium Gluconate 10% (Perfusing Patients)</p>
                     <p className="text-muted-foreground">60 mg/kg (0.6 mL/kg) diluted in equal volume D5W/NS, IV over 5 min</p>
-                    {w > 0 && <p className="font-mono text-green-600 mt-1">{(w * 60).toFixed(0)} mg ({(w * 0.6).toFixed(1)} mL) | Max: 2g (20mL)</p>}
+                    {w > 0 && <p className="font-mono text-green-600 mt-1">{Math.min(w * 60, 1000).toFixed(0)} mg ({Math.min(w * 0.6, 10).toFixed(1)} mL) | Max: 1g (10mL)</p>}
                     <p className="text-muted-foreground mt-1">Onset: Immediate | May repeat in 10 min if needed</p>
                   </div>
                   <div className="p-2 bg-amber-50 dark:bg-amber-900/20 rounded">
                     <p className="font-semibold text-amber-700">Calcium Chloride 10% (Cardiac Arrest)</p>
                     <p className="text-muted-foreground">20 mg/kg (0.2 mL/kg) via central line or IO push</p>
-                    {w > 0 && <p className="font-mono text-amber-600 mt-1">{(w * 20).toFixed(0)} mg ({(w * 0.2).toFixed(1)} mL) | Max: 2g (20mL)</p>}
+                    {w > 0 && <p className="font-mono text-amber-600 mt-1">{Math.min(w * 20, 1000).toFixed(0)} mg ({Math.min(w * 0.2, 10).toFixed(1)} mL) | Max: 1g (10mL)</p>}
                     <p className="text-red-600 mt-1">⚠️ Do NOT give peripherally</p>
                   </div>
                 </div>
