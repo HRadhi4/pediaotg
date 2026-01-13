@@ -21,9 +21,6 @@ from services.paddle_ocr_service import (
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
-# Thread pool for CPU-intensive OCR tasks
-ocr_executor = ThreadPoolExecutor(max_workers=2, thread_name_prefix="ocr_")
-
 # MongoDB connection
 mongo_url = os.environ['MONGO_URL']
 client = AsyncIOMotorClient(mongo_url)
