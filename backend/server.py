@@ -95,20 +95,22 @@ async def get_status_checks():
     return status_checks
 
 # ============================================================================
-# OCR ENDPOINTS - 100% Local Tesseract OCR (No External Services)
+# OCR ENDPOINTS - 100% Local Medical-Grade Tesseract OCR
 # ============================================================================
 # 
 # DEVELOPER NOTES:
-# - All OCR runs LOCALLY using Tesseract (pytesseract)
+# - All OCR runs LOCALLY using Tesseract with medical-grade preprocessing
 # - NO HTTP calls, NO Docker, NO cloud dependencies
-# - Lightweight and production-ready
-# - Supports: English ('en'), Arabic ('arabic'), Multilingual
-# 
-# Note: Tesseract OCR (datalab-to/chandra) service available but requires ~5GB
-# which exceeds typical pod limits. Using Tesseract for production stability.
+# - Optimized for blurry blood gas reports with:
+#   * 2x upscaling to 300+ DPI equivalent
+#   * CLAHE adaptive contrast enhancement
+#   * Gaussian + median denoising
+#   * Automatic deskew for rotated printouts
+#   * Adaptive binarization for faded ink
+#   * Medical-specific character whitelist
 #
 # Workflow:
-# User uploads image → Tesseract OCR → ocr_text → clinical reasoning
+# User uploads image → Preprocessing → Tesseract OCR → ocr_text → clinical reasoning
 #
 # Quality Guidelines:
 # - avg_confidence >= 0.7: Good quality, proceed
@@ -121,17 +123,19 @@ async def get_status_checks():
 class OCRRequest(BaseModel):
     """Request model for generic OCR endpoint"""
     image_base64: str
-    language: str = "en"  # Tesseract supports multilingual
+    language: str = "en"  # Supports 'en', 'arabic', 'multilingual'
     return_bboxes: bool = False
 
 
 @api_router.post("/ocr")
-async def perform_ocr(request: OCRRequest):
+async def perform_ocr_endpoint(request: OCRRequest):
     """
-    Generic OCR endpoint using 100% local Tesseract OCR.
+    Generic OCR endpoint using 100% local medical-grade Tesseract OCR.
     
-    No external services, HTTP calls, or cloud dependencies.
-    Returns extracted text with confidence scores.
+    Features:
+    - Medical-grade preprocessing (upscale, CLAHE, denoise, deskew, binarize)
+    - Blood gas specific character whitelist
+    - Automatic metric extraction (pH, pCO2, pO2, etc.)
     
     Quality check:
     - avg_confidence >= 0.7: Good
@@ -158,19 +162,20 @@ async def perform_ocr(request: OCRRequest):
             "confidence_avg": 0.0,
             "error_message": result.error_message,
             "quality": quality,
-            "engine": "tesseract_local"
+            "engine": "tesseract_medical"
         }
     
     # Add low confidence warning
     response = {
         "success": True,
         "ocr_text": result.ocr_text,
-        "ocr_markdown": getattr(result, 'ocr_markdown', result.ocr_text),
+        "lines": getattr(result, 'lines', []),
+        "key_metrics": getattr(result, 'key_metrics', {}),
         "ocr_blocks": [{"text": b.text, "bbox": b.bbox, "confidence": b.confidence} for b in result.ocr_blocks],
         "avg_confidence": result.avg_confidence,
         "confidence_avg": result.avg_confidence,
         "quality": quality,
-        "engine": "tesseract_local"
+        "engine": "tesseract_medical"
     }
     
     if result.avg_confidence < LOW_CONFIDENCE_THRESHOLD:
