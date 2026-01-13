@@ -234,13 +234,13 @@ const DrugsPage = ({ onBack }) => {
       category: "Antibiotic",
       route: "PO/IV",
       doses: {
-        highDose: { label: "High Dose (ES 600)", value: "90", unit: "mg/kg/day divided q12h", maxDose: 875 },
-        lowDose: { label: "Low Dose (457)", value: "45", unit: "mg/kg/day divided q12h", maxDose: 875 },
-        iv: { label: "IV", value: "30", unit: "mg/kg/dose q8h", maxDose: 1200 }
+        highDose: { label: "High Dose (ES 600)", value: "90", unit: "mg/kg/day divided q12h", maxDose: 3000 },
+        lowDose: { label: "Low Dose (457)", value: "45", unit: "mg/kg/day divided q12h", maxDose: 1750 },
+        iv: { label: "IV", value: "30", unit: "mg/kg/dose q8h", maxDose: 2000 }
       },
-      max: "875 mg amox/dose PO, 1.2g IV/dose",
+      max: "3g/day PO high dose, 2g/dose IV",
       indication: "Sinusitis, bite wounds, resistant infections",
-      notes: "ES 600 for high dose (90 mg/kg), 457 formulation for low dose (45 mg/kg). IV max 1.2g/dose Q8h.",
+      notes: "ES 600 for high dose (90 mg/kg), 457 formulation for low dose (45 mg/kg). IV max 2g/dose Q8h (adult dose).",
       renalAdjust: { gfr50: "No change", gfr30: "q12h", gfr10: "q24h", hd: "Give after HD" }
     },
     {
