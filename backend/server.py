@@ -95,35 +95,46 @@ async def get_status_checks():
     return status_checks
 
 # ============================================================================
-# OCR ENDPOINTS - Using Local PaddleOCR Service
+# OCR ENDPOINTS - 100% Local PaddleOCR (No External Services)
 # ============================================================================
 # 
 # DEVELOPER NOTES:
-# - All OCR is now done by a local PaddleOCR HTTP service
-# - Service URL: configured via PADDLE_OCR_URL env var (default: http://localhost:8081/ocr)
-# - LLM (Gemini) is ONLY used for clinical reasoning AFTER OCR extracts text
-# - See /app/backend/services/paddle_ocr_service.py for full documentation
+# - All OCR runs LOCALLY using PaddleOCR Python library
+# - NO HTTP calls, NO Docker, NO cloud dependencies
+# - Models download once on first use (~100MB, cached)
+# - Supports: English ('en'), Arabic ('arabic'), Multilingual
+# - Uses PP-OCRv4 for best accuracy on noisy/scan images
+# 
+# Workflow:
+# Old: User uploads image → Gemini Vision → extracted text → clinical reasoning
+# New: User uploads image → LocalPaddleOCR → ocr_text → clinical reasoning
 #
-# API Contract (PaddleOCR Service):
-# POST /ocr
-# Request: { "image_base64": str, "language": "en"|"ar"|"en+ar", "return_bboxes": bool }
-# Response: { "text": str, "blocks": [{ "text": str, "bbox": [x1,y1,x2,y2], "confidence": float }] }
+# Quality Guidelines:
+# - avg_confidence >= 0.7: Good quality, proceed
+# - avg_confidence < 0.7: Suggest clearer photo
+# - Empty result: Show error, stay 100% local (no fallback)
+#
+# See /app/backend/services/paddle_ocr_service.py for full documentation
 # ============================================================================
 
 class OCRRequest(BaseModel):
     """Request model for generic OCR endpoint"""
     image_base64: str
-    language: str = "en"  # "en", "ar", or "en+ar"
+    language: str = "en"  # "en", "arabic", or "multilingual"
     return_bboxes: bool = False
 
 
 @api_router.post("/ocr")
 async def perform_ocr(request: OCRRequest):
     """
-    Generic OCR endpoint using local PaddleOCR service.
+    Generic OCR endpoint using 100% local PaddleOCR.
     
-    This is the primary OCR endpoint that should be used for all text extraction.
-    Returns extracted text and optionally bounding boxes with confidence scores.
+    No external services, HTTP calls, or cloud dependencies.
+    Returns extracted text with confidence scores.
+    
+    Quality check:
+    - avg_confidence >= 0.7: Good
+    - avg_confidence < 0.7: Returns suggestion to take clearer photo
     """
     if not request.image_base64:
         raise HTTPException(status_code=400, detail="Image is required")
@@ -134,20 +145,36 @@ async def perform_ocr(request: OCRRequest):
         return_bboxes=request.return_bboxes
     )
     
+    # Check quality
+    quality = check_ocr_quality(result)
+    
     if not result.success:
         return {
             "success": False,
             "ocr_text": "",
             "ocr_blocks": [],
+            "avg_confidence": 0.0,
             "confidence_avg": 0.0,
             "error_message": result.error_message,
-            "engine": "paddle_ocr"
+            "quality": quality,
+            "engine": "paddle_ocr_local"
         }
     
-    return {
+    # Add low confidence warning
+    response = {
         "success": True,
         "ocr_text": result.ocr_text,
         "ocr_blocks": [{"text": b.text, "bbox": b.bbox, "confidence": b.confidence} for b in result.ocr_blocks],
+        "avg_confidence": result.avg_confidence,
+        "confidence_avg": result.avg_confidence,
+        "quality": quality,
+        "engine": "paddle_ocr_local"
+    }
+    
+    if result.avg_confidence < LOW_CONFIDENCE_THRESHOLD:
+        response["low_confidence_warning"] = f"OCR confidence is low ({result.avg_confidence:.0%}). Consider taking a clearer photo."
+    
+    return response
         "confidence_avg": result.confidence_avg,
         "engine": "paddle_ocr"
     }
