@@ -323,8 +323,8 @@ const BloodGasDialog = ({ open, onOpenChange }) => {
                     <Loader2 className="h-8 w-8 animate-spin text-[#00d9c5]" />
                     <span className="ml-2 mt-2">
                       {useOfflineOCR 
-                        ? `Processing with Tesseract... ${ocrProgress}%` 
-                        : "Analyzing image with AI..."}
+                        ? `Processing with PaddleOCR... ${ocrProgress}%` 
+                        : "Processing with PaddleOCR..."}
                     </span>
                     {useOfflineOCR && ocrProgress > 0 && (
                       <div className="w-full mt-2 h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
