@@ -207,33 +207,6 @@ const BloodGasDialog = ({ open, onOpenChange }) => {
                 <CardTitle className="text-base">Upload Blood Gas Image</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                {/* OCR Mode Toggle */}
-                <div className="flex items-center justify-between p-3 rounded-xl bg-gray-50 dark:bg-gray-800/50">
-                  <div className="flex items-center gap-2">
-                    {useOfflineOCR ? (
-                      <WifiOff className="h-4 w-4 text-amber-500" />
-                    ) : (
-                      <Wifi className="h-4 w-4 text-green-500" />
-                    )}
-                    <div>
-                      <p className="text-sm font-medium">
-                        {useOfflineOCR ? "Local OCR Only" : "Smart OCR"}
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        {useOfflineOCR ? "100% local PaddleOCR (no cloud)" : "Local OCR + LLM text parsing"}
-                      </p>
-                    </div>
-                  </div>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setUseOfflineOCR(!useOfflineOCR)}
-                    className="text-xs"
-                  >
-                    {useOfflineOCR ? "Use Smart" : "Use Local Only"}
-                  </Button>
-                </div>
-
                 <div className="flex gap-3">
                   <input
                     type="file"
@@ -274,12 +247,8 @@ const BloodGasDialog = ({ open, onOpenChange }) => {
                 {isLoading && (
                   <div className="flex flex-col items-center justify-center py-8">
                     <Loader2 className="h-8 w-8 animate-spin text-[#00d9c5]" />
-                    <span className="ml-2 mt-2">
-                      {useOfflineOCR 
-                        ? `Processing with local OCR... ${ocrProgress}%` 
-                        : "Processing with local OCR..."}
-                    </span>
-                    {useOfflineOCR && ocrProgress > 0 && (
+                    <span className="ml-2 mt-2">Processing with local OCR... {ocrProgress}%</span>
+                    {ocrProgress > 0 && (
                       <div className="w-full mt-2 h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
                         <div 
                           className="h-full bg-[#00d9c5] transition-all duration-300"
@@ -293,7 +262,7 @@ const BloodGasDialog = ({ open, onOpenChange }) => {
                 {extractedValues && (
                   <div className="p-3 bg-[#00d9c5]/10 rounded-xl border border-[#00d9c5]/30">
                     <p className="text-sm font-medium text-[#00d9c5] mb-2">
-                      ✓ Values extracted{useOfflineOCR ? " (local)" : ""} - Edit if needed:
+                      ✓ Values extracted - Edit if needed:
                     </p>
                   </div>
                 )}
