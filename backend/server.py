@@ -115,7 +115,7 @@ async def get_status_checks():
 # - avg_confidence < 0.7: Suggest clearer photo
 # - Empty result: Show error, stay 100% local (no fallback)
 #
-# See /app/backend/services/paddle_ocr_service.py for documentation
+# See /app/backend/services/ocr_service.py for documentation
 # ============================================================================
 
 class OCRRequest(BaseModel):
