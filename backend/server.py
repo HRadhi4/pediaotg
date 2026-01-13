@@ -92,132 +92,166 @@ async def get_status_checks():
             check['timestamp'] = datetime.fromisoformat(check['timestamp'])
     return status_checks
 
-def perform_tesseract_ocr(image_path: str) -> str:
-    """Run Tesseract OCR on image - runs in thread pool"""
-    try:
-        import pytesseract
-        from PIL import Image
-        
-        img = Image.open(image_path)
-        # Run OCR with English language
-        text = pytesseract.image_to_string(img, lang='eng')
-        return text
-    except Exception as e:
-        logging.error(f"Tesseract OCR error: {e}")
-        raise
+# ============================================================================
+# OCR ENDPOINTS - Using Local PaddleOCR Service
+# ============================================================================
+# 
+# DEVELOPER NOTES:
+# - All OCR is now done by a local PaddleOCR HTTP service
+# - Service URL: configured via PADDLE_OCR_URL env var (default: http://localhost:8081/ocr)
+# - LLM (Gemini) is ONLY used for clinical reasoning AFTER OCR extracts text
+# - See /app/backend/services/paddle_ocr_service.py for full documentation
+#
+# API Contract (PaddleOCR Service):
+# POST /ocr
+# Request: { "image_base64": str, "language": "en"|"ar"|"en+ar", "return_bboxes": bool }
+# Response: { "text": str, "blocks": [{ "text": str, "bbox": [x1,y1,x2,y2], "confidence": float }] }
+# ============================================================================
 
-def parse_blood_gas_from_text(text: str) -> dict:
-    """Parse blood gas values from OCR text"""
-    import re
+class OCRRequest(BaseModel):
+    """Request model for generic OCR endpoint"""
+    image_base64: str
+    language: str = "en"  # "en", "ar", or "en+ar"
+    return_bboxes: bool = False
+
+
+@api_router.post("/ocr")
+async def perform_ocr(request: OCRRequest):
+    """
+    Generic OCR endpoint using local PaddleOCR service.
     
-    values = {}
-    text_lower = text.lower()
+    This is the primary OCR endpoint that should be used for all text extraction.
+    Returns extracted text and optionally bounding boxes with confidence scores.
+    """
+    if not request.image_base64:
+        raise HTTPException(status_code=400, detail="Image is required")
     
-    # Regex patterns for common blood gas parameters
-    patterns = {
-        'pH': r'ph[:\s]*([0-9]+\.?[0-9]*)',
-        'pCO2': r'p?co2[:\s]*([0-9]+\.?[0-9]*)',
-        'pO2': r'p?o2[:\s]*([0-9]+\.?[0-9]*)',
-        'HCO3': r'hco3?[:\s-]*([0-9]+\.?[0-9]*)',
-        'BE': r'be[:\s]*([+-]?[0-9]+\.?[0-9]*)',
-        'Na': r'na[+]?[:\s]*([0-9]+\.?[0-9]*)',
-        'K': r'k[+]?[:\s]*([0-9]+\.?[0-9]*)',
-        'Cl': r'cl[-]?[:\s]*([0-9]+\.?[0-9]*)',
-        'lactate': r'lac(?:tate)?[:\s]*([0-9]+\.?[0-9]*)',
-        'Hb': r'h[ae]?moglobin|hb|hgb[:\s]*([0-9]+\.?[0-9]*)'
+    result = await perform_paddle_ocr(
+        image_base64=request.image_base64,
+        language=request.language,
+        return_bboxes=request.return_bboxes
+    )
+    
+    if not result.success:
+        return {
+            "success": False,
+            "ocr_text": "",
+            "ocr_blocks": [],
+            "confidence_avg": 0.0,
+            "error_message": result.error_message,
+            "engine": "paddle_ocr"
+        }
+    
+    return {
+        "success": True,
+        "ocr_text": result.ocr_text,
+        "ocr_blocks": [{"text": b.text, "bbox": b.bbox, "confidence": b.confidence} for b in result.ocr_blocks],
+        "confidence_avg": result.confidence_avg,
+        "engine": "paddle_ocr"
     }
-    
-    # Valid ranges for sanity checking
-    valid_ranges = {
-        'pH': (6.5, 8.0),
-        'pCO2': (10, 150),
-        'pO2': (10, 600),
-        'HCO3': (1, 60),
-        'BE': (-30, 30),
-        'Na': (100, 180),
-        'K': (1, 10),
-        'Cl': (70, 130),
-        'lactate': (0, 30),
-        'Hb': (3, 25)
-    }
-    
-    for key, pattern in patterns.items():
-        match = re.search(pattern, text_lower, re.IGNORECASE)
-        if match and match.group(1):
-            try:
-                val = float(match.group(1))
-                min_val, max_val = valid_ranges.get(key, (0, float('inf')))
-                if min_val <= val <= max_val:
-                    values[key] = val
-            except ValueError:
-                continue
-    
-    return values
+
 
 @api_router.post("/blood-gas/analyze-image-offline")
 async def analyze_blood_gas_image_offline(request: BloodGasInput):
-    """Analyze blood gas image using PaddleOCR (offline, no external API)"""
+    """
+    Analyze blood gas image using local PaddleOCR (offline, no external API).
+    
+    Workflow:
+    1. Image → PaddleOCR → extract raw text
+    2. Parse blood gas values from raw text
+    3. Return structured values for analysis
+    """
     if not request.image_base64:
         raise HTTPException(status_code=400, detail="Image is required")
     
     try:
-        # Clean base64 if it has data URL prefix
-        image_data = request.image_base64
-        if "," in image_data:
-            image_data = image_data.split(",")[1]
+        # Perform OCR using local PaddleOCR service
+        ocr_result = await perform_paddle_ocr(
+            image_base64=request.image_base64,
+            language="en",
+            return_bboxes=False
+        )
         
-        # Decode base64 to bytes
-        image_bytes = base64.b64decode(image_data)
-        
-        # Save to temporary file for OCR
-        with tempfile.NamedTemporaryFile(suffix=".jpg", delete=False) as tmp_file:
-            tmp_file.write(image_bytes)
-            tmp_path = tmp_file.name
-        
-        try:
-            # Run Tesseract OCR in thread pool to avoid blocking
-            loop = asyncio.get_event_loop()
-            raw_text = await loop.run_in_executor(
-                ocr_executor,
-                perform_tesseract_ocr,
-                tmp_path
-            )
-            
-            # Parse blood gas values from OCR text
-            extracted_values = parse_blood_gas_from_text(raw_text)
-            
+        if not ocr_result.success:
             return {
-                "success": True,
-                "values": extracted_values,
-                "raw_text": raw_text,
-                "engine": "tesseract"
+                "success": False,
+                "values": {},
+                "raw_text": "",
+                "error_message": ocr_result.error_message,
+                "engine": "paddle_ocr"
             }
-        finally:
-            # Cleanup temporary file
-            if os.path.exists(tmp_path):
-                os.remove(tmp_path)
+        
+        # Parse blood gas values from OCR text
+        extracted_values = parse_blood_gas_from_ocr_text(ocr_result.ocr_text)
+        
+        return {
+            "success": True,
+            "values": extracted_values,
+            "raw_text": ocr_result.ocr_text,
+            "confidence_avg": ocr_result.confidence_avg,
+            "engine": "paddle_ocr"
+        }
     
     except Exception as e:
-        logging.error(f"Offline OCR error: {str(e)}")
+        logging.error(f"PaddleOCR error: {str(e)}")
         raise HTTPException(status_code=500, detail=f"OCR processing failed: {str(e)}")
+
 
 @api_router.post("/blood-gas/analyze-image")
 async def analyze_blood_gas_image(request: BloodGasInput):
-    """Analyze blood gas image using Gemini AI for OCR"""
+    """
+    Analyze blood gas image using PaddleOCR + optional LLM for clinical reasoning.
+    
+    Workflow:
+    1. Image → PaddleOCR → extract raw text (LOCAL, no external API for OCR)
+    2. Parse blood gas values from raw text
+    3. Optionally use LLM for enhanced parsing (only if basic parsing fails)
+    
+    Note: LLM is NOT used for OCR - only for reasoning if needed.
+    """
     if not request.image_base64:
         raise HTTPException(status_code=400, detail="Image is required")
     
     try:
-        from emergentintegrations.llm.chat import LlmChat, UserMessage, ImageContent
+        # Step 1: Perform OCR using local PaddleOCR service
+        ocr_result = await perform_paddle_ocr(
+            image_base64=request.image_base64,
+            language="en",
+            return_bboxes=True  # Get bboxes for better parsing
+        )
         
-        api_key = os.getenv("EMERGENT_LLM_KEY")
-        if not api_key:
-            raise HTTPException(status_code=500, detail="AI service not configured")
+        if not ocr_result.success:
+            return {
+                "success": False,
+                "values": {},
+                "error_message": ocr_result.error_message,
+                "engine": "paddle_ocr"
+            }
         
-        chat = LlmChat(
-            api_key=api_key,
-            session_id=f"blood-gas-{uuid.uuid4()}",
-            system_message="""You are a medical OCR specialist. Extract blood gas values from the image.
+        # Step 2: Parse blood gas values from OCR text
+        extracted_values = parse_blood_gas_from_ocr_text(ocr_result.ocr_text)
+        
+        # If we got values, return them
+        if extracted_values:
+            return {
+                "success": True,
+                "values": extracted_values,
+                "raw_text": ocr_result.ocr_text,
+                "confidence_avg": ocr_result.confidence_avg,
+                "engine": "paddle_ocr"
+            }
+        
+        # Step 3: If basic parsing failed, try LLM-assisted parsing
+        # (LLM is used for reasoning/parsing, NOT for OCR)
+        try:
+            from emergentintegrations.llm.chat import LlmChat, UserMessage
+            
+            api_key = os.getenv("EMERGENT_LLM_KEY")
+            if api_key and ocr_result.ocr_text.strip():
+                chat = LlmChat(
+                    api_key=api_key,
+                    session_id=f"blood-gas-parse-{uuid.uuid4()}",
+                    system_message="""You are a medical data parser. Given OCR text from a blood gas report, extract the values.
 Return ONLY a JSON object with these fields (use null if not found):
 {
   "pH": number or null,
@@ -229,41 +263,48 @@ Return ONLY a JSON object with these fields (use null if not found):
   "K": number or null (mEq/L),
   "Cl": number or null (mEq/L),
   "lactate": number or null (mmol/L),
-  "Hb": number or null (g/dL - hemoglobin)
+  "Hb": number or null (g/dL)
 }
 Do not include any text outside the JSON."""
-        ).with_model("gemini", "gemini-2.5-flash")
+                ).with_model("gemini", "gemini-2.5-flash")
+                
+                # Send OCR text (NOT image) to LLM for parsing
+                response = await chat.send_message(UserMessage(
+                    text=f"Parse these blood gas values from OCR text:\n\n{ocr_result.ocr_text}"
+                ))
+                
+                import json
+                clean_response = response.strip()
+                if clean_response.startswith("```"):
+                    clean_response = clean_response.split("```")[1]
+                    if clean_response.startswith("json"):
+                        clean_response = clean_response[4:]
+                clean_response = clean_response.strip()
+                if clean_response.endswith("```"):
+                    clean_response = clean_response[:-3].strip()
+                
+                extracted_values = json.loads(clean_response)
+                # Remove null values
+                extracted_values = {k: v for k, v in extracted_values.items() if v is not None}
+                
+                return {
+                    "success": True,
+                    "values": extracted_values,
+                    "raw_text": ocr_result.ocr_text,
+                    "confidence_avg": ocr_result.confidence_avg,
+                    "engine": "paddle_ocr+llm_parser"
+                }
+        except Exception as llm_error:
+            logging.warning(f"LLM parsing fallback failed: {llm_error}")
         
-        # Clean base64 if it has data URL prefix
-        image_data = request.image_base64
-        if "," in image_data:
-            image_data = image_data.split(",")[1]
-        
-        image_content = ImageContent(image_base64=image_data)
-        user_message = UserMessage(
-            text="Extract all blood gas and electrolyte values from this medical lab result image. Return only JSON.",
-            file_contents=[image_content]
-        )
-        
-        response = await chat.send_message(user_message)
-        
-        # Parse the JSON response
-        import json
-        try:
-            # Clean response - remove markdown code blocks if present
-            clean_response = response.strip()
-            if clean_response.startswith("```"):
-                clean_response = clean_response.split("```")[1]
-                if clean_response.startswith("json"):
-                    clean_response = clean_response[4:]
-            clean_response = clean_response.strip()
-            if clean_response.endswith("```"):
-                clean_response = clean_response[:-3].strip()
-            
-            extracted_values = json.loads(clean_response)
-            return {"success": True, "values": extracted_values}
-        except json.JSONDecodeError:
-            return {"success": True, "values": {}, "raw_response": response}
+        # Return with whatever we have
+        return {
+            "success": True,
+            "values": extracted_values,
+            "raw_text": ocr_result.ocr_text,
+            "confidence_avg": ocr_result.confidence_avg,
+            "engine": "paddle_ocr"
+        }
             
     except Exception as e:
         logging.error(f"Error analyzing image: {str(e)}")
