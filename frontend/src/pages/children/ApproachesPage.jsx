@@ -21,7 +21,7 @@
  * Features: Search bar, collapsible sections, vital signs reference
  */
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -78,23 +78,40 @@ const ApproachesPage = ({ onBack }) => {
     }
   }, [searchQuery, filteredTabs, activeTab]);
 
-  const toggleSection = (section) => {
+  const toggleSection = (section, element) => {
+    const wasOpen = expandedSections[section];
     setExpandedSections(prev => ({ ...prev, [section]: !prev[section] }));
+    
+    // If we're opening the section, scroll it into view after a small delay
+    if (!wasOpen && element) {
+      setTimeout(() => {
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
+    }
   };
 
   // Collapsible Section Component
   const Section = ({ id, title, children, defaultOpen = false }) => {
+    const sectionRef = useRef(null);
     const isOpen = expandedSections[id] ?? defaultOpen;
+    
+    const handleClick = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      toggleSection(id, sectionRef.current);
+    };
+    
     return (
-      <div className="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
+      <div ref={sectionRef} className="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
         <button
-          onClick={() => toggleSection(id)}
+          type="button"
+          onClick={handleClick}
           className="w-full px-4 py-3 flex items-center justify-between bg-gray-50 dark:bg-gray-800/50 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
         >
-          <span className="font-medium text-sm text-left">{title}</span>
-          <span className={`transform transition-transform ${isOpen ? 'rotate-180' : ''}`}>▼</span>
+          <span className="font-medium text-sm text-left flex-1 pr-2 break-words">{title}</span>
+          <span className={`transform transition-transform flex-shrink-0 ${isOpen ? 'rotate-180' : ''}`}>▼</span>
         </button>
-        {isOpen && <div className="p-4 space-y-3 text-sm">{children}</div>}
+        {isOpen && <div className="p-4 space-y-3 text-sm break-words overflow-hidden">{children}</div>}
       </div>
     );
   };
