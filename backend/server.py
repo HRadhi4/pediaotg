@@ -241,32 +241,36 @@ async def analyze_blood_gas_image_offline(request: BloodGasInput):
 @api_router.post("/blood-gas/analyze-image")
 async def analyze_blood_gas_image(request: BloodGasInput):
     """
-    Analyze blood gas image using PaddleOCR + optional LLM for clinical reasoning.
+    Analyze blood gas image using 100% local PaddleOCR + optional LLM parsing.
     
     Workflow:
-    1. Image → PaddleOCR → extract raw text (LOCAL, no external API for OCR)
+    1. Image → Local PaddleOCR → extract raw text (100% LOCAL)
     2. Parse blood gas values from raw text
-    3. Optionally use LLM for enhanced parsing (only if basic parsing fails)
+    3. If basic parsing fails AND LLM available, use LLM for text parsing only
     
-    Note: LLM is NOT used for OCR - only for reasoning if needed.
+    Note: LLM is used for TEXT parsing only, NOT for OCR (stays 100% local).
+    No cloud fallback for OCR - always local PaddleOCR.
     """
     if not request.image_base64:
         raise HTTPException(status_code=400, detail="Image is required")
     
     try:
-        # Step 1: Perform OCR using local PaddleOCR service
+        # Step 1: Perform OCR using 100% local PaddleOCR
         ocr_result = await perform_paddle_ocr(
             image_base64=request.image_base64,
             language="en",
-            return_bboxes=True  # Get bboxes for better parsing
+            return_bboxes=True
         )
+        
+        quality = check_ocr_quality(ocr_result)
         
         if not ocr_result.success:
             return {
                 "success": False,
                 "values": {},
                 "error_message": ocr_result.error_message,
-                "engine": "paddle_ocr"
+                "quality": quality,
+                "engine": "paddle_ocr_local"
             }
         
         # Step 2: Parse blood gas values from OCR text
@@ -274,16 +278,21 @@ async def analyze_blood_gas_image(request: BloodGasInput):
         
         # If we got values, return them
         if extracted_values:
-            return {
+            response = {
                 "success": True,
                 "values": extracted_values,
                 "raw_text": ocr_result.ocr_text,
-                "confidence_avg": ocr_result.confidence_avg,
-                "engine": "paddle_ocr"
+                "avg_confidence": ocr_result.avg_confidence,
+                "confidence_avg": ocr_result.avg_confidence,
+                "quality": quality,
+                "engine": "paddle_ocr_local"
             }
+            if ocr_result.avg_confidence < LOW_CONFIDENCE_THRESHOLD:
+                response["low_confidence_warning"] = f"OCR confidence: {ocr_result.avg_confidence:.0%}. Consider taking a clearer photo."
+            return response
         
-        # Step 3: If basic parsing failed, try LLM-assisted parsing
-        # (LLM is used for reasoning/parsing, NOT for OCR)
+        # Step 3: If basic parsing failed, try LLM-assisted TEXT parsing
+        # (LLM parses the TEXT from OCR, NOT the image - OCR stays 100% local)
         try:
             from emergentintegrations.llm.chat import LlmChat, UserMessage
             
@@ -328,13 +337,18 @@ Do not include any text outside the JSON."""
                 # Remove null values
                 extracted_values = {k: v for k, v in extracted_values.items() if v is not None}
                 
-                return {
+                result_response = {
                     "success": True,
                     "values": extracted_values,
                     "raw_text": ocr_result.ocr_text,
-                    "confidence_avg": ocr_result.confidence_avg,
-                    "engine": "paddle_ocr+llm_parser"
+                    "avg_confidence": ocr_result.avg_confidence,
+                    "confidence_avg": ocr_result.avg_confidence,
+                    "quality": quality,
+                    "engine": "paddle_ocr_local+llm_parser"
                 }
+                if ocr_result.avg_confidence < LOW_CONFIDENCE_THRESHOLD:
+                    result_response["low_confidence_warning"] = f"OCR confidence: {ocr_result.avg_confidence:.0%}. Consider taking a clearer photo."
+                return result_response
         except Exception as llm_error:
             logging.warning(f"LLM parsing fallback failed: {llm_error}")
         
