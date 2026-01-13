@@ -234,13 +234,13 @@ const DrugsPage = ({ onBack }) => {
       category: "Antibiotic",
       route: "PO/IV",
       doses: {
-        standard: { label: "Standard PO", value: "25-45", unit: "mg/kg/day divided q12h" },
-        highDose: { label: "High Dose PO", value: "90", unit: "mg/kg/day divided q12h" },
+        highDose: { label: "High Dose (ES 600)", value: "90", unit: "mg/kg/day divided q12h" },
+        lowDose: { label: "Low Dose (457)", value: "45", unit: "mg/kg/day divided q12h" },
         iv: { label: "IV", value: "25-50", unit: "mg/kg/dose q6-8h" }
       },
       max: "875 mg amox/dose PO, 2g IV",
       indication: "Sinusitis, bite wounds, resistant infections",
-      notes: "Based on amoxicillin component. ES formulation for high dose.",
+      notes: "ES 600 for high dose (90 mg/kg), 457 formulation for low dose (45 mg/kg). Based on amoxicillin component.",
       renalAdjust: { gfr50: "No change", gfr30: "q12h", gfr10: "q24h", hd: "Give after HD" }
     },
     {
