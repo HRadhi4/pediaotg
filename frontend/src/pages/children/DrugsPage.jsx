@@ -1964,7 +1964,7 @@ const DrugsPage = ({ onBack }) => {
                         return (
                           <div>
                             <p className={`text-[11px] font-mono font-bold ${doseResult.isExceedingMax ? 'text-amber-600' : 'text-blue-600'}`}>
-                              {doseResult.dose}
+                              {doseResult.dose}{doseResult.doseLabel && <span className="text-[9px] text-muted-foreground">{doseResult.doseLabel}</span>}
                             </p>
                             {doseResult.isExceedingMax && (
                               <p className="text-[9px] text-amber-600 font-medium">⚠️ Max capped</p>
