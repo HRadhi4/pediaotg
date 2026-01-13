@@ -180,12 +180,12 @@ async def perform_ocr(request: OCRRequest):
 @api_router.post("/blood-gas/analyze-image-offline")
 async def analyze_blood_gas_image_offline(request: BloodGasInput):
     """
-    Analyze blood gas image using 100% local PaddleOCR.
+    Analyze blood gas image using 100% local Chandra OCR.
     
     No external API calls, no cloud dependencies.
     
     Workflow:
-    1. Image → Local PaddleOCR → extract raw text
+    1. Image → Local Chandra OCR → extract raw text
     2. Parse blood gas values from raw text
     3. Return structured values for analysis
     
@@ -195,7 +195,7 @@ async def analyze_blood_gas_image_offline(request: BloodGasInput):
         raise HTTPException(status_code=400, detail="Image is required")
     
     try:
-        # Perform OCR using 100% local PaddleOCR
+        # Perform OCR using 100% local Chandra OCR
         ocr_result = await perform_paddle_ocr(
             image_base64=request.image_base64,
             language="en",
@@ -211,7 +211,7 @@ async def analyze_blood_gas_image_offline(request: BloodGasInput):
                 "raw_text": "",
                 "error_message": ocr_result.error_message,
                 "quality": quality,
-                "engine": "paddle_ocr_local"
+                "engine": "chandra_local"
             }
         
         # Parse blood gas values from OCR text
@@ -221,10 +221,11 @@ async def analyze_blood_gas_image_offline(request: BloodGasInput):
             "success": True,
             "values": extracted_values,
             "raw_text": ocr_result.ocr_text,
+            "ocr_markdown": getattr(ocr_result, 'ocr_markdown', ocr_result.ocr_text),
             "avg_confidence": ocr_result.avg_confidence,
             "confidence_avg": ocr_result.avg_confidence,
             "quality": quality,
-            "engine": "paddle_ocr_local"
+            "engine": "chandra_local"
         }
         
         # Add low confidence warning
@@ -234,7 +235,7 @@ async def analyze_blood_gas_image_offline(request: BloodGasInput):
         return response
     
     except Exception as e:
-        logging.error(f"PaddleOCR error: {str(e)}")
+        logging.error(f"Chandra OCR error: {str(e)}")
         raise HTTPException(status_code=500, detail=f"OCR processing failed: {str(e)}")
 
 
