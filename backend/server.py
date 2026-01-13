@@ -248,21 +248,20 @@ async def analyze_blood_gas_image_offline(request: BloodGasInput):
 @api_router.post("/blood-gas/analyze-image")
 async def analyze_blood_gas_image(request: BloodGasInput):
     """
-    Analyze blood gas image using 100% local Tesseract OCR + optional LLM parsing.
+    Analyze blood gas image using 100% local medical-grade Tesseract OCR + optional LLM parsing.
     
-    Workflow:
-    1. Image → Local Tesseract OCR → extract raw text (100% LOCAL)
-    2. Parse blood gas values from raw text
-    3. If basic parsing fails AND LLM available, use LLM for text parsing only
+    Features:
+    - Medical-grade preprocessing (upscale, CLAHE, denoise, deskew, binarize)
+    - Automatic extraction of key metrics (pH, pCO2, pO2, etc.)
+    - Optional LLM fallback for complex text parsing (OCR stays 100% local)
     
-    Note: LLM is used for TEXT parsing only, NOT for OCR (stays 100% local).
-    No cloud fallback for OCR - always local Tesseract OCR.
+    Note: LLM is used for TEXT parsing only, NOT for OCR.
     """
     if not request.image_base64:
         raise HTTPException(status_code=400, detail="Image is required")
     
     try:
-        # Step 1: Perform OCR using 100% local Tesseract OCR
+        # Step 1: Perform OCR using 100% local medical-grade Tesseract
         ocr_result = await perform_paddle_ocr(
             image_base64=request.image_base64,
             language="en",
@@ -277,11 +276,11 @@ async def analyze_blood_gas_image(request: BloodGasInput):
                 "values": {},
                 "error_message": ocr_result.error_message,
                 "quality": quality,
-                "engine": "tesseract_local"
+                "engine": "tesseract_medical"
             }
         
-        # Step 2: Parse blood gas values from OCR text
-        extracted_values = parse_blood_gas_from_ocr_text(ocr_result.ocr_text)
+        # Step 2: Use pre-extracted key_metrics if available, else parse from text
+        extracted_values = getattr(ocr_result, 'key_metrics', None) or parse_blood_gas_from_ocr_text(ocr_result.ocr_text)
         
         # If we got values, return them
         if extracted_values:
@@ -289,11 +288,11 @@ async def analyze_blood_gas_image(request: BloodGasInput):
                 "success": True,
                 "values": extracted_values,
                 "raw_text": ocr_result.ocr_text,
-                "ocr_markdown": getattr(ocr_result, 'ocr_markdown', ocr_result.ocr_text),
+                "lines": getattr(ocr_result, 'lines', []),
                 "avg_confidence": ocr_result.avg_confidence,
                 "confidence_avg": ocr_result.avg_confidence,
                 "quality": quality,
-                "engine": "tesseract_local"
+                "engine": "tesseract_medical"
             }
             if ocr_result.avg_confidence < LOW_CONFIDENCE_THRESHOLD:
                 response["low_confidence_warning"] = f"OCR confidence: {ocr_result.avg_confidence:.0%}. Consider taking a clearer photo."
