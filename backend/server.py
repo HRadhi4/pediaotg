@@ -175,31 +175,34 @@ async def perform_ocr(request: OCRRequest):
         response["low_confidence_warning"] = f"OCR confidence is low ({result.avg_confidence:.0%}). Consider taking a clearer photo."
     
     return response
-        "confidence_avg": result.confidence_avg,
-        "engine": "paddle_ocr"
-    }
 
 
 @api_router.post("/blood-gas/analyze-image-offline")
 async def analyze_blood_gas_image_offline(request: BloodGasInput):
     """
-    Analyze blood gas image using local PaddleOCR (offline, no external API).
+    Analyze blood gas image using 100% local PaddleOCR.
+    
+    No external API calls, no cloud dependencies.
     
     Workflow:
-    1. Image → PaddleOCR → extract raw text
+    1. Image → Local PaddleOCR → extract raw text
     2. Parse blood gas values from raw text
     3. Return structured values for analysis
+    
+    Quality check: If avg_confidence < 0.7, suggests clearer photo.
     """
     if not request.image_base64:
         raise HTTPException(status_code=400, detail="Image is required")
     
     try:
-        # Perform OCR using local PaddleOCR service
+        # Perform OCR using 100% local PaddleOCR
         ocr_result = await perform_paddle_ocr(
             image_base64=request.image_base64,
             language="en",
             return_bboxes=False
         )
+        
+        quality = check_ocr_quality(ocr_result)
         
         if not ocr_result.success:
             return {
@@ -207,19 +210,28 @@ async def analyze_blood_gas_image_offline(request: BloodGasInput):
                 "values": {},
                 "raw_text": "",
                 "error_message": ocr_result.error_message,
-                "engine": "paddle_ocr"
+                "quality": quality,
+                "engine": "paddle_ocr_local"
             }
         
         # Parse blood gas values from OCR text
         extracted_values = parse_blood_gas_from_ocr_text(ocr_result.ocr_text)
         
-        return {
+        response = {
             "success": True,
             "values": extracted_values,
             "raw_text": ocr_result.ocr_text,
-            "confidence_avg": ocr_result.confidence_avg,
-            "engine": "paddle_ocr"
+            "avg_confidence": ocr_result.avg_confidence,
+            "confidence_avg": ocr_result.avg_confidence,
+            "quality": quality,
+            "engine": "paddle_ocr_local"
         }
+        
+        # Add low confidence warning
+        if ocr_result.avg_confidence < LOW_CONFIDENCE_THRESHOLD:
+            response["low_confidence_warning"] = f"OCR confidence: {ocr_result.avg_confidence:.0%}. Consider taking a clearer photo."
+        
+        return response
     
     except Exception as e:
         logging.error(f"PaddleOCR error: {str(e)}")
