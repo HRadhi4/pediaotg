@@ -403,12 +403,12 @@ const DrugsPage = ({ onBack }) => {
       category: "Antibiotic",
       route: "IV/IM",
       doses: {
-        standard: { label: "Standard", value: "50-75", unit: "mg/kg/day q12-24h" },
-        meningitis: { label: "Meningitis", value: "100", unit: "mg/kg/day divided q12h" }
+        standard: { label: "Standard", value: "50-75", unit: "mg/kg/day q12-24h", maxDose: 2000 },
+        meningitis: { label: "Meningitis", value: "100", unit: "mg/kg/day divided q12h", maxDose: 4000 }
       },
-      max: "4 g/day",
+      max: "2 g/dose, 4 g/day (meningitis)",
       indication: "CAP, meningitis, gonorrhea, Lyme disease",
-      notes: "Avoid in neonates with hyperbilirubinemia. Do not mix with calcium.",
+      notes: "Avoid in neonates with hyperbilirubinemia. Do not mix with calcium. Max 2g/dose per Harriet Lane.",
       renalAdjust: null
     },
     {
