@@ -11,9 +11,9 @@ import uuid
 from datetime import datetime, timezone
 import base64
 
-# Import local PaddleOCR service (100% local, no HTTP calls)
-from services.paddle_ocr_service import (
-    perform_paddle_ocr, 
+# Import Chandra OCR service (100% local, no HTTP calls)
+from services.chandra_ocr_service import (
+    perform_chandra_ocr as perform_paddle_ocr,  # Alias for compatibility
     parse_blood_gas_from_ocr_text,
     check_ocr_quality,
     OCRResult,
