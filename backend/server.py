@@ -11,11 +11,13 @@ import uuid
 from datetime import datetime, timezone
 import base64
 
-# Import local PaddleOCR service
+# Import local PaddleOCR service (100% local, no HTTP calls)
 from services.paddle_ocr_service import (
     perform_paddle_ocr, 
     parse_blood_gas_from_ocr_text,
-    OCRResult
+    check_ocr_quality,
+    OCRResult,
+    LOW_CONFIDENCE_THRESHOLD
 )
 
 ROOT_DIR = Path(__file__).parent
