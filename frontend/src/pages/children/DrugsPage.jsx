@@ -322,7 +322,7 @@ const DrugsPage = ({ onBack }) => {
         hypocalcemia: { label: "Hypocalcemia", value: "50-100", unit: "mg/kg (0.5-1 ml/kg of 10%)" },
         arrest: { label: "Cardiac Arrest", value: "60-100", unit: "mg/kg" }
       },
-      max: "2 g/dose",
+      max: "1 g/dose (10 mL of 10%)",
       indication: "Hypocalcemia, hyperkalemia, calcium channel blocker OD",
       notes: "Give slowly over 10-30 min. Monitor for extravasation.",
       renalAdjust: { gfr50: "No change", gfr30: "Use with caution", gfr10: "Monitor Ca2+ closely", hd: "No supplement" }
