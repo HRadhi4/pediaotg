@@ -352,14 +352,19 @@ Do not include any text outside the JSON."""
         except Exception as llm_error:
             logging.warning(f"LLM parsing fallback failed: {llm_error}")
         
-        # Return with whatever we have
-        return {
+        # Return with whatever we have (no cloud fallback - stay 100% local)
+        response = {
             "success": True,
             "values": extracted_values,
             "raw_text": ocr_result.ocr_text,
-            "confidence_avg": ocr_result.confidence_avg,
-            "engine": "paddle_ocr"
+            "avg_confidence": ocr_result.avg_confidence,
+            "confidence_avg": ocr_result.avg_confidence,
+            "quality": quality,
+            "engine": "paddle_ocr_local"
         }
+        if ocr_result.avg_confidence < LOW_CONFIDENCE_THRESHOLD:
+            response["low_confidence_warning"] = f"OCR confidence: {ocr_result.avg_confidence:.0%}. Consider taking a clearer photo."
+        return response
             
     except Exception as e:
         logging.error(f"Error analyzing image: {str(e)}")
