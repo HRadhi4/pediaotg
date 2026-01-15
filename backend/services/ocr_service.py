@@ -121,27 +121,27 @@ def preprocess_bloodgas_image(image_b64: str) -> Tuple[np.ndarray, np.ndarray, n
 METRIC_PATTERNS: Dict[str, Dict[str, Any]] = {
     'pH': {
         'patterns': [
-            r'pH\s*[:\(]?\s*T?\s*\)?\s*:?\s*([67]\.\d{1,3})',
-            r'([67]\.\d{2,3})\s*(?:te|pH)',
+            r'pH\s*\(?T?\)?\s*:?\s*([67]\.\d{1,3})',
             r'DH\s+([67]\.\d{1,3})',  # OCR error for pH
+            r'PCO[,2]?\s+([67]\.\d{1,3})',  # Sometimes pH value appears after PCO label
         ],
         'range': (6.5, 8.0),
         'flags': re.IGNORECASE,
     },
     'pCO2': {
         'patterns': [
-            r'p[cC][oO0]2?\s*[:\(]?\s*T?\s*\)?\s*:?\s*(\d{1,3}\.?\d*)',
-            r'PCO[,2]?\s*(\d{1,3}\.?\d*)',
-            r'pCO[,2]?\s*(\d{1,3}\.?\d*)\s*(?:mmHg|mm)',
+            r'pCO[,2]?\s*\(?T?\s*\)?\s*:?\s*(\d{1,3}\.?\d*)\s*(?:mmHg|mm)',
+            r'PO[,2]?\s+(\d{2,3}\.\d)\s+(?:Hg|mmHg)',  # PO, 47.5 Hg pattern
+            r'pCO2\s*:?\s*(\d{1,3}\.?\d*)',
         ],
         'range': (10, 150),
         'flags': re.IGNORECASE,
     },
     'pO2': {
         'patterns': [
-            r'p[oO]2?\s*[:\(]?\s*T?\s*\)?\s*:?\s*(\d{1,3}\.?\d*)',
-            r'PO[,2]?\s*(\d{1,3}\.?\d*)',
-            r'pO[,2]?\s*(\d{1,3}\.?\d*)\s*(?:mmHg|mm)',
+            r'pO[,2]?\s*\(?T?\)?\s*[:\s]+(\d{2,3})\s*(?:mmHg|mm|nie)',  # pO(T) 110 mmHg
+            r'Oximetry\s+Values\s+(\d{2,3})',  # Value after Oximetry Values label
+            r'pO2\s*:?\s*(\d{1,3}\.?\d*)',
         ],
         'range': (10, 600),
         'flags': re.IGNORECASE,
