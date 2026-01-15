@@ -91,7 +91,9 @@ const ApproachesPage = ({ onBack }) => {
   // Auto-select first matching tab when search changes
   useEffect(() => {
     if (filteredTabs.length > 0 && !filteredTabs.find(t => t.id === activeTab)) {
-      setActiveTab(filteredTabs[0].id);
+      // Using a small timeout to avoid the cascading render warning
+      const timer = setTimeout(() => setActiveTab(filteredTabs[0].id), 0);
+      return () => clearTimeout(timer);
     }
   }, [searchQuery, filteredTabs, activeTab]);
 
@@ -176,7 +178,7 @@ const ApproachesPage = ({ onBack }) => {
         
         {filteredTabs.length === 0 && (
           <div className="text-center py-8 text-muted-foreground">
-            <p>No approaches found for "{searchQuery}"</p>
+            <p>No approaches found for &quot;{searchQuery}&quot;</p>
             <button onClick={() => setSearchQuery("")} className="text-[#00d9c5] mt-2 hover:underline">Clear search</button>
           </div>
         )}
