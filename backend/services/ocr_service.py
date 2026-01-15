@@ -245,17 +245,18 @@ def extract_metrics_improved(ocr_text: str) -> Dict[str, Any]:
                     continue
     
     # ================== Base Excess (BE) ==================
-    # Common patterns: "cBase(Ef) -1.3", "cBase(Ecf)> -12.0"
+    # Common patterns: "cBase(Ef) -1.3", "cBase(Ecf)> -12.0", "cBase(Ecf)> "12.0" (quote = minus)
     if 'BE' not in metrics:
         patterns = [
-            r'c?Base\s*[\(\[]?\s*E[cf]{1,2}f?\s*[\)\]]?[oc>]?\s*[:\s]*([\-\+]?\d{1,2}[\.\,]?\d*)',
-            r'BE\s*[:\s]*([\-\+]?\d{1,2}[\.\,]?\d*)',
+            r'c?Base\s*[\(\[]?\s*E[cf]{1,2}f?\s*[\)\]][oc>]?\s*[:\s]*[""]?(\-?\d{1,2}[\.\,]?\d*)',
+            r'c?Base\s*[\(\[]?\s*E[cf]{1,2}f?\s*[\)\]][oc>]?\s*[:\s]*([\-\+]?\d{1,2}[\.\,]?\d*)',
             r'oBase[^\d]*([\-\+]?\d{1,2}[\.\,]?\d*)',
+            r'BE\s*[:\s]*([\-\+]?\d{1,2}[\.\,]?\d*)',
         ]
         for pat in patterns:
             match = re.search(pat, text, re.IGNORECASE)
             if match:
-                val_str = match.group(1).replace(',', '.')
+                val_str = match.group(1).replace(',', '.').replace('"', '-').replace('"', '-')
                 try:
                     val = float(val_str)
                     if -30 <= val <= 30:
