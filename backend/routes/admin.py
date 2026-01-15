@@ -419,3 +419,95 @@ async def edit_user(
         "updates": updates_made
     }
 
+
+@router.post("/send-renewal-reminders")
+async def send_renewal_reminders(
+    days_before: int = 3,
+    admin: UserResponse = Depends(require_admin)
+):
+    """
+    Send renewal reminder emails to users whose subscriptions are expiring soon (Admin only)
+    
+    Args:
+        days_before: Number of days before expiration to send reminder (default: 3)
+    
+    Returns:
+        Summary of emails sent
+    """
+    if days_before < 1 or days_before > 30:
+        raise HTTPException(status_code=400, detail="days_before must be between 1 and 30")
+    
+    results = await subscription_service.send_renewal_reminders(days_before)
+    
+    return {
+        "message": "Renewal reminder task completed",
+        "results": results
+    }
+
+
+@router.get("/expiring-subscriptions")
+async def get_expiring_subscriptions(
+    days: int = 7,
+    admin: UserResponse = Depends(require_admin)
+):
+    """
+    Get list of subscriptions expiring within X days (Admin only)
+    
+    Args:
+        days: Number of days to look ahead (default: 7)
+    """
+    now = datetime.now(timezone.utc)
+    window_end = now + timedelta(days=days)
+    
+    # Find active subscriptions expiring within the window
+    active_subs = await db.subscriptions.find({
+        'status': 'active',
+        'renews_at': {
+            '$gte': now.isoformat(),
+            '$lte': window_end.isoformat()
+        }
+    }, {'_id': 0}).to_list(100)
+    
+    # Find trial subscriptions expiring within the window
+    trial_subs = await db.subscriptions.find({
+        'status': 'trial',
+        'trial_ends_at': {
+            '$gte': now.isoformat(),
+            '$lte': window_end.isoformat()
+        }
+    }, {'_id': 0}).to_list(100)
+    
+    # Get user details for each subscription
+    result = []
+    
+    for sub in active_subs + trial_subs:
+        user = await db.users.find_one({'id': sub.get('user_id')}, {'_id': 0, 'email': 1, 'name': 1})
+        
+        expires_at = sub.get('renews_at') or sub.get('trial_ends_at')
+        if expires_at:
+            expires_dt = datetime.fromisoformat(expires_at) if isinstance(expires_at, str) else expires_at
+            days_remaining = (expires_dt - now).days
+        else:
+            days_remaining = None
+        
+        result.append({
+            'subscription_id': sub.get('id'),
+            'user_id': sub.get('user_id'),
+            'user_email': user.get('email') if user else 'Unknown',
+            'user_name': user.get('name') if user else 'Unknown',
+            'status': sub.get('status'),
+            'plan': sub.get('plan_name'),
+            'expires_at': expires_at,
+            'days_remaining': days_remaining,
+            'last_reminder_sent': sub.get('last_reminder_sent')
+        })
+    
+    # Sort by days remaining
+    result.sort(key=lambda x: x.get('days_remaining') or 999)
+    
+    return {
+        "expiring_count": len(result),
+        "days_window": days,
+        "subscriptions": result
+    }
+
