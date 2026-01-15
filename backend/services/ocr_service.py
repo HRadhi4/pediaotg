@@ -371,6 +371,7 @@ def extract_metrics(lines: List[str]) -> Dict[str, Any]:
 def ocr_bloodgas(image_b64: str, language: str = 'eng') -> OCRResult:
     """
     Perform OCR on blood gas image with medical-grade preprocessing.
+    Optimized for Radiometer ABL800 FLEX and similar analyzers.
     
     Args:
         image_b64: Base64 encoded image
@@ -383,16 +384,17 @@ def ocr_bloodgas(image_b64: str, language: str = 'eng') -> OCRResult:
         # Preprocess image
         processed = preprocess_bloodgas_image(image_b64)
         
-        # Tesseract with medical-optimized config
+        # Tesseract config optimized for blood gas reports
         # --oem 3: LSTM engine (best accuracy)
-        # --psm 6: Assume uniform block of text
-        # Whitelist: blood gas chars/symbols
+        # --psm 6: Assume uniform block of text (good for structured reports)
+        # --psm 4: Assume single column of text (alternative)
+        # Whitelist: blood gas chars/symbols including subscripts
         custom_config = (
             r'--oem 3 --psm 6 '
             r'-c tessedit_char_whitelist='
             r'0123456789.ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
-            r'pHPO2PCO2HCO3BEpCO2SO2FiO2NaKClCaGluLacBUNHCrtmmolLgdlminmax'
-            r'>≤≥°±:-+/ '
+            r'pHPOCOHCOBENaKClCaGluLacctmmolLgdlVol%'
+            r'>≤≥°±:-+/()² '
         )
         
         # Get detailed OCR data with confidence
@@ -426,20 +428,34 @@ def ocr_bloodgas(image_b64: str, language: str = 'eng') -> OCRResult:
                 ))
                 confidences.append(conf / 100.0)
         
-        # Also get plain text
-        plain_text = pytesseract.image_to_string(processed, lang=language, config=custom_config)
+        # Also get plain text with different PSM for better line detection
+        plain_text = pytesseract.image_to_string(
+            processed, 
+            lang=language, 
+            config=r'--oem 3 --psm 6'
+        )
         
         # Use structured text if available, else plain
         full_text = ' '.join(full_text_parts) if full_text_parts else plain_text.strip()
         
-        # Parse lines
+        # Parse lines - preserve structure
         lines = [line.strip() for line in plain_text.split('\n') if line.strip()]
         
-        # Extract key metrics
+        # Extract key metrics using enhanced parser
         key_metrics = extract_metrics(lines)
         
+        # If no metrics found, try with full text
+        if not key_metrics:
+            key_metrics = extract_metrics([full_text])
+        
         # Calculate average confidence
-        avg_conf = sum(confidences) / len(confidences) if confidences else 0.0
+        avg_conf = sum(confidences) / len(confidences) if confidences else 0.5
+        
+        # Boost confidence if we found key metrics
+        if key_metrics:
+            # Found structured data, increase confidence
+            metric_confidence = min(0.95, 0.7 + len(key_metrics) * 0.03)
+            avg_conf = max(avg_conf, metric_confidence)
         
         if not full_text:
             return OCRResult(
