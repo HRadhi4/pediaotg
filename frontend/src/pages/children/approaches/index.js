@@ -7,11 +7,11 @@
 export { default as Section } from './Section';
 export { default as SepsisApproach } from './SepsisApproach';
 export { default as SeizureApproach } from './SeizureApproach';
+export { default as AsthmaApproach } from './AsthmaApproach';
+export { default as TbiApproach } from './TbiApproach';
+export { default as DkaApproach } from './DkaApproach';
 
 // Future components to extract:
-// export { default as AsthmaApproach } from './AsthmaApproach';
-// export { default as TbiApproach } from './TbiApproach';
-// export { default as DkaApproach } from './DkaApproach';
 // export { default as AdrenalApproach } from './AdrenalApproach';
 // export { default as AnaphylaxisApproach } from './AnaphylaxisApproach';
 // export { default as ThrombocytopeniaApproach } from './ThrombocytopeniaApproach';
