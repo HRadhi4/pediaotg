@@ -295,11 +295,139 @@ METRIC_PATTERNS: Dict[str, Dict[str, Any]] = {
 def extract_metrics(lines: List[str]) -> Dict[str, Any]:
     """
     Parse common blood gas parameters from OCR lines.
-    Uses consolidated pattern matching for cleaner, more maintainable code.
+    Uses multiple strategies:
+    1. Line-by-line parsing for structured data
+    2. Full text pattern matching for scattered values
     """
     metrics = {}
     full_text = ' '.join(lines)
     
+    # Strategy 1: Line-by-line parsing for Radiometer format
+    # Lines often have format: "label value unit" or "label value"
+    for i, line in enumerate(lines):
+        line_lower = line.lower()
+        
+        # pH detection - look for 7.xxx patterns
+        if 'ph' in line_lower or 'dh' in line_lower:
+            match = re.search(r'([67]\.\d{1,3})', line)
+            if match and 'pH' not in metrics:
+                val = float(match.group(1))
+                if 6.5 <= val <= 8.0:
+                    metrics['pH'] = val
+        
+        # pCO2 detection
+        if 'pco' in line_lower or ('po' in line_lower and 'hg' in line_lower):
+            match = re.search(r'(\d{2,3}\.?\d*)\s*(?:mm)?[Hh]g', line)
+            if match and 'pCO2' not in metrics:
+                val = float(match.group(1))
+                if 10 <= val <= 150:
+                    metrics['pCO2'] = val
+        
+        # pO2 detection - look for value after "Oximetry" or "pO2" patterns
+        if 'oximetry' in line_lower or ('po' in line_lower and 'nie' in line_lower):
+            match = re.search(r'(\d{2,3})\s*(?:mm[Hh]g|nie)?', line)
+            if match and 'pO2' not in metrics:
+                val = float(match.group(1))
+                if 10 <= val <= 600:
+                    metrics['pO2'] = val
+        
+        # Check next line for pO2 if this line contains "Oximetry Values"
+        if 'oximetry values' in line_lower and i + 1 < len(lines):
+            match = re.search(r'^(\d{2,3})\b', lines[i+1])
+            if match and 'pO2' not in metrics:
+                val = float(match.group(1))
+                if 10 <= val <= 600:
+                    metrics['pO2'] = val
+        
+        # HCO3 detection
+        if 'hco3' in line_lower:
+            match = re.search(r'(\d{1,2}\.?\d*)', line)
+            if match and 'HCO3' not in metrics:
+                val = float(match.group(1))
+                if 5 <= val <= 60:
+                    metrics['HCO3'] = val
+        
+        # Na detection  
+        if 'na' in line_lower and ('mmol' in line_lower or 'mmo' in line_lower):
+            match = re.search(r'(\d{3})', line)
+            if match and 'Na' not in metrics:
+                val = float(match.group(1))
+                if 100 <= val <= 180:
+                    metrics['Na'] = val
+        
+        # K detection
+        if ('k' in line_lower or 'k*' in line_lower) and ('mmol' in line_lower or 'mmo' in line_lower):
+            match = re.search(r'(\d\.\d)', line)
+            if match and 'K' not in metrics:
+                val = float(match.group(1))
+                if 1.0 <= val <= 10.0:
+                    metrics['K'] = val
+        
+        # Ca detection
+        if 'ca' in line_lower and ('mmol' in line_lower or 'mmo' in line_lower):
+            match = re.search(r'(\d\.\d{1,2})', line)
+            if match and 'Ca' not in metrics:
+                val = float(match.group(1))
+                if 0.5 <= val <= 3.0:
+                    metrics['Ca'] = val
+        
+        # Cl detection
+        if 'cl' in line_lower and ('mmol' in line_lower or 'mmo' in line_lower):
+            match = re.search(r'(\d{2,3})', line)
+            if match and 'Cl' not in metrics:
+                val = float(match.group(1))
+                if 70 <= val <= 150:
+                    metrics['Cl'] = val
+        
+        # Hb/ctHb detection
+        if ('hb' in line_lower or 'thb' in line_lower) and 'g/dl' in line_lower:
+            match = re.search(r'(\d{1,2}\.?\d*)', line)
+            if match and 'Hb' not in metrics:
+                val = float(match.group(1))
+                if 3 <= val <= 25:
+                    metrics['Hb'] = val
+        
+        # sO2 detection
+        if 'so2' in line_lower or '30,' in line_lower:
+            match = re.search(r'(\d{2,3}\.?\d*)\s*%', line)
+            if match and 'SO2' not in metrics:
+                val = float(match.group(1))
+                if 0 <= val <= 100:
+                    metrics['SO2'] = val
+        
+        # Lactate detection
+        if 'lac' in line_lower:
+            match = re.search(r'(\d{1,2}\.\d)', line)
+            if match and 'lactate' not in metrics:
+                val = float(match.group(1))
+                if 0 <= val <= 30:
+                    metrics['lactate'] = val
+        
+        # Glucose detection
+        if 'glu' in line_lower:
+            match = re.search(r'(\d{1,3}\.?\d*)', line)
+            if match and 'glucose' not in metrics:
+                val = float(match.group(1))
+                if 0.5 <= val <= 50:
+                    metrics['glucose'] = val
+        
+        # Base Excess detection
+        if 'base' in line_lower:
+            match = re.search(r'([-+]?\d{1,2}\.?\d*)', line)
+            if match and 'BE' not in metrics:
+                val = float(match.group(1))
+                if -30 <= val <= 30:
+                    metrics['BE'] = val
+        
+        # Bilirubin detection
+        if 'bil' in line_lower:
+            match = re.search(r'(\d{1,3})', line)
+            if match and 'Bilirubin' not in metrics:
+                val = float(match.group(1))
+                if 0 <= val <= 500:
+                    metrics['Bilirubin'] = val
+    
+    # Strategy 2: Full text pattern matching for any missed values
     for metric_name, config in METRIC_PATTERNS.items():
         if metric_name in metrics:
             continue
