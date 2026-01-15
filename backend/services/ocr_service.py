@@ -415,6 +415,91 @@ def extract_metrics(lines: List[str]) -> Dict[str, Any]:
                     except ValueError:
                         continue
     
+    # Final pass: Look for specific value patterns in context
+    # This handles heavily corrupted OCR but with valid numerical data
+    for line in lines:
+        line_clean = line.replace(':', '.').replace(';', '.').replace(',', '.')
+        
+        # K+ value (around 4-5 mmol/L typically)
+        if 'K' not in metrics:
+            match = re.search(r'[ck][kt][^0-9]*(\d\.\d)', line_clean, re.IGNORECASE)
+            if match:
+                try:
+                    val = float(match.group(1))
+                    if 1.0 <= val <= 10.0:
+                        metrics['K'] = val
+                except: pass
+        
+        # Na+ value (around 130-145 mmol/L typically)
+        if 'Na' not in metrics:
+            match = re.search(r'[on]a[t+]?[^0-9]*(\d{3})', line_clean, re.IGNORECASE)
+            if match:
+                try:
+                    val = float(match.group(1))
+                    if 100 <= val <= 180:
+                        metrics['Na'] = val
+                except: pass
+        
+        # Ca2+ value (around 1-2 mmol/L typically)
+        if 'Ca' not in metrics:
+            match = re.search(r'ca[t2]?[^0-9]*(\d\.\d{1,2})', line_clean, re.IGNORECASE)
+            if match:
+                try:
+                    val = float(match.group(1))
+                    if 0.5 <= val <= 3.0:  # Ionized calcium range
+                        metrics['Ca'] = val
+                except: pass
+        
+        # Cl- value (around 95-110 mmol/L typically)
+        if 'Cl' not in metrics:
+            match = re.search(r'c[lh]e?[^0-9]*(\d{3})', line_clean, re.IGNORECASE)
+            if match:
+                try:
+                    val = float(match.group(1))
+                    if 70 <= val <= 130:
+                        metrics['Cl'] = val
+                except: pass
+        
+        # Glucose value (typically 4-8 mmol/L)
+        if 'glucose' not in metrics:
+            match = re.search(r'glu[^0-9]*(\d\.\d)', line_clean, re.IGNORECASE)
+            if match:
+                try:
+                    val = float(match.group(1))
+                    if 0.5 <= val <= 50:
+                        metrics['glucose'] = val
+                except: pass
+        
+        # Lactate value (typically 0.5-2 mmol/L)
+        if 'lactate' not in metrics:
+            match = re.search(r'lac[^0-9]*(\d\.\d)', line_clean, re.IGNORECASE)
+            if match:
+                try:
+                    val = float(match.group(1))
+                    if 0 <= val <= 30:
+                        metrics['lactate'] = val
+                except: pass
+        
+        # Base excess (typically -5 to +5)
+        if 'BE' not in metrics:
+            match = re.search(r'base[^0-9]*([-+]?\d+\.?\d*)', line_clean, re.IGNORECASE)
+            if match:
+                try:
+                    val = float(match.group(1))
+                    if -30 <= val <= 30:
+                        metrics['BE'] = val
+                except: pass
+        
+        # HCO3 (typically 22-26 mmol/L)
+        if 'HCO3' not in metrics:
+            match = re.search(r'hco3?[^0-9]*(\d{1,2}\.?\d*)', line_clean, re.IGNORECASE)
+            if match:
+                try:
+                    val = float(match.group(1))
+                    if 1 <= val <= 60:
+                        metrics['HCO3'] = val
+                except: pass
+    
     return metrics
 
 
