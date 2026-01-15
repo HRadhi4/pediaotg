@@ -301,15 +301,22 @@ def extract_metrics(lines: List[str]) -> Dict[str, Any]:
                         metrics['glucose'] = val
                 except: pass
         
-        # cLac (lactate) - Radiometer format
+        # cLac (lactate) - Radiometer format, handle "clac" OCR errors
         if 'clac' in line_lower or 'lac' in line_lower or 'lactate' in line_lower:
-            match = re.search(r'(?:c)?lac(?:tate)?[:\s]*(\d{1,2}\.?\d*)', line_lower)
-            if match and 'lactate' not in metrics:
-                try:
-                    val = float(match.group(1))
-                    if 0 <= val <= 30:
-                        metrics['lactate'] = val
-                except: pass
+            # Only match if not part of "blood" or "place" etc
+            patterns = [
+                r'(?:c)?lac(?:tate)?[:\s]*(\d{1,2}\.?\d*)',
+                r'\bclac[:\s]*(\d{1,2}\.?\d*)',
+            ]
+            for pat in patterns:
+                match = re.search(pat, line_lower)
+                if match and 'lactate' not in metrics:
+                    try:
+                        val = float(match.group(1))
+                        if 0 <= val <= 30:
+                            metrics['lactate'] = val
+                            break
+                    except: pass
         
         # cHCO3 (bicarbonate) - Radiometer format: "cHCO3-(P,st)c"
         if 'hco3' in line_lower or 'bicarb' in line_lower:
