@@ -284,10 +284,11 @@ def extract_metrics_improved(ocr_text: str) -> Dict[str, Any]:
                     continue
     
     # ================== Potassium (K) ==================
-    # Common patterns: "cK+ 4.9", "? cK 4.9", "ckK* 3.7"
+    # Common patterns: "cK+ 4.9", "? cK 4.9", "ckK* 3.7", "3k+ 3.9"
     if 'K' not in metrics:
         patterns = [
-            r'[?co]?\s*[ck]K[\+\*]?\s*[:\s]*(\d[\.\,]\d)',
+            r'[?3co]?\s*[ck]?K[\+\*]?\s*[:\s]*(\d[\.\,]\d)',
+            r'[?co]?\s*[ck]K[\+\*]?\s*(\d[\.\,]\d)\s*mmol',
             r'Potassium[^\d]*(\d[\.\,]\d)',
         ]
         for pat in patterns:
