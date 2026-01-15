@@ -152,72 +152,237 @@ def preprocess_bloodgas_image(image_b64: str) -> np.ndarray:
 def extract_metrics(lines: List[str]) -> Dict[str, Any]:
     """
     Parse common blood gas parameters from OCR lines.
-    Optimized for Radiometer ABL800 FLEX format.
+    Optimized for Radiometer ABL800 FLEX format with heavy noise tolerance.
     
     Extracts: pH, pCO2, pO2, HCO3, BE, Na, K, Cl, lactate, Hb, SO2, FiO2, glucose, Ca
     """
     metrics = {}
     
     # Join all lines for pattern matching
-    full_text = ' '.join(lines).lower()
+    full_text = ' '.join(lines)
+    full_text_lower = full_text.lower()
     
-    # Also try line-by-line parsing for structured reports
-    for line in lines:
-        line_lower = line.lower().strip()
-        
-        # Radiometer ABL800 format: "parameter value unit"
-        # e.g., "pH 7.456", "pCO2 31.8 mmHg", "ctHb 7.1 g/dL"
-        
-        # pH - very specific patterns
-        if 'ph' in line_lower and 'fcohb' not in line_lower and 'fmethb' not in line_lower:
-            match = re.search(r'ph[:\s(t)]*\s*([67]\.\d{1,3})', line_lower)
-            if match and 'pH' not in metrics:
+    # Strategy: Look for known parameter patterns followed by numbers
+    # The OCR is very noisy so we need flexible patterns
+    
+    # pH - look for pH followed by 7.xxx pattern anywhere
+    if 'pH' not in metrics:
+        # Try to find 7.xxx pattern near "ph" or "PH"
+        ph_patterns = [
+            r'ph[^0-9]*([67]\.\d{1,3})',
+            r'PH[^0-9]*([67]\.\d{1,3})',
+            r'([67]\.\d{2,3})\s*(?:te|pH)',  # value before pH
+        ]
+        for pat in ph_patterns:
+            match = re.search(pat, full_text, re.IGNORECASE)
+            if match:
                 try:
                     val = float(match.group(1))
                     if 6.5 <= val <= 8.0:
                         metrics['pH'] = val
+                        break
                 except: pass
-        
-        # pCO2
-        if 'pco2' in line_lower or 'pco' in line_lower:
-            match = re.search(r'pco2?[:\s(t)]*\s*(\d{1,3}\.?\d*)', line_lower)
-            if match and 'pCO2' not in metrics:
+    
+    # pCO2 - look for patterns like "pCO2(T) 25.9" or "pCcO(T) 25.9"
+    if 'pCO2' not in metrics:
+        pco2_patterns = [
+            r'p[cC][oO]2?\s*\(?[tT]?\)?\s*:?\s*(\d{1,3}\.?\d*)\s*mm[Hh]g',
+            r'pCcO\(?[tT]?\)?\s*:?\s*(\d{1,3}\.?\d*)',
+            r'PCO[^0-9]*(\d{1,3}\.?\d*)',
+        ]
+        for pat in pco2_patterns:
+            match = re.search(pat, full_text)
+            if match:
                 try:
                     val = float(match.group(1))
                     if 10 <= val <= 150:
                         metrics['pCO2'] = val
+                        break
                 except: pass
-        
-        # pO2 - handle OCR errors like "pd," instead of "pO2"
-        if 'po2' in line_lower or 'po,' in line_lower or 'pd,' in line_lower or 'pd2' in line_lower:
-            # Try multiple patterns for OCR variations
-            patterns = [
-                r'po2[:\s(t)]*\s*(\d{1,3}\.?\d*)',
-                r'p[od][,2][:\s(t)]*\s*(\d{1,3}\.?\d*)',
-                r'pd[,\s]*(\d{1,3}\.?\d*)',
-            ]
-            for pat in patterns:
-                match = re.search(pat, line_lower)
-                if match and 'pO2' not in metrics:
-                    try:
-                        val = float(match.group(1))
-                        if 10 <= val <= 600:
-                            metrics['pO2'] = val
-                            break
-                    except: pass
-        
-        # ctHb (total hemoglobin) - Radiometer format
-        if 'cthb' in line_lower or 'hb' in line_lower or 'hgb' in line_lower:
-            match = re.search(r'(?:ct)?h[ae]?[bg]b?[:\s]*(\d{1,2}\.?\d*)', line_lower)
-            if match and 'Hb' not in metrics:
+    
+    # pO2 - look for patterns like "pO2(T) 95.0" or "pT) : 95.0"
+    if 'pO2' not in metrics:
+        po2_patterns = [
+            r'p[oO]2?\s*\(?[tT]?\)?\s*:?\s*(\d{1,3}\.?\d*)\s*mm[Hh]g',
+            r'pT\)\s*:?\s*(\d{1,3}\.?\d*)\s*mm[Hh]g',
+            r'PO2[^0-9]*(\d{1,3}\.?\d*)',
+        ]
+        for pat in po2_patterns:
+            match = re.search(pat, full_text)
+            if match:
+                try:
+                    val = float(match.group(1))
+                    if 10 <= val <= 600:
+                        metrics['pO2'] = val
+                        break
+                except: pass
+    
+    # HCO3 - look for "cHCO3" or "CHOOS" followed by number
+    if 'HCO3' not in metrics:
+        hco3_patterns = [
+            r'[cC]HCO3?[^0-9]*(\d{1,2}\.?\d*)',
+            r'CHOO[sS][^0-9]*(\d{1,2}\.?\d*)',
+            r'HCO3[^0-9]*(\d{1,2}\.?\d*)',
+        ]
+        for pat in hco3_patterns:
+            match = re.search(pat, full_text)
+            if match:
+                try:
+                    val = float(match.group(1))
+                    if 5 <= val <= 60:
+                        metrics['HCO3'] = val
+                        break
+                except: pass
+    
+    # BE (Base Excess) - look for "BASE" or "cBase" followed by number
+    if 'BE' not in metrics:
+        be_patterns = [
+            r'[cC]?BASE[^0-9]*([-+]?\d{1,2}\.?\d*)',
+            r'BASE\s*[EeGg][^0-9]*([-+]?\d{1,2}\.?\d*)',
+            r'cBase\(Ecf\)[^0-9]*([-+]?\d{1,2}\.?\d*)',
+        ]
+        for pat in be_patterns:
+            match = re.search(pat, full_text, re.IGNORECASE)
+            if match:
+                try:
+                    val = float(match.group(1))
+                    # Check if the value should be negative (common for acidosis)
+                    # If we see "BASE" without explicit sign and value > 5, it might be negative
+                    if -30 <= val <= 30:
+                        metrics['BE'] = val
+                        break
+                except: pass
+    
+    # Na (Sodium) - look for "Na" or "Nat" followed by 3-digit number
+    if 'Na' not in metrics:
+        na_patterns = [
+            r'[cC]?Na[t+]?\s*(\d{3})\s*mm[oO]l',
+            r'Na[t+]?[^0-9]*(\d{3})',
+        ]
+        for pat in na_patterns:
+            match = re.search(pat, full_text)
+            if match:
+                try:
+                    val = float(match.group(1))
+                    if 100 <= val <= 180:
+                        metrics['Na'] = val
+                        break
+                except: pass
+    
+    # K (Potassium) - look for "K" or "cK" followed by single digit with decimal
+    if 'K' not in metrics:
+        k_patterns = [
+            r'[cC]K[t+]?\s*(\d\.\d)\s*mm[oO]l',
+            r'K[t+]?[^0-9]*(\d\.\d)',
+        ]
+        for pat in k_patterns:
+            match = re.search(pat, full_text)
+            if match:
+                try:
+                    val = float(match.group(1))
+                    if 1.0 <= val <= 10.0:
+                        metrics['K'] = val
+                        break
+                except: pass
+    
+    # Cl (Chloride) - look for "Cl" followed by 3-digit number
+    if 'Cl' not in metrics:
+        cl_patterns = [
+            r'[cC]Cl[-]?\s*(\d{2,3})\s*mm[oO]l',
+            r'Cl[-]?[^0-9]*(\d{2,3})',
+        ]
+        for pat in cl_patterns:
+            match = re.search(pat, full_text)
+            if match:
+                try:
+                    val = float(match.group(1))
+                    if 70 <= val <= 130:
+                        metrics['Cl'] = val
+                        break
+                except: pass
+    
+    # Ca (Calcium) - look for "Ca" followed by 1.xx
+    if 'Ca' not in metrics:
+        ca_patterns = [
+            r'[cC]Ca2?\+?\s*(\d\.\d{1,2})\s*mm[oO]l',
+            r'Ca2?\+?[^0-9]*(\d\.\d{1,2})',
+        ]
+        for pat in ca_patterns:
+            match = re.search(pat, full_text)
+            if match:
+                try:
+                    val = float(match.group(1))
+                    if 0.5 <= val <= 3.0:
+                        metrics['Ca'] = val
+                        break
+                except: pass
+    
+    # Hb (Hemoglobin) - look for "ctHb" or "Hb" followed by number
+    if 'Hb' not in metrics:
+        hb_patterns = [
+            r'[cC]t[Hh][bB]\s*(\d{1,2}\.?\d*)\s*g/[dD]L',
+            r'Hb[^0-9]*(\d{1,2}\.?\d*)',
+            r'othib\s*(\d{1,2}\.?\d*)',  # OCR error for ctHb
+        ]
+        for pat in hb_patterns:
+            match = re.search(pat, full_text, re.IGNORECASE)
+            if match:
                 try:
                     val = float(match.group(1))
                     if 3 <= val <= 25:
                         metrics['Hb'] = val
+                        break
                 except: pass
-        
-        # sO2 (oxygen saturation) - handle "so," OCR error
-        if 'so2' in line_lower or 'sat' in line_lower or 'so,' in line_lower:
+    
+    # SO2 (Oxygen Saturation) - look for "sO2" followed by percentage
+    if 'SO2' not in metrics:
+        so2_patterns = [
+            r's[oO]2\s*(\d{1,3}\.?\d*)\s*%',
+            r'sO2[^0-9]*(\d{1,3}\.?\d*)',
+        ]
+        for pat in so2_patterns:
+            match = re.search(pat, full_text)
+            if match:
+                try:
+                    val = float(match.group(1))
+                    if 0 <= val <= 100:
+                        metrics['SO2'] = val
+                        break
+                except: pass
+    
+    # Lactate - look for "Lac" or "cLac" followed by number
+    if 'lactate' not in metrics:
+        lac_patterns = [
+            r'[cC]Lac\s*(\d{1,2}\.?\d*)\s*mm[oO]l',
+            r'Lac[^0-9]*(\d{1,2}\.?\d*)',
+        ]
+        for pat in lac_patterns:
+            match = re.search(pat, full_text, re.IGNORECASE)
+            if match:
+                try:
+                    val = float(match.group(1))
+                    if 0 <= val <= 30:
+                        metrics['lactate'] = val
+                        break
+                except: pass
+    
+    # Glucose - look for "Glu" or "cGlu" followed by number
+    if 'glucose' not in metrics:
+        glu_patterns = [
+            r'[cC]Glu\s*(\d{1,3}\.?\d*)\s*mm[oO]l',
+            r'Glu[^0-9]*(\d{1,3}\.?\d*)',
+        ]
+        for pat in glu_patterns:
+            match = re.search(pat, full_text, re.IGNORECASE)
+            if match:
+                try:
+                    val = float(match.group(1))
+                    if 0.5 <= val <= 50:
+                        metrics['glucose'] = val
+                        break
+                except: pass
+    
+    return metrics
             patterns = [
                 r'(?:s|sa)o[,2][:\s]*(\d{1,3})[:\.](\d)',  # Handle "99:3" format
                 r'(?:s|sa)o[,2][:\s]*(\d{1,3}\.?\d*)',
