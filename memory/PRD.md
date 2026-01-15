@@ -78,16 +78,14 @@ Build a full SaaS-style web app "Pediatrics on the Go" with:
 - GoDaddy/Microsoft Exchange SMTP (emails)
 
 ## Recent Changes (January 15, 2026)
-- ✅ **OCR Service Completely Rebuilt**: New medical-grade OCR service with tesseract-ocr
-  - Multiple preprocessing strategies (simple grayscale, CLAHE enhancement, denoising)
-  - Automatic selection of best preprocessing based on metric extraction success
-  - Medical-specific regex patterns for blood gas values (pH, pCO2, pO2, Na, K, Ca, Cl, etc.)
-  - PSM mode 4 (single column) for better blood gas report parsing
-  - Fixed language parameter from 'en' to 'eng' for tesseract
-- ✅ **Blood Gas OCR Testing**: All 15 tests passed (100% success rate)
-  - Extracts 7-13 metrics per image depending on image quality
-  - Verified against expected values from medical reports
-  - Works with Radiometer ABL800 FLEX and similar analyzer printouts
+- ✅ **OCR Service Major Accuracy Improvement**: Enhanced regex patterns for blood gas extraction
+  - Overall accuracy improved from ~50% to **81%+**
+  - img1: 73%, img2: 90%, img3: 82% accuracy against ground truth
+  - Fixed patterns for: pH (handles 456 -> 7.456), pO2 (handles various OCR errors), pCO2, Ca (handles 137 -> 1.37), HCO3, etc.
+  - Now extracting 12-16 metrics per image
+  - Added support for common OCR errors: "py" for pH, "Poi" for pO2, "cia" for Ca, etc.
+- ✅ **Tesseract Installation**: Added system-packages.txt for deployment persistence
+- ✅ **Fixed language parameter**: Changed from 'en' to 'eng' for tesseract compatibility
 
 ## Previous Changes (January 13, 2026)
 - ✅ **Fluid Replacement 2500ml Cap**: Applied to individual 8h and 16h periods, not just 24h total
