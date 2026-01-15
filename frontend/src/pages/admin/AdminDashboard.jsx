@@ -354,12 +354,16 @@ const AdminDashboard = () => {
                         <th className="text-left py-3 px-2 text-sm font-medium text-muted-foreground">User</th>
                         <th className="text-left py-3 px-2 text-sm font-medium text-muted-foreground">Plan</th>
                         <th className="text-left py-3 px-2 text-sm font-medium text-muted-foreground">Status</th>
+                        <th className="text-left py-3 px-2 text-sm font-medium text-muted-foreground">Days Left</th>
                         <th className="text-left py-3 px-2 text-sm font-medium text-muted-foreground">Joined</th>
                         <th className="text-left py-3 px-2 text-sm font-medium text-muted-foreground">Actions</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {filteredUsers.map((u) => (
+                      {filteredUsers.map((u) => {
+                        const daysRemaining = getDaysRemaining(u.subscription);
+                        const daysDisplay = getDaysDisplay(daysRemaining);
+                        return (
                         <tr key={u.id} className="border-b hover:bg-gray-50 dark:hover:bg-gray-800">
                           <td className="py-3 px-2">
                             <div>
@@ -385,6 +389,11 @@ const AdminDashboard = () => {
                             ) : (
                               <span className="text-muted-foreground text-sm">-</span>
                             )}
+                          </td>
+                          <td className="py-3 px-2">
+                            <span className={daysDisplay.className}>
+                              {daysDisplay.text}
+                            </span>
                           </td>
                           <td className="py-3 px-2 text-sm text-muted-foreground">
                             {formatDate(u.created_at)}
@@ -419,7 +428,8 @@ const AdminDashboard = () => {
                             )}
                           </td>
                         </tr>
-                      ))}
+                        );
+                      })}
                     </tbody>
                   </table>
                 </div>
