@@ -216,15 +216,25 @@ def extract_metrics(lines: List[str]) -> Dict[str, Any]:
                         metrics['Hb'] = val
                 except: pass
         
-        # sO2 (oxygen saturation)
-        if 'so2' in line_lower or 'sat' in line_lower:
-            match = re.search(r'(?:s|sa)o2[:\s]*(\d{1,3}\.?\d*)', line_lower)
-            if match and 'SO2' not in metrics:
-                try:
-                    val = float(match.group(1))
-                    if 0 <= val <= 100:
-                        metrics['SO2'] = val
-                except: pass
+        # sO2 (oxygen saturation) - handle "so," OCR error
+        if 'so2' in line_lower or 'sat' in line_lower or 'so,' in line_lower:
+            patterns = [
+                r'(?:s|sa)o[,2][:\s]*(\d{1,3})[:\.](\d)',  # Handle "99:3" format
+                r'(?:s|sa)o[,2][:\s]*(\d{1,3}\.?\d*)',
+            ]
+            for pat in patterns:
+                match = re.search(pat, line_lower)
+                if match and 'SO2' not in metrics:
+                    try:
+                        if len(match.groups()) == 2:
+                            # Handle "99:3" → 99.3
+                            val = float(f"{match.group(1)}.{match.group(2)}")
+                        else:
+                            val = float(match.group(1))
+                        if 0 <= val <= 100:
+                            metrics['SO2'] = val
+                            break
+                    except: pass
         
         # cK+ (potassium) - Radiometer format, handle OCR errors
         if 'ck' in line_lower or 'k+' in line_lower or 'potassium' in line_lower or 'ckt' in line_lower:
