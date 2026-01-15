@@ -19,7 +19,7 @@ const GaitApproach = ({ expandedSections, toggleSection }) => {
             <p className="font-semibold text-amber-700 mb-2">Key Points:</p>
             <ul className="text-muted-foreground space-y-1">
               <li>• <strong>Hemiplegic, Waddling, and Neuropathic gaits are NOT acute</strong></li>
-              <li>• Don't label anyone with ataxia unless <strong>afebrile</strong> and <strong>fully conscious</strong></li>
+              <li>• <strong>Do not</strong> label anyone with ataxia unless <strong>afebrile</strong> and <strong>fully conscious</strong></li>
               <li>• Ataxia in febrile/drowsy child = <strong>Pseudo-ataxia</strong> (treat underlying cause)</li>
             </ul>
           </div>
@@ -35,7 +35,7 @@ const GaitApproach = ({ expandedSections, toggleSection }) => {
             </div>
             <div className="p-2 bg-purple-50 dark:bg-purple-900/20 rounded">
               <p className="font-semibold text-purple-700">Ataxic Gait</p>
-              <p className="text-muted-foreground">Wide-based, can't walk heel-to-toe, unsteady, tremors</p>
+              <p className="text-muted-foreground">Wide-based, cannot walk heel-to-toe, unsteady, tremors</p>
               <p className="text-blue-600 mt-1">Ix: CT Brain → Normal: Neurology | Abnormal: Neurosurgery</p>
             </div>
             <div className="p-2 bg-amber-50 dark:bg-amber-900/20 rounded">
