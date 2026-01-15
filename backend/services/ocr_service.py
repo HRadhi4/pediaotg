@@ -224,12 +224,12 @@ def extract_metrics_improved(ocr_text: str) -> Dict[str, Any]:
                     continue
     
     # ================== HCO3 ==================
-    # Common patterns: "cHCO3-(P,st) 23.5", "cH20,(P,st)o 15.4", "cHOO, (7,80. 23.6"
+    # Common patterns: "cHCO3-(P,st) 23.5", "cH20,(P,st)o 15.4", "cHOO, (7,80. 23.6", "cHCO,(P,st)¢ 15.8"
     if 'HCO3' not in metrics:
         patterns = [
-            r'c?H[CO0]{2,3}[3\-]?\s*[\(\[]?P?,?\s*st\s*[\)\]]?[oc]?\s*[:\s]*(\d{1,2}[\.\,]\d)',
-            r'cH[CO0]{2}[O0]?[,\-]?\s*[\(\[]?\d?,?\s*\d{0,2}[\.\,]?\s*[\)\]]?\s*(\d{1,2}[\.\,]\d)',
-            r'HCO3\s*[:\s]*(\d{1,2}[\.\,]\d)',
+            r'c?H[CO0]{1,3}[O032\-,]?\s*[\(\[]?P?,?\s*st\s*[\)\]][oc¢]?\s*[:\s]*(\d{1,2}[\.\,]\d)',
+            r'cH[2O0]{1,2}[,O0]?\s*[\(\[]?P?,?\s*st\s*[\)\]]?[oc]?\s*(\d{1,2}[\.\,]\d)',
+            r'HCO3[\-]?\s*[:\s]*(\d{1,2}[\.\,]\d)',
             r'Bicarb[^\d]*(\d{1,2}[\.\,]\d)',
         ]
         for pat in patterns:
