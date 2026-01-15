@@ -103,6 +103,7 @@ const CPRPage = ({ onBack }) => {
                 placeholder="Enter weight for drug calculations"
                 value={weight}
                 onChange={(e) => setWeight(e.target.value)}
+                min="0"
                 className="font-mono mt-1"
               />
             </div>

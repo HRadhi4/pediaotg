@@ -120,6 +120,7 @@ const FluidReplacementPage = ({ onBack }) => {
               placeholder="Enter weight in kg"
               value={weight}
               onChange={(e) => setWeight(e.target.value)}
+              min="0"
               className="font-mono text-lg h-12"
             />
           </div>

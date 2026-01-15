@@ -1732,6 +1732,7 @@ const DrugsPage = ({ onBack }) => {
               placeholder="Enter weight for dose calculations"
               value={weight}
               onChange={(e) => setWeight(e.target.value)}
+              min="0"
               className="font-mono text-sm h-9"
             />
           </div>
