@@ -93,6 +93,15 @@ Build a full SaaS-style web app "Pediatrics on the Go" with:
     - `GET /api/admin/expiring-subscriptions?days=7` - View expiring subscriptions
   - Tracks `last_reminder_sent` to avoid duplicate emails (24hr cooldown)
   - Supports both paid subscriptions and trial accounts
+- ✅ **Days Left Display**: Added subscription days remaining indicators
+  - Admin Dashboard: New "Days Left" column with color-coded badges (green/amber/red)
+  - Account Page: "Time Until Renewal" field showing days remaining
+  - Dynamic colors: green (>7 days), amber (1-7 days), red (expired/today)
+- ✅ **ApproachesPage Refactoring Started**: 
+  - Created `/approaches/` folder with shared components
+  - Extracted `Section.jsx` shared component
+  - Extracted `SepsisApproach.jsx` and `SeizureApproach.jsx`
+  - Created `index.js` for exports
 
 ## Previous Changes (January 13, 2026)
 - ✅ **Fluid Replacement 2500ml Cap**: Applied to individual 8h and 16h periods, not just 24h total
