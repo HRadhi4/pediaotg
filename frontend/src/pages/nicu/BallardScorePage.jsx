@@ -286,7 +286,7 @@ const BallardScorePage = () => {
   const gestationalAge = getGestationalAge(totalScore);
 
   const resetScores = () => {
-    setNeuromuscularScores({ posture: -1, squareWindow: -1, armRecoil: -1, poplitealAngle: -1, scarfSign: -1, heelToEar: -1 });
+    setNeuromuscularScores({ posture: 0, squareWindow: -1, armRecoil: 0, poplitealAngle: -1, scarfSign: -1, heelToEar: -1 });
     setPhysicalScores({ skin: -1, lanugo: -1, plantarSurface: -1, breast: -1, eyeEar: -1, genitals: -1 });
   };
 
