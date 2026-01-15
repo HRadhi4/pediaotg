@@ -10,7 +10,7 @@ This module provides OCR optimized for blurry medical documents with:
 - Gaussian + median denoising
 - Automatic deskew for rotated printouts
 - Adaptive binarization for faded ink
-- Medical-specific character whitelist
+- Medical-specific regex parsing
 
 Expected accuracy gains:
 - Blurry → 300DPI upscale: +20-50%
@@ -22,7 +22,7 @@ import base64
 import io
 import re
 import logging
-from typing import Optional, List, Dict, Any
+from typing import Optional, List, Dict, Any, Tuple
 from dataclasses import dataclass, asdict, field
 
 import cv2
@@ -32,6 +32,10 @@ from PIL import Image
 
 logger = logging.getLogger(__name__)
 
+
+# ============================================================================
+# DATA CLASSES
+# ============================================================================
 
 @dataclass
 class OCRBlock:
@@ -66,6 +70,10 @@ class OCRResult:
         }
 
 
+# ============================================================================
+# IMAGE PREPROCESSING
+# ============================================================================
+
 def preprocess_bloodgas_image(image_b64: str) -> np.ndarray:
     """
     Medical-grade preprocessing for blood gas reports.
@@ -91,7 +99,6 @@ def preprocess_bloodgas_image(image_b64: str) -> np.ndarray:
     
     # 1. Upscale to 300+ DPI equivalent (2x for better OCR)
     h, w = img.shape[:2]
-    # For larger images, use 1.5x; for smaller ones, use 2x
     scale = 2.0 if max(h, w) < 1500 else 1.5
     img = cv2.resize(img, (int(w * scale), int(h * scale)), interpolation=cv2.INTER_CUBIC)
     
@@ -100,22 +107,20 @@ def preprocess_bloodgas_image(image_b64: str) -> np.ndarray:
     clahe = cv2.createCLAHE(clipLimit=2.5, tileGridSize=(8, 8))
     enhanced = clahe.apply(gray)
     
-    # 3. Denoise (Gaussian + bilateral for preserving edges)
-    # Bilateral filter preserves edges better for text
+    # 3. Denoise (bilateral for preserving edges)
     denoised = cv2.bilateralFilter(enhanced, 9, 75, 75)
     denoised = cv2.GaussianBlur(denoised, (3, 3), 0)
     
     # 4. Deskew (critical for rotated printouts)
     try:
         coords = np.column_stack(np.where(denoised > 0))
-        if len(coords) > 100:  # Need enough points for deskew
+        if len(coords) > 100:
             angle = cv2.minAreaRect(coords)[-1]
             if angle < -45:
                 angle = -(90 + angle)
             else:
                 angle = -angle
             
-            # Only deskew if angle is significant but not too extreme
             if abs(angle) > 0.5 and abs(angle) < 15:
                 (h, w) = denoised.shape[:2]
                 M = cv2.getRotationMatrix2D((w // 2, h // 2), angle, 1.0)
@@ -123,25 +128,22 @@ def preprocess_bloodgas_image(image_b64: str) -> np.ndarray:
     except Exception as e:
         logger.warning(f"Deskew failed, continuing without: {e}")
     
-    # 5. Adaptive binarize with Otsu's method for better threshold selection
-    # First try Otsu's method
+    # 5. Adaptive binarize with Otsu's method
     _, otsu_thresh = cv2.threshold(denoised, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
-    
-    # Also get adaptive threshold
     adaptive_thresh = cv2.adaptiveThreshold(
         denoised, 255, 
         cv2.ADAPTIVE_THRESH_GAUSSIAN_C, 
         cv2.THRESH_BINARY, 
-        15, 4  # Slightly larger block size for thermal printouts
+        15, 4
     )
     
-    # Use the one with more white pixels (better text extraction)
+    # Use the one with more white pixels
     if np.sum(otsu_thresh == 255) > np.sum(adaptive_thresh == 255):
         cleaned = otsu_thresh
     else:
         cleaned = adaptive_thresh
     
-    # Morphological cleanup to fill gaps and remove noise
+    # Morphological cleanup
     kernel = np.ones((2, 2), np.uint8)
     cleaned = cv2.morphologyEx(cleaned, cv2.MORPH_CLOSE, kernel)
     cleaned = cv2.morphologyEx(cleaned, cv2.MORPH_OPEN, np.ones((1, 1), np.uint8))
@@ -149,237 +151,344 @@ def preprocess_bloodgas_image(image_b64: str) -> np.ndarray:
     return cleaned
 
 
+# ============================================================================
+# METRIC EXTRACTION - Consolidated Regex Parsing
+# ============================================================================
+
+# Define all metric patterns in a single dictionary for maintainability
+METRIC_PATTERNS: Dict[str, Dict[str, Any]] = {
+    'pH': {
+        'patterns': [
+            r'ph\s*[:\(]?\s*T?\s*\)?\s*:?\s*([67]\.\d{1,3})',
+            r'([67]\.\d{2,3})\s*(?:te|pH)',
+        ],
+        'range': (6.5, 8.0),
+        'flags': re.IGNORECASE,
+    },
+    'pCO2': {
+        'patterns': [
+            r'p[cC][oO0]2?\s*\(?[tT]?\)?\s*:?\s*(\d{1,3}\.?\d*)',
+            r'pCc[oO0]\(?[tT]?\)?\s*:?\s*(\d{1,3}\.?\d*)',
+            r'PCO[^0-9]*(\d{1,3}\.?\d*)',
+        ],
+        'range': (10, 150),
+        'flags': 0,
+    },
+    'pO2': {
+        'patterns': [
+            r'p[oO]2?\s*\(?[tT]?\)?\s*:?\s*(\d{1,3}\.?\d*)',
+            r'pT\)\s*:?\s*(\d{1,3}\.?\d*)',
+            r'PO2[^0-9]*(\d{1,3}\.?\d*)',
+        ],
+        'range': (10, 600),
+        'flags': 0,
+    },
+    'HCO3': {
+        'patterns': [
+            r'[cC]HCO3?[^0-9]*(\d{1,2}\.?\d*)',
+            r'CHOO[sS][^0-9]*(\d{1,2}\.?\d*)',
+            r'HCO3[^0-9]*(\d{1,2}\.?\d*)',
+        ],
+        'range': (5, 60),
+        'flags': 0,
+    },
+    'BE': {
+        'patterns': [
+            r'[cC]?BASE\s*[EeGg]?\s*\(?[Ee]?[Cc]?[Ff]?\)?\s*:?\s*([-+]?\d{1,2}\.?\d*)',
+            r'cBase\(Ecf\)[^0-9]*([-+]?\d{1,2}\.?\d*)',
+            r'BE[cC]?\s*:?\s*([-+]?\d{1,2}\.?\d*)',
+        ],
+        'range': (-30, 30),
+        'flags': re.IGNORECASE,
+    },
+    'Na': {
+        'patterns': [
+            r'[cC]?Na[t+]?\s*:?\s*(\d{2,3})(?:\s*mm[oO]l)?',
+            r'Sodium[^0-9]*(\d{2,3})',
+        ],
+        'range': (100, 180),
+        'flags': 0,
+    },
+    'K': {
+        'patterns': [
+            r'[cC]?K[t+]?\s*:?\s*(\d\.\d{1,2})(?:\s*mm[oO]l)?',
+            r'Potassium[^0-9]*(\d\.\d{1,2})',
+        ],
+        'range': (1.0, 10.0),
+        'flags': 0,
+    },
+    'Cl': {
+        'patterns': [
+            r'[cC]?Cl[-]?\s*:?\s*(\d{2,3})(?:\s*mm[oO]l)?',
+            r'Chloride[^0-9]*(\d{2,3})',
+        ],
+        'range': (70, 130),
+        'flags': 0,
+    },
+    'Ca': {
+        'patterns': [
+            r'[cC]?Ca2?\+?\s*:?\s*(\d\.\d{1,2})(?:\s*mm[oO]l)?',
+            r'Calcium[^0-9]*(\d\.\d{1,2})',
+        ],
+        'range': (0.5, 3.0),
+        'flags': 0,
+    },
+    'Hb': {
+        'patterns': [
+            r'[cC]t[Hh][bB]\s*:?\s*(\d{1,2}\.?\d*)(?:\s*g/[dD]L)?',
+            r'Hb\s*:?\s*(\d{1,2}\.?\d*)',
+            r'Hemoglobin[^0-9]*(\d{1,2}\.?\d*)',
+            r'othib\s*(\d{1,2}\.?\d*)',  # OCR error for ctHb
+        ],
+        'range': (3, 25),
+        'flags': re.IGNORECASE,
+    },
+    'SO2': {
+        'patterns': [
+            r's[oO]2\s*:?\s*(\d{1,3}\.?\d*)(?:\s*%)?',
+            r'Saturation[^0-9]*(\d{1,3}\.?\d*)',
+        ],
+        'range': (0, 100),
+        'flags': 0,
+    },
+    'lactate': {
+        'patterns': [
+            r'[cC]?Lac\s*:?\s*(\d{1,2}\.?\d*)(?:\s*mm[oO]l)?',
+            r'Lactate[^0-9]*(\d{1,2}\.?\d*)',
+        ],
+        'range': (0, 30),
+        'flags': re.IGNORECASE,
+    },
+    'glucose': {
+        'patterns': [
+            r'[cC]?Glu\s*:?\s*(\d{1,3}\.?\d*)(?:\s*mm[oO]l)?',
+            r'Glucose[^0-9]*(\d{1,3}\.?\d*)',
+        ],
+        'range': (0.5, 50),
+        'flags': re.IGNORECASE,
+    },
+    'FiO2': {
+        'patterns': [
+            r'F[iI][oO]2\s*:?\s*(\d{1,3}\.?\d*)(?:\s*%)?',
+        ],
+        'range': (21, 100),
+        'flags': 0,
+    },
+    'Hct': {
+        'patterns': [
+            r'[Hh]ct\s*:?\s*(\d{1,2}\.?\d*)(?:\s*%)?',
+            r'Hematocrit[^0-9]*(\d{1,2}\.?\d*)',
+        ],
+        'range': (10, 70),
+        'flags': re.IGNORECASE,
+    },
+    'AnionGap': {
+        'patterns': [
+            r'Anion\s*Gap[^0-9]*(\d{1,2}\.?\d*)',
+            r'AG\s*:?\s*(\d{1,2}\.?\d*)',
+        ],
+        'range': (3, 30),
+        'flags': re.IGNORECASE,
+    },
+}
+
+
 def extract_metrics(lines: List[str]) -> Dict[str, Any]:
     """
     Parse common blood gas parameters from OCR lines.
     Optimized for Radiometer ABL800 FLEX format with heavy noise tolerance.
     
-    Extracts: pH, pCO2, pO2, HCO3, BE, Na, K, Cl, lactate, Hb, SO2, FiO2, glucose, Ca
+    Uses consolidated pattern matching for cleaner, more maintainable code.
     """
     metrics = {}
-    
-    # Join all lines for pattern matching
     full_text = ' '.join(lines)
-    full_text_lower = full_text.lower()
     
-    # Strategy: Look for known parameter patterns followed by numbers
-    # The OCR is very noisy so we need flexible patterns
-    
-    # pH - look for pH followed by 7.xxx pattern anywhere
-    if 'pH' not in metrics:
-        # Try to find 7.xxx pattern near "ph" or "PH"
-        ph_patterns = [
-            r'ph[^0-9]*([67]\.\d{1,3})',
-            r'PH[^0-9]*([67]\.\d{1,3})',
-            r'([67]\.\d{2,3})\s*(?:te|pH)',  # value before pH
-        ]
-        for pat in ph_patterns:
-            match = re.search(pat, full_text, re.IGNORECASE)
-            if match:
-                try:
+    for metric_name, config in METRIC_PATTERNS.items():
+        if metric_name in metrics:
+            continue
+            
+        min_val, max_val = config['range']
+        flags = config.get('flags', 0)
+        
+        for pattern in config['patterns']:
+            try:
+                match = re.search(pattern, full_text, flags)
+                if match:
                     val = float(match.group(1))
-                    if 6.5 <= val <= 8.0:
-                        metrics['pH'] = val
+                    if min_val <= val <= max_val:
+                        metrics[metric_name] = val
                         break
-                except: pass
-    
-    # pCO2 - look for patterns like "pCO2(T) 25.9" or "pCcO(T) 25.9"
-    if 'pCO2' not in metrics:
-        pco2_patterns = [
-            r'p[cC][oO]2?\s*\(?[tT]?\)?\s*:?\s*(\d{1,3}\.?\d*)\s*mm[Hh]g',
-            r'pCcO\(?[tT]?\)?\s*:?\s*(\d{1,3}\.?\d*)',
-            r'PCO[^0-9]*(\d{1,3}\.?\d*)',
-        ]
-        for pat in pco2_patterns:
-            match = re.search(pat, full_text)
-            if match:
-                try:
-                    val = float(match.group(1))
-                    if 10 <= val <= 150:
-                        metrics['pCO2'] = val
-                        break
-                except: pass
-    
-    # pO2 - look for patterns like "pO2(T) 95.0" or "pT) : 95.0"
-    if 'pO2' not in metrics:
-        po2_patterns = [
-            r'p[oO]2?\s*\(?[tT]?\)?\s*:?\s*(\d{1,3}\.?\d*)\s*mm[Hh]g',
-            r'pT\)\s*:?\s*(\d{1,3}\.?\d*)\s*mm[Hh]g',
-            r'PO2[^0-9]*(\d{1,3}\.?\d*)',
-        ]
-        for pat in po2_patterns:
-            match = re.search(pat, full_text)
-            if match:
-                try:
-                    val = float(match.group(1))
-                    if 10 <= val <= 600:
-                        metrics['pO2'] = val
-                        break
-                except: pass
-    
-    # HCO3 - look for "cHCO3" or "CHOOS" followed by number
-    if 'HCO3' not in metrics:
-        hco3_patterns = [
-            r'[cC]HCO3?[^0-9]*(\d{1,2}\.?\d*)',
-            r'CHOO[sS][^0-9]*(\d{1,2}\.?\d*)',
-            r'HCO3[^0-9]*(\d{1,2}\.?\d*)',
-        ]
-        for pat in hco3_patterns:
-            match = re.search(pat, full_text)
-            if match:
-                try:
-                    val = float(match.group(1))
-                    if 5 <= val <= 60:
-                        metrics['HCO3'] = val
-                        break
-                except: pass
-    
-    # BE (Base Excess) - look for "BASE" or "cBase" followed by number
-    if 'BE' not in metrics:
-        be_patterns = [
-            r'[cC]?BASE[^0-9]*([-+]?\d{1,2}\.?\d*)',
-            r'BASE\s*[EeGg][^0-9]*([-+]?\d{1,2}\.?\d*)',
-            r'cBase\(Ecf\)[^0-9]*([-+]?\d{1,2}\.?\d*)',
-        ]
-        for pat in be_patterns:
-            match = re.search(pat, full_text, re.IGNORECASE)
-            if match:
-                try:
-                    val = float(match.group(1))
-                    # Check if the value should be negative (common for acidosis)
-                    # If we see "BASE" without explicit sign and value > 5, it might be negative
-                    if -30 <= val <= 30:
-                        metrics['BE'] = val
-                        break
-                except: pass
-    
-    # Na (Sodium) - look for "Na" or "Nat" followed by 3-digit number
-    if 'Na' not in metrics:
-        na_patterns = [
-            r'[cC]?Na[t+]?\s*(\d{3})\s*mm[oO]l',
-            r'Na[t+]?[^0-9]*(\d{3})',
-        ]
-        for pat in na_patterns:
-            match = re.search(pat, full_text)
-            if match:
-                try:
-                    val = float(match.group(1))
-                    if 100 <= val <= 180:
-                        metrics['Na'] = val
-                        break
-                except: pass
-    
-    # K (Potassium) - look for "K" or "cK" followed by single digit with decimal
-    if 'K' not in metrics:
-        k_patterns = [
-            r'[cC]K[t+]?\s*(\d\.\d)\s*mm[oO]l',
-            r'K[t+]?[^0-9]*(\d\.\d)',
-        ]
-        for pat in k_patterns:
-            match = re.search(pat, full_text)
-            if match:
-                try:
-                    val = float(match.group(1))
-                    if 1.0 <= val <= 10.0:
-                        metrics['K'] = val
-                        break
-                except: pass
-    
-    # Cl (Chloride) - look for "Cl" followed by 3-digit number
-    if 'Cl' not in metrics:
-        cl_patterns = [
-            r'[cC]Cl[-]?\s*(\d{2,3})\s*mm[oO]l',
-            r'Cl[-]?[^0-9]*(\d{2,3})',
-        ]
-        for pat in cl_patterns:
-            match = re.search(pat, full_text)
-            if match:
-                try:
-                    val = float(match.group(1))
-                    if 70 <= val <= 130:
-                        metrics['Cl'] = val
-                        break
-                except: pass
-    
-    # Ca (Calcium) - look for "Ca" followed by 1.xx
-    if 'Ca' not in metrics:
-        ca_patterns = [
-            r'[cC]Ca2?\+?\s*(\d\.\d{1,2})\s*mm[oO]l',
-            r'Ca2?\+?[^0-9]*(\d\.\d{1,2})',
-        ]
-        for pat in ca_patterns:
-            match = re.search(pat, full_text)
-            if match:
-                try:
-                    val = float(match.group(1))
-                    if 0.5 <= val <= 3.0:
-                        metrics['Ca'] = val
-                        break
-                except: pass
-    
-    # Hb (Hemoglobin) - look for "ctHb" or "Hb" followed by number
-    if 'Hb' not in metrics:
-        hb_patterns = [
-            r'[cC]t[Hh][bB]\s*(\d{1,2}\.?\d*)\s*g/[dD]L',
-            r'Hb[^0-9]*(\d{1,2}\.?\d*)',
-            r'othib\s*(\d{1,2}\.?\d*)',  # OCR error for ctHb
-        ]
-        for pat in hb_patterns:
-            match = re.search(pat, full_text, re.IGNORECASE)
-            if match:
-                try:
-                    val = float(match.group(1))
-                    if 3 <= val <= 25:
-                        metrics['Hb'] = val
-                        break
-                except: pass
-    
-    # SO2 (Oxygen Saturation) - look for "sO2" followed by percentage
-    if 'SO2' not in metrics:
-        so2_patterns = [
-            r's[oO]2\s*(\d{1,3}\.?\d*)\s*%',
-            r'sO2[^0-9]*(\d{1,3}\.?\d*)',
-        ]
-        for pat in so2_patterns:
-            match = re.search(pat, full_text)
-            if match:
-                try:
-                    val = float(match.group(1))
-                    if 0 <= val <= 100:
-                        metrics['SO2'] = val
-                        break
-                except: pass
-    
-    # Lactate - look for "Lac" or "cLac" followed by number
-    if 'lactate' not in metrics:
-        lac_patterns = [
-            r'[cC]Lac\s*(\d{1,2}\.?\d*)\s*mm[oO]l',
-            r'Lac[^0-9]*(\d{1,2}\.?\d*)',
-        ]
-        for pat in lac_patterns:
-            match = re.search(pat, full_text, re.IGNORECASE)
-            if match:
-                try:
-                    val = float(match.group(1))
-                    if 0 <= val <= 30:
-                        metrics['lactate'] = val
-                        break
-                except: pass
-    
-    # Glucose - look for "Glu" or "cGlu" followed by number
-    if 'glucose' not in metrics:
-        glu_patterns = [
-            r'[cC]Glu\s*(\d{1,3}\.?\d*)\s*mm[oO]l',
-            r'Glu[^0-9]*(\d{1,3}\.?\d*)',
-        ]
-        for pat in glu_patterns:
-            match = re.search(pat, full_text, re.IGNORECASE)
-            if match:
-                try:
-                    val = float(match.group(1))
-                    if 0.5 <= val <= 50:
-                        metrics['glucose'] = val
-                        break
-                except: pass
+            except (ValueError, IndexError):
+                continue
     
     return metrics
+
+
+def parse_blood_gas_from_ocr_text(ocr_text: str) -> Dict[str, Any]:
+    """
+    Parse blood gas values from raw OCR text.
+    This is an alias for extract_metrics but works on raw text.
+    """
+    lines = [line.strip() for line in ocr_text.split('\n') if line.strip()]
+    return extract_metrics(lines)
+
+
+# ============================================================================
+# MAIN OCR FUNCTION
+# ============================================================================
+
+async def perform_ocr(
+    image_base64: str,
+    language: str = "eng",
+    enhanced: bool = True,
+    psm_mode: int = 6,
+    **kwargs
+) -> OCRResult:
+    """
+    Perform OCR on a base64-encoded image using Tesseract.
+    
+    Args:
+        image_base64: Base64-encoded image data
+        language: Tesseract language code (default: "eng")
+        enhanced: Whether to apply medical-grade preprocessing (default: True)
+        psm_mode: Tesseract Page Segmentation Mode (default: 6 - single block)
+    
+    Returns:
+        OCRResult with extracted text, confidence, and parsed metrics
+    """
+    try:
+        # Apply preprocessing
+        if enhanced:
+            processed_img = preprocess_bloodgas_image(image_base64)
+        else:
+            # Basic decode without preprocessing
+            if "," in image_base64:
+                image_base64 = image_base64.split(",")[1]
+            img_bytes = base64.b64decode(image_base64)
+            nparr = np.frombuffer(img_bytes, np.uint8)
+            processed_img = cv2.imdecode(nparr, cv2.IMREAD_GRAYSCALE)
+        
+        if processed_img is None:
+            return OCRResult(
+                success=False,
+                ocr_text="",
+                ocr_blocks=[],
+                avg_confidence=0.0,
+                error_message="Failed to process image"
+            )
+        
+        # Tesseract configuration for medical documents
+        custom_config = f'--psm {psm_mode} --oem 3 -c tessedit_char_whitelist=0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.+-:()/%'
+        
+        # Get detailed data with confidence scores
+        data = pytesseract.image_to_data(
+            processed_img, 
+            lang=language, 
+            config=custom_config,
+            output_type=pytesseract.Output.DICT
+        )
+        
+        # Process blocks and calculate confidence
+        blocks = []
+        confidences = []
+        texts = []
+        
+        for i, conf in enumerate(data['conf']):
+            if conf > 0:  # Only valid detections
+                text = data['text'][i].strip()
+                if text:
+                    blocks.append(OCRBlock(
+                        text=text,
+                        confidence=float(conf) / 100.0,
+                        bbox=[
+                            float(data['left'][i]),
+                            float(data['top'][i]),
+                            float(data['width'][i]),
+                            float(data['height'][i])
+                        ]
+                    ))
+                    confidences.append(float(conf))
+                    texts.append(text)
+        
+        # Also get full text for line-based parsing
+        full_text = pytesseract.image_to_string(
+            processed_img, 
+            lang=language, 
+            config=custom_config
+        )
+        
+        # Split into lines
+        lines = [line.strip() for line in full_text.split('\n') if line.strip()]
+        
+        # Calculate average confidence
+        avg_confidence = sum(confidences) / len(confidences) if confidences else 0.0
+        
+        # Extract medical metrics
+        key_metrics = extract_metrics(lines)
+        
+        return OCRResult(
+            success=True,
+            ocr_text=full_text,
+            ocr_blocks=blocks,
+            avg_confidence=avg_confidence / 100.0,  # Normalize to 0-1
+            lines=lines,
+            key_metrics=key_metrics
+        )
+        
+    except Exception as e:
+        logger.error(f"OCR failed: {str(e)}")
+        return OCRResult(
+            success=False,
+            ocr_text="",
+            ocr_blocks=[],
+            avg_confidence=0.0,
+            error_message=str(e)
+        )
+
+
+# ============================================================================
+# QUALITY CHECK
+# ============================================================================
+
+def check_ocr_quality(result: OCRResult) -> Dict[str, Any]:
+    """
+    Evaluate the quality of OCR results.
+    
+    Returns a dict with:
+    - quality_score: 0-1 overall quality
+    - is_acceptable: whether quality meets minimum threshold
+    - issues: list of detected problems
+    """
+    issues = []
+    scores = []
+    
+    # 1. Check confidence score
+    conf_score = result.avg_confidence
+    scores.append(conf_score)
+    if conf_score < 0.5:
+        issues.append("Low OCR confidence - image may be blurry or low quality")
+    
+    # 2. Check if we got any text
+    text_score = 1.0 if result.ocr_text.strip() else 0.0
+    scores.append(text_score)
+    if text_score == 0:
+        issues.append("No text detected in image")
+    
+    # 3. Check if we extracted key medical metrics
+    metric_count = len(result.key_metrics)
+    expected_min = 3  # At least pH, pCO2, pO2
+    metric_score = min(1.0, metric_count / expected_min)
+    scores.append(metric_score)
+    if metric_count < expected_min:
+        issues.append(f"Only {metric_count} metrics extracted - expected at least {expected_min}")
+    
+    # Calculate overall quality
+    quality_score = sum(scores) / len(scores) if scores else 0.0
+    
+    return {
+        "quality_score": quality_score,
+        "is_acceptable": quality_score >= 0.5,
+        "confidence": result.avg_confidence,
+        "metrics_found": metric_count,
+        "issues": issues
+    }
