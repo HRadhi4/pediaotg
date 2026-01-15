@@ -209,7 +209,8 @@ def extract_metrics_improved(ocr_text: str) -> Dict[str, Any]:
     # Must distinguish from pCO2 - pO2 values are usually larger (60-500)
     if 'pO2' not in metrics:
         patterns = [
-            r'[?\s]?pO[2,]?\s*[=:]\s*(\d{2,3})',  # "? pO, 166 ="
+            r'pO[,]?\s*(\d{2,3})\s*[=]',  # "? pO, 166 ="
+            r'[?\s]?pO[2,]?\s*[=:]\s*(\d{2,3})',  # pO2 = 166
             r'pO\s*\(?T?\s*\)?\s*(\d{2,3}[\.\,]?\d*)\s*(?:mmHg|mm)',  # pO(T ) 110 mmHg
             r'OT\)\s*(\d{2,3}[\.\,]\d*)',  # OCR error for pO2(T)
             r'Poi[,\s]*T?h?\s*(\d{2,3}[\.\,]?\d*)\s*mmHg',  # "Poi, Th mmHg" OCR error
