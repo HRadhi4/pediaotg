@@ -78,6 +78,25 @@ const AccountPage = () => {
     });
   };
 
+  const getDaysRemaining = (dateString) => {
+    if (!dateString) return null;
+    const now = new Date();
+    const endDate = new Date(dateString);
+    const diffTime = endDate - now;
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays;
+  };
+
+  const getDaysRemainingDisplay = (days) => {
+    if (days === null) return null;
+    if (days < 0) return { text: 'Expired', color: 'text-red-600 dark:text-red-400', bgColor: 'bg-red-100 dark:bg-red-900/30' };
+    if (days === 0) return { text: 'Expires today', color: 'text-red-600 dark:text-red-400', bgColor: 'bg-red-100 dark:bg-red-900/30' };
+    if (days === 1) return { text: '1 day left', color: 'text-amber-600 dark:text-amber-400', bgColor: 'bg-amber-100 dark:bg-amber-900/30' };
+    if (days <= 3) return { text: `${days} days left`, color: 'text-amber-600 dark:text-amber-400', bgColor: 'bg-amber-100 dark:bg-amber-900/30' };
+    if (days <= 7) return { text: `${days} days left`, color: 'text-blue-600 dark:text-blue-400', bgColor: 'bg-blue-100 dark:bg-blue-900/30' };
+    return { text: `${days} days left`, color: 'text-green-600 dark:text-green-400', bgColor: 'bg-green-100 dark:bg-green-900/30' };
+  };
+
   const getStatusBadge = (status) => {
     const styles = {
       active: 'bg-green-100 text-green-700 dark:bg-green-900/20 dark:text-green-400',
