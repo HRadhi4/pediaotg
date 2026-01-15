@@ -86,6 +86,13 @@ Build a full SaaS-style web app "Pediatrics on the Go" with:
   - Added support for common OCR errors: "py" for pH, "Poi" for pO2, "cia" for Ca, etc.
 - ✅ **Tesseract Installation**: Added system-packages.txt for deployment persistence
 - ✅ **Fixed language parameter**: Changed from 'en' to 'eng' for tesseract compatibility
+- ✅ **Subscription Renewal Reminder System**: Implemented automated reminder emails
+  - New email templates: `send_subscription_renewal_reminder_email` and `send_trial_expiring_reminder_email`
+  - New admin endpoints:
+    - `POST /api/admin/send-renewal-reminders?days_before=3` - Trigger reminder emails
+    - `GET /api/admin/expiring-subscriptions?days=7` - View expiring subscriptions
+  - Tracks `last_reminder_sent` to avoid duplicate emails (24hr cooldown)
+  - Supports both paid subscriptions and trial accounts
 
 ## Previous Changes (January 13, 2026)
 - ✅ **Fluid Replacement 2500ml Cap**: Applied to individual 8h and 16h periods, not just 24h total
