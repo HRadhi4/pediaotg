@@ -75,9 +75,28 @@ const BloodGasDialog = ({ open, onOpenChange }) => {
     return values;
   };
 
+  // Cancel ongoing OCR request
+  const cancelOcr = () => {
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+      abortControllerRef.current = null;
+    }
+    setIsLoading(false);
+    setOcrProgress(0);
+    toast.info("OCR cancelled");
+  };
+
   // Local OCR using Tesseract (100% local, no external services)
   const handleImageUpload = async (file) => {
     if (!file) return;
+    
+    // Cancel any existing request
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+    
+    // Create new abort controller
+    abortControllerRef.current = new AbortController();
     
     setIsLoading(true);
     setOcrProgress(10);
@@ -92,6 +111,9 @@ const BloodGasDialog = ({ open, onOpenChange }) => {
           // 100% local OCR (no external API)
           const response = await axios.post(`${API}/blood-gas/analyze-image-offline`, {
             image_base64: base64
+          }, {
+            signal: abortControllerRef.current?.signal,
+            timeout: 60000 // 60 second timeout
           });
           
           setOcrProgress(90);
@@ -133,19 +155,28 @@ const BloodGasDialog = ({ open, onOpenChange }) => {
             toast.error(errorMsg);
           }
         } catch (err) {
+          if (axios.isCancel(err) || err.name === 'AbortError' || err.code === 'ERR_CANCELED') {
+            // Request was cancelled, don't show error
+            return;
+          }
           console.error("OCR Error:", err);
           toast.error("OCR failed: " + (err.response?.data?.detail || err.message));
         }
         
         setIsLoading(false);
         setOcrProgress(0);
+        abortControllerRef.current = null;
       };
       reader.readAsDataURL(file);
     } catch (error) {
+      if (error.name === 'AbortError' || error.code === 'ERR_CANCELED') {
+        return;
+      }
       console.error("OCR Error:", error);
       toast.error("OCR failed: " + error.message);
       setIsLoading(false);
       setOcrProgress(0);
+      abortControllerRef.current = null;
     }
   };
 
