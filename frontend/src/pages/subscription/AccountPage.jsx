@@ -177,24 +177,54 @@ const AccountPage = () => {
                     </Badge>
                   </div>
                   {subscription?.trial_ends_at && subscription?.status === 'trial' && (
-                    <div className="flex justify-between items-center py-2 border-b">
-                      <span className="text-muted-foreground">Trial Ends</span>
-                      <span className="font-medium flex items-center gap-2">
-                        <Calendar className="h-4 w-4" />
-                        {formatDate(subscription.trial_ends_at)}
-                      </span>
-                    </div>
+                    <>
+                      <div className="flex justify-between items-center py-2 border-b">
+                        <span className="text-muted-foreground">Trial Ends</span>
+                        <span className="font-medium flex items-center gap-2">
+                          <Calendar className="h-4 w-4" />
+                          {formatDate(subscription.trial_ends_at)}
+                        </span>
+                      </div>
+                      {(() => {
+                        const days = getDaysRemaining(subscription.trial_ends_at);
+                        const display = getDaysRemainingDisplay(days);
+                        return display && (
+                          <div className="flex justify-between items-center py-2 border-b">
+                            <span className="text-muted-foreground">Time Remaining</span>
+                            <span className={`font-semibold px-3 py-1 rounded-full text-sm ${display.color} ${display.bgColor}`}>
+                              {display.text}
+                            </span>
+                          </div>
+                        );
+                      })()}
+                    </>
                   )}
                   {subscription?.renews_at && subscription?.status !== 'trial' && (
-                    <div className="flex justify-between items-center py-2 border-b">
-                      <span className="text-muted-foreground">
-                        {subscription?.status === 'canceled' ? 'Access Until' : 'Renews On'}
-                      </span>
-                      <span className="font-medium flex items-center gap-2">
-                        <Calendar className="h-4 w-4" />
-                        {formatDate(subscription.renews_at)}
-                      </span>
-                    </div>
+                    <>
+                      <div className="flex justify-between items-center py-2 border-b">
+                        <span className="text-muted-foreground">
+                          {subscription?.status === 'canceled' ? 'Access Until' : 'Renews On'}
+                        </span>
+                        <span className="font-medium flex items-center gap-2">
+                          <Calendar className="h-4 w-4" />
+                          {formatDate(subscription.renews_at)}
+                        </span>
+                      </div>
+                      {(() => {
+                        const days = getDaysRemaining(subscription.renews_at);
+                        const display = getDaysRemainingDisplay(days);
+                        return display && (
+                          <div className="flex justify-between items-center py-2 border-b">
+                            <span className="text-muted-foreground">
+                              {subscription?.status === 'canceled' ? 'Access Remaining' : 'Time Until Renewal'}
+                            </span>
+                            <span className={`font-semibold px-3 py-1 rounded-full text-sm ${display.color} ${display.bgColor}`}>
+                              {display.text}
+                            </span>
+                          </div>
+                        );
+                      })()}
+                    </>
                   )}
 
                   {/* Actions */}
