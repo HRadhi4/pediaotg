@@ -457,7 +457,8 @@ def extract_metrics_improved(ocr_text: str) -> Dict[str, Any]:
     # ================== FO2Hb ==================
     if 'FO2Hb' not in metrics:
         patterns = [
-            r'F[oO0][2,]?[Hh][bB]\s*[:\s]*(\d{2,3}[\.\,]?\d*)\s*%?',
+            r'F[oO0][2,]?[,\s]?[Hh][bB]\s*[:\s]*(\d{2,3}[\.\,]?\d*)\s*%?',
+            r'nol\s*(\d{2}[\.\,]\d)\s*%',  # OCR error for FO2Hb
         ]
         for pat in patterns:
             match = re.search(pat, text, re.IGNORECASE)
