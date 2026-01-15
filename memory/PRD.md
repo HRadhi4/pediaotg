@@ -107,6 +107,11 @@ Build a full SaaS-style web app "Pediatrics on the Go" with:
 ## Pending User Verification
 - [ ] Registration bug fix ("Body is disturbed or locked" error in AuthContext.jsx)
 - [ ] Vital Signs table header alignment
+- [ ] OCR accuracy on user's actual blood gas report images
+
+## Test Reports
+- `/app/test_reports/iteration_7.json` - OCR backend tests (15/15 passed)
+- `/app/tests/test_ocr_service.py` - Test file for OCR endpoints
 
 ## Last Updated
-January 13, 2026
+January 15, 2026
