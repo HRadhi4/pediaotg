@@ -226,15 +226,21 @@ def extract_metrics(lines: List[str]) -> Dict[str, Any]:
                         metrics['SO2'] = val
                 except: pass
         
-        # cK+ (potassium) - Radiometer format
-        if 'ck' in line_lower or 'k+' in line_lower or 'potassium' in line_lower:
-            match = re.search(r'(?:c)?k\+?[:\s]*(\d\.?\d*)', line_lower)
-            if match and 'K' not in metrics:
-                try:
-                    val = float(match.group(1))
-                    if 1.0 <= val <= 10.0:
-                        metrics['K'] = val
-                except: pass
+        # cK+ (potassium) - Radiometer format, handle OCR errors
+        if 'ck' in line_lower or 'k+' in line_lower or 'potassium' in line_lower or 'ckt' in line_lower:
+            patterns = [
+                r'(?:c)?k[+t]?[:\s]*(\d\.?\d*)',
+                r'ckt[:\s]*(\d\.?\d*)',
+            ]
+            for pat in patterns:
+                match = re.search(pat, line_lower)
+                if match and 'K' not in metrics:
+                    try:
+                        val = float(match.group(1))
+                        if 1.0 <= val <= 10.0:
+                            metrics['K'] = val
+                            break
+                    except: pass
         
         # cNa+ (sodium) - Radiometer format
         if 'cna' in line_lower or 'na+' in line_lower or 'sodium' in line_lower:
