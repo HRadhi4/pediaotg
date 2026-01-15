@@ -102,6 +102,14 @@ Build a full SaaS-style web app "Pediatrics on the Go" with:
   - Extracted `Section.jsx` shared component
   - Extracted `SepsisApproach.jsx` and `SeizureApproach.jsx`
   - Created `index.js` for exports
+- ✅ **Remember Me for Auto-Login**: Added checkbox on login page
+  - Saves email and password in localStorage when checked
+  - Auto-fills credentials on next visit
+  - Clears saved credentials when unchecked
+- ✅ **OCR Cancel Button**: Fixed stuck OCR issue
+  - Added Cancel button visible during OCR processing
+  - Properly aborts ongoing API request
+  - Resets UI state immediately
 
 ## Previous Changes (January 13, 2026)
 - ✅ **Fluid Replacement 2500ml Cap**: Applied to individual 8h and 16h periods, not just 24h total
