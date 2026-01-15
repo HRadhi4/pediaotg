@@ -188,15 +188,23 @@ def extract_metrics(lines: List[str]) -> Dict[str, Any]:
                         metrics['pCO2'] = val
                 except: pass
         
-        # pO2
-        if 'po2' in line_lower and 'fcohb' not in line_lower:
-            match = re.search(r'po2[:\s(t)]*\s*(\d{1,3}\.?\d*)', line_lower)
-            if match and 'pO2' not in metrics:
-                try:
-                    val = float(match.group(1))
-                    if 10 <= val <= 600:
-                        metrics['pO2'] = val
-                except: pass
+        # pO2 - handle OCR errors like "pd," instead of "pO2"
+        if 'po2' in line_lower or 'po,' in line_lower or 'pd,' in line_lower or 'pd2' in line_lower:
+            # Try multiple patterns for OCR variations
+            patterns = [
+                r'po2[:\s(t)]*\s*(\d{1,3}\.?\d*)',
+                r'p[od][,2][:\s(t)]*\s*(\d{1,3}\.?\d*)',
+                r'pd[,\s]*(\d{1,3}\.?\d*)',
+            ]
+            for pat in patterns:
+                match = re.search(pat, line_lower)
+                if match and 'pO2' not in metrics:
+                    try:
+                        val = float(match.group(1))
+                        if 10 <= val <= 600:
+                            metrics['pO2'] = val
+                            break
+                    except: pass
         
         # ctHb (total hemoglobin) - Radiometer format
         if 'cthb' in line_lower or 'hb' in line_lower or 'hgb' in line_lower:
