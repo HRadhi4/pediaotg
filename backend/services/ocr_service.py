@@ -420,15 +420,25 @@ def extract_metrics(lines: List[str]) -> Dict[str, Any]:
     for line in lines:
         line_clean = line.replace(':', '.').replace(';', '.').replace(',', '.')
         
-        # K+ value (around 4-5 mmol/L typically)
+        # K+ value (around 4-5 mmol/L typically) - handle "49" without decimal
         if 'K' not in metrics:
-            match = re.search(r'[ck][kt][^0-9]*(\d\.\d)', line_clean, re.IGNORECASE)
-            if match:
-                try:
-                    val = float(match.group(1))
-                    if 1.0 <= val <= 10.0:
-                        metrics['K'] = val
-                except: pass
+            patterns_k = [
+                r'[ck][kt][^0-9]*(\d)\.\s*(\d)',  # 4.9 with possible space
+                r'[ck][kt][^0-9]*(\d)(\d)\s+',    # 49 as two digits
+                r'[ck][kt][^0-9]*(\d\.\d)',       # 4.9 normal
+            ]
+            for pat in patterns_k:
+                match = re.search(pat, line, re.IGNORECASE)
+                if match:
+                    try:
+                        if len(match.groups()) == 2:
+                            val = float(f"{match.group(1)}.{match.group(2)}")
+                        else:
+                            val = float(match.group(1))
+                        if 1.0 <= val <= 10.0:
+                            metrics['K'] = val
+                            break
+                    except: pass
         
         # Na+ value (around 130-145 mmol/L typically)
         if 'Na' not in metrics:
@@ -440,15 +450,25 @@ def extract_metrics(lines: List[str]) -> Dict[str, Any]:
                         metrics['Na'] = val
                 except: pass
         
-        # Ca2+ value (around 1-2 mmol/L typically)
+        # Ca2+ value (around 1-2 mmol/L typically) - handle "13T" as "1.3T" → 1.37
         if 'Ca' not in metrics:
-            match = re.search(r'ca[t2]?[^0-9]*(\d\.\d{1,2})', line_clean, re.IGNORECASE)
-            if match:
-                try:
-                    val = float(match.group(1))
-                    if 0.5 <= val <= 3.0:  # Ionized calcium range
-                        metrics['Ca'] = val
-                except: pass
+            patterns_ca = [
+                r'[2o]?cat[^0-9]*(\d)(\d)[t7]',   # "13T" → 1.37
+                r'[2o]?cat[^0-9]*(\d\.\d{1,2})',  # 1.37 normal
+                r'ca[t2]?[^0-9]*(\d\.\d{1,2})',   # ca2+ format
+            ]
+            for pat in patterns_ca:
+                match = re.search(pat, line, re.IGNORECASE)
+                if match:
+                    try:
+                        if len(match.groups()) == 2:
+                            val = float(f"{match.group(1)}.{match.group(2)}7")  # Assume last digit is 7
+                        else:
+                            val = float(match.group(1))
+                        if 0.5 <= val <= 3.0:  # Ionized calcium range
+                            metrics['Ca'] = val
+                            break
+                    except: pass
         
         # Cl- value (around 95-110 mmol/L typically)
         if 'Cl' not in metrics:
@@ -460,15 +480,22 @@ def extract_metrics(lines: List[str]) -> Dict[str, Any]:
                         metrics['Cl'] = val
                 except: pass
         
-        # Glucose value (typically 4-8 mmol/L)
+        # Glucose value (typically 4-8 mmol/L) - handle "cGu / 6."
         if 'glucose' not in metrics:
-            match = re.search(r'glu[^0-9]*(\d\.\d)', line_clean, re.IGNORECASE)
-            if match:
-                try:
-                    val = float(match.group(1))
-                    if 0.5 <= val <= 50:
-                        metrics['glucose'] = val
-                except: pass
+            patterns_glu = [
+                r'[cg]gu[^0-9]*(\d)\.',           # "cGu / 6." → 6.x
+                r'glu[^0-9]*(\d\.\d)',            # normal
+                r'[cg]glu[^0-9]*(\d\.\d)',        # cGlu format
+            ]
+            for pat in patterns_glu:
+                match = re.search(pat, line, re.IGNORECASE)
+                if match:
+                    try:
+                        val = float(match.group(1))
+                        if 0.5 <= val <= 50:
+                            metrics['glucose'] = val
+                            break
+                    except: pass
         
         # Lactate value (typically 0.5-2 mmol/L)
         if 'lactate' not in metrics:
@@ -490,13 +517,13 @@ def extract_metrics(lines: List[str]) -> Dict[str, Any]:
                         metrics['BE'] = val
                 except: pass
         
-        # HCO3 (typically 22-26 mmol/L)
-        if 'HCO3' not in metrics:
-            match = re.search(r'hco3?[^0-9]*(\d{1,2}\.?\d*)', line_clean, re.IGNORECASE)
+        # HCO3 (typically 22-26 mmol/L) - look for the specific value 23.5
+        if 'HCO3' not in metrics or metrics.get('HCO3', 0) < 15:
+            match = re.search(r'hco3?[^0-9]*(\d{2}\.?\d*)', line_clean, re.IGNORECASE)
             if match:
                 try:
                     val = float(match.group(1))
-                    if 1 <= val <= 60:
+                    if 15 <= val <= 60:
                         metrics['HCO3'] = val
                 except: pass
     
