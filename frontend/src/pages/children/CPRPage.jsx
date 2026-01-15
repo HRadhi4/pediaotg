@@ -16,7 +16,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ArrowLeftIcon, HeartIcon } from "@/components/HealthIcons";
-import { AlertTriangle } from "lucide-react";
+import { AlertTriangle, ChevronDown } from "lucide-react";
 
 const CPRPage = ({ onBack }) => {
   const [activeTab, setActiveTab] = useState("arrest");
