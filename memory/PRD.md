@@ -115,9 +115,10 @@ Build a full SaaS-style web app "Pediatrics on the Go" with:
 - [ ] Implement Postnatal widget
 - [ ] Address minor linting errors in /pages/children/ components
 - [ ] Production deployment prep
-- [ ] Break down ApproachesPage.jsx (~2700 lines) into smaller sub-components
-  - Extract each approach (Sepsis, Seizure, Asthma, etc.) into separate component files
-  - Create shared Section component in /approaches/components/
+- [ ] Continue ApproachesPage refactoring (13 more approaches to extract):
+  - AsthmaApproach, TbiApproach, DkaApproach, AdrenalApproach, AnaphylaxisApproach
+  - ThrombocytopeniaApproach, HypocalcemiaApproach, DlocApproach, HeadacheApproach
+  - WeaknessApproach, GaitApproach, HyperkalemiaApproach, UgibApproach
 - [ ] Set up scheduled cron job for automated renewal reminders (currently manual trigger)
 
 ## Pending User Verification
