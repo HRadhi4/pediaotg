@@ -131,6 +131,30 @@ Build a full SaaS-style web app "Pediatrics on the Go" with:
 - ✅ **BloodGasDialog OCR Toggle Removed**: Simplified UI with single local OCR method
 - ✅ **BloodGasDialog Syntax Error Fixed**: Removed corrupted code causing frontend build failure
 
+## UI/UX Development Rules
+**IMPORTANT: These rules must be followed in ALL current and future builds**
+
+### Rule 1: Text Overflow Prevention
+- **Text must ALWAYS stay within its container** - never exceed or overflow
+- Global CSS rules added to `/app/frontend/src/index.css`:
+  - `overflow-wrap: break-word` on all elements
+  - `word-break: break-word` for long text
+  - `max-width: 100%` on all containers
+  - `min-width: 0` on flex/grid children
+  - `text-overflow: ellipsis` for table cells
+- Use utility classes when needed:
+  - `.truncate-text` - for single-line truncation with ellipsis
+  - `.wrap-text` - for forced word wrapping
+
+### Rule 2: Input Validation
+- Weight and age inputs must have `min="0"` to prevent negative values
+- Number inputs should validate for reasonable ranges
+
+### Rule 3: Mobile-First Design
+- All components must be responsive
+- Test on mobile viewport (390x844) before desktop
+- Use viewport meta tags for proper mobile rendering
+
 ## Backlog / Future Tasks
 - [ ] Add more drug entries
 - [ ] Implement Postnatal widget
