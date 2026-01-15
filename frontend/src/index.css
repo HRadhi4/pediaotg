@@ -10,8 +10,17 @@
   --font-mono: 'JetBrains Mono', monospace;
 }
 
+/* Ensure proper mobile rendering */
+html {
+  width: 100%;
+  overflow-x: hidden;
+}
+
 body {
   margin: 0;
+  width: 100%;
+  min-width: 320px;
+  overflow-x: hidden;
   font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -22,6 +31,8 @@ body {
   user-select: none;
   /* Disable touch callout (long-press menu on mobile) */
   -webkit-touch-callout: none;
+  /* Ensure smooth scrolling on iOS */
+  -webkit-overflow-scrolling: touch;
 }
 
 /* Allow selection in input fields */
