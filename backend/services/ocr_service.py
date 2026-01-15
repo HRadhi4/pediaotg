@@ -32,6 +32,9 @@ from PIL import Image
 
 logger = logging.getLogger(__name__)
 
+# Confidence threshold for warning about poor OCR quality
+LOW_CONFIDENCE_THRESHOLD = 0.6
+
 
 # ============================================================================
 # DATA CLASSES
