@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Checkbox } from '@/components/ui/checkbox';
 import { AlertCircle, Loader2 } from 'lucide-react';
 
 const LoginPage = () => {
@@ -12,8 +13,24 @@ const LoginPage = () => {
   const { login } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+
+  // Load remembered credentials on mount
+  useEffect(() => {
+    const remembered = localStorage.getItem('remembered_user');
+    if (remembered) {
+      try {
+        const { email: savedEmail, password: savedPassword } = JSON.parse(remembered);
+        setEmail(savedEmail || '');
+        setPassword(savedPassword || '');
+        setRememberMe(true);
+      } catch (e) {
+        localStorage.removeItem('remembered_user');
+      }
+    }
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -23,12 +40,25 @@ const LoginPage = () => {
     const result = await login(email, password);
 
     if (result.success) {
+      // Save or clear remembered credentials
+      if (rememberMe) {
+        localStorage.setItem('remembered_user', JSON.stringify({ email, password }));
+      } else {
+        localStorage.removeItem('remembered_user');
+      }
       navigate('/');
     } else {
       setError(result.error);
     }
 
     setLoading(false);
+  };
+
+  const handleRememberMeChange = (checked) => {
+    setRememberMe(checked);
+    if (!checked) {
+      localStorage.removeItem('remembered_user');
+    }
   };
 
   return (
@@ -60,6 +90,7 @@ const LoginPage = () => {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 disabled={loading}
+                data-testid="login-email"
               />
             </div>
 
@@ -73,18 +104,36 @@ const LoginPage = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 disabled={loading}
+                data-testid="login-password"
               />
-              <div className="text-right">
-                <Link to="/forgot-password" className="text-xs text-[#00d9c5] hover:underline">
-                  Forgot password?
-                </Link>
+            </div>
+
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="remember"
+                  checked={rememberMe}
+                  onCheckedChange={handleRememberMeChange}
+                  disabled={loading}
+                  data-testid="remember-me"
+                />
+                <Label 
+                  htmlFor="remember" 
+                  className="text-sm font-normal cursor-pointer text-muted-foreground"
+                >
+                  Remember me
+                </Label>
               </div>
+              <Link to="/forgot-password" className="text-xs text-[#00d9c5] hover:underline">
+                Forgot password?
+              </Link>
             </div>
 
             <Button
               type="submit"
               className="w-full bg-[#00d9c5] hover:bg-[#00c4b0] text-white"
               disabled={loading}
+              data-testid="login-submit"
             >
               {loading ? (
                 <>
