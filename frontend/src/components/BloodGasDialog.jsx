@@ -101,11 +101,20 @@ const BloodGasDialog = ({ open, onOpenChange }) => {
     setIsLoading(true);
     setOcrProgress(10);
     
+    // Simulate progress animation during API call
+    let progress = 10;
+    const progressInterval = setInterval(() => {
+      progress += Math.random() * 8 + 2; // Random increment between 2-10
+      if (progress < 85) {
+        setOcrProgress(Math.floor(progress));
+      }
+    }, 500);
+    
     try {
       const reader = new FileReader();
       reader.onloadend = async () => {
         const base64 = reader.result;
-        setOcrProgress(30);
+        setOcrProgress(25);
         
         try {
           // 100% local OCR (no external API)
@@ -113,10 +122,11 @@ const BloodGasDialog = ({ open, onOpenChange }) => {
             image_base64: base64
           }, {
             signal: abortControllerRef.current?.signal,
-            timeout: 60000 // 60 second timeout
+            timeout: 90000 // 90 second timeout
           });
           
-          setOcrProgress(90);
+          clearInterval(progressInterval);
+          setOcrProgress(95);
           
           if (response.data.success && response.data.values) {
             const parsedValues = response.data.values;
