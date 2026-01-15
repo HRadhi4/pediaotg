@@ -68,7 +68,8 @@ class OCRResult:
 
 def preprocess_bloodgas_image(image_b64: str) -> np.ndarray:
     """
-    Medical-grade preprocessing for blurry blood gas reports.
+    Medical-grade preprocessing for blood gas reports.
+    Optimized for Radiometer ABL800 FLEX and similar thermal printouts.
     
     Pipeline:
     1. Upscale to 300+ DPI equivalent (2x)
@@ -90,16 +91,19 @@ def preprocess_bloodgas_image(image_b64: str) -> np.ndarray:
     
     # 1. Upscale to 300+ DPI equivalent (2x for better OCR)
     h, w = img.shape[:2]
-    img = cv2.resize(img, (w * 2, h * 2), interpolation=cv2.INTER_CUBIC)
+    # For larger images, use 1.5x; for smaller ones, use 2x
+    scale = 2.0 if max(h, w) < 1500 else 1.5
+    img = cv2.resize(img, (int(w * scale), int(h * scale)), interpolation=cv2.INTER_CUBIC)
     
     # 2. Grayscale + CLAHE contrast (medical docs gold standard)
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    clahe = cv2.createCLAHE(clipLimit=3.0, tileGridSize=(8, 8))
+    clahe = cv2.createCLAHE(clipLimit=2.5, tileGridSize=(8, 8))
     enhanced = clahe.apply(gray)
     
-    # 3. Denoise (Gaussian + median for blood gas artifacts)
-    denoised = cv2.GaussianBlur(enhanced, (3, 3), 0)
-    denoised = cv2.medianBlur(denoised, 3)
+    # 3. Denoise (Gaussian + bilateral for preserving edges)
+    # Bilateral filter preserves edges better for text
+    denoised = cv2.bilateralFilter(enhanced, 9, 75, 75)
+    denoised = cv2.GaussianBlur(denoised, (3, 3), 0)
     
     # 4. Deskew (critical for rotated printouts)
     try:
@@ -119,17 +123,28 @@ def preprocess_bloodgas_image(image_b64: str) -> np.ndarray:
     except Exception as e:
         logger.warning(f"Deskew failed, continuing without: {e}")
     
-    # 5. Adaptive binarize (Otsu + morphology for faded ink)
-    thresh = cv2.adaptiveThreshold(
+    # 5. Adaptive binarize with Otsu's method for better threshold selection
+    # First try Otsu's method
+    _, otsu_thresh = cv2.threshold(denoised, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+    
+    # Also get adaptive threshold
+    adaptive_thresh = cv2.adaptiveThreshold(
         denoised, 255, 
         cv2.ADAPTIVE_THRESH_GAUSSIAN_C, 
         cv2.THRESH_BINARY, 
-        11, 2
+        15, 4  # Slightly larger block size for thermal printouts
     )
     
-    # Morphological cleanup to fill gaps
-    kernel = np.ones((1, 1), np.uint8)
-    cleaned = cv2.morphologyEx(thresh, cv2.MORPH_CLOSE, kernel)
+    # Use the one with more white pixels (better text extraction)
+    if np.sum(otsu_thresh == 255) > np.sum(adaptive_thresh == 255):
+        cleaned = otsu_thresh
+    else:
+        cleaned = adaptive_thresh
+    
+    # Morphological cleanup to fill gaps and remove noise
+    kernel = np.ones((2, 2), np.uint8)
+    cleaned = cv2.morphologyEx(cleaned, cv2.MORPH_CLOSE, kernel)
+    cleaned = cv2.morphologyEx(cleaned, cv2.MORPH_OPEN, np.ones((1, 1), np.uint8))
     
     return cleaned
 
