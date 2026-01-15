@@ -371,10 +371,11 @@ def extract_metrics_improved(ocr_text: str) -> Dict[str, Any]:
                     continue
     
     # ================== Oxygen Saturation (SO2/sO2) ==================
-    # Common patterns: "sO2 99.3%", "[ sO, 99.", "sO, O6.2"
+    # Common patterns: "sO2 99.3%", "[ sO, 99.", "sO, O6.2", "30, 97.4"
     if 'SO2' not in metrics:
         patterns = [
-            r's[oO0][2,]?\s*[:\s]*(\d{2,3}[\.\,]?\d*)\s*%?',
+            r'[s3][oO0][2,]?\s*[:\s]*[O0]?(\d{2}[\.\,]?\d*)\s*%?',
+            r'met\s*(\d{2}[\.\,]\d)\s*[%Yo]',  # OCR error "met 97.4 %"
             r'Saturation[^\d]*(\d{2,3}[\.\,]?\d*)',
         ]
         for pat in patterns:
