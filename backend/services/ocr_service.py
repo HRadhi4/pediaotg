@@ -517,15 +517,21 @@ def extract_metrics(lines: List[str]) -> Dict[str, Any]:
                         metrics['BE'] = val
                 except: pass
         
-        # HCO3 (typically 22-26 mmol/L) - look for the specific value 23.5
+        # HCO3 (typically 22-26 mmol/L) - look for cHCO3 pattern
         if 'HCO3' not in metrics or metrics.get('HCO3', 0) < 15:
-            match = re.search(r'hco3?[^0-9]*(\d{2}\.?\d*)', line_clean, re.IGNORECASE)
-            if match:
-                try:
-                    val = float(match.group(1))
-                    if 15 <= val <= 60:
-                        metrics['HCO3'] = val
-                except: pass
+            patterns_hco3 = [
+                r'chco[,3]?[^0-9]*(\d{2}\.\d)',   # cHCO3 23.6
+                r'hco3?[^0-9]*(\d{2}\.?\d*)',     # HCO3 23.5
+            ]
+            for pat in patterns_hco3:
+                match = re.search(pat, line, re.IGNORECASE)
+                if match:
+                    try:
+                        val = float(match.group(1))
+                        if 15 <= val <= 60:
+                            metrics['HCO3'] = val
+                            break
+                    except: pass
     
     return metrics
 
