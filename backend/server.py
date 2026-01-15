@@ -123,7 +123,7 @@ async def get_status_checks():
 class OCRRequest(BaseModel):
     """Request model for generic OCR endpoint"""
     image_base64: str
-    language: str = "en"  # Supports 'en', 'arabic', 'multilingual'
+    language: str = "eng"  # Supports 'en', 'arabic', 'multilingual'
     return_bboxes: bool = False
 
 
@@ -204,7 +204,7 @@ async def analyze_blood_gas_image_offline(request: BloodGasInput):
         # Perform OCR using 100% local medical-grade Tesseract
         ocr_result = await perform_paddle_ocr(
             image_base64=request.image_base64,
-            language="en",
+            language="eng",
             return_bboxes=False
         )
         
@@ -264,7 +264,7 @@ async def analyze_blood_gas_image(request: BloodGasInput):
         # Step 1: Perform OCR using 100% local medical-grade Tesseract
         ocr_result = await perform_paddle_ocr(
             image_base64=request.image_base64,
-            language="en",
+            language="eng",
             return_bboxes=True
         )
         
