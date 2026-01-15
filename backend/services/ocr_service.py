@@ -157,20 +157,22 @@ def extract_metrics_improved(ocr_text: str) -> Dict[str, Any]:
     # Common OCR patterns: "pH 7.456", "pH T 456)", "pH(T) 7.318", "py 7.3196", "? pH(T ) 7.196"
     if 'pH' not in metrics:
         patterns = [
-            r'[?\s]*pH?\s*[\(\[]?\s*T?\s*[\)\]]?\s*[:\|]?\s*([67][\.\,]\d{2,4})',  # pH(T) 7.196, py 7.3196
-            r'pH\s*[T\(\)]?\s*[:\s]*([67][\.\,]?\d{2,3})',
-            r'([67][\.\,]\d{3,4})\s*[\|\]]',  # 7.3196 |
+            r'[?\s]*pH?\s*[\(\[]?\s*T?\s*[\)\]]?\s*[:\|]?\s*([67][\.\,]\d{2,4})',  # pH(T) 7.196
+            r'pH\s*T?\s*[\)\]]?\s*(\d{3,4})\s*[\)\]]',  # pH T 456) -> 7.456
+            r'([67][\.\,]\d{3,4})\s*[\|\]]',
         ]
         for pat in patterns:
             match = re.search(pat, text, re.IGNORECASE)
             if match:
                 val_str = match.group(1).replace(',', '.')
-                # Handle cases like "73196" -> "7.3196" -> "7.32"
-                if '.' not in val_str and len(val_str) >= 4:
-                    val_str = val_str[0] + '.' + val_str[1:]
+                # Handle cases like "456" -> "7.456" or "7456" -> "7.456"
+                if '.' not in val_str:
+                    if len(val_str) == 3:  # 456 -> 7.456
+                        val_str = '7.' + val_str
+                    elif len(val_str) >= 4:  # 7456 -> 7.456
+                        val_str = val_str[0] + '.' + val_str[1:]
                 try:
                     val = float(val_str)
-                    # Round to 3 decimal places
                     if 6.5 <= val <= 8.0:
                         metrics['pH'] = round(val, 3)
                         break
