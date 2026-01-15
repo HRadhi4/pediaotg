@@ -4,22 +4,15 @@ Medical-Grade OCR Service - Optimized Tesseract for Blood Gas Reports
 
 100% LOCAL - No HTTP/Cloud dependencies.
 
-This module provides OCR optimized for blurry medical documents with:
-- 2x upscaling to 300+ DPI equivalent
-- CLAHE adaptive contrast enhancement
-- Gaussian + median denoising
-- Automatic deskew for rotated printouts
-- Adaptive binarization for faded ink
-- Medical-specific regex parsing
+This module provides OCR optimized for blood gas report photos with:
+- Adaptive preprocessing for different image qualities
+- Multiple OCR passes with different settings
+- Medical-specific regex parsing for blood gas values
 
-Expected accuracy gains:
-- Blurry → 300DPI upscale: +20-50%
-- CLAHE contrast: Medical docs essential
-- Deskew + adaptive thresh: +15-25% on rotated/faded
+Supports Radiometer ABL800 FLEX and similar medical analyzer printouts.
 """
 
 import base64
-import io
 import re
 import logging
 from typing import Optional, List, Dict, Any, Tuple
@@ -28,7 +21,6 @@ from dataclasses import dataclass, asdict, field
 import cv2
 import numpy as np
 import pytesseract
-from PIL import Image
 
 logger = logging.getLogger(__name__)
 
@@ -77,144 +69,113 @@ class OCRResult:
 # IMAGE PREPROCESSING
 # ============================================================================
 
-def preprocess_bloodgas_image(image_b64: str) -> np.ndarray:
-    """
-    Medical-grade preprocessing for blood gas reports.
-    Optimized for Radiometer ABL800 FLEX and similar thermal printouts.
-    
-    Pipeline:
-    1. Upscale to 300+ DPI equivalent (2x)
-    2. Grayscale + CLAHE contrast enhancement
-    3. Gaussian + median denoising
-    4. Automatic deskew
-    5. Adaptive binarization with morphology cleanup
-    """
-    # Clean base64 if it has data URL prefix
+def decode_base64_image(image_b64: str) -> np.ndarray:
+    """Decode base64 image to OpenCV format."""
     if "," in image_b64:
         image_b64 = image_b64.split(",")[1]
-    
-    # Decode image
     img_bytes = base64.b64decode(image_b64)
     img = cv2.imdecode(np.frombuffer(img_bytes, np.uint8), cv2.IMREAD_COLOR)
-    
     if img is None:
         raise ValueError("Could not decode image")
-    
-    # 1. Upscale to 300+ DPI equivalent (2x for better OCR)
+    return img
+
+
+def preprocess_simple(img: np.ndarray) -> np.ndarray:
+    """Simple preprocessing - just grayscale."""
+    return cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+
+def preprocess_clahe(img: np.ndarray, scale: float = 1.5) -> np.ndarray:
+    """Light upscale with CLAHE contrast enhancement - best for most blood gas reports."""
     h, w = img.shape[:2]
-    scale = 2.0 if max(h, w) < 1500 else 1.5
-    img = cv2.resize(img, (int(w * scale), int(h * scale)), interpolation=cv2.INTER_CUBIC)
-    
-    # 2. Grayscale + CLAHE contrast (medical docs gold standard)
+    if scale != 1.0:
+        img = cv2.resize(img, (int(w * scale), int(h * scale)), interpolation=cv2.INTER_CUBIC)
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    clahe = cv2.createCLAHE(clipLimit=2.5, tileGridSize=(8, 8))
-    enhanced = clahe.apply(gray)
-    
-    # 3. Denoise (bilateral for preserving edges)
-    denoised = cv2.bilateralFilter(enhanced, 9, 75, 75)
-    denoised = cv2.GaussianBlur(denoised, (3, 3), 0)
-    
-    # 4. Deskew (critical for rotated printouts)
-    try:
-        coords = np.column_stack(np.where(denoised > 0))
-        if len(coords) > 100:
-            angle = cv2.minAreaRect(coords)[-1]
-            if angle < -45:
-                angle = -(90 + angle)
-            else:
-                angle = -angle
-            
-            if abs(angle) > 0.5 and abs(angle) < 15:
-                (h, w) = denoised.shape[:2]
-                M = cv2.getRotationMatrix2D((w // 2, h // 2), angle, 1.0)
-                denoised = cv2.warpAffine(denoised, M, (w, h), flags=cv2.INTER_CUBIC, borderMode=cv2.BORDER_REPLICATE)
-    except Exception as e:
-        logger.warning(f"Deskew failed, continuing without: {e}")
-    
-    # 5. Adaptive binarize with Otsu's method
-    _, otsu_thresh = cv2.threshold(denoised, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
-    adaptive_thresh = cv2.adaptiveThreshold(
-        denoised, 255, 
-        cv2.ADAPTIVE_THRESH_GAUSSIAN_C, 
-        cv2.THRESH_BINARY, 
-        15, 4
+    clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
+    return clahe.apply(gray)
+
+
+def preprocess_denoise(img: np.ndarray) -> np.ndarray:
+    """Denoise preprocessing for noisy images."""
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    return cv2.fastNlMeansDenoising(gray, None, 10, 7, 21)
+
+
+def preprocess_bloodgas_image(image_b64: str) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """
+    Generate multiple preprocessed versions of the image for OCR.
+    Returns tuple of (simple, clahe, denoised) versions.
+    """
+    img = decode_base64_image(image_b64)
+    return (
+        preprocess_simple(img),
+        preprocess_clahe(img, scale=1.5),
+        preprocess_denoise(img)
     )
-    
-    # Use the one with more white pixels
-    if np.sum(otsu_thresh == 255) > np.sum(adaptive_thresh == 255):
-        cleaned = otsu_thresh
-    else:
-        cleaned = adaptive_thresh
-    
-    # Morphological cleanup
-    kernel = np.ones((2, 2), np.uint8)
-    cleaned = cv2.morphologyEx(cleaned, cv2.MORPH_CLOSE, kernel)
-    cleaned = cv2.morphologyEx(cleaned, cv2.MORPH_OPEN, np.ones((1, 1), np.uint8))
-    
-    return cleaned
 
 
 # ============================================================================
-# METRIC EXTRACTION - Consolidated Regex Parsing
+# METRIC EXTRACTION - Medical-specific regex patterns
 # ============================================================================
 
-# Define all metric patterns in a single dictionary for maintainability
 METRIC_PATTERNS: Dict[str, Dict[str, Any]] = {
     'pH': {
         'patterns': [
-            r'ph\s*[:\(]?\s*T?\s*\)?\s*:?\s*([67]\.\d{1,3})',
+            r'pH\s*[:\(]?\s*T?\s*\)?\s*:?\s*([67]\.\d{1,3})',
             r'([67]\.\d{2,3})\s*(?:te|pH)',
+            r'DH\s+([67]\.\d{1,3})',  # OCR error for pH
         ],
         'range': (6.5, 8.0),
         'flags': re.IGNORECASE,
     },
     'pCO2': {
         'patterns': [
-            r'p[cC][oO0]2?\s*\(?[tT]?\)?\s*:?\s*(\d{1,3}\.?\d*)',
-            r'pCc[oO0]\(?[tT]?\)?\s*:?\s*(\d{1,3}\.?\d*)',
-            r'PCO[^0-9]*(\d{1,3}\.?\d*)',
+            r'p[cC][oO0]2?\s*[:\(]?\s*T?\s*\)?\s*:?\s*(\d{1,3}\.?\d*)',
+            r'PCO[,2]?\s*(\d{1,3}\.?\d*)',
+            r'pCO[,2]?\s*(\d{1,3}\.?\d*)\s*(?:mmHg|mm)',
         ],
         'range': (10, 150),
-        'flags': 0,
+        'flags': re.IGNORECASE,
     },
     'pO2': {
         'patterns': [
-            r'p[oO]2?\s*\(?[tT]?\)?\s*:?\s*(\d{1,3}\.?\d*)',
-            r'pT\)\s*:?\s*(\d{1,3}\.?\d*)',
-            r'PO2[^0-9]*(\d{1,3}\.?\d*)',
+            r'p[oO]2?\s*[:\(]?\s*T?\s*\)?\s*:?\s*(\d{1,3}\.?\d*)',
+            r'PO[,2]?\s*(\d{1,3}\.?\d*)',
+            r'pO[,2]?\s*(\d{1,3}\.?\d*)\s*(?:mmHg|mm)',
         ],
         'range': (10, 600),
-        'flags': 0,
+        'flags': re.IGNORECASE,
     },
     'HCO3': {
         'patterns': [
-            r'[cC]HCO3?[^0-9]*(\d{1,2}\.?\d*)',
-            r'CHOO[sS][^0-9]*(\d{1,2}\.?\d*)',
-            r'HCO3[^0-9]*(\d{1,2}\.?\d*)',
+            r'[cC]?HCO3?[-]?\s*[:\(]?\s*P?\s*,?\s*st?\s*\)?\s*c?\s*:?\s*(\d{1,2}\.?\d*)',
+            r'HCO3\s*(\d{1,2}\.?\d*)',
+            r'Bicarb[^0-9]*(\d{1,2}\.?\d*)',
         ],
         'range': (5, 60),
-        'flags': 0,
+        'flags': re.IGNORECASE,
     },
     'BE': {
         'patterns': [
-            r'[cC]?BASE\s*[EeGg]?\s*\(?[Ee]?[Cc]?[Ff]?\)?\s*:?\s*([-+]?\d{1,2}\.?\d*)',
-            r'cBase\(Ecf\)[^0-9]*([-+]?\d{1,2}\.?\d*)',
+            r'[cC]?Base\s*\(?[Ee]?[Cc]?[Ff]?\)?\s*[cC]?\s*:?\s*([-+]?\d{1,2}\.?\d*)',
             r'BE[cC]?\s*:?\s*([-+]?\d{1,2}\.?\d*)',
+            r'Base\s*Excess[^0-9]*([-+]?\d{1,2}\.?\d*)',
         ],
         'range': (-30, 30),
         'flags': re.IGNORECASE,
     },
     'Na': {
         'patterns': [
-            r'[cC]?Na[t+]?\s*:?\s*(\d{2,3})(?:\s*mm[oO]l)?',
+            r'[cC]?Na[t+]?\s*:?\s*(\d{2,3})(?:\s*(?:mmol|mmo))?',
             r'Sodium[^0-9]*(\d{2,3})',
+            r'3Na[t+]?\s*(\d{2,3})',  # OCR misread cNa as 3Na
         ],
         'range': (100, 180),
         'flags': 0,
     },
     'K': {
         'patterns': [
-            r'[cC]?K[t+]?\s*:?\s*(\d\.\d{1,2})(?:\s*mm[oO]l)?',
+            r'[cC>]?K[t+*]?\s*:?\s*(\d\.\d{1,2})(?:\s*(?:mmol|mmo))?',
             r'Potassium[^0-9]*(\d\.\d{1,2})',
         ],
         'range': (1.0, 10.0),
@@ -222,26 +183,27 @@ METRIC_PATTERNS: Dict[str, Dict[str, Any]] = {
     },
     'Cl': {
         'patterns': [
-            r'[cC]?Cl[-]?\s*:?\s*(\d{2,3})(?:\s*mm[oO]l)?',
+            r'[cCes]?Cl[-]?\s*:?\s*(\d{2,3})(?:\s*(?:mmol|mmo))?',
             r'Chloride[^0-9]*(\d{2,3})',
         ],
-        'range': (70, 130),
+        'range': (70, 150),
         'flags': 0,
     },
     'Ca': {
         'patterns': [
-            r'[cC]?Ca2?\+?\s*:?\s*(\d\.\d{1,2})(?:\s*mm[oO]l)?',
+            r'[cCes]?Ca2?\+?\s*:?\s*(\d\.\d{1,2})(?:\s*(?:mmol|mmo))?',
             r'Calcium[^0-9]*(\d\.\d{1,2})',
+            r'5Ca2?\+?\s*(\d\.\d{1,2})',  # OCR misread
         ],
         'range': (0.5, 3.0),
         'flags': 0,
     },
     'Hb': {
         'patterns': [
-            r'[cC]t[Hh][bB]\s*:?\s*(\d{1,2}\.?\d*)(?:\s*g/[dD]L)?',
-            r'Hb\s*:?\s*(\d{1,2}\.?\d*)',
+            r'[cCes]?t?[Hh][bB]\s*:?\s*(\d{1,2}\.?\d*)(?:\s*g/[dD]L)?',
+            r'ctHb\s*(\d{1,2}\.?\d*)',
+            r'StHb\s*(\d{1,2}\.?\d*)',  # OCR error
             r'Hemoglobin[^0-9]*(\d{1,2}\.?\d*)',
-            r'othib\s*(\d{1,2}\.?\d*)',  # OCR error for ctHb
         ],
         'range': (3, 25),
         'flags': re.IGNORECASE,
@@ -249,6 +211,7 @@ METRIC_PATTERNS: Dict[str, Dict[str, Any]] = {
     'SO2': {
         'patterns': [
             r's[oO]2\s*:?\s*(\d{1,3}\.?\d*)(?:\s*%)?',
+            r'30[,2]?\s*(\d{1,3}\.?\d*)\s*%',  # OCR error for sO2
             r'Saturation[^0-9]*(\d{1,3}\.?\d*)',
         ],
         'range': (0, 100),
@@ -256,7 +219,9 @@ METRIC_PATTERNS: Dict[str, Dict[str, Any]] = {
     },
     'lactate': {
         'patterns': [
-            r'[cC]?Lac\s*:?\s*(\d{1,2}\.?\d*)(?:\s*mm[oO]l)?',
+            r'[cCes]?Lac\s*:?\s*(\d{1,2}\.?\d*)(?:\s*(?:mmol|mmo))?',
+            r'slac\s*(\d{1,2}\.?\d*)',  # OCR error
+            r'eLac\s*(\d{1,2}\.?\d*)',  # OCR error
             r'Lactate[^0-9]*(\d{1,2}\.?\d*)',
         ],
         'range': (0, 30),
@@ -264,7 +229,8 @@ METRIC_PATTERNS: Dict[str, Dict[str, Any]] = {
     },
     'glucose': {
         'patterns': [
-            r'[cC]?Glu\s*:?\s*(\d{1,3}\.?\d*)(?:\s*mm[oO]l)?',
+            r'[cCes]?Glu\s*:?\s*(\d{1,3}\.?\d*)(?:\s*(?:mmol|mmo))?',
+            r'eGlu\s*(\d{1,3}\.?\d*)',  # OCR error
             r'Glucose[^0-9]*(\d{1,3}\.?\d*)',
         ],
         'range': (0.5, 50),
@@ -285,13 +251,43 @@ METRIC_PATTERNS: Dict[str, Dict[str, Any]] = {
         'range': (10, 70),
         'flags': re.IGNORECASE,
     },
-    'AnionGap': {
+    'ctO2': {
         'patterns': [
-            r'Anion\s*Gap[^0-9]*(\d{1,2}\.?\d*)',
-            r'AG\s*:?\s*(\d{1,2}\.?\d*)',
+            r'[cCes]?tO2[cC]?\s*:?\s*(\d{1,2}\.?\d*)(?:\s*Vol%)?',
+            r'LC\s*(\d{1,2}\.?\d*)\s*Vol%',  # OCR error
         ],
-        'range': (3, 30),
+        'range': (5, 30),
+        'flags': 0,
+    },
+    'Bilirubin': {
+        'patterns': [
+            r'[cCes]?t?Bil\s*:?\s*(\d{1,3}\.?\d*)(?:\s*(?:umol|µmol))?',
+            r'stBil\s*(\d{1,3}\.?\d*)',
+        ],
+        'range': (0, 500),
         'flags': re.IGNORECASE,
+    },
+    'FO2Hb': {
+        'patterns': [
+            r'F[oO]2?[Hh][bB]\s*:?\s*(\d{1,3}\.?\d*)(?:\s*%)?',
+        ],
+        'range': (0, 100),
+        'flags': 0,
+    },
+    'FCOHb': {
+        'patterns': [
+            r'F?COHb\s*:?\s*(\d{1,2}\.?\d*)(?:\s*%)?',
+            r'~COHb\s*(\d{1,2}\.?\d*)',  # OCR error
+        ],
+        'range': (0, 100),
+        'flags': 0,
+    },
+    'FMetHb': {
+        'patterns': [
+            r'F?Met[Hh][bB]\s*:?\s*(\d{1,2}\.?\d*)(?:\s*%)?',
+        ],
+        'range': (0, 100),
+        'flags': 0,
     },
 }
 
@@ -299,8 +295,6 @@ METRIC_PATTERNS: Dict[str, Dict[str, Any]] = {
 def extract_metrics(lines: List[str]) -> Dict[str, Any]:
     """
     Parse common blood gas parameters from OCR lines.
-    Optimized for Radiometer ABL800 FLEX format with heavy noise tolerance.
-    
     Uses consolidated pattern matching for cleaner, more maintainable code.
     """
     metrics = {}
@@ -340,102 +334,121 @@ def parse_blood_gas_from_ocr_text(ocr_text: str) -> Dict[str, Any]:
 # MAIN OCR FUNCTION
 # ============================================================================
 
+def run_tesseract(processed_img: np.ndarray, psm_mode: int = 4, language: str = "eng") -> Tuple[str, float, List[OCRBlock]]:
+    """
+    Run Tesseract OCR on a processed image.
+    
+    Returns:
+        Tuple of (full_text, avg_confidence, blocks)
+    """
+    # PSM 4: Assume a single column of text of variable sizes
+    # This works best for medical report layouts
+    config = f'--psm {psm_mode} --oem 3'
+    
+    # Get detailed data with confidence scores
+    data = pytesseract.image_to_data(
+        processed_img, 
+        lang=language, 
+        config=config,
+        output_type=pytesseract.Output.DICT
+    )
+    
+    blocks = []
+    confidences = []
+    
+    for i, conf in enumerate(data['conf']):
+        if conf > 0:
+            text = data['text'][i].strip()
+            if text:
+                blocks.append(OCRBlock(
+                    text=text,
+                    confidence=float(conf) / 100.0,
+                    bbox=[
+                        float(data['left'][i]),
+                        float(data['top'][i]),
+                        float(data['width'][i]),
+                        float(data['height'][i])
+                    ]
+                ))
+                confidences.append(float(conf))
+    
+    # Get full text
+    full_text = pytesseract.image_to_string(processed_img, lang=language, config=config)
+    
+    avg_confidence = sum(confidences) / len(confidences) if confidences else 0.0
+    
+    return full_text, avg_confidence, blocks
+
+
 async def perform_ocr(
     image_base64: str,
     language: str = "eng",
     enhanced: bool = True,
-    psm_mode: int = 6,
+    psm_mode: int = 4,
     **kwargs
 ) -> OCRResult:
     """
     Perform OCR on a base64-encoded image using Tesseract.
     
+    Uses multiple preprocessing approaches and selects the best result
+    based on metrics extraction success.
+    
     Args:
         image_base64: Base64-encoded image data
         language: Tesseract language code (default: "eng")
-        enhanced: Whether to apply medical-grade preprocessing (default: True)
-        psm_mode: Tesseract Page Segmentation Mode (default: 6 - single block)
+        enhanced: Whether to try multiple preprocessing approaches (default: True)
+        psm_mode: Tesseract Page Segmentation Mode (default: 4 - single column)
     
     Returns:
         OCRResult with extracted text, confidence, and parsed metrics
     """
     try:
-        # Apply preprocessing
         if enhanced:
-            processed_img = preprocess_bloodgas_image(image_base64)
+            # Try multiple preprocessing approaches
+            simple, clahe, denoised = preprocess_bloodgas_image(image_base64)
+            
+            best_result = None
+            best_metric_count = -1
+            
+            # Test each preprocessing with PSM 4 (best for columnar medical reports)
+            for name, processed in [("clahe", clahe), ("simple", simple), ("denoised", denoised)]:
+                try:
+                    full_text, avg_conf, blocks = run_tesseract(processed, psm_mode=4, language=language)
+                    lines = [line.strip() for line in full_text.split('\n') if line.strip()]
+                    metrics = extract_metrics(lines)
+                    
+                    # Score: metric count + confidence bonus
+                    score = len(metrics) * 10 + avg_conf
+                    
+                    if score > best_metric_count:
+                        best_metric_count = score
+                        best_result = (full_text, avg_conf, blocks, lines, metrics)
+                except Exception as e:
+                    logger.warning(f"OCR pass {name} failed: {e}")
+                    continue
+            
+            if best_result:
+                full_text, avg_conf, blocks, lines, metrics = best_result
+            else:
+                # Fallback to simple grayscale if all enhanced methods failed
+                full_text, avg_conf, blocks = run_tesseract(simple, psm_mode=4, language=language)
+                lines = [line.strip() for line in full_text.split('\n') if line.strip()]
+                metrics = extract_metrics(lines)
         else:
             # Basic decode without preprocessing
-            if "," in image_base64:
-                image_base64 = image_base64.split(",")[1]
-            img_bytes = base64.b64decode(image_base64)
-            nparr = np.frombuffer(img_bytes, np.uint8)
-            processed_img = cv2.imdecode(nparr, cv2.IMREAD_GRAYSCALE)
-        
-        if processed_img is None:
-            return OCRResult(
-                success=False,
-                ocr_text="",
-                ocr_blocks=[],
-                avg_confidence=0.0,
-                error_message="Failed to process image"
-            )
-        
-        # Tesseract configuration for medical documents
-        custom_config = f'--psm {psm_mode} --oem 3 -c tessedit_char_whitelist=0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.+-:()/%'
-        
-        # Get detailed data with confidence scores
-        data = pytesseract.image_to_data(
-            processed_img, 
-            lang=language, 
-            config=custom_config,
-            output_type=pytesseract.Output.DICT
-        )
-        
-        # Process blocks and calculate confidence
-        blocks = []
-        confidences = []
-        texts = []
-        
-        for i, conf in enumerate(data['conf']):
-            if conf > 0:  # Only valid detections
-                text = data['text'][i].strip()
-                if text:
-                    blocks.append(OCRBlock(
-                        text=text,
-                        confidence=float(conf) / 100.0,
-                        bbox=[
-                            float(data['left'][i]),
-                            float(data['top'][i]),
-                            float(data['width'][i]),
-                            float(data['height'][i])
-                        ]
-                    ))
-                    confidences.append(float(conf))
-                    texts.append(text)
-        
-        # Also get full text for line-based parsing
-        full_text = pytesseract.image_to_string(
-            processed_img, 
-            lang=language, 
-            config=custom_config
-        )
-        
-        # Split into lines
-        lines = [line.strip() for line in full_text.split('\n') if line.strip()]
-        
-        # Calculate average confidence
-        avg_confidence = sum(confidences) / len(confidences) if confidences else 0.0
-        
-        # Extract medical metrics
-        key_metrics = extract_metrics(lines)
+            img = decode_base64_image(image_base64)
+            processed = preprocess_simple(img)
+            full_text, avg_conf, blocks = run_tesseract(processed, psm_mode=psm_mode, language=language)
+            lines = [line.strip() for line in full_text.split('\n') if line.strip()]
+            metrics = extract_metrics(lines)
         
         return OCRResult(
             success=True,
             ocr_text=full_text,
             ocr_blocks=blocks,
-            avg_confidence=avg_confidence / 100.0,  # Normalize to 0-1
+            avg_confidence=avg_conf / 100.0,  # Normalize to 0-1
             lines=lines,
-            key_metrics=key_metrics
+            key_metrics=metrics
         )
         
     except Exception as e:
