@@ -145,6 +145,7 @@ const ApproachesPage = ({ onBack }) => {
                 placeholder="kg"
                 value={weight}
                 onChange={(e) => setWeight(e.target.value)}
+                min="0"
                 className="font-mono mt-1"
                 data-testid="approaches-weight-input"
               />
@@ -156,6 +157,7 @@ const ApproachesPage = ({ onBack }) => {
                 placeholder="years"
                 value={age}
                 onChange={(e) => setAge(e.target.value)}
+                min="0"
                 className="font-mono mt-1"
                 data-testid="approaches-age-input"
               />

@@ -174,7 +174,7 @@ const GenitalsSVG = ({ score }) => {
 
 const BallardScorePage = () => {
   const [neuromuscularScores, setNeuromuscularScores] = useState({
-    posture: -1, squareWindow: -1, armRecoil: -1,
+    posture: 0, squareWindow: -1, armRecoil: 0,
     poplitealAngle: -1, scarfSign: -1, heelToEar: -1
   });
   
