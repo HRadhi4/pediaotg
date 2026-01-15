@@ -304,10 +304,11 @@ def extract_metrics_improved(ocr_text: str) -> Dict[str, Any]:
                     continue
     
     # ================== Calcium (Ca) ==================
-    # Common patterns: "cCa2+ 1.37", "? cCa 1.37", "cia 1.36"
+    # Common patterns: "cCa2+ 1.37", "? cCa 1.37", "cia 1.36", "Ca?" 431" (needs decimal fix)
     if 'Ca' not in metrics:
         patterns = [
-            r'[?co]?\s*c?[Cc]a2?\+?\s*[:\s]*(\d[\.\,]\d{1,2})',
+            r'[?sco]?\s*c?[Cc]a2?[\+\?"]?\s*[:\s]*(\d[\.\,]\d{1,2})',
+            r'[Cc]a[\?"]?\s*(\d{3})\s*mmol',  # Ca?" 431 -> 1.31
             r'cia\s*(\d[\.\,]\d{1,2})',  # OCR error
             r'Calcium[^\d]*(\d[\.\,]\d{1,2})',
         ]
@@ -317,6 +318,9 @@ def extract_metrics_improved(ocr_text: str) -> Dict[str, Any]:
                 val_str = match.group(1).replace(',', '.')
                 try:
                     val = float(val_str)
+                    # Handle 3-digit values like 431 -> 1.31
+                    if val > 10:
+                        val = val / 100.0
                     if 0.5 <= val <= 3.0:
                         metrics['Ca'] = round(val, 2)
                         break
