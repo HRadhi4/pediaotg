@@ -258,15 +258,22 @@ def extract_metrics(lines: List[str]) -> Dict[str, Any]:
                             break
                     except: pass
         
-        # cCa2+ (calcium) - Radiometer format
-        if 'cca' in line_lower or 'ca2' in line_lower or 'calcium' in line_lower:
-            match = re.search(r'(?:c)?ca2?\+?[:\s]*(\d{1,2}\.?\d*)', line_lower)
-            if match and 'Ca' not in metrics:
-                try:
-                    val = float(match.group(1))
-                    if 0.5 <= val <= 15:
-                        metrics['Ca'] = val
-                except: pass
+        # cCa2+ (calcium) - Radiometer format, handle "ocat" or "2ocat" OCR error
+        if 'cca' in line_lower or 'ca2' in line_lower or 'calcium' in line_lower or 'ocat' in line_lower:
+            patterns = [
+                r'(?:c|2o)?ca[2t]?\+?[:\s]*(\d{1,2}\.?\d*)',
+                r'ocat[:\s]*(\d{1,2}\.?\d*)',
+                r'2ocat[:\s]*(\d{1,2}\.?\d*)',
+            ]
+            for pat in patterns:
+                match = re.search(pat, line_lower)
+                if match and 'Ca' not in metrics:
+                    try:
+                        val = float(match.group(1))
+                        if 0.5 <= val <= 15:
+                            metrics['Ca'] = val
+                            break
+                    except: pass
         
         # cCl- (chloride) - Radiometer format
         if 'ccl' in line_lower or 'cl-' in line_lower or 'chloride' in line_lower:
