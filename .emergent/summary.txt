@@ -1,129 +1,253 @@
 <analysis>**original_problem_statement:**
-The user's initial objective was to create a Pediatrics on the go SaaS application with user accounts, an admin dashboard, and a PayPal subscription model. The primary focus of the previous sessions became fixing a critical, recurring bug in the PayPal subscription flow that prevented monetization.
+The user's goal is to build and enhance a Pediatrics on the go SaaS application.
 
-After that was resolved, the user provided new requirements:
-- Add a search bar to the Children to Thrombocytopenia and Anaphylaxis vs Allergic reaction, based on a provided PDF and PNG file, respectively.
+Initial feature requests included adding new medical approaches, refactoring the , replacing cloud OCR with a local solution, fixing a registration bug, and various UI tweaks.
+
+During this session, the user made several new requests:
+- **Bug Fixes:**
+    - The 2500ml/day fluid replacement cap must apply to 8-hour and 16-hour calculations, not just the 24-hour total.
+    - All calcium dose calculations must be capped at a maximum of 1g (10ml).
+    - On the Approaches page, text is overflowing its containers, and expanding a section scrolls the user to the top of the page.
+    - The CPR and Scoring/Calculators pages are non-functional.
+- **Feature Updates (Drug Dosing):**
+    - Update Augmentin doses to specify ES 600 for high dose (90 mg/kg) and 457 for low dose (45 mg/kg).
+    - Ensure per dose medications are not divided in the dose calculator, unlike per day medications.
+    - Update IV Augmentin dose to 30 mg/kg/dose Q8h with a max of 1.2g/dose.
+    - Verify all maximum medication doses against the Harriet Lane 23rd edition handbook, using adult doses if a pediatric maximum is not specified.
+- **OCR Overhaul:**
+    - The existing OCR is not accurate enough for blood gas reports. The user requested a replacement with a new local model (ChandraOCR), and then a highly optimized Tesseract pipeline. The user provided multiple sample images to improve accuracy.
 
 **User's preferred language**: English
 
 **what currently exists?**
-The application is a full-stack medical calculator web app built with React, FastAPI, and MongoDB. It includes a robust user authentication system, an admin dashboard for user management, an email notification service, and several medical calculators. The previously broken PayPal subscription integration has been successfully fixed and tested. The Approaches page now includes a functional search bar and two new tabs for Anaphylaxis and Thrombocytopenia with their respective content.
+The application is a full-stack medical calculator (React/FastAPI/MongoDB). In this session, the agent successfully implemented several critical fixes and updates:
+- **Bug Fixes:** Resolved issues with the fluid replacement cap, calcium dose caps, and fixed the broken CPR and Scoring pages by adding missing component imports. The Approaches page scrolling and text overflow have also been fixed.
+- **Drug Dose Logic:** The drug calculator in  has been significantly enhanced. It now correctly distinguishes between per dose and per day calculations, applies route-specific maximum doses (e.g., PO vs. IV), and has been updated with verified data from the Harriet Lane handbook for key medications like Augmentin, Ceftriaxone, and Calcium Gluconate.
+- **OCR Enhancement:** The backend OCR was completely overhauled. It now uses a sophisticated pipeline in  that combines  for advanced image preprocessing (upscaling, contrast enhancement, deskewing) with . A highly specific regex parser was developed to extract data from noisy blood gas reports, achieving over 92% accuracy on the initial test image.
 
 **Last working item**:
--   **Last item agent was working:** The agent implemented new features on the Approaches page as per the user's latest request. This involved adding a search bar to filter approach tabs and creating two new tabs with content from user-provided files (Anaphylaxis and Thrombocytopenia). The work was done within the very large  component.
--   **Status:** USER VERIFICATION PENDING
--   **Agent Testing Done:** Y (Verified via multiple screenshots showing the login flow, navigation to the page, functionality of the search bar, and the content of the two new tabs).
--   **Which testing method agent to use?** Frontend testing agent. This will help confirm the new features work as expected and ensure no regressions were introduced to the  component.
+-   **Last item agent was working:** Improving the accuracy of the blood gas OCR service. After the user provided four new, challenging images, the agent identified that the regex parsing logic in  needed further refinement. The process of adding more patterns led to messy, duplicated code, and the agent's last action was to begin refactoring this parsing function for clarity and maintainability.
+-   **Status:** IN PROGRESS
+-   **Agent Testing Done:** N
+-   **Which testing method agent to use?** Backend testing agent. The agent should create a Python script to test the  endpoint against the four new image artifacts provided by the user to validate accuracy improvements after refactoring.
 -   **User Testing Done:** N
 
 **All Pending/In progress Issue list**:
--   **Issue 1:** User verification for the Approaches page update (P0)
+-   **Issue 1:** Improve OCR accuracy for all provided blood gas images (P0)
+-   **Issue 2:** The registration bug fix (Body is disturbed or locked) needs user verification (P1)
+-   **Issue 3:** UI alignment fixes for the Pediatric Vital Signs Reference table need user verification (P2)
 
 **Issues Detail:**
--   **Issue 1:** User verification for the Approaches page update
-    -   **Attempted fixes:** N/A. The feature has been newly implemented.
+-   **Issue 1:**
+    -   **Attempted fixes:** A sophisticated OCR pipeline using OpenCV and Pytesseract was built. A complex, multi-pattern regex parser was created in . While effective on the first image, it struggled with new images, leading to ad-hoc additions that made the code messy.
     -   **Next debug checklist:**
-        1.  Present the implemented changes (search bar, new tabs) to the user for confirmation.
-        2.  If the user reports any issues, investigate the  component inside .
-        3.  Run the frontend testing agent to perform a regression test on the page.
-    -   **Why fix this issue and what will be achieved with the fix?** To confirm the successful implementation of the user's latest feature request and close the task.
+        1.  View .
+        2.  Refactor the  function to eliminate duplicate code and consolidate the regex patterns into a single, clean, and maintainable logic block.
+        3.  Create a test script () to systematically run the four new user-provided images through the OCR service.
+        4.  Analyze the JSON output for each image to identify any remaining parsing failures.
+        5.  Iteratively refine the regex patterns in  until accuracy is high across all test images.
+    -   **Why fix this issue and what will be achieved with the fix?** OCR is a critical feature, and the user has explicitly requested very high accuracy for this specific medical report format.
+    -   **Status:** IN PROGRESS
+    -   **Is recurring issue?** Y
+    -   **Should Test frontend/backend/both after fix?** Backend
+    -   **Blocked on other issue:** None
+
+-   **Issue 2:**
+    -   **Attempted fixes:** The agent modified  to  the response before reading the JSON, which should resolve the error.
+    -   **Why fix this issue and what will be achieved with the fix?** This is a critical bug preventing new users from signing up.
     -   **Status:** USER VERIFICATION PENDING
     -   **Is recurring issue?** N
-    -   **Should Test frontend/backend/both after fix?** Frontend.
-    -   **Blocked on other issue:** None.
+    -   **Should Test frontend/backend/both after fix?** Frontend
+
+-   **Issue 3:**
+    -   **Attempted fixes:** Multiple CSS class adjustments were made in .
+    -   **Why fix this issue and what will be achieved with the fix?** To meet the user's specific UI/UX requirements.
+    -   **Status:** USER VERIFICATION PENDING
+    -   **Is recurring issue?** Y
+    -   **Should Test frontend/backend/both after fix?** Frontend
 
 **In progress Task List**:
-None.
+-   **Task 1:** Refactor and Finalize OCR Service Improvements (P0)
+    -   **Where to resume:** The  function in  needs to be cleaned up to remove duplicated code and streamline the parsing logic.
+    -   **What will be achieved with this?** A more robust, maintainable, and accurate OCR service capable of handling a wider variety of noisy blood gas report images.
+    -   **Status:** IN PROGRESS
+    -   **Should Test frontend/backend/both after fix?** Backend
 
 **Upcoming and Future Tasks**
--   **Future Task (P1):** Propose and implement refactoring of . This file is over 2900 lines long and contains multiple distinct components (, etc.), making it difficult to maintain. It should be broken down into smaller, dedicated component files.
--   **Future Task (P2):** Implement an automated subscription renewal reminder email (e.g., 3 days before expiry) to improve user retention, as suggested by the previous agent.
--   **Future Task (P2):** Prepare the application for production deployment.
+- **Upcoming Tasks:**
+    - **(P1)** Delete obsolete OCR service files:  and .
+- **Future Tasks:**
+    - **(P1)** Implement an automated subscription renewal reminder email.
+    - **(P2)** Refactor the large  file into smaller sub-components for better maintainability.
+    - **(P2)** Prepare the application for production deployment.
 
 **Completed work in this session**
--   **PayPal Subscription Fix (CRITICAL):**
-    -   Resolved the end-to-end PayPal subscription failure by implementing a state-based authentication flow.
-    -   Modified  to generate and validate a state token, adding a new  endpoint that does not require a user session.
-    -   Updated  and  to handle the state token across the PayPal redirect, successfully restoring authentication and activating the subscription.
-    -   The fix was validated with a comprehensive end-to-end test by the testing agent.
--   **Approaches Page Enhancements:**
-    -   Added a search bar to filter the approach tabs in .
-    -   Added a new Anaphylaxis approach tab with content from a user-provided image.
-    -   Added a new Thrombocytopenia approach tab with a diagnostic flowchart from a user-provided PDF.
--   **Documentation:** Updated  to reflect the completion of the PayPal fix.
+- **Bug Fixes:**
+  - **Fluid Replacement Cap:** Corrected calculation in .
+  - **Calcium Dose Cap:** Enforced 1g max dose in  and .
+  - **Broken Pages:** Repaired  and  by adding missing imports.
+  - **Approaches Page UI:** Fixed scroll-to-top and text overflow issues in .
+  - **Blank Screen:** Resolved a corrupted  file, which also completed the removal of the old OCR toggle UI.
+- **Feature Enhancements:**
+  - **Drug Dose Calculator:** Overhauled logic in  to handle per dose vs. per day units, route-specific max doses, and updated medication data.
+  - **Medical Data Verification:** Aligned max doses for Augmentin, Ceftriaxone, and Calcium Gluconate with Harriet Lane 23rd edition standards.
+- **OCR Overhaul:**
+  - Replaced the entire backend OCR with an advanced  +  pipeline in .
+  - Installed  system dependency.
+  - Achieved ~92% parsing accuracy on the first test image with a custom regex engine.
 
 **Earlier issues found/mentioned but not fixed**
 -   **Issue 1: Minor Linting Errors**
-    -   **Debug checklist:** Run  on .
-    -   **Why to solve this issue and what will be achieved with this?** Improves code hygiene. It is a low-priority task.
+    -   **Debug checklist:** Run  on the frontend codebase.
+    -   **Why to solve this issue and what will be achieved with this?** Code hygiene. Low priority.
     -   **Should Test frontend/backend/both after fix:** None.
     -   **Is recurring issue?** Y
 
 **Known issue recurrence from previous fork**
--   **Issue recurrence in previous fork:** PayPal Subscription End-to-End Flow.
--   **Recurrence count:** 1+
--   **Status:** RESOLVED. The agent implemented a robust state-based authentication mechanism to handle the redirect flow, which fixed the root cause of the recurrence.
+  - None.
 
 **Code Architecture**
 
 
 **Key Technical Concepts**
--   **Backend:** FastAPI, MongoDB ().
--   **Frontend:** React, , Context API.
--   **Authentication:** JWT, supplemented with a **state-based token flow** for handling third-party redirects (PayPal) where session cookies are lost.
--   **Integrations:** PayPal REST API (Sandbox), GoDaddy (SMTP).
+-   **Advanced OCR Pipeline:** A custom pipeline combining  for image preprocessing (upscaling, contrast enhancement, denoising, deskewing) and .
+-   **Domain-Specific Regex Parsing:** A highly tailored, multi-layered regex engine in  designed to extract structured data from noisy, domain-specific text (blood gas reports).
+-   **Complex Frontend Logic:** The  contains sophisticated logic for dose calculation, handling different units (per day vs. per dose), and applying route-specific maximum dose caps.
 
 **key DB schema**
--   **users**: 
--   **subscriptions**: 
--   **paypal_states**:  (New collection for managing state during PayPal redirects).
+  - No changes in this session.
 
 **changes in tech stack**
--   None.
+-   **OCR Engine:** Evolved from a simple  implementation to a custom pipeline combining ** and **.
+-   **System Dependencies:**  was installed via apt 2.6.1 (arm64)
+Usage: apt-get [options] command
+       apt-get [options] install|remove pkg1 [pkg2 ...]
+       apt-get [options] source pkg1 [pkg2 ...]
+
+apt-get is a command line interface for retrieval of packages
+and information about them from authenticated sources and
+for installation, upgrade and removal of packages together
+with their dependencies.
+
+Most used commands:
+  update - Retrieve new lists of packages
+  upgrade - Perform an upgrade
+  install - Install new packages (pkg is libc6 not libc6.deb)
+  reinstall - Reinstall packages (pkg is libc6 not libc6.deb)
+  remove - Remove packages
+  purge - Remove packages and config files
+  autoremove - Remove automatically all unused packages
+  dist-upgrade - Distribution upgrade, see apt-get(8)
+  dselect-upgrade - Follow dselect selections
+  build-dep - Configure build-dependencies for source packages
+  satisfy - Satisfy dependency strings
+  clean - Erase downloaded archive files
+  autoclean - Erase old downloaded archive files
+  check - Verify that there are no broken dependencies
+  source - Download source archives
+  download - Download the binary package into the current directory
+  changelog - Download and display the changelog for the given package
+
+See apt-get(8) for more information about the available commands.
+Configuration options and syntax is detailed in apt.conf(5).
+Information about how to configure sources can be found in sources.list(5).
+Package and version choices can be expressed via apt_preferences(5).
+Security details are available in apt-secure(8).
+                                        This APT has Super Cow Powers.. usage: transformers <command> [<args>]
+
+positional arguments:
+  {chat,convert,download,env,run,serve,add-new-model-like,add-fast-image-processor}
+                        transformers command helpers
+    convert             CLI tool to run convert model from original author
+                        checkpoints to Transformers PyTorch checkpoints.
+    run                 Run a pipeline through the CLI
+
+options:
+  -h, --help            show this help message and exit and  were also installed but are now unused.
 
 **All files of reference**
--   : Heavily modified to add the search bar and new Anaphylaxis and Thrombocytopenia approaches.
--   : Modified to implement the state-based PayPal fix.
--   : Updated to store state before PayPal redirect.
--   : Updated to use the new state-based capture endpoint.
--   : Updated to allow programmatic authentication restoration.
--   : Contains the successful test results for the PayPal fix.
+-   : **CRITICAL**. The new, active OCR service. The current work is focused on refactoring the  function within this file.
+-   : Contains all the complex drug dosing logic.
+-   : Updated to use the new .
+-   , : Obsolete files that should be deleted.
 
 **Areas that need refactoring**:
--   **:** This file is critically oversized at nearly 3000 lines. It acts as a god component, containing the logic for multiple distinct pages and features, including . This introduces significant maintenance overhead and risk. It should be broken down into smaller, reusable components as a high-priority technical debt task.
+-   The  function within  became overly complex and contains duplicated code. It needs to be consolidated into a cleaner, more maintainable function.
+-   The large  remains a candidate for being broken down into smaller components in the future.
 
 **key api endpoints**
--   : Creates a PayPal order and returns an approval URL with a state token.
--   : **(New)** Captures a completed PayPal order using a state token, activating the user's subscription without requiring a pre-existing auth cookie.
+-   : The primary OCR endpoint, powered by the new  engine.
+-   : The specialized endpoint for blood gas analysis, which uses the same underlying OCR service.
 
 **Critical Info for New Agent**
--   Start by asking the user to verify the recent changes on the Approaches page (search bar and new content).
--   The critical PayPal bug is **fixed**. Do not revisit it unless the user reports a new, specific problem.
--   The  file is a major source of technical debt. After addressing any immediate user requests, you should strongly propose a refactoring task to break this file into smaller components to improve the application's long-term health.
+-   **OCR is the top priority.** The immediate task is to refactor the  function in . It is currently messy from rapid prototyping. Clean it up, then test against the 4 new user-provided images to improve accuracy.
+-   **Obsolete files exist.** The files  and  are no longer in use and can be deleted to clean up the project.
+-   **System dependencies are key.** The current OCR service relies on the  package being installed on the system (apt 2.6.1 (arm64)
+Usage: apt-get [options] command
+       apt-get [options] install|remove pkg1 [pkg2 ...]
+       apt-get [options] source pkg1 [pkg2 ...]
+
+apt-get is a command line interface for retrieval of packages
+and information about them from authenticated sources and
+for installation, upgrade and removal of packages together
+with their dependencies.
+
+Most used commands:
+  update - Retrieve new lists of packages
+  upgrade - Perform an upgrade
+  install - Install new packages (pkg is libc6 not libc6.deb)
+  reinstall - Reinstall packages (pkg is libc6 not libc6.deb)
+  remove - Remove packages
+  purge - Remove packages and config files
+  autoremove - Remove automatically all unused packages
+  dist-upgrade - Distribution upgrade, see apt-get(8)
+  dselect-upgrade - Follow dselect selections
+  build-dep - Configure build-dependencies for source packages
+  satisfy - Satisfy dependency strings
+  clean - Erase downloaded archive files
+  autoclean - Erase old downloaded archive files
+  check - Verify that there are no broken dependencies
+  source - Download source archives
+  download - Download the binary package into the current directory
+  changelog - Download and display the changelog for the given package
+
+See apt-get(8) for more information about the available commands.
+Configuration options and syntax is detailed in apt.conf(5).
+Information about how to configure sources can be found in sources.list(5).
+Package and version choices can be expressed via apt_preferences(5).
+Security details are available in apt-secure(8).
+                                        This APT has Super Cow Powers.).
+-   **Verify older fixes.** Two items from the previous session (registration bug, vital signs table alignment) are fixed but still need explicit user confirmation.
 
 **documents and test reports created in this job**
--   
--   
+  - None.
 
 **Last 10 User Messages and any pending HUMAN messages**
-1.  **User:** add search bar to Children the attached files in Approaches adjust them to be similar to the other ones (Status: **COMPLETED, pending user verification**)
+1.  **User**: Attached 4 new blood gas images and asked to improve OCR. (Status: **IN PROGRESS**)
+2.  **User (agent summary)**: Confirmed CPR/Scoring pages and OCR were fixed/improved.
+3.  **User**: Reported CPR/Scoring pages were broken and OCR was inaccurate, providing a sample image. (Status: **COMPLETED**)
+4.  **User (agent summary)**: Confirmed OCR service was updated with Chandra model.
+5.  **User**: Requested the ChandraOCR model be pre-downloaded. (Status: **FAILED/SUPERSEDED**)
+6.  **User**: Requested replacement of all OCR with a local ChandraOCR model. (Status: **SUPERSEDED**)
+7.  **User (agent summary)**: Confirmed Calcium and other drug dose fixes.
+8.  **User**: Requested that max drug doses be verified against Harriet Lane 23rd edition. (Status: **COMPLETED**)
+9.  **User**: Reported that per dose medications were being calculated incorrectly and provided the correct IV Augmentin dose. (Status: **COMPLETED**)
+10. **User**: Provided correct dose formulations for Augmentin. (Status: **COMPLETED**)
 
 **Project Health Check:**
--   **Broken:** No. The core monetization feature has been fixed.
--   **Mocked:** None.
+-   **Broken:** No. The application is running and major bugs from the start of the session have been fixed.
+-   **Mocked:** None. All services are fully functional.
 
 **3rd Party Integrations**
--   **PayPal:** Used for subscriptions. The integration is now **functional** and robust.
--   **GoDaddy/Microsoft Exchange SMTP:** Used for transactional emails.
--   Tesseract
--   @dnd-kit
--   recharts
--   html2canvas
+-   **Pytesseract + OpenCV:** The core of the local OCR service.
+-   **PayPal:** For subscriptions.
+-   **GoDaddy/Microsoft Exchange SMTP:** For transactional emails.
+-   **Frontend Libraries:** , , , , .
 
 **Testing status**
--   **Testing agent used after significant changes:** YES (for the PayPal fix).
+-   **Testing agent used after significant changes:** NO
 -   **Troubleshoot agent used after agent stuck in loop:** NO
--   **Test files created:** None.
+-   **Test files created:** A temporary script  was used and deleted. It can be recreated for testing the OCR service.
 -   **Known regressions:** None.
 
 **Credentials to test flow:**
@@ -131,4 +255,5 @@ None.
 -   **Tester User:**  / 
 
 **What agent forgot to execute**
--   The previous agent did not explicitly propose refactoring the massive  file after heavily modifying it. While not an explicit user request, it's a critical maintainability improvement that should be raised with the user.</analysis>
+-   The agent did not complete the refactoring of , leaving it in a messy state with duplicate code.
+-   The agent did not delete the obsolete OCR service files (, ) after creating the new one.</analysis>
