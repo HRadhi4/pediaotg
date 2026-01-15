@@ -204,12 +204,12 @@ def extract_metrics_improved(ocr_text: str) -> Dict[str, Any]:
                     continue
     
     # ================== pO2 ==================
-    # Common OCR patterns: "pO2 166", "? pO, 166", "pO2(T) 95.2"
+    # Common OCR patterns: "pO2 166", "? pO, 166", "pO2(T) 95.2", "OT) 95.2", "pO(T ) 110"
     if 'pO2' not in metrics:
         patterns = [
-            r'[?\s]?p[oO0][2,]?\s*\(?[T\)]?\s*[:\s]*(\d{2,3}[\.\,]?\d*)\s*(?:mmHg|mm|m[il]g)?',
-            r'pO\s*\(?T?\s*\)?\s*(\d{2,3}[\.\,]?\d*)',
-            r'PO[,2]?\s*[T\(\)]?\s*(\d{2,3}[\.\,]?\d*)',
+            r'p?[oO0][2,\(]?\s*T?\s*[\)\]]?\s*[:\|]?\s*(\d{2,3}[\.\,]?\d*)\s*(?:mmHg|mm)?',
+            r'[?\s]?p[oO0][2,]?\s*\(?[T\)]?\s*[:\s]*(\d{2,3}[\.\,]?\d*)',
+            r'OT\)\s*(\d{2,3}[\.\,]\d*)',  # OCR error for pO2(T)
         ]
         for pat in patterns:
             match = re.search(pat, text, re.IGNORECASE)
