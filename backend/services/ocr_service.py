@@ -352,10 +352,10 @@ def extract_metrics_improved(ocr_text: str) -> Dict[str, Any]:
                     continue
     
     # ================== Hemoglobin (Hb) ==================
-    # Common patterns: "ctHb 7.41", "» ctHb 7.41", "Cthb 12.4"
+    # Common patterns: "ctHb 7.41", "» ctHb 7.41", "Cthb 12.4", "StHb", "30, 1.0 y/dl"
     if 'Hb' not in metrics:
         patterns = [
-            r'[»\s]?c?t?[Hh][bB]\s*[:\s]*(\d{1,2}[\.\,]?\d*)\s*(?:g/?[dD]?[lL]?)?',
+            r'[»\sSs]?[cCsS]?t?[Hh][bB]\s*[:\s]*(\d{1,2}[\.\,]?\d*)\s*(?:g/?[dD]?[lL]?|y/?[dD]?[lL]?)?',
             r'Hemoglobin[^\d]*(\d{1,2}[\.\,]\d)',
         ]
         for pat in patterns:
