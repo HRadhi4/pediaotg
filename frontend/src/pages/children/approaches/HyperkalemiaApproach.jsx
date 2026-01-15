@@ -74,7 +74,7 @@ const HyperkalemiaApproach = ({ weight, expandedSections, toggleSection }) => {
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 rounded-full bg-red-100 dark:bg-red-900 flex items-center justify-center text-red-700 font-bold text-sm">3</div>
               <div className="flex-1 p-2 bg-red-50 dark:bg-red-900/20 rounded text-xs">
-                <p className="font-medium text-red-700">Loss of P wave, "sine wave" pattern, conduction block</p>
+                <p className="font-medium text-red-700">Loss of P wave, sine wave pattern, conduction block</p>
               </div>
             </div>
             <div className="flex items-center gap-2">
