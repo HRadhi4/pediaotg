@@ -137,81 +137,188 @@ def preprocess_bloodgas_image(image_b64: str) -> np.ndarray:
 def extract_metrics(lines: List[str]) -> Dict[str, Any]:
     """
     Parse common blood gas parameters from OCR lines.
+    Optimized for Radiometer ABL800 FLEX format.
     
-    Extracts: pH, pCO2, pO2, HCO3, BE, Na, K, Cl, lactate, Hb, SO2, FiO2
+    Extracts: pH, pCO2, pO2, HCO3, BE, Na, K, Cl, lactate, Hb, SO2, FiO2, glucose, Ca
     """
     metrics = {}
     
     # Join all lines for pattern matching
     full_text = ' '.join(lines).lower()
     
-    # Patterns for blood gas parameters
-    patterns = {
-        'pH': [
-            r'ph[:\s]*([67]\.\d{1,3})',
-            r'ph\s*=?\s*([67]\.\d{1,3})',
-        ],
-        'pCO2': [
-            r'p?co2[:\s]*(\d{1,3}\.?\d*)',
-            r'pco2\s*=?\s*(\d{1,3}\.?\d*)',
-            r'co2\s*partial[:\s]*(\d{1,3}\.?\d*)',
-        ],
-        'pO2': [
-            r'p?o2[:\s]*(\d{1,3}\.?\d*)',
-            r'po2\s*=?\s*(\d{1,3}\.?\d*)',
-            r'o2\s*partial[:\s]*(\d{1,3}\.?\d*)',
-        ],
-        'HCO3': [
-            r'hco3?[:\s\-]*(\d{1,2}\.?\d*)',
-            r'bicarbonate[:\s]*(\d{1,2}\.?\d*)',
-            r'bicarb[:\s]*(\d{1,2}\.?\d*)',
-        ],
-        'BE': [
-            r'be[:\s]*([-+]?\d{1,2}\.?\d*)',
-            r'base\s*excess[:\s]*([-+]?\d{1,2}\.?\d*)',
-        ],
-        'Na': [
-            r'\bna[+]?[:\s]*(\d{2,3})',
-            r'sodium[:\s]*(\d{2,3})',
-        ],
-        'K': [
-            r'\bk[+]?[:\s]*(\d\.?\d*)',
-            r'potassium[:\s]*(\d\.?\d*)',
-        ],
-        'Cl': [
-            r'\bcl[-]?[:\s]*(\d{2,3})',
-            r'chloride[:\s]*(\d{2,3})',
-        ],
-        'lactate': [
-            r'lac(?:tate)?[:\s]*(\d{1,2}\.?\d*)',
-            r'lact[:\s]*(\d{1,2}\.?\d*)',
-        ],
-        'Hb': [
-            r'h[ae]?moglobin[:\s]*(\d{1,2}\.?\d*)',
-            r'\bhb\b[:\s]*(\d{1,2}\.?\d*)',
-            r'\bhgb\b[:\s]*(\d{1,2}\.?\d*)',
-        ],
-        'SO2': [
-            r'so2[:\s]*(\d{1,3}\.?\d*)',
-            r'sao2[:\s]*(\d{1,3}\.?\d*)',
-            r'sat(?:uration)?[:\s]*(\d{1,3}\.?\d*)',
-        ],
-        'FiO2': [
-            r'fio2[:\s]*(\d{1,3}\.?\d*)',
-            r'fi\s*o2[:\s]*(\d{1,3}\.?\d*)',
-        ],
-        'glucose': [
-            r'glu(?:cose)?[:\s]*(\d{1,3}\.?\d*)',
-            r'glc[:\s]*(\d{1,3}\.?\d*)',
-        ],
-        'Ca': [
-            r'\bca[+]?[:\s]*(\d{1,2}\.?\d*)',
-            r'calcium[:\s]*(\d{1,2}\.?\d*)',
-            r'ica[:\s]*(\d{1,2}\.?\d*)',
-        ],
+    # Also try line-by-line parsing for structured reports
+    for line in lines:
+        line_lower = line.lower().strip()
+        
+        # Radiometer ABL800 format: "parameter value unit"
+        # e.g., "pH 7.456", "pCO2 31.8 mmHg", "ctHb 7.1 g/dL"
+        
+        # pH - very specific patterns
+        if 'ph' in line_lower and 'fcohb' not in line_lower and 'fmethb' not in line_lower:
+            match = re.search(r'ph[:\s(t)]*\s*([67]\.\d{1,3})', line_lower)
+            if match and 'pH' not in metrics:
+                try:
+                    val = float(match.group(1))
+                    if 6.5 <= val <= 8.0:
+                        metrics['pH'] = val
+                except: pass
+        
+        # pCO2
+        if 'pco2' in line_lower or 'pco' in line_lower:
+            match = re.search(r'pco2?[:\s(t)]*\s*(\d{1,3}\.?\d*)', line_lower)
+            if match and 'pCO2' not in metrics:
+                try:
+                    val = float(match.group(1))
+                    if 10 <= val <= 150:
+                        metrics['pCO2'] = val
+                except: pass
+        
+        # pO2
+        if 'po2' in line_lower and 'fcohb' not in line_lower:
+            match = re.search(r'po2[:\s(t)]*\s*(\d{1,3}\.?\d*)', line_lower)
+            if match and 'pO2' not in metrics:
+                try:
+                    val = float(match.group(1))
+                    if 10 <= val <= 600:
+                        metrics['pO2'] = val
+                except: pass
+        
+        # ctHb (total hemoglobin) - Radiometer format
+        if 'cthb' in line_lower or 'hb' in line_lower or 'hgb' in line_lower:
+            match = re.search(r'(?:ct)?h[ae]?[bg]b?[:\s]*(\d{1,2}\.?\d*)', line_lower)
+            if match and 'Hb' not in metrics:
+                try:
+                    val = float(match.group(1))
+                    if 3 <= val <= 25:
+                        metrics['Hb'] = val
+                except: pass
+        
+        # sO2 (oxygen saturation)
+        if 'so2' in line_lower or 'sat' in line_lower:
+            match = re.search(r'(?:s|sa)o2[:\s]*(\d{1,3}\.?\d*)', line_lower)
+            if match and 'SO2' not in metrics:
+                try:
+                    val = float(match.group(1))
+                    if 0 <= val <= 100:
+                        metrics['SO2'] = val
+                except: pass
+        
+        # cK+ (potassium) - Radiometer format
+        if 'ck' in line_lower or 'k+' in line_lower or 'potassium' in line_lower:
+            match = re.search(r'(?:c)?k\+?[:\s]*(\d\.?\d*)', line_lower)
+            if match and 'K' not in metrics:
+                try:
+                    val = float(match.group(1))
+                    if 1.0 <= val <= 10.0:
+                        metrics['K'] = val
+                except: pass
+        
+        # cNa+ (sodium) - Radiometer format
+        if 'cna' in line_lower or 'na+' in line_lower or 'sodium' in line_lower:
+            match = re.search(r'(?:c)?na\+?[:\s]*(\d{2,3})', line_lower)
+            if match and 'Na' not in metrics:
+                try:
+                    val = float(match.group(1))
+                    if 100 <= val <= 180:
+                        metrics['Na'] = val
+                except: pass
+        
+        # cCa2+ (calcium) - Radiometer format
+        if 'cca' in line_lower or 'ca2' in line_lower or 'calcium' in line_lower:
+            match = re.search(r'(?:c)?ca2?\+?[:\s]*(\d{1,2}\.?\d*)', line_lower)
+            if match and 'Ca' not in metrics:
+                try:
+                    val = float(match.group(1))
+                    if 0.5 <= val <= 15:
+                        metrics['Ca'] = val
+                except: pass
+        
+        # cCl- (chloride) - Radiometer format
+        if 'ccl' in line_lower or 'cl-' in line_lower or 'chloride' in line_lower:
+            match = re.search(r'(?:c)?cl-?[:\s]*(\d{2,3})', line_lower)
+            if match and 'Cl' not in metrics:
+                try:
+                    val = float(match.group(1))
+                    if 70 <= val <= 130:
+                        metrics['Cl'] = val
+                except: pass
+        
+        # cGlu (glucose) - Radiometer format
+        if 'cglu' in line_lower or 'glucose' in line_lower or 'glu' in line_lower:
+            match = re.search(r'(?:c)?glu(?:cose)?[:\s]*(\d{1,3}\.?\d*)', line_lower)
+            if match and 'glucose' not in metrics:
+                try:
+                    val = float(match.group(1))
+                    if 0.5 <= val <= 50:  # mmol/L range
+                        metrics['glucose'] = val
+                except: pass
+        
+        # cLac (lactate) - Radiometer format
+        if 'clac' in line_lower or 'lac' in line_lower or 'lactate' in line_lower:
+            match = re.search(r'(?:c)?lac(?:tate)?[:\s]*(\d{1,2}\.?\d*)', line_lower)
+            if match and 'lactate' not in metrics:
+                try:
+                    val = float(match.group(1))
+                    if 0 <= val <= 30:
+                        metrics['lactate'] = val
+                except: pass
+        
+        # cHCO3 (bicarbonate) - Radiometer format: "cHCO3-(P,st)c"
+        if 'hco3' in line_lower or 'bicarb' in line_lower:
+            match = re.search(r'(?:c)?hco3?[:\s\-()pstc]*(\d{1,2}\.?\d*)', line_lower)
+            if match and 'HCO3' not in metrics:
+                try:
+                    val = float(match.group(1))
+                    if 1 <= val <= 60:
+                        metrics['HCO3'] = val
+                except: pass
+        
+        # cBase(Ecf) - Base Excess - Radiometer format
+        if 'base' in line_lower or 'be' in line_lower:
+            match = re.search(r'(?:c)?base[:\s()ecf]*\s*([-+]?\d{1,2}\.?\d*)', line_lower)
+            if match and 'BE' not in metrics:
+                try:
+                    val = float(match.group(1))
+                    if -30 <= val <= 30:
+                        metrics['BE'] = val
+                except: pass
+            # Also try simple BE pattern
+            if 'BE' not in metrics:
+                match = re.search(r'\bbe[:\s]*([-+]?\d{1,2}\.?\d*)', line_lower)
+                if match:
+                    try:
+                        val = float(match.group(1))
+                        if -30 <= val <= 30:
+                            metrics['BE'] = val
+                    except: pass
+        
+        # FiO2
+        if 'fio2' in line_lower or 'fi o2' in line_lower:
+            match = re.search(r'fi\s*o2[:\s]*(\d{1,3}\.?\d*)', line_lower)
+            if match and 'FiO2' not in metrics:
+                try:
+                    val = float(match.group(1))
+                    if 0 <= val <= 100:
+                        metrics['FiO2'] = val
+                except: pass
+    
+    # Fallback: Try generic patterns on full text
+    fallback_patterns = {
+        'pH': [r'ph[:\s]*([67]\.\d{1,3})'],
+        'pCO2': [r'pco2[:\s]*(\d{1,3}\.?\d*)'],
+        'pO2': [r'po2[:\s]*(\d{1,3}\.?\d*)'],
+        'HCO3': [r'hco3[:\s\-]*(\d{1,2}\.?\d*)'],
+        'BE': [r'base[:\s()ecf]*([-+]?\d{1,2}\.?\d*)'],
+        'Na': [r'na\+?[:\s]*(\d{2,3})'],
+        'K': [r'k\+?[:\s]*(\d\.?\d*)'],
+        'Cl': [r'cl-?[:\s]*(\d{2,3})'],
+        'lactate': [r'lac[:\s]*(\d{1,2}\.?\d*)'],
+        'Hb': [r'hb[:\s]*(\d{1,2}\.?\d*)'],
+        'SO2': [r'so2[:\s]*(\d{1,3}\.?\d*)'],
+        'glucose': [r'glu[:\s]*(\d{1,3}\.?\d*)'],
+        'Ca': [r'ca[:\s]*(\d{1,2}\.?\d*)'],
     }
     
-    # Valid ranges for sanity checking
     valid_ranges = {
         'pH': (6.5, 8.0),
         'pCO2': (10, 150),
@@ -225,22 +332,23 @@ def extract_metrics(lines: List[str]) -> Dict[str, Any]:
         'Hb': (3, 25),
         'SO2': (0, 100),
         'FiO2': (0, 100),
-        'glucose': (10, 1000),
+        'glucose': (0.5, 50),
         'Ca': (0.5, 15),
     }
     
-    for key, pattern_list in patterns.items():
-        for pattern in pattern_list:
-            match = re.search(pattern, full_text, re.IGNORECASE)
-            if match:
-                try:
-                    val = float(match.group(1))
-                    min_val, max_val = valid_ranges.get(key, (0, float('inf')))
-                    if min_val <= val <= max_val:
-                        metrics[key] = val
-                        break
-                except ValueError:
-                    continue
+    for key, patterns in fallback_patterns.items():
+        if key not in metrics:
+            for pattern in patterns:
+                match = re.search(pattern, full_text, re.IGNORECASE)
+                if match:
+                    try:
+                        val = float(match.group(1))
+                        min_val, max_val = valid_ranges.get(key, (0, float('inf')))
+                        if min_val <= val <= max_val:
+                            metrics[key] = val
+                            break
+                    except ValueError:
+                        continue
     
     return metrics
 
