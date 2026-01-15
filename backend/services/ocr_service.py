@@ -178,22 +178,25 @@ def extract_metrics_improved(ocr_text: str) -> Dict[str, Any]:
                     continue
     
     # ================== pCO2 ==================
-    # Common OCR patterns: "pCO2 31.6", "poo, 341.6", "pCO,(T) 25.9"
+    # Common OCR patterns: "pCO2 31.6", "poo, 341.6", "pCO,(T) 25.9", "pCO{T ) 25.9)", "PCO, 7.198"
     if 'pCO2' not in metrics:
         patterns = [
+            r'pCO[2,\{]?\s*[\(\[]?\s*T?\s*[\)\]\}]?\s*[:\|]?\s*(\d{2,3}[\.\,]?\d*)\s*(?:mmHg|mm|\))?',
             r'p[cC][oO0][2,]?\s*\(?[T\)]?\s*[:\s]*(\d{1,3}[\.\,]?\d*)\s*(?:mmHg|mm)?',
             r'poo[,\.]?\s*(\d{1,3}[\.\,]?\d*)',  # OCR error
-            r'pCO\s*\(?T?\s*\)?\s*(\d{1,3}[\.\,]?\d*)',
         ]
         for pat in patterns:
             match = re.search(pat, text, re.IGNORECASE)
             if match:
                 val_str = match.group(1).replace(',', '.')
-                # Handle OCR adding extra digit: "341.6" -> "31.6"
                 try:
                     val = float(val_str)
-                    if val > 150 and val < 1000:  # Likely OCR error
-                        val = val / 10 if val > 150 else val
+                    # Skip if this looks like pH (7.xxx)
+                    if 7.0 <= val <= 7.8:
+                        continue
+                    # Handle OCR adding extra digit: "341.6" -> "31.6"
+                    if val > 150 and val < 1000:
+                        val = val / 10
                     if 10 <= val <= 150:
                         metrics['pCO2'] = round(val, 1)
                         break
