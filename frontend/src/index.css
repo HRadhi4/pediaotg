@@ -47,6 +47,80 @@ code {
   font-family: var(--font-mono);
 }
 
+/* ===========================================
+   GLOBAL TEXT OVERFLOW PREVENTION RULES
+   Ensures text always stays within containers
+   =========================================== */
+
+/* Prevent text overflow globally */
+* {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+/* All block-level containers */
+div, section, article, aside, main, header, footer, nav,
+p, h1, h2, h3, h4, h5, h6, li, td, th, label, span {
+  max-width: 100%;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+/* Cards and containers */
+.card, [class*="Card"], [class*="card"] {
+  overflow: hidden;
+  max-width: 100%;
+}
+
+/* Tables - prevent overflow */
+table {
+  table-layout: fixed;
+  width: 100%;
+  max-width: 100%;
+}
+
+td, th {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+/* Long text handling */
+.truncate-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.wrap-text {
+  overflow-wrap: break-word;
+  word-break: break-word;
+  hyphens: auto;
+}
+
+/* Prevent horizontal scroll from text */
+[class*="container"], [class*="content"], [class*="wrapper"] {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* Force long words/URLs to break */
+a, code, pre {
+  word-break: break-all;
+}
+
+/* Ensure flex children don't overflow */
+.flex > *, [class*="flex"] > * {
+  min-width: 0;
+  max-width: 100%;
+}
+
+/* Grid children overflow prevention */
+.grid > *, [class*="grid"] > * {
+  min-width: 0;
+  max-width: 100%;
+}
+
 @layer base {
   :root {
     --background: 170 50% 98%;
