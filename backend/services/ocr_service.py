@@ -208,8 +208,7 @@ def extract_metrics_improved(ocr_text: str) -> Dict[str, Any]:
     # Common OCR patterns: "pO2 166", "? pO, 166", "pO2(T) 95.2", "OT) 95.2", "pO(T ) 110"
     if 'pO2' not in metrics:
         patterns = [
-            r'p?[oO0][2,\(]?\s*T?\s*[\)\]]?\s*[:\|]?\s*(\d{2,3}[\.\,]?\d*)\s*(?:mmHg|mm)?',
-            r'[?\s]?p[oO0][2,]?\s*\(?[T\)]?\s*[:\s]*(\d{2,3}[\.\,]?\d*)',
+            r'[?\s]?p?[oO0][2,\(]?\s*T?\s*[\)\]]?\s*(\d{2,3}[\.\,]?\d*)\s*(?:mmHg|mm|mig)?',
             r'OT\)\s*(\d{2,3}[\.\,]\d*)',  # OCR error for pO2(T)
         ]
         for pat in patterns:
@@ -218,7 +217,8 @@ def extract_metrics_improved(ocr_text: str) -> Dict[str, Any]:
                 val_str = match.group(1).replace(',', '.')
                 try:
                     val = float(val_str)
-                    if 10 <= val <= 700:
+                    # Skip values that look like pCO2 (usually 20-60)
+                    if 10 <= val <= 700 and val not in [metrics.get('pCO2', 0)]:
                         metrics['pO2'] = round(val, 1)
                         break
                 except ValueError:
