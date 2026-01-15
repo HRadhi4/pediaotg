@@ -77,7 +77,19 @@ Build a full SaaS-style web app "Pediatrics on the Go" with:
 - html2canvas
 - GoDaddy/Microsoft Exchange SMTP (emails)
 
-## Recent Changes (January 13, 2026)
+## Recent Changes (January 15, 2026)
+- ✅ **OCR Service Completely Rebuilt**: New medical-grade OCR service with tesseract-ocr
+  - Multiple preprocessing strategies (simple grayscale, CLAHE enhancement, denoising)
+  - Automatic selection of best preprocessing based on metric extraction success
+  - Medical-specific regex patterns for blood gas values (pH, pCO2, pO2, Na, K, Ca, Cl, etc.)
+  - PSM mode 4 (single column) for better blood gas report parsing
+  - Fixed language parameter from 'en' to 'eng' for tesseract
+- ✅ **Blood Gas OCR Testing**: All 15 tests passed (100% success rate)
+  - Extracts 7-13 metrics per image depending on image quality
+  - Verified against expected values from medical reports
+  - Works with Radiometer ABL800 FLEX and similar analyzer printouts
+
+## Previous Changes (January 13, 2026)
 - ✅ **Fluid Replacement 2500ml Cap**: Applied to individual 8h and 16h periods, not just 24h total
 - ✅ **Calcium Dose Max**: Capped at 1g (10mL) in Hyperkalemia approach and DrugsPage
 - ✅ **Approaches Scroll Fix**: Expanding sections now scrolls to show the expanded content
