@@ -105,9 +105,11 @@ Build a full SaaS-style web app "Pediatrics on the Go" with:
 - [ ] Add more drug entries
 - [ ] Implement Postnatal widget
 - [ ] Address minor linting errors in /pages/children/ components
-- [ ] Subscription renewal reminder email (3 days before expiry)
 - [ ] Production deployment prep
 - [ ] Break down ApproachesPage.jsx (~2700 lines) into smaller sub-components
+  - Extract each approach (Sepsis, Seizure, Asthma, etc.) into separate component files
+  - Create shared Section component in /approaches/components/
+- [ ] Set up scheduled cron job for automated renewal reminders (currently manual trigger)
 
 ## Pending User Verification
 - [ ] Registration bug fix ("Body is disturbed or locked" error in AuthContext.jsx)
