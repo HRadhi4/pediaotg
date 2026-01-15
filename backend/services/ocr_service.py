@@ -328,10 +328,10 @@ def extract_metrics_improved(ocr_text: str) -> Dict[str, Any]:
                     continue
     
     # ================== Chloride (Cl) ==================
-    # Common patterns: "Cl- 107", "cCl- 107", "oc: 102"
+    # Common patterns: "Cl- 107", "cCl- 107", "oc: 102", "scl 1412" (needs digit fix)
     if 'Cl' not in metrics:
         patterns = [
-            r'[co]?Cl[\-]?\s*[:\s]*(\d{2,3})',
+            r'[sco]?[Cc]l[\-]?\s*[:\s]*(\d{2,4})',
             r'oc:\s*(\d{2,3})',  # OCR error
             r'Chloride[^\d]*(\d{2,3})',
         ]
@@ -340,6 +340,11 @@ def extract_metrics_improved(ocr_text: str) -> Dict[str, Any]:
             if match:
                 try:
                     val = float(match.group(1))
+                    # Handle extra digits like 1412 -> 112
+                    if val > 200:
+                        val_str = str(int(val))
+                        if len(val_str) == 4 and val_str[0] == '1':
+                            val = float(val_str[1:])  # Remove leading 1
                     if 70 <= val <= 130:
                         metrics['Cl'] = round(val, 0)
                         break
