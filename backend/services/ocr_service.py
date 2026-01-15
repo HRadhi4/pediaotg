@@ -180,12 +180,11 @@ def extract_metrics_improved(ocr_text: str) -> Dict[str, Any]:
                     continue
     
     # ================== pCO2 ==================
-    # Common OCR patterns: "pCO2 31.6", "poo, 341.6", "pCO,(T) 25.9", "pCO{T ) 25.9)", "PCO, 7.198"
+    # Common OCR patterns: "pCO2 31.6", "poo, 341.6", "pCO,(T) 25.9", "pCO{T ) 25.9)", "PCO, 7.198", "pCO,{T ) 47.5"
     if 'pCO2' not in metrics:
         patterns = [
-            r'pCO[2,\{]?\s*[\(\[]?\s*T?\s*[\)\]\}]?\s*[:\|]?\s*(\d{2,3}[\.\,]?\d*)\s*(?:mmHg|mm|\))?',
-            r'p[cC][oO0][2,]?\s*\(?[T\)]?\s*[:\s]*(\d{1,3}[\.\,]?\d*)\s*(?:mmHg|mm)?',
-            r'poo[,\.]?\s*(\d{1,3}[\.\,]?\d*)',  # OCR error
+            r'pCO[2,\{]?\s*[\(\[\{]?\s*T?\s*[\)\]\}]?\s*[:\|]?\s*(\d{2,3}[\.\,]?\d*)\s*(?:mmHg|mm|\))?',
+            r'p[cC][oO0][2,]?\s*\(?[T\)]?\s*[:\s]*(\d{1,3}[\.\,]?\d*)\s*(?:mmHg|mm|rorntig)?',
         ]
         for pat in patterns:
             match = re.search(pat, text, re.IGNORECASE)
