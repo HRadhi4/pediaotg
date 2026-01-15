@@ -59,7 +59,7 @@ class PayPalService:
             self.base_url = 'https://api-m.sandbox.paypal.com'
         
         # Get frontend URL for callbacks
-        frontend_url = os.environ.get('FRONTEND_URL', 'https://pedi-calculator.preview.emergentagent.com')
+        frontend_url = os.environ.get('FRONTEND_URL', 'https://medcalc-saas.preview.emergentagent.com')
         self.return_url = os.environ.get('PAYPAL_RETURN_URL', f'{frontend_url}/subscription/success')
         self.cancel_url = os.environ.get('PAYPAL_CANCEL_URL', f'{frontend_url}/subscription/cancel')
         
