@@ -206,23 +206,28 @@ def extract_metrics_improved(ocr_text: str) -> Dict[str, Any]:
     
     # ================== pO2 ==================
     # Common OCR patterns: "pO2 166", "? pO, 166", "pO2(T) 95.2", "OT) 95.2", "pO(T ) 110"
+    # Must distinguish from pCO2 - pO2 values are usually larger (60-500)
     if 'pO2' not in metrics:
         patterns = [
-            r'[?\s]?p?[oO0][2,\(]?\s*T?\s*[\)\]]?\s*(\d{2,3}[\.\,]?\d*)\s*(?:mmHg|mm|mig)?',
+            r'[?\s]?pO[2,]?\s*[=:]\s*(\d{2,3})',  # "? pO, 166 ="
+            r'pO\s*\(?T?\s*\)?\s*(\d{2,3}[\.\,]?\d*)\s*(?:mmHg|mm)',  # pO(T ) 110 mmHg
             r'OT\)\s*(\d{2,3}[\.\,]\d*)',  # OCR error for pO2(T)
+            r'Poi[,\s]*T?h?\s*(\d{2,3}[\.\,]?\d*)\s*mmHg',  # "Poi, Th mmHg" OCR error
         ]
         for pat in patterns:
-            match = re.search(pat, text, re.IGNORECASE)
-            if match:
-                val_str = match.group(1).replace(',', '.')
+            matches = re.findall(pat, text, re.IGNORECASE)
+            for val_str in matches:
+                val_str = val_str.replace(',', '.')
                 try:
                     val = float(val_str)
-                    # Skip values that look like pCO2 (usually 20-60)
-                    if 10 <= val <= 700 and val not in [metrics.get('pCO2', 0)]:
+                    # pO2 typically > 50, unlike pCO2 which is 20-60
+                    if 50 <= val <= 700:
                         metrics['pO2'] = round(val, 1)
                         break
                 except ValueError:
                     continue
+            if 'pO2' in metrics:
+                break
     
     # ================== HCO3 ==================
     # Common patterns: "cHCO3-(P,st) 23.5", "cH20,(P,st)o 15.4", "cHOO, (7,80. 23.6", "cHCO,(P,st)¢ 15.8"
