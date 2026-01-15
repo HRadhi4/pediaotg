@@ -1,189 +1,215 @@
 /**
- * Pediatric Headache Approach Component
+ * Pediatric Headache Approach - Flowchart Version
+ * Backup saved at: HeadacheApproach.jsx.backup
  */
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import Section from "./Section";
 
-const HeadacheApproach = ({ weight, expandedSections, toggleSection }) => {
+const HeadacheApproach = ({ weight }) => {
   const w = parseFloat(weight) || 0;
 
   return (
     <Card>
       <CardHeader className="pb-2">
         <CardTitle className="text-base">Pediatric Headache</CardTitle>
-        <CardDescription className="text-xs">Diagnostic approach based on duration and red flags</CardDescription>
+        <CardDescription className="text-xs">Diagnostic flowchart</CardDescription>
       </CardHeader>
-      <CardContent className="space-y-3">
-        {/* Red Flags */}
-        <Section id="headache-redflags" title="Red Flags" defaultOpen={true} expandedSections={expandedSections} toggleSection={toggleSection}>
-          <div className="p-3 bg-red-50 dark:bg-red-950/30 rounded-lg border border-red-200">
-            <p className="font-semibold text-red-700 text-sm mb-2">Urgent Investigation Required:</p>
-            <ul className="text-xs text-muted-foreground space-y-1">
-              <li>• <strong>Early morning or night headache</strong></li>
-              <li>• <strong>Progressive headache</strong> in frequency, duration or severity</li>
-              <li>• <strong>Neurologic signs:</strong> altered mental status, gait abnormality, seizures</li>
-              <li>• <strong>Papilledema</strong></li>
-            </ul>
-            <p className="text-red-600 font-medium mt-2 text-xs">→ CT Brain indicated if any red flag present</p>
-          </div>
-        </Section>
+      <CardContent className="space-y-4">
 
-        {/* Algorithm */}
-        <Section id="headache-algorithm" title="Diagnostic Algorithm" expandedSections={expandedSections} toggleSection={toggleSection}>
-          <div className="space-y-3">
-            <div className="grid grid-cols-2 gap-3">
-              <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-                <p className="font-semibold text-blue-700 text-center">Acute (≤7 days)</p>
-                <div className="text-xs text-muted-foreground mt-2 space-y-1">
-                  <p>• 1st onset: CT Brain</p>
-                  <p>• Episodic: Check red flags</p>
-                </div>
-              </div>
-              <div className="p-3 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
-                <p className="font-semibold text-purple-700 text-center">Chronic (&gt;7 days)</p>
-                <div className="text-xs text-muted-foreground mt-2 space-y-1">
-                  <p>• CT Brain</p>
-                  <p>• If normal: Check for papilledema</p>
-                </div>
-              </div>
-            </div>
-            <div className="p-3 bg-amber-50 dark:bg-amber-900/20 rounded-lg text-xs">
-              <p className="font-semibold text-amber-700">CT Normal + Chronic Headache:</p>
-              <p className="text-muted-foreground mt-1">→ Ophthalmology consult for papilledema</p>
-              <p className="text-muted-foreground">• Papilledema present: Admit for IIH workup</p>
-              <p className="text-muted-foreground">• No papilledema: Neurology consult</p>
+        {/* RED FLAGS */}
+        <div className="p-3 bg-red-100 dark:bg-red-950/30 rounded-xl border-2 border-red-300">
+          <p className="text-xs font-bold text-red-700 text-center mb-2">🚨 RED FLAGS → CT Brain</p>
+          <div className="grid grid-cols-2 gap-1 text-[10px] text-red-600">
+            <span>• Early morning/night HA</span>
+            <span>• Progressive worsening</span>
+            <span>• Neuro signs (gait, GCS)</span>
+            <span>• Papilledema</span>
+          </div>
+        </div>
+
+        {/* MAIN FLOWCHART */}
+        <div className="relative">
+          {/* Starting Point */}
+          <div className="flex justify-center">
+            <div className="px-6 py-3 bg-purple-500 text-white rounded-xl font-bold text-sm shadow-lg">
+              Headache
             </div>
           </div>
-        </Section>
+          
+          <div className="flex justify-center py-1">
+            <div className="w-0.5 h-5 bg-gray-400"></div>
+          </div>
+
+          {/* Duration Branch */}
+          <div className="flex justify-center">
+            <div className="px-4 py-2 bg-gray-600 text-white rounded-lg font-bold text-xs">
+              Duration?
+            </div>
+          </div>
+
+          <div className="flex justify-center py-1">
+            <div className="flex items-end gap-0">
+              <div className="w-20 h-0.5 bg-gray-400"></div>
+              <div className="w-0.5 h-4 bg-gray-400"></div>
+              <div className="w-20 h-0.5 bg-gray-400"></div>
+            </div>
+          </div>
+
+          {/* Acute vs Chronic */}
+          <div className="grid grid-cols-2 gap-3">
+            {/* Acute */}
+            <div className="space-y-2">
+              <div className="p-2 bg-blue-500 text-white rounded-lg text-center">
+                <p className="text-xs font-bold">Acute (≤7 days)</p>
+              </div>
+              <div className="flex justify-center py-1">
+                <div className="flex items-end gap-0">
+                  <div className="w-8 h-0.5 bg-gray-400"></div>
+                  <div className="w-0.5 h-3 bg-gray-400"></div>
+                  <div className="w-8 h-0.5 bg-gray-400"></div>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-1">
+                <div className="p-1.5 bg-red-100 dark:bg-red-950/30 rounded text-center border border-red-200">
+                  <p className="text-[9px] font-bold text-red-600">1st Onset</p>
+                  <p className="text-[8px] text-red-500">CT Brain</p>
+                </div>
+                <div className="p-1.5 bg-green-100 dark:bg-green-950/30 rounded text-center border border-green-200">
+                  <p className="text-[9px] font-bold text-green-600">Episodic</p>
+                  <p className="text-[8px] text-green-500">Check flags</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Chronic */}
+            <div className="space-y-2">
+              <div className="p-2 bg-amber-500 text-white rounded-lg text-center">
+                <p className="text-xs font-bold">Chronic (&gt;7 days)</p>
+              </div>
+              <div className="flex justify-center">
+                <div className="w-0.5 h-4 bg-gray-400"></div>
+              </div>
+              <div className="p-2 bg-amber-100 dark:bg-amber-900/30 rounded-lg text-center border border-amber-300">
+                <p className="text-xs font-bold text-amber-700">CT Brain</p>
+              </div>
+              <div className="flex justify-center py-1">
+                <div className="flex items-end gap-0">
+                  <div className="w-8 h-0.5 bg-gray-400"></div>
+                  <div className="w-0.5 h-3 bg-gray-400"></div>
+                  <div className="w-8 h-0.5 bg-gray-400"></div>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-1">
+                <div className="p-1.5 bg-purple-100 dark:bg-purple-950/30 rounded text-center border border-purple-200">
+                  <p className="text-[9px] font-bold text-purple-600">Abnormal</p>
+                  <p className="text-[8px] text-purple-500">Neurosurgery</p>
+                </div>
+                <div className="p-1.5 bg-teal-100 dark:bg-teal-950/30 rounded text-center border border-teal-200">
+                  <p className="text-[9px] font-bold text-teal-600">Normal</p>
+                  <p className="text-[8px] text-teal-500">Check fundus</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* CT Normal Flow */}
+        <div className="p-3 bg-gradient-to-b from-teal-50 to-purple-50 dark:from-teal-950/20 dark:to-purple-950/20 rounded-xl">
+          <p className="text-xs font-bold text-center text-gray-700 mb-2">CT Normal + Chronic → Fundoscopy</p>
+          <div className="flex justify-center">
+            <div className="px-3 py-1.5 bg-teal-500 text-white rounded-lg text-xs font-bold">
+              Papilledema?
+            </div>
+          </div>
+          <div className="flex justify-center py-1">
+            <div className="flex items-end gap-0">
+              <div className="w-16 h-0.5 bg-gray-400"></div>
+              <div className="w-0.5 h-4 bg-gray-400"></div>
+              <div className="w-16 h-0.5 bg-gray-400"></div>
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-2">
+            <div className="p-2 bg-red-100 dark:bg-red-900/30 rounded-lg text-center border border-red-200">
+              <p className="text-xs font-bold text-red-700">YES</p>
+              <p className="text-[10px] text-red-600">Admit → IIH workup</p>
+            </div>
+            <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded-lg text-center border border-green-200">
+              <p className="text-xs font-bold text-green-700">NO</p>
+              <p className="text-[10px] text-green-600">Neurology consult</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Divider */}
+        <div className="border-t border-dashed border-gray-300 dark:border-gray-700 my-3"></div>
 
         {/* Migraine vs Tension */}
-        <Section id="headache-comparison" title="Migraine vs Tension Headache" expandedSections={expandedSections} toggleSection={toggleSection}>
-          <div className="overflow-x-auto -mx-2">
-            <table className="w-full text-[10px] min-w-[350px]">
-              <thead>
-                <tr className="border-b bg-gray-50 dark:bg-gray-800/50">
-                  <th className="text-left py-2 px-2 font-semibold">Feature</th>
-                  <th className="text-left py-2 px-2 font-semibold">Migraine</th>
-                  <th className="text-left py-2 px-2 font-semibold">Tension</th>
-                </tr>
-              </thead>
-              <tbody className="text-muted-foreground">
-                <tr className="border-b"><td className="py-1 px-2 font-medium">Location</td><td className="py-1 px-2">Unilateral/Bilateral</td><td className="py-1 px-2">Frontal</td></tr>
-                <tr className="border-b"><td className="py-1 px-2 font-medium">Duration</td><td className="py-1 px-2">2-72 hours</td><td className="py-1 px-2">Hours to days</td></tr>
-                <tr className="border-b"><td className="py-1 px-2 font-medium">Character</td><td className="py-1 px-2">Pulsating/throbbing</td><td className="py-1 px-2">Squeezing/pressure</td></tr>
-                <tr className="border-b"><td className="py-1 px-2 font-medium">Severity</td><td className="py-1 px-2">Moderate-severe</td><td className="py-1 px-2">Mild-moderate</td></tr>
-                <tr className="border-b"><td className="py-1 px-2 font-medium">Associations</td><td className="py-1 px-2">Nausea, vomiting, photo/phonophobia</td><td className="py-1 px-2">None</td></tr>
-                <tr className="border-b"><td className="py-1 px-2 font-medium">Trigger</td><td className="py-1 px-2">Activity</td><td className="py-1 px-2">Stress</td></tr>
-                <tr><td className="py-1 px-2 font-medium">Family Hx</td><td className="py-1 px-2">Yes</td><td className="py-1 px-2">No</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </Section>
-
-        {/* Acute Migraine Management */}
-        <Section id="headache-acute" title="Acute Migraine Management" expandedSections={expandedSections} toggleSection={toggleSection}>
-          <div className="space-y-2 text-xs">
-            <div className="p-2 bg-green-50 dark:bg-green-900/20 rounded">
-              <p className="font-semibold text-green-700">First Line - Analgesics</p>
-              <div className="grid grid-cols-2 gap-2 mt-1">
-                <div>
-                  <p className="text-muted-foreground">Paracetamol: 10-15 mg/kg/dose</p>
-                  {w > 0 && <p className="font-mono text-green-600">{(w * 10).toFixed(0)}-{(w * 15).toFixed(0)} mg</p>}
-                </div>
-                <div>
-                  <p className="text-muted-foreground">Ibuprofen: 5-10 mg/kg/dose</p>
-                  {w > 0 && <p className="font-mono text-green-600">{(w * 5).toFixed(0)}-{(w * 10).toFixed(0)} mg</p>}
-                </div>
+        <div className="p-3 bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-950/20 dark:to-blue-950/20 rounded-xl">
+          <p className="text-xs font-bold text-center text-gray-700 dark:text-gray-300 mb-2">Migraine vs Tension</p>
+          <div className="grid grid-cols-2 gap-2">
+            <div className="p-2 bg-purple-100 dark:bg-purple-900/40 rounded-lg border border-purple-300">
+              <p className="text-xs font-bold text-purple-700 text-center mb-1">Migraine</p>
+              <div className="text-[9px] text-purple-600 space-y-0.5">
+                <p>• Unilateral/Bilateral</p>
+                <p>• Pulsating/Throbbing</p>
+                <p>• 2-72 hours</p>
+                <p>• Nausea, photo/phonophobia</p>
+                <p>• Family history +</p>
               </div>
             </div>
-            <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
-              <p className="font-semibold">Naproxen: 5-7 mg/kg/dose</p>
-              {w > 0 && <p className="font-mono text-gray-600">{(w * 5).toFixed(0)}-{(w * 7).toFixed(0)} mg</p>}
-            </div>
-            <div className="p-2 bg-amber-50 dark:bg-amber-900/20 rounded">
-              <p className="font-semibold text-amber-700">Triptans (Specialist use only)</p>
-              <p className="text-muted-foreground">Rarely used in pediatrics - consult Neurology</p>
+            <div className="p-2 bg-blue-100 dark:bg-blue-900/40 rounded-lg border border-blue-300">
+              <p className="text-xs font-bold text-blue-700 text-center mb-1">Tension</p>
+              <div className="text-[9px] text-blue-600 space-y-0.5">
+                <p>• Frontal</p>
+                <p>• Squeezing/Pressure</p>
+                <p>• Hours to days</p>
+                <p>• No associations</p>
+                <p>• Stress trigger</p>
+              </div>
             </div>
           </div>
-        </Section>
+        </div>
 
-        {/* Chronic Migraine Prophylaxis */}
-        <Section id="headache-prophylaxis" title="Migraine Prophylaxis (Chronic)" expandedSections={expandedSections} toggleSection={toggleSection}>
-          <div className="p-2 bg-blue-50 dark:bg-blue-900/20 rounded text-xs mb-2">
-            <p className="font-medium text-blue-700">Indications:</p>
-            <p className="text-muted-foreground">• ≥1 headache/week or &gt;3/month • Prolonged severe attacks • Abortive treatment fails</p>
-          </div>
-          <div className="space-y-2 text-xs">
-            <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
-              <p className="font-medium">Propranolol</p>
-              <p className="text-muted-foreground">&lt;35kg: 10-20mg TDS | ≥35kg: 20-40mg TDS</p>
+        {/* Divider */}
+        <div className="border-t border-dashed border-gray-300 dark:border-gray-700 my-3"></div>
+
+        {/* Treatment */}
+        <div className="p-3 bg-gradient-to-r from-green-50 to-amber-50 dark:from-green-950/20 dark:to-amber-950/20 rounded-xl">
+          <p className="text-xs font-bold text-center text-gray-700 dark:text-gray-300 mb-2">Acute Migraine Treatment</p>
+          <div className="grid grid-cols-2 gap-2">
+            <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded text-center">
+              <p className="text-[10px] font-bold text-green-700">Paracetamol</p>
+              <p className="text-[9px] text-green-600">10-15 mg/kg</p>
+              {w > 0 && <p className="text-[10px] font-mono text-green-700">{(w*10).toFixed(0)}-{(w*15).toFixed(0)} mg</p>}
             </div>
-            <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
-              <p className="font-medium">Cyproheptadine</p>
-              <p className="text-muted-foreground">0.25-0.4 mg/kg/day BD-TDS</p>
-              {w > 0 && <p className="font-mono text-gray-600">{(w * 0.25).toFixed(1)}-{(w * 0.4).toFixed(1)} mg/day</p>}
-            </div>
-            <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
-              <p className="font-medium">Amitriptyline</p>
-              <p className="text-muted-foreground">0.1-0.25 mg/kg/dose HS (max 2mg/kg/day)</p>
+            <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded text-center">
+              <p className="text-[10px] font-bold text-blue-700">Ibuprofen</p>
+              <p className="text-[9px] text-blue-600">5-10 mg/kg</p>
+              {w > 0 && <p className="text-[10px] font-mono text-blue-700">{(w*5).toFixed(0)}-{(w*10).toFixed(0)} mg</p>}
             </div>
           </div>
-        </Section>
+        </div>
 
         {/* IIH */}
-        <Section id="headache-iih" title="Idiopathic Intracranial Hypertension (IIH)" expandedSections={expandedSections} toggleSection={toggleSection}>
-          <div className="space-y-2">
-            <div className="p-2 bg-purple-50 dark:bg-purple-900/20 rounded text-xs">
-              <p className="font-semibold text-purple-700">Clinical Features:</p>
-              <p className="text-muted-foreground">Daily headache, diplopia, transient visual obscurations</p>
+        <div className="p-3 bg-gradient-to-b from-amber-50 to-orange-50 dark:from-amber-950/20 dark:to-orange-950/20 rounded-xl">
+          <p className="text-xs font-bold text-center text-amber-700 dark:text-amber-300 mb-2">IIH (Idiopathic Intracranial HTN)</p>
+          <div className="grid grid-cols-3 gap-1 text-[9px]">
+            <div className="p-1.5 bg-white dark:bg-gray-900 rounded text-center">
+              <p className="font-bold text-amber-600">Signs</p>
+              <p className="text-gray-500">Papilledema, CN VI palsy</p>
             </div>
-            <div className="p-2 bg-red-50 dark:bg-red-900/20 rounded text-xs">
-              <p className="font-semibold text-red-700">Examination:</p>
-              <p className="text-muted-foreground">Papilledema, Abducent nerve palsy (CN VI)</p>
+            <div className="p-1.5 bg-white dark:bg-gray-900 rounded text-center">
+              <p className="font-bold text-amber-600">Dx</p>
+              <p className="text-gray-500">LP: ICP &gt;25</p>
             </div>
-            <div className="p-2 bg-blue-50 dark:bg-blue-900/20 rounded text-xs">
-              <p className="font-semibold text-blue-700">Diagnosis:</p>
-              <p className="text-muted-foreground">LP with opening pressure: ICP &gt;25 cmH₂O (normal CSF)</p>
-            </div>
-            <div className="p-2 bg-green-50 dark:bg-green-900/20 rounded text-xs">
-              <p className="font-semibold text-green-700">Treatment - Acetazolamide:</p>
-              <p className="text-muted-foreground">Children: 25 mg/kg/day, increase by 25 mg/kg/day (max 100 mg/kg/day)</p>
-              {w > 0 && <p className="font-mono text-green-600">Start: {(w * 25).toFixed(0)} mg/day</p>}
-              <p className="text-muted-foreground mt-1">+ Weight loss + Stop triggering medications</p>
+            <div className="p-1.5 bg-white dark:bg-gray-900 rounded text-center">
+              <p className="font-bold text-green-600">Tx</p>
+              <p className="text-gray-500">Acetazolamide</p>
+              {w > 0 && <p className="font-mono text-green-600">{(w*25).toFixed(0)}mg/d</p>}
             </div>
           </div>
-        </Section>
+        </div>
 
-        {/* Non-neurological DDx */}
-        <Section id="headache-nonneuro" title="Non-Neurological Causes" expandedSections={expandedSections} toggleSection={toggleSection}>
-          <div className="grid grid-cols-2 gap-2 text-xs">
-            <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
-              <p className="font-medium">URTI</p>
-              <p className="text-muted-foreground">Cough, congestion</p>
-            </div>
-            <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
-              <p className="font-medium">Sinusitis</p>
-              <p className="text-muted-foreground">↑ with position, facial tenderness</p>
-            </div>
-            <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
-              <p className="font-medium">Meningitis</p>
-              <p className="text-muted-foreground">Fever, photophobia, neck rigidity</p>
-            </div>
-            <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
-              <p className="font-medium">Refractive Errors</p>
-              <p className="text-muted-foreground">Reduced visual acuity</p>
-            </div>
-            <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
-              <p className="font-medium">Dental Caries</p>
-              <p className="text-muted-foreground">Tooth pain</p>
-            </div>
-            <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
-              <p className="font-medium">Malignant HTN</p>
-              <p className="text-muted-foreground">High BP, risk factors</p>
-            </div>
-          </div>
-        </Section>
       </CardContent>
     </Card>
   );
