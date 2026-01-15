@@ -66,7 +66,7 @@ const HypocalcemiaApproach = ({ expandedSections, toggleSection }) => {
             <div className="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
               <p className="font-semibold mb-2">Phosphate ↑ + Creatinine Normal</p>
               <p className="text-xs text-muted-foreground font-semibold">→ Pseudohypoparathyroidism</p>
-              <p className="text-xs text-muted-foreground mt-1">PTH resistance (PTH present but tissues don't respond)</p>
+              <p className="text-xs text-muted-foreground mt-1">PTH resistance (PTH present but tissues do not respond)</p>
             </div>
           </div>
         </Section>
