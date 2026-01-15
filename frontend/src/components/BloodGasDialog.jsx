@@ -165,6 +165,7 @@ const BloodGasDialog = ({ open, onOpenChange }) => {
             toast.error(errorMsg);
           }
         } catch (err) {
+          clearInterval(progressInterval);
           if (axios.isCancel(err) || err.name === 'AbortError' || err.code === 'ERR_CANCELED') {
             // Request was cancelled, don't show error
             return;
@@ -173,6 +174,7 @@ const BloodGasDialog = ({ open, onOpenChange }) => {
           toast.error("OCR failed: " + (err.response?.data?.detail || err.message));
         }
         
+        clearInterval(progressInterval);
         setIsLoading(false);
         setOcrProgress(0);
         abortControllerRef.current = null;
