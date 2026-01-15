@@ -59,7 +59,7 @@ const TbiApproach = ({ weight, expandedSections, toggleSection }) => {
         {/* ICP Management */}
         <Section id="tbi-icp" title="Raised ICP Management (Tier 1)" expandedSections={expandedSections} toggleSection={toggleSection}>
           <div className="space-y-2 text-xs">
-            <p className="text-muted-foreground font-medium">Signs: Cushing's triad, bradycardia, hypertension, irregular breathing, pupil changes</p>
+            <p className="text-muted-foreground font-medium">Signs: Cushing triad, bradycardia, hypertension, irregular breathing, pupil changes</p>
             <div className="p-2 bg-blue-50 dark:bg-blue-900/20 rounded">
               <p className="font-medium">Hypertonic Saline (3%)</p>
               <p className="text-muted-foreground">5-10 mL/kg IV over 20 min</p>
