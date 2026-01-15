@@ -206,6 +206,29 @@ const AdminDashboard = () => {
     return new Date(dateString).toLocaleDateString();
   };
 
+  const getDaysRemaining = (subscription) => {
+    if (!subscription) return null;
+    const dateString = subscription.status === 'trial' 
+      ? subscription.trial_ends_at 
+      : subscription.renews_at;
+    if (!dateString) return null;
+    const now = new Date();
+    const endDate = new Date(dateString);
+    const diffTime = endDate - now;
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays;
+  };
+
+  const getDaysDisplay = (days) => {
+    if (days === null) return { text: '-', className: 'text-gray-400' };
+    if (days < 0) return { text: 'Expired', className: 'text-red-600 bg-red-100 px-2 py-0.5 rounded-full text-xs font-medium' };
+    if (days === 0) return { text: 'Today', className: 'text-red-600 bg-red-100 px-2 py-0.5 rounded-full text-xs font-medium' };
+    if (days === 1) return { text: '1 day', className: 'text-amber-600 bg-amber-100 px-2 py-0.5 rounded-full text-xs font-medium' };
+    if (days <= 3) return { text: `${days} days`, className: 'text-amber-600 bg-amber-100 px-2 py-0.5 rounded-full text-xs font-medium' };
+    if (days <= 7) return { text: `${days} days`, className: 'text-blue-600 bg-blue-100 px-2 py-0.5 rounded-full text-xs font-medium' };
+    return { text: `${days} days`, className: 'text-green-600 bg-green-100 px-2 py-0.5 rounded-full text-xs font-medium' };
+  };
+
   const filteredUsers = users.filter(user =>
     user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
     user.name.toLowerCase().includes(searchTerm.toLowerCase())
