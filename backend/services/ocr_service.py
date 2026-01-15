@@ -391,10 +391,10 @@ def extract_metrics_improved(ocr_text: str) -> Dict[str, Any]:
                     continue
     
     # ================== Lactate ==================
-    # Common patterns: "cLac 0.9", "? clec 0.", "clac"
+    # Common patterns: "cLac 0.9", "? clec 0.", "clac", "Pitac 48" (48 -> 4.8)
     if 'lactate' not in metrics:
         patterns = [
-            r'[?co]?\s*c?[Ll]ac\s*[:\s]*(\d{1,2}[\.\,]?\d*)\s*(?:mmol)?',
+            r'[?coPp]?\s*[ciI]?[tl]?[ae]c\s*[:\s]*(\d{1,2}[\.\,]?\d*)\s*(?:mmol)?',
             r'clec\s*(\d[\.\,]\d)',  # OCR error
             r'Lactate[^\d]*(\d{1,2}[\.\,]\d)',
         ]
@@ -404,6 +404,9 @@ def extract_metrics_improved(ocr_text: str) -> Dict[str, Any]:
                 val_str = match.group(1).replace(',', '.')
                 try:
                     val = float(val_str)
+                    # Handle OCR without decimal: 48 -> 4.8
+                    if val >= 10 and '.' not in match.group(1):
+                        val = val / 10.0
                     if 0 <= val <= 30:
                         metrics['lactate'] = round(val, 1)
                         break
