@@ -275,15 +275,21 @@ def extract_metrics(lines: List[str]) -> Dict[str, Any]:
                             break
                     except: pass
         
-        # cCl- (chloride) - Radiometer format
-        if 'ccl' in line_lower or 'cl-' in line_lower or 'chloride' in line_lower:
-            match = re.search(r'(?:c)?cl-?[:\s]*(\d{2,3})', line_lower)
-            if match and 'Cl' not in metrics:
-                try:
-                    val = float(match.group(1))
-                    if 70 <= val <= 130:
-                        metrics['Cl'] = val
-                except: pass
+        # cCl- (chloride) - Radiometer format, handle "cche" or "che" OCR error
+        if 'ccl' in line_lower or 'cl-' in line_lower or 'chloride' in line_lower or 'cche' in line_lower or ' che' in line_lower:
+            patterns = [
+                r'(?:c)?cl-?[:\s]*(\d{2,3})',
+                r'c?che[:\s]*(\d{2,3})',
+            ]
+            for pat in patterns:
+                match = re.search(pat, line_lower)
+                if match and 'Cl' not in metrics:
+                    try:
+                        val = float(match.group(1))
+                        if 70 <= val <= 130:
+                            metrics['Cl'] = val
+                            break
+                    except: pass
         
         # cGlu (glucose) - Radiometer format
         if 'cglu' in line_lower or 'glucose' in line_lower or 'glu' in line_lower:
