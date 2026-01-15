@@ -345,3 +345,169 @@ class SubscriptionService:
             stats['total'] += count
         
         return stats
+
+    async def send_renewal_reminders(self, days_before: int = 3) -> dict:
+        """
+        Send renewal reminder emails to users whose subscriptions are expiring soon.
+        
+        Args:
+            days_before: Number of days before expiration to send reminder (default: 3)
+            
+        Returns:
+            Dict with counts of emails sent and any errors
+        """
+        now = datetime.now(timezone.utc)
+        reminder_window_start = now
+        reminder_window_end = now + timedelta(days=days_before + 1)
+        
+        results = {
+            'checked': 0,
+            'reminders_sent': 0,
+            'trials_sent': 0,
+            'errors': [],
+            'skipped': 0
+        }
+        
+        try:
+            # Find active subscriptions expiring within the window
+            active_subs = await self.db.subscriptions.find({
+                'status': 'active',
+                'renews_at': {
+                    '$gte': reminder_window_start.isoformat(),
+                    '$lte': reminder_window_end.isoformat()
+                }
+            }, {'_id': 0}).to_list(None)
+            
+            # Find trial subscriptions expiring within the window
+            trial_subs = await self.db.subscriptions.find({
+                'status': 'trial',
+                'trial_ends_at': {
+                    '$gte': reminder_window_start.isoformat(),
+                    '$lte': reminder_window_end.isoformat()
+                }
+            }, {'_id': 0}).to_list(None)
+            
+            results['checked'] = len(active_subs) + len(trial_subs)
+            
+            # Process active subscriptions
+            for sub in active_subs:
+                try:
+                    user_id = sub.get('user_id')
+                    renews_at_str = sub.get('renews_at')
+                    plan_name = sub.get('plan_name', 'monthly')
+                    
+                    if not user_id or not renews_at_str:
+                        results['skipped'] += 1
+                        continue
+                    
+                    # Check if we already sent a reminder recently (within last 24 hours)
+                    last_reminder = sub.get('last_reminder_sent')
+                    if last_reminder:
+                        last_reminder_dt = datetime.fromisoformat(last_reminder) if isinstance(last_reminder, str) else last_reminder
+                        if now - last_reminder_dt < timedelta(hours=24):
+                            results['skipped'] += 1
+                            continue
+                    
+                    # Get user details
+                    user = await self.db.users.find_one({'id': user_id}, {'_id': 0, 'email': 1, 'name': 1})
+                    if not user:
+                        results['skipped'] += 1
+                        continue
+                    
+                    # Calculate days remaining
+                    renews_at = datetime.fromisoformat(renews_at_str) if isinstance(renews_at_str, str) else renews_at_str
+                    days_remaining = (renews_at - now).days
+                    
+                    if days_remaining < 0:
+                        results['skipped'] += 1
+                        continue
+                    
+                    # Format dates
+                    expires_at_formatted = renews_at.strftime("%B %d, %Y")
+                    plan_display = plan_name.capitalize() if isinstance(plan_name, str) else str(plan_name).capitalize()
+                    
+                    # Send reminder email
+                    success = email_service.send_subscription_renewal_reminder_email(
+                        to_email=user['email'],
+                        user_name=user.get('name', 'User'),
+                        plan_name=plan_display,
+                        expires_at=expires_at_formatted,
+                        days_remaining=days_remaining
+                    )
+                    
+                    if success:
+                        results['reminders_sent'] += 1
+                        # Update last reminder sent timestamp
+                        await self.db.subscriptions.update_one(
+                            {'id': sub.get('id')},
+                            {'$set': {'last_reminder_sent': now.isoformat()}}
+                        )
+                        logger.info(f"Renewal reminder sent to {user['email']} ({days_remaining} days remaining)")
+                    else:
+                        results['errors'].append(f"Failed to send to {user['email']}")
+                        
+                except Exception as e:
+                    results['errors'].append(f"Error processing subscription: {str(e)}")
+            
+            # Process trial subscriptions
+            for sub in trial_subs:
+                try:
+                    user_id = sub.get('user_id')
+                    trial_ends_at_str = sub.get('trial_ends_at')
+                    
+                    if not user_id or not trial_ends_at_str:
+                        results['skipped'] += 1
+                        continue
+                    
+                    # Check if we already sent a reminder recently
+                    last_reminder = sub.get('last_reminder_sent')
+                    if last_reminder:
+                        last_reminder_dt = datetime.fromisoformat(last_reminder) if isinstance(last_reminder, str) else last_reminder
+                        if now - last_reminder_dt < timedelta(hours=24):
+                            results['skipped'] += 1
+                            continue
+                    
+                    # Get user details
+                    user = await self.db.users.find_one({'id': user_id}, {'_id': 0, 'email': 1, 'name': 1})
+                    if not user:
+                        results['skipped'] += 1
+                        continue
+                    
+                    # Calculate days remaining
+                    trial_ends_at = datetime.fromisoformat(trial_ends_at_str) if isinstance(trial_ends_at_str, str) else trial_ends_at_str
+                    days_remaining = (trial_ends_at - now).days
+                    
+                    if days_remaining < 0:
+                        results['skipped'] += 1
+                        continue
+                    
+                    # Format date
+                    expires_at_formatted = trial_ends_at.strftime("%B %d, %Y")
+                    
+                    # Send trial reminder email
+                    success = email_service.send_trial_expiring_reminder_email(
+                        to_email=user['email'],
+                        user_name=user.get('name', 'User'),
+                        expires_at=expires_at_formatted,
+                        days_remaining=days_remaining
+                    )
+                    
+                    if success:
+                        results['trials_sent'] += 1
+                        # Update last reminder sent timestamp
+                        await self.db.subscriptions.update_one(
+                            {'id': sub.get('id')},
+                            {'$set': {'last_reminder_sent': now.isoformat()}}
+                        )
+                        logger.info(f"Trial reminder sent to {user['email']} ({days_remaining} days remaining)")
+                    else:
+                        results['errors'].append(f"Failed to send trial reminder to {user['email']}")
+                        
+                except Exception as e:
+                    results['errors'].append(f"Error processing trial subscription: {str(e)}")
+            
+        except Exception as e:
+            logger.error(f"Error in send_renewal_reminders: {e}")
+            results['errors'].append(str(e))
+        
+        return results
