@@ -380,6 +380,226 @@ class EmailService:
         
         return self._send_email(to_email, subject, html_body, text_body)
 
+    def send_subscription_renewal_reminder_email(
+        self, 
+        to_email: str, 
+        user_name: str, 
+        plan_name: str, 
+        expires_at: str,
+        days_remaining: int
+    ) -> bool:
+        """
+        Send a subscription renewal reminder email.
+        
+        Args:
+            to_email: User's email address
+            user_name: User's display name
+            plan_name: Name of the subscription plan
+            expires_at: Formatted expiration date string (e.g., "January 15, 2026")
+            days_remaining: Number of days until expiration
+        """
+        if days_remaining <= 1:
+            urgency = "EXPIRES TOMORROW"
+            urgency_color = "#dc3545"
+        elif days_remaining <= 3:
+            urgency = f"EXPIRES IN {days_remaining} DAYS"
+            urgency_color = "#ffc107"
+        else:
+            urgency = f"EXPIRES IN {days_remaining} DAYS"
+            urgency_color = "#17a2b8"
+        
+        subject = f"⏰ Subscription {urgency} - {self.app_name}"
+        
+        html_body = f"""
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <style>
+                body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; }}
+                .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
+                .header {{ background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }}
+                .header img {{ width: 60px; height: 60px; margin-bottom: 10px; }}
+                .header h1 {{ color: white; margin: 0; font-size: 22px; }}
+                .content {{ background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }}
+                .urgency-box {{ background: white; border: 3px solid {urgency_color}; border-radius: 10px; padding: 20px; margin: 20px 0; text-align: center; }}
+                .urgency-text {{ font-size: 18px; font-weight: bold; color: {urgency_color}; margin-bottom: 10px; }}
+                .expiry-date {{ font-size: 16px; color: #333; }}
+                .plan-info {{ background: #e9ecef; border-radius: 5px; padding: 15px; margin: 15px 0; }}
+                .button {{ display: inline-block; background: #00d9c5; color: white; padding: 12px 30px; text-decoration: none; border-radius: 25px; margin: 20px 0; font-weight: bold; }}
+                .footer {{ text-align: center; padding: 20px; color: #666; font-size: 12px; }}
+                .warning {{ background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin: 15px 0; }}
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="header">
+                    <img src="{self.logo_url}" alt="Logo" />
+                    <h1>Subscription Renewal Reminder</h1>
+                </div>
+                <div class="content">
+                    <p>Hi <strong>{user_name}</strong>,</p>
+                    <p>This is a friendly reminder that your subscription is expiring soon.</p>
+                    
+                    <div class="urgency-box">
+                        <div class="urgency-text">⏰ {urgency}</div>
+                        <div class="expiry-date">Expires on: <strong>{expires_at}</strong></div>
+                    </div>
+                    
+                    <div class="plan-info">
+                        <strong>Current Plan:</strong> {plan_name}
+                    </div>
+                    
+                    <div class="warning">
+                        <strong>⚠️ Important:</strong> After your subscription expires, you will lose access to all premium features including NICU and Children's ER/Ward calculators.
+                    </div>
+                    
+                    <p style="text-align: center;">
+                        <a href="{self.frontend_url}" class="button">Renew Now</a>
+                    </p>
+                    
+                    <p>If you have automatic renewal enabled through PayPal, your subscription will renew automatically.</p>
+                    <p>Thank you for being a valued subscriber!</p>
+                </div>
+                <div class="footer">
+                    <p>© 2026 {self.app_name}. All rights reserved.</p>
+                    <p style="font-size: 10px; color: #999;">You received this email because you have an active subscription. To unsubscribe from renewal reminders, cancel your subscription in the app.</p>
+                </div>
+            </div>
+        </body>
+        </html>
+        """
+        
+        text_body = f"""
+        Subscription Renewal Reminder - {self.app_name}
+        
+        Hi {user_name},
+        
+        This is a friendly reminder that your subscription is expiring soon.
+        
+        {urgency}
+        Expires on: {expires_at}
+        Current Plan: {plan_name}
+        
+        ⚠️ Important: After your subscription expires, you will lose access to all premium features.
+        
+        Renew now at: {self.frontend_url}
+        
+        If you have automatic renewal enabled through PayPal, your subscription will renew automatically.
+        
+        Thank you for being a valued subscriber!
+        
+        © 2026 {self.app_name}. All rights reserved.
+        """
+        
+        return self._send_email(to_email, subject, html_body, text_body)
+
+    def send_trial_expiring_reminder_email(
+        self, 
+        to_email: str, 
+        user_name: str, 
+        expires_at: str,
+        days_remaining: int
+    ) -> bool:
+        """
+        Send a trial expiration reminder email.
+        
+        Args:
+            to_email: User's email address
+            user_name: User's display name
+            expires_at: Formatted expiration date string
+            days_remaining: Number of days until trial expires
+        """
+        if days_remaining <= 1:
+            urgency = "EXPIRES TOMORROW"
+            urgency_color = "#dc3545"
+        else:
+            urgency = f"EXPIRES IN {days_remaining} DAYS"
+            urgency_color = "#ffc107"
+        
+        subject = f"⏰ Free Trial {urgency} - {self.app_name}"
+        
+        html_body = f"""
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <style>
+                body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; }}
+                .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
+                .header {{ background: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }}
+                .header img {{ width: 60px; height: 60px; margin-bottom: 10px; }}
+                .header h1 {{ color: white; margin: 0; font-size: 22px; }}
+                .content {{ background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }}
+                .urgency-box {{ background: white; border: 3px solid {urgency_color}; border-radius: 10px; padding: 20px; margin: 20px 0; text-align: center; }}
+                .urgency-text {{ font-size: 18px; font-weight: bold; color: {urgency_color}; margin-bottom: 10px; }}
+                .expiry-date {{ font-size: 16px; color: #333; }}
+                .button {{ display: inline-block; background: #00d9c5; color: white; padding: 12px 30px; text-decoration: none; border-radius: 25px; margin: 20px 0; font-weight: bold; }}
+                .features {{ background: #e9ecef; border-radius: 5px; padding: 15px; margin: 15px 0; }}
+                .features ul {{ margin: 10px 0; padding-left: 20px; }}
+                .footer {{ text-align: center; padding: 20px; color: #666; font-size: 12px; }}
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="header">
+                    <img src="{self.logo_url}" alt="Logo" />
+                    <h1>Your Free Trial is Ending Soon!</h1>
+                </div>
+                <div class="content">
+                    <p>Hi <strong>{user_name}</strong>,</p>
+                    <p>We hope you've been enjoying {self.app_name}! Your free trial is about to expire.</p>
+                    
+                    <div class="urgency-box">
+                        <div class="urgency-text">⏰ TRIAL {urgency}</div>
+                        <div class="expiry-date">Ends on: <strong>{expires_at}</strong></div>
+                    </div>
+                    
+                    <div class="features">
+                        <strong>Don't lose access to:</strong>
+                        <ul>
+                            <li>NICU Calculators (Fluids, TPN, Jaundice, etc.)</li>
+                            <li>Children's ER/Ward Tools (Drug Dosing, CPR, Scoring)</li>
+                            <li>Blood Gas Analysis with OCR</li>
+                            <li>Customizable Dashboard Layouts</li>
+                        </ul>
+                    </div>
+                    
+                    <p style="text-align: center;">
+                        <a href="{self.frontend_url}" class="button">Subscribe Now</a>
+                    </p>
+                    
+                    <p>Subscribe today to continue using all premium features!</p>
+                </div>
+                <div class="footer">
+                    <p>© 2026 {self.app_name}. All rights reserved.</p>
+                </div>
+            </div>
+        </body>
+        </html>
+        """
+        
+        text_body = f"""
+        Your Free Trial is Ending Soon! - {self.app_name}
+        
+        Hi {user_name},
+        
+        We hope you've been enjoying {self.app_name}! Your free trial is about to expire.
+        
+        TRIAL {urgency}
+        Ends on: {expires_at}
+        
+        Don't lose access to:
+        - NICU Calculators
+        - Children's ER/Ward Tools
+        - Blood Gas Analysis with OCR
+        - Customizable Dashboard Layouts
+        
+        Subscribe now at: {self.frontend_url}
+        
+        © 2026 {self.app_name}. All rights reserved.
+        """
+        
+        return self._send_email(to_email, subject, html_body, text_body)
+
 
 # Singleton instance
 email_service = EmailService()
