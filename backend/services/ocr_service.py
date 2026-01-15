@@ -414,10 +414,10 @@ def extract_metrics_improved(ocr_text: str) -> Dict[str, Any]:
                     continue
     
     # ================== Glucose ==================
-    # Common patterns: "cGlu 6.7", "Glu 67", "eGiu . 4"
+    # Common patterns: "cGlu 6.7", "Glu 67", "eGiu . 4" (needs decimal reconstruction), "Glu 41.3" -> 11.3
     if 'glucose' not in metrics:
         patterns = [
-            r'[ce]?[Gg][il]u\s*[:\s]*(\d{1,3}[\.\,]?\d*)\s*(?:mmol)?',
+            r'[ce]?[Gg][il]u\s*[\.\s]*(\d{1,2}[\.\,]?\d*)\s*(?:mmol)?',
             r'Glucose[^\d]*(\d{1,3}[\.\,]\d)',
         ]
         for pat in patterns:
@@ -426,6 +426,11 @@ def extract_metrics_improved(ocr_text: str) -> Dict[str, Any]:
                 val_str = match.group(1).replace(',', '.')
                 try:
                     val = float(val_str)
+                    # Handle OCR errors adding extra digits: 41.3 -> 11.3
+                    if val > 30 and val < 100:
+                        val_str = str(val)
+                        if val_str[0] == '4':
+                            val = float('1' + val_str[1:])
                     if 0.5 <= val <= 50:
                         metrics['glucose'] = round(val, 1)
                         break
