@@ -288,6 +288,16 @@ const BloodGasDialog = ({ open, onOpenChange }) => {
                         />
                       </div>
                     )}
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={cancelOcr}
+                      className="mt-4 text-red-500 border-red-300 hover:bg-red-50 hover:text-red-600"
+                      data-testid="cancel-ocr-btn"
+                    >
+                      <X className="h-4 w-4 mr-1" />
+                      Cancel
+                    </Button>
                   </div>
                 )}
 
