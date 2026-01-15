@@ -242,15 +242,21 @@ def extract_metrics(lines: List[str]) -> Dict[str, Any]:
                             break
                     except: pass
         
-        # cNa+ (sodium) - Radiometer format
-        if 'cna' in line_lower or 'na+' in line_lower or 'sodium' in line_lower:
-            match = re.search(r'(?:c)?na\+?[:\s]*(\d{2,3})', line_lower)
-            if match and 'Na' not in metrics:
-                try:
-                    val = float(match.group(1))
-                    if 100 <= val <= 180:
-                        metrics['Na'] = val
-                except: pass
+        # cNa+ (sodium) - Radiometer format, handle "onat" OCR error
+        if 'cna' in line_lower or 'na+' in line_lower or 'sodium' in line_lower or 'onat' in line_lower:
+            patterns = [
+                r'(?:c|o)?na[+t]?[:\s]*(\d{2,3})',
+                r'onat[:\s]*(\d{2,3})',
+            ]
+            for pat in patterns:
+                match = re.search(pat, line_lower)
+                if match and 'Na' not in metrics:
+                    try:
+                        val = float(match.group(1))
+                        if 100 <= val <= 180:
+                            metrics['Na'] = val
+                            break
+                    except: pass
         
         # cCa2+ (calcium) - Radiometer format
         if 'cca' in line_lower or 'ca2' in line_lower or 'calcium' in line_lower:
