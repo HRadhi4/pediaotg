@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Camera, Upload, PenLine, Loader2, AlertTriangle, CheckCircle } from "lucide-react";
+import { Camera, Upload, PenLine, Loader2, AlertTriangle, CheckCircle, X } from "lucide-react";
 import { toast } from "sonner";
 import axios from "axios";
 
@@ -33,6 +33,7 @@ const BloodGasDialog = ({ open, onOpenChange }) => {
   
   const fileInputRef = useRef(null);
   const cameraInputRef = useRef(null);
+  const abortControllerRef = useRef(null);
 
   // Parse blood gas values from OCR text
   const parseBloodGasFromText = (text) => {
