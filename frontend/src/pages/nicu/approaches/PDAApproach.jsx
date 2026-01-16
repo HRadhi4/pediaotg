@@ -1,7 +1,8 @@
 /**
  * Patent Ductus Arteriosus (PDA) Approach
  * Updated: 2024 Guidelines
- * Simplified design matching Apnea approach
+ * 
+ * Design: Standardized to match JaundiceApproach.jsx
  */
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -14,114 +15,141 @@ const PDAApproach = ({ weight, gestationalAge }) => {
     <Card data-testid="pda-approach">
       <CardHeader className="pb-2">
         <CardTitle className="text-base">Patent Ductus Arteriosus (PDA)</CardTitle>
-        <CardDescription className="text-xs">Diagnosis & Management</CardDescription>
-        <p className="text-[10px] text-blue-600 mt-1 font-medium">Updated: 2024 Guidelines</p>
+        <CardDescription className="text-xs">Assessment & Management Guidelines</CardDescription>
       </CardHeader>
-      <CardContent className="space-y-3">
+      <CardContent className="space-y-3 text-sm">
 
         {/* Key Points */}
-        <div className="p-2 bg-amber-50 dark:bg-amber-950/30 rounded-lg border border-amber-200">
-          <p className="text-xs font-bold text-amber-700 mb-1">Key Points (2024)</p>
-          <div className="text-[8px] text-amber-600 space-y-1">
-            <p><strong>Incidence:</strong> ~70% in &lt;28 weeks</p>
-            <p><strong>Key change:</strong> Many close spontaneously - conservative approach OK</p>
-            <p><strong>Treat:</strong> Hemodynamically significant PDA (hsPDA) only</p>
-            <p><strong>Early routine closure:</strong> NOT beneficial</p>
+        <div className="p-3 bg-slate-50 dark:bg-slate-900 rounded-lg border-l-4 border-blue-500">
+          <p className="font-semibold text-slate-700 dark:text-slate-200 mb-2">Key Points (2024)</p>
+          <ul className="text-xs text-slate-600 dark:text-slate-300 space-y-1 list-disc pl-4">
+            <li><strong>Conservative approach:</strong> Many PDAs close spontaneously</li>
+            <li><strong>Treatment:</strong> Reserved for hemodynamically significant PDA</li>
+            <li><strong>Echo assessment:</strong> Size, shunt direction, and hemodynamic significance</li>
+            <li><strong>Timing:</strong> Earlier treatment may be beneficial in ELBW infants</li>
+          </ul>
+        </div>
+
+        {/* Hemodynamic Significance */}
+        <div className="p-3 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700">
+          <p className="font-semibold text-slate-700 dark:text-slate-200 mb-2">Hemodynamically Significant PDA (hsPDA)</p>
+          <div className="text-xs text-slate-600 dark:text-slate-300">
+            <p className="font-medium mb-1">Echo criteria:</p>
+            <ul className="list-disc pl-4 space-y-0.5">
+              <li>PDA diameter &gt;1.5 mm or &gt;1.5 mm/kg</li>
+              <li>LA:Ao ratio &gt;1.5</li>
+              <li>Left-to-right shunt with diastolic flow reversal</li>
+              <li>Absent/reversed diastolic flow in descending aorta</li>
+            </ul>
+            <p className="font-medium mt-2 mb-1">Clinical signs:</p>
+            <ul className="list-disc pl-4 space-y-0.5">
+              <li>Wide pulse pressure</li>
+              <li>Bounding pulses</li>
+              <li>Continuous murmur</li>
+              <li>Increasing respiratory support</li>
+            </ul>
           </div>
         </div>
 
-        {/* Clinical Features */}
-        <div className="p-2 bg-blue-50 dark:bg-blue-950/30 rounded-lg border border-blue-200">
-          <p className="text-xs font-bold text-blue-700 mb-1">Signs of hsPDA</p>
-          <div className="grid grid-cols-2 gap-2 text-[8px] text-blue-600">
+        {/* Management Options */}
+        <div className="p-3 bg-slate-100 dark:bg-slate-800 rounded-lg border-l-4 border-green-500">
+          <p className="font-semibold text-slate-700 dark:text-slate-200 mb-2">Management Options</p>
+          <div className="text-xs text-slate-600 dark:text-slate-300 space-y-2">
+            <div className="p-2 bg-white dark:bg-slate-900 rounded">
+              <p className="font-medium">1. Conservative/Watchful waiting:</p>
+              <p>• Fluid restriction (120-140 mL/kg/day)</p>
+              <p>• Optimize respiratory support</p>
+              <p>• Many close spontaneously by term</p>
+            </div>
+            <div className="p-2 bg-white dark:bg-slate-900 rounded">
+              <p className="font-medium">2. Pharmacological closure:</p>
+              <p>• Ibuprofen (preferred) or Indomethacin</p>
+              <p>• Acetaminophen (alternative)</p>
+            </div>
+            <div className="p-2 bg-white dark:bg-slate-900 rounded">
+              <p className="font-medium">3. Surgical/Interventional:</p>
+              <p>• Surgical ligation</p>
+              <p>• Transcatheter closure (if &gt;700g)</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Drug Dosing */}
+        <div className="p-3 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700">
+          <p className="font-semibold text-slate-700 dark:text-slate-200 mb-2">Pharmacological Treatment</p>
+          <div className="text-xs text-slate-600 dark:text-slate-300 space-y-3">
             <div>
-              <p className="font-bold">Cardiac:</p>
-              <p>• Continuous murmur</p>
-              <p>• Hyperdynamic precordium</p>
-              <p>• Bounding pulses</p>
+              <p className="font-medium text-blue-600">Ibuprofen (IV):</p>
+              <p>• Loading: 10 mg/kg</p>
+              <p>• Then: 5 mg/kg at 24h and 48h</p>
+              {w > 0 && (
+                <p className="font-mono text-blue-600 mt-1">
+                  = {(w * 10).toFixed(1)} mg, then {(w * 5).toFixed(1)} mg × 2
+                </p>
+              )}
             </div>
             <div>
-              <p className="font-bold">Systemic:</p>
-              <p>• ↑ Respiratory support</p>
-              <p>• Feeding intolerance</p>
-              <p>• ↓ Urine output</p>
+              <p className="font-medium text-blue-600">Indomethacin (IV):</p>
+              <p>• 0.2 mg/kg q12h × 3 doses (if &lt;48h old)</p>
+              <p>• 0.2, 0.25, 0.25 mg/kg (if 2-7 days old)</p>
+              {w > 0 && (
+                <p className="font-mono text-blue-600 mt-1">
+                  = {(w * 0.2).toFixed(2)} mg q12h × 3
+                </p>
+              )}
+            </div>
+            <div>
+              <p className="font-medium text-blue-600">Acetaminophen (IV/PO):</p>
+              <p>• 15 mg/kg q6h × 3-7 days</p>
+              {w > 0 && (
+                <p className="font-mono text-blue-600 mt-1">
+                  = {(w * 15).toFixed(1)} mg q6h
+                </p>
+              )}
             </div>
           </div>
         </div>
 
-        {/* Echo Criteria */}
-        <div className="p-2 bg-purple-50 dark:bg-purple-950/30 rounded-lg border border-purple-200">
-          <p className="text-xs font-bold text-purple-700 mb-1">Echo Criteria for hsPDA</p>
-          <div className="text-[8px] text-purple-600 space-y-1">
-            <p><strong>Size:</strong> &gt;1.5 mm/kg or &gt;3 mm</p>
-            <p><strong>LA:Ao ratio:</strong> &gt;1.4-1.5</p>
-            <p><strong>Flow:</strong> Diastolic reversal in descending Ao</p>
-          </div>
-        </div>
-
-        {/* Management */}
-        <div className="p-2 bg-green-50 dark:bg-green-950/30 rounded-lg border border-green-200">
-          <p className="text-xs font-bold text-green-700 mb-1">Management Approach</p>
-          <div className="grid grid-cols-2 gap-2 text-[8px] text-green-600">
-            <div className="p-1.5 bg-white dark:bg-gray-900 rounded">
-              <p className="font-bold">Step 1: Conservative</p>
-              <p>Optimize PEEP</p>
-              <p>Watchful waiting</p>
-            </div>
-            <div className="p-1.5 bg-white dark:bg-gray-900 rounded">
-              <p className="font-bold">Step 2: Medical</p>
-              <p>If symptomatic hsPDA</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Ibuprofen */}
-        <div className="p-2 bg-gray-800 text-white rounded-lg">
-          <p className="text-xs font-bold mb-1">Ibuprofen (Preferred)</p>
-          <div className="text-[8px] space-y-1">
-            <p className="font-bold text-amber-400">Standard Course:</p>
-            <p>Day 1: 10 mg/kg → Day 2-3: 5 mg/kg each</p>
-            {w > 0 && (
-              <div className="text-green-400 font-mono">
-                <p>Day 1: {(w * 10).toFixed(0)} mg</p>
-                <p>Day 2-3: {(w * 5).toFixed(0)} mg</p>
-              </div>
-            )}
-            
-            <p className="font-bold text-red-400 mt-2">Contraindications:</p>
-            <p>Active bleeding, IVH ≥III, NEC, platelets &lt;50K, renal failure</p>
-          </div>
-        </div>
-
-        {/* Paracetamol */}
-        <div className="p-2 bg-indigo-50 dark:bg-indigo-950/30 rounded-lg border border-indigo-200">
-          <p className="text-xs font-bold text-indigo-700 mb-1">Paracetamol (Alternative)</p>
-          <div className="text-[8px] text-indigo-600 space-y-1">
-            <p><strong>Dose:</strong> 15 mg/kg q6h × 3-7 days</p>
-            {w > 0 && <p className="text-green-600 font-mono">= {(w * 15).toFixed(0)} mg q6h</p>}
-            <p><strong>Use when:</strong> NSAID contraindicated (renal impairment, bleeding)</p>
+        {/* Contraindications */}
+        <div className="p-3 bg-slate-50 dark:bg-slate-900 rounded-lg border-l-4 border-red-500">
+          <p className="font-semibold text-red-600 dark:text-red-400 mb-2">Contraindications to NSAIDs</p>
+          <div className="grid grid-cols-2 gap-4 text-xs text-slate-600 dark:text-slate-300">
+            <ul className="list-disc pl-4 space-y-0.5">
+              <li>Active bleeding</li>
+              <li>Thrombocytopenia (&lt;50k)</li>
+              <li>Coagulopathy</li>
+              <li>NEC or suspected NEC</li>
+            </ul>
+            <ul className="list-disc pl-4 space-y-0.5">
+              <li>Renal failure (Cr &gt;1.8)</li>
+              <li>Oliguria (&lt;1 mL/kg/h)</li>
+              <li>Hyperbilirubinemia near exchange</li>
+              <li>Proven sepsis</li>
+            </ul>
           </div>
         </div>
 
         {/* Monitoring */}
-        <div className="p-2 bg-teal-50 dark:bg-teal-950/30 rounded-lg border border-teal-200">
-          <p className="text-xs font-bold text-teal-700 mb-1">Monitoring During Treatment</p>
-          <div className="text-[8px] text-teal-600 space-y-1">
-            <p><strong>Before each dose:</strong></p>
-            <p>• Urine output (&gt;1 mL/kg/hr)</p>
-            <p>• Creatinine, platelets</p>
-            <p className="text-red-600 font-bold">HOLD if UOP &lt;0.5-1 mL/kg/hr, NEC signs</p>
-          </div>
+        <div className="p-3 bg-slate-50 dark:bg-slate-900 rounded-lg">
+          <p className="font-semibold text-slate-700 dark:text-slate-200 mb-2">Monitoring During Treatment</p>
+          <ul className="text-xs text-slate-600 dark:text-slate-300 list-disc pl-4 space-y-0.5">
+            <li>Daily creatinine and BUN</li>
+            <li>Urine output (hold if &lt;1 mL/kg/h)</li>
+            <li>Platelet count</li>
+            <li>Signs of bleeding</li>
+            <li>Repeat echo after treatment course</li>
+          </ul>
         </div>
 
-        {/* Prognosis */}
-        <div className="p-2 bg-gray-100 dark:bg-gray-800 rounded-lg">
-          <p className="text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Prognosis</p>
-          <div className="text-[8px] text-gray-600 dark:text-gray-400 space-y-1">
-            <p>• Many close spontaneously</p>
-            <p>• Medical closure: 70-80%</p>
-            <p>• Surgery: Reserved for failures</p>
-          </div>
+        {/* Surgical Indications */}
+        <div className="p-3 bg-slate-50 dark:bg-slate-900 rounded-lg">
+          <p className="font-semibold text-slate-700 dark:text-slate-200 mb-2">Surgical Indications</p>
+          <ul className="text-xs text-slate-600 dark:text-slate-300 list-disc pl-4 space-y-0.5">
+            <li>Failed pharmacological treatment (2 courses)</li>
+            <li>Contraindication to medical therapy</li>
+            <li>Life-threatening cardiopulmonary compromise</li>
+            <li>Inability to wean from ventilator</li>
+          </ul>
         </div>
 
       </CardContent>
