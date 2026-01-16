@@ -1,7 +1,7 @@
 /**
  * Neonatal Sepsis Approach
- * Based on WHO Neonatal Clinical Guidelines 2018-2021
- * Reference: WHO/Belize Neonatal Guidelines
+ * Based on AAP 2019 Guidelines & 2024 Updates
+ * Reference: AAP EOS Calculator, Surviving Sepsis Campaign
  */
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -15,9 +15,20 @@ const SepsisApproach = ({ weight, gestationalAge, postnatalAge }) => {
       <CardHeader className="pb-2">
         <CardTitle className="text-base">Neonatal Sepsis</CardTitle>
         <CardDescription className="text-xs">Early and Late Onset Sepsis</CardDescription>
-        <p className="text-[10px] text-blue-600 mt-1 font-medium">Reference: WHO Neonatal Guidelines</p>
+        <p className="text-[10px] text-blue-600 mt-1 font-medium">Reference: AAP 2019 / Red Book Guidelines</p>
       </CardHeader>
       <CardContent className="space-y-3">
+
+        {/* 2024 Key Updates */}
+        <div className="p-2 bg-cyan-50 dark:bg-cyan-950/30 rounded-lg border border-cyan-200">
+          <p className="text-xs font-bold text-cyan-700 mb-1">2024 Guideline Updates</p>
+          <div className="text-[8px] text-cyan-600 space-y-0.5">
+            <p>• <strong>EOS Calculator</strong> (Kaiser) for risk stratification in ≥35 weeks</p>
+            <p>• <strong>Serial clinical observation</strong> preferred over empiric antibiotics for well-appearing at-risk neonates</p>
+            <p>• <strong>24-hour rule-out</strong>: Safe to discontinue if asymptomatic + negative cultures at 24h</p>
+            <p>• <strong>LOS stewardship</strong>: Discontinue by 48h if cultures negative, trending to narrower-spectrum agents</p>
+          </div>
+        </div>
 
         {/* Definition */}
         <div className="p-2 bg-blue-50 dark:bg-blue-950/30 rounded-lg">
