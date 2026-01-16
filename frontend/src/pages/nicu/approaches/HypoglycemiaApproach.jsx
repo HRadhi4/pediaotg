@@ -1,7 +1,7 @@
 /**
  * Neonatal Hypoglycemia Approach
- * Based on WHO Neonatal Clinical Guidelines 2018-2021
- * Reference: WHO/Belize Neonatal Guidelines
+ * Based on AAP 2011 Guidelines & PES Recommendations
+ * Reference: AAP Clinical Report / Pediatric Endocrine Society
  */
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -15,9 +15,45 @@ const HypoglycemiaApproach = ({ weight, gestationalAge, postnatalAge }) => {
       <CardHeader className="pb-2">
         <CardTitle className="text-base">Neonatal Hypoglycemia</CardTitle>
         <CardDescription className="text-xs">Screening, diagnosis and management</CardDescription>
-        <p className="text-[10px] text-blue-600 mt-1 font-medium">Reference: WHO Neonatal Guidelines</p>
+        <p className="text-[10px] text-blue-600 mt-1 font-medium">Reference: AAP 2011 / PES Guidelines</p>
       </CardHeader>
       <CardContent className="space-y-3">
+
+        {/* AAP Operational Thresholds */}
+        <div className="p-2 bg-cyan-50 dark:bg-cyan-950/30 rounded-lg border border-cyan-200">
+          <p className="text-xs font-bold text-cyan-700 mb-1">AAP Operational Thresholds (At-Risk Asymptomatic)</p>
+          <table className="w-full text-[7px]">
+            <thead>
+              <tr className="bg-cyan-100">
+                <th className="border p-1">Time</th>
+                <th className="border p-1">Intervene if &lt;</th>
+                <th className="border p-1">NICU if &lt;</th>
+                <th className="border p-1">PES Target</th>
+              </tr>
+            </thead>
+            <tbody className="text-cyan-600">
+              <tr>
+                <td className="border p-1 font-bold">0-4 hours</td>
+                <td className="border p-1">&lt;40 mg/dL</td>
+                <td className="border p-1">&lt;25 mg/dL</td>
+                <td className="border p-1">&gt;50 mg/dL</td>
+              </tr>
+              <tr>
+                <td className="border p-1 font-bold">4-24 hours</td>
+                <td className="border p-1">&lt;45 mg/dL</td>
+                <td className="border p-1">&lt;35 mg/dL</td>
+                <td className="border p-1">&gt;50 mg/dL</td>
+              </tr>
+              <tr>
+                <td className="border p-1 font-bold">&gt;48 hours</td>
+                <td className="border p-1">&lt;60 mg/dL</td>
+                <td className="border p-1">-</td>
+                <td className="border p-1">&gt;60 mg/dL</td>
+              </tr>
+            </tbody>
+          </table>
+          <p className="text-[7px] text-cyan-500 mt-1">Symptomatic infant with glucose &lt;40 mg/dL → NICU + IV dextrose regardless of age</p>
+        </div>
 
         {/* Definition */}
         <div className="p-2 bg-blue-50 dark:bg-blue-950/30 rounded-lg">
