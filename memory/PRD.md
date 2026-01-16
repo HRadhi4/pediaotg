@@ -79,34 +79,37 @@ Build a full SaaS-style web app "Pediatrics on the Go" with:
 - GoDaddy/Microsoft Exchange SMTP (emails)
 
 ## Recent Changes (January 16, 2026)
-- ✅ **NICU Approaches Section - COMPLETE NEW FEATURE**:
+- ✅ **NICU Approaches Section - COMPLETE & UPDATED**:
   - Created `/app/frontend/src/pages/nicu/NICUApproachesPage.jsx` - main container page
-  - Created 16 comprehensive NICU approach components in `/approaches/`:
-    - ResuscitationApproach.jsx (NRP algorithm)
+  - Created **20 comprehensive NICU approach components** in `/approaches/`:
+    - ResuscitationApproach.jsx (NRP algorithm - **updated to 2025 AHA/AAP**)
     - RDSApproach.jsx (Respiratory Distress Syndrome)
-    - SepsisApproach.jsx (Early/Late Onset Sepsis)
-    - HypoglycemiaApproach.jsx
-    - JaundiceApproach.jsx (Hyperbilirubinemia with phototherapy thresholds)
+    - SepsisApproach.jsx (EOS/LOS - **updated to AAP 2019/2024**)
+    - HypoglycemiaApproach.jsx (**updated to AAP operational thresholds**)
+    - JaundiceApproach.jsx (**updated to AAP 2022 Guidelines**)
     - NECApproach.jsx (Bell Staging)
-    - HIEApproach.jsx (Sarnat Staging, therapeutic hypothermia)
-    - ApnoeaApproach.jsx (caffeine dosing)
+    - HIEApproach.jsx (Sarnat Staging - **updated to 2025 NICHD guidelines**)
+    - ApneaApproach.jsx (caffeine dosing) - **spelling fixed from Apnoea**
     - PDAApproach.jsx (Ibuprofen/Indomethacin dosing)
     - SeizuresApproach.jsx (phenobarbital/levetiracetam)
     - PPHNApproach.jsx (iNO, sildenafil, milrinone)
     - MASApproach.jsx (Meconium Aspiration)
     - TTNBApproach.jsx (Transient Tachypnea)
     - BPDApproach.jsx (Bronchopulmonary Dysplasia)
-    - AnaemiaApproach.jsx (transfusion thresholds)
-    - PolycythaemiaApproach.jsx (partial exchange)
+    - AnemiaApproach.jsx (transfusion thresholds) - **spelling fixed from Anaemia**
+    - PolycythemiaApproach.jsx (partial exchange) - **spelling fixed from Polycythaemia**
+    - **CHDApproach.jsx** (NEW - Congenital Heart Disease, PGE1)
+    - **CDHApproach.jsx** (NEW - Congenital Diaphragmatic Hernia)
+    - **GastroschisisApproach.jsx** (NEW - Abdominal wall defect)
+    - **OmphaloceleApproach.jsx** (NEW - Abdominal wall defect with membrane)
   - Features:
     - Dropdown selector with alphabetical sorting
     - Search functionality with keyword matching
     - Patient info inputs (GA weeks, Postnatal days, Weight kg)
     - Weight-based drug calculations in all approach components
-    - Reference footer citing WHO Neonatal Clinical Guidelines
-  - All approaches sourced from WHO Neonatal Clinical Practice Guidelines 2018-2021
-  - Enabled "Approaches" widget in NICU dashboard (removed "Coming Soon" flag)
-  - Testing: 100% pass rate (iteration_9.json)
+    - Reference footer citing updated guidelines
+  - Spelling corrections: Anaemia→Anemia, Apnoea→Apnea, Polycythaemia→Polycythemia
+  - Testing: Verified via screenshots
 
 ## Changes (January 15, 2026)
 - ✅ **OCR Service Major Accuracy Improvement**: Enhanced regex patterns for blood gas extraction
