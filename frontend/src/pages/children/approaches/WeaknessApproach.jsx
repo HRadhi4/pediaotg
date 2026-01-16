@@ -14,6 +14,7 @@ const WeaknessApproach = ({ weight }) => {
       <CardHeader className="pb-2">
         <CardTitle className="text-base">Approach to Acute Weakness</CardTitle>
         <CardDescription className="text-xs">Algorithm with History, Examination, Investigations & Neuro Location</CardDescription>
+        <p className="text-[10px] text-blue-600 mt-1 font-medium">Reference: SMC Neuro Guideline</p>
       </CardHeader>
       <CardContent className="space-y-4">
 
