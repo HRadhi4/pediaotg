@@ -234,7 +234,6 @@ Build a full SaaS-style web app "Pediatrics on the Go" with:
 ## Backlog / Future Tasks
 - [ ] Implement Postnatal widget
 - [ ] Add more drug entries
-- [ ] Set up scheduled cron job for automated renewal reminders (currently manual trigger)
 - [ ] Add automated blood gas interpretation
 - [ ] Address minor linting errors in /pages/children/ components
 - [ ] Production deployment prep
