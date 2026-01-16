@@ -562,8 +562,10 @@ const GrowthChartPage = () => {
                 <CartesianGrid strokeDasharray="3 3" stroke="#ccc" />
                 <XAxis 
                   dataKey="age"
-                  type="category"
+                  type="number"
+                  domain={isWHO ? [0, 24] : [2, 20]}
                   tick={{ fontSize: 10 }} 
+                  tickCount={isWHO ? 9 : 10}
                   label={{ 
                     value: isWHO ? 'Age (months)' : 'Age (years)', 
                     position: 'bottom', 
@@ -580,7 +582,7 @@ const GrowthChartPage = () => {
                     fontSize: 11,
                     offset: 10
                   }}
-                  domain={['auto', 'auto']}
+                  domain={['dataMin - 1', 'dataMax + 1']}
                 />
                 <Tooltip 
                   contentStyle={{ fontSize: 11, borderRadius: 8, backgroundColor: '#fff' }}
@@ -591,14 +593,14 @@ const GrowthChartPage = () => {
                   labelFormatter={(label) => isWHO ? `${label} months` : `${label} years`}
                 />
                 
-                {/* Percentile curves - key percentiles only for cleaner display */}
-                <Line type="monotone" dataKey="p97" stroke="#C41E3A" strokeWidth={1.5} dot={false} name="p97" connectNulls />
-                <Line type="monotone" dataKey="p90" stroke="#FD8D3C" strokeWidth={1.5} dot={false} name="p90" connectNulls />
-                <Line type="monotone" dataKey="p75" stroke="#FDAE6B" strokeWidth={1} dot={false} name="p75" strokeDasharray="4 2" connectNulls />
-                <Line type="monotone" dataKey="p50" stroke="#31A354" strokeWidth={2.5} dot={false} name="p50" connectNulls />
-                <Line type="monotone" dataKey="p25" stroke="#FDAE6B" strokeWidth={1} dot={false} name="p25" strokeDasharray="4 2" connectNulls />
-                <Line type="monotone" dataKey="p10" stroke="#FD8D3C" strokeWidth={1.5} dot={false} name="p10" connectNulls />
-                <Line type="monotone" dataKey="p3" stroke="#C41E3A" strokeWidth={1.5} dot={false} name="p3" connectNulls />
+                {/* Percentile curves */}
+                <Line type="monotone" dataKey="p97" stroke="#C41E3A" strokeWidth={1.5} dot={false} name="p97" />
+                <Line type="monotone" dataKey="p90" stroke="#FD8D3C" strokeWidth={1.5} dot={false} name="p90" />
+                <Line type="monotone" dataKey="p75" stroke="#FDAE6B" strokeWidth={1} dot={false} name="p75" strokeDasharray="4 2" />
+                <Line type="monotone" dataKey="p50" stroke="#31A354" strokeWidth={2.5} dot={false} name="p50" />
+                <Line type="monotone" dataKey="p25" stroke="#FDAE6B" strokeWidth={1} dot={false} name="p25" strokeDasharray="4 2" />
+                <Line type="monotone" dataKey="p10" stroke="#FD8D3C" strokeWidth={1.5} dot={false} name="p10" />
+                <Line type="monotone" dataKey="p3" stroke="#C41E3A" strokeWidth={1.5} dot={false} name="p3" />
               
                 {/* Patient data points */}
                 {patientData.map((point, idx) => (
