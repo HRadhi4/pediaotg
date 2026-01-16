@@ -86,9 +86,12 @@ const ApproachesPage = ({ onBack }) => {
   // Scroll to top when page loads and reset tab scroll position
   useEffect(() => {
     window.scrollTo(0, 0);
-    // Reset tab scroll to beginning
-    const tabContainer = document.querySelector('.overflow-x-auto');
-    if (tabContainer) tabContainer.scrollLeft = 0;
+    // Reset tab scroll to beginning with a slight delay to ensure render is complete
+    const timer = setTimeout(() => {
+      const tabContainer = document.querySelector('[data-testid="tabs-scroll-container"]');
+      if (tabContainer) tabContainer.scrollLeft = 0;
+    }, 100);
+    return () => clearTimeout(timer);
   }, []);
 
   // Auto-select first matching tab when search changes
