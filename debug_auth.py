@@ -2,7 +2,7 @@ import requests
 import json
 
 # Test the user token authentication
-base_url = "https://pedmed-saas.preview.emergentagent.com"
+base_url = "https://nicu-platform.preview.emergentagent.com"
 
 # First, create a user and get token
 signup_data = {
