@@ -17,7 +17,7 @@ const WeaknessApproach = ({ weight }) => {
       </CardHeader>
       <CardContent className="space-y-4">
 
-        {/* MAIN ALGORITHM FLOWCHART - Table Layout for proper alignment */}
+        {/* MAIN ALGORITHM FLOWCHART - Table Layout for proper alignment with connecting lines */}
         <div className="p-2 bg-gradient-to-b from-gray-50 to-blue-50 dark:from-gray-900 dark:to-blue-950/30 rounded-xl">
           <p className="text-xs font-bold text-center text-gray-700 dark:text-gray-300 mb-2">Algorithm</p>
           
@@ -29,29 +29,39 @@ const WeaknessApproach = ({ weight }) => {
           </div>
 
           {/* Starting Point */}
-          <div className="grid grid-cols-12 gap-1 mb-2">
+          <div className="grid grid-cols-12 gap-1 mb-1">
             <div className="col-span-12">
               <div className="inline-block px-3 py-1.5 bg-gray-800 text-white rounded-lg font-bold text-[10px]">
                 Acute Weakness
               </div>
             </div>
           </div>
+          
+          {/* Vertical connector from start */}
+          <div className="grid grid-cols-12 gap-1 mb-1">
+            <div className="col-span-12 flex">
+              <div className="w-0.5 h-3 bg-gray-400 ml-12"></div>
+            </div>
+          </div>
 
           {/* Branch 1: Unilateral */}
-          <div className="grid grid-cols-12 gap-1 mb-2 items-center">
-            <div className="col-span-4">
-              <div className="p-1.5 bg-purple-100 dark:bg-purple-900/40 rounded text-[9px]">
+          <div className="grid grid-cols-12 gap-1 mb-1 items-center relative">
+            <div className="col-span-4 relative">
+              <div className="p-1.5 bg-purple-100 dark:bg-purple-900/40 rounded text-[9px] border-l-4 border-purple-500">
                 <p className="font-bold text-purple-700">Unilateral weakness</p>
                 <p className="text-purple-600">± Headache</p>
               </div>
             </div>
-            <div className="col-span-4 text-center">
-              <div className="inline-block p-1.5 bg-blue-100 dark:bg-blue-900/40 rounded text-[9px]">
+            {/* Horizontal connector line */}
+            <div className="col-span-4 text-center relative">
+              <div className="absolute left-0 top-1/2 w-full h-0.5 bg-gray-300 -translate-y-1/2"></div>
+              <div className="relative inline-block p-1.5 bg-blue-100 dark:bg-blue-900/40 rounded text-[9px] z-10">
                 <p className="font-bold text-blue-700">CT Brain</p>
               </div>
             </div>
-            <div className="col-span-4">
-              <div className="text-[8px] space-y-0.5">
+            <div className="col-span-4 relative">
+              <div className="absolute left-0 top-1/2 w-4 h-0.5 bg-gray-300 -translate-y-1/2"></div>
+              <div className="text-[8px] space-y-0.5 pl-4">
                 <div className="flex items-center gap-1">
                   <span className="text-gray-500">-ve →</span>
                   <span className="px-1.5 py-0.5 bg-gray-100 dark:bg-gray-800 rounded">Other DDx</span>
@@ -63,11 +73,18 @@ const WeaknessApproach = ({ weight }) => {
               </div>
             </div>
           </div>
+          
+          {/* Vertical connector */}
+          <div className="grid grid-cols-12 gap-1 mb-1">
+            <div className="col-span-4 flex justify-center">
+              <div className="w-0.5 h-2 bg-gray-400"></div>
+            </div>
+          </div>
 
           {/* Branch 2: Bilateral LL */}
-          <div className="grid grid-cols-12 gap-1 mb-2 items-start">
-            <div className="col-span-4">
-              <div className="p-1.5 bg-red-100 dark:bg-red-900/40 rounded text-[9px]">
+          <div className="grid grid-cols-12 gap-1 mb-1 items-start relative">
+            <div className="col-span-4 relative">
+              <div className="p-1.5 bg-red-100 dark:bg-red-900/40 rounded text-[9px] border-l-4 border-red-500">
                 <p className="font-bold text-red-700">Progressive bilateral LL weakness</p>
                 <p className="text-red-600">Areflexia</p>
                 <div className="mt-1 p-1 bg-red-50 dark:bg-red-950/30 rounded text-[8px] text-red-600">
@@ -77,15 +94,18 @@ const WeaknessApproach = ({ weight }) => {
                 </div>
               </div>
             </div>
-            <div className="col-span-4 text-center">
-              <div className="inline-block p-1.5 bg-orange-100 dark:bg-orange-900/40 rounded text-[9px]">
+            {/* Horizontal connector line */}
+            <div className="col-span-4 text-center relative">
+              <div className="absolute left-0 top-6 w-full h-0.5 bg-gray-300"></div>
+              <div className="relative inline-block p-1.5 bg-orange-100 dark:bg-orange-900/40 rounded text-[9px] z-10">
                 <p className="font-bold text-orange-700">Emergency</p>
                 <p className="font-bold text-orange-700">MRI Spine</p>
               </div>
               <div className="mt-1 text-[8px] text-gray-500">then LP if -ve</div>
             </div>
-            <div className="col-span-4">
-              <div className="text-[8px] space-y-0.5">
+            <div className="col-span-4 relative">
+              <div className="absolute left-0 top-6 w-4 h-0.5 bg-gray-300"></div>
+              <div className="text-[8px] space-y-0.5 pl-4">
                 <div className="flex items-center gap-1">
                   <span className="text-gray-500">+ve →</span>
                   <span className="px-1.5 py-0.5 bg-orange-100 text-orange-700 rounded">Spinal Compression</span>
@@ -100,38 +120,58 @@ const WeaknessApproach = ({ weight }) => {
               </div>
             </div>
           </div>
+          
+          {/* Vertical connector */}
+          <div className="grid grid-cols-12 gap-1 mb-1">
+            <div className="col-span-4 flex justify-center">
+              <div className="w-0.5 h-2 bg-gray-400"></div>
+            </div>
+          </div>
 
           {/* Branch 3: Diurnal */}
-          <div className="grid grid-cols-12 gap-1 mb-2 items-center">
-            <div className="col-span-4">
-              <div className="p-1.5 bg-amber-100 dark:bg-amber-900/40 rounded text-[9px]">
+          <div className="grid grid-cols-12 gap-1 mb-1 items-center relative">
+            <div className="col-span-4 relative">
+              <div className="p-1.5 bg-amber-100 dark:bg-amber-900/40 rounded text-[9px] border-l-4 border-amber-500">
                 <p className="font-bold text-amber-700">Diurnal variation</p>
               </div>
             </div>
-            <div className="col-span-4 text-center">
-              <span className="text-[9px] text-gray-400">—</span>
+            {/* Horizontal connector line */}
+            <div className="col-span-4 text-center relative">
+              <div className="absolute left-0 top-1/2 w-full h-0.5 bg-gray-300 -translate-y-1/2"></div>
+              <span className="relative text-[9px] text-gray-400 bg-gray-50 dark:bg-gray-900 px-2 z-10">—</span>
             </div>
-            <div className="col-span-4">
-              <div className="inline-block p-1.5 bg-amber-50 dark:bg-amber-950/30 rounded border border-amber-300 text-[9px]">
+            <div className="col-span-4 relative">
+              <div className="absolute left-0 top-1/2 w-4 h-0.5 bg-gray-300 -translate-y-1/2"></div>
+              <div className="inline-block p-1.5 bg-amber-50 dark:bg-amber-950/30 rounded border border-amber-300 text-[9px] ml-4">
                 <p className="font-bold text-amber-700">Myasthenia Gravis</p>
               </div>
             </div>
           </div>
+          
+          {/* Vertical connector */}
+          <div className="grid grid-cols-12 gap-1 mb-1">
+            <div className="col-span-4 flex justify-center">
+              <div className="w-0.5 h-2 bg-gray-400"></div>
+            </div>
+          </div>
 
           {/* Branch 4: Calf Tenderness */}
-          <div className="grid grid-cols-12 gap-1 items-center">
-            <div className="col-span-4">
-              <div className="p-1.5 bg-green-100 dark:bg-green-900/40 rounded text-[9px]">
+          <div className="grid grid-cols-12 gap-1 items-center relative">
+            <div className="col-span-4 relative">
+              <div className="p-1.5 bg-green-100 dark:bg-green-900/40 rounded text-[9px] border-l-4 border-green-500">
                 <p className="font-bold text-green-700">Bilateral calf tenderness</p>
               </div>
             </div>
-            <div className="col-span-4 text-center">
-              <div className="inline-block p-1.5 bg-blue-100 dark:bg-blue-900/40 rounded text-[9px]">
+            {/* Horizontal connector line */}
+            <div className="col-span-4 text-center relative">
+              <div className="absolute left-0 top-1/2 w-full h-0.5 bg-gray-300 -translate-y-1/2"></div>
+              <div className="relative inline-block p-1.5 bg-blue-100 dark:bg-blue-900/40 rounded text-[9px] z-10">
                 <p className="font-bold text-blue-700">CK</p>
               </div>
             </div>
-            <div className="col-span-4">
-              <div className="text-[8px] space-y-0.5">
+            <div className="col-span-4 relative">
+              <div className="absolute left-0 top-1/2 w-4 h-0.5 bg-gray-300 -translate-y-1/2"></div>
+              <div className="text-[8px] space-y-0.5 pl-4">
                 <div className="flex items-center gap-1">
                   <span className="text-gray-500">High →</span>
                   <span className="px-1.5 py-0.5 bg-green-100 text-green-700 rounded">Myositis</span>
