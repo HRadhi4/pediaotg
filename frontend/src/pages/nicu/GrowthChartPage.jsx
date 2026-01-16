@@ -1,5 +1,5 @@
 import React, { useState, useRef, useMemo } from "react";
-import { Plus, Trash2, Download } from "lucide-react";
+import { Plus, Trash2, Download, Maximize2, Minimize2 } from "lucide-react";
 import { GrowthChartIcon as HealthGrowthIcon } from "@/components/HealthIcons";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
