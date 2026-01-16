@@ -186,6 +186,12 @@ const DlocApproach = ({ weight }) => {
             <div className="w-0.5 h-4 bg-gray-400"></div>
           </div>
 
+          {/* Decision Point */}
+          <div className="p-2 bg-gray-200 dark:bg-gray-700 rounded-lg text-center mb-2">
+            <p className="text-[9px] font-bold text-gray-700 dark:text-gray-300">Based on investigations and examination:</p>
+            <p className="text-[8px] text-gray-600 dark:text-gray-400">Is the cause likely neurological or non-neurological?</p>
+          </div>
+
           {/* Decision Branch */}
           <div className="flex justify-center mb-2">
             <div className="flex items-end gap-0">
@@ -200,13 +206,14 @@ const DlocApproach = ({ weight }) => {
             {/* Neurological Branch */}
             <div className="space-y-2">
               <div className="p-2 bg-red-500 text-white rounded-lg text-center">
-                <p className="text-[10px] font-bold">Neurological / Unclear</p>
+                <p className="text-[9px] font-bold">1. Possible Neurological causes</p>
+                <p className="text-[8px]">OR 2. Unclear cause</p>
               </div>
               <div className="flex justify-center">
                 <div className="w-0.5 h-3 bg-gray-400"></div>
               </div>
               <div className="p-2 bg-red-100 dark:bg-red-900/30 rounded-lg text-center border border-red-300">
-                <p className="text-[10px] font-bold text-red-700">CT Brain</p>
+                <p className="text-[10px] font-bold text-red-700">CT Scan Brain</p>
               </div>
               <div className="flex justify-center">
                 <div className="flex items-end gap-0">
@@ -215,41 +222,88 @@ const DlocApproach = ({ weight }) => {
                   <div className="w-10 h-0.5 bg-gray-400"></div>
                 </div>
               </div>
+              
+              {/* CT Scan Results */}
               <div className="grid grid-cols-2 gap-1">
-                <div className="p-1.5 bg-green-100 dark:bg-green-950/30 rounded text-center border border-green-200">
-                  <p className="text-[8px] font-bold text-green-600">Normal</p>
-                  <div className="w-0.5 h-2 bg-gray-400 mx-auto my-0.5"></div>
-                  <p className="text-[7px] text-green-500">LP + Neuro consult</p>
+                {/* Abnormal CT */}
+                <div className="p-1.5 bg-red-100 dark:bg-red-950/30 rounded border border-red-200">
+                  <p className="text-[8px] font-bold text-red-600 text-center">Abnormal CT</p>
+                  <div className="text-[6px] text-red-500 mt-1 space-y-0.5">
+                    <p>• Hydrocephalus</p>
+                    <p>• Brain edema</p>
+                    <p>• Intracranial hemorrhage</p>
+                    <p>• Other high ICP causes</p>
+                  </div>
+                  <div className="w-0.5 h-2 bg-gray-400 mx-auto my-1"></div>
+                  <div className="p-1 bg-red-200 rounded text-center">
+                    <p className="text-[7px] font-bold text-red-700">NEUROSURGERY</p>
+                  </div>
                 </div>
-                <div className="p-1.5 bg-red-100 dark:bg-red-950/30 rounded text-center border border-red-200">
-                  <p className="text-[8px] font-bold text-red-600">Abnormal</p>
+                
+                {/* Normal CT */}
+                <div className="p-1.5 bg-green-100 dark:bg-green-950/30 rounded border border-green-200">
+                  <p className="text-[8px] font-bold text-green-600 text-center">Normal CT</p>
+                  <p className="text-[7px] text-green-500 text-center">or other abnormalities</p>
+                  <div className="w-0.5 h-2 bg-gray-400 mx-auto my-1"></div>
+                  <div className="p-1 bg-blue-100 rounded text-center">
+                    <p className="text-[7px] font-bold text-blue-700">LP (Lumbar Puncture)</p>
+                  </div>
+                  <div className="flex justify-center my-1">
+                    <div className="flex items-end gap-0">
+                      <div className="w-6 h-0.5 bg-gray-400"></div>
+                      <div className="w-0.5 h-2 bg-gray-400"></div>
+                      <div className="w-6 h-0.5 bg-gray-400"></div>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-0.5">
+                    <div className="p-0.5 bg-green-50 rounded text-center">
+                      <p className="text-[6px] text-green-600">Normal</p>
+                    </div>
+                    <div className="p-0.5 bg-orange-50 rounded text-center">
+                      <p className="text-[6px] text-orange-600">Abnormal</p>
+                    </div>
+                  </div>
                   <div className="w-0.5 h-2 bg-gray-400 mx-auto my-0.5"></div>
-                  <p className="text-[7px] text-red-500">Neurosurgery</p>
+                  <div className="p-1 bg-purple-200 rounded text-center">
+                    <p className="text-[7px] font-bold text-purple-700">NEUROLOGY</p>
+                  </div>
                 </div>
               </div>
+              
               <div className="p-1.5 bg-purple-100 dark:bg-purple-950/30 rounded text-center border border-purple-200 mt-1">
                 <p className="text-[8px] font-bold text-purple-600">Neurological Differentials</p>
-                <p className="text-[7px] text-purple-500">See Table 3</p>
+                <p className="text-[7px] text-purple-500">GO TO TABLE 3</p>
               </div>
             </div>
 
             {/* Non-Neurological Branch */}
             <div className="space-y-2">
               <div className="p-2 bg-green-500 text-white rounded-lg text-center">
-                <p className="text-[10px] font-bold">Non-Neurological</p>
+                <p className="text-[9px] font-bold">Clear Non-Neurological cause</p>
               </div>
               <div className="flex justify-center">
                 <div className="w-0.5 h-3 bg-gray-400"></div>
               </div>
               <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded-lg text-center border border-green-300">
-                <p className="text-[10px] font-bold text-green-700">Treat Underlying Cause</p>
+                <p className="text-[10px] font-bold text-green-700">Inform Appropriate Specialty</p>
               </div>
               <div className="flex justify-center">
                 <div className="w-0.5 h-3 bg-gray-400"></div>
               </div>
+              <div className="p-2 bg-green-50 dark:bg-green-950/30 rounded border border-green-200">
+                <p className="text-[8px] font-bold text-green-700 text-center mb-1">Treat Underlying Cause</p>
+                <div className="text-[7px] text-green-600 space-y-0.5">
+                  <p>• Hypoglycemia → Dextrose</p>
+                  <p>• Shock → Fluids + Vasopressors</p>
+                  <p>• Infection → Antibiotics</p>
+                  <p>• Toxin → Specific Antidote</p>
+                  <p>• Metabolic → Correct abnormality</p>
+                  <p>• Electrolyte → Correct imbalance</p>
+                </div>
+              </div>
               <div className="p-1.5 bg-teal-100 dark:bg-teal-950/30 rounded text-center border border-teal-200">
                 <p className="text-[8px] font-bold text-teal-600">Non-Neurological Differentials</p>
-                <p className="text-[7px] text-teal-500">See Table 4</p>
+                <p className="text-[7px] text-teal-500">GO TO TABLE 4</p>
               </div>
             </div>
           </div>
