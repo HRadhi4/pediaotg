@@ -89,6 +89,18 @@ const LoginPage = () => {
     }
   };
 
+  // Show loading screen during auto-login attempt
+  if (loading && !autoLoginAttempted) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-teal-50 to-blue-50 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="h-8 w-8 animate-spin text-[#00d9c5] mx-auto mb-3" />
+          <p className="text-sm text-muted-foreground">Signing you in...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-teal-50 to-blue-50 dark:from-gray-900 dark:to-gray-800 flex items-start sm:items-center justify-center px-4 pt-8 sm:pt-4 pb-4">
       <Card className="w-full max-w-md">
