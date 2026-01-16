@@ -80,6 +80,17 @@ Build a full SaaS-style web app "Pediatrics on the Go" with:
 
 ## Recent Changes (January 16, 2026)
 
+### Session 4 Updates (Current)
+- ✅ **Growth Chart Replaced with GitHub Repo Version**:
+  - Replaced `GrowthChartPage.jsx` with implementation from user's GitHub repository (https://github.com/HRadhi4/PaedOTG)
+  - Features: WHO (0-24 months) and CDC (2-20 years) standards
+  - Measurements: Weight, Length/Stature, Head Circumference
+  - Percentiles: 3rd, 15th, 50th, 85th, 97th
+  - Z-score and percentile calculation for plotted patient data
+  - Save chart to image functionality
+  - Color-coded backgrounds: Blue for Boys, Pink for Girls
+  - Fixed ResponsiveContainer issue by using fixed-width LineChart
+
 ### Session 3 Updates
 - ✅ **Growth Chart Data Fixed with Official WHO/CDC Data**:
   - Updated `GrowthChartPage.jsx` with official data from CDC/WHO growth chart data files
