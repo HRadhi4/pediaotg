@@ -545,61 +545,60 @@ const GrowthChartPage = () => {
         <CardContent>
           <div 
             ref={chartRef} 
-            className="rounded-lg p-3 overflow-x-auto" 
+            className="rounded-lg p-3" 
             style={{ 
               backgroundColor: gender === 'male' ? '#e8f4fc' : '#fce8f4',
-              minHeight: '380px'
+              minHeight: '380px',
+              width: '100%'
             }}
           >
-            <LineChart 
-              width={720} 
-              height={350} 
-              data={chartData} 
-              margin={{ top: 15, right: 30, left: 10, bottom: 35 }}
-            >
-              <CartesianGrid strokeDasharray="3 3" stroke="#ccc" />
-              <XAxis 
-                dataKey="age"
-                tick={{ fontSize: 10 }} 
-                label={{ 
-                  value: isWHO ? 'Age (months)' : 'Age (years)', 
-                  position: 'bottom', 
-                  fontSize: 11,
-                  offset: 20
-                }}
-                domain={isWHO ? [0, 24] : [2, 20]}
-                ticks={isWHO ? [0, 3, 6, 9, 12, 15, 18, 21, 24] : [2, 4, 6, 8, 10, 12, 14, 16, 18, 20]}
-              />
-              <YAxis 
-                tick={{ fontSize: 10 }} 
-                label={{ 
-                  value: chartLabels[activeChart].yLabel, 
-                  angle: -90, 
-                  position: 'insideLeft', 
-                  fontSize: 11,
-                  offset: 10
-                }}
-                domain={['auto', 'auto']}
-              />
-              <Tooltip 
-                contentStyle={{ fontSize: 11, borderRadius: 8, backgroundColor: '#fff' }}
-                formatter={(value, name) => {
-                  const labels = { p3: '3rd', p5: '5th', p10: '10th', p25: '25th', p50: '50th', p75: '75th', p90: '90th', p95: '95th', p97: '97th' };
-                  return [value?.toFixed(1) + ' ' + chartLabels[activeChart].unit, labels[name] || name];
-                }}
-                labelFormatter={(label) => isWHO ? `${label} months` : `${label} years`}
-              />
-              
-              {/* Percentile curves */}
-              <Line type="linear" dataKey="p97" stroke={percentileColors.p97} strokeWidth={1.5} dot={false} name="p97" isAnimationActive={false} />
-              <Line type="linear" dataKey="p95" stroke={percentileColors.p95} strokeWidth={1} dot={false} name="p95" strokeDasharray="4 2" isAnimationActive={false} />
-              <Line type="linear" dataKey="p90" stroke={percentileColors.p90} strokeWidth={1.5} dot={false} name="p90" isAnimationActive={false} />
-              <Line type="linear" dataKey="p75" stroke={percentileColors.p75} strokeWidth={1} dot={false} name="p75" strokeDasharray="4 2" isAnimationActive={false} />
-              <Line type="linear" dataKey="p50" stroke={percentileColors.p50} strokeWidth={2.5} dot={false} name="p50" isAnimationActive={false} />
-              <Line type="linear" dataKey="p25" stroke={percentileColors.p25} strokeWidth={1} dot={false} name="p25" strokeDasharray="4 2" isAnimationActive={false} />
-              <Line type="linear" dataKey="p10" stroke={percentileColors.p10} strokeWidth={1.5} dot={false} name="p10" isAnimationActive={false} />
-              <Line type="linear" dataKey="p5" stroke={percentileColors.p5} strokeWidth={1} dot={false} name="p5" strokeDasharray="4 2" isAnimationActive={false} />
-              <Line type="linear" dataKey="p3" stroke={percentileColors.p3} strokeWidth={1.5} dot={false} name="p3" isAnimationActive={false} />
+            <div style={{ width: '100%', height: '350px' }}>
+              <LineChart 
+                width={700} 
+                height={340} 
+                data={chartData} 
+                margin={{ top: 15, right: 30, left: 10, bottom: 35 }}
+              >
+                <CartesianGrid strokeDasharray="3 3" stroke="#ccc" />
+                <XAxis 
+                  dataKey="age"
+                  type="category"
+                  tick={{ fontSize: 10 }} 
+                  label={{ 
+                    value: isWHO ? 'Age (months)' : 'Age (years)', 
+                    position: 'bottom', 
+                    fontSize: 11,
+                    offset: 20
+                  }}
+                />
+                <YAxis 
+                  tick={{ fontSize: 10 }} 
+                  label={{ 
+                    value: chartLabels[activeChart].yLabel, 
+                    angle: -90, 
+                    position: 'insideLeft', 
+                    fontSize: 11,
+                    offset: 10
+                  }}
+                  domain={['auto', 'auto']}
+                />
+                <Tooltip 
+                  contentStyle={{ fontSize: 11, borderRadius: 8, backgroundColor: '#fff' }}
+                  formatter={(value, name) => {
+                    const labels = { p3: '3rd', p5: '5th', p10: '10th', p25: '25th', p50: '50th', p75: '75th', p90: '90th', p95: '95th', p97: '97th' };
+                    return [value?.toFixed(1) + ' ' + chartLabels[activeChart].unit, labels[name] || name];
+                  }}
+                  labelFormatter={(label) => isWHO ? `${label} months` : `${label} years`}
+                />
+                
+                {/* Percentile curves - key percentiles only for cleaner display */}
+                <Line type="monotone" dataKey="p97" stroke="#C41E3A" strokeWidth={1.5} dot={false} name="p97" connectNulls />
+                <Line type="monotone" dataKey="p90" stroke="#FD8D3C" strokeWidth={1.5} dot={false} name="p90" connectNulls />
+                <Line type="monotone" dataKey="p75" stroke="#FDAE6B" strokeWidth={1} dot={false} name="p75" strokeDasharray="4 2" connectNulls />
+                <Line type="monotone" dataKey="p50" stroke="#31A354" strokeWidth={2.5} dot={false} name="p50" connectNulls />
+                <Line type="monotone" dataKey="p25" stroke="#FDAE6B" strokeWidth={1} dot={false} name="p25" strokeDasharray="4 2" connectNulls />
+                <Line type="monotone" dataKey="p10" stroke="#FD8D3C" strokeWidth={1.5} dot={false} name="p10" connectNulls />
+                <Line type="monotone" dataKey="p3" stroke="#C41E3A" strokeWidth={1.5} dot={false} name="p3" connectNulls />
               
               {/* Patient data points */}
               {patientData.map((point, idx) => (
