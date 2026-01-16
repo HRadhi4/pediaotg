@@ -29,6 +29,7 @@ Build a full SaaS-style web app "Pediatrics on the Go" with:
 - ✅ Ventilator Settings
 - ✅ Feeding Calculator
 - ✅ Bilirubin Management
+- ✅ **NICU Approaches** (NEW - 16 clinical guideline components)
 
 ### Children Calculator (Completed)
 - ✅ Fluid Replacement
@@ -77,7 +78,37 @@ Build a full SaaS-style web app "Pediatrics on the Go" with:
 - html2canvas
 - GoDaddy/Microsoft Exchange SMTP (emails)
 
-## Recent Changes (January 15, 2026)
+## Recent Changes (January 16, 2026)
+- ✅ **NICU Approaches Section - COMPLETE NEW FEATURE**:
+  - Created `/app/frontend/src/pages/nicu/NICUApproachesPage.jsx` - main container page
+  - Created 16 comprehensive NICU approach components in `/approaches/`:
+    - ResuscitationApproach.jsx (NRP algorithm)
+    - RDSApproach.jsx (Respiratory Distress Syndrome)
+    - SepsisApproach.jsx (Early/Late Onset Sepsis)
+    - HypoglycemiaApproach.jsx
+    - JaundiceApproach.jsx (Hyperbilirubinemia with phototherapy thresholds)
+    - NECApproach.jsx (Bell Staging)
+    - HIEApproach.jsx (Sarnat Staging, therapeutic hypothermia)
+    - ApnoeaApproach.jsx (caffeine dosing)
+    - PDAApproach.jsx (Ibuprofen/Indomethacin dosing)
+    - SeizuresApproach.jsx (phenobarbital/levetiracetam)
+    - PPHNApproach.jsx (iNO, sildenafil, milrinone)
+    - MASApproach.jsx (Meconium Aspiration)
+    - TTNBApproach.jsx (Transient Tachypnea)
+    - BPDApproach.jsx (Bronchopulmonary Dysplasia)
+    - AnaemiaApproach.jsx (transfusion thresholds)
+    - PolycythaemiaApproach.jsx (partial exchange)
+  - Features:
+    - Dropdown selector with alphabetical sorting
+    - Search functionality with keyword matching
+    - Patient info inputs (GA weeks, Postnatal days, Weight kg)
+    - Weight-based drug calculations in all approach components
+    - Reference footer citing WHO Neonatal Clinical Guidelines
+  - All approaches sourced from WHO Neonatal Clinical Practice Guidelines 2018-2021
+  - Enabled "Approaches" widget in NICU dashboard (removed "Coming Soon" flag)
+  - Testing: 100% pass rate (iteration_9.json)
+
+## Changes (January 15, 2026)
 - ✅ **OCR Service Major Accuracy Improvement**: Enhanced regex patterns for blood gas extraction
   - Overall accuracy improved from ~50% to **81%+**
   - img1: 73%, img2: 90%, img3: 82% accuracy against ground truth
@@ -156,12 +187,14 @@ Build a full SaaS-style web app "Pediatrics on the Go" with:
 - Use viewport meta tags for proper mobile rendering
 
 ## Backlog / Future Tasks
-- [ ] Add more drug entries
 - [ ] Implement Postnatal widget
+- [ ] Add more drug entries
+- [ ] Set up scheduled cron job for automated renewal reminders (currently manual trigger)
+- [ ] Add automated blood gas interpretation
 - [ ] Address minor linting errors in /pages/children/ components
 - [ ] Production deployment prep
-- [ ] Set up scheduled cron job for automated renewal reminders (currently manual trigger)
 - [ ] Add aria-describedby to DialogContent in Medical Disclaimer modal for accessibility
+- [ ] Add dark mode theme toggle
 
 ## Pending User Verification
 - [ ] Registration bug fix ("Body is disturbed or locked" error in AuthContext.jsx)
@@ -170,9 +203,10 @@ Build a full SaaS-style web app "Pediatrics on the Go" with:
 - [ ] Mobile responsiveness fix when accessing from app.pedotg.com (GoDaddy domain)
 
 ## Test Reports
+- `/app/test_reports/iteration_9.json` - NICU Approaches feature tests (100% passed)
 - `/app/test_reports/iteration_8.json` - Approaches refactoring tests (100% passed)
 - `/app/test_reports/iteration_7.json` - OCR backend tests (15/15 passed)
 - `/app/tests/test_ocr_service.py` - Test file for OCR endpoints
 
 ## Last Updated
-January 15, 2026 - ApproachesPage Refactoring Completed
+January 16, 2026 - NICU Approaches Section Complete
