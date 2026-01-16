@@ -23,9 +23,9 @@
 /* Floating tab bar */
 .floating-tab-bar {
   @apply fixed bottom-6 left-1/2 -translate-x-1/2 z-50;
-  @apply bg-white/70 dark:bg-[#1a1f2e]/70 backdrop-blur-xl rounded-[2rem] px-2 py-2;
-  @apply shadow-[0_8px_32px_rgba(0,0,0,0.08)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.3)];
-  @apply border border-white/50 dark:border-gray-700/30;
+  @apply bg-transparent backdrop-blur-md rounded-[2rem] px-2 py-2;
+  @apply shadow-none;
+  @apply border border-white/20 dark:border-white/10;
 }
 
 .tab-item {
