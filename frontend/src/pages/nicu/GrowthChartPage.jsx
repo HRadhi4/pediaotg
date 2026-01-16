@@ -231,6 +231,48 @@ const GrowthChartPage = () => {
 
   const removeEntry = (id) => setEntries(entries.filter(e => e.id !== id));
 
+  // Save chart to PNG
+  const saveChartToPng = async () => {
+    if (!svgRef.current) return;
+    
+    try {
+      const svgElement = svgRef.current.querySelector('svg');
+      if (!svgElement) return;
+      
+      // Create canvas
+      const canvas = document.createElement('canvas');
+      const scale = 2; // High resolution
+      canvas.width = width * scale;
+      canvas.height = height * scale;
+      const ctx = canvas.getContext('2d');
+      
+      // Fill background
+      ctx.fillStyle = gender === 'male' ? '#e8f4fc' : '#fce8f4';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      // Convert SVG to data URL
+      const svgData = new XMLSerializer().serializeToString(svgElement);
+      const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+      const url = URL.createObjectURL(svgBlob);
+      
+      // Load image and draw to canvas
+      const img = new Image();
+      img.onload = () => {
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        URL.revokeObjectURL(url);
+        
+        // Download
+        const link = document.createElement('a');
+        link.download = `growth-chart-${chartType}-${gender}-${activeChart}-${new Date().toISOString().split('T')[0]}.png`;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+      };
+      img.src = url;
+    } catch (error) {
+      console.error('Save error:', error);
+    }
+  };
+
   // Get patient points to plot
   const patientPoints = useMemo(() => {
     const value = activeChart === 'length' ? 'length' : activeChart;
