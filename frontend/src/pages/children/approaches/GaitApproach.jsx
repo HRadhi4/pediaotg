@@ -138,7 +138,7 @@ const GaitApproach = () => {
               </thead>
               <tbody className="text-gray-700 dark:text-gray-300">
                 <tr className="bg-white dark:bg-gray-900">
-                  <td className="border border-blue-200 p-1 font-medium">Limbing</td>
+                  <td className="border border-blue-200 p-1 font-medium">Limping</td>
                   <td className="border border-blue-200 p-1">• Musculoskeletal pain<br/>• Joint pain<br/>• Trauma</td>
                   <td className="border border-blue-200 p-1">• Avoid bearing on affected side<br/>• Smaller child may just refuse to walk<br/>• Limited range of movement<br/>• Tenderness with passive examination</td>
                   <td className="border border-blue-200 p-1">• High CRP and ESR<br/>• X-ray: fracture<br/>• US joint: effusion</td>
