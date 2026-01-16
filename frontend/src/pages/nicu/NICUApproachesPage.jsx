@@ -32,15 +32,19 @@ import HypoglycemiaApproach from "./approaches/HypoglycemiaApproach";
 import JaundiceApproach from "./approaches/JaundiceApproach";
 import NECApproach from "./approaches/NECApproach";
 import HIEApproach from "./approaches/HIEApproach";
-import ApnoeaApproach from "./approaches/ApnoeaApproach";
+import ApneaApproach from "./approaches/ApneaApproach";
 import PDAApproach from "./approaches/PDAApproach";
 import SeizuresApproach from "./approaches/SeizuresApproach";
 import PPHNApproach from "./approaches/PPHNApproach";
 import MASApproach from "./approaches/MASApproach";
 import TTNBApproach from "./approaches/TTNBApproach";
 import BPDApproach from "./approaches/BPDApproach";
-import AnaemiaApproach from "./approaches/AnaemiaApproach";
-import PolycythaemiaApproach from "./approaches/PolycythaemiaApproach";
+import AnemiaApproach from "./approaches/AnemiaApproach";
+import PolycythemiaApproach from "./approaches/PolycythemiaApproach";
+import CHDApproach from "./approaches/CHDApproach";
+import GastroschisisApproach from "./approaches/GastroschisisApproach";
+import OmphaloceleApproach from "./approaches/OmphaloceleApproach";
+import CDHApproach from "./approaches/CDHApproach";
 
 const NICUApproachesPage = () => {
   const [activeApproach, setActiveApproach] = useState("resuscitation");
@@ -52,16 +56,20 @@ const NICUApproachesPage = () => {
 
   // Define all NICU approaches with search keywords - sorted alphabetically
   const nicuApproaches = [
-    { id: "anaemia", label: "Anaemia", keywords: ["anaemia", "anemia", "transfusion", "hemoglobin", "haemoglobin", "hematocrit", "prbc", "blood"] },
-    { id: "apnoea", label: "Apnoea", keywords: ["apnea", "apnoea", "breathing", "caffeine", "bradycardia", "desaturation", "periodic breathing"] },
+    { id: "anemia", label: "Anemia", keywords: ["anemia", "anaemia", "transfusion", "hemoglobin", "hematocrit", "prbc", "blood"] },
+    { id: "apnea", label: "Apnea", keywords: ["apnea", "apnoea", "breathing", "caffeine", "bradycardia", "desaturation", "periodic breathing"] },
     { id: "bpd", label: "Bronchopulmonary Dysplasia", keywords: ["bpd", "bronchopulmonary", "dysplasia", "chronic lung", "oxygen dependency", "ventilator"] },
+    { id: "cdh", label: "Congenital Diaphragmatic Hernia", keywords: ["cdh", "diaphragmatic", "hernia", "bochdalek", "pulmonary hypoplasia"] },
+    { id: "chd", label: "Congenital Heart Disease", keywords: ["chd", "congenital", "heart", "cardiac", "cyanotic", "acyanotic", "murmur", "prostaglandin"] },
+    { id: "gastroschisis", label: "Gastroschisis", keywords: ["gastroschisis", "abdominal wall", "eviscerated", "intestine", "surgical"] },
     { id: "hie", label: "HIE (Hypoxic Ischemic)", keywords: ["hie", "asphyxia", "hypoxic", "ischemic", "encephalopathy", "cooling", "hypothermia", "sarnat"] },
     { id: "hypoglycemia", label: "Hypoglycemia", keywords: ["hypoglycemia", "hypoglycaemia", "glucose", "sugar", "dextrose", "gir", "low blood sugar"] },
     { id: "jaundice", label: "Jaundice (Hyperbilirubinemia)", keywords: ["jaundice", "bilirubin", "hyperbilirubinemia", "phototherapy", "exchange", "kernicterus", "yellow"] },
     { id: "mas", label: "Meconium Aspiration (MAS)", keywords: ["meconium", "mas", "aspiration", "msaf", "respiratory distress"] },
     { id: "nec", label: "Necrotizing Enterocolitis", keywords: ["nec", "necrotizing", "enterocolitis", "abdominal", "distension", "bell staging", "feeding intolerance"] },
+    { id: "omphalocele", label: "Omphalocele", keywords: ["omphalocele", "exomphalos", "abdominal wall", "umbilical", "beckwith", "surgical"] },
     { id: "pda", label: "Patent Ductus Arteriosus", keywords: ["pda", "patent", "ductus", "arteriosus", "murmur", "ibuprofen", "indomethacin", "heart"] },
-    { id: "polycythaemia", label: "Polycythaemia", keywords: ["polycythaemia", "polycythemia", "high hematocrit", "exchange", "partial exchange"] },
+    { id: "polycythemia", label: "Polycythemia", keywords: ["polycythemia", "polycythaemia", "high hematocrit", "exchange", "partial exchange"] },
     { id: "pphn", label: "PPHN", keywords: ["pphn", "persistent", "pulmonary", "hypertension", "nitric oxide", "ino", "cyanosis"] },
     { id: "rds", label: "Respiratory Distress Syndrome", keywords: ["rds", "respiratory", "distress", "surfactant", "preterm", "cpap", "ventilation"] },
     { id: "resuscitation", label: "Resuscitation (NRP)", keywords: ["resuscitation", "nrp", "delivery", "birth", "apgar", "ppv", "compressions", "epinephrine"] },
