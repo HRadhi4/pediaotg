@@ -1,12 +1,12 @@
 /**
- * Polycythaemia Approach
+ * Polycythemia Approach
  * Based on WHO Neonatal Clinical Guidelines 2018-2021
  * Reference: WHO/Belize Neonatal Guidelines
  */
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 
-const PolycythaemiaApproach = ({ weight }) => {
+const PolycythemiaApproach = ({ weight }) => {
   const w = parseFloat(weight) || 0;
 
   // Calculate partial exchange volume if needed
