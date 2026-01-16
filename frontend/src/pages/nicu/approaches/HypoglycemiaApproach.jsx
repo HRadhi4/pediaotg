@@ -1,144 +1,178 @@
 /**
- * Neonatal Hypoglycemia Approach
- * Updated: 2022 AAP Guidelines
- * Simplified design matching Apnea approach
+ * Hypoglycemia Approach
+ * Updated: 2024 AAP Guidelines
+ * 
+ * Design: Standardized to match JaundiceApproach.jsx
  */
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 
-const HypoglycemiaApproach = ({ weight, postnatalAge }) => {
+const HypoglycemiaApproach = ({ weight, gestationalAge, postnatalAge }) => {
   const w = parseFloat(weight) || 0;
+  const ga = parseFloat(gestationalAge) || 0;
   const pna = parseFloat(postnatalAge) || 0;
+  const pnaHours = pna * 24;
+
+  // GIR calculation
+  const calculateGIR = (rate, dextrose) => {
+    if (!w || !rate || !dextrose) return null;
+    return ((dextrose * rate) / (w * 6)).toFixed(1);
+  };
 
   return (
     <Card data-testid="hypoglycemia-approach">
       <CardHeader className="pb-2">
         <CardTitle className="text-base">Neonatal Hypoglycemia</CardTitle>
-        <CardDescription className="text-xs">AAP/PES Guidelines</CardDescription>
-        <p className="text-[10px] text-blue-600 mt-1 font-medium">Updated: 2022 AAP Guidelines</p>
+        <CardDescription className="text-xs">AAP 2024 Guidelines</CardDescription>
       </CardHeader>
-      <CardContent className="space-y-3">
+      <CardContent className="space-y-3 text-sm">
 
-        {/* Key Points */}
-        <div className="p-2 bg-amber-50 dark:bg-amber-950/30 rounded-lg border border-amber-200">
-          <p className="text-xs font-bold text-amber-700 mb-1">Key Points (2022)</p>
-          <div className="text-[8px] text-amber-600 space-y-1">
-            <p><strong>Screen:</strong> At-risk infants (IDM, SGA, LGA, preterm)</p>
-            <p><strong>Symptomatic:</strong> Always treat immediately with IV dextrose</p>
-            <p><strong>GIR &gt;12:</strong> Suspect hyperinsulinism</p>
+        {/* Definition */}
+        <div className="p-3 bg-slate-50 dark:bg-slate-900 rounded-lg border-l-4 border-blue-500">
+          <p className="font-semibold text-slate-700 dark:text-slate-200 mb-2">Definition (AAP 2024)</p>
+          <div className="text-xs text-slate-600 dark:text-slate-300">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-slate-200 dark:border-slate-600">
+                  <th className="text-left py-1">Age</th>
+                  <th className="text-left py-1">Threshold</th>
+                  <th className="text-left py-1">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr className={pnaHours < 4 ? "bg-blue-50 dark:bg-blue-900/20" : ""}>
+                  <td className="py-1">0-4 hours</td>
+                  <td className="font-bold">&lt;25 mg/dL</td>
+                  <td>Feed + recheck</td>
+                </tr>
+                <tr className={pnaHours >= 4 && pnaHours < 24 ? "bg-blue-50 dark:bg-blue-900/20" : ""}>
+                  <td className="py-1">4-24 hours</td>
+                  <td className="font-bold">&lt;35 mg/dL</td>
+                  <td>Feed + recheck</td>
+                </tr>
+                <tr className={pnaHours >= 24 && pnaHours < 48 ? "bg-blue-50 dark:bg-blue-900/20" : ""}>
+                  <td className="py-1">24-48 hours</td>
+                  <td className="font-bold">&lt;45 mg/dL</td>
+                  <td>Evaluate cause</td>
+                </tr>
+                <tr className={pnaHours >= 48 ? "bg-blue-50 dark:bg-blue-900/20" : ""}>
+                  <td className="py-1">&gt;48 hours</td>
+                  <td className="font-bold">&lt;60 mg/dL</td>
+                  <td>Persistent hypoglycemia</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
 
-        {/* Thresholds */}
-        <div className="p-2 bg-blue-50 dark:bg-blue-950/30 rounded-lg border border-blue-200">
-          <p className="text-xs font-bold text-blue-700 mb-1">AAP Operational Thresholds</p>
-          <div className="grid grid-cols-3 gap-2 text-[8px] text-blue-600">
-            <div className={`p-1.5 bg-white dark:bg-gray-900 rounded ${pna < 4 ? 'ring-2 ring-blue-400' : ''}`}>
-              <p className="font-bold">0-4 hours</p>
-              <p>Treat if &lt;25</p>
-              <p>Target ≥40</p>
+        {/* Risk Factors */}
+        <div className="p-3 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700">
+          <p className="font-semibold text-slate-700 dark:text-slate-200 mb-2">Risk Factors - Screen These Infants</p>
+          <div className="grid grid-cols-2 gap-4 text-xs text-slate-600 dark:text-slate-300">
+            <div>
+              <p className="font-medium mb-1">Large for GA / Small for GA:</p>
+              <ul className="list-disc pl-4 space-y-0.5">
+                <li>SGA (&lt;10th percentile)</li>
+                <li>LGA (&gt;90th percentile)</li>
+                <li>IUGR</li>
+              </ul>
             </div>
-            <div className={`p-1.5 bg-white dark:bg-gray-900 rounded ${pna >= 4 && pna < 24 ? 'ring-2 ring-blue-400' : ''}`}>
-              <p className="font-bold">4-24 hours</p>
-              <p>Treat if &lt;35</p>
-              <p>Target ≥45</p>
-            </div>
-            <div className={`p-1.5 bg-white dark:bg-gray-900 rounded ${pna >= 24 ? 'ring-2 ring-blue-400' : ''}`}>
-              <p className="font-bold">&gt;24 hours</p>
-              <p>Treat if &lt;45</p>
-              <p>Target ≥45-50</p>
+            <div>
+              <p className="font-medium mb-1">Maternal/Infant factors:</p>
+              <ul className="list-disc pl-4 space-y-0.5">
+                <li><strong>Infant of diabetic mother</strong></li>
+                <li>Late preterm (34-36 weeks)</li>
+                <li>Perinatal stress/asphyxia</li>
+                <li>Hypothermia</li>
+              </ul>
             </div>
           </div>
         </div>
 
-        {/* At-Risk */}
-        <div className="p-2 bg-red-50 dark:bg-red-950/30 rounded-lg border border-red-200">
-          <p className="text-xs font-bold text-red-700 mb-1">At-Risk Infants (Screen)</p>
-          <div className="grid grid-cols-2 gap-2 text-[8px] text-red-600">
+        {/* Management Algorithm */}
+        <div className="p-3 bg-slate-100 dark:bg-slate-800 rounded-lg border-l-4 border-green-500">
+          <p className="font-semibold text-slate-700 dark:text-slate-200 mb-2">Management Algorithm</p>
+          <div className="text-xs text-slate-600 dark:text-slate-300 space-y-2">
+            <div className="p-2 bg-white dark:bg-slate-900 rounded">
+              <p className="font-medium">Asymptomatic + Glucose 25-45 mg/dL:</p>
+              <p>1. Feed (breast or formula)</p>
+              <p>2. Recheck glucose 30 min after feed</p>
+              <p>3. If still low → consider IV glucose</p>
+            </div>
+            <div className="p-2 bg-white dark:bg-slate-900 rounded">
+              <p className="font-medium">Symptomatic OR Glucose &lt;25 mg/dL:</p>
+              <p>1. IV glucose bolus: D10W 2 mL/kg</p>
+              <p>2. Start IV infusion at GIR 5-8 mg/kg/min</p>
+              <p>3. Recheck glucose 30 min post-bolus</p>
+            </div>
+          </div>
+        </div>
+
+        {/* IV Glucose */}
+        <div className="p-3 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700">
+          <p className="font-semibold text-slate-700 dark:text-slate-200 mb-2">IV Glucose Calculations</p>
+          <div className="text-xs text-slate-600 dark:text-slate-300 space-y-2">
             <div>
-              <p className="font-bold">↑ Utilization:</p>
-              <p>• SGA (&lt;10th %ile)</p>
-              <p>• Preterm (&lt;37 wk)</p>
-              <p>• Perinatal stress</p>
-              <p>• Sepsis</p>
+              <p className="font-medium">Bolus (for symptomatic/severe):</p>
+              <p>D10W 2 mL/kg IV push over 1-2 minutes</p>
+              {w > 0 && <p className="font-mono text-blue-600">= {(w * 2).toFixed(1)} mL D10W</p>}
             </div>
             <div>
-              <p className="font-bold">Hyperinsulinism:</p>
-              <p>• <strong>IDM</strong></p>
-              <p>• <strong>LGA</strong> (&gt;90th %ile)</p>
-              <p>• Beckwith-Wiedemann</p>
+              <p className="font-medium">GIR Formula:</p>
+              <p className="font-mono bg-slate-100 dark:bg-slate-900 p-1 rounded">
+                GIR = (% Dextrose × Rate mL/kg/day) ÷ 144
+              </p>
             </div>
+            <div>
+              <p className="font-medium">Target GIR:</p>
+              <p>• Start: 5-6 mg/kg/min</p>
+              <p>• Increase: up to 10-12 mg/kg/min if needed</p>
+              <p>• Max peripheral: D12.5W (higher requires central line)</p>
+            </div>
+            {w > 0 && (
+              <div className="p-2 bg-blue-50 dark:bg-blue-900/30 rounded mt-2">
+                <p className="font-medium">D10W rates for {w} kg:</p>
+                <p>GIR 6: <span className="font-mono text-blue-600">{((6 * w * 144) / 10).toFixed(0)} mL/day = {((6 * w * 144) / 10 / 24).toFixed(1)} mL/hr</span></p>
+                <p>GIR 8: <span className="font-mono text-blue-600">{((8 * w * 144) / 10).toFixed(0)} mL/day = {((8 * w * 144) / 10 / 24).toFixed(1)} mL/hr</span></p>
+              </div>
+            )}
           </div>
         </div>
 
         {/* Symptoms */}
-        <div className="p-2 bg-purple-50 dark:bg-purple-950/30 rounded-lg border border-purple-200">
-          <p className="text-xs font-bold text-purple-700 mb-1">Symptoms</p>
-          <div className="grid grid-cols-2 gap-1 text-[8px] text-purple-600">
-            <p>• Jitteriness</p>
-            <p>• Lethargy</p>
-            <p>• Poor feeding</p>
-            <p>• Apnea</p>
-            <p>• Seizures</p>
-            <p>• Hypothermia</p>
+        <div className="p-3 bg-slate-50 dark:bg-slate-900 rounded-lg border-l-4 border-red-500">
+          <p className="font-semibold text-red-600 dark:text-red-400 mb-2">Symptoms of Hypoglycemia</p>
+          <div className="grid grid-cols-2 gap-4 text-xs text-slate-600 dark:text-slate-300">
+            <ul className="list-disc pl-4 space-y-0.5">
+              <li>Jitteriness/tremors</li>
+              <li>Lethargy</li>
+              <li>Poor feeding</li>
+              <li>Hypotonia</li>
+            </ul>
+            <ul className="list-disc pl-4 space-y-0.5">
+              <li>Seizures</li>
+              <li>Apnea</li>
+              <li>Cyanosis</li>
+              <li>Hypothermia</li>
+            </ul>
           </div>
-          <p className="text-red-600 mt-1 font-bold">⚠️ Symptomatic = Medical Emergency</p>
+          <p className="text-xs text-red-600 dark:text-red-400 mt-2 font-medium">
+            ⚠️ Symptoms are nonspecific - always check glucose in at-risk infants
+          </p>
         </div>
 
-        {/* Treatment */}
-        <div className="p-2 bg-gray-800 text-white rounded-lg">
-          <p className="text-xs font-bold mb-1">Treatment Protocol</p>
-          <div className="text-[8px] space-y-1">
-            <p className="font-bold text-amber-400">Asymptomatic (Glucose 25-40):</p>
-            <p>Feed → recheck in 30-60 min</p>
-            
-            <p className="font-bold text-red-400 mt-2">Symptomatic OR &lt;25:</p>
-            <p>D10W bolus: 2 mL/kg IV</p>
-            {w > 0 && <p className="text-green-400 font-mono">= {(w * 2).toFixed(1)} mL D10W</p>}
-            
-            <p className="font-bold text-cyan-400 mt-2">Maintenance:</p>
-            <p>D10W at 80 mL/kg/day (GIR ~5-6)</p>
-            {w > 0 && <p className="text-green-400 font-mono">= {(w * 80 / 24).toFixed(1)} mL/hr</p>}
-          </div>
-        </div>
-
-        {/* Refractory */}
-        <div className="p-2 bg-indigo-50 dark:bg-indigo-950/30 rounded-lg border border-indigo-200">
-          <p className="text-xs font-bold text-indigo-700 mb-1">Refractory (GIR &gt;12)</p>
-          <div className="text-[8px] text-indigo-600 space-y-1">
-            <p className="font-bold text-red-600">Suspect hyperinsulinism → Endocrine consult</p>
-            <div className="grid grid-cols-2 gap-2 mt-1">
-              <div className="p-1.5 bg-white dark:bg-gray-900 rounded">
-                <p className="font-bold">Diazoxide:</p>
-                <p>5-15 mg/kg/day ÷ q8h</p>
-                {w > 0 && <p className="text-green-600 font-mono">= {(w * 5).toFixed(0)}-{(w * 15).toFixed(0)} mg/day</p>}
-              </div>
-              <div className="p-1.5 bg-white dark:bg-gray-900 rounded">
-                <p className="font-bold">Glucagon (emergency):</p>
-                <p>0.03 mg/kg IM/IV</p>
-                {w > 0 && <p className="text-green-600 font-mono">= {(w * 0.03).toFixed(2)} mg</p>}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* GIR Formula */}
-        <div className="p-2 bg-teal-50 dark:bg-teal-950/30 rounded-lg border border-teal-200">
-          <p className="text-xs font-bold text-teal-700 mb-1">GIR Formula</p>
-          <div className="text-[8px] text-teal-600 space-y-1">
-            <p className="font-mono bg-teal-100 p-1 rounded">GIR = (% Dex × Rate mL/hr) ÷ (Wt kg × 6)</p>
-            <p>Normal requirement: 4-6 mg/kg/min</p>
-            <p>Max peripheral: <strong>D12.5%</strong></p>
-          </div>
-        </div>
-
-        {/* Prognosis */}
-        <div className="p-2 bg-gray-100 dark:bg-gray-800 rounded-lg">
-          <p className="text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Prognosis</p>
-          <div className="text-[8px] text-gray-600 dark:text-gray-400 space-y-1">
-            <p>• Transient: Excellent prognosis</p>
-            <p>• <strong>Symptomatic:</strong> Risk of NDI</p>
-            <p>• Hyperinsulinism may need surgery</p>
+        {/* Persistent Hypoglycemia */}
+        <div className="p-3 bg-slate-50 dark:bg-slate-900 rounded-lg">
+          <p className="font-semibold text-slate-700 dark:text-slate-200 mb-2">Persistent Hypoglycemia (&gt;48h)</p>
+          <div className="text-xs text-slate-600 dark:text-slate-300">
+            <p className="mb-1">If requiring GIR &gt;10 mg/kg/min or glucose &lt;60 at 48h, consider:</p>
+            <ul className="list-disc pl-4 space-y-0.5">
+              <li>Hyperinsulinism (most common)</li>
+              <li>Cortisol deficiency</li>
+              <li>Growth hormone deficiency</li>
+              <li>Inborn errors of metabolism</li>
+            </ul>
+            <p className="mt-2"><strong>Workup:</strong> Critical sample during hypoglycemia (insulin, cortisol, GH, ketones, lactate, FFA)</p>
           </div>
         </div>
 
