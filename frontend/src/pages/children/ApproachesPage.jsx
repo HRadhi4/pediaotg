@@ -114,11 +114,20 @@ const ApproachesPage = ({ onBack }) => {
     );
   };
 
+  const lastTap = useRef(0);
+
   const handleTouchStart = useCallback((e) => {
     if (e.touches.length === 2) {
       e.preventDefault();
       initialDistance.current = getDistance(e.touches);
       initialZoom.current = zoomLevel;
+    } else if (e.touches.length === 1) {
+      // Double-tap to reset zoom
+      const now = Date.now();
+      if (now - lastTap.current < 300 && zoomLevel !== 100) {
+        setZoomLevel(100);
+      }
+      lastTap.current = now;
     }
   }, [zoomLevel]);
 
