@@ -356,17 +356,35 @@ const BloodGasDialog = ({ open, onOpenChange }) => {
 
 const ValuesForm = ({ values, onChange }) => {
   const fields = [
-    { key: "pH", label: "pH", placeholder: "7.35-7.45" },
-    { key: "pCO2", label: "pCO2 (mmHg)", placeholder: "35-45" },
-    { key: "pO2", label: "pO2 (mmHg)", placeholder: "80-100" },
-    { key: "HCO3", label: "HCO3 (mEq/L)", placeholder: "22-26" },
-    { key: "BE", label: "Base Excess", placeholder: "-2 to +2" },
-    { key: "Hb", label: "Hb (g/dL)", placeholder: "12-16" },
-    { key: "Na", label: "Na (mEq/L)", placeholder: "135-145" },
-    { key: "K", label: "K (mEq/L)", placeholder: "3.5-5.0" },
-    { key: "Cl", label: "Cl (mEq/L)", placeholder: "98-106" },
-    { key: "lactate", label: "Lactate (mmol/L)", placeholder: "<2" }
+    { key: "pH", label: "pH", placeholder: "7.35-7.45", allowNegative: false },
+    { key: "pCO2", label: "pCO2 (mmHg)", placeholder: "35-45", allowNegative: false },
+    { key: "pO2", label: "pO2 (mmHg)", placeholder: "80-100", allowNegative: false },
+    { key: "HCO3", label: "HCO3 (mEq/L)", placeholder: "22-26", allowNegative: false },
+    { key: "BE", label: "Base Excess", placeholder: "-2 to +2", allowNegative: true },
+    { key: "Hb", label: "Hb (g/dL)", placeholder: "12-16", allowNegative: false },
+    { key: "Na", label: "Na (mEq/L)", placeholder: "135-145", allowNegative: false },
+    { key: "K", label: "K (mEq/L)", placeholder: "3.5-5.0", allowNegative: false },
+    { key: "Cl", label: "Cl (mEq/L)", placeholder: "98-106", allowNegative: false },
+    { key: "lactate", label: "Lactate (mmol/L)", placeholder: "<2", allowNegative: false }
   ];
+
+  // Handle input to allow only valid numeric characters (digits, decimal point, and minus for BE)
+  const handleInputChange = (key, value, allowNegative) => {
+    // Allow empty string
+    if (value === '') {
+      onChange(key, value);
+      return;
+    }
+    
+    // Regex pattern: allow digits, one decimal point, and optionally a leading minus sign
+    const pattern = allowNegative 
+      ? /^-?\d*\.?\d*$/ 
+      : /^\d*\.?\d*$/;
+    
+    if (pattern.test(value)) {
+      onChange(key, value);
+    }
+  };
 
   return (
     <Card className="nightingale-card">
@@ -378,16 +396,16 @@ const ValuesForm = ({ values, onChange }) => {
       </CardHeader>
       <CardContent>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-          {fields.map(({ key, label, placeholder }) => (
+          {fields.map(({ key, label, placeholder, allowNegative }) => (
             <div key={key} className="space-y-1">
               <Label htmlFor={key} className="text-xs text-muted-foreground">{label}</Label>
               <Input
                 id={key}
-                type="number"
-                step="0.01"
+                type="text"
+                inputMode="decimal"
                 placeholder={placeholder}
                 value={values[key]}
-                onChange={(e) => onChange(key, e.target.value)}
+                onChange={(e) => handleInputChange(key, e.target.value, allowNegative)}
                 className="h-9 font-mono text-sm nightingale-input"
                 data-testid={`input-${key}`}
               />
