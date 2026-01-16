@@ -191,7 +191,7 @@ const ApproachesPage = ({ onBack }) => {
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none', WebkitOverflowScrolling: 'touch' }}
           data-testid="tabs-scroll-container"
         >
-          <TabsList className="inline-flex w-max h-auto p-1 gap-1 bg-transparent">
+          <TabsList className="inline-flex w-max h-auto p-1 pr-4 gap-1 bg-transparent">
             {filteredTabs.map(tab => (
               <TabsTrigger 
                 key={tab.id} 
