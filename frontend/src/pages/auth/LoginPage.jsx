@@ -10,27 +10,55 @@ import { AlertCircle, Loader2 } from 'lucide-react';
 
 const LoginPage = () => {
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { login, isAuthenticated } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [autoLoginAttempted, setAutoLoginAttempted] = useState(false);
 
-  // Load remembered credentials on mount
+  // Redirect if already authenticated
   useEffect(() => {
-    const remembered = localStorage.getItem('remembered_user');
-    if (remembered) {
-      try {
-        const { email: savedEmail, password: savedPassword } = JSON.parse(remembered);
-        setEmail(savedEmail || '');
-        setPassword(savedPassword || '');
-        setRememberMe(true);
-      } catch (e) {
-        localStorage.removeItem('remembered_user');
-      }
+    if (isAuthenticated) {
+      navigate('/');
     }
-  }, []);
+  }, [isAuthenticated, navigate]);
+
+  // Load remembered credentials and auto-login on mount
+  useEffect(() => {
+    const attemptAutoLogin = async () => {
+      const remembered = localStorage.getItem('remembered_user');
+      if (remembered && !autoLoginAttempted) {
+        try {
+          const { email: savedEmail, password: savedPassword } = JSON.parse(remembered);
+          if (savedEmail && savedPassword) {
+            setEmail(savedEmail);
+            setPassword(savedPassword);
+            setRememberMe(true);
+            setAutoLoginAttempted(true);
+            
+            // Auto-login with saved credentials
+            setLoading(true);
+            const result = await login(savedEmail, savedPassword);
+            if (result.success) {
+              navigate('/');
+            } else {
+              // If auto-login fails, just show the form with filled credentials
+              setLoading(false);
+            }
+          }
+        } catch (e) {
+          localStorage.removeItem('remembered_user');
+          setAutoLoginAttempted(true);
+        }
+      } else {
+        setAutoLoginAttempted(true);
+      }
+    };
+    
+    attemptAutoLogin();
+  }, [login, navigate, autoLoginAttempted]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
