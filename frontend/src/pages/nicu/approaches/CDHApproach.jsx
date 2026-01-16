@@ -1,179 +1,129 @@
 /**
- * Congenital Diaphragmatic Hernia (CDH) Approach
- * Updated: 2024 CDH Study Group Guidelines
- * Reference: J Pediatr Surg, ECMO Guidelines
+ * CDH (Congenital Diaphragmatic Hernia) Approach
+ * 
+ * Design: Standardized to match JaundiceApproach.jsx
  */
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 
-const CDHApproach = ({ weight, gestationalAge }) => {
+const CDHApproach = ({ weight }) => {
   const w = parseFloat(weight) || 0;
 
   return (
     <Card data-testid="cdh-approach">
       <CardHeader className="pb-2">
         <CardTitle className="text-base">Congenital Diaphragmatic Hernia (CDH)</CardTitle>
-        <CardDescription className="text-xs">Bochdalek & Morgagni Hernias</CardDescription>
-        <p className="text-[10px] text-blue-600 mt-1 font-medium">Updated: 2024 CDH Study Group Guidelines</p>
+        <CardDescription className="text-xs">Bochdalek & Morgagni Hernia</CardDescription>
       </CardHeader>
-      <CardContent className="space-y-3">
+      <CardContent className="space-y-3 text-sm">
 
-        {/* Definition */}
-        <div className="p-2 bg-amber-50 dark:bg-amber-950/30 rounded-lg border border-amber-200">
-          <p className="text-xs font-bold text-amber-700 mb-1">Definition & Epidemiology</p>
-          <div className="text-[8px] text-amber-600 space-y-1">
-            <p><strong>CDH:</strong> Defect in the diaphragm allowing herniation of abdominal contents into the thorax, causing pulmonary hypoplasia and pulmonary hypertension.</p>
-            <p>Incidence: 1 in 2,500-3,000 live births</p>
-            <p>Left-sided (Bochdalek): 85% | Right-sided: 13% | Bilateral: 2%</p>
+        {/* Key Points */}
+        <div className="p-3 bg-slate-50 dark:bg-slate-900 rounded-lg border-l-4 border-blue-500">
+          <p className="font-semibold text-slate-700 dark:text-slate-200 mb-2">Key Points</p>
+          <ul className="text-xs text-slate-600 dark:text-slate-300 space-y-1 list-disc pl-4">
+            <li><strong>Left-sided:</strong> 85% (Bochdalek - posterolateral)</li>
+            <li><strong>Pulmonary hypoplasia:</strong> Both lungs affected, ipsilateral worse</li>
+            <li><strong>PPHN:</strong> Major contributor to mortality</li>
+            <li><strong>NO bag-mask ventilation</strong> - immediate intubation</li>
+          </ul>
+        </div>
+
+        {/* Delivery Room */}
+        <div className="p-3 bg-slate-50 dark:bg-slate-900 rounded-lg border-l-4 border-red-500">
+          <p className="font-semibold text-red-600 dark:text-red-400 mb-2">Delivery Room - CRITICAL</p>
+          <div className="text-xs text-slate-600 dark:text-slate-300">
+            <ul className="list-disc pl-4 space-y-0.5">
+              <li><strong>Immediate intubation</strong> - avoid bag-mask (gastric distension)</li>
+              <li>Large bore OG tube to continuous suction</li>
+              <li>Gentle ventilation - avoid high pressures</li>
+              <li>Target preductal SpO2 85-95%</li>
+              <li>Permissive hypercapnia (pCO2 45-65 acceptable)</li>
+            </ul>
           </div>
         </div>
 
-        {/* Pathophysiology */}
-        <div className="p-2 bg-blue-50 dark:bg-blue-950/30 rounded-lg border border-blue-200">
-          <p className="text-xs font-bold text-blue-700 mb-1">Pathophysiology</p>
-          <div className="text-[8px] text-blue-600 space-y-1">
-            <p><strong>Two-Hit Hypothesis:</strong></p>
-            <p>1. Pulmonary hypoplasia (bilateral, worse on ipsilateral side)</p>
-            <p>2. Pulmonary hypertension (abnormal vascular development)</p>
-            <p className="mt-1">Severity depends on timing of herniation, degree of lung compression</p>
+        {/* Ventilation Strategy */}
+        <div className="p-3 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700">
+          <p className="font-semibold text-slate-700 dark:text-slate-200 mb-2">Gentle Ventilation Strategy</p>
+          <div className="text-xs text-slate-600 dark:text-slate-300">
+            <table className="w-full">
+              <tbody>
+                <tr><td className="py-1 font-medium">PIP</td><td>≤25 cmH2O (goal &lt;20)</td></tr>
+                <tr><td className="py-1 font-medium">PEEP</td><td>3-5 cmH2O</td></tr>
+                <tr><td className="py-1 font-medium">Rate</td><td>40-60/min</td></tr>
+                <tr><td className="py-1 font-medium">FiO2</td><td>Titrate for preductal SpO2 85-95%</td></tr>
+                <tr><td className="py-1 font-medium">Goal pH</td><td>&gt;7.20</td></tr>
+                <tr><td className="py-1 font-medium">Goal pCO2</td><td>45-65 mmHg acceptable</td></tr>
+              </tbody>
+            </table>
+            <p className="text-red-600 dark:text-red-400 mt-2 font-medium">
+              ⚠️ HFOV may be needed if conventional ventilation inadequate
+            </p>
           </div>
         </div>
 
-        {/* Clinical Features */}
-        <div className="p-2 bg-red-50 dark:bg-red-950/30 rounded-lg border border-red-200">
-          <p className="text-xs font-bold text-red-700 mb-1">Clinical Features</p>
-          <div className="text-[8px] text-red-600 space-y-1">
-            <p className="font-bold">Classic Triad:</p>
-            <p>• Scaphoid (flat) abdomen</p>
-            <p>• Barrel chest</p>
-            <p>• Respiratory distress at birth</p>
-            
-            <p className="font-bold mt-1">Other findings:</p>
-            <div className="grid grid-cols-2 gap-1">
-              <div>• Cyanosis</div>
-              <div>• Absent breath sounds on affected side</div>
-              <div>• Bowel sounds in chest</div>
-              <div>• Displaced heart sounds</div>
-              <div>• Severe respiratory distress</div>
-              <div>• Labile oxygenation</div>
+        {/* PPHN Management */}
+        <div className="p-3 bg-slate-100 dark:bg-slate-800 rounded-lg border-l-4 border-green-500">
+          <p className="font-semibold text-slate-700 dark:text-slate-200 mb-2">PPHN Management</p>
+          <div className="text-xs text-slate-600 dark:text-slate-300 space-y-2">
+            <div className="p-2 bg-white dark:bg-slate-900 rounded">
+              <p className="font-medium">Optimize:</p>
+              <p>• Sedation (morphine/fentanyl)</p>
+              <p>• Avoid stimulation/suctioning</p>
+              <p>• Maintain normothermia</p>
+              <p>• Correct acidosis, hypoglycemia</p>
             </div>
-          </div>
-        </div>
-
-        {/* Delivery Room Management */}
-        <div className="p-2 bg-gradient-to-b from-green-50 to-gray-50 dark:from-green-950/20 dark:to-gray-900 rounded-xl">
-          <p className="text-xs font-bold text-center text-green-700 mb-2">DELIVERY ROOM MANAGEMENT (2024)</p>
-          
-          <div className="p-2 bg-green-100 dark:bg-green-900/40 rounded-lg mb-2">
-            <p className="text-[10px] font-bold text-green-700">Critical First Steps</p>
-            <div className="text-[8px] text-green-600 mt-1 space-y-0.5">
-              <p className="text-red-600 font-bold">⚠️ DO NOT bag-mask ventilate</p>
-              <p>• Immediate intubation - avoid gastric distension</p>
-              <p>• OG/NG tube to continuous suction (large bore, 10Fr)</p>
-              <p>• Gentle ventilation with low PIPs</p>
-              <p>• Avoid high FiO2 initially if possible</p>
+            <div className="p-2 bg-white dark:bg-slate-900 rounded">
+              <p className="font-medium">Pulmonary vasodilators:</p>
+              <p>• iNO 20 ppm (first-line)</p>
+              <p>• Sildenafil, milrinone (adjuncts)</p>
             </div>
-          </div>
-
-          <div className="p-2 bg-blue-100 dark:bg-blue-900/40 rounded-lg">
-            <p className="text-[10px] font-bold text-blue-700">Ventilation Goals (Gentle Strategy)</p>
-            <div className="text-[8px] text-blue-600 mt-1 space-y-0.5">
-              <p>• Preductal SpO2 &gt;85% (accept lower initially)</p>
-              <p>• Peak pressures &lt;25 cm H2O if possible</p>
-              <p>• Permissive hypercapnia (pH &gt;7.20, PCO2 &lt;65)</p>
-              <p>• HFOV if conventional ventilation fails</p>
+            <div className="p-2 bg-white dark:bg-slate-900 rounded">
+              <p className="font-medium">Blood pressure:</p>
+              <p>• Target systemic BP &gt; pulmonary BP</p>
+              <p>• Vasopressors: dopamine, norepinephrine, vasopressin</p>
             </div>
-          </div>
-        </div>
-
-        {/* NICU Stabilization */}
-        <div className="p-2 bg-gray-800 text-white rounded-lg">
-          <p className="text-xs font-bold mb-1">NICU Stabilization Goals</p>
-          <div className="text-[8px] space-y-1">
-            <p className="font-bold text-amber-400">Pre-operative targets:</p>
-            <p>• Preductal SpO2 85-95%</p>
-            <p>• Normal BP for gestational age</p>
-            <p>• Adequate perfusion (lactate &lt;3 mmol/L)</p>
-            <p>• Stable on minimal ventilatory settings</p>
-            
-            <p className="font-bold text-cyan-400 mt-2">Supportive Care:</p>
-            <p>• Sedation (fentanyl, midazolam)</p>
-            <p>• Muscle relaxation if needed</p>
-            <p>• Minimize handling (↓PVR fluctuations)</p>
-            <p>• Correct acidosis, maintain glucose</p>
-            
-            <p className="font-bold text-purple-400 mt-2">For PPHN:</p>
-            <p>• iNO 20 ppm if available</p>
-            <p>• Sildenafil if iNO unavailable</p>
-            <p>• Maintain systemic BP &gt; pulmonary BP</p>
-            {w > 0 && (
-              <p className="text-green-400 font-mono mt-1">
-                Sildenafil: {(w * 0.5).toFixed(1)} - {(w * 2).toFixed(0)} mg/dose PO q6-8h
-              </p>
-            )}
-          </div>
-        </div>
-
-        {/* ECMO */}
-        <div className="p-2 bg-purple-50 dark:bg-purple-950/30 rounded-lg border border-purple-200">
-          <p className="text-xs font-bold text-purple-700 mb-1">ECMO Considerations (2024 CDH Study Group)</p>
-          <div className="text-[8px] text-purple-600 space-y-1">
-            <p><strong>Indications:</strong></p>
-            <p>• OI &gt;40 despite maximal therapy</p>
-            <p>• Inability to maintain preductal SpO2 &gt;85%</p>
-            <p>• Refractory hypotension</p>
-            <p>• Severe metabolic acidosis (pH &lt;7.15)</p>
-            
-            <p className="font-bold mt-1">Criteria:</p>
-            <p>• Weight &gt;2 kg, GA &gt;34 weeks</p>
-            <p>• No major IVH</p>
-            <p>• No lethal anomaly</p>
           </div>
         </div>
 
         {/* Surgical Repair */}
-        <div className="p-2 bg-orange-50 dark:bg-orange-950/30 rounded-lg border border-orange-200">
-          <p className="text-xs font-bold text-orange-700 mb-1">Surgical Management</p>
-          <div className="text-[8px] text-orange-600 space-y-1">
-            <p><strong>Timing:</strong> Delayed repair after stabilization (not emergent)</p>
-            <p>• Typically 24-72 hours after birth when stable</p>
-            <p>• May be on ECMO during surgery</p>
-            
-            <p className="font-bold mt-1">Approach:</p>
-            <p>• Primary repair if defect small</p>
-            <p>• Patch repair (Gore-Tex, muscle flap) if large</p>
-            <p>• Laparoscopic repair in select cases</p>
+        <div className="p-3 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700">
+          <p className="font-semibold text-slate-700 dark:text-slate-200 mb-2">Surgical Repair</p>
+          <div className="text-xs text-slate-600 dark:text-slate-300">
+            <p className="font-medium mb-1">Timing:</p>
+            <p>• Delayed repair (24-72h or longer) preferred over emergent</p>
+            <p>• Stabilize PPHN first</p>
+            <p className="font-medium mt-2 mb-1">Criteria for repair:</p>
+            <ul className="list-disc pl-4 space-y-0.5">
+              <li>Hemodynamically stable</li>
+              <li>Preductal SpO2 &gt;85% on reasonable support</li>
+              <li>Adequate urine output</li>
+              <li>No escalating support</li>
+            </ul>
           </div>
         </div>
 
-        {/* Prognostic Indicators */}
-        <div className="p-2 bg-indigo-50 dark:bg-indigo-950/30 rounded-lg border border-indigo-200">
-          <p className="text-xs font-bold text-indigo-700 mb-1">Prognostic Indicators</p>
-          <div className="text-[8px] text-indigo-600 space-y-1">
-            <p className="font-bold text-green-600">Better Prognosis:</p>
-            <p>• Later gestational age at diagnosis</p>
-            <p>• Higher O/E LHR (observed/expected lung-to-head ratio) &gt;50%</p>
-            <p>• Liver in abdomen</p>
-            <p>• Right-sided lesion</p>
-            
-            <p className="font-bold mt-1 text-red-600">Worse Prognosis:</p>
-            <p>• Liver in chest ("liver up")</p>
-            <p>• Associated anomalies</p>
-            <p>• O/E LHR &lt;25%</p>
-            <p>• Bilateral CDH</p>
+        {/* ECMO */}
+        <div className="p-3 bg-slate-50 dark:bg-slate-900 rounded-lg">
+          <p className="font-semibold text-slate-700 dark:text-slate-200 mb-2">ECMO Indications</p>
+          <div className="text-xs text-slate-600 dark:text-slate-300">
+            <ul className="list-disc pl-4 space-y-0.5">
+              <li>OI &gt;40 despite optimal management</li>
+              <li>Inability to maintain preductal SpO2 &gt;85%</li>
+              <li>Metabolic acidosis with pH &lt;7.15</li>
+              <li>Inadequate oxygen delivery</li>
+            </ul>
+            <p className="mt-2"><strong>Contraindications:</strong> Severe anomalies, lethal chromosomal abnormality, IVH grade ≥3</p>
           </div>
         </div>
 
-        {/* Long-term Outcomes */}
-        <div className="p-2 bg-gray-100 dark:bg-gray-800 rounded-lg">
-          <p className="text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Long-term Outcomes</p>
-          <div className="text-[8px] text-gray-600 dark:text-gray-400 space-y-1">
-            <p>• Overall survival: 70-90% in specialized centers</p>
-            <p>• Chronic lung disease common (up to 50%)</p>
-            <p>• GERD, feeding difficulties frequent</p>
-            <p>• Recurrence rate: 5-20%</p>
+        {/* Prognosis */}
+        <div className="p-3 bg-slate-50 dark:bg-slate-900 rounded-lg">
+          <p className="font-semibold text-slate-700 dark:text-slate-200 mb-2">Prognosis</p>
+          <div className="text-xs text-slate-600 dark:text-slate-300">
+            <p>• Survival ~70-90% at experienced centers</p>
+            <p>• Long-term issues: CLD, GER, feeding difficulties, scoliosis</p>
             <p>• Neurodevelopmental follow-up essential</p>
-            <p>• Hearing screening (aminoglycoside exposure)</p>
           </div>
         </div>
 
