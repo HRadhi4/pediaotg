@@ -246,9 +246,6 @@ const GrowthChartPage = () => {
     p97: '#8B0000'
   };
 
-  // Import Recharts components
-  const { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceDot } = require('recharts');
-
   const formatXAxis = (value) => {
     if (isWHO) {
       if (value === 0) return 'Birth';
