@@ -358,6 +358,100 @@ const GrowthChartPage = () => {
       </Card>
 
       {/* SVG Growth Chart */}
+      {isFullscreen ? (
+        // Fullscreen Modal
+        <div 
+          className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4"
+          onClick={() => setIsFullscreen(false)}
+        >
+          <div 
+            className="relative bg-white dark:bg-gray-900 rounded-lg p-4 max-w-full max-h-full overflow-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex justify-between items-center mb-3">
+              <div>
+                <h3 className="text-lg font-semibold">{chartLabels[activeChart].title} • {chartType}</h3>
+                <p className="text-sm text-muted-foreground">Official {isWHO ? 'WHO' : 'CDC'} Growth Data • {gender === 'male' ? 'Boys' : 'Girls'}</p>
+              </div>
+              <div className="flex gap-2">
+                <Button variant="outline" size="sm" onClick={saveChartToPng} className="h-9 w-9 p-0" data-testid="save-chart-btn-fullscreen" title="Save as PNG">
+                  <Download className="h-4 w-4" />
+                </Button>
+                <Button variant="outline" size="sm" onClick={() => setIsFullscreen(false)} className="h-9 w-9 p-0" data-testid="minimize-btn" title="Exit fullscreen">
+                  <Minimize2 className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+            <div 
+              ref={svgRef} 
+              className="rounded-lg overflow-auto" 
+              style={{ 
+                backgroundColor: gender === 'male' ? '#e8f4fc' : '#fce8f4',
+                padding: '10px'
+              }}
+            >
+              <svg width={width} height={height} style={{ display: 'block' }}>
+                {/* Grid lines */}
+                {yTicks.map(tick => (
+                  <line key={`grid-${tick}`} x1={margin.left} y1={yScale(tick)} x2={width - margin.right} y2={yScale(tick)} stroke="#ddd" strokeDasharray="2,2" />
+                ))}
+                
+                {/* Percentile curves */}
+                {getData && (
+                  <>
+                    <path d={generatePath(getData.p97)} fill="none" stroke={PERCENTILE_COLORS.p97} strokeWidth="1.5" />
+                    <path d={generatePath(getData.p90)} fill="none" stroke={PERCENTILE_COLORS.p90} strokeWidth="1.5" />
+                    <path d={generatePath(getData.p75)} fill="none" stroke={PERCENTILE_COLORS.p75} strokeWidth="1" strokeDasharray="4,2" />
+                    <path d={generatePath(getData.p50)} fill="none" stroke={PERCENTILE_COLORS.p50} strokeWidth="2.5" />
+                    <path d={generatePath(getData.p25)} fill="none" stroke={PERCENTILE_COLORS.p25} strokeWidth="1" strokeDasharray="4,2" />
+                    <path d={generatePath(getData.p10)} fill="none" stroke={PERCENTILE_COLORS.p10} strokeWidth="1.5" />
+                    <path d={generatePath(getData.p3)} fill="none" stroke={PERCENTILE_COLORS.p3} strokeWidth="1.5" />
+                  </>
+                )}
+                
+                {/* Patient data points */}
+                {patientPoints.map((point, idx) => (
+                  <g key={idx}>
+                    <circle cx={xScale(point.x)} cy={yScale(point.y)} r="6" fill="#000" stroke="#fff" strokeWidth="2" />
+                  </g>
+                ))}
+                
+                {/* X-axis */}
+                <line x1={margin.left} y1={height - margin.bottom} x2={width - margin.right} y2={height - margin.bottom} stroke="#333" />
+                {xTicks.map(tick => (
+                  <g key={`x-${tick}`}>
+                    <line x1={xScale(tick)} y1={height - margin.bottom} x2={xScale(tick)} y2={height - margin.bottom + 5} stroke="#333" />
+                    <text x={xScale(tick)} y={height - margin.bottom + 18} textAnchor="middle" fontSize="12" fill="#666">{tick}</text>
+                  </g>
+                ))}
+                <text x={width / 2} y={height - 15} textAnchor="middle" fontSize="13" fill="#333">Age ({isWHO ? 'months' : 'years'})</text>
+                
+                {/* Y-axis */}
+                <line x1={margin.left} y1={margin.top} x2={margin.left} y2={height - margin.bottom} stroke="#333" />
+                {yTicks.map(tick => (
+                  <g key={`y-${tick}`}>
+                    <line x1={margin.left - 5} y1={yScale(tick)} x2={margin.left} y2={yScale(tick)} stroke="#333" />
+                    <text x={margin.left - 8} y={yScale(tick) + 3} textAnchor="end" fontSize="12" fill="#666">{tick}</text>
+                  </g>
+                ))}
+                <text x={15} y={height / 2} textAnchor="middle" fontSize="13" fill="#333" transform={`rotate(-90, 15, ${height / 2})`}>{chartLabels[activeChart].yLabel}</text>
+                
+                {/* Percentile labels on right */}
+                {getData && (
+                  <>
+                    <text x={width - margin.right + 5} y={yScale(getData.p97[dataLength - 1])} fontSize="11" fill={PERCENTILE_COLORS.p97}>97th</text>
+                    <text x={width - margin.right + 5} y={yScale(getData.p90[dataLength - 1])} fontSize="11" fill={PERCENTILE_COLORS.p90}>90th</text>
+                    <text x={width - margin.right + 5} y={yScale(getData.p50[dataLength - 1])} fontSize="11" fill={PERCENTILE_COLORS.p50} fontWeight="bold">50th</text>
+                    <text x={width - margin.right + 5} y={yScale(getData.p10[dataLength - 1])} fontSize="11" fill={PERCENTILE_COLORS.p10}>10th</text>
+                    <text x={width - margin.right + 5} y={yScale(getData.p3[dataLength - 1])} fontSize="11" fill={PERCENTILE_COLORS.p3}>3rd</text>
+                  </>
+                )}
+              </svg>
+            </div>
+          </div>
+        </div>
+      ) : null}
+
       <Card>
         <CardHeader className="pb-2">
           <div className="flex justify-between items-center">
@@ -365,15 +459,20 @@ const GrowthChartPage = () => {
               <CardTitle className="text-sm">{chartLabels[activeChart].title} • {chartType}</CardTitle>
               <CardDescription className="text-xs">Official {isWHO ? 'WHO' : 'CDC'} Growth Data • {gender === 'male' ? 'Boys' : 'Girls'}</CardDescription>
             </div>
-            <Button variant="outline" size="sm" onClick={saveChartToPng} className="text-xs h-8 px-3" data-testid="save-chart-btn">
-              <Download className="h-3 w-3 mr-1" /> Save PNG
-            </Button>
+            <div className="flex gap-2">
+              <Button variant="outline" size="sm" onClick={saveChartToPng} className="h-8 w-8 p-0" data-testid="save-chart-btn" title="Save as PNG">
+                <Download className="h-3.5 w-3.5" />
+              </Button>
+              <Button variant="outline" size="sm" onClick={() => setIsFullscreen(true)} className="h-8 w-8 p-0" data-testid="maximize-btn" title="Fullscreen view">
+                <Maximize2 className="h-3.5 w-3.5" />
+              </Button>
+            </div>
           </div>
         </CardHeader>
         <CardContent className="p-3">
           <div 
-            ref={svgRef} 
-            className="rounded-lg overflow-hidden" 
+            ref={!isFullscreen ? svgRef : null} 
+            className="rounded-lg overflow-x-auto" 
             style={{ 
               backgroundColor: gender === 'male' ? '#e8f4fc' : '#fce8f4',
               padding: '10px'
