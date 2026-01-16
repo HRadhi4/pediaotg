@@ -1,6 +1,6 @@
 /**
  * Neonatal Resuscitation Approach
- * Based on AHA/AAP NRP Guidelines 2025 (8th Edition)
+ * Based on AHA/AAP NRP Guidelines 2025 (9th Edition)
  * Reference: AHA/AAP Neonatal Resuscitation Guidelines 2025
  */
 
@@ -10,230 +10,186 @@ const ResuscitationApproach = ({ weight, gestationalAge, postnatalAge }) => {
   const w = parseFloat(weight) || 0;
   const ga = parseFloat(gestationalAge) || 0;
 
+  // ETT size calculation
+  const getETTSize = () => {
+    if (ga < 28) return "2.5";
+    if (ga < 34) return "3.0";
+    if (ga < 38) return "3.5";
+    return "3.5-4.0";
+  };
+
+  // ETT depth calculation
+  const getETTDepth = () => {
+    if (w <= 0) return null;
+    if (w < 1) return "6-7";
+    if (w < 2) return "7-8";
+    if (w < 3) return "8-9";
+    return "9-10";
+  };
+
   return (
     <Card data-testid="resuscitation-approach">
       <CardHeader className="pb-2">
-        <CardTitle className="text-base">Neonatal Resuscitation</CardTitle>
-        <CardDescription className="text-xs">NRP Algorithm 2025 (9th Edition)</CardDescription>
-        <p className="text-[10px] text-blue-600 mt-1 font-medium">Reference: AHA/AAP 2025 Guidelines</p>
+        <CardTitle className="text-base">Neonatal Resuscitation (NRP 2025)</CardTitle>
+        <CardDescription className="text-xs">AHA/AAP 9th Edition Guidelines</CardDescription>
       </CardHeader>
-      <CardContent className="space-y-3">
+      <CardContent className="space-y-3 text-sm">
 
-        {/* 2025 Key Updates Box */}
-        <div className="p-2 bg-cyan-50 dark:bg-cyan-950/30 rounded-lg border border-cyan-200">
-          <p className="text-xs font-bold text-cyan-700 mb-1">2025 Key Updates</p>
-          <div className="text-[8px] text-cyan-600 space-y-0.5">
-            <p>• <strong>Avoid 100% O2</strong> in term/late preterm (≥35 wks) - start with room air or blended O2</p>
-            <p>• <strong>Delayed cord clamping ≥60 sec</strong> for stable infants</p>
-            <p>• <strong>Intact cord resuscitation</strong> (CPAP/PPV before clamping) supported for vigorous infants</p>
-            <p>• Consider redirecting care ~20 min post-birth in periviable/high-morbidity cases</p>
+        {/* 2025 Key Updates */}
+        <div className="p-3 bg-slate-50 dark:bg-slate-900 rounded-lg border-l-4 border-blue-500">
+          <p className="font-semibold text-slate-700 dark:text-slate-200 mb-2">2025 Key Updates</p>
+          <ul className="text-xs text-slate-600 dark:text-slate-300 space-y-1 list-disc pl-4">
+            <li><strong>Initial O2:</strong> Start with 21% (room air) for ≥35 weeks; 21-30% for &lt;35 weeks</li>
+            <li><strong>Delayed cord clamping:</strong> ≥60 seconds for stable infants</li>
+            <li><strong>Meconium:</strong> Do NOT routinely suction - begin PPV if needed</li>
+            <li><strong>Epinephrine:</strong> IV route preferred; give early if HR &lt;60 despite ventilation + compressions</li>
+          </ul>
+        </div>
+
+        {/* Initial Assessment - 30 seconds */}
+        <div className="p-3 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700">
+          <p className="font-semibold text-slate-700 dark:text-slate-200 mb-2">Initial Steps (30 seconds)</p>
+          <div className="text-xs text-slate-600 dark:text-slate-300 space-y-1">
+            <p><strong>Assess:</strong> Term? Good tone? Breathing/crying?</p>
+            <p><strong>If YES to all:</strong> Routine care with mother, delayed cord clamping</p>
+            <p><strong>If NO:</strong> Warm, dry, position airway, clear secretions if needed, stimulate</p>
           </div>
         </div>
 
-        {/* Risk Factors */}
-        <div className="p-2 bg-red-50 dark:bg-red-950/30 rounded-lg border border-red-200">
-          <p className="text-xs font-bold text-red-700 mb-1">Risk Factors for High-Risk Birth</p>
-          <div className="grid grid-cols-2 gap-1 text-[8px] text-red-600">
-            <div>• Preterm delivery</div>
-            <div>• Abnormal FHR</div>
-            <div>• Maternal infection</div>
-            <div>• Preeclampsia</div>
-            <div>• Breech presentation</div>
-            <div>• Obstetrical emergencies</div>
-            <div>• Thick meconium</div>
-            <div>• Oligohydramnios</div>
-            <div>• Fetal anomalies</div>
-            <div>• C-section &lt;39 wks</div>
-          </div>
-        </div>
-
-        {/* ALGORITHM FLOWCHART */}
-        <div className="p-2 bg-gradient-to-b from-blue-50 to-gray-50 dark:from-blue-950/20 dark:to-gray-900 rounded-xl">
-          <p className="text-xs font-bold text-center text-blue-700 mb-2">RESUSCITATION ALGORITHM</p>
-          
-          {/* Initial Assessment */}
-          <div className="p-2 bg-blue-100 dark:bg-blue-900/40 rounded-lg text-center mb-2">
-            <p className="text-[10px] font-bold text-blue-700">Initial Assessment</p>
-            <p className="text-[8px] text-blue-600">Term gestation? Breathing/crying? Good tone?</p>
-          </div>
-
-          <div className="flex justify-center mb-2">
-            <div className="w-0.5 h-3 bg-gray-400"></div>
-          </div>
-
-          {/* Initial Steps */}
-          <div className="p-2 bg-green-100 dark:bg-green-900/40 rounded-lg mb-2">
-            <p className="text-[10px] font-bold text-green-700 text-center">A - Initial Steps</p>
-            <div className="text-[8px] text-green-600 space-y-0.5 mt-1">
-              <p>• Warmth (polyethylene bag for &lt;28 weeks)</p>
-              <p>• Position airway (sniffing position)</p>
-              <p>• Clear secretions if needed</p>
-              <p>• Dry and stimulate</p>
-            </div>
-          </div>
-
-          <div className="flex justify-center mb-2">
-            <div className="w-0.5 h-3 bg-gray-400"></div>
-          </div>
-
-          {/* Decision: Apnea/Gasping or HR <100? */}
-          <div className="p-2 bg-amber-100 dark:bg-amber-900/40 rounded-lg text-center mb-2">
-            <p className="text-[9px] font-bold text-amber-700">Apnea/Gasping or HR &lt;100 bpm?</p>
-          </div>
-
-          <div className="grid grid-cols-2 gap-2 mb-2">
-            <div className="text-center">
-              <div className="p-1.5 bg-green-100 rounded text-[8px] font-bold text-green-700">NO</div>
-              <div className="w-0.5 h-2 bg-gray-400 mx-auto"></div>
-              <div className="p-1.5 bg-green-50 rounded text-[7px] text-green-600">
-                Labored breathing/Cyanosis?<br/>→ CPAP or O2
-              </div>
-            </div>
-            <div className="text-center">
-              <div className="p-1.5 bg-red-100 rounded text-[8px] font-bold text-red-700">YES</div>
-              <div className="w-0.5 h-2 bg-gray-400 mx-auto"></div>
-              <div className="p-1.5 bg-blue-100 rounded text-[7px] font-bold text-blue-700">
-                B - PPV
-              </div>
-            </div>
-          </div>
-
-          {/* PPV Details */}
-          <div className="p-2 bg-blue-100 dark:bg-blue-900/40 rounded-lg mb-2">
-            <p className="text-[10px] font-bold text-blue-700 text-center">B - Positive Pressure Ventilation</p>
-            <div className="text-[8px] text-blue-600 space-y-0.5 mt-1">
-              <p>• PIP: 20-25 cm H2O (first breath 30-40 cm H2O)</p>
-              <p>• PEEP: 5 cm H2O</p>
-              <p>• Rate: 40-60 breaths/min</p>
-              <p>• <strong>Term:</strong> Start with 21% O2</p>
-              <p>• <strong>&lt;35 weeks:</strong> Start with 21-30% O2</p>
-            </div>
-          </div>
-
-          {/* MR. SOPA */}
-          <div className="p-2 bg-purple-50 dark:bg-purple-950/30 rounded-lg border border-purple-200 mb-2">
-            <p className="text-[9px] font-bold text-purple-700 text-center">MR. SOPA - Ventilation Corrective Steps</p>
-            <div className="grid grid-cols-2 gap-1 text-[7px] text-purple-600 mt-1">
-              <div><strong>M</strong> - Mask seal</div>
-              <div><strong>R</strong> - Reposition airway</div>
-              <div><strong>S</strong> - Suction</div>
-              <div><strong>O</strong> - Open mouth</div>
-              <div><strong>P</strong> - Pressure increase</div>
-              <div><strong>A</strong> - Advanced airway</div>
-            </div>
-          </div>
-
-          <div className="flex justify-center mb-2">
-            <div className="w-0.5 h-3 bg-gray-400"></div>
-          </div>
-
-          {/* HR <60? */}
-          <div className="p-2 bg-orange-100 dark:bg-orange-900/40 rounded-lg text-center mb-2">
-            <p className="text-[9px] font-bold text-orange-700">HR &lt;60 bpm despite 30 sec effective ventilation?</p>
-          </div>
-
-          <div className="flex justify-center mb-2">
-            <div className="w-0.5 h-3 bg-gray-400"></div>
-          </div>
-
-          {/* Chest Compressions */}
-          <div className="p-2 bg-red-100 dark:bg-red-900/40 rounded-lg mb-2">
-            <p className="text-[10px] font-bold text-red-700 text-center">C - Chest Compressions</p>
-            <div className="text-[8px] text-red-600 space-y-0.5 mt-1">
-              <p>• Two-thumb encircling technique</p>
-              <p>• Compression:Ventilation = <strong>3:1</strong></p>
-              <p>• 90 compressions + 30 ventilations/min</p>
-              <p>• Depth: 1/3 of AP chest diameter</p>
-              <p>• Increase O2 to 100%</p>
-            </div>
-          </div>
-
-          <div className="flex justify-center mb-2">
-            <div className="w-0.5 h-3 bg-gray-400"></div>
-          </div>
-
-          {/* Medications */}
-          <div className="p-2 bg-gray-800 text-white rounded-lg">
-            <p className="text-[10px] font-bold text-center">D - Drugs (if HR remains &lt;60 bpm)</p>
-            <div className="text-[8px] space-y-1 mt-1">
-              <div className="p-1.5 bg-gray-700 rounded">
-                <p className="font-bold">Epinephrine 1:10,000</p>
-                <p>IV/IO: 0.01-0.03 mg/kg (0.1-0.3 mL/kg)</p>
-                {w > 0 && <p className="text-green-400">= {(w*0.1).toFixed(1)}-{(w*0.3).toFixed(1)} mL</p>}
-                <p>ET: 0.05-0.1 mg/kg (0.5-1 mL/kg)</p>
-              </div>
-              <div className="p-1.5 bg-gray-700 rounded">
-                <p className="font-bold">Volume Expansion (NS)</p>
-                <p>10 mL/kg over 5-10 minutes</p>
-                {w > 0 && <p className="text-green-400">= {(w*10).toFixed(0)} mL</p>}
-              </div>
+        {/* PPV */}
+        <div className="p-3 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700">
+          <p className="font-semibold text-slate-700 dark:text-slate-200 mb-2">Positive Pressure Ventilation (PPV)</p>
+          <div className="text-xs text-slate-600 dark:text-slate-300 space-y-1">
+            <p><strong>Indication:</strong> Apnea, gasping, or HR &lt;100 after initial steps</p>
+            <p><strong>Rate:</strong> 40-60 breaths/min</p>
+            <p><strong>Pressure:</strong> Initial PIP 20-25 cm H2O (preterm: 20)</p>
+            <p><strong>Check:</strong> MR. SOPA if chest not rising</p>
+            <div className="mt-2 p-2 bg-slate-50 dark:bg-slate-900 rounded text-xs">
+              <p className="font-medium">MR. SOPA:</p>
+              <p>M - Mask adjustment | R - Reposition airway</p>
+              <p>S - Suction | O - Open mouth | P - Pressure increase | A - Airway (ETT/LMA)</p>
             </div>
           </div>
         </div>
 
-        {/* SpO2 Targets */}
-        <div className="p-2 bg-blue-50 dark:bg-blue-950/30 rounded-lg">
-          <p className="text-xs font-bold text-blue-700 mb-1">Target SpO2 After Birth</p>
-          <div className="overflow-x-auto">
-            <table className="w-full text-[8px] border-collapse">
-              <thead>
-                <tr className="bg-blue-100 dark:bg-blue-900/40">
-                  <th className="border border-blue-200 p-1">Time</th>
-                  <th className="border border-blue-200 p-1">1 min</th>
-                  <th className="border border-blue-200 p-1">2 min</th>
-                  <th className="border border-blue-200 p-1">3 min</th>
-                  <th className="border border-blue-200 p-1">4 min</th>
-                  <th className="border border-blue-200 p-1">5 min</th>
-                  <th className="border border-blue-200 p-1">10 min</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td className="border border-blue-200 p-1 font-medium">SpO2</td>
-                  <td className="border border-blue-200 p-1 text-center">60-65%</td>
-                  <td className="border border-blue-200 p-1 text-center">65-70%</td>
-                  <td className="border border-blue-200 p-1 text-center">70-75%</td>
-                  <td className="border border-blue-200 p-1 text-center">75-80%</td>
-                  <td className="border border-blue-200 p-1 text-center">80-85%</td>
-                  <td className="border border-blue-200 p-1 text-center">85-95%</td>
-                </tr>
-              </tbody>
-            </table>
+        {/* Oxygen Targets */}
+        <div className="p-3 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700">
+          <p className="font-semibold text-slate-700 dark:text-slate-200 mb-2">Target SpO2 (Preductal - Right Hand)</p>
+          <table className="w-full text-xs">
+            <thead>
+              <tr className="border-b border-slate-200 dark:border-slate-600">
+                <th className="text-left py-1 text-slate-600 dark:text-slate-300">Time</th>
+                <th className="text-left py-1 text-slate-600 dark:text-slate-300">Target SpO2</th>
+              </tr>
+            </thead>
+            <tbody className="text-slate-600 dark:text-slate-300">
+              <tr><td className="py-1">1 min</td><td>60-65%</td></tr>
+              <tr><td className="py-1">2 min</td><td>65-70%</td></tr>
+              <tr><td className="py-1">3 min</td><td>70-75%</td></tr>
+              <tr><td className="py-1">4 min</td><td>75-80%</td></tr>
+              <tr><td className="py-1">5 min</td><td>80-85%</td></tr>
+              <tr><td className="py-1">10 min</td><td>85-95%</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        {/* Chest Compressions */}
+        <div className="p-3 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700">
+          <p className="font-semibold text-slate-700 dark:text-slate-200 mb-2">Chest Compressions</p>
+          <div className="text-xs text-slate-600 dark:text-slate-300 space-y-1">
+            <p><strong>Indication:</strong> HR &lt;60 despite 30 sec of effective PPV</p>
+            <p><strong>Technique:</strong> Two-thumb encircling (preferred)</p>
+            <p><strong>Depth:</strong> ⅓ AP diameter of chest</p>
+            <p><strong>Ratio:</strong> 3 compressions : 1 breath (90 compressions + 30 breaths/min)</p>
+            <p><strong>Increase O2:</strong> To 100% during compressions</p>
           </div>
+        </div>
+
+        {/* Epinephrine */}
+        <div className="p-3 bg-slate-100 dark:bg-slate-800 rounded-lg border-l-4 border-red-500">
+          <p className="font-semibold text-slate-700 dark:text-slate-200 mb-2">Epinephrine</p>
+          <div className="text-xs text-slate-600 dark:text-slate-300 space-y-1">
+            <p><strong>Indication:</strong> HR &lt;60 despite effective PPV + compressions</p>
+            <p><strong>Concentration:</strong> 1:10,000 (0.1 mg/mL)</p>
+            <div className="mt-2 space-y-2">
+              <div className="p-2 bg-white dark:bg-slate-900 rounded">
+                <p className="font-medium">IV/UVC (preferred):</p>
+                <p>0.01-0.03 mg/kg (0.1-0.3 mL/kg of 1:10,000)</p>
+                {w > 0 && <p className="font-mono text-blue-600 dark:text-blue-400 mt-1">= {(w * 0.1).toFixed(1)} - {(w * 0.3).toFixed(1)} mL</p>}
+              </div>
+              <div className="p-2 bg-white dark:bg-slate-900 rounded">
+                <p className="font-medium">ETT (if no IV):</p>
+                <p>0.05-0.1 mg/kg (0.5-1 mL/kg of 1:10,000)</p>
+                {w > 0 && <p className="font-mono text-blue-600 dark:text-blue-400 mt-1">= {(w * 0.5).toFixed(1)} - {(w * 1).toFixed(1)} mL</p>}
+              </div>
+            </div>
+            <p className="mt-2">May repeat every 3-5 minutes</p>
+          </div>
+        </div>
+
+        {/* Volume Expansion */}
+        <div className="p-3 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700">
+          <p className="font-semibold text-slate-700 dark:text-slate-200 mb-2">Volume Expansion</p>
+          <div className="text-xs text-slate-600 dark:text-slate-300 space-y-1">
+            <p><strong>Indication:</strong> Suspected blood loss, poor response to resuscitation</p>
+            <p><strong>Solution:</strong> NS or O-negative blood</p>
+            <p><strong>Dose:</strong> 10 mL/kg IV over 5-10 minutes</p>
+            {w > 0 && <p className="font-mono text-blue-600 dark:text-blue-400">= {(w * 10).toFixed(0)} mL</p>}
+          </div>
+        </div>
+
+        {/* ETT Sizing */}
+        <div className="p-3 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700">
+          <p className="font-semibold text-slate-700 dark:text-slate-200 mb-2">ETT Size & Depth</p>
+          <table className="w-full text-xs">
+            <thead>
+              <tr className="border-b border-slate-200 dark:border-slate-600">
+                <th className="text-left py-1 text-slate-600 dark:text-slate-300">GA (weeks)</th>
+                <th className="text-left py-1 text-slate-600 dark:text-slate-300">Weight (kg)</th>
+                <th className="text-left py-1 text-slate-600 dark:text-slate-300">ETT Size</th>
+                <th className="text-left py-1 text-slate-600 dark:text-slate-300">Depth (cm)</th>
+              </tr>
+            </thead>
+            <tbody className="text-slate-600 dark:text-slate-300">
+              <tr className={ga > 0 && ga < 28 ? "bg-blue-50 dark:bg-blue-900/20" : ""}>
+                <td className="py-1">&lt;28</td><td>&lt;1</td><td>2.5</td><td>6-7</td>
+              </tr>
+              <tr className={ga >= 28 && ga < 34 ? "bg-blue-50 dark:bg-blue-900/20" : ""}>
+                <td className="py-1">28-34</td><td>1-2</td><td>3.0</td><td>7-8</td>
+              </tr>
+              <tr className={ga >= 34 && ga < 38 ? "bg-blue-50 dark:bg-blue-900/20" : ""}>
+                <td className="py-1">34-38</td><td>2-3</td><td>3.5</td><td>8-9</td>
+              </tr>
+              <tr className={ga >= 38 ? "bg-blue-50 dark:bg-blue-900/20" : ""}>
+                <td className="py-1">≥38</td><td>&gt;3</td><td>3.5-4.0</td><td>9-10</td>
+              </tr>
+            </tbody>
+          </table>
+          {(ga > 0 || w > 0) && (
+            <div className="mt-2 p-2 bg-blue-50 dark:bg-blue-900/20 rounded text-xs">
+              <p className="font-medium text-blue-700 dark:text-blue-300">For this patient:</p>
+              <p className="text-blue-600 dark:text-blue-400">ETT Size: {getETTSize()} | Depth: {getETTDepth() || "Enter weight"} cm</p>
+            </div>
+          )}
         </div>
 
         {/* Special Considerations */}
-        <div className="p-2 bg-amber-50 dark:bg-amber-950/30 rounded-lg border border-amber-200">
-          <p className="text-xs font-bold text-amber-700 mb-1">Special Considerations</p>
-          <div className="space-y-1 text-[8px] text-amber-600">
-            <div className="p-1.5 bg-white dark:bg-gray-900 rounded">
-              <p className="font-bold">Prematurity (&lt;28 weeks):</p>
-              <p>• Polyethylene bag/wrap (don't dry first)</p>
-              <p>• Cap on head, exothermic mattress</p>
-              <p>• Start O2 at 21-30%</p>
-            </div>
-            <div className="p-1.5 bg-white dark:bg-gray-900 rounded">
-              <p className="font-bold">Congenital Diaphragmatic Hernia:</p>
-              <p>• Avoid prolonged face-mask ventilation</p>
-              <p>• Intubate quickly</p>
-              <p>• Place orogastric tube</p>
-            </div>
-            <div className="p-1.5 bg-white dark:bg-gray-900 rounded">
-              <p className="font-bold">Meconium-Stained Amniotic Fluid:</p>
-              <p>• Routine intubation NOT recommended for vigorous infants</p>
-              <p>• May suction non-vigorous infants with airway obstruction</p>
-            </div>
+        <div className="p-3 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700">
+          <p className="font-semibold text-slate-700 dark:text-slate-200 mb-2">Special Considerations</p>
+          <div className="text-xs text-slate-600 dark:text-slate-300 space-y-1">
+            <p><strong>Preterm &lt;32 weeks:</strong> Plastic wrap/bag, T-piece resuscitator, avoid high FiO2</p>
+            <p><strong>Meconium:</strong> Begin PPV if not vigorous; intubate only if obstruction suspected</p>
+            <p><strong>Pneumothorax:</strong> Consider if sudden deterioration, asymmetric breath sounds</p>
           </div>
         </div>
 
-        {/* DOPE Mnemonic */}
-        <div className="p-2 bg-red-50 dark:bg-red-950/30 rounded-lg border border-red-200">
-          <p className="text-xs font-bold text-red-700 mb-1">DOPE - If Not Responding</p>
-          <div className="grid grid-cols-2 gap-1 text-[8px] text-red-600">
-            <div><strong>D</strong> - Displacement of ETT</div>
-            <div><strong>O</strong> - Obstruction of ETT</div>
-            <div><strong>P</strong> - Pneumothorax</div>
-            <div><strong>E</strong> - Equipment failure</div>
+        {/* Post-Resuscitation */}
+        <div className="p-3 bg-slate-50 dark:bg-slate-900 rounded-lg">
+          <p className="font-semibold text-slate-700 dark:text-slate-200 mb-2">Post-Resuscitation Care</p>
+          <div className="text-xs text-slate-600 dark:text-slate-300 space-y-1">
+            <p>• Monitor glucose, temperature, blood gas</p>
+            <p>• Consider therapeutic hypothermia if HIE criteria met (≥36 weeks)</p>
+            <p>• Document all interventions and Apgar scores</p>
           </div>
         </div>
 
