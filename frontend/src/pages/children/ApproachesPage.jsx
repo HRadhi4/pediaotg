@@ -184,19 +184,19 @@ const ApproachesPage = ({ onBack }) => {
         </CardContent>
       </Card>
 
-      {/* Tab Navigation - Scrollable */}
+      {/* Approach Selection - Vertical List */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <div 
-          className="overflow-x-auto pb-1 bg-muted rounded-lg" 
-          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none', WebkitOverflowScrolling: 'touch' }}
+          className="bg-muted rounded-lg p-2 max-h-[300px] overflow-y-auto"
+          style={{ scrollbarWidth: 'thin' }}
           data-testid="tabs-scroll-container"
         >
-          <TabsList className="inline-flex w-max h-auto p-1 pr-4 gap-1 bg-transparent">
+          <TabsList className="flex flex-col w-full h-auto gap-1 bg-transparent">
             {filteredTabs.map(tab => (
               <TabsTrigger 
                 key={tab.id} 
                 value={tab.id} 
-                className="text-[10px] py-1.5 px-2.5 whitespace-nowrap flex-shrink-0" 
+                className="w-full justify-start text-left text-xs py-2 px-3 rounded-md data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800 data-[state=active]:shadow-sm" 
                 data-testid={`tab-${tab.id}`}
               >
                 {tab.label}
