@@ -238,26 +238,36 @@ const ApproachesPage = ({ onBack }) => {
         </div>
       )}
 
-      {/* Approach Content with Pinch-to-Zoom */}
+      {/* Zoom indicator */}
+      {zoomLevel !== 100 && (
+        <div className="fixed top-20 right-4 z-50 bg-black/70 text-white text-xs px-2 py-1 rounded-full">
+          {zoomLevel}% <span className="text-[10px] opacity-70">(double-tap to reset)</span>
+        </div>
+      )}
+
+      {/* Scrollable Container for Zoomed Content */}
       <div 
-        ref={contentRef}
-        className="space-y-3 mt-4 origin-top-left transition-transform duration-100 touch-none"
-        style={{ 
-          transform: `scale(${zoomLevel / 100})`,
-          transformOrigin: 'top center',
-          width: zoomLevel !== 100 ? `${10000 / zoomLevel}%` : '100%'
+        className="relative mt-4 overflow-auto rounded-lg border border-transparent"
+        style={{
+          maxHeight: zoomLevel > 100 ? '60vh' : 'none',
         }}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
-        data-testid="zoomable-content"
+        data-testid="zoom-container"
       >
-        {/* Zoom indicator */}
-        {zoomLevel !== 100 && (
-          <div className="fixed top-20 right-4 z-50 bg-black/70 text-white text-xs px-2 py-1 rounded-full">
-            {zoomLevel}%
-          </div>
-        )}
+        {/* Approach Content with Pinch-to-Zoom */}
+        <div 
+          ref={contentRef}
+          className="space-y-3 transition-transform duration-100"
+          style={{ 
+            transform: `scale(${zoomLevel / 100})`,
+            transformOrigin: 'top left',
+            width: `${10000 / zoomLevel}%`,
+            minWidth: '100%'
+          }}
+          data-testid="zoomable-content"
+        >
         {activeTab === "sepsis" && <SepsisApproach {...commonProps} />}
         {activeTab === "seizure" && <SeizureApproach {...commonProps} />}
         {activeTab === "asthma" && <AsthmaApproach {...commonProps} />}
