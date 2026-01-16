@@ -1,15 +1,16 @@
 /**
- * Bronchopulmonary Dysplasia (BPD) Approach
- * Updated: 2024 Jensen Grading System
- * Simplified design matching Apnea approach
+ * BPD (Bronchopulmonary Dysplasia) Approach
+ * Updated: 2024 Guidelines
+ * 
+ * Design: Standardized to match JaundiceApproach.jsx
  */
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 
 const BPDApproach = ({ weight, gestationalAge, postnatalAge }) => {
+  const w = parseFloat(weight) || 0;
   const ga = parseFloat(gestationalAge) || 0;
   const pna = parseFloat(postnatalAge) || 0;
-  const w = parseFloat(weight) || 0;
   const pmaWeeks = ga + (pna / 7);
 
   return (
@@ -17,136 +18,127 @@ const BPDApproach = ({ weight, gestationalAge, postnatalAge }) => {
       <CardHeader className="pb-2">
         <CardTitle className="text-base">Bronchopulmonary Dysplasia (BPD)</CardTitle>
         <CardDescription className="text-xs">Chronic Lung Disease of Prematurity</CardDescription>
-        <p className="text-[10px] text-blue-600 mt-1 font-medium">Updated: 2024 Jensen Grading & NIH Workshop</p>
       </CardHeader>
-      <CardContent className="space-y-3">
+      <CardContent className="space-y-3 text-sm">
 
-        {/* Key Points */}
-        <div className="p-2 bg-amber-50 dark:bg-amber-950/30 rounded-lg border border-amber-200">
-          <p className="text-xs font-bold text-amber-700 mb-1">Key Points (2024)</p>
-          <div className="text-[8px] text-amber-600 space-y-1">
-            <p><strong>Definition:</strong> Need for supplemental O2 for ≥28 days in preterm infants</p>
-            <p><strong>Assessment:</strong> At 36 weeks PMA (for &lt;32 wk GA) or 56 days postnatal (for ≥32 wk GA)</p>
-            <p><strong>Key change:</strong> Jensen grading predicts outcomes better than traditional NIH classification</p>
+        {/* Definition */}
+        <div className="p-3 bg-slate-50 dark:bg-slate-900 rounded-lg border-l-4 border-blue-500">
+          <p className="font-semibold text-slate-700 dark:text-slate-200 mb-2">Definition (2019 NICHD)</p>
+          <div className="text-xs text-slate-600 dark:text-slate-300">
+            <p className="mb-2">Radiographic lung disease AND need for respiratory support at 36 weeks PMA:</p>
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-slate-200 dark:border-slate-600">
+                  <th className="text-left py-1">Grade</th>
+                  <th className="text-left py-1">Respiratory Support at 36 wks PMA</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td className="py-1">Grade 1</td><td>Nasal cannula ≤2 L/min</td></tr>
+                <tr><td className="py-1">Grade 2</td><td>NC &gt;2 L/min OR CPAP/HFNC</td></tr>
+                <tr><td className="py-1">Grade 3</td><td>Invasive mechanical ventilation</td></tr>
+              </tbody>
+            </table>
             {pmaWeeks > 0 && (
-              <p className="bg-amber-100 p-1 rounded mt-1">
+              <p className="text-xs mt-2 p-2 bg-blue-100 dark:bg-blue-900/30 rounded">
                 Current PMA: <strong>{pmaWeeks.toFixed(1)} weeks</strong>
               </p>
             )}
           </div>
         </div>
 
-        {/* Jensen Grading */}
-        <div className="p-2 bg-blue-50 dark:bg-blue-950/30 rounded-lg border border-blue-200">
-          <p className="text-xs font-bold text-blue-700 mb-1">Jensen BPD Grading (at 36 wk PMA)</p>
-          <div className="grid grid-cols-2 gap-2 text-[8px] text-blue-600">
-            <div className="p-1.5 bg-white dark:bg-gray-900 rounded">
-              <p className="font-bold text-green-600">No BPD</p>
-              <p>Room air</p>
-            </div>
-            <div className="p-1.5 bg-white dark:bg-gray-900 rounded">
-              <p className="font-bold text-yellow-600">Grade I</p>
-              <p>Nasal cannula ≤2 L/min</p>
-            </div>
-            <div className="p-1.5 bg-white dark:bg-gray-900 rounded">
-              <p className="font-bold text-orange-600">Grade II</p>
-              <p>HFNC &gt;2 L/min or CPAP</p>
-            </div>
-            <div className="p-1.5 bg-white dark:bg-gray-900 rounded">
-              <p className="font-bold text-red-600">Grade III</p>
-              <p>Mechanical ventilation</p>
-            </div>
-          </div>
-        </div>
-
         {/* Risk Factors */}
-        <div className="p-2 bg-red-50 dark:bg-red-950/30 rounded-lg border border-red-200">
-          <p className="text-xs font-bold text-red-700 mb-1">Risk Factors</p>
-          <div className="grid grid-cols-2 gap-2 text-[8px] text-red-600">
-            <div>
-              <p className="font-bold">Major:</p>
-              <p>• Extreme prematurity (&lt;28 wk)</p>
-              <p>• ELBW (&lt;1000g)</p>
-              <p>• Prolonged ventilation</p>
-              <p>• High FiO2 exposure</p>
-            </div>
-            <div>
-              <p className="font-bold">Additional:</p>
-              <p>• Male sex</p>
-              <p>• Chorioamnionitis</p>
-              <p>• Postnatal sepsis</p>
-              <p>• Significant PDA</p>
-            </div>
+        <div className="p-3 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700">
+          <p className="font-semibold text-slate-700 dark:text-slate-200 mb-2">Risk Factors</p>
+          <div className="grid grid-cols-2 gap-4 text-xs text-slate-600 dark:text-slate-300">
+            <ul className="list-disc pl-4 space-y-0.5">
+              <li><strong>Extreme prematurity</strong></li>
+              <li>Mechanical ventilation</li>
+              <li>Oxygen toxicity</li>
+              <li>Chorioamnionitis</li>
+            </ul>
+            <ul className="list-disc pl-4 space-y-0.5">
+              <li>Postnatal sepsis</li>
+              <li>PDA</li>
+              <li>Fluid overload</li>
+              <li>Male sex</li>
+            </ul>
           </div>
         </div>
 
         {/* Prevention */}
-        <div className="p-2 bg-green-50 dark:bg-green-950/30 rounded-lg border border-green-200">
-          <p className="text-xs font-bold text-green-700 mb-1">Prevention Strategies</p>
-          <div className="text-[8px] text-green-600 space-y-1">
-            <p>• <strong>Antenatal steroids</strong> - strongest evidence</p>
-            <p>• <strong>Early CPAP</strong> over routine intubation</p>
-            <p>• <strong>Caffeine</strong> - start early (CAP trial)</p>
-            <p>• Target SpO2 <strong>91-95%</strong></p>
-            <p>• LISA/MIST for surfactant delivery</p>
-            <p>• Volume-targeted ventilation</p>
-          </div>
+        <div className="p-3 bg-slate-100 dark:bg-slate-800 rounded-lg border-l-4 border-green-500">
+          <p className="font-semibold text-slate-700 dark:text-slate-200 mb-2">Prevention Strategies</p>
+          <ul className="text-xs text-slate-600 dark:text-slate-300 list-disc pl-4 space-y-1">
+            <li><strong>Antenatal steroids</strong> - reduce RDS and BPD</li>
+            <li><strong>Early CPAP</strong> - avoid intubation if possible</li>
+            <li><strong>Caffeine</strong> - start early, reduces BPD</li>
+            <li><strong>Vitamin A</strong> - 5000 IU IM 3x/week × 4 weeks</li>
+            <li><strong>Conservative oxygen</strong> - target SpO2 90-95%</li>
+            <li>Minimize volutrauma (low tidal volumes)</li>
+          </ul>
         </div>
 
         {/* Management */}
-        <div className="p-2 bg-gray-800 text-white rounded-lg">
-          <p className="text-xs font-bold mb-1">Management of Established BPD</p>
-          <div className="text-[8px] space-y-1">
-            <p className="font-bold text-amber-400">Respiratory:</p>
-            <p>• Target SpO2 92-95% (higher if PH)</p>
-            <p>• Minimize ventilator days</p>
-            
-            <p className="font-bold text-cyan-400 mt-2">Nutrition (critical):</p>
-            <p>• 120-150 kcal/kg/day</p>
-            <p>• Protein 3.5-4 g/kg/day</p>
-            
-            <p className="font-bold text-purple-400 mt-2">Medications:</p>
-            <p>• <strong>Caffeine</strong> - continue until off resp support</p>
-            <p>• Diuretics - acute exacerbations only</p>
-            <p>• Steroids - severe cases only (DART protocol)</p>
-          </div>
-        </div>
-
-        {/* Diuretics */}
-        <div className="p-2 bg-indigo-50 dark:bg-indigo-950/30 rounded-lg border border-indigo-200">
-          <p className="text-xs font-bold text-indigo-700 mb-1">Diuretics (Use Sparingly)</p>
-          <div className="text-[8px] text-indigo-600 space-y-1">
-            <div className="p-1.5 bg-white dark:bg-gray-900 rounded">
-              <p className="font-bold">Furosemide:</p>
-              <p>1-2 mg/kg/dose q12-24h (short-term only)</p>
-              {w > 0 && <p className="text-green-600 font-mono">= {(w * 1).toFixed(1)} - {(w * 2).toFixed(1)} mg/dose</p>}
+        <div className="p-3 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700">
+          <p className="font-semibold text-slate-700 dark:text-slate-200 mb-2">Management</p>
+          <div className="text-xs text-slate-600 dark:text-slate-300 space-y-2">
+            <div>
+              <p className="font-medium">Respiratory:</p>
+              <p>• Minimize ventilator support</p>
+              <p>• CPAP/HFNC preferred over IMV</p>
+              <p>• Target SpO2 90-95%</p>
             </div>
-            <div className="p-1.5 bg-white dark:bg-gray-900 rounded">
-              <p className="font-bold">Chlorothiazide + Spironolactone:</p>
-              <p>For chronic use if needed</p>
+            <div>
+              <p className="font-medium">Nutrition:</p>
+              <p>• Enhanced calories (120-150 kcal/kg/day)</p>
+              <p>• Adequate protein (3.5-4 g/kg/day)</p>
+              <p>• May need fluid restriction</p>
+            </div>
+            <div>
+              <p className="font-medium">Diuretics (if fluid overloaded):</p>
+              <p>• Furosemide: 1-2 mg/kg/dose</p>
+              <p>• Chlorothiazide: 10-20 mg/kg/dose</p>
+              {w > 0 && (
+                <p className="font-mono text-blue-600 mt-1">
+                  Furosemide: {(w * 1).toFixed(1)}-{(w * 2).toFixed(1)} mg/dose
+                </p>
+              )}
             </div>
           </div>
         </div>
 
-        {/* Discharge */}
-        <div className="p-2 bg-teal-50 dark:bg-teal-950/30 rounded-lg border border-teal-200">
-          <p className="text-xs font-bold text-teal-700 mb-1">Discharge Planning</p>
-          <div className="text-[8px] text-teal-600 space-y-1">
-            <p><strong>Home O2 criteria:</strong> Stable on ≤0.5 L/min, SpO2 ≥92%</p>
-            <p><strong>Follow-up:</strong> Pulmonology, developmental, nutrition</p>
-            <p><strong>RSV prophylaxis:</strong> Palivizumab per AAP guidelines</p>
+        {/* Steroids */}
+        <div className="p-3 bg-slate-50 dark:bg-slate-900 rounded-lg border-l-4 border-orange-500">
+          <p className="font-semibold text-orange-600 dark:text-orange-400 mb-2">Postnatal Steroids</p>
+          <div className="text-xs text-slate-600 dark:text-slate-300">
+            <p className="mb-2">Consider if high risk of BPD and unable to wean from ventilator:</p>
+            <div className="p-2 bg-white dark:bg-slate-900 rounded">
+              <p className="font-medium">Dexamethasone (DART protocol):</p>
+              <p>• 0.15 mg/kg/day ÷ q12h × 3 days</p>
+              <p>• Then taper over 7-10 days</p>
+              {w > 0 && (
+                <p className="font-mono text-blue-600 mt-1">
+                  = {(w * 0.15).toFixed(2)} mg/day ({(w * 0.075).toFixed(2)} mg q12h)
+                </p>
+              )}
+            </div>
+            <p className="text-orange-600 dark:text-orange-400 mt-2 font-medium">
+              ⚠️ Balance risk of BPD vs. neurodevelopmental concerns
+            </p>
           </div>
         </div>
 
-        {/* Prognosis */}
-        <div className="p-2 bg-gray-100 dark:bg-gray-800 rounded-lg">
-          <p className="text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Prognosis</p>
-          <div className="text-[8px] text-gray-600 dark:text-gray-400 space-y-1">
-            <p>• Most improve significantly over 2-3 years</p>
-            <p>• Many wean off home O2 by 6-12 months</p>
-            <p>• Increased risk of respiratory infections</p>
-            <p>• Severe BPD: Higher neurodevelopmental risk</p>
-          </div>
+        {/* Discharge Planning */}
+        <div className="p-3 bg-slate-50 dark:bg-slate-900 rounded-lg">
+          <p className="font-semibold text-slate-700 dark:text-slate-200 mb-2">Discharge Planning</p>
+          <ul className="text-xs text-slate-600 dark:text-slate-300 list-disc pl-4 space-y-0.5">
+            <li>May discharge on home oxygen if needed</li>
+            <li>Target SpO2 ≥92% on room air or prescribed O2</li>
+            <li>RSV prophylaxis (Palivizumab) if criteria met</li>
+            <li>Close pulmonary follow-up</li>
+            <li>Avoid smoke exposure</li>
+          </ul>
         </div>
 
       </CardContent>
