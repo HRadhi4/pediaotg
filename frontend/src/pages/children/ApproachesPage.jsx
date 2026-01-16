@@ -171,13 +171,13 @@ const ApproachesPage = ({ onBack }) => {
 
       {/* Tab Navigation - Scrollable */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <div className="overflow-x-auto pb-1 bg-muted rounded-lg">
-          <TabsList className="inline-flex w-max h-auto p-1 pr-3 gap-1 bg-transparent">
+        <div className="overflow-x-auto pb-1 bg-muted rounded-lg scroll-smooth" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+          <TabsList className="inline-flex w-max h-auto p-1 gap-1 bg-transparent">
             {filteredTabs.map(tab => (
               <TabsTrigger 
                 key={tab.id} 
                 value={tab.id} 
-                className="text-[10px] py-1.5 px-2 whitespace-nowrap flex-shrink-0" 
+                className="text-[10px] py-1.5 px-2.5 whitespace-nowrap flex-shrink-0" 
                 data-testid={`tab-${tab.id}`}
               >
                 {tab.label}
