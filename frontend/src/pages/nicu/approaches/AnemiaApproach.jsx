@@ -1,12 +1,12 @@
 /**
- * Neonatal Anaemia Approach
+ * Neonatal Anemia Approach
  * Based on WHO Neonatal Clinical Guidelines 2018-2021
  * Reference: WHO/Belize Neonatal Guidelines
  */
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 
-const AnaemiaApproach = ({ weight, gestationalAge, postnatalAge }) => {
+const AnemiaApproach = ({ weight, gestationalAge, postnatalAge }) => {
   const w = parseFloat(weight) || 0;
   const ga = parseFloat(gestationalAge) || 0;
   const pna = parseFloat(postnatalAge) || 0;
