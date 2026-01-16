@@ -437,6 +437,8 @@ const GrowthChartPage = () => {
               <CartesianGrid strokeDasharray="3 3" stroke="#ccc" />
               <XAxis 
                 dataKey="age"
+                type="number"
+                domain={[0, 'dataMax']}
                 tickFormatter={formatXAxis}
                 tick={{ fontSize: 10 }} 
                 label={{ value: isWHO ? 'Age (months)' : 'Age (years)', position: 'bottom', fontSize: 11 }}
@@ -449,13 +451,14 @@ const GrowthChartPage = () => {
               <Tooltip 
                 contentStyle={{ fontSize: 11, borderRadius: 8, backgroundColor: '#fff' }}
                 formatter={(value, name) => [value?.toFixed(1), name]}
+                labelFormatter={(label) => isWHO ? `${label} months` : `${label / 12} years`}
               />
               
-              <Line type="monotone" dataKey="p97" stroke="#8B0000" strokeWidth={1.5} dot={false} name="97th %" />
-              <Line type="monotone" dataKey="p85" stroke="#CD853F" strokeWidth={1.5} dot={false} name="85th %" />
-              <Line type="monotone" dataKey="p50" stroke="#228B22" strokeWidth={2} dot={false} name="50th %" />
-              <Line type="monotone" dataKey="p15" stroke="#CD853F" strokeWidth={1.5} dot={false} name="15th %" />
-              <Line type="monotone" dataKey="p3" stroke="#8B0000" strokeWidth={1.5} dot={false} name="3rd %" />
+              <Line type="monotone" dataKey="p97" stroke="#8B0000" strokeWidth={1.5} dot={false} name="97th %" connectNulls />
+              <Line type="monotone" dataKey="p85" stroke="#CD853F" strokeWidth={1.5} dot={false} name="85th %" connectNulls />
+              <Line type="monotone" dataKey="p50" stroke="#228B22" strokeWidth={2} dot={false} name="50th %" connectNulls />
+              <Line type="monotone" dataKey="p15" stroke="#CD853F" strokeWidth={1.5} dot={false} name="15th %" connectNulls />
+              <Line type="monotone" dataKey="p3" stroke="#8B0000" strokeWidth={1.5} dot={false} name="3rd %" connectNulls />
               
               {patientData.map((point, idx) => (
                 <ReferenceDot key={idx} x={point.age} y={point.value} r={5} fill="#000" stroke="#fff" strokeWidth={2} />
