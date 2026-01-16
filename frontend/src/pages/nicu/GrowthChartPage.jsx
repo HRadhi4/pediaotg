@@ -412,7 +412,7 @@ const GrowthChartPage = () => {
                   <text x={xScale(tick)} y={height - margin.bottom + 18} textAnchor="middle" fontSize="10" fill="#666">{tick}</text>
                 </g>
               ))}
-              <text x={width / 2} y={height - 10} textAnchor="middle" fontSize="11" fill="#333">Age ({isWHO ? 'months' : 'years'})</text>
+              <text x={width / 2} y={height - 15} textAnchor="middle" fontSize="11" fill="#333">Age ({isWHO ? 'months' : 'years'})</text>
               
               {/* Y-axis */}
               <line x1={margin.left} y1={margin.top} x2={margin.left} y2={height - margin.bottom} stroke="#333" />
