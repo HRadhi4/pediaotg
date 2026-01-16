@@ -433,46 +433,34 @@ const GrowthChartPage = () => {
         </CardHeader>
         <CardContent>
           <div ref={chartRef} className="bg-white dark:bg-gray-900 rounded-lg p-3" style={{ backgroundColor: gender === 'male' ? '#e6f3ff' : '#fff0f5', minHeight: '350px' }}>
-            {chartData && chartData.length > 0 ? (
-              <ResponsiveContainer width="100%" height={300}>
-                <LineChart data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 20 }}>
-                <CartesianGrid strokeDasharray="1 1" stroke="#ccc" />
+            <ResponsiveContainer width="100%" height={300}>
+              <LineChart data={chartData} margin={{ top: 10, right: 30, left: 10, bottom: 20 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#ccc" />
                 <XAxis 
                   dataKey="age"
                   tickFormatter={formatXAxis}
                   tick={{ fontSize: 10 }} 
-                  label={{ value: isWHO ? 'Age (months)' : 'Age (years)', position: 'bottom', fontSize: 11, offset: 0 }}
-                  domain={xAxisDomain}
-                  ticks={xAxisTicks}
+                  label={{ value: isWHO ? 'Age (months)' : 'Age (years)', position: 'bottom', fontSize: 11 }}
                 />
                 <YAxis 
                   tick={{ fontSize: 10 }} 
-                  label={{ value: chartLabels[activeChart].yLabel, angle: -90, position: 'insideLeft', fontSize: 11, offset: 10 }}
-                  domain={['auto', 'auto']}
+                  label={{ value: chartLabels[activeChart].yLabel, angle: -90, position: 'insideLeft', fontSize: 11 }}
                 />
                 <Tooltip 
                   contentStyle={{ fontSize: 11, borderRadius: 8, backgroundColor: '#fff' }}
-                  formatter={(value, name) => {
-                    const labels = { p3: '3rd', p15: '15th', p50: '50th', p85: '85th', p97: '97th' };
-                    return [value.toFixed(1) + ' ' + chartLabels[activeChart].unit, labels[name] || name];
-                  }}
-                  labelFormatter={(label) => isWHO ? `${label} months` : `${label/12} years`}
                 />
                 
-                <Line type="monotone" dataKey="p97" stroke={percentileColors.p97} strokeWidth={1.5} dot={false} name="p97" />
-                <Line type="monotone" dataKey="p85" stroke={percentileColors.p85} strokeWidth={1.5} dot={false} name="p85" />
-                <Line type="monotone" dataKey="p50" stroke={percentileColors.p50} strokeWidth={2} dot={false} name="p50" />
-                <Line type="monotone" dataKey="p15" stroke={percentileColors.p15} strokeWidth={1.5} dot={false} name="p15" />
-                <Line type="monotone" dataKey="p3" stroke={percentileColors.p3} strokeWidth={1.5} dot={false} name="p3" />
+                <Line type="monotone" dataKey="p97" stroke="#8B0000" strokeWidth={1.5} dot={false} />
+                <Line type="monotone" dataKey="p85" stroke="#CD853F" strokeWidth={1.5} dot={false} />
+                <Line type="monotone" dataKey="p50" stroke="#228B22" strokeWidth={2} dot={false} />
+                <Line type="monotone" dataKey="p15" stroke="#CD853F" strokeWidth={1.5} dot={false} />
+                <Line type="monotone" dataKey="p3" stroke="#8B0000" strokeWidth={1.5} dot={false} />
                 
                 {patientData.map((point, idx) => (
-                  <ReferenceDot key={idx} x={point.age} y={point.value} r={3} fill="#000" stroke="#fff" strokeWidth={2} />
+                  <ReferenceDot key={idx} x={point.age} y={point.value} r={4} fill="#000" stroke="#fff" strokeWidth={2} />
                 ))}
               </LineChart>
-              </ResponsiveContainer>
-            ) : (
-              <div className="flex items-center justify-center h-64 text-gray-500">Loading chart data...</div>
-            )}
+            </ResponsiveContainer>
             
             {/* Legend */}
             <div className="flex justify-center gap-3 mt-3 text-xs flex-wrap">
