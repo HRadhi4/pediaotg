@@ -158,10 +158,10 @@ const GrowthChartPage = () => {
 
   const isWHO = chartType === "WHO";
 
-  // Chart dimensions
-  const width = 700;
-  const height = 350;
-  const margin = { top: 20, right: 30, bottom: 50, left: 50 };
+  // Chart dimensions - increased bottom margin for X-axis label
+  const width = 680;
+  const height = 380;
+  const margin = { top: 20, right: 50, bottom: 60, left: 55 };
   const innerWidth = width - margin.left - margin.right;
   const innerHeight = height - margin.top - margin.bottom;
 
