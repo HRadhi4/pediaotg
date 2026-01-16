@@ -281,6 +281,26 @@ const GrowthChartPage = () => {
   const chartData = getChartData();
   const patientData = getPatientData();
 
+  // Get Y-axis domain based on chart type and standard
+  const getYDomain = () => {
+    if (chartStandard === 'WHO') {
+      switch (chartType) {
+        case 'weight': return [0, 20];
+        case 'length': return [40, 100];
+        case 'headCirc': return [30, 55];
+        default: return ['auto', 'auto'];
+      }
+    } else { // CDC
+      switch (chartType) {
+        case 'weight': return [0, 140];
+        case 'height': return [70, 210];
+        default: return ['auto', 'auto'];
+      }
+    }
+  };
+
+  const yDomain = getYDomain();
+
   // Chart labels
   const chartLabels = {
     weight: { title: 'Weight-for-Age', yLabel: 'Weight (kg)', unit: 'kg' },
