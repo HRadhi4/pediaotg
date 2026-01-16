@@ -80,7 +80,14 @@ Build a full SaaS-style web app "Pediatrics on the Go" with:
 
 ## Recent Changes (January 16, 2026)
 
-### Session 4 Updates (Current)
+### Session 5 Updates (Current)
+- ✅ **Growth Chart Mobile Improvements**:
+  - Added fullscreen/maximize mode for better mobile viewing (X and Y axes fully visible)
+  - Minimize button to exit fullscreen and return to normal view
+  - Changed "Save PNG" button to icon-only (Download icon) for cleaner UI
+  - Fullscreen chart is larger and more readable with all axis labels visible
+
+### Session 4 Updates
 - ✅ **Growth Chart Replaced with GitHub Repo Version**:
   - Replaced `GrowthChartPage.jsx` with implementation from user's GitHub repository (https://github.com/HRadhi4/PaedOTG)
   - Features: WHO (0-24 months) and CDC (2-20 years) standards
