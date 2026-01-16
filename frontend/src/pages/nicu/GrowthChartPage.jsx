@@ -591,15 +591,15 @@ const GrowthChartPage = () => {
               />
               
               {/* Percentile curves */}
-              <Line type="monotone" dataKey="p97" stroke={percentileColors.p97} strokeWidth={1.5} dot={false} name="p97" />
-              <Line type="monotone" dataKey="p95" stroke={percentileColors.p95} strokeWidth={1} dot={false} name="p95" strokeDasharray="4 2" />
-              <Line type="monotone" dataKey="p90" stroke={percentileColors.p90} strokeWidth={1.5} dot={false} name="p90" />
-              <Line type="monotone" dataKey="p75" stroke={percentileColors.p75} strokeWidth={1} dot={false} name="p75" strokeDasharray="4 2" />
-              <Line type="monotone" dataKey="p50" stroke={percentileColors.p50} strokeWidth={2.5} dot={false} name="p50" />
-              <Line type="monotone" dataKey="p25" stroke={percentileColors.p25} strokeWidth={1} dot={false} name="p25" strokeDasharray="4 2" />
-              <Line type="monotone" dataKey="p10" stroke={percentileColors.p10} strokeWidth={1.5} dot={false} name="p10" />
-              <Line type="monotone" dataKey="p5" stroke={percentileColors.p5} strokeWidth={1} dot={false} name="p5" strokeDasharray="4 2" />
-              <Line type="monotone" dataKey="p3" stroke={percentileColors.p3} strokeWidth={1.5} dot={false} name="p3" />
+              <Line type="linear" dataKey="p97" stroke={percentileColors.p97} strokeWidth={1.5} dot={false} name="p97" isAnimationActive={false} />
+              <Line type="linear" dataKey="p95" stroke={percentileColors.p95} strokeWidth={1} dot={false} name="p95" strokeDasharray="4 2" isAnimationActive={false} />
+              <Line type="linear" dataKey="p90" stroke={percentileColors.p90} strokeWidth={1.5} dot={false} name="p90" isAnimationActive={false} />
+              <Line type="linear" dataKey="p75" stroke={percentileColors.p75} strokeWidth={1} dot={false} name="p75" strokeDasharray="4 2" isAnimationActive={false} />
+              <Line type="linear" dataKey="p50" stroke={percentileColors.p50} strokeWidth={2.5} dot={false} name="p50" isAnimationActive={false} />
+              <Line type="linear" dataKey="p25" stroke={percentileColors.p25} strokeWidth={1} dot={false} name="p25" strokeDasharray="4 2" isAnimationActive={false} />
+              <Line type="linear" dataKey="p10" stroke={percentileColors.p10} strokeWidth={1.5} dot={false} name="p10" isAnimationActive={false} />
+              <Line type="linear" dataKey="p5" stroke={percentileColors.p5} strokeWidth={1} dot={false} name="p5" strokeDasharray="4 2" isAnimationActive={false} />
+              <Line type="linear" dataKey="p3" stroke={percentileColors.p3} strokeWidth={1.5} dot={false} name="p3" isAnimationActive={false} />
               
               {/* Patient data points */}
               {patientData.map((point, idx) => (
