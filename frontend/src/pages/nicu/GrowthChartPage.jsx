@@ -159,9 +159,9 @@ const GrowthChartPage = () => {
 
   const isWHO = chartType === "WHO";
 
-  // Chart dimensions - increased bottom margin for X-axis label
-  const width = 680;
-  const height = 380;
+  // Chart dimensions - responsive: larger in fullscreen mode
+  const width = isFullscreen ? Math.min(window.innerWidth - 40, 900) : 680;
+  const height = isFullscreen ? Math.min(window.innerHeight - 100, 600) : 380;
   const margin = { top: 20, right: 50, bottom: 60, left: 55 };
   const innerWidth = width - margin.left - margin.right;
   const innerHeight = height - margin.top - margin.bottom;
