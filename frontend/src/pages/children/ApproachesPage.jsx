@@ -221,43 +221,6 @@ const ApproachesPage = ({ onBack }) => {
           </div>
         </CardContent>
       </Card>
-
-      {/* Zoom Controls */}
-      <div className="flex items-center justify-end gap-2">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => setZoomLevel(Math.max(50, zoomLevel - 10))}
-          className="h-8 w-8 p-0"
-          data-testid="zoom-out-btn"
-          title="Zoom out"
-        >
-          <ZoomOut className="h-4 w-4" />
-        </Button>
-        <span className="text-xs text-muted-foreground min-w-[40px] text-center">{zoomLevel}%</span>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => setZoomLevel(Math.min(150, zoomLevel + 10))}
-          className="h-8 w-8 p-0"
-          data-testid="zoom-in-btn"
-          title="Zoom in"
-        >
-          <ZoomIn className="h-4 w-4" />
-        </Button>
-        {zoomLevel !== 100 && (
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setZoomLevel(100)}
-            className="h-8 w-8 p-0"
-            data-testid="zoom-reset-btn"
-            title="Reset zoom"
-          >
-            <RotateCcw className="h-4 w-4" />
-          </Button>
-        )}
-      </div>
         
       {filteredTabs.length === 0 && (
         <div className="text-center py-8 text-muted-foreground">
@@ -266,16 +229,26 @@ const ApproachesPage = ({ onBack }) => {
         </div>
       )}
 
-      {/* Approach Content with Zoom */}
+      {/* Approach Content with Pinch-to-Zoom */}
       <div 
         ref={contentRef}
-        className="space-y-3 mt-4 origin-top-left transition-transform duration-200"
+        className="space-y-3 mt-4 origin-top-left transition-transform duration-100 touch-none"
         style={{ 
           transform: `scale(${zoomLevel / 100})`,
           transformOrigin: 'top center',
           width: zoomLevel !== 100 ? `${10000 / zoomLevel}%` : '100%'
         }}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+        data-testid="zoomable-content"
       >
+        {/* Zoom indicator */}
+        {zoomLevel !== 100 && (
+          <div className="fixed top-20 right-4 z-50 bg-black/70 text-white text-xs px-2 py-1 rounded-full">
+            {zoomLevel}%
+          </div>
+        )}
         {activeTab === "sepsis" && <SepsisApproach {...commonProps} />}
         {activeTab === "seizure" && <SeizureApproach {...commonProps} />}
         {activeTab === "asthma" && <AsthmaApproach {...commonProps} />}
