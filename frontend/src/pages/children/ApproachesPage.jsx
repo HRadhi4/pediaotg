@@ -136,7 +136,7 @@ const ApproachesPage = ({ onBack }) => {
       e.preventDefault();
       const currentDistance = getDistance(e.touches);
       const scale = currentDistance / initialDistance.current;
-      const newZoom = Math.min(200, Math.max(50, initialZoom.current * scale));
+      const newZoom = Math.min(200, Math.max(100, initialZoom.current * scale));
       setZoomLevel(Math.round(newZoom));
     }
   }, []);
