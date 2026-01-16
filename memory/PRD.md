@@ -80,6 +80,17 @@ Build a full SaaS-style web app "Pediatrics on the Go" with:
 
 ## Recent Changes (January 16, 2026)
 
+### Session 3 Updates
+- ✅ **Growth Chart Data Fixed with Official WHO/CDC Data**:
+  - Updated `GrowthChartPage.jsx` with official data from CDC/WHO growth chart data files
+  - **WHO Data (0-24 months)**: Weight-for-Age, Length-for-Age, Head Circumference-for-Age (Boys & Girls)
+  - **CDC Data (2-20 years)**: Weight-for-Age, Stature-for-Age (Boys & Girls)
+  - Data source: https://www.cdc.gov/growthcharts/who-data-files.htm & https://www.cdc.gov/growthcharts/cdc-data-files.htm
+  - Percentiles: 3rd, 5th, 10th, 25th, 50th, 75th, 90th, 95th, 97th
+  - Fixed recharts XAxis domain configuration (removed `type="number"` to allow proper line rendering)
+  - Added proper Y-axis domains for each chart type
+  - Color-coded charts: Blue background for Boys, Pink for Girls
+
 ### Session 2 Updates
 - ✅ **Growth Chart Fixed**: Fixed recharts import issue (changed `require()` to ES6 import) and fixed ResponsiveContainer rendering by using explicit width/height
 - ✅ **Subscription Renewal Reminder Scheduler (Cron Job) Implemented**:
