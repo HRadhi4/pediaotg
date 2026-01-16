@@ -1,279 +1,186 @@
 /**
  * Necrotizing Enterocolitis (NEC) Approach
- * Based on WHO Neonatal Clinical Guidelines 2018-2021
- * Reference: WHO/Belize Neonatal Guidelines
+ * Based on Modified Bell Staging
+ * Reference: J Pediatr Surg, Clinics in Perinatology
  */
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 
 const NECApproach = ({ weight, gestationalAge }) => {
   const w = parseFloat(weight) || 0;
-  const ga = parseFloat(gestationalAge) || 0;
 
   return (
     <Card data-testid="nec-approach">
       <CardHeader className="pb-2">
         <CardTitle className="text-base">Necrotizing Enterocolitis (NEC)</CardTitle>
-        <CardDescription className="text-xs">Bell Staging & Management</CardDescription>
-        <p className="text-[10px] text-blue-600 mt-1 font-medium">Reference: WHO Neonatal Guidelines</p>
+        <CardDescription className="text-xs">Modified Bell Staging & Management</CardDescription>
       </CardHeader>
-      <CardContent className="space-y-3">
+      <CardContent className="space-y-3 text-sm">
 
-        {/* Definition */}
-        <div className="p-2 bg-amber-50 dark:bg-amber-950/30 rounded-lg border border-amber-200">
-          <p className="text-xs font-bold text-amber-700 mb-1">Definition</p>
-          <p className="text-[8px] text-amber-600">
-            NEC is an acquired gastrointestinal disease primarily affecting premature neonates, characterized by variable damage to the intestinal tract ranging from mucosal injury to full-thickness necrosis and perforation.
-          </p>
+        {/* Key Points */}
+        <div className="p-3 bg-slate-50 dark:bg-slate-900 rounded-lg border-l-4 border-blue-500">
+          <p className="font-semibold text-slate-700 dark:text-slate-200 mb-2">Key Points</p>
+          <ul className="text-xs text-slate-600 dark:text-slate-300 space-y-1 list-disc pl-4">
+            <li>Most common GI emergency in premature infants</li>
+            <li>Peak onset: 3-4 weeks in VLBW infants</li>
+            <li>Breast milk is protective</li>
+            <li>X-ray: pneumatosis intestinalis is pathognomonic</li>
+          </ul>
         </div>
 
         {/* Risk Factors */}
-        <div className="p-2 bg-red-50 dark:bg-red-950/30 rounded-lg border border-red-200">
-          <p className="text-xs font-bold text-red-700 mb-1">Risk Factors</p>
-          <div className="grid grid-cols-2 gap-1 text-[8px] text-red-600">
-            <div>• Prematurity (main factor)</div>
-            <div>• Low birth weight</div>
-            <div>• Formula feeding</div>
-            <div>• Hypoxic-ischemic events</div>
-            <div>• PDA</div>
-            <div>• Polycythemia</div>
-            <div>• Exchange transfusion</div>
-            <div>• H2 blockers / PPI use</div>
-            <div>• Rapid advancement of feeds</div>
-            <div>• Hyperosmolar formulas</div>
+        <div className="p-3 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700">
+          <p className="font-semibold text-slate-700 dark:text-slate-200 mb-2">Risk Factors</p>
+          <div className="grid grid-cols-2 gap-2 text-xs text-slate-600 dark:text-slate-300">
+            <div>
+              <p>• Prematurity (primary)</p>
+              <p>• Formula feeding</p>
+              <p>• Hypoxic-ischemic events</p>
+            </div>
+            <div>
+              <p>• PDA</p>
+              <p>• Rapid feed advancement</p>
+              <p>• Polycythemia</p>
+            </div>
           </div>
         </div>
 
-        {/* Clinical Presentation */}
-        <div className="p-2 bg-orange-50 dark:bg-orange-950/30 rounded-lg border border-orange-200">
-          <p className="text-xs font-bold text-orange-700 mb-1">Clinical Presentation</p>
-          <div className="grid grid-cols-2 gap-2 text-[8px] text-orange-600">
+        {/* Clinical Signs */}
+        <div className="p-3 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700">
+          <p className="font-semibold text-slate-700 dark:text-slate-200 mb-2">Clinical Presentation</p>
+          <div className="grid grid-cols-2 gap-4 text-xs text-slate-600 dark:text-slate-300">
             <div>
-              <p className="font-bold mb-1">GI Signs:</p>
-              <p>• Feeding intolerance</p>
-              <p>• Abdominal distension</p>
-              <p>• Gastric residuals (bilious)</p>
-              <p>• Blood in stool</p>
-              <p>• Absent bowel sounds</p>
+              <p className="font-medium mb-1">GI Signs:</p>
+              <ul className="list-disc pl-4">
+                <li>Feeding intolerance</li>
+                <li>Abdominal distension</li>
+                <li>Bilious residuals</li>
+                <li>Blood in stool</li>
+              </ul>
             </div>
             <div>
-              <p className="font-bold mb-1">Systemic Signs:</p>
-              <p>• Apnea/bradycardia</p>
-              <p>• Temperature instability</p>
-              <p>• Lethargy</p>
-              <p>• Poor perfusion</p>
-              <p>• Hypotension</p>
+              <p className="font-medium mb-1">Systemic Signs:</p>
+              <ul className="list-disc pl-4">
+                <li>Apnea/bradycardia</li>
+                <li>Temperature instability</li>
+                <li>Lethargy</li>
+                <li>Hypotension</li>
+              </ul>
             </div>
           </div>
         </div>
 
         {/* Bell Staging */}
-        <div className="p-2 bg-gradient-to-b from-blue-50 to-gray-50 dark:from-blue-950/20 dark:to-gray-900 rounded-xl">
-          <p className="text-xs font-bold text-center text-blue-700 mb-2">MODIFIED BELL STAGING</p>
-          
-          {/* Stage I */}
-          <div className="p-2 bg-yellow-100 dark:bg-yellow-900/40 rounded-lg mb-2">
-            <p className="text-[10px] font-bold text-yellow-700">Stage I - Suspected NEC</p>
-            <div className="grid grid-cols-2 gap-2 text-[7px] text-yellow-600 mt-1">
-              <div>
-                <p className="font-bold">IA - Mild:</p>
-                <p>• Temperature instability</p>
-                <p>• Apnea, bradycardia</p>
-                <p>• Mild abdominal distension</p>
-                <p>• Gastric residuals</p>
-                <p>• Guaiac + stool</p>
-              </div>
-              <div>
-                <p className="font-bold">IB - Mild:</p>
-                <p>• Same as IA</p>
-                <p>• Grossly bloody stool</p>
-              </div>
-            </div>
-            <p className="text-[7px] text-yellow-700 mt-1"><strong>X-ray:</strong> Normal or mild ileus</p>
-          </div>
-
-          {/* Stage II */}
-          <div className="p-2 bg-orange-100 dark:bg-orange-900/40 rounded-lg mb-2">
-            <p className="text-[10px] font-bold text-orange-700">Stage II - Definite NEC</p>
-            <div className="grid grid-cols-2 gap-2 text-[7px] text-orange-600 mt-1">
-              <div>
-                <p className="font-bold">IIA - Moderately Ill:</p>
-                <p>• Stage I signs</p>
-                <p>• Absent bowel sounds</p>
-                <p>• ± Abdominal tenderness</p>
-              </div>
-              <div>
-                <p className="font-bold">IIB - Moderately to Severely Ill:</p>
-                <p>• Stage IIA signs</p>
-                <p>• Definite tenderness</p>
-                <p>• ± Abdominal cellulitis</p>
-                <p>• ± RLQ mass</p>
-                <p>• Metabolic acidosis</p>
-                <p>• Thrombocytopenia</p>
-              </div>
-            </div>
-            <p className="text-[7px] text-orange-700 mt-1"><strong>X-ray:</strong> Intestinal dilation, ileus, <strong className="text-red-600">pneumatosis intestinalis</strong>, ± portal venous gas</p>
-          </div>
-
-          {/* Stage III */}
-          <div className="p-2 bg-red-100 dark:bg-red-900/40 rounded-lg">
-            <p className="text-[10px] font-bold text-red-700">Stage III - Advanced NEC</p>
-            <div className="grid grid-cols-2 gap-2 text-[7px] text-red-600 mt-1">
-              <div>
-                <p className="font-bold">IIIA - Severely Ill, Intact Bowel:</p>
-                <p>• Stage IIB signs</p>
-                <p>• Hypotension</p>
-                <p>• Severe apnea</p>
-                <p>• DIC</p>
-                <p>• Severe metabolic acidosis</p>
-              </div>
-              <div>
-                <p className="font-bold">IIIB - Perforated Bowel:</p>
-                <p>• Stage IIIA signs</p>
-                <p>• Evidence of perforation</p>
-              </div>
-            </div>
-            <p className="text-[7px] text-red-700 mt-1"><strong>X-ray:</strong> Definite ascites, <strong className="text-red-800">pneumoperitoneum (IIIB)</strong></p>
-          </div>
-        </div>
-
-        {/* Diagnostic Workup */}
-        <div className="p-2 bg-purple-50 dark:bg-purple-950/30 rounded-lg border border-purple-200">
-          <p className="text-xs font-bold text-purple-700 mb-1">Diagnostic Workup</p>
-          <div className="text-[8px] text-purple-600 space-y-1">
-            <p><strong>Laboratory:</strong></p>
-            <div className="grid grid-cols-2 gap-1">
-              <div>• CBC with differential</div>
-              <div>• Blood culture</div>
-              <div>• CRP</div>
-              <div>• ABG/VBG</div>
-              <div>• Electrolytes</div>
-              <div>• Coagulation panel</div>
-            </div>
-            <p className="mt-2"><strong>Imaging:</strong></p>
-            <p>• Serial abdominal X-rays (AP and left lateral decubitus)</p>
-            <p>• Frequency: Every 6-8 hours in acute phase</p>
-          </div>
-        </div>
-
-        {/* X-ray Findings */}
-        <div className="p-2 bg-gray-800 text-white rounded-lg">
-          <p className="text-xs font-bold mb-1">Key X-ray Findings</p>
-          <div className="text-[8px] space-y-1">
-            <div className="grid grid-cols-2 gap-2">
-              <div>
-                <p className="text-amber-400 font-bold">Early Signs:</p>
-                <p>• Ileus</p>
-                <p>• Bowel wall thickening</p>
-                <p>• Dilated loops</p>
-              </div>
-              <div>
-                <p className="text-red-400 font-bold">Pathognomonic:</p>
-                <p>• Pneumatosis intestinalis</p>
-                <p>• Portal venous gas</p>
-                <p>• Pneumoperitoneum (perf)</p>
-              </div>
-            </div>
-            <p className="text-yellow-400 mt-1">⚠️ "Football sign" = free air under diaphragm</p>
-          </div>
-        </div>
-
-        {/* Medical Management */}
-        <div className="p-2 bg-blue-50 dark:bg-blue-950/30 rounded-lg border border-blue-200">
-          <p className="text-xs font-bold text-blue-700 mb-1">Medical Management</p>
-          <div className="text-[8px] text-blue-600 space-y-1">
-            <p className="font-bold">Supportive Care:</p>
-            <p>• NPO - Bowel rest</p>
-            <p>• Gastric decompression (OG/NG on low intermittent suction)</p>
-            <p>• IV fluid resuscitation</p>
-            <p>• TPN (start early)</p>
-            <p>• Correct metabolic abnormalities</p>
-            <p>• Blood products as needed (platelets, FFP)</p>
-            
-            <p className="font-bold mt-2">Antibiotics (7-14 days):</p>
-            <div className="p-1.5 bg-white dark:bg-gray-900 rounded mt-1">
-              <p><strong>First-line:</strong> Ampicillin + Gentamicin + Metronidazole</p>
-              {w > 0 && (
-                <div className="mt-1 text-green-600 font-mono">
-                  <p>Ampicillin: {(w * 50).toFixed(0)} mg q12h (50 mg/kg/dose)</p>
-                  <p>Gentamicin: {(w * 4).toFixed(1)} mg q24h (4 mg/kg/dose)</p>
-                  <p>Metronidazole: {(w * 7.5).toFixed(1)} mg q12h (7.5 mg/kg/dose)</p>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* NPO Duration */}
-        <div className="p-2 bg-green-50 dark:bg-green-950/30 rounded-lg border border-green-200">
-          <p className="text-xs font-bold text-green-700 mb-1">NPO Duration by Stage</p>
-          <table className="w-full text-[8px]">
+        <div className="p-3 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700">
+          <p className="font-semibold text-slate-700 dark:text-slate-200 mb-2">Modified Bell Staging</p>
+          <table className="w-full text-xs">
             <thead>
-              <tr className="bg-green-100 dark:bg-green-900/40">
-                <th className="border border-green-200 p-1">Stage</th>
-                <th className="border border-green-200 p-1">NPO Duration</th>
+              <tr className="border-b border-slate-200 dark:border-slate-600">
+                <th className="text-left py-1 text-slate-600 dark:text-slate-300">Stage</th>
+                <th className="text-left py-1 text-slate-600 dark:text-slate-300">Signs</th>
+                <th className="text-left py-1 text-slate-600 dark:text-slate-300">X-ray</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="text-slate-600 dark:text-slate-300">
               <tr>
-                <td className="border border-green-200 p-1">Stage I (suspected)</td>
-                <td className="border border-green-200 p-1 font-bold">3 days minimum</td>
+                <td className="py-2 font-medium">I - Suspected</td>
+                <td>Nonspecific, guaiac+ stool</td>
+                <td>Normal or mild ileus</td>
               </tr>
-              <tr>
-                <td className="border border-green-200 p-1">Stage II (definite)</td>
-                <td className="border border-green-200 p-1 font-bold">7-10 days</td>
+              <tr className="border-t border-slate-100 dark:border-slate-700">
+                <td className="py-2 font-medium">II - Definite</td>
+                <td>Absent bowel sounds, tenderness</td>
+                <td className="font-medium text-red-600">Pneumatosis ± portal gas</td>
               </tr>
-              <tr>
-                <td className="border border-green-200 p-1">Stage III (advanced)</td>
-                <td className="border border-green-200 p-1 font-bold">14 days minimum</td>
+              <tr className="border-t border-slate-100 dark:border-slate-700">
+                <td className="py-2 font-medium">III - Advanced</td>
+                <td>Shock, DIC, peritonitis</td>
+                <td className="font-medium text-red-600">Pneumoperitoneum</td>
               </tr>
             </tbody>
           </table>
         </div>
 
-        {/* Surgical Indications */}
-        <div className="p-2 bg-red-50 dark:bg-red-950/30 rounded-lg border border-red-200">
-          <p className="text-xs font-bold text-red-700 mb-1">Surgical Consultation Indications</p>
-          <div className="text-[8px] text-red-600 space-y-1">
-            <p className="font-bold text-red-800">Absolute:</p>
-            <p>• Pneumoperitoneum (free air) - EMERGENCY</p>
+        {/* Management */}
+        <div className="p-3 bg-slate-100 dark:bg-slate-800 rounded-lg border-l-4 border-blue-500">
+          <p className="font-semibold text-slate-700 dark:text-slate-200 mb-2">Medical Management</p>
+          <div className="text-xs text-slate-600 dark:text-slate-300 space-y-2">
+            <div>
+              <p className="font-medium">Bowel Rest:</p>
+              <ul className="list-disc pl-4">
+                <li>NPO</li>
+                <li>OG/NG to suction</li>
+                <li>TPN</li>
+              </ul>
+            </div>
             
-            <p className="font-bold mt-2">Relative:</p>
-            <div className="grid grid-cols-2 gap-1">
-              <div>• Clinical deterioration despite treatment</div>
-              <div>• Fixed dilated loop (&gt;24-48h)</div>
-              <div>• Abdominal wall erythema</div>
-              <div>• Persistent acidosis</div>
-              <div>• Portal venous gas</div>
-              <div>• Abdominal mass</div>
+            <div>
+              <p className="font-medium">Antibiotics (7-14 days):</p>
+              <p>Ampicillin + Gentamicin + Metronidazole</p>
+              {w > 0 && (
+                <div className="font-mono text-blue-600 dark:text-blue-400 mt-1">
+                  <p>Ampicillin: {(w * 50).toFixed(0)} mg q12h</p>
+                  <p>Gentamicin: {(w * 4).toFixed(1)} mg q24h</p>
+                  <p>Metronidazole: {(w * 7.5).toFixed(1)} mg q12h</p>
+                </div>
+              )}
+            </div>
+            
+            <div>
+              <p className="font-medium">Supportive:</p>
+              <ul className="list-disc pl-4">
+                <li>Fluid resuscitation</li>
+                <li>Blood products as needed</li>
+                <li>Respiratory support</li>
+                <li>Serial abdominal X-rays (q6-8h)</li>
+              </ul>
             </div>
           </div>
         </div>
 
-        {/* Prevention */}
-        <div className="p-2 bg-teal-50 dark:bg-teal-950/30 rounded-lg border border-teal-200">
-          <p className="text-xs font-bold text-teal-700 mb-1">Prevention Strategies</p>
-          <div className="text-[8px] text-teal-600 space-y-0.5">
-            <p>• <strong>Breast milk feeding</strong> (most protective)</p>
-            <p>• Standardized feeding protocols</p>
-            <p>• Slow advancement of feeds</p>
-            <p>• Probiotics (evidence growing)</p>
-            <p>• Avoid unnecessary antibiotics</p>
-            <p>• Avoid H2 blockers when possible</p>
-            <p>• Cautious feeding with PDA treatment</p>
+        {/* NPO Duration */}
+        <div className="p-3 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700">
+          <p className="font-semibold text-slate-700 dark:text-slate-200 mb-2">NPO Duration by Stage</p>
+          <table className="w-full text-xs">
+            <thead>
+              <tr className="border-b border-slate-200 dark:border-slate-600">
+                <th className="text-left py-1 text-slate-600 dark:text-slate-300">Stage</th>
+                <th className="text-left py-1 text-slate-600 dark:text-slate-300">NPO Duration</th>
+              </tr>
+            </thead>
+            <tbody className="text-slate-600 dark:text-slate-300">
+              <tr><td className="py-1">Stage I</td><td>3 days minimum</td></tr>
+              <tr><td className="py-1">Stage II</td><td>7-10 days</td></tr>
+              <tr><td className="py-1">Stage III</td><td>14+ days</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        {/* Surgical Indications */}
+        <div className="p-3 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700">
+          <p className="font-semibold text-slate-700 dark:text-slate-200 mb-2">Surgical Consultation</p>
+          <div className="text-xs text-slate-600 dark:text-slate-300 space-y-1">
+            <p className="font-medium text-red-600 dark:text-red-400">Absolute: Pneumoperitoneum (free air)</p>
+            <p className="font-medium">Relative:</p>
+            <ul className="list-disc pl-4">
+              <li>Clinical deterioration despite treatment</li>
+              <li>Fixed dilated loop (&gt;24-48h)</li>
+              <li>Abdominal wall erythema</li>
+              <li>Portal venous gas</li>
+              <li>Persistent acidosis</li>
+            </ul>
           </div>
         </div>
 
-        {/* Complications */}
-        <div className="p-2 bg-gray-100 dark:bg-gray-800 rounded-lg">
-          <p className="text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Long-term Complications</p>
-          <div className="grid grid-cols-2 gap-1 text-[8px] text-gray-600 dark:text-gray-400">
-            <div>• Intestinal strictures (10-35%)</div>
-            <div>• Short bowel syndrome</div>
-            <div>• TPN-associated cholestasis</div>
-            <div>• Neurodevelopmental delay</div>
-            <div>• Growth failure</div>
-            <div>• Recurrent NEC</div>
+        {/* Prevention */}
+        <div className="p-3 bg-slate-50 dark:bg-slate-900 rounded-lg">
+          <p className="font-semibold text-slate-700 dark:text-slate-200 mb-2">Prevention</p>
+          <div className="text-xs text-slate-600 dark:text-slate-300 space-y-1">
+            <p>• <strong>Breast milk</strong> (most protective)</p>
+            <p>• Standardized feeding protocols</p>
+            <p>• Slow feed advancement (20-30 mL/kg/day)</p>
+            <p>• Probiotics (emerging evidence)</p>
+            <p>• Avoid unnecessary antibiotics</p>
           </div>
         </div>
 
