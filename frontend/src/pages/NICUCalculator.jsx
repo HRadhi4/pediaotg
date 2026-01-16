@@ -52,7 +52,8 @@ import {
   ExchangeCalculatorPage,
   BloodPressurePage,
   GrowthChartPage,
-  NICUDrugsPage
+  NICUDrugsPage,
+  NICUApproachesPage
 } from './nicu';
 
 // Sortable Widget Component for NICU drag and drop
@@ -167,7 +168,7 @@ const NICUCalculator = ({ theme, toggleTheme }) => {
     { id: "drugs", title: "Drugs", icon: "drugs", color: "blue", enabled: true },
     { id: "ballard", title: "Ballard Score", icon: "ballard", color: "amber", enabled: true },
     { id: "postnatal", title: "Postnatal", icon: "postnatal", color: "teal", enabled: true, comingSoon: true },
-    { id: "approaches", title: "Approaches", icon: "approaches", color: "purple", enabled: true, comingSoon: true }
+    { id: "approaches", title: "Approaches", icon: "approaches", color: "purple", enabled: true }
   ]);
   
   // Favorites management
@@ -392,6 +393,7 @@ const NICUCalculator = ({ theme, toggleTheme }) => {
               {currentPage === "growth" && <GrowthChartPage />}
               {currentPage === "drugs" && <NICUDrugsPage />}
               {currentPage === "ballard" && <BallardScorePage />}
+              {currentPage === "approaches" && <NICUApproachesPage />}
             </div>
           )}
         </div>
