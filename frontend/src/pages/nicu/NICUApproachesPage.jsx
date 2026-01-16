@@ -113,7 +113,7 @@ const NICUApproachesPage = () => {
   };
 
   return (
-    <div className="space-y-4 pt-4 pb-32" data-testid="nicu-approaches-page">
+    <div className="space-y-4 pt-4 pb-4" data-testid="nicu-approaches-page">
       {/* Search Bar */}
       <div className="relative">
         <Input
