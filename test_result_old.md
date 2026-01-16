@@ -13,7 +13,7 @@
 
 #### 1. Basic API Endpoints - ✅ VERIFIED
 **Root API Endpoint:**
-- ✅ Successfully connected to https://pedcare.preview.emergentagent.com/api/
+- ✅ Successfully connected to https://pedmed-saas.preview.emergentagent.com/api/
 - ✅ Returns proper API message: "PediaOTG API"
 
 **Status Check Endpoints:**

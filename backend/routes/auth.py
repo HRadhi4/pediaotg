@@ -346,7 +346,7 @@ async def forgot_password(request_data: ForgotPasswordRequest):
         })
         
         # Get frontend URL from environment or use default
-        frontend_url = os.environ.get('FRONTEND_URL', 'https://pedcare.preview.emergentagent.com')
+        frontend_url = os.environ.get('FRONTEND_URL', 'https://pedmed-saas.preview.emergentagent.com')
         
         # Send email
         email_service.send_password_reset_email(
