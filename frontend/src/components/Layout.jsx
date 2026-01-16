@@ -18,6 +18,9 @@ const DisclaimerDialog = ({ open, onAgree }) => {
             <Info className="h-5 w-5 text-[#00d9c5]" />
             Medical Disclaimer
           </DialogTitle>
+          <DialogDescription className="sr-only">
+            Important medical disclaimer information about the use of this application
+          </DialogDescription>
         </DialogHeader>
         <div className="space-y-4">
           <div className="p-4 rounded-xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 text-sm">
