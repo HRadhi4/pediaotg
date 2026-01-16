@@ -1,7 +1,7 @@
 /**
  * Neonatal Resuscitation Approach
- * Based on WHO Neonatal Clinical Guidelines 2018-2021
- * Reference: WHO/Belize Neonatal Guidelines
+ * Based on AHA/AAP NRP Guidelines 2025 (8th Edition)
+ * Reference: AHA/AAP Neonatal Resuscitation Guidelines 2025
  */
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -14,10 +14,21 @@ const ResuscitationApproach = ({ weight, gestationalAge, postnatalAge }) => {
     <Card data-testid="resuscitation-approach">
       <CardHeader className="pb-2">
         <CardTitle className="text-base">Neonatal Resuscitation</CardTitle>
-        <CardDescription className="text-xs">NRP Algorithm 2015</CardDescription>
-        <p className="text-[10px] text-blue-600 mt-1 font-medium">Reference: WHO Neonatal Guidelines</p>
+        <CardDescription className="text-xs">NRP Algorithm 2025 (9th Edition)</CardDescription>
+        <p className="text-[10px] text-blue-600 mt-1 font-medium">Reference: AHA/AAP 2025 Guidelines</p>
       </CardHeader>
       <CardContent className="space-y-3">
+
+        {/* 2025 Key Updates Box */}
+        <div className="p-2 bg-cyan-50 dark:bg-cyan-950/30 rounded-lg border border-cyan-200">
+          <p className="text-xs font-bold text-cyan-700 mb-1">2025 Key Updates</p>
+          <div className="text-[8px] text-cyan-600 space-y-0.5">
+            <p>• <strong>Avoid 100% O2</strong> in term/late preterm (≥35 wks) - start with room air or blended O2</p>
+            <p>• <strong>Delayed cord clamping ≥60 sec</strong> for stable infants</p>
+            <p>• <strong>Intact cord resuscitation</strong> (CPAP/PPV before clamping) supported for vigorous infants</p>
+            <p>• Consider redirecting care ~20 min post-birth in periviable/high-morbidity cases</p>
+          </div>
+        </div>
 
         {/* Risk Factors */}
         <div className="p-2 bg-red-50 dark:bg-red-950/30 rounded-lg border border-red-200">
