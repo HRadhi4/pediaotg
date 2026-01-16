@@ -566,20 +566,81 @@ const DlocApproach = ({ weight }) => {
           </div>
         </div>
 
-        {/* DRUG ANTIDOTES */}
-        <div className="p-2 bg-gradient-to-r from-amber-50 to-green-50 dark:from-amber-950/20 dark:to-green-950/20 rounded-lg">
-          <p className="text-xs font-bold text-center text-gray-700 mb-2">Common Drug Antidotes</p>
-          <div className="grid grid-cols-2 gap-2">
-            <div className="p-2 bg-white dark:bg-gray-900 rounded text-center border">
-              <p className="text-[10px] font-bold text-amber-700">Opioid Toxicity</p>
-              <p className="text-[8px] text-gray-500">Pinpoint pupils, respiratory depression</p>
-              <p className="text-[10px] font-bold text-green-600 mt-1">→ Naloxone</p>
-            </div>
-            <div className="p-2 bg-white dark:bg-gray-900 rounded text-center border">
-              <p className="text-[10px] font-bold text-amber-700">Benzodiazepine Toxicity</p>
-              <p className="text-[8px] text-gray-500">Sedation, respiratory depression</p>
-              <p className="text-[10px] font-bold text-green-600 mt-1">→ Flumazenil</p>
-            </div>
+        {/* DRUGS CAUSING DECREASED LEVEL OF CONSCIOUSNESS */}
+        <div className="space-y-1">
+          <p className="text-xs font-bold text-center text-orange-700">DRUGS CAUSING DECREASED LEVEL OF CONSCIOUSNESS</p>
+          <div className="overflow-x-auto -mx-2">
+            <table className="w-full text-[7px] min-w-[400px] border-collapse">
+              <thead>
+                <tr className="bg-orange-200 dark:bg-orange-900/40">
+                  <th className="border border-orange-300 p-1 text-left font-semibold">Drug</th>
+                  <th className="border border-orange-300 p-1 text-left font-semibold">Symptoms (Toxidrome Features)</th>
+                  <th className="border border-orange-300 p-1 text-left font-semibold">Antidote</th>
+                </tr>
+              </thead>
+              <tbody className="text-gray-700 dark:text-gray-300">
+                <tr className="bg-white dark:bg-gray-900">
+                  <td className="border border-orange-200 p-1 font-medium">Phenobarbitone</td>
+                  <td className="border border-orange-200 p-1">
+                    • Pinpoint pupils<br/>
+                    • Respiratory depression<br/>
+                    • Hypotension<br/>
+                    • Arrhythmias
+                  </td>
+                  <td className="border border-orange-200 p-1 text-red-600">Supportive care (no specific antidote)</td>
+                </tr>
+                <tr className="bg-orange-50 dark:bg-orange-950/20">
+                  <td className="border border-orange-200 p-1 font-medium">Benzodiazepines</td>
+                  <td className="border border-orange-200 p-1">
+                    • Dilated pupils<br/>
+                    • Respiratory depression<br/>
+                    • Hypotension<br/>
+                    • Hypothermia
+                  </td>
+                  <td className="border border-orange-200 p-1 text-green-600 font-bold">Flumazenil</td>
+                </tr>
+                <tr className="bg-white dark:bg-gray-900">
+                  <td className="border border-orange-200 p-1 font-medium">Anti-seizure meds<br/><span className="text-[6px] text-gray-500">(Carbamazepine, Valproate)</span></td>
+                  <td className="border border-orange-200 p-1">
+                    • Decreased level of consciousness<br/>
+                    • Ataxia<br/>
+                    • Nystagmus
+                  </td>
+                  <td className="border border-orange-200 p-1 text-red-600">Supportive care (monitor levels, manage airway) – no specific antidote</td>
+                </tr>
+                <tr className="bg-orange-50 dark:bg-orange-950/20">
+                  <td className="border border-orange-200 p-1 font-medium">Anti-histamines</td>
+                  <td className="border border-orange-200 p-1">
+                    • Tachycardia<br/>
+                    • Ataxia<br/>
+                    • Agitation<br/>
+                    • Psychosis
+                  </td>
+                  <td className="border border-orange-200 p-1 text-red-600">Supportive care (activated charcoal if early) – no specific antidote</td>
+                </tr>
+                <tr className="bg-white dark:bg-gray-900">
+                  <td className="border border-orange-200 p-1 font-medium">Opioids</td>
+                  <td className="border border-orange-200 p-1">
+                    • Pinpoint pupils<br/>
+                    • Respiratory depression<br/>
+                    • Bradycardia
+                  </td>
+                  <td className="border border-orange-200 p-1 text-green-600 font-bold">Naloxone</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          
+          {/* Important Notes */}
+          <div className="p-2 bg-red-50 dark:bg-red-950/30 rounded-lg border border-red-200 mt-2">
+            <p className="text-[8px] font-bold text-red-700 mb-1">Important Notes:</p>
+            <ul className="text-[7px] text-red-600 space-y-0.5 list-disc list-inside">
+              <li><strong>PHENYTOIN, LEVETIRACETAM DON'T REDUCE LEVEL OF CONSCIOUSNESS</strong></li>
+              <li><strong>VP SHUNT patients:</strong> Any patient with VP shunt with reduced consciousness is NEUROSURGICAL till proven otherwise</li>
+              <li>Antidotes not given unless patient is hemodynamically unstable</li>
+              <li>Drug levels to check: phenobarbital, carbamazepine, valproate</li>
+              <li>Always send toxicology screening</li>
+            </ul>
           </div>
         </div>
 
