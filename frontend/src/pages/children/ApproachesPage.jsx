@@ -283,6 +283,7 @@ const ApproachesPage = ({ onBack }) => {
         {activeTab === "gait" && <GaitApproach {...commonProps} />}
         {activeTab === "hyperkalemia" && <HyperkalemiaApproach {...commonProps} />}
         {activeTab === "ugib" && <UgibApproach {...commonProps} />}
+        </div>
       </div>
 
       {/* Pediatric Vital Signs Reference */}
