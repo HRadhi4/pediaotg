@@ -171,19 +171,26 @@ const ApproachesPage = ({ onBack }) => {
 
       {/* Tab Navigation - Scrollable */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <div className="overflow-x-auto pb-1 bg-muted rounded-lg scroll-smooth" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
-          <TabsList className="inline-flex w-max h-auto p-1 gap-1 bg-transparent">
-            {filteredTabs.map(tab => (
-              <TabsTrigger 
-                key={tab.id} 
-                value={tab.id} 
-                className="text-[10px] py-1.5 px-2.5 whitespace-nowrap flex-shrink-0" 
-                data-testid={`tab-${tab.id}`}
-              >
-                {tab.label}
-              </TabsTrigger>
-            ))}
-          </TabsList>
+        <div className="relative">
+          <div 
+            className="overflow-x-auto pb-1 bg-muted rounded-lg scroll-smooth scrollbar-hide" 
+            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none', WebkitOverflowScrolling: 'touch' }}
+          >
+            <TabsList className="inline-flex w-max h-auto p-1 gap-1 bg-transparent">
+              {filteredTabs.map(tab => (
+                <TabsTrigger 
+                  key={tab.id} 
+                  value={tab.id} 
+                  className="text-[10px] py-1.5 px-2.5 whitespace-nowrap flex-shrink-0" 
+                  data-testid={`tab-${tab.id}`}
+                >
+                  {tab.label}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+          </div>
+          {/* Scroll fade indicator on right */}
+          <div className="absolute right-0 top-0 bottom-1 w-6 bg-gradient-to-l from-muted to-transparent pointer-events-none rounded-r-lg"></div>
         </div>
         
         {filteredTabs.length === 0 && (
