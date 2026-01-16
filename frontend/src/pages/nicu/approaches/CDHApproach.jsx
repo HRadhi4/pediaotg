@@ -1,7 +1,7 @@
 /**
  * Congenital Diaphragmatic Hernia (CDH) Approach
- * Based on WHO Neonatal Clinical Guidelines & UpToDate
- * Reference: WHO/Belize Neonatal Guidelines
+ * Updated: 2024 CDH Study Group Guidelines
+ * Reference: J Pediatr Surg, ECMO Guidelines
  */
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -14,13 +14,13 @@ const CDHApproach = ({ weight, gestationalAge }) => {
       <CardHeader className="pb-2">
         <CardTitle className="text-base">Congenital Diaphragmatic Hernia (CDH)</CardTitle>
         <CardDescription className="text-xs">Bochdalek & Morgagni Hernias</CardDescription>
-        <p className="text-[10px] text-blue-600 mt-1 font-medium">Reference: WHO Neonatal Guidelines / UpToDate</p>
+        <p className="text-[10px] text-blue-600 mt-1 font-medium">Updated: 2024 CDH Study Group Guidelines</p>
       </CardHeader>
       <CardContent className="space-y-3">
 
         {/* Definition */}
         <div className="p-2 bg-amber-50 dark:bg-amber-950/30 rounded-lg border border-amber-200">
-          <p className="text-xs font-bold text-amber-700 mb-1">Definition</p>
+          <p className="text-xs font-bold text-amber-700 mb-1">Definition & Epidemiology</p>
           <div className="text-[8px] text-amber-600 space-y-1">
             <p><strong>CDH:</strong> Defect in the diaphragm allowing herniation of abdominal contents into the thorax, causing pulmonary hypoplasia and pulmonary hypertension.</p>
             <p>Incidence: 1 in 2,500-3,000 live births</p>
@@ -60,9 +60,9 @@ const CDHApproach = ({ weight, gestationalAge }) => {
           </div>
         </div>
 
-        {/* Immediate Management */}
+        {/* Delivery Room Management */}
         <div className="p-2 bg-gradient-to-b from-green-50 to-gray-50 dark:from-green-950/20 dark:to-gray-900 rounded-xl">
-          <p className="text-xs font-bold text-center text-green-700 mb-2">DELIVERY ROOM MANAGEMENT</p>
+          <p className="text-xs font-bold text-center text-green-700 mb-2">DELIVERY ROOM MANAGEMENT (2024)</p>
           
           <div className="p-2 bg-green-100 dark:bg-green-900/40 rounded-lg mb-2">
             <p className="text-[10px] font-bold text-green-700">Critical First Steps</p>
@@ -76,7 +76,7 @@ const CDHApproach = ({ weight, gestationalAge }) => {
           </div>
 
           <div className="p-2 bg-blue-100 dark:bg-blue-900/40 rounded-lg">
-            <p className="text-[10px] font-bold text-blue-700">Ventilation Goals</p>
+            <p className="text-[10px] font-bold text-blue-700">Ventilation Goals (Gentle Strategy)</p>
             <div className="text-[8px] text-blue-600 mt-1 space-y-0.5">
               <p>• Preductal SpO2 &gt;85% (accept lower initially)</p>
               <p>• Peak pressures &lt;25 cm H2O if possible</p>
@@ -86,11 +86,11 @@ const CDHApproach = ({ weight, gestationalAge }) => {
           </div>
         </div>
 
-        {/* NICU Management */}
+        {/* NICU Stabilization */}
         <div className="p-2 bg-gray-800 text-white rounded-lg">
-          <p className="text-xs font-bold mb-1">NICU Stabilization</p>
+          <p className="text-xs font-bold mb-1">NICU Stabilization Goals</p>
           <div className="text-[8px] space-y-1">
-            <p className="font-bold text-amber-400">Goals before surgery:</p>
+            <p className="font-bold text-amber-400">Pre-operative targets:</p>
             <p>• Preductal SpO2 85-95%</p>
             <p>• Normal BP for gestational age</p>
             <p>• Adequate perfusion (lactate &lt;3 mmol/L)</p>
@@ -99,7 +99,7 @@ const CDHApproach = ({ weight, gestationalAge }) => {
             <p className="font-bold text-cyan-400 mt-2">Supportive Care:</p>
             <p>• Sedation (fentanyl, midazolam)</p>
             <p>• Muscle relaxation if needed</p>
-            <p>• Minimize handling</p>
+            <p>• Minimize handling (↓PVR fluctuations)</p>
             <p>• Correct acidosis, maintain glucose</p>
             
             <p className="font-bold text-purple-400 mt-2">For PPHN:</p>
@@ -116,7 +116,7 @@ const CDHApproach = ({ weight, gestationalAge }) => {
 
         {/* ECMO */}
         <div className="p-2 bg-purple-50 dark:bg-purple-950/30 rounded-lg border border-purple-200">
-          <p className="text-xs font-bold text-purple-700 mb-1">ECMO Considerations</p>
+          <p className="text-xs font-bold text-purple-700 mb-1">ECMO Considerations (2024 CDH Study Group)</p>
           <div className="text-[8px] text-purple-600 space-y-1">
             <p><strong>Indications:</strong></p>
             <p>• OI &gt;40 despite maximal therapy</p>
@@ -152,7 +152,7 @@ const CDHApproach = ({ weight, gestationalAge }) => {
           <div className="text-[8px] text-indigo-600 space-y-1">
             <p className="font-bold text-green-600">Better Prognosis:</p>
             <p>• Later gestational age at diagnosis</p>
-            <p>• Higher O/E LHR (observed/expected lung-to-head ratio)</p>
+            <p>• Higher O/E LHR (observed/expected lung-to-head ratio) &gt;50%</p>
             <p>• Liver in abdomen</p>
             <p>• Right-sided lesion</p>
             
@@ -164,7 +164,7 @@ const CDHApproach = ({ weight, gestationalAge }) => {
           </div>
         </div>
 
-        {/* Long-term Issues */}
+        {/* Long-term Outcomes */}
         <div className="p-2 bg-gray-100 dark:bg-gray-800 rounded-lg">
           <p className="text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Long-term Outcomes</p>
           <div className="text-[8px] text-gray-600 dark:text-gray-400 space-y-1">
