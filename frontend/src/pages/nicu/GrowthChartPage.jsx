@@ -600,19 +600,20 @@ const GrowthChartPage = () => {
                 <Line type="monotone" dataKey="p10" stroke="#FD8D3C" strokeWidth={1.5} dot={false} name="p10" connectNulls />
                 <Line type="monotone" dataKey="p3" stroke="#C41E3A" strokeWidth={1.5} dot={false} name="p3" connectNulls />
               
-              {/* Patient data points */}
-              {patientData.map((point, idx) => (
-                <ReferenceDot
-                  key={idx}
-                  x={point.age}
-                  y={point.value}
-                  r={5}
-                  fill="#000"
-                  stroke="#fff"
-                  strokeWidth={2}
-                />
-              ))}
-            </LineChart>
+                {/* Patient data points */}
+                {patientData.map((point, idx) => (
+                  <ReferenceDot
+                    key={idx}
+                    x={point.age}
+                    y={point.value}
+                    r={5}
+                    fill="#000"
+                    stroke="#fff"
+                    strokeWidth={2}
+                  />
+                ))}
+              </LineChart>
+            </div>
             
             {/* Legend */}
             <div className="flex justify-center gap-2 mt-3 text-xs flex-wrap">
