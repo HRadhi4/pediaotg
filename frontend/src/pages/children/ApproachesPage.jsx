@@ -110,7 +110,7 @@ const ApproachesPage = ({ onBack }) => {
   };
 
   return (
-    <div className="space-y-4 pt-4 pb-32">
+    <div className="space-y-4 pt-4 pb-4">
       {/* Search Bar */}
       <div className="relative">
         <Input

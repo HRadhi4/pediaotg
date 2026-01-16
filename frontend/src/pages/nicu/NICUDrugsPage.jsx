@@ -387,7 +387,7 @@ const NICUDrugsPage = () => {
   };
 
   return (
-    <div className="space-y-4 pt-4 pb-24">
+    <div className="space-y-4 pt-4 pb-4">
       {/* Search and Patient Info */}
       <Card className="nightingale-card">
         <CardContent className="pt-4 space-y-3">

@@ -81,7 +81,7 @@ const FluidReplacementPage = ({ onBack }) => {
   const maintenanceHourlyRate = maintenance24h / 24;
 
   return (
-    <div className="space-y-4 pt-4 pb-24">
+    <div className="space-y-4 pt-4 pb-4">
       {/* Input Card */}
       <Card className="nightingale-card">
         <CardContent className="pt-4 space-y-4">

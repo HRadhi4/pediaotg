@@ -1708,7 +1708,7 @@ const DrugsPage = ({ onBack }) => {
   };
 
   return (
-    <div className="space-y-4 pt-4 pb-24">
+    <div className="space-y-4 pt-4 pb-4">
       {/* Search and Weight Input */}
       <Card className="nightingale-card">
         <CardContent className="pt-4 space-y-3">
