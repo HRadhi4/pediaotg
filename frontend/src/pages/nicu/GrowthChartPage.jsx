@@ -472,7 +472,6 @@ const GrowthChartPage = () => {
                 <CartesianGrid strokeDasharray="3 3" stroke="#ccc" />
                 <XAxis 
                   dataKey="month"
-                  type="number"
                   domain={chartStandard === 'WHO' ? [0, 24] : [24, 240]}
                   tickFormatter={formatXAxis}
                   tick={{ fontSize: 10 }} 
