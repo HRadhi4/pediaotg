@@ -12,9 +12,9 @@ const AnaemiaApproach = ({ weight, gestationalAge, postnatalAge }) => {
   const pna = parseFloat(postnatalAge) || 0;
 
   return (
-    <Card data-testid="anaemia-approach">
+    <Card data-testid="anemia-approach">
       <CardHeader className="pb-2">
-        <CardTitle className="text-base">Neonatal Anaemia</CardTitle>
+        <CardTitle className="text-base">Neonatal Anemia</CardTitle>
         <CardDescription className="text-xs">Assessment & Transfusion Guidelines</CardDescription>
         <p className="text-[10px] text-blue-600 mt-1 font-medium">Reference: WHO Neonatal Guidelines</p>
       </CardHeader>
@@ -255,4 +255,4 @@ const AnaemiaApproach = ({ weight, gestationalAge, postnatalAge }) => {
   );
 };
 
-export default AnaemiaApproach;
+export default AnemiaApproach;

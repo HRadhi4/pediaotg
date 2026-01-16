@@ -1,19 +1,19 @@
 /**
- * Apnoea of Prematurity Approach
+ * Apnea of Prematurity Approach
  * Based on WHO Neonatal Clinical Guidelines 2018-2021
  * Reference: WHO/Belize Neonatal Guidelines
  */
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 
-const ApnoeaApproach = ({ weight, gestationalAge, postnatalAge }) => {
+const ApneaApproach = ({ weight, gestationalAge, postnatalAge }) => {
   const w = parseFloat(weight) || 0;
   const ga = parseFloat(gestationalAge) || 0;
 
   return (
-    <Card data-testid="apnoea-approach">
+    <Card data-testid="apnea-approach">
       <CardHeader className="pb-2">
-        <CardTitle className="text-base">Apnoea of Prematurity</CardTitle>
+        <CardTitle className="text-base">Apnea of Prematurity</CardTitle>
         <CardDescription className="text-xs">Pathophysiology & Management</CardDescription>
         <p className="text-[10px] text-blue-600 mt-1 font-medium">Reference: WHO Neonatal Guidelines</p>
       </CardHeader>
@@ -267,4 +267,4 @@ const ApnoeaApproach = ({ weight, gestationalAge, postnatalAge }) => {
   );
 };
 
-export default ApnoeaApproach;
+export default ApneaApproach;
