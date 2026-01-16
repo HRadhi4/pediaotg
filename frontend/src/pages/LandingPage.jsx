@@ -135,7 +135,7 @@ const LandingPage = ({ theme, toggleTheme }) => {
   return (
     <Layout theme={theme} toggleTheme={toggleTheme}>
       {/* Main Content - Centered vertically between header and nav bar */}
-      <main className="fixed inset-0 flex items-center justify-center px-4 md:px-6" style={{ top: '64px', bottom: '100px' }}>
+      <main className="fixed inset-0 flex items-center justify-center px-4 md:px-6 pb-20" style={{ top: '64px' }}>
         {/* Department Selection - Stacked Rectangular Cards */}
         <div className="flex flex-col gap-4 w-full max-w-md">
           {/* Welcome Message */}
