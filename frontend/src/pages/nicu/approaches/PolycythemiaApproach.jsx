@@ -19,9 +19,9 @@ const PolycythemiaApproach = ({ weight }) => {
   };
 
   return (
-    <Card data-testid="polycythaemia-approach">
+    <Card data-testid="polycythemia-approach">
       <CardHeader className="pb-2">
-        <CardTitle className="text-base">Polycythaemia</CardTitle>
+        <CardTitle className="text-base">Polycythemia</CardTitle>
         <CardDescription className="text-xs">Neonatal Hyperviscosity Syndrome</CardDescription>
         <p className="text-[10px] text-blue-600 mt-1 font-medium">Reference: WHO Neonatal Guidelines</p>
       </CardHeader>
@@ -215,4 +215,4 @@ const PolycythemiaApproach = ({ weight }) => {
   );
 };
 
-export default PolycythaemiaApproach;
+export default PolycythemiaApproach;
