@@ -511,3 +511,73 @@ async def get_expiring_subscriptions(
         "subscriptions": result
     }
 
+
+@router.get("/scheduler/jobs")
+async def get_scheduled_jobs(
+    admin: UserResponse = Depends(require_admin)
+):
+    """
+    Get list of all scheduled jobs and their next run times (Admin only)
+    """
+    from services.scheduler_service import get_scheduler
+    
+    scheduler = get_scheduler()
+    if not scheduler:
+        raise HTTPException(status_code=503, detail="Scheduler not initialized")
+    
+    jobs = scheduler.get_jobs()
+    
+    return {
+        "scheduler_status": "running" if scheduler._is_running else "stopped",
+        "jobs": jobs
+    }
+
+
+@router.post("/scheduler/run-job/{job_id}")
+async def run_scheduled_job(
+    job_id: str,
+    admin: UserResponse = Depends(require_admin)
+):
+    """
+    Manually trigger a scheduled job to run immediately (Admin only)
+    
+    Args:
+        job_id: ID of the job to run (e.g., 'renewal_reminders')
+    """
+    from services.scheduler_service import get_scheduler
+    
+    scheduler = get_scheduler()
+    if not scheduler:
+        raise HTTPException(status_code=503, detail="Scheduler not initialized")
+    
+    try:
+        result = await scheduler.run_job_now(job_id)
+        return {
+            "message": f"Job '{job_id}' executed successfully",
+            "result": result
+        }
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Job execution failed: {str(e)}")
+
+
+@router.get("/scheduler/logs")
+async def get_scheduler_logs(
+    limit: int = 20,
+    admin: UserResponse = Depends(require_admin)
+):
+    """
+    Get recent scheduler execution logs (Admin only)
+    
+    Args:
+        limit: Maximum number of logs to return (default: 20)
+    """
+    logs = await db.scheduler_logs.find(
+        {},
+        {'_id': 0}
+    ).sort('executed_at', -1).limit(limit).to_list(limit)
+    
+    return {
+        "logs": logs
+    }
