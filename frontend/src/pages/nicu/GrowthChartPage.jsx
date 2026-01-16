@@ -448,41 +448,39 @@ const GrowthChartPage = () => {
             style={{ backgroundColor: gender === 'male' ? '#e6f3ff' : '#fff0f5', minHeight: '350px' }}
           >
             {chartData.length > 0 ? (
-              <ResponsiveContainer width="100%" height={320}>
-                <LineChart data={chartData} margin={{ top: 10, right: 30, left: 10, bottom: 30 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#ccc" />
-                  <XAxis 
-                    dataKey="month"
-                    type="number"
-                    domain={chartStandard === 'WHO' ? [0, 24] : [24, 240]}
-                    tickFormatter={formatXAxis}
-                    tick={{ fontSize: 10 }} 
-                    label={{ value: chartStandard === 'WHO' ? 'Age (months)' : 'Age (years)', position: 'bottom', fontSize: 11, offset: 15 }}
-                  />
-                  <YAxis 
-                    tick={{ fontSize: 10 }} 
-                    label={{ value: chartLabels[currentChartType]?.yLabel, angle: -90, position: 'insideLeft', fontSize: 11 }}
-                  />
-                  <Tooltip 
-                    contentStyle={{ fontSize: 11, borderRadius: 8, backgroundColor: '#fff' }}
-                    formatter={(value, name) => [value?.toFixed(1), name]}
-                    labelFormatter={(label) => chartStandard === 'WHO' ? `${label} months` : `${(label / 12).toFixed(1)} years`}
-                  />
-                  <Legend wrapperStyle={{ fontSize: 10 }} />
-                  
-                  <Line type="monotone" dataKey="p97" stroke="#8B0000" strokeWidth={1.5} dot={false} name="97th %" />
-                  <Line type="monotone" dataKey="p90" stroke="#CD853F" strokeWidth={1} dot={false} name="90th %" strokeDasharray="3 3" />
-                  <Line type="monotone" dataKey="p75" stroke="#DAA520" strokeWidth={1} dot={false} name="75th %" strokeDasharray="3 3" />
-                  <Line type="monotone" dataKey="p50" stroke="#228B22" strokeWidth={2} dot={false} name="50th %" />
-                  <Line type="monotone" dataKey="p25" stroke="#DAA520" strokeWidth={1} dot={false} name="25th %" strokeDasharray="3 3" />
-                  <Line type="monotone" dataKey="p10" stroke="#CD853F" strokeWidth={1} dot={false} name="10th %" strokeDasharray="3 3" />
-                  <Line type="monotone" dataKey="p3" stroke="#8B0000" strokeWidth={1.5} dot={false} name="3rd %" />
-                  
-                  {patientData.map((point, idx) => (
-                    <ReferenceDot key={idx} x={point.month} y={point.value} r={6} fill="#000" stroke="#fff" strokeWidth={2} />
-                  ))}
-                </LineChart>
-              </ResponsiveContainer>
+              <LineChart width={750} height={320} data={chartData} margin={{ top: 10, right: 30, left: 10, bottom: 30 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#ccc" />
+                <XAxis 
+                  dataKey="month"
+                  type="number"
+                  domain={chartStandard === 'WHO' ? [0, 24] : [24, 240]}
+                  tickFormatter={formatXAxis}
+                  tick={{ fontSize: 10 }} 
+                  label={{ value: chartStandard === 'WHO' ? 'Age (months)' : 'Age (years)', position: 'bottom', fontSize: 11, offset: 15 }}
+                />
+                <YAxis 
+                  tick={{ fontSize: 10 }} 
+                  label={{ value: chartLabels[currentChartType]?.yLabel, angle: -90, position: 'insideLeft', fontSize: 11 }}
+                />
+                <Tooltip 
+                  contentStyle={{ fontSize: 11, borderRadius: 8, backgroundColor: '#fff' }}
+                  formatter={(value, name) => [value?.toFixed(1), name]}
+                  labelFormatter={(label) => chartStandard === 'WHO' ? `${label} months` : `${(label / 12).toFixed(1)} years`}
+                />
+                <Legend wrapperStyle={{ fontSize: 10 }} />
+                
+                <Line type="monotone" dataKey="p97" stroke="#8B0000" strokeWidth={1.5} dot={false} name="97th %" />
+                <Line type="monotone" dataKey="p90" stroke="#CD853F" strokeWidth={1} dot={false} name="90th %" strokeDasharray="3 3" />
+                <Line type="monotone" dataKey="p75" stroke="#DAA520" strokeWidth={1} dot={false} name="75th %" strokeDasharray="3 3" />
+                <Line type="monotone" dataKey="p50" stroke="#228B22" strokeWidth={2} dot={false} name="50th %" />
+                <Line type="monotone" dataKey="p25" stroke="#DAA520" strokeWidth={1} dot={false} name="25th %" strokeDasharray="3 3" />
+                <Line type="monotone" dataKey="p10" stroke="#CD853F" strokeWidth={1} dot={false} name="10th %" strokeDasharray="3 3" />
+                <Line type="monotone" dataKey="p3" stroke="#8B0000" strokeWidth={1.5} dot={false} name="3rd %" />
+                
+                {patientData.map((point, idx) => (
+                  <ReferenceDot key={idx} x={point.month} y={point.value} r={6} fill="#000" stroke="#fff" strokeWidth={2} />
+                ))}
+              </LineChart>
             ) : (
               <div className="flex items-center justify-center h-64 text-gray-500">Select chart options above</div>
             )}
