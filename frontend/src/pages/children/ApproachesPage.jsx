@@ -56,6 +56,8 @@ const ApproachesPage = ({ onBack }) => {
   const [age, setAge] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [expandedSections, setExpandedSections] = useState({});
+  const [zoomLevel, setZoomLevel] = useState(100);
+  const contentRef = useRef(null);
   const ageNum = parseFloat(age) || 0;
 
   // Define all approach tabs with search keywords - sorted alphabetically by label
