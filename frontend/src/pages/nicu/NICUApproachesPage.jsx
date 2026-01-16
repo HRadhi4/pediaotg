@@ -220,15 +220,19 @@ const NICUApproachesPage = () => {
         {activeApproach === "jaundice" && <JaundiceApproach {...commonProps} />}
         {activeApproach === "nec" && <NECApproach {...commonProps} />}
         {activeApproach === "hie" && <HIEApproach {...commonProps} />}
-        {activeApproach === "apnoea" && <ApnoeaApproach {...commonProps} />}
+        {activeApproach === "apnea" && <ApneaApproach {...commonProps} />}
         {activeApproach === "pda" && <PDAApproach {...commonProps} />}
         {activeApproach === "seizures" && <SeizuresApproach {...commonProps} />}
         {activeApproach === "pphn" && <PPHNApproach {...commonProps} />}
         {activeApproach === "mas" && <MASApproach {...commonProps} />}
         {activeApproach === "ttnb" && <TTNBApproach {...commonProps} />}
         {activeApproach === "bpd" && <BPDApproach {...commonProps} />}
-        {activeApproach === "anaemia" && <AnaemiaApproach {...commonProps} />}
-        {activeApproach === "polycythaemia" && <PolycythaemiaApproach {...commonProps} />}
+        {activeApproach === "anemia" && <AnemiaApproach {...commonProps} />}
+        {activeApproach === "polycythemia" && <PolycythemiaApproach {...commonProps} />}
+        {activeApproach === "chd" && <CHDApproach {...commonProps} />}
+        {activeApproach === "cdh" && <CDHApproach {...commonProps} />}
+        {activeApproach === "gastroschisis" && <GastroschisisApproach {...commonProps} />}
+        {activeApproach === "omphalocele" && <OmphaloceleApproach {...commonProps} />}
       </div>
 
       {/* Reference Footer */}
