@@ -479,6 +479,7 @@ const GrowthChartPage = () => {
                   label={{ value: chartStandard === 'WHO' ? 'Age (months)' : 'Age (years)', position: 'bottom', fontSize: 11, offset: 15 }}
                 />
                 <YAxis 
+                  domain={yDomain}
                   tick={{ fontSize: 10 }} 
                   label={{ value: chartLabels[currentChartType]?.yLabel, angle: -90, position: 'insideLeft', fontSize: 11 }}
                 />
