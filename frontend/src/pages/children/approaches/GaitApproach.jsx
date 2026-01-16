@@ -12,6 +12,7 @@ const GaitApproach = () => {
       <CardHeader className="pb-2">
         <CardTitle className="text-base">Acute Abnormal Gait Guidelines</CardTitle>
         <CardDescription className="text-xs">Algorithm with gait identification and management</CardDescription>
+        <p className="text-[10px] text-blue-600 mt-1 font-medium">Reference: SMC Neuro Guideline</p>
       </CardHeader>
       <CardContent className="space-y-3">
 
