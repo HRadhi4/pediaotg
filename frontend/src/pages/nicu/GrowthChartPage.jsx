@@ -466,7 +466,8 @@ const GrowthChartPage = () => {
                   <ReferenceDot key={idx} x={point.age} y={point.value} r={3} fill="#000" stroke="#fff" strokeWidth={2} />
                 ))}
               </LineChart>
-            </ResponsiveContainer>
+              </ResponsiveContainer>
+            </div>
             
             {/* Legend */}
             <div className="flex justify-center gap-3 mt-3 text-xs flex-wrap">
