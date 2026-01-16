@@ -226,8 +226,8 @@ Build a full SaaS-style web app "Pediatrics on the Go" with:
 - [ ] Add automated blood gas interpretation
 - [ ] Address minor linting errors in /pages/children/ components
 - [ ] Production deployment prep
-- [ ] Add aria-describedby to DialogContent in Medical Disclaimer modal for accessibility
 - [ ] Add dark mode theme toggle
+- [ ] Audit all number inputs for proper validation (min="0" where appropriate)
 
 ## Pending User Verification
 - [ ] Registration bug fix ("Body is disturbed or locked" error in AuthContext.jsx)
