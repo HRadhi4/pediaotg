@@ -172,7 +172,7 @@ const ApproachesPage = ({ onBack }) => {
       {/* Tab Navigation - Scrollable */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <div className="overflow-x-auto pb-1 bg-muted rounded-lg">
-          <TabsList className="inline-flex w-max min-w-full h-auto p-1 gap-1 bg-transparent">
+          <TabsList className="inline-flex w-max h-auto p-1 pr-3 gap-1 bg-transparent">
             {filteredTabs.map(tab => (
               <TabsTrigger 
                 key={tab.id} 
