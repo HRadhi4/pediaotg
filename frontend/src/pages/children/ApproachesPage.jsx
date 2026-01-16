@@ -83,9 +83,12 @@ const ApproachesPage = ({ onBack }) => {
         tab.keywords.some(kw => kw.toLowerCase().includes(searchQuery.toLowerCase()))
       );
 
-  // Scroll to top when page loads
+  // Scroll to top when page loads and reset tab scroll position
   useEffect(() => {
     window.scrollTo(0, 0);
+    // Reset tab scroll to beginning
+    const tabContainer = document.querySelector('.overflow-x-auto');
+    if (tabContainer) tabContainer.scrollLeft = 0;
   }, []);
 
   // Auto-select first matching tab when search changes
