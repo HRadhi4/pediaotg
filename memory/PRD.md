@@ -79,6 +79,18 @@ Build a full SaaS-style web app "Pediatrics on the Go" with:
 - GoDaddy/Microsoft Exchange SMTP (emails)
 
 ## Recent Changes (January 16, 2026)
+
+### Session 2 Updates
+- ✅ **Growth Chart Fixed**: Fixed recharts import issue (changed `require()` to ES6 import) and fixed ResponsiveContainer rendering by using explicit width/height
+- ✅ **Subscription Renewal Reminder Scheduler (Cron Job) Implemented**:
+  - Created `/app/backend/services/scheduler_service.py` with APScheduler
+  - Cron job runs daily at **9:00 AM UTC** to send renewal reminders
+  - Uses `noreply@pedotg.com` for sending emails (already configured)
+  - Admin endpoints added: `/api/admin/scheduler/jobs`, `/api/admin/scheduler/run-job/{job_id}`, `/api/admin/scheduler/logs`
+  - Scheduler logs stored in MongoDB `scheduler_logs` collection
+- ✅ **NICU Approaches UI Consistency**: All 20 approaches already use consistent design language (amber for definitions, blue for classifications, green for management, red for warnings)
+
+### Session 1 Updates
 - ✅ **NICU Approaches - CONTENT UPDATES (Latest Guidelines)**:
   - All 20 approach components updated with 2022-2025 clinical guidelines:
     - ResuscitationApproach: **NRP 2025 (AHA/AAP 9th Edition)**
