@@ -432,33 +432,37 @@ const GrowthChartPage = () => {
           </div>
         </CardHeader>
         <CardContent>
-          <div ref={chartRef} className="bg-white dark:bg-gray-900 rounded-lg p-3" style={{ backgroundColor: gender === 'male' ? '#e6f3ff' : '#fff0f5', minHeight: '350px' }}>
-            <LineChart width={800} height={300} data={chartData} margin={{ top: 10, right: 30, left: 10, bottom: 20 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#ccc" />
-              <XAxis 
-                dataKey="age"
-                tickFormatter={formatXAxis}
-                tick={{ fontSize: 10 }} 
-                label={{ value: isWHO ? 'Age (months)' : 'Age (years)', position: 'bottom', fontSize: 11 }}
-              />
-              <YAxis 
-                tick={{ fontSize: 10 }} 
-                label={{ value: chartLabels[activeChart].yLabel, angle: -90, position: 'insideLeft', fontSize: 11 }}
-              />
-              <Tooltip 
-                contentStyle={{ fontSize: 11, borderRadius: 8, backgroundColor: '#fff' }}
-              />
-              
-              <Line type="monotone" dataKey="p97" stroke="#8B0000" strokeWidth={1.5} dot={false} />
-              <Line type="monotone" dataKey="p85" stroke="#CD853F" strokeWidth={1.5} dot={false} />
-              <Line type="monotone" dataKey="p50" stroke="#228B22" strokeWidth={2} dot={false} />
-              <Line type="monotone" dataKey="p15" stroke="#CD853F" strokeWidth={1.5} dot={false} />
-              <Line type="monotone" dataKey="p3" stroke="#8B0000" strokeWidth={1.5} dot={false} />
-              
-              {patientData.map((point, idx) => (
-                <ReferenceDot key={idx} x={point.age} y={point.value} r={4} fill="#000" stroke="#fff" strokeWidth={2} />
-              ))}
-            </LineChart>
+          <div ref={chartRef} className="bg-white dark:bg-gray-900 rounded-lg p-3" style={{ backgroundColor: gender === 'male' ? '#e6f3ff' : '#fff0f5', minHeight: '350px', width: '100%' }}>
+            <div style={{ width: '100%', height: 300 }}>
+              <ResponsiveContainer>
+                <LineChart data={chartData} margin={{ top: 10, right: 30, left: 10, bottom: 20 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#ccc" />
+                  <XAxis 
+                    dataKey="age"
+                    tickFormatter={formatXAxis}
+                    tick={{ fontSize: 10 }} 
+                    label={{ value: isWHO ? 'Age (months)' : 'Age (years)', position: 'bottom', fontSize: 11 }}
+                  />
+                  <YAxis 
+                    tick={{ fontSize: 10 }} 
+                    label={{ value: chartLabels[activeChart].yLabel, angle: -90, position: 'insideLeft', fontSize: 11 }}
+                  />
+                  <Tooltip 
+                    contentStyle={{ fontSize: 11, borderRadius: 8, backgroundColor: '#fff' }}
+                  />
+                  
+                  <Line type="monotone" dataKey="p97" stroke="#8B0000" strokeWidth={1.5} dot={false} name="97th" />
+                  <Line type="monotone" dataKey="p85" stroke="#CD853F" strokeWidth={1.5} dot={false} name="85th" />
+                  <Line type="monotone" dataKey="p50" stroke="#228B22" strokeWidth={2} dot={false} name="50th" />
+                  <Line type="monotone" dataKey="p15" stroke="#CD853F" strokeWidth={1.5} dot={false} name="15th" />
+                  <Line type="monotone" dataKey="p3" stroke="#8B0000" strokeWidth={1.5} dot={false} name="3rd" />
+                  
+                  {patientData.map((point, idx) => (
+                    <ReferenceDot key={idx} x={point.age} y={point.value} r={5} fill="#000" stroke="#fff" strokeWidth={2} />
+                  ))}
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
             
             {/* Legend */}
             <div className="flex justify-center gap-3 mt-3 text-xs flex-wrap">
