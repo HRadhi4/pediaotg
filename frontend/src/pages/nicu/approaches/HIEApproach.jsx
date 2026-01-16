@@ -1,7 +1,7 @@
 /**
  * Hypoxic Ischemic Encephalopathy (HIE) Approach
- * Based on WHO Neonatal Clinical Guidelines 2018-2021
- * Reference: WHO/Belize Neonatal Guidelines
+ * Based on NICHD/Cochrane Guidelines 2024-2025
+ * Reference: NICHD Neonatal Research Network
  */
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -15,9 +15,20 @@ const HIEApproach = ({ weight, gestationalAge }) => {
       <CardHeader className="pb-2">
         <CardTitle className="text-base">Hypoxic Ischemic Encephalopathy (HIE)</CardTitle>
         <CardDescription className="text-xs">Perinatal Asphyxia & Therapeutic Hypothermia</CardDescription>
-        <p className="text-[10px] text-blue-600 mt-1 font-medium">Reference: WHO Neonatal Guidelines</p>
+        <p className="text-[10px] text-blue-600 mt-1 font-medium">Reference: NICHD/Cochrane 2024-2025 Guidelines</p>
       </CardHeader>
       <CardContent className="space-y-3">
+
+        {/* 2025 Updates */}
+        <div className="p-2 bg-cyan-50 dark:bg-cyan-950/30 rounded-lg border border-cyan-200">
+          <p className="text-xs font-bold text-cyan-700 mb-1">2025 Key Updates</p>
+          <div className="text-[8px] text-cyan-600 space-y-0.5">
+            <p>• <strong>NO benefit for preterm (33-35 wks)</strong> - NIH 2025 study shows 74% increased risk</p>
+            <p>• <strong>Mild NE</strong>: TH not recommended (unknown risk-benefit)</p>
+            <p>• Initiate as early as possible, ideally &lt;3 hours of life</p>
+            <p>• Consider up to 24 hours in select cases (case-by-case decision)</p>
+          </div>
+        </div>
 
         {/* Definition */}
         <div className="p-2 bg-amber-50 dark:bg-amber-950/30 rounded-lg border border-amber-200">
