@@ -359,12 +359,26 @@ const GrowthChartPage = () => {
       {/* SVG Growth Chart */}
       <Card>
         <CardHeader className="pb-2">
-          <CardTitle className="text-sm">{chartLabels[activeChart].title} • {chartType}</CardTitle>
-          <CardDescription className="text-xs">Official {isWHO ? 'WHO' : 'CDC'} Growth Data</CardDescription>
+          <div className="flex justify-between items-center">
+            <div>
+              <CardTitle className="text-sm">{chartLabels[activeChart].title} • {chartType}</CardTitle>
+              <CardDescription className="text-xs">Official {isWHO ? 'WHO' : 'CDC'} Growth Data • {gender === 'male' ? 'Boys' : 'Girls'}</CardDescription>
+            </div>
+            <Button variant="outline" size="sm" onClick={saveChartToPng} className="text-xs h-8 px-3" data-testid="save-chart-btn">
+              <Download className="h-3 w-3 mr-1" /> Save PNG
+            </Button>
+          </div>
         </CardHeader>
-        <CardContent>
-          <div ref={svgRef} className="rounded-lg p-2" style={{ backgroundColor: gender === 'male' ? '#e8f4fc' : '#fce8f4' }}>
-            <svg width={width} height={height} className="overflow-visible">
+        <CardContent className="p-3">
+          <div 
+            ref={svgRef} 
+            className="rounded-lg overflow-hidden" 
+            style={{ 
+              backgroundColor: gender === 'male' ? '#e8f4fc' : '#fce8f4',
+              padding: '10px'
+            }}
+          >
+            <svg width={width} height={height} style={{ display: 'block' }}>
               {/* Grid lines */}
               {yTicks.map(tick => (
                 <line key={`grid-${tick}`} x1={margin.left} y1={yScale(tick)} x2={width - margin.right} y2={yScale(tick)} stroke="#ddd" strokeDasharray="2,2" />
