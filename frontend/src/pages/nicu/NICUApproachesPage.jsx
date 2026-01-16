@@ -137,60 +137,14 @@ const NICUApproachesPage = () => {
         )}
       </div>
 
-      {/* Patient Info Input - NICU specific fields */}
-      <Card className="border-slate-200 dark:border-slate-700">
-        <CardContent className="pt-4">
-          <div className="grid grid-cols-3 gap-3">
-            <div>
-              <Label className="text-xs text-muted-foreground">GA (weeks)</Label>
-              <Input
-                type="number"
-                placeholder="weeks"
-                value={gestationalAge}
-                onChange={(e) => setGestationalAge(e.target.value)}
-                min="22"
-                max="44"
-                className="font-mono mt-1"
-                data-testid="nicu-gestational-age-input"
-              />
-            </div>
-            <div>
-              <Label className="text-xs text-muted-foreground">Postnatal (days)</Label>
-              <Input
-                type="number"
-                placeholder="days"
-                value={postnatalAge}
-                onChange={(e) => setPostnatalAge(e.target.value)}
-                min="0"
-                className="font-mono mt-1"
-                data-testid="nicu-postnatal-age-input"
-              />
-            </div>
-            <div>
-              <Label className="text-xs text-muted-foreground">Weight (kg)</Label>
-              <Input
-                type="number"
-                placeholder="kg"
-                value={weight}
-                onChange={(e) => setWeight(e.target.value)}
-                min="0"
-                step="0.01"
-                className="font-mono mt-1"
-                data-testid="nicu-weight-input"
-              />
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Approach Selector - Dropdown */}
+      {/* Approach Selector - Dropdown (moved above patient info) */}
       <div className="space-y-2">
         <Label className="text-xs text-muted-foreground">Select Approach</Label>
         <Select value={activeApproach} onValueChange={setActiveApproach}>
           <SelectTrigger className="w-full" data-testid="nicu-approach-selector">
             <SelectValue placeholder="Select an approach..." />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent position="popper" side="bottom" align="start" sideOffset={4}>
             {filteredApproaches.map(approach => (
               <SelectItem 
                 key={approach.id} 
@@ -203,6 +157,52 @@ const NICUApproachesPage = () => {
           </SelectContent>
         </Select>
       </div>
+
+      {/* Patient Info Input - NICU specific fields */}
+      <Card className="border-slate-200 dark:border-slate-700">
+        <CardContent className="pt-4">
+          <div className="grid grid-cols-3 gap-2 sm:gap-3">
+            <div>
+              <Label className="text-xs text-muted-foreground">GA (wks)</Label>
+              <Input
+                type="number"
+                placeholder="wks"
+                value={gestationalAge}
+                onChange={(e) => setGestationalAge(e.target.value)}
+                min="22"
+                max="44"
+                className="font-mono mt-1 text-sm"
+                data-testid="nicu-gestational-age-input"
+              />
+            </div>
+            <div>
+              <Label className="text-xs text-muted-foreground">PNA (days)</Label>
+              <Input
+                type="number"
+                placeholder="days"
+                value={postnatalAge}
+                onChange={(e) => setPostnatalAge(e.target.value)}
+                min="0"
+                className="font-mono mt-1 text-sm"
+                data-testid="nicu-postnatal-age-input"
+              />
+            </div>
+            <div>
+              <Label className="text-xs text-muted-foreground">Wt (kg)</Label>
+              <Input
+                type="number"
+                placeholder="kg"
+                value={weight}
+                onChange={(e) => setWeight(e.target.value)}
+                min="0"
+                step="0.01"
+                className="font-mono mt-1 text-sm"
+                data-testid="nicu-weight-input"
+              />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
         
       {filteredApproaches.length === 0 && (
         <div className="text-center py-8 text-muted-foreground">
