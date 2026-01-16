@@ -2,6 +2,8 @@
  * Neonatal Anemia Approach
  * Updated: 2024 JAMA Clinical Practice Guideline & ETTNO/TOP Trials
  * Reference: JAMA Network Open 2024, Transfusion Medicine Reviews
+ * 
+ * Design: Standardized to match JaundiceApproach.jsx
  */
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -17,275 +19,140 @@ const AnemiaApproach = ({ weight, gestationalAge, postnatalAge }) => {
       <CardHeader className="pb-2">
         <CardTitle className="text-base">Neonatal Anemia</CardTitle>
         <CardDescription className="text-xs">Assessment & Transfusion Guidelines</CardDescription>
-        <p className="text-[10px] text-blue-600 mt-1 font-medium">Updated: 2024 JAMA Guidelines (ETTNO/TOP Evidence)</p>
       </CardHeader>
-      <CardContent className="space-y-3">
+      <CardContent className="space-y-3 text-sm">
 
         {/* Definition */}
-        <div className="p-2 bg-amber-50 dark:bg-amber-950/30 rounded-lg border border-amber-200">
-          <p className="text-xs font-bold text-amber-700 mb-1">Definition</p>
-          <div className="text-[8px] text-amber-600 space-y-1">
+        <div className="p-3 bg-slate-50 dark:bg-slate-900 rounded-lg border-l-4 border-blue-500">
+          <p className="font-semibold text-slate-700 dark:text-slate-200 mb-2">Definition</p>
+          <div className="text-xs text-slate-600 dark:text-slate-300">
             <p><strong>Neonatal anemia:</strong> Hemoglobin or hematocrit below normal for gestational and postnatal age.</p>
-            <p className="font-bold mt-1">Normal values vary significantly:</p>
-            <table className="w-full text-[7px] mt-1">
+            <table className="w-full mt-2">
               <thead>
-                <tr className="bg-amber-100">
-                  <th className="border p-1">Age</th>
-                  <th className="border p-1">Hb (g/dL)</th>
-                  <th className="border p-1">Hct (%)</th>
+                <tr className="border-b border-slate-200 dark:border-slate-600">
+                  <th className="text-left py-1">Age</th>
+                  <th className="text-left py-1">Hb (g/dL)</th>
+                  <th className="text-left py-1">Hct (%)</th>
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td className="border p-1">Term cord blood</td>
-                  <td className="border p-1">16.5 (13.5-19.5)</td>
-                  <td className="border p-1">51 (42-60)</td>
-                </tr>
-                <tr>
-                  <td className="border p-1">Term 2 weeks</td>
-                  <td className="border p-1">16.5 (13-20)</td>
-                  <td className="border p-1">50</td>
-                </tr>
-                <tr>
-                  <td className="border p-1">Preterm 28 wk</td>
-                  <td className="border p-1">14.5</td>
-                  <td className="border p-1">45</td>
-                </tr>
+                <tr><td className="py-1">Term cord blood</td><td>16.5 (13.5-19.5)</td><td>51 (42-60)</td></tr>
+                <tr><td className="py-1">Term 2 weeks</td><td>16.5 (13-20)</td><td>50</td></tr>
+                <tr><td className="py-1">Preterm 28 wk</td><td>14.5</td><td>45</td></tr>
               </tbody>
             </table>
           </div>
         </div>
 
         {/* Causes */}
-        <div className="p-2 bg-red-50 dark:bg-red-950/30 rounded-lg border border-red-200">
-          <p className="text-xs font-bold text-red-700 mb-1">Causes of Neonatal Anemia</p>
-          <div className="grid grid-cols-2 gap-2 text-[8px] text-red-600">
+        <div className="p-3 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700">
+          <p className="font-semibold text-slate-700 dark:text-slate-200 mb-2">Causes of Neonatal Anemia</p>
+          <div className="grid grid-cols-2 gap-4 text-xs text-slate-600 dark:text-slate-300">
             <div>
-              <p className="font-bold">Blood Loss:</p>
-              <p>• Fetomaternal hemorrhage</p>
-              <p>• Twin-twin transfusion</p>
-              <p>• Placental abruption/previa</p>
-              <p>• Cord accidents</p>
-              <p>• Internal hemorrhage (IVH)</p>
-              <p>• <strong>Iatrogenic (phlebotomy)</strong></p>
+              <p className="font-medium mb-1">Blood Loss:</p>
+              <ul className="list-disc pl-4 space-y-0.5">
+                <li>Fetomaternal hemorrhage</li>
+                <li>Twin-twin transfusion</li>
+                <li>Placental abruption/previa</li>
+                <li>Cord accidents</li>
+                <li>Internal hemorrhage (IVH)</li>
+                <li><strong>Iatrogenic (phlebotomy)</strong></li>
+              </ul>
             </div>
             <div>
-              <p className="font-bold">Hemolysis:</p>
-              <p>• Rh/ABO incompatibility</p>
-              <p>• G6PD deficiency</p>
-              <p>• Hereditary spherocytosis</p>
-              <p>• Infection/sepsis</p>
-              <p>• DIC</p>
-            </div>
-            <div className="col-span-2">
-              <p className="font-bold">Decreased Production:</p>
-              <p>• <strong>Anemia of prematurity</strong> (most common in preterm)</p>
-              <p>• Diamond-Blackfan anemia</p>
-              <p>• Congenital infections (CMV, parvovirus B19)</p>
+              <p className="font-medium mb-1">Hemolysis:</p>
+              <ul className="list-disc pl-4 space-y-0.5">
+                <li>Rh/ABO incompatibility</li>
+                <li>G6PD deficiency</li>
+                <li>Hereditary spherocytosis</li>
+                <li>Infection/sepsis</li>
+                <li>DIC</li>
+              </ul>
             </div>
           </div>
-        </div>
-
-        {/* Anemia of Prematurity */}
-        <div className="p-2 bg-blue-50 dark:bg-blue-950/30 rounded-lg border border-blue-200">
-          <p className="text-xs font-bold text-blue-700 mb-1">Anemia of Prematurity</p>
-          <div className="text-[8px] text-blue-600 space-y-1">
-            <p><strong>Pathophysiology:</strong></p>
-            <p>• Shortened RBC lifespan (40-60 days vs 120 in adults)</p>
-            <p>• Inadequate EPO response to hypoxia</p>
-            <p>• Rapid growth with blood volume expansion</p>
-            <p>• <strong>Frequent phlebotomy losses</strong> (major contributor)</p>
-            <p>• Low iron stores at birth</p>
-            
-            <p className="mt-2"><strong>Nadir timing:</strong></p>
-            <p>• Term: 8-12 weeks (Hb ~10-11 g/dL) - physiologic</p>
-            <p>• Preterm: <strong>4-8 weeks</strong> (Hb may fall to 7-8 g/dL)</p>
+          <div className="mt-2 text-xs text-slate-600 dark:text-slate-300">
+            <p className="font-medium mb-1">Decreased Production:</p>
+            <p>Anemia of prematurity, Diamond-Blackfan, infection, nutritional deficiency</p>
           </div>
         </div>
 
-        {/* Clinical Signs */}
-        <div className="p-2 bg-orange-50 dark:bg-orange-950/30 rounded-lg border border-orange-200">
-          <p className="text-xs font-bold text-orange-700 mb-1">Clinical Signs of Significant Anemia</p>
-          <div className="grid grid-cols-2 gap-1 text-[8px] text-orange-600">
-            <div>• Pallor</div>
-            <div>• Tachycardia</div>
-            <div>• Tachypnea</div>
-            <div>• Poor feeding</div>
-            <div>• Apnea/bradycardia episodes</div>
-            <div>• Poor weight gain</div>
-            <div>• Increased oxygen requirement</div>
-            <div>• Metabolic acidosis (lactic)</div>
-          </div>
-        </div>
-
-        {/* 2024 JAMA Transfusion Thresholds - CRITICAL UPDATE */}
-        <div className="p-2 bg-gradient-to-b from-green-50 to-gray-50 dark:from-green-950/20 dark:to-gray-900 rounded-xl">
-          <p className="text-xs font-bold text-center text-green-700 mb-2">2024 JAMA TRANSFUSION THRESHOLDS (&lt;30 weeks GA)</p>
-          <p className="text-[7px] text-center text-green-600 mb-2">Based on ETTNO/TOP Trials - Restrictive Strategy Recommended</p>
-          
-          <table className="w-full text-[8px]">
+        {/* Transfusion Thresholds */}
+        <div className="p-3 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700">
+          <p className="font-semibold text-slate-700 dark:text-slate-200 mb-2">Transfusion Thresholds (2024 Guidelines)</p>
+          <table className="w-full text-xs">
             <thead>
-              <tr className="bg-green-100 dark:bg-green-900/40">
-                <th className="border border-green-200 p-1">Postnatal Week</th>
-                <th className="border border-green-200 p-1">With Resp Support*</th>
-                <th className="border border-green-200 p-1">No/Minimal Support</th>
+              <tr className="border-b border-slate-200 dark:border-slate-600">
+                <th className="text-left py-1 text-slate-600 dark:text-slate-300">Clinical Status</th>
+                <th className="text-left py-1 text-slate-600 dark:text-slate-300">Hb Threshold</th>
+                <th className="text-left py-1 text-slate-600 dark:text-slate-300">Hct Threshold</th>
               </tr>
             </thead>
-            <tbody className="text-green-600">
-              <tr className={pnaWeeks === 1 ? "bg-green-200 dark:bg-green-800" : ""}>
-                <td className="border border-green-200 p-1 font-bold">Week 1</td>
-                <td className="border border-green-200 p-1 font-bold">&lt;11 g/dL</td>
-                <td className="border border-green-200 p-1 font-bold">&lt;10 g/dL</td>
-              </tr>
-              <tr className={pnaWeeks === 2 ? "bg-green-200 dark:bg-green-800" : ""}>
-                <td className="border border-green-200 p-1 font-bold">Week 2</td>
-                <td className="border border-green-200 p-1 font-bold">&lt;10 g/dL</td>
-                <td className="border border-green-200 p-1 font-bold">&lt;8.5 g/dL</td>
-              </tr>
-              <tr className={pnaWeeks >= 3 ? "bg-green-200 dark:bg-green-800" : ""}>
-                <td className="border border-green-200 p-1 font-bold">Week 3+</td>
-                <td className="border border-green-200 p-1 font-bold">&lt;9 g/dL</td>
-                <td className="border border-green-200 p-1 font-bold">&lt;7 g/dL</td>
-              </tr>
+            <tbody className="text-slate-600 dark:text-slate-300">
+              <tr><td className="py-1">Ventilated/Oxygen &gt;35%</td><td className="font-bold">11-12 g/dL</td><td>35-38%</td></tr>
+              <tr><td className="py-1">CPAP/Low O2</td><td className="font-bold">10 g/dL</td><td>30-32%</td></tr>
+              <tr><td className="py-1">Stable/Growing</td><td className="font-bold">7-8 g/dL</td><td>21-25%</td></tr>
             </tbody>
           </table>
-          <p className="text-[7px] text-green-500 mt-1">*Respiratory support = ≥1 L/min NC or positive pressure ventilation</p>
-          {ga > 0 && ga < 30 && pna > 0 && (
-            <p className="text-[8px] text-blue-600 bg-blue-50 p-1 rounded mt-2">
-              For this infant ({ga} wk GA, day {pna}): Use Week {pnaWeeks} thresholds above
-            </p>
-          )}
+          <p className="text-xs text-slate-500 mt-2">ETTNO/TOP trials support restrictive thresholds for stable preterms</p>
         </div>
 
-        {/* Traditional Thresholds */}
-        <div className="p-2 bg-purple-50 dark:bg-purple-950/30 rounded-lg border border-purple-200">
-          <p className="text-xs font-bold text-purple-700 mb-1">Alternative: Clinical Status-Based Thresholds</p>
-          <p className="text-[7px] text-purple-500 mb-1">For term infants or when week-based not applicable</p>
-          <table className="w-full text-[8px]">
-            <thead>
-              <tr className="bg-purple-100 dark:bg-purple-900/40">
-                <th className="border border-purple-200 p-1">Clinical Status</th>
-                <th className="border border-purple-200 p-1">Hb Threshold</th>
-              </tr>
-            </thead>
-            <tbody className="text-purple-600">
-              <tr>
-                <td className="border border-purple-200 p-1">Severe cardiorespiratory disease</td>
-                <td className="border border-purple-200 p-1 font-bold">&lt;12 g/dL</td>
-              </tr>
-              <tr>
-                <td className="border border-purple-200 p-1">Moderate respiratory support</td>
-                <td className="border border-purple-200 p-1 font-bold">&lt;10 g/dL</td>
-              </tr>
-              <tr>
-                <td className="border border-purple-200 p-1">Minimal respiratory support</td>
-                <td className="border border-purple-200 p-1 font-bold">&lt;8 g/dL</td>
-              </tr>
-              <tr>
-                <td className="border border-purple-200 p-1">Stable on room air</td>
-                <td className="border border-purple-200 p-1 font-bold">&lt;7 g/dL</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        {/* Transfusion Details */}
-        <div className="p-2 bg-gray-800 text-white rounded-lg">
-          <p className="text-xs font-bold mb-1">PRBC Transfusion</p>
-          <div className="text-[8px] space-y-1">
-            <p className="font-bold">Volume: 15-20 mL/kg (2024 consensus)</p>
-            {w > 0 && (
-              <p className="text-green-400 font-mono">
-                = {(w * 15).toFixed(0)} - {(w * 20).toFixed(0)} mL
-              </p>
-            )}
-            
-            <p className="mt-2"><strong>Rate:</strong> 3-5 mL/kg/hr over 3-4 hours</p>
-            <p className="text-[7px] text-gray-400">May give faster (10-20 mL/kg/hr) in acute blood loss</p>
-            
-            <p className="mt-2"><strong>Expected Hb rise:</strong></p>
-            <p>~2-3 g/dL per 15 mL/kg transfused</p>
-            
-            <p className="mt-2"><strong>Product specifications (2024):</strong></p>
-            <p>• Leukoreduced</p>
-            <p>• Irradiated (for all &lt;1200g or immunocompromised)</p>
-            <p>• CMV-negative or leukoreduced (equivalent)</p>
-            <p>• &lt;7 days old preferred for large volume/exchange</p>
-          </div>
-        </div>
-
-        {/* Prevention */}
-        <div className="p-2 bg-teal-50 dark:bg-teal-950/30 rounded-lg border border-teal-200">
-          <p className="text-xs font-bold text-teal-700 mb-1">Prevention Strategies</p>
-          <div className="text-[8px] text-teal-600 space-y-1">
-            <p><strong>Minimize phlebotomy (most important):</strong></p>
-            <p>• Use microtainer samples</p>
-            <p>• Batch lab draws when possible</p>
-            <p>• Point-of-care testing</p>
-            <p>• Document cumulative blood loss</p>
-            
-            <p className="font-bold mt-2">Delayed cord clamping (DCC):</p>
-            <p>• 30-60 seconds for preterm</p>
-            <p>• Increases blood volume 10-15 mL/kg</p>
-            <p>• Reduces transfusion need</p>
-            
-            <p className="font-bold mt-2">Iron supplementation:</p>
-            <p>• Start at 2-4 weeks of age in preterm</p>
-            <p>• 2-4 mg/kg/day elemental iron</p>
-            <p>• Continue until 12 months corrected age</p>
+        {/* PRBC Transfusion */}
+        <div className="p-3 bg-slate-100 dark:bg-slate-800 rounded-lg border-l-4 border-red-500">
+          <p className="font-semibold text-slate-700 dark:text-slate-200 mb-2">PRBC Transfusion</p>
+          <div className="text-xs text-slate-600 dark:text-slate-300 space-y-2">
+            <div>
+              <p className="font-medium">Standard volume:</p>
+              <p>10-15 mL/kg over 3-4 hours</p>
+              {w > 0 && <p className="font-mono text-blue-600 dark:text-blue-400">= {(w * 10).toFixed(0)} - {(w * 15).toFixed(0)} mL</p>}
+            </div>
+            <div>
+              <p className="font-medium">Expected rise:</p>
+              <p>Hb increases ~2-3 g/dL per 10-15 mL/kg transfused</p>
+            </div>
+            <div>
+              <p className="font-medium">Product specifications:</p>
+              <p>• CMV-negative or leukoreduced</p>
+              <p>• Irradiated (prevents GVHD)</p>
+              <p>• &lt;7 days old preferred for small/sick neonates</p>
+            </div>
           </div>
         </div>
 
         {/* EPO */}
-        <div className="p-2 bg-indigo-50 dark:bg-indigo-950/30 rounded-lg border border-indigo-200">
-          <p className="text-xs font-bold text-indigo-700 mb-1">Erythropoietin (EPO) - 2024 Status</p>
-          <div className="text-[8px] text-indigo-600 space-y-1">
-            <p><strong>Current evidence:</strong></p>
-            <p>• May reduce <strong>late</strong> transfusions (after week 1-2)</p>
-            <p>• Does NOT significantly reduce early transfusions</p>
-            <p>• Requires concurrent iron supplementation</p>
-            
-            <p className="font-bold mt-1">If used:</p>
-            <p>200-400 units/kg SC 3×/week</p>
-            
-            <p className="text-amber-600 mt-1">⚠️ Concerns: Potential ROP association</p>
-            <p className="text-[7px]"><strong>Not routinely recommended</strong> in most current guidelines</p>
+        <div className="p-3 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700">
+          <p className="font-semibold text-slate-700 dark:text-slate-200 mb-2">Erythropoietin (EPO)</p>
+          <div className="text-xs text-slate-600 dark:text-slate-300">
+            <p className="text-orange-600 dark:text-orange-400 font-medium">⚠️ Not routinely recommended (increased ROP risk)</p>
+            <p className="mt-1">May consider in select cases with:</p>
+            <p>• Dose: 200-400 U/kg 3x/week</p>
+            <p>• Iron supplementation required (4-6 mg/kg/day)</p>
+            {w > 0 && <p className="font-mono text-blue-600 dark:text-blue-400 mt-1">EPO dose: {(w * 200).toFixed(0)} - {(w * 400).toFixed(0)} U 3x/week</p>}
           </div>
         </div>
 
-        {/* Workup */}
-        <div className="p-2 bg-blue-50 dark:bg-blue-950/30 rounded-lg border border-blue-200">
-          <p className="text-xs font-bold text-blue-700 mb-1">Diagnostic Workup</p>
-          <div className="text-[8px] text-blue-600 space-y-1">
-            <p className="font-bold">Initial (all anemic neonates):</p>
-            <div className="grid grid-cols-2 gap-1">
-              <div>• CBC with indices, MCV</div>
-              <div>• Reticulocyte count</div>
-              <div>• Blood type, DAT (Coombs)</div>
-              <div>• Peripheral smear</div>
-            </div>
-            
-            <p className="font-bold mt-2">If hemolysis suspected:</p>
-            <p>• Bilirubin (direct/indirect)</p>
-            <p>• G6PD screen</p>
-            <p>• Kleihauer-Betke on maternal blood</p>
-            
-            <p className="font-bold mt-2">If production issue suspected:</p>
-            <p>• Very low reticulocyte count</p>
-            <p>• Consider bone marrow (rare)</p>
-            <p>• TORCH workup if congenital infection suspected</p>
+        {/* Iron Supplementation */}
+        <div className="p-3 bg-slate-50 dark:bg-slate-900 rounded-lg">
+          <p className="font-semibold text-slate-700 dark:text-slate-200 mb-2">Iron Supplementation</p>
+          <div className="text-xs text-slate-600 dark:text-slate-300">
+            <p><strong>Start:</strong> 2-4 weeks of age (when tolerating feeds)</p>
+            <p><strong>Dose:</strong> 2-4 mg/kg/day elemental iron</p>
+            {w > 0 && <p className="font-mono text-blue-600 dark:text-blue-400">= {(w * 2).toFixed(1)} - {(w * 4).toFixed(1)} mg/day elemental iron</p>}
+            <p className="mt-1"><strong>Duration:</strong> Until 12 months of age</p>
+            <p><strong>Higher dose (4-6 mg/kg):</strong> If on EPO or significant phlebotomy losses</p>
           </div>
         </div>
 
-        {/* Prognosis */}
-        <div className="p-2 bg-gray-100 dark:bg-gray-800 rounded-lg">
-          <p className="text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Prognosis</p>
-          <div className="text-[8px] text-gray-600 dark:text-gray-400 space-y-1">
-            <p>• <strong>Anemia of prematurity:</strong> Self-limited, resolves by 3-6 months</p>
-            <p>• Prognosis depends on underlying cause</p>
-            <p>• Severe anemia in first week: Rule out hemolysis, hemorrhage</p>
-            <p>• Multiple transfusions: Consider underlying pathology</p>
-            <p>• 2024 evidence: Restrictive thresholds are safe (no worse outcomes)</p>
+        {/* Prevention */}
+        <div className="p-3 bg-slate-50 dark:bg-slate-900 rounded-lg">
+          <p className="font-semibold text-slate-700 dark:text-slate-200 mb-2">Prevention Strategies</p>
+          <div className="text-xs text-slate-600 dark:text-slate-300">
+            <ul className="list-disc pl-4 space-y-0.5">
+              <li><strong>Delayed cord clamping</strong> (30-60 seconds)</li>
+              <li>Minimize phlebotomy losses</li>
+              <li>Use micro-sampling techniques</li>
+              <li>Point-of-care testing when available</li>
+              <li>Cord blood banking for initial labs</li>
+            </ul>
           </div>
         </div>
 
