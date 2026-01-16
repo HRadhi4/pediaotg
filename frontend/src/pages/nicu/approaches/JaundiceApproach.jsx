@@ -1,7 +1,7 @@
 /**
  * Neonatal Jaundice (Hyperbilirubinemia) Approach
- * Based on WHO Neonatal Clinical Guidelines 2018-2021
- * Reference: WHO/Belize Neonatal Guidelines, AAP Guidelines
+ * Based on AAP 2022 Guidelines (valid through 2027)
+ * Reference: AAP Clinical Practice Guideline 2022
  */
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -16,9 +16,21 @@ const JaundiceApproach = ({ weight, gestationalAge, postnatalAge }) => {
       <CardHeader className="pb-2">
         <CardTitle className="text-base">Neonatal Hyperbilirubinemia (Jaundice)</CardTitle>
         <CardDescription className="text-xs">Management of Unconjugated Hyperbilirubinemia</CardDescription>
-        <p className="text-[10px] text-blue-600 mt-1 font-medium">Reference: WHO Neonatal Guidelines / AAP 2004</p>
+        <p className="text-[10px] text-blue-600 mt-1 font-medium">Reference: AAP 2022 Guidelines (valid through 2027)</p>
       </CardHeader>
       <CardContent className="space-y-3">
+
+        {/* 2022 AAP Updates */}
+        <div className="p-2 bg-cyan-50 dark:bg-cyan-950/30 rounded-lg border border-cyan-200">
+          <p className="text-xs font-bold text-cyan-700 mb-1">2022 AAP Key Updates</p>
+          <div className="text-[8px] text-cyan-600 space-y-0.5">
+            <p>• <strong>Universal bilirubin screening</strong> before discharge (transcutaneous or blood)</p>
+            <p>• <strong>Increased phototherapy thresholds</strong> (safely reduced unnecessary treatment)</p>
+            <p>• <strong>Risk-stratified approach</strong> based on GA, hyperbilirubinemia risk, neuro risk</p>
+            <p>• Delay bilirubin recheck 12-24h after phototherapy (low-risk neonates)</p>
+            <p>• Reduced IV fluid supplementation during phototherapy in stable neonates</p>
+          </div>
+        </div>
 
         {/* Key Points */}
         <div className="p-2 bg-amber-50 dark:bg-amber-950/30 rounded-lg border border-amber-200">
