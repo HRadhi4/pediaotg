@@ -591,13 +591,13 @@ const GrowthChartPage = () => {
                 />
                 
                 {/* Percentile curves */}
-                <Line type="basis" dataKey="p97" stroke="#C41E3A" strokeWidth={1.5} dot={false} name="p97" />
-                <Line type="basis" dataKey="p90" stroke="#FD8D3C" strokeWidth={1.5} dot={false} name="p90" />
-                <Line type="basis" dataKey="p75" stroke="#FDAE6B" strokeWidth={1} dot={false} name="p75" strokeDasharray="4 2" />
-                <Line type="basis" dataKey="p50" stroke="#31A354" strokeWidth={2.5} dot={false} name="p50" />
-                <Line type="basis" dataKey="p25" stroke="#FDAE6B" strokeWidth={1} dot={false} name="p25" strokeDasharray="4 2" />
-                <Line type="basis" dataKey="p10" stroke="#FD8D3C" strokeWidth={1.5} dot={false} name="p10" />
-                <Line type="basis" dataKey="p3" stroke="#C41E3A" strokeWidth={1.5} dot={false} name="p3" />
+                <Line type="linear" dataKey="p97" stroke="#C41E3A" strokeWidth={1.5} dot={{ r: 2, fill: '#C41E3A' }} name="p97" />
+                <Line type="linear" dataKey="p90" stroke="#FD8D3C" strokeWidth={1.5} dot={false} name="p90" />
+                <Line type="linear" dataKey="p75" stroke="#FDAE6B" strokeWidth={1} dot={false} name="p75" strokeDasharray="4 2" />
+                <Line type="linear" dataKey="p50" stroke="#31A354" strokeWidth={2.5} dot={{ r: 2, fill: '#31A354' }} name="p50" />
+                <Line type="linear" dataKey="p25" stroke="#FDAE6B" strokeWidth={1} dot={false} name="p25" strokeDasharray="4 2" />
+                <Line type="linear" dataKey="p10" stroke="#FD8D3C" strokeWidth={1.5} dot={false} name="p10" />
+                <Line type="linear" dataKey="p3" stroke="#C41E3A" strokeWidth={1.5} dot={{ r: 2, fill: '#C41E3A' }} name="p3" />
               
                 {/* Patient data points */}
                 {patientData.map((point, idx) => (
