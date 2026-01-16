@@ -105,6 +105,37 @@ const ApproachesPage = ({ onBack }) => {
     setExpandedSections(prev => ({ ...prev, [section]: !prev[section] }));
   };
 
+  // Pinch-to-zoom handlers
+  const getDistance = (touches) => {
+    const [touch1, touch2] = touches;
+    return Math.hypot(
+      touch2.clientX - touch1.clientX,
+      touch2.clientY - touch1.clientY
+    );
+  };
+
+  const handleTouchStart = useCallback((e) => {
+    if (e.touches.length === 2) {
+      e.preventDefault();
+      initialDistance.current = getDistance(e.touches);
+      initialZoom.current = zoomLevel;
+    }
+  }, [zoomLevel]);
+
+  const handleTouchMove = useCallback((e) => {
+    if (e.touches.length === 2 && initialDistance.current) {
+      e.preventDefault();
+      const currentDistance = getDistance(e.touches);
+      const scale = currentDistance / initialDistance.current;
+      const newZoom = Math.min(200, Math.max(50, initialZoom.current * scale));
+      setZoomLevel(Math.round(newZoom));
+    }
+  }, []);
+
+  const handleTouchEnd = useCallback(() => {
+    initialDistance.current = null;
+  }, []);
+
   // Common props for all approach components
   const commonProps = {
     weight,
