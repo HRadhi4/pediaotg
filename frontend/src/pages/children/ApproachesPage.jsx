@@ -49,7 +49,7 @@ import {
 } from "./approaches";
 
 const ApproachesPage = ({ onBack }) => {
-  const [activeTab, setActiveTab] = useState("sepsis");
+  const [activeTab, setActiveTab] = useState("gait");
   const [weight, setWeight] = useState("");
   const [age, setAge] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
