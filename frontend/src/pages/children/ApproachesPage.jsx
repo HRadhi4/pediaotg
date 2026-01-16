@@ -86,12 +86,24 @@ const ApproachesPage = ({ onBack }) => {
   // Scroll to top when page loads and reset tab scroll position
   useEffect(() => {
     window.scrollTo(0, 0);
-    // Reset tab scroll to beginning with a slight delay to ensure render is complete
-    const timer = setTimeout(() => {
+    // Reset tab scroll to beginning - use multiple attempts to ensure it works
+    const resetScroll = () => {
       const tabContainer = document.querySelector('[data-testid="tabs-scroll-container"]');
-      if (tabContainer) tabContainer.scrollLeft = 0;
-    }, 100);
-    return () => clearTimeout(timer);
+      if (tabContainer) {
+        tabContainer.scrollLeft = 0;
+      }
+    };
+    // Immediate reset
+    resetScroll();
+    // Delayed reset to override any other scroll behavior
+    const timer1 = setTimeout(resetScroll, 50);
+    const timer2 = setTimeout(resetScroll, 150);
+    const timer3 = setTimeout(resetScroll, 300);
+    return () => {
+      clearTimeout(timer1);
+      clearTimeout(timer2);
+      clearTimeout(timer3);
+    };
   }, []);
 
   // Auto-select first matching tab when search changes
