@@ -10,6 +10,7 @@ from typing import List, Optional
 import uuid
 from datetime import datetime, timezone
 import base64
+from contextlib import asynccontextmanager
 
 # Import optimized Tesseract OCR service (100% local, medical-grade preprocessing)
 from services.ocr_service import (
@@ -20,16 +21,46 @@ from services.ocr_service import (
     LOW_CONFIDENCE_THRESHOLD
 )
 
+# Import scheduler service
+from services.scheduler_service import init_scheduler, get_scheduler
+
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # MongoDB connection
 mongo_url = os.environ['MONGO_URL']
 client = AsyncIOMotorClient(mongo_url)
 db = client[os.environ['DB_NAME']]
 
-# Create the main app without a prefix
-app = FastAPI()
+# Lifespan context manager for startup/shutdown events
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """
+    Lifespan context manager to handle startup and shutdown events.
+    - Starts the scheduler on startup
+    - Stops the scheduler on shutdown
+    """
+    # Startup
+    logger.info("Starting application...")
+    scheduler = init_scheduler(db)
+    scheduler.start()
+    logger.info("Scheduler started - renewal reminders will run daily at 9:00 AM UTC")
+    
+    yield
+    
+    # Shutdown
+    logger.info("Shutting down application...")
+    scheduler = get_scheduler()
+    if scheduler:
+        scheduler.stop()
+    logger.info("Scheduler stopped")
+
+# Create the main app with lifespan
+app = FastAPI(lifespan=lifespan)
 
 # Health check endpoint (required for Kubernetes)
 @app.get("/health")
