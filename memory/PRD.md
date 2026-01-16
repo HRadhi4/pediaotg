@@ -86,6 +86,17 @@ Build a full SaaS-style web app "Pediatrics on the Go" with:
   - Minimize button to exit fullscreen and return to normal view
   - Changed "Save PNG" button to icon-only (Download icon) for cleaner UI
   - Fullscreen chart is larger and more readable with all axis labels visible
+  - Fixed Head Circ input layout - now full-width on mobile (2-column on mobile, 3-column on tablet+)
+
+- ✅ **NICU Approaches Page Improvements**:
+  - Moved Select Approach dropdown ABOVE patient info inputs for better UX
+  - Dropdown now opens DOWNWARD (using `position="popper" side="bottom"`)
+  - Shortened patient info labels (GA wks, PNA days, Wt kg) for better mobile fit
+
+- ✅ **Floating Nav Bar Transparency**:
+  - Nav bar now has glass/transparent effect with `backdrop-blur-xl`
+  - Uses 70% opacity white/dark backgrounds
+  - More subtle shadow and border for cleaner look
 
 ### Session 4 Updates
 - ✅ **Growth Chart Replaced with GitHub Repo Version**:
