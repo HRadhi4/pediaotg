@@ -6,8 +6,9 @@
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 
-const ResuscitationApproach = ({ weight }) => {
+const ResuscitationApproach = ({ weight, gestationalAge, postnatalAge }) => {
   const w = parseFloat(weight) || 0;
+  const ga = parseFloat(gestationalAge) || 0;
 
   return (
     <Card>
