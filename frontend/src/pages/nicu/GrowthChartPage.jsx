@@ -228,8 +228,11 @@ const GrowthChartPage = () => {
     }
   };
 
-  const patientData = getPatientData();
   const chartData = getChartData();
+  const patientData = getPatientData();
+  
+  // Debug: Log chart data
+  console.log('Chart Data:', chartData);
   
   // Chart configuration
   const xAxisDomain = isWHO ? [0, 24] : [24, 240];
