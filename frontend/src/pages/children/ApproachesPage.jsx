@@ -166,109 +166,52 @@ const ApproachesPage = ({ onBack }) => {
         </CardContent>
       </Card>
 
-      {/* Approach Selection - Vertical List */}
-      <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <div 
-          className="bg-muted rounded-lg p-2 max-h-[300px] overflow-y-auto"
-          style={{ scrollbarWidth: 'thin' }}
-          data-testid="tabs-scroll-container"
-        >
-          <TabsList className="flex flex-col w-full h-auto gap-1 bg-transparent">
+      {/* Approach Selector - Dropdown */}
+      <div className="space-y-2">
+        <Label className="text-xs text-muted-foreground">Select Approach</Label>
+        <Select value={activeTab} onValueChange={setActiveTab}>
+          <SelectTrigger className="w-full" data-testid="approach-selector">
+            <SelectValue placeholder="Select an approach..." />
+          </SelectTrigger>
+          <SelectContent>
             {filteredTabs.map(tab => (
-              <TabsTrigger 
+              <SelectItem 
                 key={tab.id} 
-                value={tab.id} 
-                className="w-full justify-start text-left text-xs py-2 px-3 rounded-md data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800 data-[state=active]:shadow-sm" 
+                value={tab.id}
                 data-testid={`tab-${tab.id}`}
               >
                 {tab.label}
-              </TabsTrigger>
+              </SelectItem>
             ))}
-          </TabsList>
-        </div>
+          </SelectContent>
+        </Select>
+      </div>
         
-        {filteredTabs.length === 0 && (
-          <div className="text-center py-8 text-muted-foreground">
-            <p>No approaches found for &quot;{searchQuery}&quot;</p>
-            <button onClick={() => setSearchQuery("")} className="text-[#00d9c5] mt-2 hover:underline">Clear search</button>
-          </div>
-        )}
+      {filteredTabs.length === 0 && (
+        <div className="text-center py-8 text-muted-foreground">
+          <p>No approaches found for &quot;{searchQuery}&quot;</p>
+          <button onClick={() => setSearchQuery("")} className="text-[#00d9c5] mt-2 hover:underline">Clear search</button>
+        </div>
+      )}
 
-        {/* Septic Shock */}
-        <TabsContent value="sepsis" className="space-y-3 mt-4" data-testid="content-sepsis">
-          <SepsisApproach {...commonProps} />
-        </TabsContent>
-
-        {/* Status Epilepticus */}
-        <TabsContent value="seizure" className="space-y-3 mt-4" data-testid="content-seizure">
-          <SeizureApproach {...commonProps} />
-        </TabsContent>
-
-        {/* Status Asthmaticus */}
-        <TabsContent value="asthma" className="space-y-3 mt-4" data-testid="content-asthma">
-          <AsthmaApproach {...commonProps} />
-        </TabsContent>
-
-        {/* TBI */}
-        <TabsContent value="tbi" className="space-y-3 mt-4" data-testid="content-tbi">
-          <TbiApproach {...commonProps} />
-        </TabsContent>
-
-        {/* DKA */}
-        <TabsContent value="dka" className="space-y-3 mt-4" data-testid="content-dka">
-          <DkaApproach {...commonProps} />
-        </TabsContent>
-
-        {/* Adrenal Crisis */}
-        <TabsContent value="adrenal" className="space-y-3 mt-4" data-testid="content-adrenal">
-          <AdrenalApproach {...commonProps} />
-        </TabsContent>
-
-        {/* Anaphylaxis */}
-        <TabsContent value="anaphylaxis" className="space-y-3 mt-4" data-testid="content-anaphylaxis">
-          <AnaphylaxisApproach {...commonProps} />
-        </TabsContent>
-
-        {/* Thrombocytopenia */}
-        <TabsContent value="thrombocytopenia" className="space-y-3 mt-4" data-testid="content-thrombocytopenia">
-          <ThrombocytopeniaApproach {...commonProps} />
-        </TabsContent>
-
-        {/* Hypocalcemia */}
-        <TabsContent value="hypocalcemia" className="space-y-3 mt-4" data-testid="content-hypocalcemia">
-          <HypocalcemiaApproach {...commonProps} />
-        </TabsContent>
-
-        {/* Decreased LOC */}
-        <TabsContent value="dloc" className="space-y-3 mt-4" data-testid="content-dloc">
-          <DlocApproach {...commonProps} />
-        </TabsContent>
-
-        {/* Headache */}
-        <TabsContent value="headache" className="space-y-3 mt-4" data-testid="content-headache">
-          <HeadacheApproach {...commonProps} />
-        </TabsContent>
-
-        {/* Acute Weakness */}
-        <TabsContent value="weakness" className="space-y-3 mt-4" data-testid="content-weakness">
-          <WeaknessApproach {...commonProps} />
-        </TabsContent>
-
-        {/* Abnormal Gait */}
-        <TabsContent value="gait" className="space-y-3 mt-4" data-testid="content-gait">
-          <GaitApproach {...commonProps} />
-        </TabsContent>
-
-        {/* Hyperkalemia */}
-        <TabsContent value="hyperkalemia" className="space-y-3 mt-4" data-testid="content-hyperkalemia">
-          <HyperkalemiaApproach {...commonProps} />
-        </TabsContent>
-
-        {/* Upper GI Bleed */}
-        <TabsContent value="ugib" className="space-y-3 mt-4" data-testid="content-ugib">
-          <UgibApproach {...commonProps} />
-        </TabsContent>
-      </Tabs>
+      {/* Approach Content */}
+      <div className="space-y-3 mt-4">
+        {activeTab === "sepsis" && <SepsisApproach {...commonProps} />}
+        {activeTab === "seizure" && <SeizureApproach {...commonProps} />}
+        {activeTab === "asthma" && <AsthmaApproach {...commonProps} />}
+        {activeTab === "tbi" && <TbiApproach {...commonProps} />}
+        {activeTab === "dka" && <DkaApproach {...commonProps} />}
+        {activeTab === "adrenal" && <AdrenalApproach {...commonProps} />}
+        {activeTab === "anaphylaxis" && <AnaphylaxisApproach {...commonProps} />}
+        {activeTab === "thrombocytopenia" && <ThrombocytopeniaApproach {...commonProps} />}
+        {activeTab === "hypocalcemia" && <HypocalcemiaApproach {...commonProps} />}
+        {activeTab === "dloc" && <DlocApproach {...commonProps} />}
+        {activeTab === "headache" && <HeadacheApproach {...commonProps} />}
+        {activeTab === "weakness" && <WeaknessApproach {...commonProps} />}
+        {activeTab === "gait" && <GaitApproach {...commonProps} />}
+        {activeTab === "hyperkalemia" && <HyperkalemiaApproach {...commonProps} />}
+        {activeTab === "ugib" && <UgibApproach {...commonProps} />}
+      </div>
 
       {/* Pediatric Vital Signs Reference */}
       <Card className="border-slate-200 dark:border-slate-700">
