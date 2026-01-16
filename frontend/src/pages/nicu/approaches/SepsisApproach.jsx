@@ -11,7 +11,7 @@ const SepsisApproach = ({ weight, gestationalAge, postnatalAge }) => {
   const ga = parseFloat(gestationalAge) || 0;
 
   return (
-    <Card>
+    <Card data-testid="sepsis-approach">
       <CardHeader className="pb-2">
         <CardTitle className="text-base">Neonatal Sepsis</CardTitle>
         <CardDescription className="text-xs">Early and Late Onset Sepsis</CardDescription>

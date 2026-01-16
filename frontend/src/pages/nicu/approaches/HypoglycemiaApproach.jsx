@@ -11,7 +11,7 @@ const HypoglycemiaApproach = ({ weight, gestationalAge, postnatalAge }) => {
   const ga = parseFloat(gestationalAge) || 0;
 
   return (
-    <Card>
+    <Card data-testid="hypoglycemia-approach">
       <CardHeader className="pb-2">
         <CardTitle className="text-base">Neonatal Hypoglycemia</CardTitle>
         <CardDescription className="text-xs">Screening, diagnosis and management</CardDescription>

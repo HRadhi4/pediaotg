@@ -11,7 +11,7 @@ const ResuscitationApproach = ({ weight, gestationalAge, postnatalAge }) => {
   const ga = parseFloat(gestationalAge) || 0;
 
   return (
-    <Card>
+    <Card data-testid="resuscitation-approach">
       <CardHeader className="pb-2">
         <CardTitle className="text-base">Neonatal Resuscitation</CardTitle>
         <CardDescription className="text-xs">NRP Algorithm 2015</CardDescription>

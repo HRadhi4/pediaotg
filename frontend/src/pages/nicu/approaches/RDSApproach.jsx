@@ -11,7 +11,7 @@ const RDSApproach = ({ weight, gestationalAge, postnatalAge }) => {
   const ga = parseFloat(gestationalAge) || 0;
 
   return (
-    <Card>
+    <Card data-testid="rds-approach">
       <CardHeader className="pb-2">
         <CardTitle className="text-base">Respiratory Distress Syndrome (RDS)</CardTitle>
         <CardDescription className="text-xs">Preterm respiratory management</CardDescription>
