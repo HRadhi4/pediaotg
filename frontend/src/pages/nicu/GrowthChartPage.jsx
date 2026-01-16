@@ -467,7 +467,9 @@ const GrowthChartPage = () => {
                 ))}
               </LineChart>
               </ResponsiveContainer>
-            </div>
+            ) : (
+              <div className="flex items-center justify-center h-64 text-gray-500">Loading chart data...</div>
+            )}
             
             {/* Legend */}
             <div className="flex justify-center gap-3 mt-3 text-xs flex-wrap">
