@@ -1591,7 +1591,7 @@ const DrugsPage = ({ onBack }) => {
       max: "4 g/day IV; 2 g/day PO",
       indication: "MRSA, C. difficile colitis (PO), CNS infections, endocarditis, osteomyelitis, pneumonia, septic arthritis, serious gram-positive infections",
       notes: "Trough: 10-15 (standard), 15-20 (CNS/severe). Infuse over 1hr minimum. Red man syndrome with rapid infusion.",
-      renalAdjust: { gfr50: "q8-12h or per levels", gfr30: "q12-24h or per levels", gfr10: "q24-48h or per levels", hd: "Redose per levels after HD" }
+      renalAdjust: { gfr50: "Standard initial dose, then per levels", gfr30: "Standard initial dose, then per levels q12-24h", gfr10: "Standard initial dose, then per levels q24-48h", hd: "Redose per levels after HD; re-check 4-6hr post-HD" }
     },
     {
       id: "vecuronium",
