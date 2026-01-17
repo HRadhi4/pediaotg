@@ -1344,7 +1344,7 @@ const DrugsPage = ({ onBack }) => {
       max: "75 mg/kg/day or 4 g/day (whichever is less); DO NOT exceed 5 doses/24hr",
       indication: "Pain, fever, analgesic/antipyretic",
       notes: "IV max 1g/dose for >50kg. All routes count toward daily max. Hepatotoxicity risk with overdose.",
-      renalAdjust: { gfr50: "No change", gfr30: "q6h", gfr10: "q8h", hd: "Give after HD" }
+      renalAdjust: { gfr50: "100% dose q6h", gfr30: "100% dose q8h", gfr10: "Avoid prolonged use", hd: "Avoid prolonged use" }
     },
     {
       id: "penicillinG",
