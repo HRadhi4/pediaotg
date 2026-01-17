@@ -300,12 +300,13 @@ const ApproachesPage = ({ onBack }) => {
         {/* Approach Content with Pinch-to-Zoom */}
         <div 
           ref={contentRef}
-          className="space-y-3 transition-transform duration-75"
+          className="space-y-3"
           style={{ 
             transform: `scale(${zoomLevel / 100})`,
-            transformOrigin: 'top left',
+            transformOrigin: transformOrigin,
             width: `${10000 / zoomLevel}%`,
-            minWidth: '100%'
+            minWidth: '100%',
+            transition: isPinching ? 'none' : 'transform 0.15s ease-out'
           }}
           data-testid="zoomable-content"
         >
