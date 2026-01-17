@@ -19,6 +19,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import RoutineManagementApproach from "./postnatal/RoutineManagementApproach";
 import NewbornAssessmentApproach from "./postnatal/NewbornAssessmentApproach";
 import HemoglobinopathyApproach from "./postnatal/HemoglobinopathyApproach";
+import AsymptomaticBacteriuriaApproach from "./postnatal/AsymptomaticBacteriuriaApproach";
 
 const PostnatalPage = () => {
   const [activeApproach, setActiveApproach] = useState("routine");
@@ -29,6 +30,7 @@ const PostnatalPage = () => {
   const postnatalApproaches = [
     { id: "assessment", label: "Assessment of Newborn", keywords: ["assessment", "examination", "physical exam", "newborn exam", "check", "evaluation", "apgar"] },
     { id: "hemoglobinopathy", label: "Hemoglobinopathy Screening", keywords: ["hemoglobinopathy", "sickle cell", "thalassemia", "screening", "newborn screen", "blood", "anemia", "carrier"] },
+    { id: "bacteriuria", label: "Infant of Mother with ASB", keywords: ["bacteriuria", "asb", "asymptomatic", "uti", "urinary", "maternal", "infection", "urine"] },
     { id: "routine", label: "Routine Newborn Management", keywords: ["routine", "healthy", "normal", "management", "care", "vitamin k", "feeding", "discharge", "follow-up", "eye prophylaxis"] },
   ];
 
@@ -121,6 +123,7 @@ const PostnatalPage = () => {
         {activeApproach === "routine" && <RoutineManagementApproach {...commonProps} />}
         {activeApproach === "assessment" && <NewbornAssessmentApproach {...commonProps} />}
         {activeApproach === "hemoglobinopathy" && <HemoglobinopathyApproach {...commonProps} />}
+        {activeApproach === "bacteriuria" && <AsymptomaticBacteriuriaApproach {...commonProps} />}
       </div>
 
       {/* Reference Footer */}
