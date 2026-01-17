@@ -760,8 +760,8 @@ const DrugsPage = ({ onBack }) => {
       },
       max: "See indication",
       indication: "Procedural sedation, severe pain, intubation",
-      notes: "Rapid onset (1-2 min IV), short duration. Use caution in neonates.",
-      renalAdjust: { gfr50: "No change", gfr30: "75% dose", gfr10: "50% dose", hd: "No supplement" }
+      notes: "Rapid onset (1-2 min IV), short duration. Use caution in neonates. Patch: no renal adjustment needed.",
+      renalAdjust: { gfr50: "No adjustment needed", gfr30: "No adjustment needed", gfr10: "Use with caution, titrate carefully", hd: "No supplement needed" }
     },
     {
       id: "ferroussulfate",
