@@ -135,14 +135,17 @@ const DrugsPage = ({ onBack }) => {
       category: "Antiviral",
       route: "IV/PO",
       doses: {
-        iv: { label: "IV (HSV/VZV)", value: "10-20", unit: "mg/kg/dose q8h" },
-        po: { label: "PO (Chickenpox)", value: "20", unit: "mg/kg/dose q6h x5 days" },
-        encephalitis: { label: "HSV Encephalitis", value: "20", unit: "mg/kg/dose q8h x21 days" }
+        neoHSV: { label: "Neonate HSV", value: "20", unit: "mg/kg/dose q8h IV x14-21 days" },
+        childHSV: { label: "Child HSV (IV)", value: "10-15", unit: "mg/kg/dose q8h IV" },
+        childVZV: { label: "Child VZV (IV)", value: "10-15", unit: "mg/kg/dose q8h IV x7-10 days" },
+        encephalitis: { label: "HSV Encephalitis", value: "20", unit: "mg/kg/dose q8h IV x14-21 days" },
+        chickenpoxPO: { label: "Chickenpox (PO)", value: "20", unit: "mg/kg/dose q6h PO x5 days (max 800mg/dose)" },
+        genitalHerpesPO: { label: "Genital Herpes (Adult)", value: "400", unit: "mg TID x7-10 days or 200mg 5x/day" }
       },
-      max: "800 mg PO, 20 mg/kg IV",
-      indication: "HSV, VZV, chickenpox, encephalitis",
-      notes: "HSV encephalitis: 20 mg/kg q8h x21 days. Hydrate well to prevent crystalluria.",
-      renalAdjust: { gfr50: "q8h", gfr30: "q12h", gfr10: "q24h", hd: "Give after HD" }
+      max: "800 mg/dose PO; 20 mg/kg/dose IV",
+      indication: "HSV (neonatal, genital, encephalitis), VZV (chickenpox, shingles), immunocompromised patients",
+      notes: "Hydrate well to prevent crystalluria. Adjust for renal function.",
+      renalAdjust: { gfr50: "100% dose q12h", gfr30: "50% dose q12h", gfr10: "50% dose q24h", hd: "50% dose q24h, give after HD" }
     },
     {
       id: "adenosine",
