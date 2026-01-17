@@ -309,12 +309,18 @@ const DrugsPage = ({ onBack }) => {
       category: "Antibiotic",
       route: "PO/IV",
       doses: {
-        standard: { label: "Standard (Z-pack)", value: "10", unit: "mg/kg day 1, then 5 mg/kg days 2-5" },
-        cap: { label: "CAP", value: "10", unit: "mg/kg/day x5 days" }
+        childZPack: { label: "Z-Pack (Child)", value: "10", unit: "mg/kg day 1 (max 500mg), then 5 mg/kg days 2-5 (max 250mg/day)" },
+        childCAP: { label: "CAP (Child)", value: "10", unit: "mg/kg/day x3 days (max 500mg/day)" },
+        pertussisChild: { label: "Pertussis (Child)", value: "10", unit: "mg/kg day 1 (max 500mg), then 5mg/kg days 2-5" },
+        otitisMedia: { label: "Otitis Media", value: "30", unit: "mg/kg x1 day (max 1500mg) OR 10mg/kg day 1 then 5mg/kg days 2-5" },
+        pharyngitis: { label: "Pharyngitis", value: "12", unit: "mg/kg/day x5 days (max 500mg)" },
+        adultCAP: { label: "Adult CAP", value: "500", unit: "mg day 1, then 250 mg days 2-5" },
+        macProphylaxis: { label: "MAC Prophylaxis", value: "5", unit: "mg/kg/day (max 250mg/day) 1x/week" },
+        chlamydia: { label: "Chlamydia", value: "1", unit: "g PO x1 dose" }
       },
-      max: "500 mg/day",
-      indication: "Atypical pneumonia, pertussis, MAC prophylaxis",
-      notes: "Long half-life. QT prolongation risk.",
+      max: "500 mg/day (standard); 1500 mg x1 dose (otitis media); 1 g x1 (chlamydia)",
+      indication: "Atypical pneumonia, pertussis, MAC prophylaxis, sinusitis, pharyngitis, chlamydia, CAP, acute bacterial COPD exacerbation",
+      notes: "Long half-life (~68hr). QT prolongation risk - avoid with other QT-prolonging drugs.",
       renalAdjust: null
     },
     {
