@@ -1108,12 +1108,19 @@ const DrugsPage = ({ onBack }) => {
       category: "Antibiotic",
       route: "IV/PO",
       doses: {
-        standard: { label: "Standard", value: "7.5", unit: "mg/kg/dose q8h" },
-        cdiff: { label: "C. diff", value: "7.5", unit: "mg/kg/dose q6h PO" }
+        amebiasis: { label: "Amebiasis", value: "35-50", unit: "mg/kg/day ÷ q6-8h (max 750mg/dose)" },
+        neo24to27wk: { label: "Neonate 24-27wk PMA", value: "7.5", unit: "mg/kg/dose q48h IV" },
+        neo28to33wk: { label: "Neonate 28-33wk PMA", value: "10", unit: "mg/kg/dose q24h IV" },
+        neoOver33wk: { label: "Neonate >33wk PMA", value: "7.5", unit: "mg/kg/dose q12h IV" },
+        childAnaerobic: { label: "Child Anaerobic", value: "22.5-40", unit: "mg/kg/day ÷ q8h IV/PO (max 4g/day)" },
+        cdiff: { label: "C. diff (Child)", value: "30", unit: "mg/kg/day ÷ q6h PO (max 500mg/dose)" },
+        cdiffSevere: { label: "C. diff Severe", value: "30", unit: "mg/kg/day ÷ q6-8h IV (max 4g/day)" },
+        giardia: { label: "Giardiasis", value: "15-30", unit: "mg/kg/day ÷ TID x5-7d (max 250mg/dose)" },
+        bactVaginosis: { label: "Bacterial Vaginosis", value: "500", unit: "mg BID x7d or 2g x1 PO (adult)" }
       },
-      max: "500 mg/dose",
-      indication: "Anaerobes, C. diff, H. pylori, giardia",
-      notes: "Avoid alcohol. Metallic taste common.",
+      max: "750 mg/dose (amebiasis); 4 g/day (severe infections)",
+      indication: "Anaerobic infections, amebiasis, C. difficile colitis, giardiasis, trichomoniasis, bacterial vaginosis, H. pylori (with PPI + clarithromycin)",
+      notes: "Avoid alcohol (disulfiram reaction). Metallic taste common.",
       renalAdjust: { gfr50: "No change", gfr30: "No change", gfr10: "q12h or 50%", hd: "Give after HD" }
     },
     {
