@@ -603,13 +603,13 @@ const DrugsPage = ({ onBack }) => {
       category: "Vasoactive",
       route: "IV Infusion",
       doses: {
-        low: { label: "Low (renal)", value: "2-5", unit: "mcg/kg/min" },
-        medium: { label: "Medium (cardiac)", value: "5-10", unit: "mcg/kg/min" },
-        high: { label: "High (pressor)", value: "10-20", unit: "mcg/kg/min" }
+        low: { label: "Low (renal dose)", value: "2-5", unit: "mcg/kg/min - ↑ renal blood flow" },
+        medium: { label: "Intermediate", value: "5-15", unit: "mcg/kg/min - ↑ HR, contractility, CO" },
+        high: { label: "High (pressor)", value: ">15", unit: "mcg/kg/min - α-adrenergic, ↓ renal perfusion" }
       },
-      max: "20 mcg/kg/min",
-      indication: "Shock, hypotension",
-      notes: "Central line preferred. Titrate to effect.",
+      max: "20-50 mcg/kg/min",
+      indication: "Shock, hypotension, low cardiac output",
+      notes: "Central line preferred. Titrate to effect. High doses decrease renal perfusion.",
       renalAdjust: null
     },
     {
