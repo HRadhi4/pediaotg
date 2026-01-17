@@ -872,14 +872,16 @@ const DrugsPage = ({ onBack }) => {
       id: "ketamine",
       name: "Ketamine",
       category: "Sedative",
-      route: "IV/IM",
+      route: "IV/IM/IN",
       doses: {
-        iv: { label: "IV", value: "1-2", unit: "mg/kg" },
-        im: { label: "IM", value: "4-5", unit: "mg/kg" }
+        sedationIV: { label: "Sedation IV", value: "0.5-2", unit: "mg/kg (max 150mg)" },
+        sedationIM: { label: "Sedation IM", value: "4-5", unit: "mg/kg (max 150mg)" },
+        analgesiaIV: { label: "Analgesia IV", value: "0.1-0.5", unit: "mg/kg" },
+        intranasal: { label: "Intranasal", value: "3-6", unit: "mg/kg (half dose per nostril)" }
       },
-      max: "4 mg/kg IV, 10 mg/kg IM",
-      indication: "Procedural sedation, analgesia",
-      notes: "Dissociative. Causes salivation - consider glycopyrrolate.",
+      max: "150 mg/dose",
+      indication: "Procedural sedation, analgesia, RSI",
+      notes: "Dissociative. Causes ↑ salivation - consider glycopyrrolate. Bronchodilator properties.",
       renalAdjust: null
     },
     {
