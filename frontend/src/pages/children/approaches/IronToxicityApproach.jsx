@@ -336,12 +336,12 @@ const IronToxicityApproach = ({ weight }) => {
           )}
           
           <div className="mt-2 text-[10px] text-muted-foreground">
-            <p><strong>Draw level 4-6 hours post-ingestion</strong> for peak assessment</p>
+            <p><strong>Draw peak serum iron 4-6 hours post-ingestion</strong> (8h for extended-release)</p>
             <p className="mt-1">
-              <span className="text-green-600">&lt;150:</span> Normal | 
-              <span className="text-yellow-600 ml-1">150-350:</span> Elevated | 
-              <span className="text-amber-600 ml-1">350-500:</span> High | 
-              <span className="text-red-600 ml-1">&gt;500:</span> Critical (chelate)
+              <span className="text-green-600">&lt;350:</span> Minimal | 
+              <span className="text-yellow-600 ml-1">350-500:</span> Mild-Mod GI | 
+              <span className="text-red-600 ml-1">≥500:</span> Serious | 
+              <span className="text-red-800 ml-1">&gt;1000:</span> Critical
             </p>
           </div>
         </div>
@@ -433,20 +433,20 @@ const IronToxicityApproach = ({ weight }) => {
           <p className="font-bold text-sm mb-2 text-center">⚡ QUICK REFERENCE</p>
           <div className="grid grid-cols-3 gap-2 text-[10px]">
             <div className="text-center p-2 bg-white/50 dark:bg-black/20 rounded">
-              <p className="font-bold text-amber-600">Mild</p>
-              <p>&lt;40 mg/kg</p>
+              <p className="font-bold text-green-600">Low Risk</p>
+              <p>&lt;20 mg/kg</p>
             </div>
             <div className="text-center p-2 bg-white/50 dark:bg-black/20 rounded">
-              <p className="font-bold text-red-600">Severe</p>
-              <p>&gt;60 mg/kg</p>
+              <p className="font-bold text-red-600">Serious</p>
+              <p>≥60 mg/kg</p>
             </div>
             <div className="text-center p-2 bg-white/50 dark:bg-black/20 rounded">
               <p className="font-bold text-blue-600">Chelate if</p>
-              <p>Fe &gt;500 mcg/dL</p>
+              <p>SIL ≥500</p>
             </div>
           </div>
           <div className="mt-2 text-center text-[10px] text-muted-foreground">
-            <p>Activated charcoal does NOT bind iron | Iron tablets are radiopaque on X-ray</p>
+            <p>Activated charcoal does NOT bind iron | Vomiting = most sensitive sign | X-ray shows tablets</p>
           </div>
         </div>
 
