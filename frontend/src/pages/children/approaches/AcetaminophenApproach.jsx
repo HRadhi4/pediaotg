@@ -484,6 +484,7 @@ const AcetaminophenApproach = ({ weight, expandedSections, toggleSection }) => {
             )}
 
             {/* SVG Nomogram - scrollable container for mobile */}
+            <p className="text-[9px] text-center text-muted-foreground mb-2 sm:hidden">← Swipe to scroll →</p>
             <div className="overflow-auto -mx-2 px-2 pb-2">
               <div className="flex justify-center" style={{ minWidth: '340px' }}>
                 <svg width={svgWidth} height={svgHeight} className="bg-white dark:bg-gray-900 rounded border" style={{ flexShrink: 0 }}>
