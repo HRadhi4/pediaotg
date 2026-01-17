@@ -81,6 +81,7 @@ const ApproachesPage = ({ onBack }) => {
     { id: "hyperkalemia", label: "Hyperkalemia", keywords: ["potassium", "hyperkalemia", "ecg", "calcium gluconate", "insulin", "kayexalate", "dialysis", "arrhythmia"] },
     { id: "hypocalcemia", label: "Hypocalcemia", keywords: ["calcium", "hypocalcemia", "rickets", "vitamin d", "pth", "parathyroid", "phosphate", "calcitriol", "tetany", "chvostek", "trousseau"] },
     { id: "iron", label: "Iron Toxicity", keywords: ["iron", "ferrous", "sulfate", "gluconate", "fumarate", "deferoxamine", "desferal", "chelation", "poisoning", "overdose", "elemental iron"] },
+    { id: "metabolic", label: "Metabolic Emergencies", keywords: ["metabolic", "iem", "inborn", "metabolism", "organic acidemia", "urea cycle", "msud", "maple syrup", "fatty acid", "hyperammonemia", "ammonia", "hypoglycemia", "lactic acidosis", "mcad"] },
     { id: "nsaid", label: "NSAID Toxicity", keywords: ["nsaid", "ibuprofen", "naproxen", "diclofenac", "advil", "motrin", "aleve", "mefenamic", "ponstan", "indomethacin", "ketorolac", "poisoning", "overdose"] },
     { id: "sepsis", label: "Septic Shock", keywords: ["sepsis", "septic", "shock", "cold", "warm", "vasopressor", "fluid", "bolus"] },
     { id: "asthma", label: "Status Asthmaticus", keywords: ["asthma", "wheeze", "bronchospasm", "salbutamol", "ventolin", "magnesium", "respiratory"] },
