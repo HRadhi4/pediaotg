@@ -187,6 +187,8 @@ const WeaknessApproach = ({ weight }) => {
               </div>
             </div>
           </div>
+          
+          </div>{/* End scrollable container */}
         </div>
 
         {/* Important Note - Back Pain */}
