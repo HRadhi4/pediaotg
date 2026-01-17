@@ -873,14 +873,18 @@ const DrugsPage = ({ onBack }) => {
     {
       id: "ibuprofen",
       name: "Ibuprofen",
-      category: "Analgesic",
+      category: "Analgesic/NSAID",
       route: "PO",
       doses: {
-        standard: { label: "Standard", value: "5-10", unit: "mg/kg/dose q6-8h" }
+        childAnalgesic: { label: "Child Analgesic/Antipyretic", value: "10", unit: "mg/kg/dose q4-6h PRN (max 40mg/kg/day)" },
+        infantUnder6mo: { label: "Infant <6mo", value: "10", unit: "mg/kg/dose q6h PRN (max 40mg/kg/day)" },
+        child6to12yr: { label: "Child 6-12yr", value: "10", unit: "mg/kg/dose q4-6h" },
+        adultAnalgesic: { label: "Adult Analgesic", value: "400", unit: "mg/dose q4-6h (max 3.2g/day)" },
+        antiInflammatory: { label: "Anti-inflammatory", value: "30-40", unit: "mg/kg/day ÷ q6-8h" }
       },
-      max: "40 mg/kg/day (max 2.4g/day)",
-      indication: "Pain, fever, inflammation",
-      notes: "Avoid if dehydrated, renal impairment, GI bleed risk.",
+      max: "40 mg/kg/day or 2.4-3.2 g/day (whichever is less)",
+      indication: "Pain, fever, inflammation, dysmenorrhea, JIA",
+      notes: "Avoid if dehydrated, renal impairment, GI bleed risk, aspirin-sensitive asthma. Give with food.",
       renalAdjust: { gfr50: "Use with caution", gfr30: "Avoid", gfr10: "Avoid", hd: "Avoid" }
     },
     {
