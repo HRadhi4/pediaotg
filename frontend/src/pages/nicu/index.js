@@ -10,3 +10,4 @@ export { default as BloodPressurePage } from './BloodPressurePage';
 export { default as GrowthChartPage } from './GrowthChartPage';
 export { default as NICUDrugsPage } from './NICUDrugsPage';
 export { default as NICUApproachesPage } from './NICUApproachesPage';
+export { default as PostnatalPage } from './PostnatalPage';

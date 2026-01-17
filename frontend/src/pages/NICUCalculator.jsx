@@ -53,7 +53,8 @@ import {
   BloodPressurePage,
   GrowthChartPage,
   NICUDrugsPage,
-  NICUApproachesPage
+  NICUApproachesPage,
+  PostnatalPage
 } from './nicu';
 
 // Sortable Widget Component for NICU drag and drop
