@@ -399,12 +399,18 @@ const DrugsPage = ({ onBack }) => {
       category: "Antibiotic",
       route: "IV/IM",
       doses: {
-        standard: { label: "Standard", value: "50", unit: "mg/kg/dose q6-8h" },
-        meningitis: { label: "Meningitis", value: "50", unit: "mg/kg/dose q6h" }
+        neo0to7d: { label: "Neonate 0-7 days (<2kg)", value: "50", unit: "mg/kg/dose q12h IV" },
+        neo0to7dMeningitis: { label: "Neonate 0-7d Meningitis (<2kg)", value: "50", unit: "mg/kg/dose q12h IV" },
+        neo8to28d: { label: "Neonate 8-28 days", value: "50", unit: "mg/kg/dose q8-12h IV" },
+        neo8to28dMeningitis: { label: "Neonate 8-28d Meningitis", value: "50", unit: "mg/kg/dose q6-8h IV" },
+        childStandard: { label: "Child >28 days", value: "50-100", unit: "mg/kg/dose q6h IV (max 8-10g/day)" },
+        childMeningitis: { label: "Child Meningitis", value: "75", unit: "mg/kg/dose q6h IV (max 12g/day)" },
+        adultStandard: { label: "Adult Standard", value: "1-2", unit: "g IV q6-8h" },
+        adultMeningitis: { label: "Adult Meningitis", value: "2", unit: "g IV q4h (max 12g/day)" }
       },
-      max: "12 g/day",
-      indication: "Meningitis, sepsis (preferred in neonates)",
-      notes: "Preferred over ceftriaxone in neonates. Good CSF penetration.",
+      max: "8-10 g/day standard; 12 g/day meningitis",
+      indication: "Meningitis, sepsis, gram-negative infections (preferred in neonates over ceftriaxone)",
+      notes: "Preferred over ceftriaxone in neonates (no bilirubin displacement). Good CSF penetration.",
       renalAdjust: { gfr50: "No change", gfr30: "q8-12h", gfr10: "q24h", hd: "Give after HD" }
     },
     {
