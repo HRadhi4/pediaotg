@@ -797,12 +797,17 @@ const DrugsPage = ({ onBack }) => {
       category: "Antibiotic",
       route: "IV/IM",
       doses: {
-        standard: { label: "Once Daily", value: "5-7.5", unit: "mg/kg/dose q24h" },
-        traditional: { label: "Traditional", value: "2.5", unit: "mg/kg/dose q8h" }
+        neo0to7d: { label: "Neonate 0-7 days", value: "4", unit: "mg/kg/dose q24h" },
+        neo8to28d: { label: "Neonate 8-28 days", value: "4.5", unit: "mg/kg/dose q12h" },
+        neoOver28d: { label: "Neonate >28 days", value: "5", unit: "mg/kg/dose q8h" },
+        childConv: { label: "Child (Conventional)", value: "2.5", unit: "mg/kg/dose q8h" },
+        childOnceDaily: { label: "Child (Once Daily)", value: "5-7.5", unit: "mg/kg/dose q24h" },
+        cysticFibrosis: { label: "Cystic Fibrosis", value: "7.5-10.5", unit: "mg/kg/dose q8h" },
+        adultConv: { label: "Adult (Conventional)", value: "1.5-2", unit: "mg/kg/dose q8h" }
       },
-      max: "560 mg/dose",
-      indication: "Gram-negative sepsis, synergy for endocarditis",
-      notes: "Monitor levels: trough <1, peak 20-30. Adjust for renal function.",
+      max: "5 mg/kg/dose (conventional); 7.5 mg/kg/dose (once daily)",
+      indication: "Gram-negative sepsis, synergy for endocarditis, serious infections, ophthalmic, intrathecal/intraventricular",
+      notes: "Monitor levels: trough <1 mg/L, peak 20-30 mg/L. Ototoxic and nephrotoxic.",
       renalAdjust: { gfr50: "q12h or per levels", gfr30: "q24h or per levels", gfr10: "q48-72h or per levels", hd: "Give after HD, redose per levels" }
     },
     {
