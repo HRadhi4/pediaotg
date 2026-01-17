@@ -1028,14 +1028,16 @@ const DrugsPage = ({ onBack }) => {
       id: "magnesium",
       name: "Magnesium Sulfate",
       category: "Electrolyte",
-      route: "IV",
+      route: "IV/IM",
       doses: {
-        hypo: { label: "Hypomagnesemia", value: "25-50", unit: "mg/kg over 2-4h" },
-        asthma: { label: "Severe Asthma", value: "25-75", unit: "mg/kg over 20 min" }
+        hypoMild: { label: "Mild Hypomagnesemia", value: "25-50", unit: "mg/kg q6h x3-4 doses (max 2g)" },
+        hypoSevere: { label: "Severe Hypomagnesemia", value: "25-50", unit: "mg/kg IV over 2-4h (max 2g)" },
+        asthma: { label: "Severe Asthma", value: "25-50", unit: "mg/kg IV over 20 min (max 2g)" },
+        torsades: { label: "Torsades de Pointes", value: "25-50", unit: "mg/kg IV push (max 2g)" }
       },
       max: "2 g/dose",
-      indication: "Hypomagnesemia, severe asthma, torsades",
-      notes: "Monitor for hypotension, bradycardia. Slow infusion.",
+      indication: "Hypomagnesemia, severe asthma, torsades, seizure prophylaxis",
+      notes: "Monitor for hypotension, bradycardia, respiratory depression. Slow infusion except torsades.",
       renalAdjust: { gfr50: "75% dose", gfr30: "50% dose", gfr10: "25-50% dose", hd: "Avoid unless critical" }
     },
     {
@@ -1044,11 +1046,12 @@ const DrugsPage = ({ onBack }) => {
       category: "Osmotic Diuretic",
       route: "IV",
       doses: {
-        cerebral: { label: "Cerebral Edema", value: "0.25-1", unit: "g/kg over 20-30 min" }
+        cerebral: { label: "Cerebral Edema", value: "0.25-1", unit: "g/kg IV over 20-30 min" },
+        icp: { label: "Acute ICP Crisis", value: "1", unit: "g/kg IV over 10-20 min" }
       },
-      max: "1 g/kg/dose",
-      indication: "Cerebral edema, raised ICP",
-      notes: "Monitor serum osmolality (keep <320). Requires urinary catheter.",
+      max: "1 g/kg/dose, may repeat q4-6h",
+      indication: "Cerebral edema, raised ICP, acute glaucoma",
+      notes: "Monitor serum osmolality (keep <320). Requires urinary catheter. Filter through 5-micron filter.",
       renalAdjust: { gfr50: "Use with caution", gfr30: "Avoid if possible", gfr10: "Contraindicated", hd: "Contraindicated" }
     },
     {
