@@ -416,12 +416,17 @@ const DrugsPage = ({ onBack }) => {
       category: "Antibiotic",
       route: "IV/IM",
       doses: {
-        standard: { label: "Standard", value: "50-75", unit: "mg/kg/day q12-24h", maxDose: 2000 },
-        meningitis: { label: "Meningitis", value: "100", unit: "mg/kg/day divided q12h", maxDose: 4000 }
+        neoUnder37wk: { label: "Neonate <37wk", value: "25-50", unit: "mg/kg/dose q12h IV/IM" },
+        neoMeningitis: { label: "Neonate Meningitis", value: "25-50", unit: "mg/kg/dose q8h IV" },
+        infantUnder1mo: { label: "Infant <1mo", value: "50", unit: "mg/kg/dose q12h IV/IM" },
+        childStandard: { label: "Child 1mo-12yr", value: "50-75", unit: "mg/kg/day q12-24h (max 2g/dose)" },
+        childMeningitis: { label: "Child Meningitis", value: "100", unit: "mg/kg/day ÷ q12h (max 4g/day)" },
+        adultSevere: { label: "Adult Severe", value: "2-4", unit: "g/day q12-24h" },
+        gonorrhea: { label: "Gonorrhea", value: "250", unit: "mg IM x1 dose" }
       },
-      max: "2 g/dose, 4 g/day (meningitis)",
-      indication: "CAP, meningitis, gonorrhea, Lyme disease",
-      notes: "Avoid in neonates with hyperbilirubinemia. Do not mix with calcium. Max 2g/dose per Harriet Lane.",
+      max: "2 g/dose; 4 g/day (meningitis/severe)",
+      indication: "CAP, meningitis, complicated UTI/pyelonephritis, gonorrhea, Lyme disease, nosocomial pneumonia, complicated intra-abdominal infections, PID",
+      notes: "Avoid in neonates <28 days with hyperbilirubinemia or calcium-containing IV products. Displaces bilirubin from albumin.",
       renalAdjust: null
     },
     {
