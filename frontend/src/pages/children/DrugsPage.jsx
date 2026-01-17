@@ -1309,12 +1309,17 @@ const DrugsPage = ({ onBack }) => {
       category: "Analgesic",
       route: "PO/PR/IV",
       doses: {
-        po: { label: "PO/PR", value: "15", unit: "mg/kg/dose q4-6h" },
-        iv: { label: "IV", value: "15", unit: "mg/kg/dose q6h (7.5 if <10kg)" }
+        loadingPR: { label: "Loading (PR)", value: "20-25", unit: "mg/kg/dose x1" },
+        neoUnder32wk: { label: "Neonate ≤32wk (IV)", value: "12.5", unit: "mg/kg/dose q6h (max 50mg/kg/day)" },
+        neoOver32wk: { label: "Neonate >32wk (IV)", value: "15", unit: "mg/kg/dose q6h (max 75mg/kg/day)" },
+        childPO: { label: "Child PO/PR", value: "10-15", unit: "mg/kg/dose q4-6h PRN (max 75mg/kg/day)" },
+        childIV: { label: "Child IV", value: "15", unit: "mg/kg/dose q6h (7.5 if <10kg)" },
+        adultPO: { label: "Adult PO", value: "325-650", unit: "mg/dose q4-6h (max 4g/day)" },
+        adultIV: { label: "Adult IV (<50kg)", value: "15", unit: "mg/kg q6h (max 750mg/dose, 3.75g/day)" }
       },
-      max: "75 mg/kg/day (max 4g/day)",
-      indication: "Pain, fever",
-      notes: "PR loading: 20-25 mg/kg. IV: 7.5 mg/kg if <10kg.",
+      max: "75 mg/kg/day or 4 g/day (whichever is less); DO NOT exceed 5 doses/24hr",
+      indication: "Pain, fever, analgesic/antipyretic",
+      notes: "IV max 1g/dose for >50kg. All routes count toward daily max. Hepatotoxicity risk with overdose.",
       renalAdjust: { gfr50: "No change", gfr30: "q6h", gfr10: "q8h", hd: "Give after HD" }
     },
     {
