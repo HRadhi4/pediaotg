@@ -1298,14 +1298,16 @@ const DrugsPage = ({ onBack }) => {
       id: "phenytoin",
       name: "Phenytoin/Fosphenytoin",
       category: "Anticonvulsant",
-      route: "IV",
+      route: "IV/IM",
       doses: {
-        loading: { label: "Loading", value: "20", unit: "mg PE/kg" },
-        maintenance: { label: "Maintenance", value: "5-7", unit: "mg/kg/day divided q8-12h" }
+        loadingStatus: { label: "Loading (Status)", value: "20", unit: "mg PE/kg IV (max 1500mg PE)" },
+        loadingNonEmergent: { label: "Loading (Non-emergent)", value: "15", unit: "mg PE/kg/24hr IV/IM" },
+        maintenanceNeo: { label: "Maintenance (Neonate)", value: "15-20", unit: "mg PE/kg/24hr IV/IM" },
+        maintenanceChild: { label: "Maintenance (Child)", value: "5-7", unit: "mg/kg/day divided q8-12h" }
       },
-      max: "1500 mg load",
+      max: "1500 mg PE load",
       indication: "Status epilepticus, seizure prophylaxis",
-      notes: "Fosphenytoin preferred (less irritation). Monitor levels, cardiac.",
+      notes: "Fosphenytoin preferred (less irritation, can give IM). PE = phenytoin equivalents. Monitor levels and cardiac rhythm.",
       renalAdjust: null
     },
     {
