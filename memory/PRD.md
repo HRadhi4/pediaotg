@@ -83,18 +83,35 @@ Build a full SaaS-style web app "Pediatrics on the Go" with:
 ### Session 6 Updates (Current - January 17, 2026)
 - ✅ **NEW: Postnatal Section Added**:
   - Created `/app/frontend/src/pages/nicu/PostnatalPage.jsx` - main page with search and topic selector
-  - Created 3 comprehensive postnatal approach components in `/postnatal/`:
+  - Created 4 comprehensive postnatal approach components in `/postnatal/`:
     - **RoutineManagementApproach.jsx**: Delivery room care, Apgar score, transitional period monitoring, routine interventions (eye prophylaxis, Vitamin K, Hep B, RSV), umbilical cord care, newborn screening, feeding, weight loss, discharge criteria, follow-up timing
     - **NewbornAssessmentApproach.jsx**: Complete physical examination guide (general appearance, vital signs, measurements, head/fontanelles, eyes, ears, nose/mouth, cardiovascular, respiratory, abdomen, genitalia, musculoskeletal/DDH, skin, neurological/primitive reflexes)
     - **HemoglobinopathyApproach.jsx**: Newborn screening results interpretation (FS, FSA, FAS patterns), SCD management, thalassemia overview, parental counseling, inheritance patterns
+    - **AsymptomaticBacteriuriaApproach.jsx**: AAP/IDSA guidelines - NO routine screening/treatment for healthy infants, management algorithm, urine collection methods
   - Features:
-    - Search bar with keyword filtering (e.g., "sickle" finds Hemoglobinopathy)
-    - Topic dropdown selector with 3 options (alphabetically sorted)
+    - Search bar with keyword filtering (e.g., "sickle" finds Hemoglobinopathy, "bacteriuria" finds ASB)
+    - Topic dropdown selector with 4 options (alphabetically sorted)
     - UI matches NICUApproachesPage but WITHOUT patient info inputs (as requested)
     - Reference footer citing UpToDate/AAP/WHO Guidelines
   - Updated `/app/frontend/src/pages/nicu/index.js` to export PostnatalPage
   - Updated `/app/frontend/src/pages/NICUCalculator.jsx` to route Postnatal widget (removed comingSoon flag)
-  - **Testing**: 100% pass rate (iteration_16.json - 9/9 tests)
+  - **Testing**: 100% pass rate (iteration_16.json - 9/9 tests, iteration_17.json - ASB tests passed)
+
+- ✅ **NEW: Metabolic Emergencies Approach Added (Children)**:
+  - Created `/app/frontend/src/pages/children/approaches/MetabolicEmergencyApproach.jsx`
+  - Content based on provided PDF covering IEM (Inborn Errors of Metabolism):
+    - Clinical presentations (neurologic 85%, GI 58%)
+    - Triggers of metabolic crisis (catabolism, protein intake)
+    - Initial lab evaluation (ammonia collection protocol - on ICE, analyze in 30 min)
+    - Specialized metabolic tests (amino acids, organic acids, acylcarnitine)
+    - Lab findings comparison table (MSUD, organic acidemias, urea cycle, GSD, FAO, mitochondrial)
+    - Hyperammonemia EMERGENCY management (neurotoxic - treat immediately, ammonia scavengers, hemodialysis)
+    - Hypoglycemia in IEM (ketotic vs hypoketotic - FAO disorders)
+    - Metabolic acidosis causes
+    - Seizure cofactor trials (Pyridoxine 100mg IV, PLP, Folinic acid, Biotin)
+    - Immediate management summary with weight-based calculations (GIR 8-10 mg/kg/min, insulin, carnitine)
+  - Added to Children Approaches dropdown with keywords: metabolic, iem, inborn, ammonia, hypoglycemia, mcad, etc.
+  - **Testing**: 100% pass rate (iteration_17.json - 16/16 tests)
 
 - ✅ **Acetaminophen (Paracetamol) Approach Updated**:
   - Refactored `AcetaminophenApproach.jsx` with collapsible sections and ml/mg converter
