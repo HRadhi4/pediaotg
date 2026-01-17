@@ -791,9 +791,9 @@ const DrugsPage = ({ onBack }) => {
         maintenance: { label: "Maintenance", value: "6-12", unit: "mg/kg/day once daily" }
       },
       max: "400 mg/day",
-      indication: "Candidiasis (oral, esophageal, systemic)",
-      notes: "Oral thrush: 6 mg/kg day 1, then 3 mg/kg/day x14 days.",
-      renalAdjust: { gfr50: "No change", gfr30: "q24-36h", gfr10: "q48h", hd: "Give after HD" }
+      indication: "Candidiasis (oral, esophageal, systemic), cryptococcal meningitis",
+      notes: "Oral thrush: 6 mg/kg day 1, then 3 mg/kg/day x14 days. Fungistatic.",
+      renalAdjust: { gfr50: "50% dose q24h", gfr30: "50% dose q24-48h", gfr10: "50% dose q48h", hd: "100% dose after each HD" }
     },
     {
       id: "flumazenil",
