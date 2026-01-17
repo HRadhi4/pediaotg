@@ -1284,12 +1284,14 @@ const DrugsPage = ({ onBack }) => {
       category: "Anticonvulsant",
       route: "IV/PO",
       doses: {
-        loading: { label: "Loading", value: "20", unit: "mg/kg" },
-        maintenance: { label: "Maintenance", value: "3-5", unit: "mg/kg/day" }
+        loading: { label: "Loading (Status)", value: "15-20", unit: "mg/kg IV (max 1000mg)" },
+        additionalLoad: { label: "Additional Loads", value: "5-10", unit: "mg/kg IV PRN (max 30mg/kg/24hr total)" },
+        maintenanceNeo: { label: "Maintenance (Neonate)", value: "5", unit: "mg/kg/day IV" },
+        maintenanceChild: { label: "Maintenance (Infant/Child)", value: "5-10", unit: "mg/kg/day (max 30mg/kg/24hr)" }
       },
-      max: "40 mg/kg total load",
+      max: "1000 mg single load, 30 mg/kg/24hr total",
       indication: "Neonatal seizures, status epilepticus",
-      notes: "Causes sedation. Additional 10 mg/kg loads PRN to max 40 mg/kg.",
+      notes: "Causes sedation. Give loading dose as single or divided doses. Monitor levels.",
       renalAdjust: { gfr50: "No change", gfr30: "No change", gfr10: "q12-16h", hd: "Give after HD" }
     },
     {
