@@ -643,15 +643,18 @@ const DrugsPage = ({ onBack }) => {
       id: "adrenaline",
       name: "Epinephrine (Adrenaline)",
       category: "Vasoactive",
-      route: "IV/IM/ETT",
+      route: "IV/IO/IM/ETT/SC",
       doses: {
-        arrest: { label: "Cardiac Arrest", value: "0.01", unit: "mg/kg (0.1 ml/kg of 1:10,000) q3-5min" },
-        anaphylaxis: { label: "Anaphylaxis IM", value: "0.01", unit: "mg/kg (0.01 ml/kg of 1:1,000)" },
+        arrestNeo: { label: "Arrest (Neonate)", value: "0.01-0.03", unit: "mg/kg IV/IO (1:10,000) q3-5min" },
+        arrestChild: { label: "Arrest (Child)", value: "0.01", unit: "mg/kg IV/IO (1:10,000) q3-5min, max 1mg" },
+        ett: { label: "ETT (All ages)", value: "0.1", unit: "mg/kg of 1:1000 (max 2.5mg)" },
+        anaphylaxis: { label: "Anaphylaxis IM", value: "0.01", unit: "mg/kg of 1:1000 IM (max 0.5mg)" },
+        bronchodilator: { label: "SC Bronchodilator", value: "0.01", unit: "mg/kg SC of 1:1000, repeat q15min x3-4" },
         infusion: { label: "Infusion", value: "0.01-1", unit: "mcg/kg/min" }
       },
-      max: "1 mg/dose arrest, 0.5 mg IM",
-      indication: "Cardiac arrest, anaphylaxis, shock",
-      notes: "ETT: 0.1 mg/kg (10x IV dose). IM for anaphylaxis.",
+      max: "1 mg/dose IV arrest, 0.5 mg IM, 2.5 mg ETT",
+      indication: "Cardiac arrest, anaphylaxis, shock, asthma",
+      notes: "ETT dose is 10x IV dose. IM preferred for anaphylaxis. Asystole: 1mg IV or 2-2.5mg ETT q3-5min.",
       renalAdjust: null
     },
     {
