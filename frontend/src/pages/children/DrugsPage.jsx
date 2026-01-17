@@ -510,14 +510,19 @@ const DrugsPage = ({ onBack }) => {
       id: "clindamycin",
       name: "Clindamycin",
       category: "Antibiotic",
-      route: "IV/PO",
+      route: "IV/IM/PO",
       doses: {
-        standard: { label: "Standard", value: "10-13", unit: "mg/kg/dose q6-8h" },
-        severe: { label: "Severe/Bone", value: "10-15", unit: "mg/kg/dose q6h" }
+        neoUnder32wk: { label: "Neonate ≤32wk PMA", value: "5", unit: "mg/kg/dose IV/IM q8h" },
+        neo33to40wk: { label: "Neonate 33-40wk PMA", value: "7", unit: "mg/kg/dose IV/IM q8h" },
+        neoOver40wk: { label: "Neonate >40wk PMA", value: "7", unit: "mg/kg/dose IV/IM q8h" },
+        childPO: { label: "Child PO", value: "10-20", unit: "mg/kg/day ÷ q6-8h (max 1.8g/day)" },
+        childIV: { label: "Child IV/IM", value: "20-40", unit: "mg/kg/day ÷ q6-8h (max 2.7g/day)" },
+        adultPO: { label: "Adult PO", value: "600-1800", unit: "mg/day ÷ q6-12h (max 2.4g/day)" },
+        adultIM: { label: "Adult IM", value: "600", unit: "mg/dose q6-12h (max 600mg/dose)" }
       },
-      max: "900 mg/dose",
-      indication: "Skin/soft tissue, osteomyelitis, anaerobes, MRSA",
-      notes: "Good bone penetration. Risk of C. diff colitis.",
+      max: "1.8 g/day PO, 2.7 g/day IV/IM (child); 2.4 g/day PO, 600 mg/dose IM (adult)",
+      indication: "Skin/soft tissue infections, osteomyelitis, septic arthritis, anaerobic infections, MRSA, toxoplasmosis, PCP (with primaquine), bacterial vaginosis, acne (topical)",
+      notes: "Good bone penetration. Risk of C. diff colitis. Topical/vaginal forms available.",
       renalAdjust: null
     },
     {
