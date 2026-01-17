@@ -1524,14 +1524,19 @@ const DrugsPage = ({ onBack }) => {
       id: "vancomycin",
       name: "Vancomycin",
       category: "Antibiotic",
-      route: "IV",
+      route: "IV/PO",
       doses: {
-        standard: { label: "Standard", value: "15", unit: "mg/kg/dose q6-8h" },
-        meningitis: { label: "Meningitis/Severe", value: "15-20", unit: "mg/kg/dose q6h" }
+        neoMeningitis: { label: "Neonate Meningitis", value: "10", unit: "mg/kg/dose q8h IV" },
+        neoOther: { label: "Neonate Other", value: "15", unit: "mg/kg/dose q12h IV" },
+        childIV: { label: "Child IV", value: "15", unit: "mg/kg/dose q6-8h (max 15mg/kg/dose)" },
+        adolIV: { label: "Adolescent IV", value: "15", unit: "mg/kg/dose q6-8h" },
+        adultIV: { label: "Adult IV", value: "15", unit: "mg/kg/dose q8-12h" },
+        cdiffChild: { label: "C. diff (Child) PO", value: "10", unit: "mg/kg/dose q6h PO (max 125mg/dose)" },
+        cdiffAdult: { label: "C. diff (Adult) PO", value: "125-500", unit: "mg/dose q6h PO" }
       },
-      max: "4 g/day",
-      indication: "MRSA, C. diff (PO), serious gram-positive",
-      notes: "Trough: 10-15 (standard), 15-20 (CNS/severe). Infuse over 1hr.",
+      max: "4 g/day IV; 2 g/day PO",
+      indication: "MRSA, C. difficile colitis (PO), CNS infections, endocarditis, osteomyelitis, pneumonia, septic arthritis, serious gram-positive infections",
+      notes: "Trough: 10-15 (standard), 15-20 (CNS/severe). Infuse over 1hr minimum. Red man syndrome with rapid infusion.",
       renalAdjust: { gfr50: "q8-12h or per levels", gfr30: "q12-24h or per levels", gfr10: "q24-48h or per levels", hd: "Redose per levels after HD" }
     },
     {
