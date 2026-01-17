@@ -1079,15 +1079,18 @@ const DrugsPage = ({ onBack }) => {
       id: "midazolam",
       name: "Midazolam (Versed)",
       category: "Sedative",
-      route: "IV/IN/PO",
+      route: "IV/IN/PO/IM",
       doses: {
-        iv: { label: "IV", value: "0.05-0.1", unit: "mg/kg" },
-        intranasal: { label: "Intranasal", value: "0.2-0.5", unit: "mg/kg" },
+        ivChild: { label: "IV (Infant/Child/Adol)", value: "0.05-0.1", unit: "mg/kg q4-6h PRN (max 10mg)" },
+        intranasal: { label: "Intranasal", value: "0.2-0.3", unit: "mg/kg (max 10mg)" },
+        statusUnder1yr: { label: "Status (<1yr)", value: "0.1-0.3", unit: "mg/kg IV q15-30min x2-3 (max total 2mg)" },
+        status1to5yr: { label: "Status (1-5yr)", value: "0.2-0.5", unit: "mg/kg IV q2-5min (max total 10mg)" },
+        statusOver5yr: { label: "Status (>5yr)", value: "0.1-0.3", unit: "mg/kg IV q10-15min (max total 10mg)" },
         po: { label: "PO", value: "0.25-0.5", unit: "mg/kg" }
       },
-      max: "0.5 mg/kg IN, 10 mg IV",
-      indication: "Anxiolysis, procedural sedation, seizures",
-      notes: "Short-acting benzo. Reversal: flumazenil.",
+      max: "10 mg/dose",
+      indication: "Anxiolysis, procedural sedation, status epilepticus",
+      notes: "Short-acting benzo. Oral syrup 1 mg/mL available. Reversal: flumazenil.",
       renalAdjust: null
     },
     {
