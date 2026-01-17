@@ -80,7 +80,23 @@ Build a full SaaS-style web app "Pediatrics on the Go" with:
 
 ## Recent Changes (January 16, 2026)
 
-### Session 5 Updates (Current)
+### Session 6 Updates (Current - January 17, 2026)
+- ✅ **Acetaminophen (Paracetamol) Approach Added**:
+  - Created comprehensive `AcetaminophenApproach.jsx` component in `/app/frontend/src/pages/children/approaches/`
+  - Features include:
+    - **Rumack-Matthew Nomogram**: Interactive SVG chart with treatment line (orange) and probable toxicity line (red dashed)
+    - **Risk Assessment Calculator**: Calculates mg/kg ingestion, plots serum level vs time on nomogram
+    - **NAC Dosing Protocols**: 3-bag IV (21h), 2-bag IV (20h), and Oral (72h) regimens with weight-based calculations
+    - **Clinical Phases of Toxicity**: Phase I-IV with detailed symptoms
+    - **Toxic Dose Thresholds**: Acute (≥150 mg/kg), Chronic (≥150 mg/kg/day), High-risk patients
+    - **Initial Management**: Decontamination, labs, poison control guidance
+    - **Stopping Criteria**: When to discontinue NAC treatment
+    - **Severe Hepatotoxicity Indicators**: AST/ALT, INR, creatinine, metabolic acidosis thresholds
+  - Integrated into `ApproachesPage.jsx` with dropdown and search functionality
+  - Keywords: acetaminophen, paracetamol, tylenol, overdose, nac, n-acetylcysteine, rumack, nomogram, hepatotoxicity, liver, poisoning
+  - **Testing**: 100% pass rate (iteration_11.json)
+
+### Session 5 Updates
 - ✅ **Growth Chart Mobile Improvements**:
   - Added fullscreen/maximize mode for better mobile viewing (X and Y axes fully visible)
   - Minimize button to exit fullscreen and return to normal view
@@ -293,10 +309,11 @@ Build a full SaaS-style web app "Pediatrics on the Go" with:
 - [ ] Mobile responsiveness fix when accessing from app.pedotg.com (GoDaddy domain)
 
 ## Test Reports
+- `/app/test_reports/iteration_11.json` - Acetaminophen Approach tests (100% passed)
 - `/app/test_reports/iteration_9.json` - NICU Approaches feature tests (100% passed)
 - `/app/test_reports/iteration_8.json` - Approaches refactoring tests (100% passed)
 - `/app/test_reports/iteration_7.json` - OCR backend tests (15/15 passed)
 - `/app/tests/test_ocr_service.py` - Test file for OCR endpoints
 
 ## Last Updated
-January 16, 2026 - NICU Approaches Section Complete
+January 17, 2026 - Acetaminophen (Paracetamol) Approach Added
