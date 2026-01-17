@@ -302,9 +302,10 @@ const ApproachesPage = ({ onBack }) => {
 
       {/* Scrollable Container for Zoomed Content */}
       <div 
+        ref={containerRef}
         className="relative mt-4 overflow-auto rounded-lg border border-transparent"
         style={{
-          maxHeight: zoomLevel > 100 ? '60vh' : 'none',
+          maxHeight: zoomLevel > 100 ? '70vh' : 'none',
         }}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
@@ -314,7 +315,7 @@ const ApproachesPage = ({ onBack }) => {
         {/* Approach Content with Pinch-to-Zoom */}
         <div 
           ref={contentRef}
-          className="space-y-3 transition-transform duration-100"
+          className="space-y-3 transition-transform duration-75"
           style={{ 
             transform: `scale(${zoomLevel / 100})`,
             transformOrigin: 'top left',
