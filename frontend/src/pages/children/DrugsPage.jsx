@@ -996,14 +996,15 @@ const DrugsPage = ({ onBack }) => {
       id: "lorazepam",
       name: "Lorazepam",
       category: "Sedative",
-      route: "IV/PO",
+      route: "IV/PO/IM",
       doses: {
-        seizure: { label: "Status Epilepticus", value: "0.05-0.1", unit: "mg/kg (max 4mg)" },
+        seizureNeo: { label: "Sedation (Neonate/Infant)", value: "0.05-0.1", unit: "mg/kg IV q4-8h (max 2mg)" },
+        seizureChild: { label: "Status Epilepticus", value: "0.05-0.1", unit: "mg/kg IV slowly over 2-5min (max 4mg)" },
         sedation: { label: "Sedation", value: "0.02-0.05", unit: "mg/kg q4-8h" }
       },
-      max: "4 mg/dose",
+      max: "2 mg (neonates), 4 mg (child/adult)",
       indication: "Status epilepticus, sedation, anxiety",
-      notes: "Benzodiazepine. Contains propylene glycol (IV).",
+      notes: "Benzodiazepine. Give IV slowly over 2-5 min. May repeat in 10-15 min. Contains propylene glycol (IV).",
       renalAdjust: null
     },
     {
