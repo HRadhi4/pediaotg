@@ -484,9 +484,9 @@ const AcetaminophenApproach = ({ weight, expandedSections, toggleSection }) => {
             )}
 
             {/* SVG Nomogram - scrollable container for mobile */}
-            <div className="overflow-x-auto overflow-y-auto max-h-[350px] -mx-2 px-2">
-              <div className="flex justify-center min-w-[340px]">
-                <svg width={svgWidth} height={svgHeight} className="bg-white dark:bg-gray-900 rounded border flex-shrink-0">
+            <div className="overflow-auto -mx-2 px-2 pb-2">
+              <div className="flex justify-center" style={{ minWidth: '340px' }}>
+                <svg width={svgWidth} height={svgHeight} className="bg-white dark:bg-gray-900 rounded border" style={{ flexShrink: 0 }}>
                 {/* Grid lines */}
                 {[5, 10, 20, 50, 100, 150, 200].map(c => (
                   <g key={c}>
