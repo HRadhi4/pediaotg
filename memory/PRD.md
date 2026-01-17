@@ -93,10 +93,16 @@ Build a full SaaS-style web app "Pediatrics on the Go" with:
   - Dropdown now opens DOWNWARD (using `position="popper" side="bottom"`)
   - Shortened patient info labels (GA wks, PNA days, Wt kg) for better mobile fit
 
-- ✅ **Floating Nav Bar Transparency**:
-  - Nav bar now has glass/transparent effect with `backdrop-blur-xl`
-  - Uses 70% opacity white/dark backgrounds
-  - More subtle shadow and border for cleaner look
+- ✅ **Children Approaches Improvements**:
+  - Layout matches NICU Approaches (dropdown above patient info)
+  - Added pinch-to-zoom (100%-200% range, double-tap to reset)
+  - Converted UGIB and Hyperkalemia to visual flowchart format
+
+- ✅ **Drug Dosing Major Update (Formulary Alignment)**:
+  - Updated 25+ medications to match Harriet Lane Formulary dosing
+  - Added age-stratified dosing (neonate by PMA, child, adult)
+  - Added comprehensive indications for all drugs
+  - Key drugs updated: Clindamycin, Vancomycin, Gentamicin, Ampicillin, Ceftriaxone, Cefotaxime, Metronidazole, Azithromycin, Morphine, Fentanyl, Ketamine, Midazolam, Phenobarbital, Phenytoin, Epinephrine, Atropine, Amiodarone, Adenosine, Dopamine, Norepinephrine, Furosemide, Dexamethasone, Hydrocortisone, Prednisolone, Ondansetron, Acetaminophen, Ibuprofen, Albuterol, Naloxone, Magnesium
 
 ### Session 4 Updates
 - ✅ **Growth Chart Replaced with GitHub Repo Version**:
