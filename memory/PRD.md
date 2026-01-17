@@ -332,7 +332,6 @@ Build a full SaaS-style web app "Pediatrics on the Go" with:
 - Use viewport meta tags for proper mobile rendering
 
 ## Backlog / Future Tasks
-- [ ] Add "Infant with mother asymptomatic bacteriuria" topic to Postnatal section
 - [ ] Add more drug entries
 - [ ] Add automated blood gas interpretation
 - [ ] Add Salicylate (Aspirin) Toxicity approach
@@ -348,6 +347,7 @@ Build a full SaaS-style web app "Pediatrics on the Go" with:
 - [ ] Mobile responsiveness fix when accessing from app.pedotg.com (GoDaddy domain)
 
 ## Test Reports
+- `/app/test_reports/iteration_17.json` - ASB + Metabolic Emergencies tests (100% passed - 16/16)
 - `/app/test_reports/iteration_16.json` - Postnatal Section tests (100% passed - 9/9)
 - `/app/test_reports/iteration_14.json` - Acetaminophen ml/mg conversion tests (100% passed - 9/9)
 - `/app/test_reports/iteration_13.json` - Iron & NSAID ml/mg conversion tests (100% passed - 10/10)
@@ -358,4 +358,4 @@ Build a full SaaS-style web app "Pediatrics on the Go" with:
 - `/app/test_reports/iteration_7.json` - OCR backend tests (15/15 passed)
 
 ## Last Updated
-January 17, 2026 - Postnatal section fully implemented with 3 topics (Routine Management, Assessment, Hemoglobinopathy Screening)
+January 17, 2026 - Added Metabolic Emergencies (Children) and ASB (Postnatal) approaches
