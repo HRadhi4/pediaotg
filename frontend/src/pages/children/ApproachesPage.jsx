@@ -49,6 +49,7 @@ import {
   AcetaminophenApproach,
   IronToxicityApproach,
   NSAIDToxicityApproach,
+  MetabolicEmergencyApproach,
 } from "./approaches";
 
 const ApproachesPage = ({ onBack }) => {

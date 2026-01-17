@@ -23,3 +23,4 @@ export { default as UgibApproach } from './UgibApproach';
 export { default as AcetaminophenApproach } from './AcetaminophenApproach';
 export { default as IronToxicityApproach } from './IronToxicityApproach';
 export { default as NSAIDToxicityApproach } from './NSAIDToxicityApproach';
+export { default as MetabolicEmergencyApproach } from './MetabolicEmergencyApproach';
