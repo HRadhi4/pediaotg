@@ -48,6 +48,7 @@ import {
   UgibApproach,
   AcetaminophenApproach,
   IronToxicityApproach,
+  NSAIDToxicityApproach,
 } from "./approaches";
 
 const ApproachesPage = ({ onBack }) => {
@@ -75,6 +76,7 @@ const ApproachesPage = ({ onBack }) => {
     { id: "hyperkalemia", label: "Hyperkalemia", keywords: ["potassium", "hyperkalemia", "ecg", "calcium gluconate", "insulin", "kayexalate", "dialysis", "arrhythmia"] },
     { id: "hypocalcemia", label: "Hypocalcemia", keywords: ["calcium", "hypocalcemia", "rickets", "vitamin d", "pth", "parathyroid", "phosphate", "calcitriol", "tetany", "chvostek", "trousseau"] },
     { id: "iron", label: "Iron Toxicity", keywords: ["iron", "ferrous", "sulfate", "gluconate", "fumarate", "deferoxamine", "desferal", "chelation", "poisoning", "overdose", "elemental iron"] },
+    { id: "nsaid", label: "NSAID Toxicity", keywords: ["nsaid", "ibuprofen", "naproxen", "diclofenac", "advil", "motrin", "aleve", "mefenamic", "ponstan", "indomethacin", "ketorolac", "poisoning", "overdose"] },
     { id: "sepsis", label: "Septic Shock", keywords: ["sepsis", "septic", "shock", "cold", "warm", "vasopressor", "fluid", "bolus"] },
     { id: "asthma", label: "Status Asthmaticus", keywords: ["asthma", "wheeze", "bronchospasm", "salbutamol", "ventolin", "magnesium", "respiratory"] },
     { id: "seizure", label: "Status Epilepticus", keywords: ["seizure", "epilepsy", "convulsion", "phenytoin", "diazepam", "midazolam", "levetiracetam"] },
@@ -289,6 +291,7 @@ const ApproachesPage = ({ onBack }) => {
         {activeTab === "ugib" && <UgibApproach {...commonProps} />}
         {activeTab === "acetaminophen" && <AcetaminophenApproach {...commonProps} />}
         {activeTab === "iron" && <IronToxicityApproach {...commonProps} />}
+        {activeTab === "nsaid" && <NSAIDToxicityApproach {...commonProps} />}
         </div>
       </div>
 
