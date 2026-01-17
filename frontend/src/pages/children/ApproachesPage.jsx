@@ -47,6 +47,7 @@ import {
   HyperkalemiaApproach,
   UgibApproach,
   AcetaminophenApproach,
+  IronToxicityApproach,
 } from "./approaches";
 
 const ApproachesPage = ({ onBack }) => {
@@ -73,6 +74,7 @@ const ApproachesPage = ({ onBack }) => {
     { id: "headache", label: "Headache", keywords: ["headache", "migraine", "tension", "iih", "papilledema", "intracranial hypertension", "photophobia"] },
     { id: "hyperkalemia", label: "Hyperkalemia", keywords: ["potassium", "hyperkalemia", "ecg", "calcium gluconate", "insulin", "kayexalate", "dialysis", "arrhythmia"] },
     { id: "hypocalcemia", label: "Hypocalcemia", keywords: ["calcium", "hypocalcemia", "rickets", "vitamin d", "pth", "parathyroid", "phosphate", "calcitriol", "tetany", "chvostek", "trousseau"] },
+    { id: "iron", label: "Iron Toxicity", keywords: ["iron", "ferrous", "sulfate", "gluconate", "fumarate", "deferoxamine", "desferal", "chelation", "poisoning", "overdose", "elemental iron"] },
     { id: "sepsis", label: "Septic Shock", keywords: ["sepsis", "septic", "shock", "cold", "warm", "vasopressor", "fluid", "bolus"] },
     { id: "asthma", label: "Status Asthmaticus", keywords: ["asthma", "wheeze", "bronchospasm", "salbutamol", "ventolin", "magnesium", "respiratory"] },
     { id: "seizure", label: "Status Epilepticus", keywords: ["seizure", "epilepsy", "convulsion", "phenytoin", "diazepam", "midazolam", "levetiracetam"] },
