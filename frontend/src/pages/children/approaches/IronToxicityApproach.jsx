@@ -1,6 +1,6 @@
 /**
  * Iron Toxicity Approach Component
- * Includes elemental iron calculator and deferoxamine dosing protocols
+ * Includes elemental iron calculator with ml/mg conversion and deferoxamine dosing protocols
  */
 
 import { useState, useMemo } from "react";
@@ -8,65 +8,85 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { AlertTriangle, ArrowDown, Calculator, Beaker, Activity, Clock } from "lucide-react";
-
-const FlowNode = ({ children, type = "default", className = "" }) => {
-  const styles = {
-    start: "bg-blue-500 text-white border-blue-600",
-    decision: "bg-amber-100 dark:bg-amber-900/30 border-amber-400 text-amber-800 dark:text-amber-200",
-    action: "bg-green-50 dark:bg-green-900/20 border-green-400",
-    danger: "bg-red-50 dark:bg-red-900/20 border-red-400",
-    info: "bg-gray-50 dark:bg-gray-800 border-gray-300",
-    warning: "bg-amber-50 dark:bg-amber-900/20 border-amber-300",
-    success: "bg-green-100 dark:bg-green-900/30 border-green-500",
-  };
-  return (
-    <div className={`p-3 rounded-lg border-2 text-xs ${styles[type]} ${className}`}>
-      {children}
-    </div>
-  );
-};
-
-const Arrow = ({ label }) => (
-  <div className="flex flex-col items-center py-2">
-    <ArrowDown className="h-5 w-5 text-gray-400" />
-    {label && <span className="text-[10px] text-muted-foreground mt-1">{label}</span>}
-  </div>
-);
+import Section from "./Section";
 
 // Iron salt elemental iron percentages (from UpToDate)
 const IRON_SALTS = [
-  { id: "ferrous_sulfate", name: "Ferrous Sulfate", elementalPercent: 20, example: "325mg tablet = 65mg elemental" },
-  { id: "ferrous_gluconate", name: "Ferrous Gluconate", elementalPercent: 12, example: "325mg tablet = 39mg elemental" },
-  { id: "ferrous_fumarate", name: "Ferrous Fumarate", elementalPercent: 33, example: "325mg tablet = 107mg elemental" },
-  { id: "carbonyl_iron", name: "Carbonyl Iron", elementalPercent: 100, example: "Slowly absorbed, greater safety margin" },
-  { id: "polysaccharide_iron", name: "Polysaccharide Iron Complex", elementalPercent: 100, example: "150mg = 150mg elemental" },
-  { id: "iron_dextran", name: "Iron Dextran (IV)", elementalPercent: 100, example: "Already elemental iron" },
+  { id: "ferrous_sulfate", name: "Ferrous Sulfate", elementalPercent: 20 },
+  { id: "ferrous_gluconate", name: "Ferrous Gluconate", elementalPercent: 12 },
+  { id: "ferrous_fumarate", name: "Ferrous Fumarate", elementalPercent: 33 },
+  { id: "carbonyl_iron", name: "Carbonyl Iron", elementalPercent: 100 },
+  { id: "polysaccharide_iron", name: "Polysaccharide Iron Complex", elementalPercent: 100 },
+  { id: "iron_dextran", name: "Iron Dextran (IV)", elementalPercent: 100 },
 ];
 
-const IronToxicityApproach = ({ weight }) => {
+// Common liquid iron preparations in Bahrain (concentration in mg/ml of iron salt)
+const LIQUID_IRON_PREPARATIONS = [
+  { id: "feroglobin_syrup", name: "Feroglobin Syrup", concentration: 23.5, concentrationUnit: "mg Fe gluconate/5ml", elementalPercent: 12, perMl: 4.7 },
+  { id: "ferrous_sulfate_syrup", name: "Ferrous Sulfate Syrup (Generic)", concentration: 25, concentrationUnit: "mg Fe sulfate/ml", elementalPercent: 20, perMl: 25 },
+  { id: "fer_in_sol", name: "Fer-In-Sol Drops", concentration: 75, concentrationUnit: "mg Fe sulfate/ml", elementalPercent: 20, perMl: 75 },
+  { id: "iberet_folic", name: "Iberet Folic Liquid", concentration: 52.5, concentrationUnit: "mg Fe sulfate/5ml", elementalPercent: 20, perMl: 10.5 },
+  { id: "maltofer_syrup", name: "Maltofer Syrup", concentration: 50, concentrationUnit: "mg Fe(III)/5ml", elementalPercent: 100, perMl: 10, note: "Elemental iron" },
+  { id: "maltofer_drops", name: "Maltofer Drops", concentration: 50, concentrationUnit: "mg Fe(III)/ml", elementalPercent: 100, perMl: 50, note: "Elemental iron" },
+  { id: "custom", name: "Custom / Other", concentration: 0, concentrationUnit: "mg/ml", elementalPercent: 20, perMl: 0 },
+];
+
+const IronToxicityApproach = ({ weight, expandedSections, toggleSection }) => {
+  const [inputMode, setInputMode] = useState("mg"); // "mg" or "ml"
   const [selectedSalt, setSelectedSalt] = useState("");
+  const [selectedLiquid, setSelectedLiquid] = useState("");
   const [amountIngested, setAmountIngested] = useState("");
+  const [mlIngested, setMlIngested] = useState("");
+  const [customConcentration, setCustomConcentration] = useState("");
+  const [customElementalPercent, setCustomElementalPercent] = useState("20");
   const [serumIron, setSerumIron] = useState("");
-  const [hoursPostIngestion, setHoursPostIngestion] = useState("");
 
   const w = parseFloat(weight) || 0;
   const amount = parseFloat(amountIngested) || 0;
+  const ml = parseFloat(mlIngested) || 0;
   const serum = parseFloat(serumIron) || 0;
+  const customConc = parseFloat(customConcentration) || 0;
+  const customElem = parseFloat(customElementalPercent) || 20;
 
   // Calculate elemental iron ingested
   const ironCalculation = useMemo(() => {
-    if (!selectedSalt || amount <= 0) return null;
-    
-    const salt = IRON_SALTS.find(s => s.id === selectedSalt);
-    if (!salt) return null;
-    
-    const elementalIron = amount * (salt.elementalPercent / 100);
+    let elementalIron = 0;
+    let saltName = "";
+    let elementalPercent = 0;
+    let totalSaltMg = 0;
+
+    if (inputMode === "mg" && selectedSalt && amount > 0) {
+      const salt = IRON_SALTS.find(s => s.id === selectedSalt);
+      if (!salt) return null;
+      saltName = salt.name;
+      elementalPercent = salt.elementalPercent;
+      totalSaltMg = amount;
+      elementalIron = amount * (salt.elementalPercent / 100);
+    } else if (inputMode === "ml" && selectedLiquid && ml > 0) {
+      const liquid = LIQUID_IRON_PREPARATIONS.find(l => l.id === selectedLiquid);
+      if (!liquid) return null;
+      
+      if (liquid.id === "custom") {
+        if (customConc <= 0) return null;
+        saltName = "Custom Preparation";
+        elementalPercent = customElem;
+        totalSaltMg = ml * customConc;
+        elementalIron = totalSaltMg * (customElem / 100);
+      } else {
+        saltName = liquid.name;
+        elementalPercent = liquid.elementalPercent;
+        totalSaltMg = ml * liquid.perMl;
+        elementalIron = totalSaltMg * (liquid.elementalPercent / 100);
+      }
+    } else {
+      return null;
+    }
+
     const mgPerKg = w > 0 ? elementalIron / w : 0;
     
     let severity = "minimal";
-    let riskLevel = "Low risk";
-    let recommendation = "Observation at home may be appropriate";
+    let riskLevel = "Usually Asymptomatic";
+    let recommendation = "Observation at home appropriate";
     
     if (mgPerKg >= 60) {
       severity = "severe";
@@ -79,43 +99,32 @@ const IronToxicityApproach = ({ weight }) => {
     }
     
     return {
-      saltName: salt.name,
-      elementalPercent: salt.elementalPercent,
+      saltName,
+      elementalPercent,
+      totalSaltMg: totalSaltMg.toFixed(1),
       elementalIron: elementalIron.toFixed(1),
       mgPerKg: mgPerKg.toFixed(1),
       severity,
       riskLevel,
       recommendation
     };
-  }, [selectedSalt, amount, w]);
+  }, [inputMode, selectedSalt, selectedLiquid, amount, ml, customConc, customElem, w]);
 
   // Deferoxamine dosing
   const deferoxamineDosing = useMemo(() => {
     if (w <= 0) return null;
-    
-    const initialDose = w * 15; // 15 mg/kg/hour
-    const maxInitialHourly = Math.min(initialDose, 1000); // Max 1g/hour initially
-    const maintenanceDose = w * 10; // 10 mg/kg/hour (reduced)
-    const maxDailyDose = 6000; // 6g max daily
-    
-    return {
-      initialRate: maxInitialHourly.toFixed(0),
-      initialRatePerKg: 15,
-      maintenanceRate: maintenanceDose.toFixed(0),
-      maintenanceRatePerKg: 10,
-      maxDaily: maxDailyDose,
-      infusionDuration: "Continue until clinical improvement + serum iron <300 mcg/dL"
-    };
+    const initialDose = w * 15;
+    const maxDose = w * 35;
+    return { initialRate: initialDose.toFixed(0), maxRate: maxDose.toFixed(0) };
   }, [w]);
 
-  // Serum iron interpretation (from UpToDate)
+  // Serum iron interpretation
   const serumInterpretation = useMemo(() => {
     if (serum <= 0) return null;
-    
     let severity, recommendation;
     if (serum >= 1000) {
       severity = "critical";
-      recommendation = "Significant morbidity and mortality - immediate chelation";
+      recommendation = "Significant morbidity/mortality - immediate chelation";
     } else if (serum >= 500) {
       severity = "critical";
       recommendation = "Serious systemic toxicity - deferoxamine indicated";
@@ -126,179 +135,242 @@ const IronToxicityApproach = ({ weight }) => {
       severity = "normal";
       recommendation = "Minimal toxicity expected";
     }
-    
     return { severity, recommendation, level: serum };
   }, [serum]);
+
+  const selectedLiquidData = LIQUID_IRON_PREPARATIONS.find(l => l.id === selectedLiquid);
 
   return (
     <Card>
       <CardHeader className="pb-2">
-        <CardTitle className="text-base flex items-center gap-2">
-          <AlertTriangle className="h-5 w-5 text-orange-500" />
-          Iron Toxicity
-        </CardTitle>
+        <CardTitle className="text-base">Iron Toxicity</CardTitle>
         <CardDescription className="text-xs">Elemental iron calculator, toxicity staging & deferoxamine protocol</CardDescription>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-3">
         
-        {/* Elemental Iron Calculator */}
-        <div className="border-2 border-orange-400 rounded-lg p-3 bg-orange-50/50 dark:bg-orange-950/20">
-          <p className="font-bold text-orange-700 mb-3 flex items-center gap-2">
-            <Calculator className="h-4 w-4" />
-            Elemental Iron Calculator
-          </p>
-          
+        {/* Elemental Iron Calculator - Always Open */}
+        <Section id="iron-calc" title="Elemental Iron Calculator" defaultOpen={true} expandedSections={expandedSections} toggleSection={toggleSection}>
           <div className="space-y-3">
-            <div>
-              <Label className="text-xs">Iron Salt Type</Label>
-              <Select value={selectedSalt} onValueChange={setSelectedSalt}>
-                <SelectTrigger className="mt-1" data-testid="iron-salt-selector">
-                  <SelectValue placeholder="Select iron preparation..." />
-                </SelectTrigger>
-                <SelectContent>
-                  {IRON_SALTS.map(salt => (
-                    <SelectItem key={salt.id} value={salt.id}>
-                      {salt.name} ({salt.elementalPercent}% elemental)
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+            {/* Input Mode Toggle */}
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={() => setInputMode("mg")}
+                className={`flex-1 py-2 px-3 text-xs rounded border ${inputMode === "mg" ? "bg-slate-700 text-white border-slate-700" : "bg-white dark:bg-gray-800 border-gray-300"}`}
+              >
+                Tablets (mg)
+              </button>
+              <button
+                type="button"
+                onClick={() => setInputMode("ml")}
+                className={`flex-1 py-2 px-3 text-xs rounded border ${inputMode === "ml" ? "bg-slate-700 text-white border-slate-700" : "bg-white dark:bg-gray-800 border-gray-300"}`}
+              >
+                Liquid (ml)
+              </button>
             </div>
-            
-            <div>
-              <Label className="text-xs">Amount of Iron Salt Ingested (mg)</Label>
-              <Input
-                type="number"
-                value={amountIngested}
-                onChange={(e) => setAmountIngested(e.target.value)}
-                placeholder="e.g., 650 (two 325mg tablets)"
-                className="h-8 text-sm mt-1"
-                min="0"
-                data-testid="iron-amount-input"
-              />
-            </div>
-            
+
+            {inputMode === "mg" ? (
+              <>
+                <div>
+                  <Label className="text-xs">Iron Salt Type</Label>
+                  <Select value={selectedSalt} onValueChange={setSelectedSalt}>
+                    <SelectTrigger className="mt-1" data-testid="iron-salt-selector">
+                      <SelectValue placeholder="Select iron preparation..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {IRON_SALTS.map(salt => (
+                        <SelectItem key={salt.id} value={salt.id}>
+                          {salt.name} ({salt.elementalPercent}% elemental)
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label className="text-xs">Amount of Iron Salt Ingested (mg)</Label>
+                  <Input
+                    type="number"
+                    value={amountIngested}
+                    onChange={(e) => setAmountIngested(e.target.value)}
+                    placeholder="e.g., 650"
+                    className="h-8 text-sm mt-1"
+                    min="0"
+                    data-testid="iron-amount-input"
+                  />
+                </div>
+              </>
+            ) : (
+              <>
+                <div>
+                  <Label className="text-xs">Liquid Iron Preparation (Bahrain)</Label>
+                  <Select value={selectedLiquid} onValueChange={setSelectedLiquid}>
+                    <SelectTrigger className="mt-1" data-testid="iron-liquid-selector">
+                      <SelectValue placeholder="Select liquid preparation..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {LIQUID_IRON_PREPARATIONS.map(liquid => (
+                        <SelectItem key={liquid.id} value={liquid.id}>
+                          {liquid.name} {liquid.id !== "custom" && `(${liquid.concentrationUnit})`}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  {selectedLiquidData && selectedLiquidData.note && (
+                    <p className="text-[10px] text-muted-foreground mt-1">{selectedLiquidData.note}</p>
+                  )}
+                </div>
+
+                {selectedLiquid === "custom" && (
+                  <div className="grid grid-cols-2 gap-2">
+                    <div>
+                      <Label className="text-xs">Concentration (mg/ml)</Label>
+                      <Input
+                        type="number"
+                        value={customConcentration}
+                        onChange={(e) => setCustomConcentration(e.target.value)}
+                        placeholder="mg/ml"
+                        className="h-8 text-sm mt-1"
+                        min="0"
+                      />
+                    </div>
+                    <div>
+                      <Label className="text-xs">Elemental Iron %</Label>
+                      <Select value={customElementalPercent} onValueChange={setCustomElementalPercent}>
+                        <SelectTrigger className="mt-1 h-8">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="12">12% (Gluconate)</SelectItem>
+                          <SelectItem value="20">20% (Sulfate)</SelectItem>
+                          <SelectItem value="33">33% (Fumarate)</SelectItem>
+                          <SelectItem value="100">100% (Elemental)</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                )}
+
+                <div>
+                  <Label className="text-xs">Volume Ingested (ml)</Label>
+                  <Input
+                    type="number"
+                    value={mlIngested}
+                    onChange={(e) => setMlIngested(e.target.value)}
+                    placeholder="e.g., 30"
+                    className="h-8 text-sm mt-1"
+                    min="0"
+                    data-testid="iron-ml-input"
+                  />
+                </div>
+              </>
+            )}
+
             {/* Results */}
             {ironCalculation && (
               <div className={`p-3 rounded-lg text-xs space-y-2 ${
-                ironCalculation.severity === 'lethal' ? 'bg-red-200 dark:bg-red-900/50 text-red-900 dark:text-red-100' :
-                ironCalculation.severity === 'severe' ? 'bg-red-100 dark:bg-red-900/30 text-red-800' :
-                ironCalculation.severity === 'moderate' ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-800' :
-                ironCalculation.severity === 'mild' ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800' :
-                'bg-green-100 dark:bg-green-900/30 text-green-800'
+                ironCalculation.severity === 'severe' ? 'bg-red-50 dark:bg-red-950/30 text-red-900 dark:text-red-100 border border-red-200' :
+                ironCalculation.severity === 'mild' ? 'bg-amber-50 dark:bg-amber-950/30 text-amber-900 border border-amber-200' :
+                'bg-green-50 dark:bg-green-950/30 text-green-900 border border-green-200'
               }`}>
                 <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <p className="text-[10px] opacity-70">Iron Salt</p>
-                    <p className="font-semibold">{ironCalculation.saltName}</p>
+                    <p className="text-[10px] opacity-70">Preparation</p>
+                    <p className="font-semibold text-xs">{ironCalculation.saltName}</p>
                   </div>
                   <div>
                     <p className="text-[10px] opacity-70">Elemental %</p>
                     <p className="font-semibold">{ironCalculation.elementalPercent}%</p>
                   </div>
                 </div>
-                <div className="pt-2 border-t border-current/20">
+                {inputMode === "ml" && (
+                  <div className="pt-2 border-t border-current/10">
+                    <p className="text-[10px] opacity-70">Total Iron Salt</p>
+                    <p className="font-semibold">{ironCalculation.totalSaltMg} mg</p>
+                  </div>
+                )}
+                <div className="pt-2 border-t border-current/10">
                   <p className="text-[10px] opacity-70">Elemental Iron Ingested</p>
                   <p className="font-bold text-lg">{ironCalculation.elementalIron} mg</p>
                 </div>
                 {w > 0 && (
-                  <div className="pt-2 border-t border-current/20">
+                  <div className="pt-2 border-t border-current/10">
                     <p className="text-[10px] opacity-70">Dose per Body Weight</p>
                     <p className="font-bold text-lg">{ironCalculation.mgPerKg} mg/kg</p>
                   </div>
                 )}
-                <div className="pt-2 border-t border-current/20">
+                <div className="pt-2 border-t border-current/10">
                   <p className="font-bold">{ironCalculation.riskLevel}</p>
                   <p className="text-[10px] mt-1">{ironCalculation.recommendation}</p>
                 </div>
               </div>
             )}
-          </div>
-          
-          {/* Quick Reference Table */}
-          <div className="mt-3 text-[10px]">
-            <p className="font-semibold mb-1">Common Iron Preparations:</p>
-            <div className="grid grid-cols-2 gap-1">
-              {IRON_SALTS.slice(0, 4).map(salt => (
-                <div key={salt.id} className="p-1.5 bg-white/50 dark:bg-black/20 rounded">
-                  <p className="font-medium">{salt.name}</p>
-                  <p className="text-muted-foreground">{salt.elementalPercent}% elemental</p>
-                </div>
-              ))}
+
+            {/* Quick Reference */}
+            <div className="text-[10px] p-2 bg-gray-50 dark:bg-gray-800 rounded">
+              <p className="font-semibold mb-1">Common Iron Salts:</p>
+              <p className="text-muted-foreground">Ferrous Sulfate 20% • Gluconate 12% • Fumarate 33% • Carbonyl/Maltofer 100%</p>
             </div>
           </div>
-        </div>
+        </Section>
 
         {/* Toxic Dose Thresholds */}
-        <FlowNode type="danger">
-          <p className="font-bold text-red-700 mb-2">⚠️ Toxic Dose Thresholds (Elemental Iron)</p>
-          <div className="space-y-2 text-[10px]">
-            <div className="flex items-center gap-2">
-              <span className="w-20 font-bold text-green-600">&lt;20 mg/kg</span>
-              <span>Usually asymptomatic - observation at home</span>
+        <Section id="iron-toxic" title="Toxic Dose Thresholds (Elemental Iron)" expandedSections={expandedSections} toggleSection={toggleSection}>
+          <div className="space-y-2 text-xs">
+            <div className="flex items-center gap-2 p-2 bg-green-50 dark:bg-green-950/20 rounded">
+              <span className="w-20 font-bold text-green-700">&lt;20 mg/kg</span>
+              <span className="text-muted-foreground">Usually asymptomatic - observation at home</span>
             </div>
-            <div className="flex items-center gap-2">
-              <span className="w-20 font-bold text-yellow-600">20-60 mg/kg</span>
-              <span>Low potential for serious toxicity - GI symptoms possible</span>
+            <div className="flex items-center gap-2 p-2 bg-amber-50 dark:bg-amber-950/20 rounded">
+              <span className="w-20 font-bold text-amber-700">20-60 mg/kg</span>
+              <span className="text-muted-foreground">Low potential for serious toxicity - GI symptoms possible</span>
             </div>
-            <div className="flex items-center gap-2">
-              <span className="w-20 font-bold text-red-600">≥60 mg/kg</span>
-              <span>SERIOUS TOXICITY - hospitalization, consider deferoxamine</span>
+            <div className="flex items-center gap-2 p-2 bg-red-50 dark:bg-red-950/20 rounded">
+              <span className="w-20 font-bold text-red-700">≥60 mg/kg</span>
+              <span className="text-muted-foreground">SERIOUS TOXICITY - hospitalization, consider deferoxamine</span>
+            </div>
+            <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded mt-2">
+              <p className="font-semibold text-gray-700 dark:text-gray-300">Key Point:</p>
+              <p className="text-muted-foreground">Vomiting is the most sensitive indicator of serious iron ingestion</p>
             </div>
           </div>
-          <div className="mt-2 p-2 bg-amber-100 dark:bg-amber-900/30 rounded text-[10px]">
-            <p className="font-semibold text-amber-800">Key Point:</p>
-            <p className="text-amber-700">Vomiting is the most sensitive indicator of serious iron ingestion</p>
-          </div>
-        </FlowNode>
+        </Section>
 
         {/* Clinical Stages */}
-        <FlowNode type="info">
-          <p className="font-semibold mb-2 flex items-center gap-2">
-            <Clock className="h-4 w-4" />
-            Clinical Stages of Iron Poisoning
-          </p>
-          <div className="space-y-2 text-[10px]">
-            <div className="p-2 bg-red-100 dark:bg-red-900/30 rounded">
-              <p className="font-bold text-red-700">Stage 1: GI Phase (0.5-6 hours)</p>
-              <p>Nausea, vomiting, abdominal pain, diarrhea, hematemesis, melena</p>
-              <p className="text-[9px] text-muted-foreground mt-1">Direct corrosive injury to GI mucosa</p>
+        <Section id="iron-stages" title="Clinical Stages of Iron Poisoning" expandedSections={expandedSections} toggleSection={toggleSection}>
+          <div className="space-y-2 text-xs">
+            <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
+              <p className="font-semibold">Stage 1: GI Phase (0.5-6 hours)</p>
+              <p className="text-muted-foreground">Nausea, vomiting, abdominal pain, diarrhea, hematemesis, melena</p>
+              <p className="text-[10px] text-muted-foreground mt-1">Direct corrosive injury to GI mucosa</p>
             </div>
-            <div className="p-2 bg-amber-100 dark:bg-amber-900/30 rounded">
-              <p className="font-bold text-amber-700">Stage 2: Latent Phase (6-24 hours)</p>
-              <p>Apparent clinical improvement - GI symptoms resolve</p>
-              <p className="text-[9px] text-muted-foreground mt-1">⚠️ Can be misleading - iron absorption continues</p>
+            <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
+              <p className="font-semibold">Stage 2: Latent Phase (6-24 hours)</p>
+              <p className="text-muted-foreground">Apparent clinical improvement - GI symptoms resolve</p>
+              <p className="text-[10px] text-amber-600 mt-1">⚠️ Can be misleading - iron absorption continues</p>
             </div>
-            <div className="p-2 bg-red-200 dark:bg-red-900/40 rounded">
-              <p className="font-bold text-red-800">Stage 3: Shock/Metabolic Phase (6-72 hours)</p>
-              <p>Hypotension, metabolic acidosis, lethargy, coma, multi-organ failure</p>
-              <p className="text-[9px] text-muted-foreground mt-1">Cellular toxicity from free iron</p>
+            <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
+              <p className="font-semibold">Stage 3: Shock/Metabolic Phase (6-72 hours)</p>
+              <p className="text-muted-foreground">Hypotension, metabolic acidosis, lethargy, coma, multi-organ failure</p>
             </div>
-            <div className="p-2 bg-purple-100 dark:bg-purple-900/30 rounded">
-              <p className="font-bold text-purple-700">Stage 4: Hepatic Phase (12-96 hours)</p>
-              <p>Jaundice, coagulopathy, hypoglycemia, hepatic necrosis</p>
-              <p className="text-[9px] text-muted-foreground mt-1">Peak hepatotoxicity - may be fatal</p>
+            <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
+              <p className="font-semibold">Stage 4: Hepatic Phase (12-96 hours)</p>
+              <p className="text-muted-foreground">Jaundice, coagulopathy, hypoglycemia, hepatic necrosis</p>
             </div>
-            <div className="p-2 bg-gray-100 dark:bg-gray-800 rounded">
-              <p className="font-bold">Stage 5: Late/Delayed Phase (2-8 weeks)</p>
-              <p>Gastric outlet obstruction, pyloric stenosis, bowel strictures</p>
-              <p className="text-[9px] text-muted-foreground mt-1">Scarring from mucosal injury; rare Yersinia infection</p>
+            <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
+              <p className="font-semibold">Stage 5: Late/Delayed Phase (2-8 weeks)</p>
+              <p className="text-muted-foreground">Gastric outlet obstruction, pyloric stenosis, bowel strictures</p>
+            </div>
+            <div className="p-2 bg-green-50 dark:bg-green-950/20 rounded">
+              <p className="font-semibold text-green-700">✓ No symptoms by 6 hours = significant toxicity unlikely</p>
             </div>
           </div>
-          <div className="mt-2 p-2 bg-green-100 dark:bg-green-900/30 rounded text-[10px]">
-            <p className="font-semibold text-green-700">✓ No symptoms by 6 hours = significant toxicity unlikely</p>
-          </div>
-        </FlowNode>
+        </Section>
 
-        {/* Serum Iron Level Input */}
-        <div className="border rounded-lg p-3 bg-blue-50 dark:bg-blue-950/20">
-          <p className="font-semibold text-sm mb-2 flex items-center gap-2">
-            <Beaker className="h-4 w-4" />
-            Serum Iron Interpretation
-          </p>
-          <div className="grid grid-cols-2 gap-2 mb-2">
+        {/* Serum Iron Level */}
+        <Section id="iron-serum" title="Serum Iron Interpretation" expandedSections={expandedSections} toggleSection={toggleSection}>
+          <div className="space-y-2">
             <div>
-              <Label className="text-xs">Serum Iron (mcg/dL)</Label>
+              <Label className="text-xs">Serum Iron Level (mcg/dL)</Label>
               <Input
                 type="number"
                 value={serumIron}
@@ -309,145 +381,112 @@ const IronToxicityApproach = ({ weight }) => {
                 data-testid="serum-iron-input"
               />
             </div>
-            <div>
-              <Label className="text-xs">Hours Post-Ingestion</Label>
-              <Input
-                type="number"
-                value={hoursPostIngestion}
-                onChange={(e) => setHoursPostIngestion(e.target.value)}
-                placeholder="e.g., 4"
-                className="h-8 text-sm mt-1"
-                min="0"
-                data-testid="hours-input"
-              />
+            
+            {serumInterpretation && (
+              <div className={`p-2 rounded text-xs ${
+                serumInterpretation.severity === 'critical' ? 'bg-red-50 dark:bg-red-950/20 text-red-800' :
+                serumInterpretation.severity === 'high' ? 'bg-amber-50 dark:bg-amber-950/20 text-amber-800' :
+                'bg-green-50 dark:bg-green-950/20 text-green-800'
+              }`}>
+                <p className="font-bold">Serum Iron: {serumInterpretation.level} mcg/dL</p>
+                <p>{serumInterpretation.recommendation}</p>
+              </div>
+            )}
+            
+            <div className="text-[10px] text-muted-foreground p-2 bg-gray-50 dark:bg-gray-800 rounded">
+              <p className="font-semibold">Draw peak serum iron 4-6 hours post-ingestion (8h for extended-release)</p>
+              <p className="mt-1">&lt;350: Minimal • 350-500: Mild-Mod GI • ≥500: Serious • &gt;1000: Critical</p>
             </div>
           </div>
-          
-          {serumInterpretation && (
-            <div className={`p-2 rounded text-xs ${
-              serumInterpretation.severity === 'critical' ? 'bg-red-200 text-red-900' :
-              serumInterpretation.severity === 'high' ? 'bg-amber-200 text-amber-900' :
-              serumInterpretation.severity === 'elevated' ? 'bg-yellow-100 text-yellow-800' :
-              'bg-green-100 text-green-800'
-            }`}>
-              <p className="font-bold">Serum Iron: {serumInterpretation.level} mcg/dL</p>
-              <p>{serumInterpretation.recommendation}</p>
-            </div>
-          )}
-          
-          <div className="mt-2 text-[10px] text-muted-foreground">
-            <p><strong>Draw peak serum iron 4-6 hours post-ingestion</strong> (8h for extended-release)</p>
-            <p className="mt-1">
-              <span className="text-green-600">&lt;350:</span> Minimal | 
-              <span className="text-yellow-600 ml-1">350-500:</span> Mild-Mod GI | 
-              <span className="text-red-600 ml-1">≥500:</span> Serious | 
-              <span className="text-red-800 ml-1">&gt;1000:</span> Critical
-            </p>
-          </div>
-        </div>
+        </Section>
 
         {/* Initial Management */}
-        <FlowNode type="action">
-          <p className="font-bold text-green-700 mb-2">Initial Management</p>
-          <div className="space-y-2 text-[10px]">
-            <div className="p-2 bg-white/50 dark:bg-black/20 rounded">
+        <Section id="iron-mgmt" title="Initial Management" expandedSections={expandedSections} toggleSection={toggleSection}>
+          <div className="space-y-2 text-xs">
+            <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
               <p className="font-semibold">1. Stabilization</p>
-              <p>Airway protection, respiratory support, volume resuscitation (20 mL/kg isotonic crystalloid boluses)</p>
+              <p className="text-muted-foreground">Airway protection, respiratory support, volume resuscitation (20 mL/kg isotonic crystalloid boluses)</p>
+              {w > 0 && <p className="font-mono text-slate-600 mt-1">→ {(w * 20).toFixed(0)} mL NS bolus</p>}
             </div>
-            <div className="p-2 bg-white/50 dark:bg-black/20 rounded">
+            <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
               <p className="font-semibold">2. GI Decontamination</p>
-              <p><strong>Whole Bowel Irrigation (WBI)</strong> - preferred if significant unabsorbed iron on X-ray</p>
-              <p className="text-red-600 font-semibold mt-1">AVOID: Activated charcoal, Syrup of ipecac, Gastric lavage with bicarbonate/phosphate</p>
+              <p className="text-muted-foreground"><strong>Whole Bowel Irrigation (WBI)</strong> - preferred if significant unabsorbed iron on X-ray</p>
+              <p className="text-red-600 text-[10px] mt-1">AVOID: Activated charcoal, Syrup of ipecac, Gastric lavage with bicarbonate/phosphate</p>
             </div>
-            <div className="p-2 bg-white/50 dark:bg-black/20 rounded">
+            <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
               <p className="font-semibold">3. Labs to Order</p>
-              <p><strong>Mild:</strong> Glucose, electrolytes, BUN/Cr, blood gas, peak serum iron (4-6h)</p>
-              <p><strong>Moderate-Severe:</strong> + ALT, AST, bilirubin, CBC, PT/PTT/INR, type & screen</p>
+              <p className="text-muted-foreground"><strong>Mild:</strong> Glucose, electrolytes, BUN/Cr, blood gas, peak serum iron (4-6h)</p>
+              <p className="text-muted-foreground"><strong>Mod-Severe:</strong> + ALT, AST, bilirubin, CBC, PT/PTT/INR, type & screen</p>
             </div>
-            <div className="p-2 bg-white/50 dark:bg-black/20 rounded">
+            <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
               <p className="font-semibold">4. Abdominal X-ray</p>
-              <p>For symptomatic patients, unknown amount, or intentional ingestion - iron tablets are radiopaque</p>
+              <p className="text-muted-foreground">Iron tablets are radiopaque - helps assess pill burden</p>
             </div>
-            <div className="p-2 bg-white/50 dark:bg-black/20 rounded">
+            <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
               <p className="font-semibold">5. Poison Control / Toxicology Consult</p>
-              <p>Strongly recommended for moderate to severe poisoning</p>
             </div>
           </div>
-        </FlowNode>
+        </Section>
 
         {/* Deferoxamine Protocol */}
-        <div className="border-2 border-blue-400 rounded-lg p-3 bg-blue-50/50 dark:bg-blue-950/20">
-          <p className="font-bold text-blue-700 mb-2 flex items-center gap-2">
-            <Activity className="h-4 w-4" />
-            Deferoxamine (Desferal) Protocol
-          </p>
-          
-          {/* Indications */}
-          <div className="p-2 bg-amber-100 dark:bg-amber-900/30 rounded mb-3 text-[10px]">
-            <p className="font-semibold text-amber-800">Indications for IV Deferoxamine:</p>
-            <ul className="list-disc list-inside text-amber-700 mt-1">
-              <li>Severe symptoms (lethargy/coma, hypovolemic shock, persistent vomiting/diarrhea)</li>
-              <li>Elevated anion gap metabolic acidosis</li>
-              <li>Peak serum iron ≥500 mcg/dL (90 μmol/L)</li>
-              <li>Estimated ingestion ≥60 mg/kg elemental iron (from visible pills on X-ray)</li>
-            </ul>
-          </div>
-
-          {/* Dosing */}
-          <div className="space-y-2 text-[10px]">
-            <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded">
-              <p className="font-bold text-blue-700">IV Deferoxamine Dosing (consult toxicologist)</p>
-              <div className="mt-1 space-y-1">
-                <p><strong>Initial:</strong> 15 mg/kg/hour continuous IV infusion</p>
-                <p><strong>Titrate:</strong> Increase by 5-10 mg/kg/hr every 2-4 hours if needed</p>
-                <p><strong>Maximum:</strong> Up to 35 mg/kg/hour (some experts prefer max 15 mg/kg/hr)</p>
-                {deferoxamineDosing && w > 0 && (
-                  <div className="mt-2 p-2 bg-white/50 dark:bg-black/20 rounded font-mono">
-                    <p className="text-blue-600 font-semibold">For {w} kg patient:</p>
-                    <p>Initial rate: <strong>{deferoxamineDosing.initialRate} mg/hour</strong></p>
-                    <p>Max rate: <strong>{(w * 35).toFixed(0)} mg/hour</strong></p>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded">
-              <p className="font-bold text-green-700">When to Stop Deferoxamine (~24 hours):</p>
-              <ul className="list-disc list-inside mt-1">
-                <li>Resolution of clinical symptoms</li>
-                <li>Resolution of metabolic acidosis</li>
-                <li>Resolution of shock</li>
-                <li className="text-muted-foreground">Note: Use clinical endpoints, NOT urine color</li>
+        <Section id="iron-deferoxamine" title="Deferoxamine (Desferal) Protocol" expandedSections={expandedSections} toggleSection={toggleSection}>
+          <div className="space-y-2 text-xs">
+            <div className="p-2 bg-amber-50 dark:bg-amber-950/20 rounded">
+              <p className="font-semibold text-amber-800">Indications for IV Deferoxamine:</p>
+              <ul className="list-disc list-inside text-muted-foreground mt-1">
+                <li>Severe symptoms (lethargy/coma, hypovolemic shock, persistent vomiting/diarrhea)</li>
+                <li>Elevated anion gap metabolic acidosis</li>
+                <li>Peak serum iron ≥500 mcg/dL</li>
+                <li>Estimated ingestion ≥60 mg/kg elemental iron</li>
               </ul>
             </div>
 
-            <div className="p-2 bg-amber-50 dark:bg-amber-900/20 rounded">
-              <p className="font-semibold text-amber-700">Side Effects to Monitor:</p>
-              <p className="text-amber-600">Hypotension (infuse slowly), "vin rosé" urine (expected), pulmonary toxicity if &gt;24h, vision/hearing changes</p>
+            <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
+              <p className="font-semibold">IV Deferoxamine Dosing (consult toxicologist)</p>
+              <p className="text-muted-foreground mt-1"><strong>Initial:</strong> 15 mg/kg/hour continuous IV infusion</p>
+              <p className="text-muted-foreground"><strong>Titrate:</strong> Increase by 5-10 mg/kg/hr every 2-4 hours if needed</p>
+              <p className="text-muted-foreground"><strong>Maximum:</strong> Up to 35 mg/kg/hour</p>
+              {deferoxamineDosing && w > 0 && (
+                <div className="mt-2 p-2 bg-white dark:bg-gray-900 rounded font-mono text-slate-600">
+                  <p>For {w} kg patient:</p>
+                  <p>Initial: <strong>{deferoxamineDosing.initialRate} mg/hour</strong></p>
+                  <p>Max: <strong>{deferoxamineDosing.maxRate} mg/hour</strong></p>
+                </div>
+              )}
+            </div>
+
+            <div className="p-2 bg-green-50 dark:bg-green-950/20 rounded">
+              <p className="font-semibold text-green-700">When to Stop (~24 hours):</p>
+              <ul className="list-disc list-inside text-muted-foreground mt-1">
+                <li>Resolution of clinical symptoms</li>
+                <li>Resolution of metabolic acidosis</li>
+                <li>Resolution of shock</li>
+              </ul>
+              <p className="text-[10px] text-muted-foreground mt-1">Note: Use clinical endpoints, NOT urine color</p>
             </div>
           </div>
-        </div>
+        </Section>
 
         {/* Quick Reference */}
-        <div className="p-3 bg-gradient-to-r from-orange-100 to-red-100 dark:from-orange-900/30 dark:to-red-900/30 rounded-lg border">
-          <p className="font-bold text-sm mb-2 text-center">⚡ QUICK REFERENCE</p>
+        <div className="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg border text-center">
+          <p className="font-bold text-sm mb-2">⚡ QUICK REFERENCE</p>
           <div className="grid grid-cols-3 gap-2 text-[10px]">
-            <div className="text-center p-2 bg-white/50 dark:bg-black/20 rounded">
+            <div className="p-2 bg-white dark:bg-gray-900 rounded">
               <p className="font-bold text-green-600">Low Risk</p>
               <p>&lt;20 mg/kg</p>
             </div>
-            <div className="text-center p-2 bg-white/50 dark:bg-black/20 rounded">
+            <div className="p-2 bg-white dark:bg-gray-900 rounded">
               <p className="font-bold text-red-600">Serious</p>
               <p>≥60 mg/kg</p>
             </div>
-            <div className="text-center p-2 bg-white/50 dark:bg-black/20 rounded">
+            <div className="p-2 bg-white dark:bg-gray-900 rounded">
               <p className="font-bold text-blue-600">Chelate if</p>
               <p>SIL ≥500</p>
             </div>
           </div>
-          <div className="mt-2 text-center text-[10px] text-muted-foreground">
-            <p>Activated charcoal does NOT bind iron | Vomiting = most sensitive sign | X-ray shows tablets</p>
-          </div>
+          <p className="text-[10px] text-muted-foreground mt-2">
+            Activated charcoal does NOT bind iron • Vomiting = most sensitive sign
+          </p>
         </div>
 
       </CardContent>
