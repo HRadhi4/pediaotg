@@ -150,12 +150,13 @@ const DrugsPage = ({ onBack }) => {
       category: "Antiarrhythmic",
       route: "IV rapid push",
       doses: {
-        first: { label: "1st Dose", value: "0.1", unit: "mg/kg rapid push" },
-        second: { label: "2nd Dose", value: "0.2", unit: "mg/kg if needed" }
+        neonate: { label: "Neonate", value: "0.05-0.1", unit: "mg/kg IV push (max 0.3 mg/kg)" },
+        child: { label: "Child", value: "0.1", unit: "mg/kg IV push, then 0.2 mg/kg if needed" },
+        adult: { label: "Adult >50kg", value: "6", unit: "mg IV, then 12 mg if needed" }
       },
-      max: "6 mg first, 12 mg subsequent",
+      max: "12 mg/dose",
       indication: "SVT",
-      notes: "Give rapid IV push followed by saline flush. May cause brief asystole.",
+      notes: "Give rapid IV push over 1-2 sec followed by NS flush. May increase dose by 0.05-0.1 mg/kg q2min. May cause brief asystole.",
       renalAdjust: null
     },
     {
