@@ -34,15 +34,14 @@ const Arrow = ({ label }) => (
   </div>
 );
 
-// Iron salt elemental iron percentages
+// Iron salt elemental iron percentages (from UpToDate)
 const IRON_SALTS = [
   { id: "ferrous_sulfate", name: "Ferrous Sulfate", elementalPercent: 20, example: "325mg tablet = 65mg elemental" },
-  { id: "ferrous_sulfate_dried", name: "Ferrous Sulfate (Dried/Exsiccated)", elementalPercent: 32, example: "200mg = 64mg elemental" },
   { id: "ferrous_gluconate", name: "Ferrous Gluconate", elementalPercent: 12, example: "325mg tablet = 39mg elemental" },
   { id: "ferrous_fumarate", name: "Ferrous Fumarate", elementalPercent: 33, example: "325mg tablet = 107mg elemental" },
-  { id: "carbonyl_iron", name: "Carbonyl Iron", elementalPercent: 98, example: "Pure elemental iron powder" },
+  { id: "carbonyl_iron", name: "Carbonyl Iron", elementalPercent: 100, example: "Slowly absorbed, greater safety margin" },
   { id: "polysaccharide_iron", name: "Polysaccharide Iron Complex", elementalPercent: 100, example: "150mg = 150mg elemental" },
-  { id: "iron_dextran", name: "Iron Dextran", elementalPercent: 100, example: "Already elemental iron" },
+  { id: "iron_dextran", name: "Iron Dextran (IV)", elementalPercent: 100, example: "Already elemental iron" },
 ];
 
 const IronToxicityApproach = ({ weight }) => {
@@ -69,22 +68,14 @@ const IronToxicityApproach = ({ weight }) => {
     let riskLevel = "Low risk";
     let recommendation = "Observation at home may be appropriate";
     
-    if (mgPerKg >= 120) {
-      severity = "lethal";
-      riskLevel = "Potentially Lethal";
-      recommendation = "Immediate ICU admission, chelation therapy, aggressive resuscitation";
-    } else if (mgPerKg >= 60) {
+    if (mgPerKg >= 60) {
       severity = "severe";
-      riskLevel = "Severe Toxicity Expected";
-      recommendation = "Hospital admission, likely chelation with deferoxamine";
-    } else if (mgPerKg >= 40) {
-      severity = "moderate";
-      riskLevel = "Moderate Toxicity Possible";
-      recommendation = "ED evaluation, serum iron level, observation";
+      riskLevel = "Serious Toxicity Expected";
+      recommendation = "Hospital admission, deferoxamine if symptomatic, WBI if pills on X-ray";
     } else if (mgPerKg >= 20) {
       severity = "mild";
-      riskLevel = "Mild GI Symptoms Possible";
-      recommendation = "Consider ED evaluation if symptomatic";
+      riskLevel = "Low Potential for Serious Toxicity";
+      recommendation = "GI symptoms possible - ED evaluation if symptomatic";
     }
     
     return {
@@ -117,23 +108,23 @@ const IronToxicityApproach = ({ weight }) => {
     };
   }, [w]);
 
-  // Serum iron interpretation
+  // Serum iron interpretation (from UpToDate)
   const serumInterpretation = useMemo(() => {
     if (serum <= 0) return null;
     
     let severity, recommendation;
-    if (serum >= 500) {
+    if (serum >= 1000) {
       severity = "critical";
-      recommendation = "Chelation therapy strongly indicated";
+      recommendation = "Significant morbidity and mortality - immediate chelation";
+    } else if (serum >= 500) {
+      severity = "critical";
+      recommendation = "Serious systemic toxicity - deferoxamine indicated";
     } else if (serum >= 350) {
       severity = "high";
-      recommendation = "Consider chelation, close monitoring";
-    } else if (serum >= 150) {
-      severity = "elevated";
-      recommendation = "Monitor closely, supportive care";
+      recommendation = "Mild to moderate GI symptoms expected";
     } else {
       severity = "normal";
-      recommendation = "Unlikely to develop significant toxicity";
+      recommendation = "Minimal toxicity expected";
     }
     
     return { severity, recommendation, level: serum };
@@ -244,24 +235,20 @@ const IronToxicityApproach = ({ weight }) => {
           <div className="space-y-2 text-[10px]">
             <div className="flex items-center gap-2">
               <span className="w-20 font-bold text-green-600">&lt;20 mg/kg</span>
-              <span>Non-toxic - observation at home</span>
+              <span>Usually asymptomatic - observation at home</span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="w-20 font-bold text-yellow-600">20-40 mg/kg</span>
-              <span>Mild GI symptoms possible - consider evaluation</span>
+              <span className="w-20 font-bold text-yellow-600">20-60 mg/kg</span>
+              <span>Low potential for serious toxicity - GI symptoms possible</span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="w-20 font-bold text-amber-600">40-60 mg/kg</span>
-              <span>Moderate toxicity - ED evaluation recommended</span>
+              <span className="w-20 font-bold text-red-600">≥60 mg/kg</span>
+              <span>SERIOUS TOXICITY - hospitalization, consider deferoxamine</span>
             </div>
-            <div className="flex items-center gap-2">
-              <span className="w-20 font-bold text-red-600">&gt;60 mg/kg</span>
-              <span>Severe systemic toxicity expected - hospitalization</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="w-20 font-bold text-red-800">&gt;120 mg/kg</span>
-              <span>POTENTIALLY LETHAL - ICU, chelation, aggressive resuscitation</span>
-            </div>
+          </div>
+          <div className="mt-2 p-2 bg-amber-100 dark:bg-amber-900/30 rounded text-[10px]">
+            <p className="font-semibold text-amber-800">Key Point:</p>
+            <p className="text-amber-700">Vomiting is the most sensitive indicator of serious iron ingestion</p>
           </div>
         </FlowNode>
 
@@ -364,25 +351,26 @@ const IronToxicityApproach = ({ weight }) => {
           <p className="font-bold text-green-700 mb-2">Initial Management</p>
           <div className="space-y-2 text-[10px]">
             <div className="p-2 bg-white/50 dark:bg-black/20 rounded">
-              <p className="font-semibold">1. Supportive Care</p>
-              <p>IV access, fluid resuscitation (20mL/kg boluses), correct metabolic acidosis</p>
+              <p className="font-semibold">1. Stabilization</p>
+              <p>Airway protection, respiratory support, volume resuscitation (20 mL/kg isotonic crystalloid boluses)</p>
             </div>
             <div className="p-2 bg-white/50 dark:bg-black/20 rounded">
-              <p className="font-semibold">2. Decontamination</p>
-              <p>Whole bowel irrigation (WBI) if visible tablets on X-ray</p>
-              <p className="text-muted-foreground">Activated charcoal NOT effective for iron</p>
+              <p className="font-semibold">2. GI Decontamination</p>
+              <p><strong>Whole Bowel Irrigation (WBI)</strong> - preferred if significant unabsorbed iron on X-ray</p>
+              <p className="text-red-600 font-semibold mt-1">AVOID: Activated charcoal, Syrup of ipecac, Gastric lavage with bicarbonate/phosphate</p>
             </div>
             <div className="p-2 bg-white/50 dark:bg-black/20 rounded">
               <p className="font-semibold">3. Labs to Order</p>
-              <p>Serum iron (4-6h), CBC, BMP, LFTs, coags (PT/INR), glucose, ABG/VBG</p>
+              <p><strong>Mild:</strong> Glucose, electrolytes, BUN/Cr, blood gas, peak serum iron (4-6h)</p>
+              <p><strong>Moderate-Severe:</strong> + ALT, AST, bilirubin, CBC, PT/PTT/INR, type & screen</p>
             </div>
             <div className="p-2 bg-white/50 dark:bg-black/20 rounded">
-              <p className="font-semibold">4. Imaging</p>
-              <p>Abdominal X-ray - iron tablets are radiopaque</p>
+              <p className="font-semibold">4. Abdominal X-ray</p>
+              <p>For symptomatic patients, unknown amount, or intentional ingestion - iron tablets are radiopaque</p>
             </div>
             <div className="p-2 bg-white/50 dark:bg-black/20 rounded">
-              <p className="font-semibold">5. Contact Poison Control</p>
-              <p>Early consultation for all significant ingestions</p>
+              <p className="font-semibold">5. Poison Control / Toxicology Consult</p>
+              <p>Strongly recommended for moderate to severe poisoning</p>
             </div>
           </div>
         </FlowNode>
@@ -396,42 +384,40 @@ const IronToxicityApproach = ({ weight }) => {
           
           {/* Indications */}
           <div className="p-2 bg-amber-100 dark:bg-amber-900/30 rounded mb-3 text-[10px]">
-            <p className="font-semibold text-amber-800">Indications for Chelation:</p>
+            <p className="font-semibold text-amber-800">Indications for IV Deferoxamine:</p>
             <ul className="list-disc list-inside text-amber-700 mt-1">
-              <li>Serum iron &gt;500 mcg/dL</li>
-              <li>Ingestion &gt;60 mg/kg elemental iron with symptoms</li>
-              <li>Metabolic acidosis</li>
-              <li>Shock or cardiovascular compromise</li>
-              <li>Altered mental status</li>
-              <li>Persistent vomiting/diarrhea</li>
+              <li>Severe symptoms (lethargy/coma, hypovolemic shock, persistent vomiting/diarrhea)</li>
+              <li>Elevated anion gap metabolic acidosis</li>
+              <li>Peak serum iron ≥500 mcg/dL (90 μmol/L)</li>
+              <li>Estimated ingestion ≥60 mg/kg elemental iron (from visible pills on X-ray)</li>
             </ul>
           </div>
 
           {/* Dosing */}
           <div className="space-y-2 text-[10px]">
             <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded">
-              <p className="font-bold text-blue-700">IV Deferoxamine Dosing</p>
+              <p className="font-bold text-blue-700">IV Deferoxamine Dosing (consult toxicologist)</p>
               <div className="mt-1 space-y-1">
-                <p><strong>Initial:</strong> 15 mg/kg/hour IV (max 1 g/hour)</p>
-                <p><strong>Maintenance:</strong> Reduce to 8-10 mg/kg/hour after stabilization</p>
-                <p><strong>Max daily:</strong> 6 g/24 hours</p>
+                <p><strong>Initial:</strong> 15 mg/kg/hour continuous IV infusion</p>
+                <p><strong>Titrate:</strong> Increase by 5-10 mg/kg/hr every 2-4 hours if needed</p>
+                <p><strong>Maximum:</strong> Up to 35 mg/kg/hour (some experts prefer max 15 mg/kg/hr)</p>
                 {deferoxamineDosing && w > 0 && (
                   <div className="mt-2 p-2 bg-white/50 dark:bg-black/20 rounded font-mono">
                     <p className="text-blue-600 font-semibold">For {w} kg patient:</p>
                     <p>Initial rate: <strong>{deferoxamineDosing.initialRate} mg/hour</strong></p>
-                    <p>Maintenance: <strong>{deferoxamineDosing.maintenanceRate} mg/hour</strong></p>
+                    <p>Max rate: <strong>{(w * 35).toFixed(0)} mg/hour</strong></p>
                   </div>
                 )}
               </div>
             </div>
 
             <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded">
-              <p className="font-bold text-green-700">When to Stop Deferoxamine:</p>
+              <p className="font-bold text-green-700">When to Stop Deferoxamine (~24 hours):</p>
               <ul className="list-disc list-inside mt-1">
-                <li>Clinical improvement (resolution of acidosis, shock)</li>
-                <li>Serum iron &lt;300 mcg/dL</li>
-                <li>Urine color normalizes (no longer "vin rosé")</li>
-                <li>Usually 24-48 hours of treatment</li>
+                <li>Resolution of clinical symptoms</li>
+                <li>Resolution of metabolic acidosis</li>
+                <li>Resolution of shock</li>
+                <li className="text-muted-foreground">Note: Use clinical endpoints, NOT urine color</li>
               </ul>
             </div>
 
