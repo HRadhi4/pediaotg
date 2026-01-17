@@ -191,14 +191,17 @@ const DrugsPage = ({ onBack }) => {
       id: "amiodarone",
       name: "Amiodarone",
       category: "Antiarrhythmic",
-      route: "IV",
+      route: "IV/PO",
       doses: {
-        arrest: { label: "VF/pVT Arrest", value: "5", unit: "mg/kg bolus" },
-        other: { label: "Other Arrhythmias", value: "5", unit: "mg/kg over 20-60 min" }
+        arrestChild: { label: "VF/pVT Arrest (Child)", value: "5", unit: "mg/kg IV bolus (max 300mg), repeat q3-5min" },
+        arrestAdult: { label: "VF/pVT Arrest (Adult)", value: "300", unit: "mg IV bolus, then 150mg x1" },
+        loadingChild: { label: "Loading (Child)", value: "5", unit: "mg/kg over 20-60 min (max 300mg)" },
+        loadingAdult: { label: "Loading (Adult)", value: "150", unit: "mg IV over 10 min" },
+        perfusingVTchild: { label: "Perfusing VT (Child)", value: "5", unit: "mg/kg over 20-60 min (max 300mg)" }
       },
-      max: "300 mg/dose",
-      indication: "VF, pVT, refractory SVT",
-      notes: "May repeat x2 in arrest. Loading then infusion for non-arrest.",
+      max: "300 mg/dose, 15 mg/kg/day (2.2g/day adult)",
+      indication: "VF, pVT, refractory SVT, perfusing VT",
+      notes: "May repeat x2 in arrest up to max 15 mg/kg/day. Contains polysorbate 80. Loading then infusion for non-arrest.",
       renalAdjust: null
     },
     {
