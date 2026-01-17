@@ -1,0 +1,49 @@
+{
+  "summary": "Completed frontend testing of Acetaminophen (Paracetamol) Toxicity approach with collapsible sections, ml/mg conversion, and Bahrain-specific liquid preparations. All 9 test cases passed successfully.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "passed_tests": [
+    "Acetaminophen has collapsible sections with arrow indicators (▼/▲) that expand/collapse on click",
+    "Dose Calculator and Rumack-Matthew Nomogram sections are open by default (▲)",
+    "Acetaminophen has Tablets (mg) / Liquid (ml) toggle buttons - both modes work correctly",
+    "Liquid mode shows Bahrain preparations: Panadol Infant Drops (100mg/ml), Panadol Baby & Infant Susp (120mg/5ml), Panadol Children Susp (250mg/5ml), Adol Infant Drops, Adol Syrup, Adol 250 Suspension, Tylenol Infant Drops, Tylenol Children's Susp, Fevadol Drops, Fevadol Suspension, Calpol Infant Susp, Calpol Six Plus Susp, Custom/Other",
+    "Liquid calculation works: 30ml × 100mg/ml = 3000mg, shows 300 mg/kg for 10kg patient",
+    "Tablet calculation works: 10 tablets × 500mg = 5000mg",
+    "Nomogram assessment works: 4h post-ingestion with serum level input shows treatment threshold comparison",
+    "NAC dosing calculator shows correct doses for patient weight (loading, bag 2, bag 3 doses)",
+    "Custom/Other option allows manual entry of concentration (mg/ml) with dedicated input field"
+  ],
+  "test_report_links": [
+    "/app/test_reports/iteration_14.json"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Section.jsx component properly implements collapsible UI with arrow rotation animation (▼/▲)",
+    "LIQUID_PREPARATIONS array correctly configured with 13 Bahrain-specific preparations including concentrations",
+    "Dose calculation correctly computes totalDose = ml × perMl for liquid mode",
+    "Tablet calculation correctly computes totalDose = tablets × strength",
+    "Nomogram assessment uses linear interpolation between treatment line data points",
+    "NAC dosing calculations include 3-bag IV protocol, 2-bag IV protocol, and oral protocol",
+    "Custom/Other option properly shows concentration input field when selected",
+    "data-testid attributes properly implemented: apap-liquid-selector, apap-ml-input, apap-tablets-input, apap-amount-input, apap-hours-input, apap-level-input",
+    "Colors use muted Tailwind variants (bg-red-50, bg-amber-50, bg-green-50) for subtle appearance"
+  ],
+  "updated_files": [],
+  "success_rate": {
+    "frontend": "100% - All 9 tests passed"
+  },
+  "test_credentials": {
+    "admin_user": {"email": "admin@pedotg.com", "password": "SMC159951"}
+  },
+  "seed_data_creation": "None - used provided admin credentials",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Acetaminophen (Paracetamol) Toxicity approach updated with: 1) Collapsible sections using Section.jsx component with ▼/▲ arrows, 2) Tablets (mg) / Liquid (ml) toggle buttons, 3) Bahrain-specific liquid preparations dropdown with 13 options. Liquid preps include: Panadol Infant Drops 100mg/ml, Panadol Baby 120mg/5ml (24mg/ml), Panadol Children 250mg/5ml (50mg/ml), Adol (same concentrations), Tylenol, Fevadol, Calpol, Custom/Other. Tablet strengths: 120, 160, 325, 500, 650, 1000mg. Toxic dose threshold: ≥150 mg/kg. Navigation: Login > Dashboard > Children > Approaches > Search 'acetaminophen' > Select Acetaminophen Overdose."
+}
