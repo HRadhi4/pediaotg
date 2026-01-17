@@ -276,14 +276,17 @@ const DrugsPage = ({ onBack }) => {
       id: "atropine",
       name: "Atropine",
       category: "Anticholinergic",
-      route: "IV/IM/ETT",
+      route: "IV/IM/IO/ETT/SC",
       doses: {
-        bradycardia: { label: "Bradycardia", value: "0.02", unit: "mg/kg" },
-        premedication: { label: "Pre-intubation", value: "0.02", unit: "mg/kg" }
+        bradycardiaChild: { label: "Bradycardia (Child)", value: "0.02", unit: "mg/kg IV/IO (min 0.1mg, max 0.5mg)" },
+        bradycardiaAdult: { label: "Bradycardia (Adult)", value: "0.5", unit: "mg IV q3-5min (max 3mg)" },
+        premedication: { label: "Pre-intubation", value: "0.02", unit: "mg/kg (min 0.1mg, max 0.5mg)" },
+        organophosphate: { label: "Organophosphate", value: "0.02-0.05", unit: "mg/kg IV q5-10min until atropinized" },
+        ett: { label: "ETT", value: "0.04-0.06", unit: "mg/kg (2-3x IV dose)" }
       },
-      max: "0.5 mg child, 1 mg adolescent",
-      indication: "Symptomatic bradycardia, RSI premedication",
-      notes: "Min dose 0.1 mg (paradoxical bradycardia). ETT: 2-3x IV dose.",
+      max: "0.5 mg (child single dose), 3 mg total (adult)",
+      indication: "Symptomatic bradycardia, RSI premedication, organophosphate poisoning",
+      notes: "Min dose 0.1 mg to prevent paradoxical bradycardia. Dilute ETT dose in 1-2 mL NS.",
       renalAdjust: null
     },
     {
