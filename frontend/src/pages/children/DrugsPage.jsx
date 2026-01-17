@@ -667,6 +667,20 @@ const DrugsPage = ({ onBack }) => {
       renalAdjust: null
     },
     {
+      id: "nebulizedepinephrine",
+      name: "Epinephrine (Nebulized L-Epinephrine)",
+      category: "Bronchodilator",
+      route: "Nebulizer",
+      doses: {
+        standard: { label: "Standard dose", value: "0.5", unit: "mL/kg of 1:1000 (1 mg/mL)" },
+        fixed: { label: "Alternative", value: "2.5-5", unit: "mL of 1:1000 (1 mg/mL)" }
+      },
+      max: "5 mL/dose (5 mg)",
+      indication: "Croup, bronchiolitis, post-extubation stridor",
+      notes: "Use if racemic epi unavailable. Observe 2-4h for rebound. May repeat q20min.",
+      renalAdjust: null
+    },
+    {
       id: "erythromycin",
       name: "Erythromycin",
       category: "Antibiotic",
