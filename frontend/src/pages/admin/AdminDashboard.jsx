@@ -347,7 +347,64 @@ const AdminDashboard = () => {
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="overflow-x-auto">
+                {/* Mobile Card View */}
+                <div className="md:hidden space-y-3">
+                  {filteredUsers.map((u) => {
+                    const daysRemaining = getDaysRemaining(u.subscription);
+                    const daysDisplay = getDaysDisplay(daysRemaining);
+                    return (
+                      <div key={u.id} className="border rounded-lg p-3 bg-white dark:bg-gray-800">
+                        <div className="flex justify-between items-start mb-2">
+                          <div className="flex-1 min-w-0">
+                            <p className="font-medium text-sm truncate">{u.name}</p>
+                            <p className="text-xs text-muted-foreground truncate">{u.email}</p>
+                          </div>
+                          {!u.is_admin && (
+                            <div className="flex items-center gap-1 ml-2">
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => openEditUser(u)}
+                                className="h-8 w-8 p-0 text-blue-500"
+                              >
+                                <Pencil className="h-4 w-4" />
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => handleDeleteUser(u.id, u.email)}
+                                disabled={deletingUserId === u.id}
+                                className="h-8 w-8 p-0 text-red-500"
+                              >
+                                {deletingUserId === u.id ? (
+                                  <Loader2 className="h-4 w-4 animate-spin" />
+                                ) : (
+                                  <Trash2 className="h-4 w-4" />
+                                )}
+                              </Button>
+                            </div>
+                          )}
+                        </div>
+                        <div className="flex flex-wrap items-center gap-2 text-xs">
+                          {u.is_admin && (
+                            <Badge className="bg-purple-100 text-purple-700 text-[10px]">Admin</Badge>
+                          )}
+                          {u.subscription?.status && (
+                            <Badge className={getStatusBadge(u.subscription.status)}>
+                              {u.subscription.status}
+                            </Badge>
+                          )}
+                          <span className="text-muted-foreground capitalize">{u.subscription?.plan || 'No plan'}</span>
+                          <span className={daysDisplay.className}>{daysDisplay.text}</span>
+                        </div>
+                        <p className="text-[10px] text-muted-foreground mt-2">Joined: {formatDate(u.created_at)}</p>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* Desktop Table View */}
+                <div className="hidden md:block overflow-x-auto">
                   <table className="w-full">
                     <thead>
                       <tr className="border-b">
