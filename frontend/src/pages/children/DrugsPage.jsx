@@ -1109,13 +1109,17 @@ const DrugsPage = ({ onBack }) => {
       category: "Antibiotic",
       route: "IV",
       doses: {
-        standard: { label: "Standard", value: "20", unit: "mg/kg/dose q8h" },
-        meningitis: { label: "Meningitis", value: "40", unit: "mg/kg/dose q8h" }
+        neoUnder32wk: { label: "Neonate ≤32wk PMA", value: "20", unit: "mg/kg/dose q12h IV" },
+        neo32to40wk: { label: "Neonate 32-40wk PMA", value: "20", unit: "mg/kg/dose q8h IV" },
+        childStandard: { label: "Child Standard", value: "20", unit: "mg/kg/dose q8h IV (max 1g/dose)" },
+        meningitis: { label: "Meningitis", value: "40", unit: "mg/kg/dose q8h IV (max 2g/dose)" },
+        adultStandard: { label: "Adult Standard", value: "1", unit: "g q8h IV" },
+        adultSevere: { label: "Adult Severe/Meningitis", value: "2", unit: "g q8h IV" }
       },
-      max: "2 g/dose (6 g/day)",
-      indication: "Serious gram-negative, intra-abdominal, meningitis",
-      notes: "Carbapenem. Extended infusion (3h) for severe infections.",
-      renalAdjust: { gfr50: "No change", gfr30: "q12h", gfr10: "50% q12h", hd: "Give after HD" }
+      max: "2 g/dose; 6 g/day",
+      indication: "Serious gram-negative infections, intra-abdominal, meningitis, febrile neutropenia, pseudomonas",
+      notes: "Carbapenem. Extended infusion (3h) for severe infections. Lower seizure risk than imipenem.",
+      renalAdjust: { gfr50: "100% dose q8-12h", gfr30: "50% dose q12h", gfr10: "50% dose q24h", hd: "Dose after HD; supplement 500mg" }
     },
     {
       id: "metoclopramide",
