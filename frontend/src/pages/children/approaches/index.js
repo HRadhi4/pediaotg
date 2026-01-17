@@ -20,3 +20,4 @@ export { default as WeaknessApproach } from './WeaknessApproach';
 export { default as GaitApproach } from './GaitApproach';
 export { default as HyperkalemiaApproach } from './HyperkalemiaApproach';
 export { default as UgibApproach } from './UgibApproach';
+export { default as AcetaminophenApproach } from './AcetaminophenApproach';

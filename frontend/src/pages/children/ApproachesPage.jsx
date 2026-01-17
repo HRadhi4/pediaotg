@@ -46,6 +46,7 @@ import {
   GaitApproach,
   HyperkalemiaApproach,
   UgibApproach,
+  AcetaminophenApproach,
 } from "./approaches";
 
 const ApproachesPage = ({ onBack }) => {
@@ -63,6 +64,7 @@ const ApproachesPage = ({ onBack }) => {
   // Define all approach tabs with search keywords - sorted alphabetically by label
   const approachTabs = [
     { id: "gait", label: "Abnormal Gait", keywords: ["gait", "ataxia", "limping", "walking", "coordination", "waddling", "hemiplegic", "neuropathic"] },
+    { id: "acetaminophen", label: "Acetaminophen Overdose", keywords: ["acetaminophen", "paracetamol", "tylenol", "overdose", "nac", "n-acetylcysteine", "rumack", "nomogram", "hepatotoxicity", "liver", "poisoning"] },
     { id: "weakness", label: "Acute Weakness", keywords: ["weakness", "paralysis", "stroke", "gbs", "guillain", "transverse myelitis", "myasthenia"] },
     { id: "adrenal", label: "Adrenal Crisis", keywords: ["adrenal", "insufficiency", "cortisol", "hydrocortisone", "addison"] },
     { id: "anaphylaxis", label: "Anaphylaxis", keywords: ["anaphylaxis", "allergic", "allergy", "epinephrine", "adrenaline", "urticaria", "hives", "angioedema"] },
@@ -283,6 +285,7 @@ const ApproachesPage = ({ onBack }) => {
         {activeTab === "gait" && <GaitApproach {...commonProps} />}
         {activeTab === "hyperkalemia" && <HyperkalemiaApproach {...commonProps} />}
         {activeTab === "ugib" && <UgibApproach {...commonProps} />}
+        {activeTab === "acetaminophen" && <AcetaminophenApproach {...commonProps} />}
         </div>
       </div>
 
