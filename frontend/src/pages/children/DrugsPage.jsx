@@ -704,14 +704,16 @@ const DrugsPage = ({ onBack }) => {
       id: "fentanyl",
       name: "Fentanyl",
       category: "Opioid",
-      route: "IV/IN",
+      route: "IV/IM/IN/Buccal",
       doses: {
-        iv: { label: "IV Bolus", value: "0.5-2", unit: "mcg/kg/dose q1-2h" },
-        infusion: { label: "Infusion", value: "1-3", unit: "mcg/kg/hr" }
+        sedation: { label: "Sedation/Analgesia", value: "1", unit: "mcg/kg IV/IM q30-60min PRN" },
+        infusion: { label: "Continuous Infusion", value: "1", unit: "mcg/kg/hr" },
+        intranasal: { label: "Intranasal", value: "1.5-2", unit: "mcg/kg IN" },
+        buccal: { label: "Buccal (<18yr)", value: "200", unit: "mcg" }
       },
-      max: "4 mcg/kg/dose",
+      max: "See indication",
       indication: "Procedural sedation, severe pain, intubation",
-      notes: "Rapid onset (1-2 min), short duration. IN: 1.5-2 mcg/kg.",
+      notes: "Rapid onset (1-2 min IV), short duration. Use caution in neonates.",
       renalAdjust: { gfr50: "No change", gfr30: "75% dose", gfr10: "50% dose", hd: "No supplement" }
     },
     {
