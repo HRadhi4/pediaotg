@@ -676,12 +676,12 @@ const DrugsPage = ({ onBack }) => {
       category: "Bronchodilator",
       route: "Nebulizer",
       doses: {
-        standard: { label: "Standard dose", value: "0.5", unit: "mL/kg of 1:1000 (1 mg/mL)" },
-        fixed: { label: "Alternative", value: "2.5-5", unit: "mL of 1:1000 (1 mg/mL)" }
+        standard: { label: "Nebulized", value: "0.5", unit: "mL/kg of 1:1000 diluted in 3mL NS" },
+        maxDose: { label: "Max single dose", value: "2.5", unit: "mL of 1:1000" }
       },
-      max: "5 mL/dose (5 mg)",
-      indication: "Croup, bronchiolitis, post-extubation stridor",
-      notes: "Use if racemic epi unavailable. Observe 2-4h for rebound. May repeat q20min.",
+      max: "2.5 mL/dose (2.5 mg)",
+      indication: "Croup, bronchiolitis, post-extubation stridor, asthma",
+      notes: "Dilute in NS for nebulization. Observe 2-4h for rebound. May repeat q15min x3-4 PRN.",
       renalAdjust: null
     },
     {
