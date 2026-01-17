@@ -766,13 +766,17 @@ const DrugsPage = ({ onBack }) => {
       id: "furosemide",
       name: "Furosemide (Lasix)",
       category: "Diuretic",
-      route: "IV/PO",
+      route: "IV/IM/PO",
       doses: {
-        iv: { label: "IV", value: "0.5-1", unit: "mg/kg/dose q6-12h" },
-        po: { label: "PO", value: "1-2", unit: "mg/kg/dose q6-12h" }
+        neonateIV: { label: "Neonate IV/IM", value: "0.5-1", unit: "mg/kg/dose (max 2mg/kg)" },
+        childIV: { label: "Child IV/IM", value: "0.5-2", unit: "mg/kg/dose q6-12h (max 6mg/kg)" },
+        adultIV: { label: "Adult IV/IM", value: "20-40", unit: "mg/dose" },
+        neonatePO: { label: "Neonate PO", value: "1-3", unit: "mg/kg/dose (max 2mg/kg) once daily" },
+        childPO: { label: "Child PO", value: "0.1", unit: "mg/kg/dose (max 6mg/kg) once daily" },
+        adultPO: { label: "Adult PO", value: "40-100", unit: "mg/dose (max 600mg/24hr)" }
       },
-      max: "6 mg/kg/dose",
-      indication: "Edema, heart failure, fluid overload",
+      max: "6 mg/kg/dose IV/IM, 600 mg/24hr PO",
+      indication: "Edema, heart failure, fluid overload, acute pulmonary edema",
       notes: "Monitor K+, Mg2+. PO bioavailability ~50% of IV.",
       renalAdjust: { gfr50: "No change", gfr30: "Higher doses may be needed", gfr10: "May need continuous infusion", hd: "Usually ineffective" }
     },
