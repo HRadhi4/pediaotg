@@ -7,7 +7,7 @@ import io
 import json
 
 class PediaOTGBackendTester:
-    def __init__(self, base_url="https://medi-kid.preview.emergentagent.com"):
+    def __init__(self, base_url="https://baby-management.preview.emergentagent.com"):
         self.base_url = base_url
         self.tests_run = 0
         self.tests_passed = 0
