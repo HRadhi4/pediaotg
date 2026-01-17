@@ -1277,13 +1277,18 @@ const DrugsPage = ({ onBack }) => {
       id: "ondansetron",
       name: "Ondansetron (Zofran)",
       category: "Antiemetic",
-      route: "IV/PO",
+      route: "IV/PO/IM/ODT",
       doses: {
-        standard: { label: "Standard", value: "0.1-0.15", unit: "mg/kg/dose q8h" }
+        child6moTo12yr: { label: "Child 6mo-12yr (PO)", value: "0.15", unit: "mg/kg/dose q4-8h PRN (max 8mg/dose)" },
+        adolAdultPO: { label: "Adolescent/Adult (PO)", value: "4-8", unit: "mg/dose q4-8h PRN (max 24mg/day)" },
+        emeticChemoLow: { label: "Chemo Low Emetic (IV)", value: "0.1-0.15", unit: "mg/kg q4-8h (max 8mg/dose)" },
+        emeticChemoHigh: { label: "Chemo High Emetic (IV)", value: "0.45", unit: "mg/kg x1 pre-chemo (max 32mg)" },
+        postop: { label: "Post-Op (IV)", value: "0.05-0.1", unit: "mg/kg/dose (max 4mg)" },
+        gastroenteritis: { label: "Gastroenteritis", value: "0.15", unit: "mg/kg PO x1 (max 8mg)" }
       },
-      max: "4 mg (<40kg), 8 mg (>40kg)",
-      indication: "Nausea, vomiting",
-      notes: "QT prolongation risk. Max 3 doses/day.",
+      max: "8 mg/dose PO; 32 mg single IV (chemo); 24 mg/day total",
+      indication: "PONV (post-op nausea/vomiting), chemotherapy-induced emesis, radiation-induced emesis, gastroenteritis-related vomiting",
+      notes: "QT prolongation risk - avoid with other QT-prolonging drugs. Max single IV dose 16mg in adults.",
       renalAdjust: null
     },
     {
