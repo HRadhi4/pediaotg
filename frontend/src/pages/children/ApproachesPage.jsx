@@ -288,6 +288,7 @@ const ApproachesPage = ({ onBack }) => {
         {activeTab === "hyperkalemia" && <HyperkalemiaApproach {...commonProps} />}
         {activeTab === "ugib" && <UgibApproach {...commonProps} />}
         {activeTab === "acetaminophen" && <AcetaminophenApproach {...commonProps} />}
+        {activeTab === "iron" && <IronToxicityApproach {...commonProps} />}
         </div>
       </div>
 
