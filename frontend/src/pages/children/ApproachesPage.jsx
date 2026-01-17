@@ -115,7 +115,7 @@ const ApproachesPage = ({ onBack }) => {
     setExpandedSections(prev => ({ ...prev, [section]: !prev[section] }));
   };
 
-  // Pinch-to-zoom handlers
+  // Pinch-to-zoom handlers - smooth implementation
   const getDistance = (touches) => {
     const [touch1, touch2] = touches;
     return Math.hypot(
@@ -124,11 +124,12 @@ const ApproachesPage = ({ onBack }) => {
     );
   };
 
-  const getPinchCenter = (touches) => {
+  const getPinchCenter = (touches, container) => {
     const [touch1, touch2] = touches;
+    const rect = container.getBoundingClientRect();
     return {
-      x: (touch1.clientX + touch2.clientX) / 2,
-      y: (touch1.clientY + touch2.clientY) / 2
+      x: ((touch1.clientX + touch2.clientX) / 2 - rect.left) / rect.width * 100,
+      y: ((touch1.clientY + touch2.clientY) / 2 - rect.top) / rect.height * 100
     };
   };
 
@@ -137,32 +138,23 @@ const ApproachesPage = ({ onBack }) => {
   const handleTouchStart = useCallback((e) => {
     if (e.touches.length === 2) {
       e.preventDefault();
+      setIsPinching(true);
       initialDistance.current = getDistance(e.touches);
       initialZoom.current = zoomLevel;
+      lastZoom.current = zoomLevel;
       
-      // Get pinch center relative to the container
+      // Set transform origin to pinch center
       const container = containerRef.current;
       if (container) {
-        const rect = container.getBoundingClientRect();
-        const center = getPinchCenter(e.touches);
-        
-        // Store current scroll position
-        scrollPos.current = {
-          x: container.scrollLeft,
-          y: container.scrollTop
-        };
-        
-        // Calculate pinch center relative to content (accounting for scroll and zoom)
-        pinchCenter.current = {
-          x: (center.x - rect.left + container.scrollLeft) / (zoomLevel / 100),
-          y: (center.y - rect.top + container.scrollTop) / (zoomLevel / 100)
-        };
+        const center = getPinchCenter(e.touches, container);
+        setTransformOrigin(`${center.x}% ${center.y}%`);
       }
     } else if (e.touches.length === 1) {
       // Double-tap to reset zoom
       const now = Date.now();
       if (now - lastTap.current < 300 && zoomLevel !== 100) {
         setZoomLevel(100);
+        setTransformOrigin('center center');
       }
       lastTap.current = now;
     }
@@ -174,31 +166,23 @@ const ApproachesPage = ({ onBack }) => {
       const currentDistance = getDistance(e.touches);
       const scale = currentDistance / initialDistance.current;
       const newZoom = Math.min(200, Math.max(100, initialZoom.current * scale));
-      const roundedZoom = Math.round(newZoom);
       
-      // Calculate new scroll position to keep pinch center in place
-      const container = containerRef.current;
-      if (container && roundedZoom !== zoomLevel) {
-        const rect = container.getBoundingClientRect();
-        const center = getPinchCenter(e.touches);
-        
-        // Where the pinch center should be after zoom
-        const newScrollX = (pinchCenter.current.x * (roundedZoom / 100)) - (center.x - rect.left);
-        const newScrollY = (pinchCenter.current.y * (roundedZoom / 100)) - (center.y - rect.top);
-        
-        setZoomLevel(roundedZoom);
-        
-        // Apply scroll position after state update
-        requestAnimationFrame(() => {
-          container.scrollLeft = Math.max(0, newScrollX);
-          container.scrollTop = Math.max(0, newScrollY);
-        });
+      // Only update if zoom changed significantly (reduces jitter)
+      if (Math.abs(newZoom - lastZoom.current) > 1) {
+        lastZoom.current = newZoom;
+        setZoomLevel(Math.round(newZoom));
       }
     }
-  }, [zoomLevel]);
+  }, []);
 
   const handleTouchEnd = useCallback(() => {
     initialDistance.current = null;
+    setIsPinching(false);
+    
+    // Reset transform origin to center when zoom is 100%
+    if (lastZoom.current <= 100) {
+      setTransformOrigin('center center');
+    }
   }, []);
 
   // Common props for all approach components
