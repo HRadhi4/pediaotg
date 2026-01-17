@@ -483,9 +483,10 @@ const AcetaminophenApproach = ({ weight, expandedSections, toggleSection }) => {
               </div>
             )}
 
-            {/* SVG Nomogram */}
-            <div className="flex justify-center overflow-x-auto">
-              <svg width={svgWidth} height={svgHeight} className="bg-white dark:bg-gray-900 rounded border">
+            {/* SVG Nomogram - scrollable container for mobile */}
+            <div className="overflow-x-auto overflow-y-auto max-h-[350px] -mx-2 px-2">
+              <div className="flex justify-center min-w-[340px]">
+                <svg width={svgWidth} height={svgHeight} className="bg-white dark:bg-gray-900 rounded border flex-shrink-0">
                 {/* Grid lines */}
                 {[5, 10, 20, 50, 100, 150, 200].map(c => (
                   <g key={c}>
@@ -536,6 +537,7 @@ const AcetaminophenApproach = ({ weight, expandedSections, toggleSection }) => {
                   <text x="30" y="31" fontSize="8" fill="#374151">Treatment</text>
                 </g>
               </svg>
+              </div>
             </div>
 
             <div className="text-[10px] text-muted-foreground">
