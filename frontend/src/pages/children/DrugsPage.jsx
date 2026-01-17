@@ -835,8 +835,8 @@ const DrugsPage = ({ onBack }) => {
       },
       max: "5 mg/kg/dose (conventional); 7.5 mg/kg/dose (once daily)",
       indication: "Gram-negative sepsis, synergy for endocarditis, serious infections, ophthalmic, intrathecal/intraventricular",
-      notes: "Monitor levels: trough <1 mg/L, peak 20-30 mg/L. Ototoxic and nephrotoxic.",
-      renalAdjust: { gfr50: "q12h or per levels", gfr30: "q24h or per levels", gfr10: "q48-72h or per levels", hd: "Give after HD, redose per levels" }
+      notes: "Monitor levels: trough <2 mg/L, peak 20-30 mg/L. Ototoxic and nephrotoxic.",
+      renalAdjust: { gfr50: "Standard initial dose, redose per levels", gfr30: "Standard initial dose, redose per levels", gfr10: "Standard initial dose, redose per levels q48-72h", hd: "2-3x weekly after HD, per levels" }
     },
     {
       id: "hydralazine",
