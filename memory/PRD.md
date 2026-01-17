@@ -81,6 +81,21 @@ Build a full SaaS-style web app "Pediatrics on the Go" with:
 ## Recent Changes (January 16, 2026)
 
 ### Session 6 Updates (Current - January 17, 2026)
+- ✅ **NEW: Postnatal Section Added**:
+  - Created `/app/frontend/src/pages/nicu/PostnatalPage.jsx` - main page with search and topic selector
+  - Created 3 comprehensive postnatal approach components in `/postnatal/`:
+    - **RoutineManagementApproach.jsx**: Delivery room care, Apgar score, transitional period monitoring, routine interventions (eye prophylaxis, Vitamin K, Hep B, RSV), umbilical cord care, newborn screening, feeding, weight loss, discharge criteria, follow-up timing
+    - **NewbornAssessmentApproach.jsx**: Complete physical examination guide (general appearance, vital signs, measurements, head/fontanelles, eyes, ears, nose/mouth, cardiovascular, respiratory, abdomen, genitalia, musculoskeletal/DDH, skin, neurological/primitive reflexes)
+    - **HemoglobinopathyApproach.jsx**: Newborn screening results interpretation (FS, FSA, FAS patterns), SCD management, thalassemia overview, parental counseling, inheritance patterns
+  - Features:
+    - Search bar with keyword filtering (e.g., "sickle" finds Hemoglobinopathy)
+    - Topic dropdown selector with 3 options (alphabetically sorted)
+    - UI matches NICUApproachesPage but WITHOUT patient info inputs (as requested)
+    - Reference footer citing UpToDate/AAP/WHO Guidelines
+  - Updated `/app/frontend/src/pages/nicu/index.js` to export PostnatalPage
+  - Updated `/app/frontend/src/pages/NICUCalculator.jsx` to route Postnatal widget (removed comingSoon flag)
+  - **Testing**: 100% pass rate (iteration_16.json - 9/9 tests)
+
 - ✅ **Acetaminophen (Paracetamol) Approach Updated**:
   - Refactored `AcetaminophenApproach.jsx` with collapsible sections and ml/mg converter
   - Features include:
@@ -317,9 +332,10 @@ Build a full SaaS-style web app "Pediatrics on the Go" with:
 - Use viewport meta tags for proper mobile rendering
 
 ## Backlog / Future Tasks
-- [ ] Implement Postnatal widget
+- [ ] Add "Infant with mother asymptomatic bacteriuria" topic to Postnatal section
 - [ ] Add more drug entries
 - [ ] Add automated blood gas interpretation
+- [ ] Add Salicylate (Aspirin) Toxicity approach
 - [ ] Address minor linting errors in /pages/children/ components
 - [ ] Production deployment prep
 - [ ] Add dark mode theme toggle
@@ -332,6 +348,7 @@ Build a full SaaS-style web app "Pediatrics on the Go" with:
 - [ ] Mobile responsiveness fix when accessing from app.pedotg.com (GoDaddy domain)
 
 ## Test Reports
+- `/app/test_reports/iteration_16.json` - Postnatal Section tests (100% passed - 9/9)
 - `/app/test_reports/iteration_14.json` - Acetaminophen ml/mg conversion tests (100% passed - 9/9)
 - `/app/test_reports/iteration_13.json` - Iron & NSAID ml/mg conversion tests (100% passed - 10/10)
 - `/app/test_reports/iteration_12.json` - Iron & NSAID Toxicity tests (100% passed - 8/8)
@@ -341,4 +358,4 @@ Build a full SaaS-style web app "Pediatrics on the Go" with:
 - `/app/test_reports/iteration_7.json` - OCR backend tests (15/15 passed)
 
 ## Last Updated
-January 17, 2026 - All 3 Toxicology Approaches (Acetaminophen, Iron, NSAID) updated with collapsible UI and Bahrain liquid preparations
+January 17, 2026 - Postnatal section fully implemented with 3 topics (Routine Management, Assessment, Hemoglobinopathy Screening)
