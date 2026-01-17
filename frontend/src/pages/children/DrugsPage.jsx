@@ -563,12 +563,14 @@ const DrugsPage = ({ onBack }) => {
       category: "Sedative",
       route: "IV/PR/PO",
       doses: {
-        seizure: { label: "Status Epilepticus", value: "0.1-0.3", unit: "mg/kg IV (max 10mg)" },
+        seizureUnder1mo: { label: "Status (<1 mo)", value: "0.05", unit: "mg/kg IV" },
+        seizure1moTo5yr: { label: "Status (1mo-5yr)", value: "0.1", unit: "mg/kg IV (max 5mg)" },
+        seizureOver5yr: { label: "Status (>5yr)", value: "0.2", unit: "mg/kg IV (max 10mg)" },
         rectal: { label: "Rectal", value: "0.5", unit: "mg/kg PR (max 20mg)" }
       },
-      max: "10 mg IV, 20 mg PR",
-      indication: "Status epilepticus, seizure rescue, muscle spasm",
-      notes: "Long-acting benzo. PR gel for home seizure rescue.",
+      max: "5 mg (<5yr), 10 mg (>5yr) IV; 20 mg PR",
+      indication: "Status epilepticus, seizure rescue, muscle spasm, sedation",
+      notes: "Long-acting benzo. Give IV slowly over 2-5 min. PR gel for home seizure rescue.",
       renalAdjust: null
     },
     {
