@@ -414,7 +414,7 @@ const DrugsPage = ({ onBack }) => {
       max: "8-10 g/day standard; 12 g/day meningitis",
       indication: "Meningitis, sepsis, gram-negative infections (preferred in neonates over ceftriaxone)",
       notes: "Preferred over ceftriaxone in neonates (no bilirubin displacement). Good CSF penetration.",
-      renalAdjust: { gfr50: "No change", gfr30: "q8-12h", gfr10: "q24h", hd: "Give after HD" }
+      renalAdjust: { gfr50: "No change", gfr30: "50% dose q12-24h", gfr10: "50% dose q24h", hd: "50% dose q24h, give after HD" }
     },
     {
       id: "ceftazidime",
