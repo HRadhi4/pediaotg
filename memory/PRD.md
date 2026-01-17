@@ -81,22 +81,19 @@ Build a full SaaS-style web app "Pediatrics on the Go" with:
 ## Recent Changes (January 16, 2026)
 
 ### Session 6 Updates (Current - January 17, 2026)
-- ✅ **Acetaminophen (Paracetamol) Approach Added**:
-  - Created comprehensive `AcetaminophenApproach.jsx` component in `/app/frontend/src/pages/children/approaches/`
+- ✅ **Acetaminophen (Paracetamol) Approach Updated**:
+  - Refactored `AcetaminophenApproach.jsx` with collapsible sections and ml/mg converter
   - Features include:
-    - **Rumack-Matthew Nomogram**: Interactive SVG chart with treatment line (orange) and probable toxicity line (red dashed)
-    - **Risk Assessment Calculator**: Calculates mg/kg ingestion, plots serum level vs time on nomogram
-    - **NAC Dosing Protocols**: 3-bag IV (21h), 2-bag IV (20h), and Oral (72h) regimens with weight-based calculations
-    - **Clinical Phases of Toxicity**: Phase I-IV with detailed symptoms
-    - **Toxic Dose Thresholds**: Acute (≥150 mg/kg), Chronic (≥150 mg/kg/day), High-risk patients
-    - **Initial Management**: Decontamination, labs, poison control guidance
-    - **Stopping Criteria**: When to discontinue NAC treatment
-    - **Severe Hepatotoxicity Indicators**: AST/ALT, INR, creatinine, metabolic acidosis thresholds
-  - Integrated into `ApproachesPage.jsx` with dropdown and search functionality
-  - Keywords: acetaminophen, paracetamol, tylenol, overdose, nac, n-acetylcysteine, rumack, nomogram, hepatotoxicity, liver, poisoning
-  - **Testing**: 100% pass rate (iteration_11.json)
+    - **Collapsible Sections**: Arrow-press UI like TBI approach (Dose Calculator, Nomogram open by default)
+    - **Tablets (mg) / Liquid (ml) Toggle**: Switch between tablet and liquid input modes
+    - **Bahrain Liquid Preparations**: 13 options including Panadol (Infant Drops 100mg/ml, Baby 120mg/5ml, Children 250mg/5ml), Adol, Tylenol, Fevadol, Calpol, Custom entry
+    - **ml to mg Conversion**: Shows calculation (e.g., 30ml × 100mg/ml = 3000mg)
+    - **Tablet Strengths**: 120, 160, 325, 500, 650, 1000mg dropdown
+    - **Rumack-Matthew Nomogram**: Interactive SVG with patient point plotting
+    - **NAC Dosing Protocols**: 3-bag IV (21h), 2-bag IV (20h), and Oral (72h) with weight-based calculations
+  - **Testing**: 100% pass rate (iteration_14.json)
 
-- ✅ **Iron Toxicity Approach Added** (Updated from UpToDate PDF):
+- ✅ **Iron Toxicity Approach Updated**:
   - Created `IronToxicityApproach.jsx` in `/app/frontend/src/pages/children/approaches/`
   - Features include:
     - **Collapsible Sections**: Arrow-press UI like TBI approach
@@ -335,13 +332,13 @@ Build a full SaaS-style web app "Pediatrics on the Go" with:
 - [ ] Mobile responsiveness fix when accessing from app.pedotg.com (GoDaddy domain)
 
 ## Test Reports
+- `/app/test_reports/iteration_14.json` - Acetaminophen ml/mg conversion tests (100% passed - 9/9)
 - `/app/test_reports/iteration_13.json` - Iron & NSAID ml/mg conversion tests (100% passed - 10/10)
 - `/app/test_reports/iteration_12.json` - Iron & NSAID Toxicity tests (100% passed - 8/8)
 - `/app/test_reports/iteration_11.json` - Acetaminophen Approach tests (100% passed)
 - `/app/test_reports/iteration_9.json` - NICU Approaches feature tests (100% passed)
 - `/app/test_reports/iteration_8.json` - Approaches refactoring tests (100% passed)
 - `/app/test_reports/iteration_7.json` - OCR backend tests (15/15 passed)
-- `/app/tests/test_ocr_service.py` - Test file for OCR endpoints
 
 ## Last Updated
-January 17, 2026 - Iron & NSAID Toxicity: ml/mg conversion, Bahrain preparations, collapsible UI
+January 17, 2026 - All 3 Toxicology Approaches (Acetaminophen, Iron, NSAID) updated with collapsible UI and Bahrain liquid preparations
