@@ -1131,14 +1131,18 @@ const DrugsPage = ({ onBack }) => {
       id: "morphine",
       name: "Morphine",
       category: "Opioid",
-      route: "IV/PO",
+      route: "IV/IM/PO",
       doses: {
-        iv: { label: "IV", value: "0.05-0.1", unit: "mg/kg/dose q2-4h" },
-        po: { label: "PO", value: "0.2-0.5", unit: "mg/kg/dose q4h" }
+        neonateIV: { label: "Neonate IV", value: "0.05-0.1", unit: "mg/kg slow IV (max 0.2mg/kg) q4-6h PRN" },
+        childIV: { label: "Infant/Child/Adol IV", value: "0.1-0.2", unit: "mg/kg IV/IO (max 0.5mg/kg) q4-6h PRN" },
+        adultIV: { label: "Adult IV", value: "2-10", unit: "mg (max 10mg) q4-6h PRN" },
+        neonateInfusion: { label: "Neonate Infusion", value: "0.01-0.04", unit: "mg/kg/hr" },
+        childInfusion: { label: "Child Infusion", value: "0.02-0.04", unit: "mg/kg/hr" },
+        adultInfusion: { label: "Adult Infusion", value: "0.08-0.10", unit: "mg/kg/hr" }
       },
-      max: "0.1-0.2 mg/kg/dose IV",
-      indication: "Moderate-severe pain",
-      notes: "Start low, titrate. Monitor respiratory status. PO:IV = 3:1.",
+      max: "See dosing by age",
+      indication: "Moderate-severe pain, Tet spell (cyanotic)",
+      notes: "Start low, titrate. Monitor respiratory status. PO:IV ratio = 3:1.",
       renalAdjust: { gfr50: "75% dose", gfr30: "50% dose", gfr10: "25-50% dose", hd: "No supplement" }
     },
     {
