@@ -99,27 +99,28 @@ Build a full SaaS-style web app "Pediatrics on the Go" with:
 - ✅ **Iron Toxicity Approach Added** (Updated from UpToDate PDF):
   - Created `IronToxicityApproach.jsx` in `/app/frontend/src/pages/children/approaches/`
   - Features include:
-    - **Elemental Iron Calculator**: 6 iron salt types with percentages (Ferrous Sulfate 20%, Gluconate 12%, Fumarate 33%, Carbonyl 100%)
+    - **Collapsible Sections**: Arrow-press UI like TBI approach
+    - **Elemental Iron Calculator**: Tablets (mg) / Liquid (ml) toggle
+    - **Bahrain Liquid Preparations**: Feroglobin, Fer-In-Sol, Maltofer Drops/Syrup, Custom entry
+    - **ml to mg Conversion**: Automatic calculation based on bottle concentration
+    - **6 Iron Salt Types**: Ferrous Sulfate 20%, Gluconate 12%, Fumarate 33%, Carbonyl 100%
     - **Toxic Dose Thresholds**: <20 mg/kg low, 20-60 mg/kg mild, ≥60 mg/kg serious
-    - **Clinical Stages**: 5 phases of iron poisoning (GI, Latent, Shock/Metabolic, Hepatic, Late/Delayed)
-    - **Serum Iron Interpretation**: <350 minimal, 350-500 mild-mod, ≥500 serious, >1000 critical
-    - **Deferoxamine Protocol**: 15 mg/kg/hr initial, up to 35 mg/kg/hr max, dosing calculator
-    - **Initial Management**: WBI preferred (NOT activated charcoal), labs, X-ray (radiopaque)
-  - Keywords: iron, ferrous, sulfate, gluconate, fumarate, deferoxamine, desferal, chelation, poisoning, overdose, elemental iron
-  - **Testing**: 100% pass rate (iteration_12.json)
+    - **Clinical Stages**: 5 phases of iron poisoning
+    - **Deferoxamine Protocol**: Dosing calculator with weight-based calculations
+  - **Testing**: 100% pass rate (iteration_13.json)
 
 - ✅ **NSAID Toxicity Approach Added** (Based on UpToDate NSAID Poisoning PDF):
   - Created `NSAIDToxicityApproach.jsx` in `/app/frontend/src/pages/children/approaches/`
   - Features include:
-    - **NSAID Dose Calculator**: 10 NSAIDs with common tablet strengths, calculates tablets × strength or total mg
+    - **Collapsible Sections**: Arrow-press UI like TBI approach
+    - **NSAID Dose Calculator**: Tablets (mg) / Liquid (ml) toggle
+    - **Bahrain Liquid Preparations**: Brufen 100mg/5ml, Forte 200mg/5ml, Infant Drops 40mg/ml, Ponstan, Custom entry
+    - **ml to mg Conversion**: Shows calculation (e.g., 50ml × 20mg/ml = 1000mg)
+    - **10 NSAID Types**: Ibuprofen, Naproxen, Diclofenac, Mefenamic Acid, etc.
     - **Toxic Dose Thresholds**: <100 mg/kg low risk, 100-400 moderate, >400 severe
-    - **Special 24h Observation**: Mefenamic Acid (seizure risk), Phenylbutazone (seizures, acidosis, blood dyscrasias)
-    - **Clinical Manifestations**: Mild (GI), Moderate (CNS), Severe (metabolic acidosis, AKI, seizures, coma)
-    - **Management Protocol**: ABC stabilization, activated charcoal 1g/kg (if <2h), supportive care
-    - **Disposition Guidelines**: Discharge criteria, extended observation, admission indications
-    - Key Points: No antidote, severe toxicity uncommon, always screen for acetaminophen/aspirin co-ingestion, hemodialysis ineffective
-  - Keywords: nsaid, ibuprofen, naproxen, diclofenac, advil, motrin, aleve, mefenamic, ponstan, indomethacin, ketorolac, poisoning, overdose
-  - **Testing**: 100% pass rate (iteration_12.json)
+    - **Special 24h Observation**: Mefenamic Acid (Ponstan), Phenylbutazone flagged with ⚠️
+    - **Activated Charcoal Dosing**: 1g/kg (max 50g) calculator
+  - **Testing**: 100% pass rate (iteration_13.json)
 
 ### Session 5 Updates
 - ✅ **Growth Chart Mobile Improvements**:
@@ -334,6 +335,7 @@ Build a full SaaS-style web app "Pediatrics on the Go" with:
 - [ ] Mobile responsiveness fix when accessing from app.pedotg.com (GoDaddy domain)
 
 ## Test Reports
+- `/app/test_reports/iteration_13.json` - Iron & NSAID ml/mg conversion tests (100% passed - 10/10)
 - `/app/test_reports/iteration_12.json` - Iron & NSAID Toxicity tests (100% passed - 8/8)
 - `/app/test_reports/iteration_11.json` - Acetaminophen Approach tests (100% passed)
 - `/app/test_reports/iteration_9.json` - NICU Approaches feature tests (100% passed)
@@ -342,4 +344,4 @@ Build a full SaaS-style web app "Pediatrics on the Go" with:
 - `/app/tests/test_ocr_service.py` - Test file for OCR endpoints
 
 ## Last Updated
-January 17, 2026 - Iron Toxicity & NSAID Toxicity Approaches Added
+January 17, 2026 - Iron & NSAID Toxicity: ml/mg conversion, Bahrain preparations, collapsible UI
