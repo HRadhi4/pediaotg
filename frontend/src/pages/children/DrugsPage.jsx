@@ -518,15 +518,18 @@ const DrugsPage = ({ onBack }) => {
       id: "dexamethasone",
       name: "Dexamethasone",
       category: "Steroid",
-      route: "IV/PO",
+      route: "IV/IM/PO",
       doses: {
-        croup: { label: "Croup", value: "0.6", unit: "mg/kg single dose" },
+        antiinflammatory: { label: "Anti-inflammatory", value: "0.08-0.3", unit: "mg/kg/24hr PO/IV/IM q6-12h" },
+        croup: { label: "Croup", value: "0.6", unit: "mg/kg PO/IM single dose (max 10mg)" },
         meningitis: { label: "Meningitis", value: "0.15", unit: "mg/kg q6h x2 days" },
-        airway: { label: "Airway Edema", value: "0.5-1", unit: "mg/kg q6h" }
+        airway: { label: "Airway Edema", value: "0.5-1", unit: "mg/kg q6h" },
+        antiemeticInit: { label: "Antiemetic (Initial)", value: "10", unit: "mg/m² IV (max 20mg)" },
+        antiemeticMaint: { label: "Antiemetic (Maint)", value: "5", unit: "mg/m² IV q6h" }
       },
-      max: "10 mg/dose",
-      indication: "Croup, meningitis, airway edema, asthma",
-      notes: "Give before/with first abx dose for meningitis.",
+      max: "20 mg/dose",
+      indication: "Croup, meningitis, airway edema, asthma, chemotherapy-induced emesis",
+      notes: "Give before/with first abx dose for meningitis. Adult anti-inflammatory: 0.75-9 mg/kg/24hr.",
       renalAdjust: null
     },
     {
