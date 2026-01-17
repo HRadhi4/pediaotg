@@ -1149,14 +1149,16 @@ const DrugsPage = ({ onBack }) => {
       id: "naloxone",
       name: "Naloxone (Narcan)",
       category: "Antidote",
-      route: "IV/IM/IN/ETT",
+      route: "IV/IM/SC/IN/ETT",
       doses: {
-        reversal: { label: "Opioid Reversal", value: "0.01-0.1", unit: "mg/kg (max 2mg)" },
-        fullReversal: { label: "Full Reversal", value: "0.1", unit: "mg/kg" }
+        opioidNaive: { label: "Opioid-Naive", value: "0.1", unit: "mg/kg IV/IM/SC q2-3min PRN (max 0.2mg/kg)" },
+        opioidDependent: { label: "Opioid-Dependent (infants)", value: "0.03", unit: "mg/kg IV/IM/SC q2-3min PRN" },
+        autoinjector: { label: "Auto-Injector", value: "0.4", unit: "mg IM" },
+        nasalSpray: { label: "Nasal Spray", value: "4", unit: "mg per nostril" }
       },
       max: "2 mg/dose (may repeat)",
       indication: "Opioid overdose/reversal",
-      notes: "Short duration (30-90 min). May need repeat doses or infusion.",
+      notes: "Short duration (30-90 min). May need repeat doses or infusion (2/3 of initial dose/hr).",
       renalAdjust: null
     },
     {
