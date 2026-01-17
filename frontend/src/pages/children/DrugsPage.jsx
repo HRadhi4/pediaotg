@@ -1144,8 +1144,8 @@ const DrugsPage = ({ onBack }) => {
       },
       max: "750 mg/dose (amebiasis); 4 g/day (severe infections)",
       indication: "Anaerobic infections, amebiasis, C. difficile colitis, giardiasis, trichomoniasis, bacterial vaginosis, H. pylori (with PPI + clarithromycin)",
-      notes: "Avoid alcohol (disulfiram reaction). Metallic taste common.",
-      renalAdjust: { gfr50: "No change", gfr30: "No change", gfr10: "q12h or 50%", hd: "Give after HD" }
+      notes: "Avoid alcohol (disulfiram reaction). Metallic taste common. Metabolites accumulate in renal failure.",
+      renalAdjust: { gfr50: "No change", gfr30: "No change", gfr10: "Avoid use - metabolites accumulate", hd: "Avoid use" }
     },
     {
       id: "midazolam",
