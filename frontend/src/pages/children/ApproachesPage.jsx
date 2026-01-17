@@ -123,6 +123,14 @@ const ApproachesPage = ({ onBack }) => {
     );
   };
 
+  const getPinchCenter = (touches) => {
+    const [touch1, touch2] = touches;
+    return {
+      x: (touch1.clientX + touch2.clientX) / 2,
+      y: (touch1.clientY + touch2.clientY) / 2
+    };
+  };
+
   const lastTap = useRef(0);
 
   const handleTouchStart = useCallback((e) => {
@@ -130,6 +138,25 @@ const ApproachesPage = ({ onBack }) => {
       e.preventDefault();
       initialDistance.current = getDistance(e.touches);
       initialZoom.current = zoomLevel;
+      
+      // Get pinch center relative to the container
+      const container = containerRef.current;
+      if (container) {
+        const rect = container.getBoundingClientRect();
+        const center = getPinchCenter(e.touches);
+        
+        // Store current scroll position
+        scrollPos.current = {
+          x: container.scrollLeft,
+          y: container.scrollTop
+        };
+        
+        // Calculate pinch center relative to content (accounting for scroll and zoom)
+        pinchCenter.current = {
+          x: (center.x - rect.left + container.scrollLeft) / (zoomLevel / 100),
+          y: (center.y - rect.top + container.scrollTop) / (zoomLevel / 100)
+        };
+      }
     } else if (e.touches.length === 1) {
       // Double-tap to reset zoom
       const now = Date.now();
@@ -146,9 +173,28 @@ const ApproachesPage = ({ onBack }) => {
       const currentDistance = getDistance(e.touches);
       const scale = currentDistance / initialDistance.current;
       const newZoom = Math.min(200, Math.max(100, initialZoom.current * scale));
-      setZoomLevel(Math.round(newZoom));
+      const roundedZoom = Math.round(newZoom);
+      
+      // Calculate new scroll position to keep pinch center in place
+      const container = containerRef.current;
+      if (container && roundedZoom !== zoomLevel) {
+        const rect = container.getBoundingClientRect();
+        const center = getPinchCenter(e.touches);
+        
+        // Where the pinch center should be after zoom
+        const newScrollX = (pinchCenter.current.x * (roundedZoom / 100)) - (center.x - rect.left);
+        const newScrollY = (pinchCenter.current.y * (roundedZoom / 100)) - (center.y - rect.top);
+        
+        setZoomLevel(roundedZoom);
+        
+        // Apply scroll position after state update
+        requestAnimationFrame(() => {
+          container.scrollLeft = Math.max(0, newScrollX);
+          container.scrollTop = Math.max(0, newScrollY);
+        });
+      }
     }
-  }, []);
+  }, [zoomLevel]);
 
   const handleTouchEnd = useCallback(() => {
     initialDistance.current = null;
