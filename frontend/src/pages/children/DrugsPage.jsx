@@ -1369,12 +1369,15 @@ const DrugsPage = ({ onBack }) => {
       category: "Steroid",
       route: "PO",
       doses: {
-        asthma: { label: "Asthma", value: "1-2", unit: "mg/kg/day divided q12-24h" },
-        immunosupp: { label: "Immunosuppression", value: "2", unit: "mg/kg/day" }
+        asthmaChild: { label: "Asthma (Child)", value: "1-2", unit: "mg/kg/day (max 60mg) x3-5 days" },
+        asthmaAdult: { label: "Asthma (Adult)", value: "40-60", unit: "mg/day" },
+        croup: { label: "Croup", value: "1", unit: "mg/kg PO single dose" },
+        antiinflammatory: { label: "Anti-inflammatory", value: "0.05-2", unit: "mg/kg/day divided q12-24h" },
+        nephrotic: { label: "Nephrotic Syndrome", value: "2", unit: "mg/kg/day (max 80mg) x6 weeks" }
       },
-      max: "60 mg/day",
-      indication: "Asthma exacerbation, nephrotic syndrome",
-      notes: "Give with food. Taper if >5 days.",
+      max: "60-80 mg/day",
+      indication: "Asthma exacerbation, croup, nephrotic syndrome, inflammation",
+      notes: "Give with food. Taper if >5 days. Prednisolone liquid better absorbed than prednisone.",
       renalAdjust: null
     },
     {
