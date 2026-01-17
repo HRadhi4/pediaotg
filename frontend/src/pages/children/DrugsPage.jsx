@@ -1214,8 +1214,8 @@ const DrugsPage = ({ onBack }) => {
       },
       max: "See dosing by age",
       indication: "Moderate-severe pain, Tet spell (cyanotic)",
-      notes: "Start low, titrate. Monitor respiratory status. PO:IV ratio = 3:1.",
-      renalAdjust: { gfr50: "75% dose", gfr30: "50% dose", gfr10: "25-50% dose", hd: "No supplement" }
+      notes: "Start low, titrate. Monitor respiratory status. PO:IV ratio = 3:1. Consider other agents in renal failure.",
+      renalAdjust: { gfr50: "No change", gfr30: "75% dose q24h", gfr10: "50% dose q24h", hd: "No supplement needed" }
     },
     {
       id: "naloxone",
