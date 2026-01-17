@@ -516,13 +516,17 @@ const DrugsPage = ({ onBack }) => {
       category: "Antibiotic",
       route: "PO/IV",
       doses: {
-        po: { label: "PO", value: "10-20", unit: "mg/kg/dose q12h" },
-        iv: { label: "IV", value: "10-15", unit: "mg/kg/dose q8-12h" }
+        childPO: { label: "Child PO", value: "10-20", unit: "mg/kg/dose q12h (max 750mg/dose)" },
+        childIV: { label: "Child IV", value: "10-15", unit: "mg/kg/dose q8-12h (max 400mg/dose)" },
+        adultPO: { label: "Adult PO", value: "250-750", unit: "mg q12h" },
+        adultIV: { label: "Adult IV", value: "200-400", unit: "mg q8-12h" },
+        uti: { label: "Complicated UTI", value: "10-20", unit: "mg/kg/day ÷ q12h" },
+        anthrax: { label: "Anthrax", value: "15", unit: "mg/kg q12h (max 500mg/dose)" }
       },
-      max: "750 mg PO, 400 mg IV",
-      indication: "Pseudomonas, complicated UTI, anthrax",
-      notes: "Fluoroquinolone - avoid in children <18y unless necessary.",
-      renalAdjust: { gfr50: "No change", gfr30: "50-75% dose", gfr10: "50% dose q12h", hd: "Give after HD" }
+      max: "750 mg PO, 400 mg IV per dose",
+      indication: "Pseudomonas, complicated UTI, pyelonephritis, anthrax, GI infections, osteomyelitis, CF exacerbation",
+      notes: "Fluoroquinolone - avoid in children <18y unless benefits outweigh risks (joint toxicity). Avoid with antacids.",
+      renalAdjust: { gfr50: "50-75% dose", gfr30: "50% dose q12h", gfr10: "50% dose q18-24h", hd: "250-500mg q24h after HD" }
     },
     {
       id: "clarithromycin",
