@@ -1165,11 +1165,12 @@ const DrugsPage = ({ onBack }) => {
       category: "Vasoactive",
       route: "IV Infusion",
       doses: {
-        standard: { label: "Standard", value: "0.05-2", unit: "mcg/kg/min" }
+        neonate: { label: "Neonate", value: "0.05-0.1", unit: "mcg/kg/min" },
+        childAdult: { label: "Child/Adult", value: "0.05-0.1", unit: "mcg/kg/min, titrate to max 2 mcg/kg/min" }
       },
       max: "2 mcg/kg/min",
-      indication: "Septic shock, vasodilatory shock",
-      notes: "Potent vasoconstrictor. Central line required.",
+      indication: "Septic shock, vasodilatory shock, hypotension",
+      notes: "Potent α-adrenergic vasoconstrictor. Central line required. Titrate to effect.",
       renalAdjust: null
     },
     {
