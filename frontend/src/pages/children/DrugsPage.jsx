@@ -552,12 +552,14 @@ const DrugsPage = ({ onBack }) => {
       category: "Electrolyte",
       route: "IV",
       doses: {
-        hypoglycemia: { label: "Hypoglycemia", value: "0.25-0.5", unit: "g/kg (D10: 2.5-5 mL/kg)" },
+        hypoglycemiaNeo: { label: "Hypoglycemia (Neonate)", value: "2", unit: "mL/kg of D10W IV" },
+        hypoglycemiaChild: { label: "Hypoglycemia (Child)", value: "0.5-1", unit: "g/kg IV" },
+        hypoglycemiaAdult: { label: "Hypoglycemia (Adult)", value: "50", unit: "mL of D50W IV" },
         hyperkalemia: { label: "Hyperkalemia", value: "0.5", unit: "g/kg with insulin" }
       },
       max: "25 g/dose",
       indication: "Hypoglycemia, hyperkalemia (with insulin)",
-      notes: "D10 for peripheral, D25 for central line.",
+      notes: "D10 for peripheral/neonates, D25 for older children, D50 for adults via central line.",
       renalAdjust: null
     },
     {
