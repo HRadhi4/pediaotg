@@ -20,10 +20,11 @@ const WeaknessApproach = ({ weight }) => {
 
         {/* MAIN ALGORITHM FLOWCHART - Table Layout for proper alignment with connecting lines */}
         <div className="p-2 bg-gradient-to-b from-gray-50 to-blue-50 dark:from-gray-900 dark:to-blue-950/30 rounded-xl overflow-x-auto">
-          <p className="text-xs font-bold text-center text-gray-700 dark:text-gray-300 mb-2">Algorithm</p>
+          <p className="text-xs font-bold text-center text-gray-700 dark:text-gray-300 mb-1">Algorithm</p>
+          <p className="text-[9px] text-center text-muted-foreground mb-2 sm:hidden">← Swipe to scroll →</p>
           
           {/* Scrollable container for flowchart */}
-          <div className="min-w-[480px]">
+          <div className="min-w-[520px]">
           
           {/* Header Row */}
           <div className="grid grid-cols-12 gap-1 mb-2 text-[9px] font-semibold text-gray-600 dark:text-gray-400 border-b border-gray-300 pb-1">
