@@ -31,9 +31,11 @@ const MetabolicEmergencyApproach = ({ weight, age, expandedSections, toggleSecti
 
         {/* Clinical Presentations */}
         <Section
+          id="metabolic-clinicalPresentation"
           title="Clinical Presentations"
-          isOpen={expandedSections["clinicalPresentation"] !== false}
-          onToggle={() => toggleSection("clinicalPresentation")}
+          defaultOpen={true}
+          expandedSections={expandedSections}
+          toggleSection={toggleSection}
         >
           <div className="text-xs text-slate-600 dark:text-slate-300 space-y-2">
             <p className="text-red-600 dark:text-red-400 font-medium mb-2">
@@ -73,9 +75,10 @@ const MetabolicEmergencyApproach = ({ weight, age, expandedSections, toggleSecti
 
         {/* Triggers */}
         <Section
+          id="metabolic-triggers"
           title="Triggers of Metabolic Crisis"
-          isOpen={expandedSections["triggers"]}
-          onToggle={() => toggleSection("triggers")}
+          expandedSections={expandedSections}
+          toggleSection={toggleSection}
         >
           <div className="text-xs text-slate-600 dark:text-slate-300">
             <div className="grid grid-cols-2 gap-3">
@@ -106,9 +109,11 @@ const MetabolicEmergencyApproach = ({ weight, age, expandedSections, toggleSecti
 
         {/* Initial Laboratory Evaluation */}
         <Section
+          id="metabolic-initialLabs"
           title="Initial Laboratory Evaluation"
-          isOpen={expandedSections["initialLabs"] !== false}
-          onToggle={() => toggleSection("initialLabs")}
+          defaultOpen={true}
+          expandedSections={expandedSections}
+          toggleSection={toggleSection}
         >
           <div className="text-xs text-slate-600 dark:text-slate-300 space-y-2">
             <table className="w-full">
@@ -143,9 +148,10 @@ const MetabolicEmergencyApproach = ({ weight, age, expandedSections, toggleSecti
 
         {/* Specialized Tests */}
         <Section
+          id="metabolic-specializedTests"
           title="Specialized Metabolic Tests"
-          isOpen={expandedSections["specializedTests"]}
-          onToggle={() => toggleSection("specializedTests")}
+          expandedSections={expandedSections}
+          toggleSection={toggleSection}
         >
           <div className="text-xs text-slate-600 dark:text-slate-300 space-y-2">
             <p className="text-amber-600 dark:text-amber-400 mb-2">
@@ -171,9 +177,11 @@ const MetabolicEmergencyApproach = ({ weight, age, expandedSections, toggleSecti
 
         {/* Distinguishing IEM by Labs */}
         <Section
+          id="metabolic-distinguishingLabs"
           title="Distinguishing IEM by Lab Findings"
-          isOpen={expandedSections["distinguishingLabs"] !== false}
-          onToggle={() => toggleSection("distinguishingLabs")}
+          defaultOpen={true}
+          expandedSections={expandedSections}
+          toggleSection={toggleSection}
         >
           <div className="text-xs text-slate-600 dark:text-slate-300">
             <div className="overflow-x-auto">
@@ -245,7 +253,7 @@ const MetabolicEmergencyApproach = ({ weight, age, expandedSections, toggleSecti
             </p>
             <div className="mt-2 p-2 bg-blue-50 dark:bg-blue-900/20 rounded">
               <p className="font-medium text-blue-700 dark:text-blue-400">
-                💡 Hypoketotic hypoglycemia → Think Fatty Acid Oxidation Disorders (MCAD, VLCAD)
+                Hypoketotic hypoglycemia → Think Fatty Acid Oxidation Disorders (MCAD, VLCAD)
               </p>
             </div>
           </div>
@@ -253,9 +261,11 @@ const MetabolicEmergencyApproach = ({ weight, age, expandedSections, toggleSecti
 
         {/* Hyperammonemia Management */}
         <Section
+          id="metabolic-hyperammonemia"
           title="Hyperammonemia - EMERGENCY Management"
-          isOpen={expandedSections["hyperammonemia"] !== false}
-          onToggle={() => toggleSection("hyperammonemia")}
+          defaultOpen={true}
+          expandedSections={expandedSections}
+          toggleSection={toggleSection}
         >
           <div className="text-xs text-slate-600 dark:text-slate-300 space-y-2">
             <div className="p-2 bg-red-100 dark:bg-red-900/30 rounded border-l-4 border-red-500">
@@ -289,9 +299,10 @@ const MetabolicEmergencyApproach = ({ weight, age, expandedSections, toggleSecti
 
         {/* Hypoglycemia in IEM */}
         <Section
+          id="metabolic-hypoglycemia"
           title="Hypoglycemia in IEM"
-          isOpen={expandedSections["hypoglycemia"]}
-          onToggle={() => toggleSection("hypoglycemia")}
+          expandedSections={expandedSections}
+          toggleSection={toggleSection}
         >
           <div className="text-xs text-slate-600 dark:text-slate-300 space-y-2">
             <p className="font-medium mb-1">Distinguish by presence of ketones:</p>
@@ -328,9 +339,10 @@ const MetabolicEmergencyApproach = ({ weight, age, expandedSections, toggleSecti
 
         {/* Metabolic Acidosis */}
         <Section
+          id="metabolic-acidosis"
           title="Metabolic Acidosis in IEM"
-          isOpen={expandedSections["metabolicAcidosis"]}
-          onToggle={() => toggleSection("metabolicAcidosis")}
+          expandedSections={expandedSections}
+          toggleSection={toggleSection}
         >
           <div className="text-xs text-slate-600 dark:text-slate-300 space-y-2">
             <p className="font-medium">Causes of ↑ Anion Gap Metabolic Acidosis in IEM:</p>
@@ -356,9 +368,10 @@ const MetabolicEmergencyApproach = ({ weight, age, expandedSections, toggleSecti
 
         {/* Seizures in IEM */}
         <Section
+          id="metabolic-seizures"
           title="Seizures in IEM - Cofactor Trials"
-          isOpen={expandedSections["seizures"]}
-          onToggle={() => toggleSection("seizures")}
+          expandedSections={expandedSections}
+          toggleSection={toggleSection}
         >
           <div className="text-xs text-slate-600 dark:text-slate-300 space-y-2">
             <p className="text-amber-600 dark:text-amber-400 mb-2">
@@ -391,9 +404,11 @@ const MetabolicEmergencyApproach = ({ weight, age, expandedSections, toggleSecti
 
         {/* Immediate Management */}
         <Section
+          id="metabolic-management"
           title="Immediate Management Summary"
-          isOpen={expandedSections["management"] !== false}
-          onToggle={() => toggleSection("management")}
+          defaultOpen={true}
+          expandedSections={expandedSections}
+          toggleSection={toggleSection}
         >
           <div className="text-xs text-slate-600 dark:text-slate-300 space-y-2">
             <div className="space-y-2">
@@ -447,9 +462,10 @@ const MetabolicEmergencyApproach = ({ weight, age, expandedSections, toggleSecti
 
         {/* Differential Diagnosis */}
         <Section
+          id="metabolic-differential"
           title="Differential Diagnosis"
-          isOpen={expandedSections["differential"]}
-          onToggle={() => toggleSection("differential")}
+          expandedSections={expandedSections}
+          toggleSection={toggleSection}
         >
           <div className="text-xs text-slate-600 dark:text-slate-300 space-y-2">
             <div className="grid grid-cols-2 gap-2">
