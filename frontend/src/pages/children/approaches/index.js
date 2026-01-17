@@ -21,3 +21,4 @@ export { default as GaitApproach } from './GaitApproach';
 export { default as HyperkalemiaApproach } from './HyperkalemiaApproach';
 export { default as UgibApproach } from './UgibApproach';
 export { default as AcetaminophenApproach } from './AcetaminophenApproach';
+export { default as IronToxicityApproach } from './IronToxicityApproach';
