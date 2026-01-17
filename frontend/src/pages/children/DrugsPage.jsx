@@ -265,14 +265,20 @@ const DrugsPage = ({ onBack }) => {
       id: "ampicillin",
       name: "Ampicillin",
       category: "Antibiotic",
-      route: "IV/IM",
+      route: "IV/IM/PO",
       doses: {
-        standard: { label: "Standard", value: "50-100", unit: "mg/kg/dose q6h" },
-        meningitis: { label: "Meningitis", value: "100", unit: "mg/kg/dose q6h" }
+        neoUnder7d: { label: "Neonate <7 days", value: "100", unit: "mg/kg/day ÷ q12h IV/IM" },
+        neo7to28d: { label: "Neonate ≥7 days", value: "150", unit: "mg/kg/day ÷ q8h IV/IM" },
+        gbsMeningUnder7d: { label: "GBS Meningitis <7d", value: "150", unit: "mg/kg/day ÷ q8h IV" },
+        gbsMeningOver7d: { label: "GBS Meningitis ≥7d", value: "300", unit: "mg/kg/day ÷ q6h IV" },
+        childMildMod: { label: "Child Mild/Mod PO", value: "250-500", unit: "mg/dose q6-8h (max 12g/day)" },
+        childSevere: { label: "Child Severe IV/IM", value: "150-200", unit: "mg/kg/day ÷ q4-6h (max 12g/day)" },
+        capPneumo: { label: "CAP (S. pneumoniae MIC≤2)", value: "150-200", unit: "mg/kg/day ÷ q4-6h IV" },
+        capPneumoResist: { label: "CAP (S. pneumoniae MIC≥4)", value: "300-400", unit: "mg/kg/day ÷ q4-6h IV" }
       },
       max: "12 g/day",
-      indication: "Listeria, enterococcus, GBS, meningitis",
-      notes: "Meningitis: 300-400 mg/kg/day divided q6h.",
+      indication: "Listeria, enterococcus, GBS, meningitis, tonsillitis/pharyngitis (S. pyogenes), community-acquired pneumonia, severe infections, SBE prophylaxis",
+      notes: "GBS meningitis requires higher doses. Good CSF penetration.",
       renalAdjust: { gfr50: "q6h", gfr30: "q6-8h", gfr10: "q12h", hd: "Give after HD" }
     },
     {
