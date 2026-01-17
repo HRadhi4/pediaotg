@@ -165,12 +165,17 @@ const DrugsPage = ({ onBack }) => {
       category: "Bronchodilator",
       route: "Nebulizer/MDI",
       doses: {
-        neb: { label: "Nebulizer", value: "0.15", unit: "mg/kg (min 2.5mg, max 5mg) q20min x3" },
-        mdi: { label: "MDI", value: "4-8", unit: "puffs q20min x3" }
+        nebUnder1yr: { label: "Neb <1yr", value: "0.05-0.15", unit: "mg/kg/dose q4-6h PRN (max 20mg/day)" },
+        neb1to5yr: { label: "Neb 1-5yr", value: "1.25-2.5", unit: "mg/dose q4-6h PRN" },
+        neb5to12yr: { label: "Neb 5-12yr", value: "2.5", unit: "mg/dose q4-6h PRN" },
+        nebOver12yr: { label: "Neb >12yr", value: "2.5-5", unit: "mg/dose q4-6h PRN (max 3.2mg/day MDI)" },
+        mdi2to6yr: { label: "MDI 2-6yr", value: "2", unit: "puffs (90 mcg/puff) q4-6h PRN" },
+        mdiOver6yr: { label: "MDI >6yr", value: "2", unit: "puffs (90 mcg/puff) q4-6h PRN" },
+        acuteExacerb: { label: "Acute Exacerbation", value: "2.5-5", unit: "mg neb q20min x3, then q1-4h PRN" }
       },
-      max: "5 mg/neb, continuous if severe",
-      indication: "Asthma, bronchospasm",
-      notes: "May give continuous neb in severe asthma. Monitor HR, K+.",
+      max: "2.5 mg/dose (5-12yr); 5 mg/dose (>12yr); continuous neb if severe",
+      indication: "Asthma, bronchospasm, exercise-induced bronchospasm (give 15-30min before exercise)",
+      notes: "May give continuous neb in severe asthma. Monitor HR, K+. Can cause paradoxical bronchospasm.",
       renalAdjust: null
     },
     {
