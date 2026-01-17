@@ -812,14 +812,16 @@ const DrugsPage = ({ onBack }) => {
       id: "hydrocortisone",
       name: "Hydrocortisone",
       category: "Steroid",
-      route: "IV",
+      route: "IV/PO",
       doses: {
-        stress: { label: "Stress Dose", value: "50-100", unit: "mg/m² or 1-2 mg/kg" },
-        shock: { label: "Shock", value: "1-2", unit: "mg/kg q6h" }
+        antiinflammChild: { label: "Anti-inflammatory (Child)", value: "4-8", unit: "mg/kg/dose IV/PO q6-8h" },
+        antiinflammAdult: { label: "Anti-inflammatory (Adult)", value: "100-500", unit: "mg/dose q6-8h IV" },
+        acuteAdrenal: { label: "Acute Adrenal Insufficiency", value: "100", unit: "mg/kg IV q6h" },
+        stressDose: { label: "Stress Dose", value: "50-100", unit: "mg/m² or 1-2 mg/kg" }
       },
-      max: "100 mg/dose",
-      indication: "Adrenal insufficiency, shock",
-      notes: "Stress dosing for illness/surgery in adrenal insufficiency.",
+      max: "500 mg/dose",
+      indication: "Adrenal insufficiency, shock, anti-inflammatory/immunosuppressive",
+      notes: "Stress dosing for illness/surgery in adrenal insufficiency. Has mineralocorticoid activity.",
       renalAdjust: null
     },
     {
