@@ -409,4 +409,4 @@ Build a full SaaS-style web app "Pediatrics on the Go" with:
 - `/app/test_reports/iteration_7.json` - OCR backend tests (15/15 passed)
 
 ## Last Updated
-January 19, 2026 - Added SI units (µmol/L) to Rumack-Matthew nomogram and mmol/L glucose conversions throughout app
+January 19, 2026 - Integrated user-provided SVG for Rumack-Matthew nomogram with dynamic patient point overlay
