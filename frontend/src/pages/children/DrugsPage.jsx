@@ -2185,11 +2185,36 @@ const DrugsPage = ({ onBack }) => {
                         const result = calculateDose(firstDose.value, w, maxDoseValue, "mg", firstDose.unit);
                         if (!result) return null;
                         const doseResult = typeof result === 'string' ? { dose: result, isExceedingMax: false } : result;
+                        
+                        // Show per-dose if daily dose is divided
+                        const showPerDose = doseResult.isPerDay && doseResult.divisor > 1 && doseResult.perDoseMin;
+                        
                         return (
                           <div>
-                            <p className={`text-[11px] font-mono font-bold ${doseResult.isExceedingMax ? 'text-amber-600' : 'text-blue-600'}`}>
-                              {doseResult.dose}{doseResult.doseLabel && <span className="text-[9px] text-muted-foreground">{doseResult.doseLabel}</span>}
-                            </p>
+                            {/* Show per-dose amount prominently if divided */}
+                            {showPerDose ? (
+                              <>
+                                <p className={`text-[11px] font-mono font-bold ${doseResult.isExceedingMax ? 'text-amber-600' : 'text-green-600'}`}>
+                                  {doseResult.perDoseMin === doseResult.perDoseMax 
+                                    ? `${doseResult.perDoseMin} mg` 
+                                    : `${doseResult.perDoseMin}-${doseResult.perDoseMax} mg`}
+                                  <span className="text-[9px] text-muted-foreground ml-0.5">/dose</span>
+                                </p>
+                                <p className="text-[9px] text-muted-foreground">
+                                  {doseResult.frequency} ({doseResult.dose}/day)
+                                </p>
+                              </>
+                            ) : (
+                              <>
+                                <p className={`text-[11px] font-mono font-bold ${doseResult.isExceedingMax ? 'text-amber-600' : 'text-blue-600'}`}>
+                                  {doseResult.dose}
+                                  {doseResult.doseLabel && <span className="text-[9px] text-muted-foreground ml-0.5">{doseResult.doseLabel}</span>}
+                                </p>
+                                {doseResult.frequency && (
+                                  <p className="text-[9px] text-muted-foreground">{doseResult.frequency}</p>
+                                )}
+                              </>
+                            )}
                             {doseResult.isExceedingMax && (
                               <p className="text-[9px] text-amber-600 font-medium">⚠️ Max capped</p>
                             )}
