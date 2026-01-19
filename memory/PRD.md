@@ -80,7 +80,29 @@ Build a full SaaS-style web app "Pediatrics on the Go" with:
 
 ## Recent Changes (January 16, 2026)
 
-### Session 6 Updates (Current - January 17, 2026)
+### Session 7 Updates (Current - January 19, 2026)
+- ✅ **Rumack-Matthew Nomogram SI Units Added**:
+  - Updated `AcetaminophenApproach.jsx` nomogram with dual Y-axes:
+    - Left axis: mcg/mL (5, 10, 20, 50, 100, 150, 200, 300)
+    - Right axis: µmol/L (30, 66, 132, 330, 660, 1000, 1320, 2000)
+  - Added `mcgToMicromol` conversion function (1 mcg/mL = 6.62 µmol/L, acetaminophen MW 151.16)
+  - Serum level input shows µmol/L conversion below (e.g., "= 993 µmol/L")
+  - Nomogram results display both units (e.g., "Treatment threshold: 100 mcg/mL (662 µmol/L)")
+  - Patient point on chart shows both values (e.g., "150 (993)")
+  - Zone labels added: "Probable hepatic toxicity", "Possible hepatic toxicity", "No hepatic toxicity"
+  - SVG styled similar to Harriet Lane reference
+  - **Testing**: 100% pass rate (iteration_18.json - 9/9 tests)
+
+- ✅ **Glucose mmol/L Conversions Added Throughout App**:
+  - Formula: mg/dL ÷ 18 = mmol/L
+  - Updated files:
+    - **DkaApproach.jsx**: >200 mg/dL (>11.1 mmol/L), <250 mg/dL (<13.9 mmol/L), <180 mg/dL (<10 mmol/L)
+    - **TbiApproach.jsx**: 80-180 mg/dL (4.4-10 mmol/L)
+    - **MetabolicEmergencyApproach.jsx**: >180 mg/dL (>10 mmol/L), target 100-120 mg/dL [5.6-6.7 mmol/L]
+    - **HypoglycemiaApproach.jsx** (NICU): <25 mg/dL (<1.4 mmol/L), <35 mg/dL (<1.9 mmol/L), <45 mg/dL (<2.5 mmol/L), <60 mg/dL (<3.3 mmol/L)
+  - **Testing**: 100% pass rate (iteration_18.json)
+
+### Session 6 Updates (January 17, 2026)
 - ✅ **NEW: Postnatal Section Added**:
   - Created `/app/frontend/src/pages/nicu/PostnatalPage.jsx` - main page with search and topic selector
   - Created 4 comprehensive postnatal approach components in `/postnatal/`:
@@ -364,6 +386,7 @@ Build a full SaaS-style web app "Pediatrics on the Go" with:
 - [ ] Mobile responsiveness fix when accessing from app.pedotg.com (GoDaddy domain)
 
 ## Test Reports
+- `/app/test_reports/iteration_18.json` - SI units & glucose mmol/L tests (100% passed - 9/9)
 - `/app/test_reports/iteration_17.json` - ASB + Metabolic Emergencies tests (100% passed - 16/16)
 - `/app/test_reports/iteration_16.json` - Postnatal Section tests (100% passed - 9/9)
 - `/app/test_reports/iteration_14.json` - Acetaminophen ml/mg conversion tests (100% passed - 9/9)
@@ -375,4 +398,4 @@ Build a full SaaS-style web app "Pediatrics on the Go" with:
 - `/app/test_reports/iteration_7.json` - OCR backend tests (15/15 passed)
 
 ## Last Updated
-January 17, 2026 - Added Metabolic Emergencies (Children) and ASB (Postnatal) approaches
+January 19, 2026 - Added SI units (µmol/L) to Rumack-Matthew nomogram and mmol/L glucose conversions throughout app
