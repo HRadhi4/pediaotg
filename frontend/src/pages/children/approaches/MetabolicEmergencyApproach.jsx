@@ -426,7 +426,7 @@ const MetabolicEmergencyApproach = ({ weight, age, expandedSections, toggleSecti
                 <ul className="list-disc pl-4">
                   <li>IV dextrose: GIR 8-10 mg/kg/min</li>
                   <li>Stop enteral protein</li>
-                  <li>Add insulin if glucose &gt;180 (target 100-120 mg/dL)</li>
+                  <li>Add insulin if glucose &gt;180 mg/dL (&gt;10 mmol/L) (target 100-120 mg/dL [5.6-6.7 mmol/L])</li>
                 </ul>
                 {w > 0 && (
                   <p className="font-mono mt-1">
