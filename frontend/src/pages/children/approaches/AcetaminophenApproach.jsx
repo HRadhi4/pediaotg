@@ -532,102 +532,100 @@ const AcetaminophenApproach = ({ weight, expandedSections, toggleSection }) => {
               </div>
             )}
 
-            {/* SVG Nomogram - Harriet Lane Style */}
+            {/* SVG Nomogram - Exact Harriet Lane Style */}
             <p className="text-[9px] text-center text-muted-foreground mb-2 sm:hidden">← Swipe to scroll →</p>
             <div className="overflow-auto -mx-2 px-2 pb-2">
-              <div className="flex justify-center" style={{ minWidth: '380px' }}>
-                <svg width={svgWidth} height={svgHeight} className="rounded" style={{ flexShrink: 0, background: '#fefefe' }}>
+              <div className="flex justify-center" style={{ minWidth: '400px' }}>
+                <svg width={svgWidth} height={svgHeight} className="rounded" style={{ flexShrink: 0, background: '#ffffff' }}>
                   {/* Background */}
-                  <rect x="0" y="0" width={svgWidth} height={svgHeight} fill="#fefefe" />
+                  <rect x="0" y="0" width={svgWidth} height={svgHeight} fill="#ffffff" />
                   
-                  {/* Probable hepatic toxicity zone (top - red tint) */}
-                  <path 
-                    d={`M ${xScale(4)} ${yScale(200)} ${probablePath.substring(probablePath.indexOf(' '))} L ${xScale(24)} ${margin.top} L ${xScale(4)} ${margin.top} Z`} 
-                    fill="rgba(220, 38, 38, 0.08)" 
-                  />
+                  {/* Unit label boxes at top */}
+                  <rect x={margin.left - 35} y="3" width="45" height="16" fill="#f3f4f6" stroke="#d1d5db" strokeWidth="1" rx="2" />
+                  <text x={margin.left - 12} y="14" fontSize="8" textAnchor="middle" fill="#374151" fontWeight="500">mCg/mL</text>
                   
-                  {/* Possible hepatic toxicity zone (middle - amber tint) */}
-                  <path 
-                    d={`${treatmentPath} L ${xScale(24)} ${yScale(6.25)} L ${xScale(24)} ${yScale(4.5)} L ${xScale(4)} ${yScale(150)} L ${xScale(4)} ${yScale(200)} ${probablePath.substring(probablePath.indexOf(' '))} Z`} 
-                    fill="rgba(245, 158, 11, 0.08)" 
-                  />
+                  <rect x={svgWidth - margin.right - 10} y="3" width="60" height="16" fill="#f3f4f6" stroke="#d1d5db" strokeWidth="1" rx="2" />
+                  <text x={svgWidth - margin.right + 20} y="9" fontSize="7" textAnchor="middle" fill="#374151" fontWeight="500">SI units</text>
+                  <text x={svgWidth - margin.right + 20} y="16" fontSize="7" textAnchor="middle" fill="#374151" fontWeight="500">µmol/L</text>
                   
                   {/* Horizontal grid lines */}
-                  {(nomogramUnit === "SI" 
-                    ? [10, 20, 30, 50, 100, 200, 300, 500, 1000, 2000, 3000, 5000, 6000]
-                    : [1, 2, 3, 5, 10, 20, 30, 50, 100, 200, 300, 500, 1000]
-                  ).map(val => {
-                    const mcgVal = nomogramUnit === "SI" ? val / 6.62 : val;
-                    if (mcgVal < 1 || mcgVal > 300) return null;
+                  {[5, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 150, 200, 250, 300, 400, 500, 600, 700, 800, 900, 1000].map(c => {
+                    if (c > 300) return null;
                     return (
                       <line 
-                        key={val} 
+                        key={c} 
                         x1={margin.left} 
-                        y1={yScale(mcgVal)} 
+                        y1={yScale(c)} 
                         x2={svgWidth - margin.right} 
-                        y2={yScale(mcgVal)} 
-                        stroke="#d1d5db" 
+                        y2={yScale(c)} 
+                        stroke="#e5e7eb" 
                         strokeWidth="0.5" 
                       />
                     );
                   })}
                   
-                  {/* Vertical grid lines */}
-                  {[4, 8, 12, 16, 20, 24].map(h => (
+                  {/* Vertical grid lines - including 0 */}
+                  {[0, 4, 8, 12, 16, 20, 24].map(h => (
                     <line 
                       key={h} 
-                      x1={xScale(h)} 
+                      x1={xScale(Math.max(h, 4))} 
                       y1={margin.top} 
-                      x2={xScale(h)} 
+                      x2={xScale(Math.max(h, 4))} 
                       y2={svgHeight - margin.bottom} 
-                      stroke="#d1d5db" 
-                      strokeWidth="0.5" 
+                      stroke={h === 4 ? "#9ca3af" : "#e5e7eb"} 
+                      strokeWidth={h === 4 ? "1" : "0.5"} 
                     />
                   ))}
                   
-                  {/* Y-axis labels - Primary unit (left side) */}
-                  {(nomogramUnit === "SI" 
-                    ? [{ val: 6000, label: "6000" }, { val: 5000, label: "5000" }, { val: 4000, label: "4000" }, { val: 3000, label: "3000" }, { val: 2000, label: "2000" }, { val: 1300, label: "1300" }, { val: 1000, label: "1000" }, { val: 500, label: "500" }, { val: 300, label: "300" }, { val: 200, label: "200" }, { val: 100, label: "100" }, { val: 50, label: "50" }, { val: 30, label: "30" }]
-                    : [{ val: 500, label: "500" }, { val: 300, label: "300" }, { val: 200, label: "200" }, { val: 150, label: "150" }, { val: 100, label: "100" }, { val: 50, label: "50" }, { val: 20, label: "20" }, { val: 10, label: "10" }, { val: 5, label: "5" }]
-                  ).map(({ val, label }) => {
-                    const mcgVal = nomogramUnit === "SI" ? val / 6.62 : val;
-                    if (mcgVal < 1 || mcgVal > 300) return null;
+                  {/* Left Y-axis labels (mCg/mL) */}
+                  {[1000, 500, 200, 100, 50, 20, 10, 5].map(val => {
+                    if (val > 300) return null;
                     return (
                       <text 
                         key={val} 
                         x={margin.left - 5} 
-                        y={yScale(mcgVal) + 3} 
+                        y={yScale(val) + 3} 
                         fontSize="8" 
                         textAnchor="end" 
                         fill="#374151"
                       >
-                        {label}
+                        {val}
                       </text>
                     );
                   })}
                   
-                  {/* Y-axis labels - Secondary unit (right side) */}
-                  {(nomogramUnit === "SI"
-                    ? [{ mcg: 500, label: "500" }, { mcg: 300, label: "300" }, { mcg: 200, label: "200" }, { mcg: 100, label: "100" }, { mcg: 50, label: "50" }, { mcg: 20, label: "20" }, { mcg: 10, label: "10" }, { mcg: 5, label: "5" }]
-                    : [{ mcg: 300, label: "2000" }, { mcg: 200, label: "1320" }, { mcg: 150, label: "1000" }, { mcg: 100, label: "660" }, { mcg: 50, label: "330" }, { mcg: 20, label: "130" }, { mcg: 10, label: "66" }, { mcg: 5, label: "33" }]
-                  ).map(({ mcg, label }) => (
+                  {/* Right Y-axis labels (SI units µmol/L) */}
+                  {[
+                    { mcg: 300, si: "2000" },
+                    { mcg: 200, si: "1300" },
+                    { mcg: 150, si: "1000" },
+                    { mcg: 100, si: "660" },
+                    { mcg: 75, si: "500" },
+                    { mcg: 60, si: "400" },
+                    { mcg: 45, si: "300" },
+                    { mcg: 30, si: "200" },
+                    { mcg: 15, si: "100" },
+                    { mcg: 7.5, si: "50" },
+                    { mcg: 5, si: "30" },
+                    { mcg: 3, si: "20" },
+                  ].map(({ mcg, si }) => (
                     <text 
                       key={mcg} 
                       x={svgWidth - margin.right + 5} 
                       y={yScale(mcg) + 3} 
                       fontSize="7" 
                       textAnchor="start" 
-                      fill="#6b7280"
+                      fill="#374151"
                     >
-                      {label}
+                      {si}
                     </text>
                   ))}
                   
                   {/* X-axis labels */}
-                  {[4, 8, 12, 16, 20, 24].map(h => (
+                  {[0, 4, 8, 12, 16, 20, 24].map(h => (
                     <text 
                       key={h} 
-                      x={xScale(h)} 
+                      x={h === 0 ? margin.left - 5 : xScale(h)} 
                       y={svgHeight - margin.bottom + 14} 
                       fontSize="9" 
                       textAnchor="middle" 
@@ -637,37 +635,37 @@ const AcetaminophenApproach = ({ weight, expandedSections, toggleSection }) => {
                     </text>
                   ))}
                   
-                  {/* Zone labels */}
-                  {/* Probable hepatic toxicity - above upper line */}
-                  <text x={xScale(7)} y={yScale(280)} fontSize="10" textAnchor="start" fill="#b91c1c" fontWeight="600">Probable</text>
-                  <text x={xScale(7)} y={yScale(280) + 12} fontSize="10" textAnchor="start" fill="#b91c1c" fontWeight="600">hepatic toxicity</text>
+                  {/* Probable toxicity line (upper - dark red) */}
+                  <path d={probablePath} fill="none" stroke="#b91c1c" strokeWidth="2" />
                   
-                  {/* Possible hepatic toxicity - OBLIQUE between the two red lines */}
+                  {/* Treatment line (lower - dark red) */}
+                  <path d={treatmentPath} fill="none" stroke="#b91c1c" strokeWidth="2" />
+                  
+                  {/* Zone labels - matching Harriet Lane exactly */}
+                  {/* Probable hepatic toxicity - horizontal, above upper line */}
+                  <text x={xScale(10)} y={yScale(220)} fontSize="9" textAnchor="start" fill="#000000" fontWeight="500">Probable</text>
+                  <text x={xScale(10)} y={yScale(220) + 11} fontSize="9" textAnchor="start" fill="#000000" fontWeight="500">hepatic toxicity</text>
+                  
+                  {/* Possible hepatic toxicity - OBLIQUE/ITALIC between the two lines */}
                   <text 
-                    x={xScale(10)} 
-                    y={yScale(70)} 
-                    fontSize="10" 
+                    x={xScale(6.5)} 
+                    y={yScale(90)} 
+                    fontSize="9" 
                     textAnchor="start" 
-                    fill="#b91c1c" 
-                    fontWeight="600"
+                    fill="#000000" 
+                    fontWeight="500"
                     fontStyle="italic"
-                    transform={`rotate(-25, ${xScale(10)}, ${yScale(70)})`}
+                    transform={`rotate(-28, ${xScale(6.5)}, ${yScale(90)})`}
                   >
                     Possible hepatic toxicity
                   </text>
                   
-                  {/* Hepatic toxicity unlikely - below lower line */}
-                  <text x={xScale(14)} y={yScale(6)} fontSize="10" textAnchor="start" fill="#15803d" fontWeight="600">Hepatic toxicity</text>
-                  <text x={xScale(14)} y={yScale(6) + 12} fontSize="10" textAnchor="start" fill="#15803d" fontWeight="600">unlikely</text>
+                  {/* No hepatic toxicity - horizontal, below lower line */}
+                  <text x={xScale(6)} y={yScale(12)} fontSize="9" textAnchor="start" fill="#000000" fontWeight="500">No hepatic</text>
+                  <text x={xScale(6)} y={yScale(12) + 11} fontSize="9" textAnchor="start" fill="#000000" fontWeight="500">toxicity</text>
                   
-                  {/* Probable toxicity line (upper - dark red, thicker) */}
-                  <path d={probablePath} fill="none" stroke="#b91c1c" strokeWidth="2.5" />
-                  
-                  {/* Treatment line (lower - dark red, thicker) */}
-                  <path d={treatmentPath} fill="none" stroke="#b91c1c" strokeWidth="2.5" />
-                  
-                  {/* 25% label */}
-                  <text x={xScale(24) + 3} y={yScale(4.5) + 3} fontSize="8" textAnchor="start" fill="#b91c1c" fontWeight="500">25%</text>
+                  {/* 25% label near end of lower line */}
+                  <text x={xScale(22)} y={yScale(6) - 3} fontSize="8" textAnchor="start" fill="#000000" fontWeight="500">25%</text>
                   
                   {/* Patient point */}
                   {hours >= 4 && hours <= 24 && level > 0 && (
@@ -680,63 +678,56 @@ const AcetaminophenApproach = ({ weight, expandedSections, toggleSection }) => {
                             <circle 
                               cx={xScale(hours)} 
                               cy={yScale(clampedLevel)} 
-                              r="7" 
+                              r="6" 
                               fill={assessNomogram?.probableToxicity ? "#dc2626" : assessNomogram?.needsTreatment ? "#f59e0b" : "#22c55e"} 
-                              stroke="#fff" 
+                              stroke="#ffffff" 
                               strokeWidth="2" 
                             />
-                            <text 
-                              x={xScale(hours) + 12} 
-                              y={yScale(clampedLevel) + 4} 
-                              fontSize="9" 
-                              fill="#374151" 
-                              fontWeight="bold"
-                            >
-                              {nomogramUnit === "SI" ? level : level} {nomogramUnit === "SI" ? "µmol/L" : "mcg/mL"}
-                            </text>
                           </>
                         );
                       })()}
                     </g>
                   )}
                   
-                  {/* Axes - bold black lines */}
-                  <line x1={margin.left} y1={margin.top} x2={margin.left} y2={svgHeight - margin.bottom} stroke="#000" strokeWidth="1.5" />
-                  <line x1={svgWidth - margin.right} y1={margin.top} x2={svgWidth - margin.right} y2={svgHeight - margin.bottom} stroke="#000" strokeWidth="1.5" />
-                  <line x1={margin.left} y1={svgHeight - margin.bottom} x2={svgWidth - margin.right} y2={svgHeight - margin.bottom} stroke="#000" strokeWidth="1.5" />
-                  <line x1={margin.left} y1={margin.top} x2={svgWidth - margin.right} y2={margin.top} stroke="#000" strokeWidth="1.5" />
+                  {/* Axes - black lines */}
+                  <line x1={margin.left} y1={margin.top} x2={margin.left} y2={svgHeight - margin.bottom} stroke="#000000" strokeWidth="1" />
+                  <line x1={svgWidth - margin.right} y1={margin.top} x2={svgWidth - margin.right} y2={svgHeight - margin.bottom} stroke="#000000" strokeWidth="1" />
+                  <line x1={margin.left} y1={svgHeight - margin.bottom} x2={svgWidth - margin.right} y2={svgHeight - margin.bottom} stroke="#000000" strokeWidth="1" />
                   
-                  {/* Axis Labels */}
-                  <text x={svgWidth / 2} y={svgHeight - 3} fontSize="10" textAnchor="middle" fill="#374151" fontWeight="500">Hours after ingestion</text>
+                  {/* X-axis Label */}
+                  <text x={svgWidth / 2} y={svgHeight - 5} fontSize="9" textAnchor="middle" fill="#374151" fontWeight="500">Hours after ingestion</text>
+                  
+                  {/* Y-axis Labels - vertical oblique text */}
                   <text 
-                    x={8} 
-                    y={svgHeight / 2} 
-                    fontSize="9" 
-                    textAnchor="middle" 
-                    fill="#374151" 
-                    fontWeight="500"
-                    transform={`rotate(-90, 8, ${svgHeight / 2})`}
-                  >
-                    {nomogramUnit === "SI" ? "µmol/L" : "mcg/mL"}
-                  </text>
-                  <text 
-                    x={svgWidth - 6} 
-                    y={svgHeight / 2} 
+                    x={12} 
+                    y={svgHeight / 2 - 20} 
                     fontSize="8" 
                     textAnchor="middle" 
-                    fill="#6b7280"
-                    transform={`rotate(90, ${svgWidth - 6}, ${svgHeight / 2})`}
+                    fill="#374151" 
+                    fontStyle="italic"
+                    transform={`rotate(-90, 12, ${svgHeight / 2 - 20})`}
                   >
-                    {nomogramUnit === "SI" ? "mcg/mL" : "µmol/L"}
+                    Acetaminophen plasma concentration
+                  </text>
+                  <text 
+                    x={svgWidth - 10} 
+                    y={svgHeight / 2 - 20} 
+                    fontSize="8" 
+                    textAnchor="middle" 
+                    fill="#374151"
+                    fontStyle="italic"
+                    transform={`rotate(90, ${svgWidth - 10}, ${svgHeight / 2 - 20})`}
+                  >
+                    Acetaminophen plasma concentration
                   </text>
                 </svg>
               </div>
             </div>
 
             <div className="text-[10px] text-muted-foreground space-y-1">
-              <p><strong>Treatment Line (lower):</strong> {nomogramUnit === "SI" ? "993 µmol/L (150 mcg/mL)" : "150 mcg/mL (993 µmol/L)"} at 4h → {nomogramUnit === "SI" ? "30 µmol/L (4.5 mcg/mL)" : "4.5 mcg/mL (30 µmol/L)"} at 24h</p>
-              <p><strong>Probable Toxicity (upper):</strong> {nomogramUnit === "SI" ? "1324 µmol/L (200 mcg/mL)" : "200 mcg/mL (1324 µmol/L)"} at 4h → {nomogramUnit === "SI" ? "41 µmol/L (6.25 mcg/mL)" : "6.25 mcg/mL (41 µmol/L)"} at 24h</p>
-              <p className="text-[9px] mt-1">Conversion: 1 mcg/mL = 6.62 µmol/L (acetaminophen MW 151.16)</p>
+              <p><strong>Upper line:</strong> {nomogramUnit === "SI" ? "1320 µmol/L (200 mcg/mL)" : "200 mcg/mL (1320 µmol/L)"} at 4h</p>
+              <p><strong>Lower line (25%):</strong> {nomogramUnit === "SI" ? "990 µmol/L (150 mcg/mL)" : "150 mcg/mL (990 µmol/L)"} at 4h → {nomogramUnit === "SI" ? "33 µmol/L (5 mcg/mL)" : "5 mcg/mL (33 µmol/L)"} at 24h</p>
+              <p className="text-[9px] mt-1">Conversion: 1 mcg/mL = 6.62 µmol/L</p>
             </div>
           </div>
         </Section>
