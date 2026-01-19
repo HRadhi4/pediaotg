@@ -2393,12 +2393,6 @@ const DrugsPage = ({ onBack }) => {
                         )}
                       </div>
                     )}
-
-                    {/* Notes */}
-                    <div className="p-2 bg-gray-50 dark:bg-gray-800/50 rounded text-[10px] text-muted-foreground">
-                      <p className="font-medium text-foreground mb-0.5">Notes:</p>
-                      <p>{drug.notes}</p>
-                    </div>
                   </div>
                 )}
               </CardContent>
