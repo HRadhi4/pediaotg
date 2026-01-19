@@ -1865,13 +1865,35 @@ const DrugsPage = ({ onBack }) => {
     // Add dosing type label
     const doseLabel = isPerDose ? "/dose" : isPerDay ? "/day" : "";
     
+    // Extract frequency from unit string
+    let frequency = null;
+    let divisor = 1;
+    const unitLower = doseUnit.toLowerCase();
+    if (unitLower.includes("q4h") || unitLower.includes("q4-6h")) { frequency = "q4-6h"; divisor = 6; }
+    else if (unitLower.includes("q6h") || unitLower.includes("q6-8h")) { frequency = "q6-8h"; divisor = 4; }
+    else if (unitLower.includes("q8h")) { frequency = "q8h"; divisor = 3; }
+    else if (unitLower.includes("q12h") || unitLower.includes("q12-24h")) { frequency = "q12h"; divisor = 2; }
+    else if (unitLower.includes("q24h") || unitLower.includes("once daily")) { frequency = "q24h"; divisor = 1; }
+    
+    // Calculate per-dose amount if this is a daily dose that needs dividing
+    let perDoseMin = null;
+    let perDoseMax = null;
+    if (isPerDay && divisor > 1) {
+      perDoseMin = (calculatedMin / divisor).toFixed(1);
+      perDoseMax = (calculatedMax / divisor).toFixed(1);
+    }
+    
     return {
       dose: `${calculatedMin.toFixed(1)}${calculatedMax !== calculatedMin ? ` - ${calculatedMax.toFixed(1)}` : ''} ${unit}`,
       isExceedingMax,
       maxDisplay,
       isPerDose,
       isPerDay,
-      doseLabel
+      doseLabel,
+      frequency,
+      divisor,
+      perDoseMin,
+      perDoseMax
     };
   };
 
