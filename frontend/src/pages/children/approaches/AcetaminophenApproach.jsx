@@ -71,6 +71,7 @@ const AcetaminophenApproach = ({ weight, expandedSections, toggleSection }) => {
   const [ingestionDose, setIngestionDose] = useState("");
   const [hoursPostIngestion, setHoursPostIngestion] = useState("");
   const [serumLevel, setSerumLevel] = useState("");
+  const [nomogramUnit, setNomogramUnit] = useState("SI"); // "SI" (µmol/L) or "US" (mcg/mL)
 
   const w = parseFloat(weight) || 0;
   const ml = parseFloat(mlIngested) || 0;
