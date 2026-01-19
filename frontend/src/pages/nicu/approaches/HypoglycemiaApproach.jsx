@@ -42,22 +42,22 @@ const HypoglycemiaApproach = ({ weight, gestationalAge, postnatalAge }) => {
               <tbody>
                 <tr className={pnaHours < 4 ? "bg-blue-50 dark:bg-blue-900/20" : ""}>
                   <td className="py-1">0-4 hours</td>
-                  <td className="font-bold">&lt;25 mg/dL</td>
+                  <td className="font-bold">&lt;25 mg/dL <span className="font-normal text-slate-500">(&lt;1.4 mmol/L)</span></td>
                   <td>Feed + recheck</td>
                 </tr>
                 <tr className={pnaHours >= 4 && pnaHours < 24 ? "bg-blue-50 dark:bg-blue-900/20" : ""}>
                   <td className="py-1">4-24 hours</td>
-                  <td className="font-bold">&lt;35 mg/dL</td>
+                  <td className="font-bold">&lt;35 mg/dL <span className="font-normal text-slate-500">(&lt;1.9 mmol/L)</span></td>
                   <td>Feed + recheck</td>
                 </tr>
                 <tr className={pnaHours >= 24 && pnaHours < 48 ? "bg-blue-50 dark:bg-blue-900/20" : ""}>
                   <td className="py-1">24-48 hours</td>
-                  <td className="font-bold">&lt;45 mg/dL</td>
+                  <td className="font-bold">&lt;45 mg/dL <span className="font-normal text-slate-500">(&lt;2.5 mmol/L)</span></td>
                   <td>Evaluate cause</td>
                 </tr>
                 <tr className={pnaHours >= 48 ? "bg-blue-50 dark:bg-blue-900/20" : ""}>
                   <td className="py-1">&gt;48 hours</td>
-                  <td className="font-bold">&lt;60 mg/dL</td>
+                  <td className="font-bold">&lt;60 mg/dL <span className="font-normal text-slate-500">(&lt;3.3 mmol/L)</span></td>
                   <td>Persistent hypoglycemia</td>
                 </tr>
               </tbody>
@@ -94,13 +94,13 @@ const HypoglycemiaApproach = ({ weight, gestationalAge, postnatalAge }) => {
           <p className="font-semibold text-slate-700 dark:text-slate-200 mb-2">Management Algorithm</p>
           <div className="text-xs text-slate-600 dark:text-slate-300 space-y-2">
             <div className="p-2 bg-white dark:bg-slate-900 rounded">
-              <p className="font-medium">Asymptomatic + Glucose 25-45 mg/dL:</p>
+              <p className="font-medium">Asymptomatic + Glucose 25-45 mg/dL (1.4-2.5 mmol/L):</p>
               <p>1. Feed (breast or formula)</p>
               <p>2. Recheck glucose 30 min after feed</p>
               <p>3. If still low → consider IV glucose</p>
             </div>
             <div className="p-2 bg-white dark:bg-slate-900 rounded">
-              <p className="font-medium">Symptomatic OR Glucose &lt;25 mg/dL:</p>
+              <p className="font-medium">Symptomatic OR Glucose &lt;25 mg/dL (&lt;1.4 mmol/L):</p>
               <p>1. IV glucose bolus: D10W 2 mL/kg</p>
               <p>2. Start IV infusion at GIR 5-8 mg/kg/min</p>
               <p>3. Recheck glucose 30 min post-bolus</p>
