@@ -1869,10 +1869,16 @@ const DrugsPage = ({ onBack }) => {
     let frequency = null;
     let divisor = 1;
     const unitLower = doseUnit.toLowerCase();
-    if (unitLower.includes("q4h") || unitLower.includes("q4-6h")) { frequency = "q4-6h"; divisor = 6; }
-    else if (unitLower.includes("q6h") || unitLower.includes("q6-8h")) { frequency = "q6-8h"; divisor = 4; }
-    else if (unitLower.includes("q8h")) { frequency = "q8h"; divisor = 3; }
-    else if (unitLower.includes("q12h") || unitLower.includes("q12-24h")) { frequency = "q12h"; divisor = 2; }
+    
+    // Match frequency patterns - order matters (more specific first)
+    if (unitLower.includes("q4h") && !unitLower.includes("q4-")) { frequency = "q4h"; divisor = 6; }
+    else if (unitLower.includes("q4-6h")) { frequency = "q4-6h"; divisor = 5; }
+    else if (unitLower.includes("q6h") && !unitLower.includes("q6-")) { frequency = "q6h"; divisor = 4; }
+    else if (unitLower.includes("q6-8h")) { frequency = "q6-8h"; divisor = 3; }
+    else if (unitLower.includes("q6-12h")) { frequency = "q6-12h"; divisor = 3; } // Average of 4 and 2
+    else if (unitLower.includes("q8h") && !unitLower.includes("q8-")) { frequency = "q8h"; divisor = 3; }
+    else if (unitLower.includes("q12h") && !unitLower.includes("q12-")) { frequency = "q12h"; divisor = 2; }
+    else if (unitLower.includes("q12-24h")) { frequency = "q12-24h"; divisor = 2; }
     else if (unitLower.includes("q24h") || unitLower.includes("once daily")) { frequency = "q24h"; divisor = 1; }
     
     // Calculate per-dose amount if this is a daily dose that needs dividing
