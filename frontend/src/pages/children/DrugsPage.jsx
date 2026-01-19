@@ -2271,39 +2271,8 @@ const DrugsPage = ({ onBack }) => {
                             if (!result) return null;
                             const doseResult = typeof result === 'string' ? { dose: result, isExceedingMax: false } : result;
                             
-                            // Calculate divided doses if applicable
-                            const hasDivided = doseData.divided || doseData.unit.includes("÷") || doseData.unit.includes("divided");
-                            let dividedDoseInfo = null;
-                            
-                            if (hasDivided && doseResult.isPerDay) {
-                              // Extract divisor from unit string (e.g., "÷ q6h" means divide by 4, "÷ q8h" by 3, "÷ q12h" by 2)
-                              const unitStr = doseData.unit.toLowerCase();
-                              let divisor = 1;
-                              if (unitStr.includes("q4h") || unitStr.includes("q4-6h")) divisor = 6;
-                              else if (unitStr.includes("q6h") || unitStr.includes("q6-8h")) divisor = 4;
-                              else if (unitStr.includes("q8h")) divisor = 3;
-                              else if (unitStr.includes("q12h") || unitStr.includes("q12-24h")) divisor = 2;
-                              else if (unitStr.includes("q24h")) divisor = 1;
-                              
-                              if (divisor > 1) {
-                                // Parse dose from result
-                                const totalDoseMatch = doseResult.dose.match(/([\d.]+)(?:\s*-\s*([\d.]+))?/);
-                                if (totalDoseMatch) {
-                                  const minTotal = parseFloat(totalDoseMatch[1]);
-                                  const maxTotal = totalDoseMatch[2] ? parseFloat(totalDoseMatch[2]) : minTotal;
-                                  const perDoseMin = (minTotal / divisor).toFixed(1);
-                                  const perDoseMax = (maxTotal / divisor).toFixed(1);
-                                  dividedDoseInfo = {
-                                    perDose: perDoseMin === perDoseMax ? perDoseMin : `${perDoseMin}-${perDoseMax}`,
-                                    times: divisor,
-                                    frequency: unitStr.includes("q4h") ? "q4h" : 
-                                               unitStr.includes("q6h") ? "q6h" : 
-                                               unitStr.includes("q8h") ? "q8h" : 
-                                               unitStr.includes("q12h") ? "q12h" : "daily"
-                                  };
-                                }
-                              }
-                            }
+                            // Check if this is a divided daily dose
+                            const showDividedDose = doseResult.isPerDay && doseResult.divisor > 1 && doseResult.perDoseMin;
                             
                             return (
                               <div 
@@ -2318,36 +2287,59 @@ const DrugsPage = ({ onBack }) => {
                                   {doseData.label}
                                 </p>
                                 
-                                {/* Total Daily Dose */}
-                                <div className="flex items-baseline gap-1">
-                                  <p className={`text-lg font-mono font-bold ${
-                                    doseResult.isExceedingMax ? 'text-amber-600' : 'text-blue-600 dark:text-blue-400'
-                                  }`}>
-                                    {doseResult.dose}
-                                  </p>
-                                  {doseResult.isPerDay && (
-                                    <span className="text-[9px] text-slate-500">/day</span>
-                                  )}
-                                  {doseResult.isPerDose && (
-                                    <span className="text-[9px] text-slate-500">/dose</span>
-                                  )}
-                                </div>
-                                
-                                {/* Divided Dose Calculation */}
-                                {dividedDoseInfo && (
-                                  <div className="mt-2 pt-2 border-t border-blue-200 dark:border-blue-700">
-                                    <p className="text-[10px] text-slate-600 dark:text-slate-400">
-                                      <span className="font-medium">Per dose:</span>{" "}
-                                      <span className="font-mono font-bold text-green-600 dark:text-green-400">
-                                        {dividedDoseInfo.perDose} mg
+                                {/* Show per-dose amount prominently for divided doses */}
+                                {showDividedDose ? (
+                                  <>
+                                    {/* Per Dose - Main Display */}
+                                    <div className="flex items-baseline gap-1">
+                                      <p className="text-lg font-mono font-bold text-green-600 dark:text-green-400">
+                                        {doseResult.perDoseMin === doseResult.perDoseMax 
+                                          ? `${doseResult.perDoseMin} mg` 
+                                          : `${doseResult.perDoseMin}-${doseResult.perDoseMax} mg`}
+                                      </p>
+                                      <span className="text-[10px] text-slate-500">/dose</span>
+                                    </div>
+                                    
+                                    {/* Frequency and total */}
+                                    <div className="mt-1 text-[10px] text-slate-600 dark:text-slate-400">
+                                      <span className="font-medium bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded">
+                                        {doseResult.frequency}
                                       </span>
-                                      <span className="text-slate-400"> × {dividedDoseInfo.times} doses ({dividedDoseInfo.frequency})</span>
-                                    </p>
-                                  </div>
+                                      <span className="ml-2">
+                                        × {doseResult.divisor} doses = <span className="font-mono">{doseResult.dose}</span>/day
+                                      </span>
+                                    </div>
+                                  </>
+                                ) : (
+                                  <>
+                                    {/* Standard dose display */}
+                                    <div className="flex items-baseline gap-1">
+                                      <p className={`text-lg font-mono font-bold ${
+                                        doseResult.isExceedingMax ? 'text-amber-600' : 'text-blue-600 dark:text-blue-400'
+                                      }`}>
+                                        {doseResult.dose}
+                                      </p>
+                                      {doseResult.isPerDay && (
+                                        <span className="text-[10px] text-slate-500">/day</span>
+                                      )}
+                                      {doseResult.isPerDose && (
+                                        <span className="text-[10px] text-slate-500">/dose</span>
+                                      )}
+                                    </div>
+                                    
+                                    {/* Show frequency if available */}
+                                    {doseResult.frequency && (
+                                      <p className="mt-1 text-[10px] text-slate-600 dark:text-slate-400">
+                                        <span className="font-medium bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded">
+                                          {doseResult.frequency}
+                                        </span>
+                                      </p>
+                                    )}
+                                  </>
                                 )}
                                 
                                 {/* Original dosing instruction */}
-                                <p className="text-[9px] text-slate-500 dark:text-slate-400 mt-1">
+                                <p className="text-[9px] text-slate-400 dark:text-slate-500 mt-2 border-t border-slate-200 dark:border-slate-700 pt-1">
                                   {doseData.value} {doseData.unit}
                                 </p>
                                 
