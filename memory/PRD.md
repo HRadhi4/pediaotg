@@ -33,7 +33,7 @@ Build a full SaaS-style web app "Pediatrics on the Go" with:
 
 ### Children Calculator (Completed)
 - ✅ Fluid Replacement
-- ✅ Drugs Page (97 drugs with max dose capping)
+- ✅ Drugs Page (100 drugs with max dose capping) - **UPDATED Jan 19, 2026**
 - ✅ Blood Pressure
 - ✅ Infusions
 - ✅ Intubation
