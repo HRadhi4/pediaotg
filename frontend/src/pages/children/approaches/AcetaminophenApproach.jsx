@@ -190,10 +190,10 @@ const AcetaminophenApproach = ({ weight, expandedSections, toggleSection }) => {
     };
   }, [w]);
 
-  // SVG Nomogram dimensions - increased right margin for SI units
+  // SVG Nomogram dimensions - taller chart for better readability
   const svgWidth = 360;
-  const svgHeight = 280;
-  const margin = { top: 20, right: 55, bottom: 40, left: 50 };
+  const svgHeight = 380;
+  const margin = { top: 25, right: 55, bottom: 45, left: 55 };
   const chartWidth = svgWidth - margin.left - margin.right;
   const chartHeight = svgHeight - margin.top - margin.bottom;
 
