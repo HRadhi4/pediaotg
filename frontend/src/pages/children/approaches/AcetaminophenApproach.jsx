@@ -193,26 +193,37 @@ const AcetaminophenApproach = ({ weight, expandedSections, toggleSection }) => {
     };
   }, [w]);
 
-  // SVG Nomogram dimensions - taller chart for better readability
-  const svgWidth = 360;
-  const svgHeight = 380;
-  const margin = { top: 25, right: 55, bottom: 45, left: 55 };
-  const chartWidth = svgWidth - margin.left - margin.right;
-  const chartHeight = svgHeight - margin.top - margin.bottom;
-
-  const xScale = (h) => margin.left + ((h - 4) / 20) * chartWidth;
-  const yScale = (c) => margin.top + chartHeight - (Math.log10(c) / Math.log10(300)) * chartHeight;
-  
   // Conversion: 1 mcg/mL = 6.62 µmol/L (acetaminophen MW = 151.16)
   const mcgToMicromol = (mcg) => Math.round(mcg * 6.62);
 
-  const treatmentPath = NOMOGRAM_TREATMENT_LINE.map((p, i) => 
-    `${i === 0 ? 'M' : 'L'} ${xScale(p.hours)} ${yScale(p.concentration)}`
-  ).join(' ');
-
-  const probablePath = PROBABLE_TOXICITY_LINE.map((p, i) => 
-    `${i === 0 ? 'M' : 'L'} ${xScale(p.hours)} ${yScale(p.concentration)}`
-  ).join(' ');
+  // Static SVG nomogram dimensions and coordinate mapping
+  // The SVG viewBox is 0 0 237.82 300 - mapping chart area within it
+  // Based on the SVG structure: chart area starts ~x=45, ends ~x=197 for hours 0-24
+  // Y-axis: top (~y=34) is high concentration, bottom (~y=207) is low concentration
+  const svgViewWidth = 237.82;
+  const svgViewHeight = 300;
+  
+  // Chart boundaries within the SVG (approximate from the vectorized image)
+  const chartLeft = 45;      // x position at hour 0
+  const chartRight = 197;    // x position at hour 24
+  const chartTop = 34;       // y position at top (high concentration ~500 mcg/mL)
+  const chartBottom = 207;   // y position at bottom (low concentration ~3 mcg/mL)
+  
+  // Scale functions for the static SVG overlay
+  const xScaleSVG = (h) => {
+    // Hours 0-24 map to chartLeft-chartRight
+    return chartLeft + (h / 24) * (chartRight - chartLeft);
+  };
+  
+  const yScaleSVG = (c) => {
+    // Logarithmic scale: concentration in mcg/mL
+    // Top of chart is ~500 mcg/mL, bottom is ~3 mcg/mL
+    const logMin = Math.log10(3);
+    const logMax = Math.log10(500);
+    const logC = Math.log10(Math.max(c, 3));
+    const ratio = (logC - logMin) / (logMax - logMin);
+    return chartBottom - ratio * (chartBottom - chartTop);
+  };
 
   return (
     <Card>
