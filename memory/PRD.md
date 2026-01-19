@@ -103,6 +103,36 @@ Build a full SaaS-style web app "Pediatrics on the Go" with:
   - Conversion factor: 1 mcg/mL = 6.62 µmol/L (acetaminophen MW 151.16)
   - **Testing**: 100% pass rate (iteration_18.json - 9/9 tests)
 
+- ✅ **Methylprednisolone (Solu-Medrol) Added to Drug Formulary**:
+  - Drug ID: `methylprednisolone`
+  - Category: Steroid
+  - Route: IV/IM/PO
+  - **9 Dosing Options**:
+    1. Anti-inflammatory: 0.5-1.7 mg/kg/day ÷ q6-12h
+    2. Asthma (≤12yr): 1-2 mg/kg/day ÷ q12h (max 60mg/day)
+    3. Asthma (>12yr/Adult): 40-80 mg/day ÷ q12-24h
+    4. Burst (≤12yr): 1-2 mg/kg/day ÷ q12-24h × 3-10 days (max 60mg)
+    5. IM (≤4yr vomiting): 7.5 mg/kg × 1 (max 240mg)
+    6. IM (>4yr/Adult): 240 mg × 1
+    7. Spinal Cord Injury (bolus): 30 mg/kg IV over 15min
+    8. Spinal Cord (infusion): 5.4 mg/kg/hr × 23h
+    9. Pulse Therapy: 15-30 mg/kg/day × 3d (max 1g)
+  - Notes: Succinate salt for IV/IM, Acetate for intra-articular (NOT IV)
+  - **Drug count now 100** (was 99)
+
+- ✅ **Drug Card UI Major Overhaul**:
+  - **Quick Info Bar**: Shows Route and Max Dose prominently at top
+  - **Calculated Doses Section** (Blue background):
+    - Large font for calculated dose
+    - Shows /day or /dose suffix
+    - **NEW: Divided Dose Calculations** - automatically parses frequency (q6h=4 doses, q8h=3, q12h=2) and shows per-dose amounts
+    - Example: "Per dose: 10.0-20.0 mg × 2 doses (q12h)"
+  - **Indications Section** (Green background): 🎯 icon with clear text
+  - **Clinical Notes Section** (Gray background): 📝 icon with clinical pearls
+  - **Renal Adjustment Section** (Amber background): 🩺 icon with GFR-based adjustments in cards
+  - Click-to-expand behavior preserved with cleaner visual hierarchy
+  - **Testing**: 100% pass rate (iteration_20.json - 9/9 tests)
+
 - ✅ **Glucose mmol/L Conversions Added Throughout App**:
   - Formula: mg/dL ÷ 18 = mmol/L
   - Updated files:
