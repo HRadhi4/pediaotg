@@ -494,64 +494,86 @@ const AcetaminophenApproach = ({ weight, expandedSections, toggleSection }) => {
             {/* SVG Nomogram - scrollable container for mobile */}
             <p className="text-[9px] text-center text-muted-foreground mb-2 sm:hidden">← Swipe to scroll →</p>
             <div className="overflow-auto -mx-2 px-2 pb-2">
-              <div className="flex justify-center" style={{ minWidth: '340px' }}>
+              <div className="flex justify-center" style={{ minWidth: '380px' }}>
                 <svg width={svgWidth} height={svgHeight} className="bg-white dark:bg-gray-900 rounded border" style={{ flexShrink: 0 }}>
-                {/* Grid lines */}
-                {[5, 10, 20, 50, 100, 150, 200].map(c => (
+                {/* Probable toxicity zone (red shaded area above upper line) */}
+                <path d={`${probablePath} L ${xScale(24)} ${margin.top} L ${xScale(4)} ${margin.top} Z`} fill="rgba(239, 68, 68, 0.15)" />
+                
+                {/* Possible toxicity zone (amber shaded area between lines) */}
+                <path d={`${treatmentPath} L ${xScale(24)} ${yScale(7)} L ${xScale(24)} ${yScale(5)} ${probablePath.split(' ').slice(0, -2).reverse().map((p, i, arr) => i % 2 === 0 ? `L ${p}` : p).join(' ')} Z`} fill="rgba(245, 158, 11, 0.1)" />
+                
+                {/* Grid lines - mcg/mL on left */}
+                {[5, 10, 20, 50, 100, 150, 200, 300].map(c => (
                   <g key={c}>
                     <line x1={margin.left} y1={yScale(c)} x2={svgWidth - margin.right} y2={yScale(c)} stroke="#e5e7eb" strokeDasharray="2,2" />
                     <text x={margin.left - 5} y={yScale(c) + 3} fontSize="9" textAnchor="end" fill="#6b7280">{c}</text>
                   </g>
                 ))}
                 
+                {/* SI units (µmol/L) on right Y-axis */}
+                {[30, 66, 132, 330, 660, 1000, 1320, 2000].map(c => {
+                  const mcg = c / 6.62;
+                  return (
+                    <g key={c}>
+                      <text x={svgWidth - margin.right + 5} y={yScale(mcg) + 3} fontSize="8" textAnchor="start" fill="#6b7280">{c}</text>
+                    </g>
+                  );
+                })}
+                
                 {/* Time grid */}
                 {[4, 8, 12, 16, 20, 24].map(h => (
                   <g key={h}>
                     <line x1={xScale(h)} y1={margin.top} x2={xScale(h)} y2={svgHeight - margin.bottom} stroke="#e5e7eb" strokeDasharray="2,2" />
-                    <text x={xScale(h)} y={svgHeight - margin.bottom + 15} fontSize="9" textAnchor="middle" fill="#6b7280">{h}h</text>
+                    <text x={xScale(h)} y={svgHeight - margin.bottom + 15} fontSize="9" textAnchor="middle" fill="#6b7280">{h}</text>
                   </g>
                 ))}
                 
-                {/* Probable toxicity zone */}
-                <path d={`${probablePath} L ${xScale(24)} ${margin.top} L ${xScale(4)} ${margin.top} Z`} fill="rgba(239, 68, 68, 0.1)" />
+                {/* Zone labels */}
+                <text x={xScale(14)} y={yScale(180)} fontSize="8" textAnchor="middle" fill="#dc2626" fontWeight="500">Probable</text>
+                <text x={xScale(14)} y={yScale(180) + 10} fontSize="8" textAnchor="middle" fill="#dc2626" fontWeight="500">hepatic toxicity</text>
                 
-                {/* Probable toxicity line */}
-                <path d={probablePath} fill="none" stroke="#ef4444" strokeWidth="2" strokeDasharray="4,2" />
+                <text x={xScale(14)} y={yScale(50)} fontSize="8" textAnchor="middle" fill="#d97706" fontWeight="500">Possible</text>
+                <text x={xScale(14)} y={yScale(50) + 10} fontSize="8" textAnchor="middle" fill="#d97706" fontWeight="500">hepatic toxicity</text>
                 
-                {/* Treatment line */}
-                <path d={treatmentPath} fill="none" stroke="#f59e0b" strokeWidth="2.5" />
+                <text x={xScale(14)} y={yScale(12)} fontSize="8" textAnchor="middle" fill="#16a34a" fontWeight="500">No hepatic</text>
+                <text x={xScale(14)} y={yScale(12) + 10} fontSize="8" textAnchor="middle" fill="#16a34a" fontWeight="500">toxicity</text>
+                
+                {/* Probable toxicity line (upper - dashed red) */}
+                <path d={probablePath} fill="none" stroke="#dc2626" strokeWidth="2" strokeDasharray="4,2" />
+                
+                {/* Treatment line (lower - solid amber/orange) */}
+                <path d={treatmentPath} fill="none" stroke="#ea580c" strokeWidth="2.5" />
+                
+                {/* 25% label on treatment line */}
+                <text x={xScale(23.5)} y={yScale(5.5)} fontSize="7" textAnchor="end" fill="#ea580c">25%</text>
                 
                 {/* Patient point */}
                 {hours >= 4 && hours <= 24 && level > 0 && (
                   <g>
-                    <circle cx={xScale(hours)} cy={yScale(Math.min(level, 250))} r="6" fill={assessNomogram?.needsTreatment ? "#ef4444" : "#22c55e"} stroke="#fff" strokeWidth="2" />
-                    <text x={xScale(hours) + 10} y={yScale(Math.min(level, 250)) + 4} fontSize="9" fill={assessNomogram?.needsTreatment ? "#ef4444" : "#22c55e"} fontWeight="bold">{level}</text>
+                    <circle cx={xScale(hours)} cy={yScale(Math.min(level, 280))} r="6" fill={assessNomogram?.probableToxicity ? "#dc2626" : assessNomogram?.needsTreatment ? "#ea580c" : "#22c55e"} stroke="#fff" strokeWidth="2" />
+                    <text x={xScale(hours) + 10} y={yScale(Math.min(level, 280)) + 4} fontSize="9" fill={assessNomogram?.needsTreatment ? "#dc2626" : "#22c55e"} fontWeight="bold">
+                      {level} ({mcgToMicromol(level)})
+                    </text>
                   </g>
                 )}
                 
                 {/* Axes */}
-                <line x1={margin.left} y1={margin.top} x2={margin.left} y2={svgHeight - margin.bottom} stroke="#374151" />
-                <line x1={margin.left} y1={svgHeight - margin.bottom} x2={svgWidth - margin.right} y2={svgHeight - margin.bottom} stroke="#374151" />
+                <line x1={margin.left} y1={margin.top} x2={margin.left} y2={svgHeight - margin.bottom} stroke="#374151" strokeWidth="1.5" />
+                <line x1={svgWidth - margin.right} y1={margin.top} x2={svgWidth - margin.right} y2={svgHeight - margin.bottom} stroke="#374151" strokeWidth="1.5" />
+                <line x1={margin.left} y1={svgHeight - margin.bottom} x2={svgWidth - margin.right} y2={svgHeight - margin.bottom} stroke="#374151" strokeWidth="1.5" />
                 
-                {/* Labels */}
-                <text x={svgWidth / 2} y={svgHeight - 5} fontSize="10" textAnchor="middle" fill="#374151">Hours After Ingestion</text>
-                <text x={12} y={svgHeight / 2} fontSize="10" textAnchor="middle" fill="#374151" transform={`rotate(-90, 12, ${svgHeight / 2})`}>Acetaminophen (mcg/mL)</text>
-                
-                {/* Legend */}
-                <g transform={`translate(${svgWidth - 90}, ${margin.top + 5})`}>
-                  <rect x="0" y="0" width="85" height="40" fill="white" fillOpacity="0.9" stroke="#e5e7eb" rx="4" />
-                  <line x1="5" y1="12" x2="25" y2="12" stroke="#ef4444" strokeWidth="2" strokeDasharray="4,2" />
-                  <text x="30" y="15" fontSize="8" fill="#374151">Probable</text>
-                  <line x1="5" y1="28" x2="25" y2="28" stroke="#f59e0b" strokeWidth="2" />
-                  <text x="30" y="31" fontSize="8" fill="#374151">Treatment</text>
-                </g>
+                {/* Axis Labels */}
+                <text x={svgWidth / 2} y={svgHeight - 5} fontSize="10" textAnchor="middle" fill="#374151">Hours after ingestion</text>
+                <text x={10} y={svgHeight / 2} fontSize="9" textAnchor="middle" fill="#374151" transform={`rotate(-90, 10, ${svgHeight / 2})`}>mcg/mL</text>
+                <text x={svgWidth - 8} y={svgHeight / 2} fontSize="9" textAnchor="middle" fill="#374151" transform={`rotate(90, ${svgWidth - 8}, ${svgHeight / 2})`}>µmol/L</text>
               </svg>
               </div>
             </div>
 
-            <div className="text-[10px] text-muted-foreground">
-              <p><strong>Treatment Line (lower):</strong> 150 mcg/mL at 4h → 5 mcg/mL at 24h</p>
-              <p><strong>Probable Toxicity (upper):</strong> 200 mcg/mL at 4h → 7 mcg/mL at 24h</p>
+            <div className="text-[10px] text-muted-foreground space-y-1">
+              <p><strong>Treatment Line (lower/solid):</strong> 150 mcg/mL (993 µmol/L) at 4h → 4.5 mcg/mL (30 µmol/L) at 24h</p>
+              <p><strong>Probable Toxicity (upper/dashed):</strong> 200 mcg/mL (1324 µmol/L) at 4h → 6.25 mcg/mL (41 µmol/L) at 24h</p>
+              <p className="text-[9px] mt-1">Conversion: 1 mcg/mL = 6.62 µmol/L (acetaminophen MW 151.16)</p>
             </div>
           </div>
         </Section>
