@@ -546,195 +546,83 @@ const AcetaminophenApproach = ({ weight, expandedSections, toggleSection }) => {
               </div>
             )}
 
-            {/* SVG Nomogram - Exact Harriet Lane Style */}
+            {/* Static SVG Nomogram with Patient Point Overlay */}
             <p className="text-[9px] text-center text-muted-foreground mb-2 sm:hidden">← Swipe to scroll →</p>
             <div className="overflow-auto -mx-2 px-2 pb-2">
-              <div className="flex justify-center" style={{ minWidth: '400px' }}>
-                <svg width={svgWidth} height={svgHeight} className="rounded" style={{ flexShrink: 0, background: '#ffffff' }}>
-                  {/* Background */}
-                  <rect x="0" y="0" width={svgWidth} height={svgHeight} fill="#ffffff" />
+              <div className="flex justify-center" style={{ minWidth: '320px' }}>
+                <div className="relative" style={{ width: '360px', height: '450px' }}>
+                  {/* Static SVG Nomogram Background */}
+                  <img 
+                    src={RumackNomogramSVG} 
+                    alt="Rumack-Matthew Nomogram" 
+                    className="w-full h-full object-contain"
+                    style={{ background: '#ffffff', borderRadius: '4px' }}
+                  />
                   
-                  {/* Unit label boxes at top */}
-                  <rect x={margin.left - 35} y="3" width="45" height="16" fill="#f3f4f6" stroke="#d1d5db" strokeWidth="1" rx="2" />
-                  <text x={margin.left - 12} y="14" fontSize="8" textAnchor="middle" fill="#374151" fontWeight="500">mCg/mL</text>
-                  
-                  <rect x={svgWidth - margin.right - 10} y="3" width="60" height="16" fill="#f3f4f6" stroke="#d1d5db" strokeWidth="1" rx="2" />
-                  <text x={svgWidth - margin.right + 20} y="9" fontSize="7" textAnchor="middle" fill="#374151" fontWeight="500">SI units</text>
-                  <text x={svgWidth - margin.right + 20} y="16" fontSize="7" textAnchor="middle" fill="#374151" fontWeight="500">µmol/L</text>
-                  
-                  {/* Horizontal grid lines */}
-                  {[5, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 150, 200, 250, 300, 400, 500, 600, 700, 800, 900, 1000].map(c => {
-                    if (c > 300) return null;
-                    return (
-                      <line 
-                        key={c} 
-                        x1={margin.left} 
-                        y1={yScale(c)} 
-                        x2={svgWidth - margin.right} 
-                        y2={yScale(c)} 
-                        stroke="#e5e7eb" 
-                        strokeWidth="0.5" 
-                      />
-                    );
-                  })}
-                  
-                  {/* Vertical grid lines - including 0 */}
-                  {[0, 4, 8, 12, 16, 20, 24].map(h => (
-                    <line 
-                      key={h} 
-                      x1={xScale(Math.max(h, 4))} 
-                      y1={margin.top} 
-                      x2={xScale(Math.max(h, 4))} 
-                      y2={svgHeight - margin.bottom} 
-                      stroke={h === 4 ? "#9ca3af" : "#e5e7eb"} 
-                      strokeWidth={h === 4 ? "1" : "0.5"} 
-                    />
-                  ))}
-                  
-                  {/* Left Y-axis labels (mCg/mL) */}
-                  {[1000, 500, 200, 100, 50, 20, 10, 5].map(val => {
-                    if (val > 300) return null;
-                    return (
-                      <text 
-                        key={val} 
-                        x={margin.left - 5} 
-                        y={yScale(val) + 3} 
-                        fontSize="8" 
-                        textAnchor="end" 
-                        fill="#374151"
-                      >
-                        {val}
-                      </text>
-                    );
-                  })}
-                  
-                  {/* Right Y-axis labels (SI units µmol/L) */}
-                  {[
-                    { mcg: 300, si: "2000" },
-                    { mcg: 200, si: "1300" },
-                    { mcg: 150, si: "1000" },
-                    { mcg: 100, si: "660" },
-                    { mcg: 75, si: "500" },
-                    { mcg: 60, si: "400" },
-                    { mcg: 45, si: "300" },
-                    { mcg: 30, si: "200" },
-                    { mcg: 15, si: "100" },
-                    { mcg: 7.5, si: "50" },
-                    { mcg: 5, si: "30" },
-                    { mcg: 3, si: "20" },
-                  ].map(({ mcg, si }) => (
-                    <text 
-                      key={mcg} 
-                      x={svgWidth - margin.right + 5} 
-                      y={yScale(mcg) + 3} 
-                      fontSize="7" 
-                      textAnchor="start" 
-                      fill="#374151"
-                    >
-                      {si}
-                    </text>
-                  ))}
-                  
-                  {/* X-axis labels */}
-                  {[0, 4, 8, 12, 16, 20, 24].map(h => (
-                    <text 
-                      key={h} 
-                      x={h === 0 ? margin.left - 5 : xScale(h)} 
-                      y={svgHeight - margin.bottom + 14} 
-                      fontSize="9" 
-                      textAnchor="middle" 
-                      fill="#374151"
-                    >
-                      {h}
-                    </text>
-                  ))}
-                  
-                  {/* Probable toxicity line (upper - dark red) */}
-                  <path d={probablePath} fill="none" stroke="#b91c1c" strokeWidth="2" />
-                  
-                  {/* Treatment line (lower - dark red) */}
-                  <path d={treatmentPath} fill="none" stroke="#b91c1c" strokeWidth="2" />
-                  
-                  {/* Zone labels - matching Harriet Lane exactly */}
-                  {/* Probable hepatic toxicity - horizontal, above upper line */}
-                  <text x={xScale(10)} y={yScale(220)} fontSize="9" textAnchor="start" fill="#000000" fontWeight="500">Probable</text>
-                  <text x={xScale(10)} y={yScale(220) + 11} fontSize="9" textAnchor="start" fill="#000000" fontWeight="500">hepatic toxicity</text>
-                  
-                  {/* Possible hepatic toxicity - OBLIQUE/ITALIC between the two lines */}
-                  <text 
-                    x={xScale(6.5)} 
-                    y={yScale(90)} 
-                    fontSize="9" 
-                    textAnchor="start" 
-                    fill="#000000" 
-                    fontWeight="500"
-                    fontStyle="italic"
-                    transform={`rotate(-28, ${xScale(6.5)}, ${yScale(90)})`}
-                  >
-                    Possible hepatic toxicity
-                  </text>
-                  
-                  {/* No hepatic toxicity - horizontal, below lower line */}
-                  <text x={xScale(6)} y={yScale(12)} fontSize="9" textAnchor="start" fill="#000000" fontWeight="500">No hepatic</text>
-                  <text x={xScale(6)} y={yScale(12) + 11} fontSize="9" textAnchor="start" fill="#000000" fontWeight="500">toxicity</text>
-                  
-                  {/* 25% label near end of lower line */}
-                  <text x={xScale(22)} y={yScale(6) - 3} fontSize="8" textAnchor="start" fill="#000000" fontWeight="500">25%</text>
-                  
-                  {/* Patient point */}
+                  {/* Patient Data Point Overlay */}
                   {hours >= 4 && hours <= 24 && level > 0 && (
-                    <g>
+                    <svg 
+                      viewBox={`0 0 ${svgViewWidth} ${svgViewHeight}`}
+                      className="absolute inset-0 w-full h-full pointer-events-none"
+                      style={{ mixBlendMode: 'normal' }}
+                    >
                       {(() => {
                         const mcgLevel = nomogramUnit === "SI" ? level / 6.62 : level;
-                        const clampedLevel = Math.min(mcgLevel, 280);
+                        const clampedLevel = Math.min(Math.max(mcgLevel, 3), 500);
+                        const cx = xScaleSVG(hours);
+                        const cy = yScaleSVG(clampedLevel);
+                        const pointColor = assessNomogram?.probableToxicity 
+                          ? "#dc2626" 
+                          : assessNomogram?.needsTreatment 
+                            ? "#f59e0b" 
+                            : "#22c55e";
                         return (
-                          <>
+                          <g>
+                            {/* Outer glow for visibility */}
                             <circle 
-                              cx={xScale(hours)} 
-                              cy={yScale(clampedLevel)} 
-                              r="6" 
-                              fill={assessNomogram?.probableToxicity ? "#dc2626" : assessNomogram?.needsTreatment ? "#f59e0b" : "#22c55e"} 
-                              stroke="#ffffff" 
-                              strokeWidth="2" 
+                              cx={cx} 
+                              cy={cy} 
+                              r="8" 
+                              fill="rgba(255,255,255,0.8)"
                             />
-                          </>
+                            {/* Main point */}
+                            <circle 
+                              cx={cx} 
+                              cy={cy} 
+                              r="5" 
+                              fill={pointColor}
+                              stroke="#ffffff" 
+                              strokeWidth="2"
+                            />
+                            {/* Pulsing animation indicator */}
+                            <circle 
+                              cx={cx} 
+                              cy={cy} 
+                              r="5" 
+                              fill="none"
+                              stroke={pointColor}
+                              strokeWidth="2"
+                              opacity="0.5"
+                            >
+                              <animate 
+                                attributeName="r" 
+                                values="5;12;5" 
+                                dur="2s" 
+                                repeatCount="indefinite"
+                              />
+                              <animate 
+                                attributeName="opacity" 
+                                values="0.5;0;0.5" 
+                                dur="2s" 
+                                repeatCount="indefinite"
+                              />
+                            </circle>
+                          </g>
                         );
                       })()}
-                    </g>
+                    </svg>
                   )}
-                  
-                  {/* Axes - black lines */}
-                  <line x1={margin.left} y1={margin.top} x2={margin.left} y2={svgHeight - margin.bottom} stroke="#000000" strokeWidth="1" />
-                  <line x1={svgWidth - margin.right} y1={margin.top} x2={svgWidth - margin.right} y2={svgHeight - margin.bottom} stroke="#000000" strokeWidth="1" />
-                  <line x1={margin.left} y1={svgHeight - margin.bottom} x2={svgWidth - margin.right} y2={svgHeight - margin.bottom} stroke="#000000" strokeWidth="1" />
-                  
-                  {/* X-axis Label */}
-                  <text x={svgWidth / 2} y={svgHeight - 5} fontSize="9" textAnchor="middle" fill="#374151" fontWeight="500">Hours after ingestion</text>
-                  
-                  {/* Y-axis Labels - vertical oblique text */}
-                  <text 
-                    x={12} 
-                    y={svgHeight / 2 - 20} 
-                    fontSize="8" 
-                    textAnchor="middle" 
-                    fill="#374151" 
-                    fontStyle="italic"
-                    transform={`rotate(-90, 12, ${svgHeight / 2 - 20})`}
-                  >
-                    Acetaminophen plasma concentration
-                  </text>
-                  <text 
-                    x={svgWidth - 10} 
-                    y={svgHeight / 2 - 20} 
-                    fontSize="8" 
-                    textAnchor="middle" 
-                    fill="#374151"
-                    fontStyle="italic"
-                    transform={`rotate(90, ${svgWidth - 10}, ${svgHeight / 2 - 20})`}
-                  >
-                    Acetaminophen plasma concentration
-                  </text>
-                </svg>
+                </div>
               </div>
             </div>
 
