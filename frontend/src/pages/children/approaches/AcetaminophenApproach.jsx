@@ -468,14 +468,19 @@ const AcetaminophenApproach = ({ weight, expandedSections, toggleSection }) => {
                   min="0"
                   data-testid="apap-level-input"
                 />
+                {level > 0 && (
+                  <p className="text-[10px] text-muted-foreground mt-1">
+                    = {mcgToMicromol(level)} µmol/L
+                  </p>
+                )}
               </div>
             </div>
 
             {assessNomogram && (
               <div className={`p-2 rounded text-xs ${assessNomogram.needsTreatment ? 'bg-red-50 dark:bg-red-950/20 text-red-800 border border-red-200' : 'bg-green-50 dark:bg-green-950/20 text-green-800 border border-green-200'}`}>
                 <p className="font-semibold">Nomogram Result at {hours}h:</p>
-                <p>Treatment threshold: {assessNomogram.treatmentThreshold} mcg/mL</p>
-                <p>Your level: {level} mcg/mL</p>
+                <p>Treatment threshold: {assessNomogram.treatmentThreshold} mcg/mL ({mcgToMicromol(assessNomogram.treatmentThreshold)} µmol/L)</p>
+                <p>Your level: {level} mcg/mL ({mcgToMicromol(level)} µmol/L)</p>
                 <p className="font-bold mt-1">
                   {assessNomogram.probableToxicity 
                     ? "⚠️ PROBABLE HEPATOTOXICITY - START NAC IMMEDIATELY"
