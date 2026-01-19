@@ -189,15 +189,18 @@ const AcetaminophenApproach = ({ weight, expandedSections, toggleSection }) => {
     };
   }, [w]);
 
-  // SVG Nomogram dimensions
-  const svgWidth = 320;
+  // SVG Nomogram dimensions - increased right margin for SI units
+  const svgWidth = 360;
   const svgHeight = 280;
-  const margin = { top: 20, right: 30, bottom: 40, left: 50 };
+  const margin = { top: 20, right: 55, bottom: 40, left: 50 };
   const chartWidth = svgWidth - margin.left - margin.right;
   const chartHeight = svgHeight - margin.top - margin.bottom;
 
   const xScale = (h) => margin.left + ((h - 4) / 20) * chartWidth;
   const yScale = (c) => margin.top + chartHeight - (Math.log10(c) / Math.log10(300)) * chartHeight;
+  
+  // Conversion: 1 mcg/mL = 6.62 µmol/L (acetaminophen MW = 151.16)
+  const mcgToMicromol = (mcg) => Math.round(mcg * 6.62);
 
   const treatmentPath = NOMOGRAM_TREATMENT_LINE.map((p, i) => 
     `${i === 0 ? 'M' : 'L'} ${xScale(p.hours)} ${yScale(p.concentration)}`
