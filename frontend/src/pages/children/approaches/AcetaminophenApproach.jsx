@@ -11,6 +11,9 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import Section from "./Section";
 
+// Import the static Rumack-Matthew nomogram SVG
+import RumackNomogramSVG from "@/assets/images/rumack_matthew_nomogram.svg";
+
 // Common acetaminophen/paracetamol liquid preparations in Bahrain (concentration in mg/ml)
 const LIQUID_PREPARATIONS = [
   { id: "panadol_infant", name: "Panadol Infant Drops", concentration: "100mg/ml", perMl: 100 },
