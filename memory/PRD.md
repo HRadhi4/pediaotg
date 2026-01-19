@@ -81,16 +81,22 @@ Build a full SaaS-style web app "Pediatrics on the Go" with:
 ## Recent Changes (January 16, 2026)
 
 ### Session 7 Updates (Current - January 19, 2026)
-- ✅ **Rumack-Matthew Nomogram SI Units Added**:
-  - Updated `AcetaminophenApproach.jsx` nomogram with dual Y-axes:
-    - Left axis: mcg/mL (5, 10, 20, 50, 100, 150, 200, 300)
-    - Right axis: µmol/L (30, 66, 132, 330, 660, 1000, 1320, 2000)
-  - Added `mcgToMicromol` conversion function (1 mcg/mL = 6.62 µmol/L, acetaminophen MW 151.16)
-  - Serum level input shows µmol/L conversion below (e.g., "= 993 µmol/L")
-  - Nomogram results display both units (e.g., "Treatment threshold: 100 mcg/mL (662 µmol/L)")
-  - Patient point on chart shows both values (e.g., "150 (993)")
-  - Zone labels added: "Probable hepatic toxicity", "Possible hepatic toxicity", "No hepatic toxicity"
-  - SVG styled similar to Harriet Lane reference
+- ✅ **Rumack-Matthew Nomogram Major Enhancement**:
+  - Added **Unit Toggle** between SI (µmol/L) and US (mcg/mL) units
+  - **SI units (µmol/L) is now the DEFAULT** - togglable to mcg/mL
+  - Input field label dynamically changes based on selected unit
+  - Placeholder text changes: "e.g., 1000" for SI, "e.g., 150" for US
+  - Conversion shown below input field (e.g., "= 151.1 mcg/mL" or "= 993 µmol/L")
+  - Result displays primary unit first with secondary in parentheses
+  - SVG nomogram completely restyled (Harriet Lane style):
+    - Clean white background
+    - Bold black border axes
+    - Bold red toxicity lines (both upper and lower)
+    - Zone labels: "Probable hepatic toxicity" (red), "Possible hepatic toxicity" (amber), "No hepatic toxicity" (green)
+    - Primary unit on left Y-axis, secondary on right Y-axis
+    - Patient point with unit-appropriate label
+    - Y-axis values dynamically change based on selected unit
+  - Conversion factor: 1 mcg/mL = 6.62 µmol/L (acetaminophen MW 151.16)
   - **Testing**: 100% pass rate (iteration_18.json - 9/9 tests)
 
 - ✅ **Glucose mmol/L Conversions Added Throughout App**:
