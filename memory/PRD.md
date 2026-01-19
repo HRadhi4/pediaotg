@@ -81,21 +81,25 @@ Build a full SaaS-style web app "Pediatrics on the Go" with:
 ## Recent Changes (January 16, 2026)
 
 ### Session 7 Updates (Current - January 19, 2026)
-- ✅ **Rumack-Matthew Nomogram Major Enhancement**:
+- ✅ **Rumack-Matthew Nomogram - Static SVG Integration**:
+  - **Replaced programmatic D3.js chart with user-provided vectorized SVG file**
+  - SVG file: `/app/frontend/src/assets/images/rumack_matthew_nomogram.svg`
+  - Static SVG used as background with dynamic patient data point overlay
+  - Patient point plotted using:
+    - Logarithmic Y-scale (concentration 3-500 mcg/mL)
+    - Linear X-scale (hours 0-24)
+    - SVG viewBox: 0 0 237.82 300, chart area: x:45-197, y:34-207
+  - Color-coded patient point: Red (probable toxicity), Amber (above treatment line), Green (below threshold)
+  - Pulsing animation on patient point for visibility
+  - **Testing**: 100% pass rate (iteration_19.json - 8/8 tests)
+
+- ✅ **Rumack-Matthew Nomogram - Unit Toggle Feature**:
   - Added **Unit Toggle** between SI (µmol/L) and US (mcg/mL) units
   - **SI units (µmol/L) is now the DEFAULT** - togglable to mcg/mL
   - Input field label dynamically changes based on selected unit
   - Placeholder text changes: "e.g., 1000" for SI, "e.g., 150" for US
   - Conversion shown below input field (e.g., "= 151.1 mcg/mL" or "= 993 µmol/L")
   - Result displays primary unit first with secondary in parentheses
-  - SVG nomogram completely restyled (Harriet Lane style):
-    - Clean white background
-    - Bold black border axes
-    - Bold red toxicity lines (both upper and lower)
-    - Zone labels: "Probable hepatic toxicity" (red), "Possible hepatic toxicity" (amber), "No hepatic toxicity" (green)
-    - Primary unit on left Y-axis, secondary on right Y-axis
-    - Patient point with unit-appropriate label
-    - Y-axis values dynamically change based on selected unit
   - Conversion factor: 1 mcg/mL = 6.62 µmol/L (acetaminophen MW 151.16)
   - **Testing**: 100% pass rate (iteration_18.json - 9/9 tests)
 
