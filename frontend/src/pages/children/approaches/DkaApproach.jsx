@@ -38,7 +38,7 @@ const DkaApproach = ({ weight, expandedSections, toggleSection }) => {
           </div>
           <div className="mt-3 p-2 bg-amber-50 dark:bg-amber-900/20 rounded">
             <p className="font-medium text-xs">Confirm DKA:</p>
-            <p className="text-xs text-muted-foreground">• Ketonuria + Glucose &gt;200 mg/dL + pH &lt;7.30 and/or HCO₃ &lt;15</p>
+            <p className="text-xs text-muted-foreground">• Ketonuria + Glucose &gt;200 mg/dL (&gt;11.1 mmol/L) + pH &lt;7.30 and/or HCO₃ &lt;15</p>
           </div>
         </Section>
 
@@ -123,8 +123,8 @@ const DkaApproach = ({ weight, expandedSections, toggleSection }) => {
         {/* Dextrose */}
         <Section id="dka-dextrose" title="Dextrose" expandedSections={expandedSections} toggleSection={toggleSection}>
           <div className="text-xs text-muted-foreground">
-            <p>• Add D5 if glucose &lt;250 mg/dL or rapid drop &gt;100 mg/dL/hr</p>
-            <p>• Add D10 if glucose &lt;180 mg/dL</p>
+            <p>• Add D5 if glucose &lt;250 mg/dL (&lt;13.9 mmol/L) or rapid drop &gt;100 mg/dL/hr (&gt;5.6 mmol/L/hr)</p>
+            <p>• Add D10 if glucose &lt;180 mg/dL (&lt;10 mmol/L)</p>
           </div>
         </Section>
 
