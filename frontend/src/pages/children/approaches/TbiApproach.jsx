@@ -48,7 +48,7 @@ const TbiApproach = ({ weight, expandedSections, toggleSection }) => {
             <li>□ Maintain normothermia (&lt;37.5°C)</li>
             <li>□ Seizure prophylaxis (Phenytoin)</li>
             <li>□ Stress ulcer prophylaxis</li>
-            <li>□ Glucose 80-180 mg/dL</li>
+            <li>□ Glucose 80-180 mg/dL (4.4-10 mmol/L)</li>
           </ul>
           <div className="mt-3 p-2 bg-red-50 dark:bg-red-900/20 rounded text-xs">
             <p className="font-semibold text-red-700">DO NOT ALLOW:</p>
