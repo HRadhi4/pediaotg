@@ -1156,6 +1156,71 @@ const DrugsPage = ({ onBack }) => {
       renalAdjust: { gfr50: "No change", gfr30: "No change", gfr10: "Avoid use - metabolites accumulate", hd: "Avoid use" }
     },
     {
+      id: "methylprednisolone",
+      name: "Methylprednisolone (Solu-Medrol)",
+      category: "Steroid",
+      route: "IV/IM/PO",
+      doses: {
+        antiinflammatory: { 
+          label: "Anti-inflammatory", 
+          value: "0.5-1.7", 
+          unit: "mg/kg/day ÷ q6-12h",
+          divided: { perDay: true, frequency: "q6-12h", divisor: [4, 2] }
+        },
+        asthmaChild: { 
+          label: "Asthma (≤12yr)", 
+          value: "1-2", 
+          unit: "mg/kg/day ÷ q12h IV/IM/PO",
+          maxDose: 60,
+          divided: { perDay: true, frequency: "q12h", divisor: 2 }
+        },
+        asthmaAdult: { 
+          label: "Asthma (>12yr/Adult)", 
+          value: "40-80", 
+          unit: "mg/day ÷ q12-24h IV/IM/PO",
+          divided: { perDay: true, frequency: "q12-24h", divisor: [1, 2] }
+        },
+        burstChild: { 
+          label: "Burst (≤12yr)", 
+          value: "1-2", 
+          unit: "mg/kg/day ÷ q12-24h PO x3-10d",
+          maxDose: 60,
+          divided: { perDay: true, frequency: "q12-24h", divisor: [1, 2] }
+        },
+        imChild4yr: { 
+          label: "IM (≤4yr vomiting)", 
+          value: "7.5", 
+          unit: "mg/kg IM x1 (max 240mg)",
+          maxDose: 240
+        },
+        imOlder: { 
+          label: "IM (>4yr/Adult)", 
+          value: "240", 
+          unit: "mg IM x1"
+        },
+        spinalCordBolus: { 
+          label: "Spinal Cord Injury (bolus)", 
+          value: "30", 
+          unit: "mg/kg IV over 15min"
+        },
+        spinalCordInfusion: { 
+          label: "Spinal Cord (infusion)", 
+          value: "5.4", 
+          unit: "mg/kg/hr IV x23h"
+        },
+        pulseTherapy: { 
+          label: "Pulse Therapy", 
+          value: "15-30", 
+          unit: "mg/kg/day IV x3d (max 1g)",
+          maxDose: 1000
+        }
+      },
+      max: "60 mg/day (asthma); 1 g/day (pulse)",
+      indication: "Severe asthma exacerbation, acute spinal cord injury, inflammatory conditions, pulse therapy for autoimmune diseases",
+      notes: "Succinate salt for IV/IM. Acetate for intra-articular/soft tissue (NOT IV). Give with food if PO. Taper if >5 days.",
+      renalAdjust: null
+    },
+    {
       id: "midazolam",
       name: "Midazolam (Versed)",
       category: "Sedative",
