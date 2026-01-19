@@ -2180,44 +2180,133 @@ const DrugsPage = ({ onBack }) => {
 
                 {/* Expanded Content */}
                 {isExpanded && (
-                  <div className="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700 space-y-3">
+                  <div className="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700 space-y-4" onClick={(e) => e.stopPropagation()}>
+                    
+                    {/* Quick Info Bar */}
+                    <div className="flex flex-wrap gap-2 text-[10px]">
+                      <span className="px-2 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-medium">
+                        📍 {drug.route}
+                      </span>
+                      <span className="px-2 py-1 rounded-full bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 font-medium">
+                        ⚠️ Max: {drug.max}
+                      </span>
+                    </div>
+
                     {/* Age-Based Dosing Table */}
                     {drug.ageDosing && (
-                      <div className="p-2 rounded bg-purple-50 dark:bg-purple-900/20">
-                        <p className="text-[10px] font-medium text-purple-700 dark:text-purple-300 uppercase tracking-wide mb-1">Age-Based Dosing</p>
-                        <div className="space-y-1">
+                      <div className="p-3 rounded-lg bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800">
+                        <p className="text-[11px] font-semibold text-purple-700 dark:text-purple-300 mb-2 flex items-center gap-1">
+                          <span>👶</span> Age-Based Dosing
+                        </p>
+                        <div className="space-y-1.5">
                           {drug.ageDosing.map((ad, idx) => (
-                            <div key={idx} className="flex justify-between text-xs">
-                              <span className="text-muted-foreground">{ad.age}:</span>
-                              <span className="font-mono">{ad.dose}</span>
+                            <div key={idx} className="flex justify-between text-xs bg-white dark:bg-slate-800 p-1.5 rounded">
+                              <span className="text-muted-foreground font-medium">{ad.age}</span>
+                              <span className="font-mono text-purple-600 dark:text-purple-400">{ad.dose}</span>
                             </div>
                           ))}
                         </div>
                       </div>
                     )}
 
-                    {/* All Calculated Doses */}
+                    {/* All Calculated Doses - Improved Layout */}
                     {w > 0 && (
-                      <div>
-                        <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide mb-1">Calculated Doses ({w}kg)</p>
-                        <div className="grid grid-cols-2 gap-2">
+                      <div className="space-y-2">
+                        <p className="text-[11px] font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-1">
+                          <span>💊</span> Calculated Doses for {w} kg
+                        </p>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                           {doseKeys.map(key => {
-                            // Use per-dose maxDose if available, otherwise fall back to global max
-                            const doseSpecificMax = drug.doses[key].maxDose;
+                            const doseData = drug.doses[key];
+                            const doseSpecificMax = doseData.maxDose;
                             const maxDoseValue = doseSpecificMax || parseMaxDose(drug.max);
-                            const result = calculateDose(drug.doses[key].value, w, maxDoseValue, "mg", drug.doses[key].unit);
+                            const result = calculateDose(doseData.value, w, maxDoseValue, "mg", doseData.unit);
                             if (!result) return null;
                             const doseResult = typeof result === 'string' ? { dose: result, isExceedingMax: false } : result;
+                            
+                            // Calculate divided doses if applicable
+                            const hasDivided = doseData.divided || doseData.unit.includes("÷") || doseData.unit.includes("divided");
+                            let dividedDoseInfo = null;
+                            
+                            if (hasDivided && doseResult.isPerDay) {
+                              // Extract divisor from unit string (e.g., "÷ q6h" means divide by 4, "÷ q8h" by 3, "÷ q12h" by 2)
+                              const unitStr = doseData.unit.toLowerCase();
+                              let divisor = 1;
+                              if (unitStr.includes("q4h") || unitStr.includes("q4-6h")) divisor = 6;
+                              else if (unitStr.includes("q6h") || unitStr.includes("q6-8h")) divisor = 4;
+                              else if (unitStr.includes("q8h")) divisor = 3;
+                              else if (unitStr.includes("q12h") || unitStr.includes("q12-24h")) divisor = 2;
+                              else if (unitStr.includes("q24h")) divisor = 1;
+                              
+                              if (divisor > 1) {
+                                // Parse dose from result
+                                const totalDoseMatch = doseResult.dose.match(/([\d.]+)(?:\s*-\s*([\d.]+))?/);
+                                if (totalDoseMatch) {
+                                  const minTotal = parseFloat(totalDoseMatch[1]);
+                                  const maxTotal = totalDoseMatch[2] ? parseFloat(totalDoseMatch[2]) : minTotal;
+                                  const perDoseMin = (minTotal / divisor).toFixed(1);
+                                  const perDoseMax = (maxTotal / divisor).toFixed(1);
+                                  dividedDoseInfo = {
+                                    perDose: perDoseMin === perDoseMax ? perDoseMin : `${perDoseMin}-${perDoseMax}`,
+                                    times: divisor,
+                                    frequency: unitStr.includes("q4h") ? "q4h" : 
+                                               unitStr.includes("q6h") ? "q6h" : 
+                                               unitStr.includes("q8h") ? "q8h" : 
+                                               unitStr.includes("q12h") ? "q12h" : "daily"
+                                  };
+                                }
+                              }
+                            }
+                            
                             return (
-                              <div key={key} className={`p-2 rounded ${doseResult.isExceedingMax ? 'bg-amber-50 dark:bg-amber-900/20 border border-amber-300' : 'bg-blue-50 dark:bg-blue-900/20'}`}>
-                                <p className="text-[10px] text-muted-foreground">{drug.doses[key].label}</p>
-                                <p className={`font-mono font-bold ${doseResult.isExceedingMax ? 'text-amber-600' : 'text-blue-600'}`}>
-                                  {doseResult.dose}{doseResult.doseLabel && <span className="text-[9px] text-muted-foreground ml-0.5">{doseResult.doseLabel}</span>}
+                              <div 
+                                key={key} 
+                                className={`p-3 rounded-lg border ${
+                                  doseResult.isExceedingMax 
+                                    ? 'bg-amber-50 dark:bg-amber-900/20 border-amber-300 dark:border-amber-700' 
+                                    : 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800'
+                                }`}
+                              >
+                                <p className="text-[10px] font-medium text-slate-500 dark:text-slate-400 mb-1">
+                                  {doseData.label}
                                 </p>
-                                <p className="text-[9px] text-muted-foreground">{drug.doses[key].unit}</p>
+                                
+                                {/* Total Daily Dose */}
+                                <div className="flex items-baseline gap-1">
+                                  <p className={`text-lg font-mono font-bold ${
+                                    doseResult.isExceedingMax ? 'text-amber-600' : 'text-blue-600 dark:text-blue-400'
+                                  }`}>
+                                    {doseResult.dose}
+                                  </p>
+                                  {doseResult.isPerDay && (
+                                    <span className="text-[9px] text-slate-500">/day</span>
+                                  )}
+                                  {doseResult.isPerDose && (
+                                    <span className="text-[9px] text-slate-500">/dose</span>
+                                  )}
+                                </div>
+                                
+                                {/* Divided Dose Calculation */}
+                                {dividedDoseInfo && (
+                                  <div className="mt-2 pt-2 border-t border-blue-200 dark:border-blue-700">
+                                    <p className="text-[10px] text-slate-600 dark:text-slate-400">
+                                      <span className="font-medium">Per dose:</span>{" "}
+                                      <span className="font-mono font-bold text-green-600 dark:text-green-400">
+                                        {dividedDoseInfo.perDose} mg
+                                      </span>
+                                      <span className="text-slate-400"> × {dividedDoseInfo.times} doses ({dividedDoseInfo.frequency})</span>
+                                    </p>
+                                  </div>
+                                )}
+                                
+                                {/* Original dosing instruction */}
+                                <p className="text-[9px] text-slate-500 dark:text-slate-400 mt-1">
+                                  {doseData.value} {doseData.unit}
+                                </p>
+                                
                                 {doseResult.isExceedingMax && (
-                                  <p className="text-[9px] text-amber-600 font-medium mt-1">
-                                    ⚠️ Capped at max: {doseSpecificMax ? `${doseSpecificMax} mg` : drug.max}
+                                  <p className="text-[10px] text-amber-600 font-medium mt-2 flex items-center gap-1">
+                                    <span>⚠️</span> Capped at max: {doseSpecificMax ? `${doseSpecificMax} mg` : drug.max}
                                   </p>
                                 )}
                               </div>
@@ -2227,47 +2316,69 @@ const DrugsPage = ({ onBack }) => {
                       </div>
                     )}
 
-                    {/* Dose Table (when no weight) */}
+                    {/* Dose Table (when no weight) - Improved */}
                     {!w && (
-                      <div>
-                        <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide mb-1">Dosing</p>
-                        <div className="space-y-1">
+                      <div className="space-y-2">
+                        <p className="text-[11px] font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-1">
+                          <span>📋</span> Dosing Reference
+                        </p>
+                        <div className="space-y-1.5">
                           {doseKeys.map(key => (
-                            <div key={key} className="text-xs">
-                              <span className="font-medium">{drug.doses[key].label}:</span> {drug.doses[key].value} {drug.doses[key].unit}
+                            <div key={key} className="flex justify-between items-start p-2 rounded bg-slate-50 dark:bg-slate-800/50 text-xs">
+                              <span className="font-medium text-slate-600 dark:text-slate-300">{drug.doses[key].label}</span>
+                              <span className="font-mono text-blue-600 dark:text-blue-400 text-right ml-2">
+                                {drug.doses[key].value} {drug.doses[key].unit}
+                              </span>
                             </div>
                           ))}
                         </div>
+                        <p className="text-[9px] text-amber-600 dark:text-amber-400 mt-2 flex items-center gap-1">
+                          <span>💡</span> Enter patient weight above for calculated doses
+                        </p>
                       </div>
                     )}
 
-                    {/* Route */}
-                    <div>
-                      <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">Route</p>
-                      <p className="text-xs">{drug.route}</p>
+                    {/* Indication - Cleaner */}
+                    <div className="p-3 rounded-lg bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800">
+                      <p className="text-[11px] font-semibold text-green-700 dark:text-green-300 mb-1 flex items-center gap-1">
+                        <span>🎯</span> Indications
+                      </p>
+                      <p className="text-xs text-slate-700 dark:text-slate-300">{drug.indication}</p>
                     </div>
 
-                    {/* Max Dose */}
-                    <div>
-                      <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">Max Dose</p>
-                      <p className="text-xs font-medium text-red-600">{drug.max}</p>
-                    </div>
-
-                    {/* Indication */}
-                    <div>
-                      <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">Indication</p>
-                      <p className="text-xs">{drug.indication}</p>
-                    </div>
+                    {/* Notes - Clinical Pearls */}
+                    {drug.notes && (
+                      <div className="p-3 rounded-lg bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700">
+                        <p className="text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1">
+                          <span>📝</span> Clinical Notes
+                        </p>
+                        <p className="text-xs text-slate-600 dark:text-slate-400">{drug.notes}</p>
+                      </div>
+                    )}
 
                     {/* Renal Adjustment */}
                     {drug.renalAdjust && (
-                      <div className="p-2 rounded bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800">
-                        <p className="text-[10px] font-medium text-amber-700 dark:text-amber-300 uppercase tracking-wide mb-1">⚠️ Renal Dose Adjustment</p>
-                        <div className="grid grid-cols-2 gap-1 text-[10px]">
-                          <div><span className="text-muted-foreground">GFR 30-50:</span> <span className="font-mono">{drug.renalAdjust.gfr50}</span></div>
-                          <div><span className="text-muted-foreground">GFR 10-30:</span> <span className="font-mono">{drug.renalAdjust.gfr30}</span></div>
-                          <div><span className="text-muted-foreground">GFR &lt;10:</span> <span className="font-mono">{drug.renalAdjust.gfr10}</span></div>
-                          <div><span className="text-muted-foreground">HD:</span> <span className="font-mono">{drug.renalAdjust.hd}</span></div>
+                      <div className="p-3 rounded-lg bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800">
+                        <p className="text-[11px] font-semibold text-amber-700 dark:text-amber-300 mb-2 flex items-center gap-1">
+                          <span>🩺</span> Renal Dose Adjustment
+                        </p>
+                        <div className="grid grid-cols-2 gap-2 text-[10px]">
+                          <div className="bg-white dark:bg-slate-800 p-2 rounded">
+                            <span className="text-muted-foreground block">GFR 30-50:</span>
+                            <span className="font-mono font-medium">{drug.renalAdjust.gfr50}</span>
+                          </div>
+                          <div className="bg-white dark:bg-slate-800 p-2 rounded">
+                            <span className="text-muted-foreground block">GFR 10-30:</span>
+                            <span className="font-mono font-medium">{drug.renalAdjust.gfr30}</span>
+                          </div>
+                          <div className="bg-white dark:bg-slate-800 p-2 rounded">
+                            <span className="text-muted-foreground block">GFR &lt;10:</span>
+                            <span className="font-mono font-medium">{drug.renalAdjust.gfr10}</span>
+                          </div>
+                          <div className="bg-white dark:bg-slate-800 p-2 rounded">
+                            <span className="text-muted-foreground block">Hemodialysis:</span>
+                            <span className="font-mono font-medium">{drug.renalAdjust.hd}</span>
+                          </div>
                         </div>
                         {gfr && (
                           <div className="mt-2 pt-2 border-t border-amber-200 dark:border-amber-700">
