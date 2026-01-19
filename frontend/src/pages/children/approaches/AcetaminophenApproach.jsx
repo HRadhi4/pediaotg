@@ -638,14 +638,27 @@ const AcetaminophenApproach = ({ weight, expandedSections, toggleSection }) => {
                   ))}
                   
                   {/* Zone labels */}
-                  <text x={xScale(8)} y={yScale(250)} fontSize="9" textAnchor="start" fill="#b91c1c" fontWeight="600">Probable</text>
-                  <text x={xScale(8)} y={yScale(250) + 11} fontSize="9" textAnchor="start" fill="#b91c1c" fontWeight="600">hepatic toxicity</text>
+                  {/* Probable hepatic toxicity - above upper line */}
+                  <text x={xScale(7)} y={yScale(280)} fontSize="10" textAnchor="start" fill="#b91c1c" fontWeight="600">Probable</text>
+                  <text x={xScale(7)} y={yScale(280) + 12} fontSize="10" textAnchor="start" fill="#b91c1c" fontWeight="600">hepatic toxicity</text>
                   
-                  <text x={xScale(11)} y={yScale(45)} fontSize="9" textAnchor="start" fill="#b45309" fontWeight="600">Possible</text>
-                  <text x={xScale(11)} y={yScale(45) + 11} fontSize="9" textAnchor="start" fill="#b45309" fontWeight="600">hepatic toxicity</text>
+                  {/* Possible hepatic toxicity - OBLIQUE between the two red lines */}
+                  <text 
+                    x={xScale(10)} 
+                    y={yScale(70)} 
+                    fontSize="10" 
+                    textAnchor="start" 
+                    fill="#b91c1c" 
+                    fontWeight="600"
+                    fontStyle="italic"
+                    transform={`rotate(-25, ${xScale(10)}, ${yScale(70)})`}
+                  >
+                    Possible hepatic toxicity
+                  </text>
                   
-                  <text x={xScale(15)} y={yScale(8)} fontSize="9" textAnchor="start" fill="#15803d" fontWeight="600">No hepatic</text>
-                  <text x={xScale(15)} y={yScale(8) + 11} fontSize="9" textAnchor="start" fill="#15803d" fontWeight="600">toxicity</text>
+                  {/* Hepatic toxicity unlikely - below lower line */}
+                  <text x={xScale(14)} y={yScale(6)} fontSize="10" textAnchor="start" fill="#15803d" fontWeight="600">Hepatic toxicity</text>
+                  <text x={xScale(14)} y={yScale(6) + 12} fontSize="10" textAnchor="start" fill="#15803d" fontWeight="600">unlikely</text>
                   
                   {/* Probable toxicity line (upper - dark red, thicker) */}
                   <path d={probablePath} fill="none" stroke="#b91c1c" strokeWidth="2.5" />
@@ -654,7 +667,7 @@ const AcetaminophenApproach = ({ weight, expandedSections, toggleSection }) => {
                   <path d={treatmentPath} fill="none" stroke="#b91c1c" strokeWidth="2.5" />
                   
                   {/* 25% label */}
-                  <text x={xScale(24) + 3} y={yScale(5) + 3} fontSize="8" textAnchor="start" fill="#b91c1c" fontWeight="500">25%</text>
+                  <text x={xScale(24) + 3} y={yScale(4.5) + 3} fontSize="8" textAnchor="start" fill="#b91c1c" fontWeight="500">25%</text>
                   
                   {/* Patient point */}
                   {hours >= 4 && hours <= 24 && level > 0 && (
