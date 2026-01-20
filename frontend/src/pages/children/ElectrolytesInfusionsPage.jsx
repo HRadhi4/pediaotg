@@ -187,24 +187,21 @@ const ElectrolytesInfusionsPage = ({ onBack }) => {
 
   const calculateCalcium = () => {
     const maxDose = 1000;
-    let doseMg = w * 100;
-    let isMaxed = false;
-    
-    if (doseMg > maxDose) {
-      doseMg = maxDose;
-      isMaxed = true;
-    }
+    // Use custom dose from slider/input
+    let doseMg = currentDose;
+    let isMaxed = doseMg >= maxDose;
     
     const doseMl = doseMg / 100;
     const targetConc = 50;
     const totalVolume = doseMg / targetConc;
     const diluentMl = totalVolume - doseMl;
+    const dosePerKg = (doseMg / w).toFixed(1);
     
     setResults({
       medication: "Calcium Gluconate 10%",
       calculation: {
-        dose: `${doseMg.toFixed(0)} mg${isMaxed ? ' (MAX)' : ''}`,
-        formula: `${w} kg x 100 mg/kg = ${(w * 100).toFixed(0)} mg${isMaxed ? ' → capped at 1000 mg' : ''}`,
+        dose: `${doseMg.toFixed(0)} mg${isMaxed ? ' (MAX)' : ''} (${dosePerKg} mg/kg)`,
+        formula: `Selected: ${dosePerKg} mg/kg x ${w} kg = ${doseMg.toFixed(0)} mg`,
         drugVolume: `${doseMl.toFixed(1)} ml`,
         diluent: `${diluentMl.toFixed(1)} ml (NS or D5W)`,
         totalVolume: `${totalVolume.toFixed(1)} ml (at 50 mg/ml)`
@@ -221,38 +218,30 @@ const ElectrolytesInfusionsPage = ({ onBack }) => {
 
   const calculateMagnesium = () => {
     const maxDose = 2000;
-    let doseMin = w * 25;
-    let doseMax = w * 50;
-    let isMaxed = false;
+    // Use custom dose from slider/input
+    let doseMg = currentDose;
+    let isMaxed = doseMg >= maxDose;
     
-    if (doseMax > maxDose) {
-      doseMax = maxDose;
-      doseMin = Math.min(doseMin, maxDose);
-      isMaxed = true;
-    }
-    
-    const drugVolumeMin = doseMin / 500;
-    const drugVolumeMax = doseMax / 500;
+    const drugVolume = doseMg / 500;
     const targetConc = 60;
-    const totalVolumeMin = doseMin / targetConc;
-    const totalVolumeMax = doseMax / targetConc;
-    const diluentMin = totalVolumeMin - drugVolumeMin;
-    const diluentMax = totalVolumeMax - drugVolumeMax;
+    const totalVolume = doseMg / targetConc;
+    const diluent = totalVolume - drugVolume;
+    const dosePerKg = (doseMg / w).toFixed(1);
     
     setResults({
       medication: "Magnesium Sulfate 50%",
       calculation: {
-        dose: `${doseMin.toFixed(0)} - ${doseMax.toFixed(0)} mg${isMaxed ? ' (MAX)' : ''}`,
-        formula: `${w} kg x 25-50 mg/kg${isMaxed ? ' → capped at 2000 mg' : ''}`,
-        drugVolume: `${drugVolumeMin.toFixed(2)} - ${drugVolumeMax.toFixed(2)} ml`,
-        diluent: `${diluentMin.toFixed(1)} - ${diluentMax.toFixed(1)} ml (NS or D5W)`,
-        totalVolume: `${totalVolumeMin.toFixed(1)} - ${totalVolumeMax.toFixed(1)} ml (at 60 mg/ml)`
+        dose: `${doseMg.toFixed(0)} mg${isMaxed ? ' (MAX)' : ''} (${dosePerKg} mg/kg)`,
+        formula: `Selected: ${dosePerKg} mg/kg x ${w} kg = ${doseMg.toFixed(0)} mg`,
+        drugVolume: `${drugVolume.toFixed(2)} ml`,
+        diluent: `${diluent.toFixed(1)} ml (NS or D5W)`,
+        totalVolume: `${totalVolume.toFixed(1)} ml (at 60 mg/ml)`
       },
       administration: {
         duration: "2-4 hours",
-        rate: `${(totalVolumeMin/4).toFixed(1)} - ${(totalVolumeMax/2).toFixed(1)} ml/hr`
+        rate: `${(totalVolume/4).toFixed(1)} - ${(totalVolume/2).toFixed(1)} ml/hr`
       },
-      preparation: `Draw ${drugVolumeMax.toFixed(2)} ml MgSO4 50% + ${diluentMax.toFixed(1)} ml NS = ${totalVolumeMax.toFixed(1)} ml`,
+      preparation: `Draw ${drugVolume.toFixed(2)} ml MgSO4 50% + ${diluent.toFixed(1)} ml NS = ${totalVolume.toFixed(1)} ml`,
       frequency: "BD for 3 doses",
       ...(isMaxed && { warning: "Dose capped at maximum (2g per dose)" })
     });
@@ -260,24 +249,22 @@ const ElectrolytesInfusionsPage = ({ onBack }) => {
 
   const calculatePotassium = () => {
     const ivMaxDose = 40;
-    let doseMin = w * 0.5;
-    let doseMax = w * 1;
-    let isMaxed = false;
-    
-    if (doseMax > ivMaxDose) {
-      doseMax = ivMaxDose;
-      doseMin = Math.min(doseMin, ivMaxDose);
-      isMaxed = true;
-    }
+    // Use custom dose from slider/input
+    let doseMEq = currentDose;
+    let isMaxed = doseMEq >= ivMaxDose;
     
     const kclStock = 2;
-    const drugVolumeMin = doseMin / kclStock;
-    const drugVolumeMax = doseMax / kclStock;
+    const drugVolume = doseMEq / kclStock;
+    const dosePerKg = (doseMEq / w).toFixed(2);
     
     // Peripheral dilution (80 mEq/L)
     const peripheralConc = 0.08;
-    const totalVolumeMin = doseMin / peripheralConc;
-    const totalVolumeMax = doseMax / peripheralConc;
+    const totalVolume = doseMEq / peripheralConc;
+    const diluent = totalVolume - drugVolume;
+    
+    // Duration based on dose per kg
+    const duration = parseFloat(dosePerKg) <= 0.5 ? "1 hour" : "2 hours";
+    const rate = parseFloat(dosePerKg) <= 0.5 ? totalVolume : totalVolume / 2;
     const diluentMin = totalVolumeMin - drugVolumeMin;
     const diluentMax = totalVolumeMax - drugVolumeMax;
     
