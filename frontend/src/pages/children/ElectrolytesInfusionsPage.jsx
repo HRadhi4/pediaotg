@@ -265,47 +265,30 @@ const ElectrolytesInfusionsPage = ({ onBack }) => {
     // Duration based on dose per kg
     const duration = parseFloat(dosePerKg) <= 0.5 ? "1 hour" : "2 hours";
     const rate = parseFloat(dosePerKg) <= 0.5 ? totalVolume : totalVolume / 2;
-    const diluentMin = totalVolumeMin - drugVolumeMin;
-    const diluentMax = totalVolumeMax - drugVolumeMax;
     
     setResults({
       medication: "Potassium Chloride (KCl) 15%",
       calculation: {
-        dose: `${doseMin.toFixed(1)} - ${doseMax.toFixed(1)} mEq${isMaxed ? ' (MAX)' : ''}`,
-        formula: `0.5 mEq/kg over 1hr | 1 mEq/kg over 2hr`,
-        drugVolume: `${drugVolumeMin.toFixed(2)} - ${drugVolumeMax.toFixed(2)} ml`,
-        diluent: `${diluentMin.toFixed(0)} - ${diluentMax.toFixed(0)} ml NS (Peripheral 80 mEq/L)`,
-        totalVolume: `${totalVolumeMin.toFixed(0)} - ${totalVolumeMax.toFixed(0)} ml`
+        dose: `${doseMEq.toFixed(1)} mEq${isMaxed ? ' (MAX)' : ''} (${dosePerKg} mEq/kg)`,
+        formula: `Selected: ${dosePerKg} mEq/kg x ${w} kg = ${doseMEq.toFixed(1)} mEq`,
+        drugVolume: `${drugVolume.toFixed(2)} ml`,
+        diluent: `${diluent.toFixed(0)} ml NS (Peripheral 80 mEq/L)`,
+        totalVolume: `${totalVolume.toFixed(0)} ml`
       },
       administration: {
-        duration: "1-2 hours",
-        rate: `${totalVolumeMin.toFixed(0)} ml/hr (1h) | ${(totalVolumeMax/2).toFixed(0)} ml/hr (2h)`
+        duration: duration,
+        rate: `${rate.toFixed(0)} ml/hr`
       },
-      preparation: `${drugVolumeMax.toFixed(2)} ml KCl 15% + ${diluentMax.toFixed(0)} ml NS = ${totalVolumeMax.toFixed(0)} ml`,
+      preparation: `${drugVolume.toFixed(2)} ml KCl 15% + ${diluent.toFixed(0)} ml NS = ${totalVolume.toFixed(0)} ml`,
       notes: "Monitor ECG if giving >0.5 mEq/kg/hr",
       ...(isMaxed && { warning: "Dose capped at maximum (40 mEq)" })
     });
   };
 
   const calculateNaHCO3 = () => {
-    const hco3 = parseFloat(hco3Level);
-    const be = parseFloat(baseExcess);
-    
-    let correction = 0;
-    let method = "";
-    
-    if ((nahco3Method === "hco3" || nahco3Method === "both") && !isNaN(hco3)) {
-      const desiredHCO3 = 20;
-      correction = (desiredHCO3 - hco3) * 0.3 * w;
-      method = `(20 - ${hco3}) x 0.3 x ${w} kg`;
-    } else if ((nahco3Method === "be" || nahco3Method === "both") && !isNaN(be)) {
-      correction = Math.abs(be) * 0.3 * w;
-      method = `|${be}| x 0.3 x ${w} kg`;
-    } else {
-      // Default calculation
-      correction = w * 1.5;
-      method = `${w} kg x 1.5 mEq/kg (standard dose)`;
-    }
+    // Use custom dose from slider/input
+    let correction = currentDose;
+    const dosePerKg = (correction / w).toFixed(2);
     
     const drugVolume = correction;
     const diluentVolume = correction;
@@ -314,8 +297,8 @@ const ElectrolytesInfusionsPage = ({ onBack }) => {
     setResults({
       medication: "Sodium Bicarbonate 8.4%",
       calculation: {
-        dose: `${correction.toFixed(1)} mEq`,
-        formula: method,
+        dose: `${correction.toFixed(1)} mEq (${dosePerKg} mEq/kg)`,
+        formula: `Selected: ${dosePerKg} mEq/kg x ${w} kg = ${correction.toFixed(1)} mEq`,
         drugVolume: `${drugVolume.toFixed(1)} ml`,
         diluent: `${diluentVolume.toFixed(1)} ml NS (1:1 dilution)`,
         totalVolume: `${totalVolume.toFixed(1)} ml`
