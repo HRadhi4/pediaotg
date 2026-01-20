@@ -418,8 +418,6 @@ const ElectrolytesInfusionsPage = ({ onBack }) => {
     });
   };
 
-  const currentElectrolyte = electrolytes[selectedElectrolyte];
-
   return (
     <div className="space-y-4 pt-4 pb-8">
       {/* Weight Input */}
