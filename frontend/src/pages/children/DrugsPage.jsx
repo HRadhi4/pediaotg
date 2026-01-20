@@ -1904,14 +1904,28 @@ const DrugsPage = ({ onBack }) => {
   };
 
   // Parse max dose string from drug data (e.g., "800 mg PO, 20 mg/kg IV" -> extract first number)
-  const parseMaxDose = (maxStr, route = null) => {
+  const parseMaxDose = (maxStr, weight = null) => {
     if (!maxStr || maxStr === "See protocol") return null;
     
-    // Try to extract numeric max dose
+    // Check if this is a weight-based max (mg/kg) - don't apply fixed cap
+    if (maxStr.includes('/kg')) {
+      // Weight-based max - need to calculate based on patient weight
+      if (weight && weight > 0) {
+        // Extract the mg/kg value
+        const perKgMatch = maxStr.match(/(\d+(?:\.\d+)?)\s*mg\/kg/i);
+        if (perKgMatch) {
+          return parseFloat(perKgMatch[1]) * weight;
+        }
+      }
+      // If no weight or can't parse, return null (no cap)
+      return null;
+    }
+    
+    // Try to extract numeric max dose for fixed doses
     // Common formats: "800 mg", "3 g/day", "1.5 g/day", "6 mg first", "1.2g IV/dose"
     const patterns = [
       { regex: /(\d+(?:\.\d+)?)\s*g\/day/i, multiplier: 1000 },  // "3 g/day" -> 3000 mg
-      { regex: /(\d+(?:\.\d+)?)\s*mg/i, multiplier: 1 },  // "800 mg" - check mg BEFORE g
+      { regex: /(\d+(?:\.\d+)?)\s*mg(?!\/kg)/i, multiplier: 1 },  // "800 mg" but NOT "mg/kg"
       { regex: /(\d+(?:\.\d+)?)\s*g(?!r)/i, multiplier: 1000 },  // "3 g" or "1.2g" -> mg (not gr)
       { regex: /(\d+(?:\.\d+)?)\s*mcg/i, multiplier: 1 },  // mcg doses
     ];
