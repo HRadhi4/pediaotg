@@ -224,7 +224,7 @@ const ChildrenDashboard = ({ theme, toggleTheme }) => {
    */
   const widgetDefs = {
     bp: { id: "bp", title: "Blood Pressure", subtitle: "Age-based BP percentiles", icon: BloodPressureIcon, color: "red", keywords: ["hypertension", "systolic", "diastolic", "percentile", "boys", "girls", "map"] },
-    infusions: { id: "infusions", title: "Electrolytes & Infusions", subtitle: "IV + Corrections + Drugs", icon: InfusionIcon, color: "blue", keywords: ["dopamine", "dobutamine", "adrenaline", "epinephrine", "sedation", "midazolam", "fentanyl", "inotrope", "electrolyte", "calcium", "potassium", "magnesium", "sodium", "phosphate", "bicarbonate", "correction"] },
+    infusions: { id: "infusions", title: "Electrolytes", subtitle: "Correction Calculator", icon: InfusionIcon, color: "blue", keywords: ["electrolyte", "calcium", "potassium", "magnesium", "sodium", "phosphate", "bicarbonate", "correction", "hypokalemia", "hypocalcemia", "hyponatremia"] },
     intubation: { id: "intubation", title: "Intubation", subtitle: "ETT + RSI Checklist", icon: IntubationIcon, color: "purple", keywords: ["ett", "tube", "airway", "rsi", "rapid sequence", "laryngoscope", "cuffed", "uncuffed"] },
     scoring: { id: "scoring", title: "Scoring/Calculators", subtitle: "GCS, PRAM, Westley, OI, IWL", icon: ScoringIcon, color: "amber", keywords: ["glasgow", "coma", "croup", "respiratory", "oxygenation", "pram", "westley", "iwl", "bsa", "insensible", "water loss"] },
     cpr: { id: "cpr", title: "CPR", subtitle: "PALS drugs & algorithms", icon: HeartIcon, color: "red", keywords: ["resuscitation", "pals", "arrest", "defibrillation", "epinephrine", "amiodarone", "adenosine", "tachycardia", "bradycardia", "vf", "vt", "asystole", "pea"] },
