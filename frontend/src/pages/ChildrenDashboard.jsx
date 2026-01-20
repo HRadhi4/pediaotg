@@ -203,7 +203,7 @@ const ChildrenDashboard = ({ theme, toggleTheme }) => {
   const handleTabClick = (tab) => {
     setActiveTab(tab);
     if (tab === "bloodgas") setBloodGasOpen(true);
-    else if (tab === "electrolytes") setElectrolytesOpen(true);
+    else if (tab === "electrolytes") navigate("/children/infusions"); // Navigate to combined page
     else if (tab === "jaundice") setJaundiceOpen(true);
     else if (tab === "gir") setGirOpen(true);
     else if (tab === "bloodproducts") setBloodProductsOpen(true);
