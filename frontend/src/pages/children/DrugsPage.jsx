@@ -349,13 +349,15 @@ const DrugsPage = ({ onBack }) => {
       name: "Budesonide (Nebulized)",
       category: "Steroid",
       route: "Nebulizer",
+      isFixedDose: true,
       doses: {
-        croup: { label: "Croup", value: "2", unit: "mg nebulized once" },
-        maintenance: { label: "Asthma Maintenance", value: "0.25-0.5", unit: "mg q12h" }
+        croup: { label: "Croup (all ages)", value: "2", unit: "mg nebulized once", isFixed: true },
+        asthmaUnder12: { label: "Asthma Maintenance (<12 yr)", value: "0.25-0.5", unit: "mg q12h", isFixed: true },
+        asthma12plus: { label: "Asthma Maintenance (≥12 yr)", value: "0.5-1", unit: "mg q12h", isFixed: true }
       },
-      max: "2 mg/dose",
+      max: "2 mg/day (<12 yr severe) | 2 mg/day (≥12 yr)",
       indication: "Croup, asthma maintenance",
-      notes: "Inhaled steroid. Rinse mouth after use.",
+      notes: "Age-based dosing (not weight-based). Rinse mouth after use. Croup: may repeat q12h for max 36h.",
       renalAdjust: null
     },
     {
