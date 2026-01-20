@@ -128,10 +128,31 @@ const ElectrolytesInfusionsPage = ({ onBack }) => {
     }
   };
 
-  // Clear results when electrolyte changes
+  // Clear results and reset dose when electrolyte or weight changes
   useEffect(() => {
     setResults(null);
-  }, [selectedElectrolyte]);
+    // Set default dose to middle of range
+    const elec = electrolytes[selectedElectrolyte];
+    if (elec && w > 0) {
+      const midDose = (elec.doseMin + elec.doseMax) / 2;
+      setCustomDose(midDose.toString());
+    }
+  }, [selectedElectrolyte, weight]);
+
+  // Get dose limits for current electrolyte
+  const currentElectrolyte = electrolytes[selectedElectrolyte];
+  const getDoseLimits = () => {
+    if (!currentElectrolyte || !w) return { min: 0, max: 100, step: 1 };
+    const { doseMin, doseMax, maxAbsolute } = currentElectrolyte;
+    // Calculate absolute dose based on weight
+    const minAbsDose = doseMin * w;
+    const maxAbsDose = Math.min(doseMax * w, maxAbsolute);
+    // Step based on dose range
+    const step = maxAbsDose < 10 ? 0.1 : maxAbsDose < 100 ? 1 : 10;
+    return { min: minAbsDose, max: maxAbsDose, step };
+  };
+  const doseLimits = getDoseLimits();
+  const currentDose = parseFloat(customDose) || doseLimits.min;
 
   // Calculate based on selected electrolyte
   const calculate = () => {
