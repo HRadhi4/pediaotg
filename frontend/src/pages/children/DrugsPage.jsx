@@ -1674,17 +1674,19 @@ const DrugsPage = ({ onBack }) => {
       category: "Antibiotic",
       route: "IV/PO",
       doses: {
-        neoMeningitis: { label: "Neonate Meningitis", value: "10", unit: "mg/kg/dose q8h IV" },
-        neoOther: { label: "Neonate Other", value: "15", unit: "mg/kg/dose q12h IV" },
-        childIV: { label: "Child IV", value: "15", unit: "mg/kg/dose q6-8h (max 15mg/kg/dose)" },
-        adolIV: { label: "Adolescent IV", value: "15", unit: "mg/kg/dose q6-8h" },
-        adultIV: { label: "Adult IV", value: "15", unit: "mg/kg/dose q8-12h" },
-        cdiffChild: { label: "C. diff (Child) PO", value: "10", unit: "mg/kg/dose q6h PO (max 125mg/dose)" },
+        neoBactPMA29: { label: "Neo Bacteremia (PMA≤29wk)", value: "10", unit: "mg/kg/dose q12-18h IV" },
+        neoBactPMA30_36: { label: "Neo Bacteremia (PMA 30-36wk)", value: "10", unit: "mg/kg/dose q8-12h IV" },
+        neoBactPMA37_44: { label: "Neo Bacteremia (PMA 37-44wk)", value: "10", unit: "mg/kg/dose q8-12h IV" },
+        neoBactPMA45: { label: "Neo Bacteremia (PMA≥45wk)", value: "10", unit: "mg/kg/dose q6h IV" },
+        neoMeningitis: { label: "Neonate Meningitis/Pneumonia", value: "15", unit: "mg/kg/dose (freq per PMA)" },
+        childIV: { label: "Child IV", value: "60-80", unit: "mg/kg/day ÷ q6h IV", maxDose: 4000 },
+        adolAdultIV: { label: "Adult IV", value: "15-20", unit: "mg/kg/dose q8-12h IV (max 2g/dose)" },
+        cdiffChild: { label: "C. diff (Child) PO", value: "40", unit: "mg/kg/day ÷ q6h PO", maxDose: 500 },
         cdiffAdult: { label: "C. diff (Adult) PO", value: "125-500", unit: "mg/dose q6h PO" }
       },
-      max: "4 g/day IV; 2 g/day PO",
+      max: "4 g/day IV; 2 g/day PO; 2 g/dose (adult)",
       indication: "MRSA, C. difficile colitis (PO), CNS infections, endocarditis, osteomyelitis, pneumonia, septic arthritis, serious gram-positive infections",
-      notes: "Trough: 10-15 (standard), 15-20 (CNS/severe). Infuse over 1hr minimum. Red man syndrome with rapid infusion.",
+      notes: "Trough: 10-15 (standard), 15-20 (CNS/severe). Infuse over 1hr minimum. Red man syndrome with rapid infusion. Monitor levels for patient-specific dosing.",
       renalAdjust: { gfr50: "Standard initial dose, then per levels", gfr30: "Standard initial dose, then per levels q12-24h", gfr10: "Standard initial dose, then per levels q24-48h", hd: "Redose per levels after HD; re-check 4-6hr post-HD" }
     },
     {
