@@ -317,44 +317,40 @@ const ElectrolytesInfusionsPage = ({ onBack }) => {
     const na = parseFloat(currentNa);
     const targetNaVal = parseFloat(targetNa) || 140;
     
-    if (!na) {
-      setResults({ error: "Please enter current sodium level" });
-      return;
-    }
+    // Use custom dose from slider/input (ml for sodium)
+    let doseMl = currentDose;
+    const dosePerKg = (doseMl / w).toFixed(1);
     
     if (sodiumType === "hyponatremia") {
       if (hyponatremiaType === "severe") {
-        const bolusMin = w * 3;
-        const bolusMax = w * 5;
-        
         setResults({
           medication: "3% NaCl (Hypertonic Saline)",
           calculation: {
-            dose: `${bolusMin.toFixed(0)} - ${bolusMax.toFixed(0)} ml`,
-            formula: `${w} kg x 3-5 ml/kg`,
-            drugVolume: `${bolusMin.toFixed(0)} - ${bolusMax.toFixed(0)} ml 3% NaCl`,
+            dose: `${doseMl.toFixed(0)} ml (${dosePerKg} ml/kg)`,
+            formula: `Selected: ${dosePerKg} ml/kg x ${w} kg = ${doseMl.toFixed(0)} ml`,
+            drugVolume: `${doseMl.toFixed(0)} ml 3% NaCl`,
             diluent: "No dilution needed",
-            totalVolume: `${bolusMin.toFixed(0)} - ${bolusMax.toFixed(0)} ml`
+            totalVolume: `${doseMl.toFixed(0)} ml`
           },
           administration: {
             duration: "15-30 mins",
-            rate: `${(bolusMax/0.5).toFixed(0)} ml/hr (over 15 min)`
+            rate: `${(doseMl * 4).toFixed(0)} ml/hr (over 15 min)`
           },
-          preparation: `Give ${bolusMin.toFixed(0)}-${bolusMax.toFixed(0)} ml of 3% NaCl`,
+          preparation: `Give ${doseMl.toFixed(0)} ml of 3% NaCl`,
           notes: "May repeat bolus up to 2 times | Goal: Increase Na by 6-8 mEq/L",
           warnings: ["Do not exceed 10-12 mEq/L rise in 24 hours", "Check Na every 20 mins until symptoms resolve"]
         });
       } else {
-        const naDeficit = w * 0.6 * (targetNaVal - na);
+        const naDeficit = na ? w * 0.6 * (targetNaVal - na) : doseMl;
         
         setResults({
           medication: "Sodium Correction",
           calculation: {
-            dose: `${naDeficit.toFixed(1)} mEq Na deficit`,
-            formula: `${w} kg x 0.6 x (${targetNaVal} - ${na})`,
+            dose: `${doseMl.toFixed(0)} ml (${dosePerKg} ml/kg)`,
+            formula: na ? `Na deficit: ${w} kg x 0.6 x (${targetNaVal} - ${na}) = ${naDeficit.toFixed(1)} mEq` : `Selected: ${dosePerKg} ml/kg`,
             drugVolume: "Variable based on fluid choice",
             diluent: `NS: 154 mEq/L | 1/2NS: 77 mEq/L | 3%NaCl: 513 mEq/L`,
-            totalVolume: "Calculate based on fluid Na content"
+            totalVolume: `${doseMl.toFixed(0)} ml`
           },
           administration: {
             duration: "24-48 hours",
@@ -365,17 +361,17 @@ const ElectrolytesInfusionsPage = ({ onBack }) => {
         });
       }
     } else {
-      const fwd = 4 * w * (na - targetNaVal);
+      const fwd = na ? 4 * w * (na - targetNaVal) : doseMl;
       const maintenance = w * 100;
       const totalFluid = maintenance + fwd;
-      let correctionHours = na >= 184 ? 84 : na >= 171 ? 72 : na >= 158 ? 48 : 24;
+      let correctionHours = na && na >= 184 ? 84 : na && na >= 171 ? 72 : na && na >= 158 ? 48 : 24;
       const rate = totalFluid / correctionHours;
       
       setResults({
         medication: "Free Water Replacement",
         calculation: {
           dose: `${fwd.toFixed(1)} ml free water deficit`,
-          formula: `4 x ${w} kg x (${na} - ${targetNaVal})`,
+          formula: na ? `4 x ${w} kg x (${na} - ${targetNaVal})` : `Selected volume`,
           drugVolume: `Maintenance: ${maintenance.toFixed(0)} ml/day`,
           diluent: "D5W or hypotonic fluid",
           totalVolume: `${totalFluid.toFixed(0)} ml over ${correctionHours}h`
@@ -392,29 +388,16 @@ const ElectrolytesInfusionsPage = ({ onBack }) => {
 
   const calculatePhosphate = () => {
     const maxDose = 15;
+    // Use custom dose from slider/input
+    let doseMmol = currentDose;
+    let isMaxed = doseMmol >= maxDose;
     
-    const range = phosphateSeverity === "severe" 
-      ? { min: 0.25, max: 0.5 }
-      : { min: 0.08, max: 0.16 };
-    
-    let doseMin = w * range.min;
-    let doseMax = w * range.max;
-    let isMaxed = false;
-    
-    if (doseMax > maxDose) {
-      doseMax = maxDose;
-      doseMin = Math.min(doseMin, maxDose);
-      isMaxed = true;
-    }
-    
-    const drugVolumeMin = doseMin / 2;
-    const drugVolumeMax = doseMax / 2;
+    const drugVolume = doseMmol / 2;
+    const dosePerKg = (doseMmol / w).toFixed(3);
     
     // Peripheral dilution (0.05 mmol/ml)
-    const totalVolumeMin = doseMin / 0.05;
-    const totalVolumeMax = doseMax / 0.05;
-    const diluentMin = totalVolumeMin - drugVolumeMin;
-    const diluentMax = totalVolumeMax - drugVolumeMax;
+    const totalVolume = doseMmol / 0.05;
+    const diluent = totalVolume - drugVolume;
     
     setResults({
       medication: "Addiphos (Phosphate)",
