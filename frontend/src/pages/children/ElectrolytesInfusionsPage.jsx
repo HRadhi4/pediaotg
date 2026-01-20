@@ -476,6 +476,56 @@ const ElectrolytesInfusionsPage = ({ onBack }) => {
             </p>
           </div>
 
+          {/* Dose Input with Slider */}
+          {w > 0 && (
+            <div className="p-4 rounded-lg bg-blue-50 dark:bg-blue-950/30 border border-blue-200 space-y-3">
+              <div className="flex justify-between items-center">
+                <Label className="text-sm font-semibold text-blue-800 dark:text-blue-300">
+                  Select Dose ({currentElectrolyte.resultUnit})
+                </Label>
+                <span className="text-xs text-muted-foreground">
+                  {doseLimits.min.toFixed(doseLimits.step < 1 ? 2 : 0)} - {doseLimits.max.toFixed(doseLimits.step < 1 ? 2 : 0)} {currentElectrolyte.resultUnit}
+                </span>
+              </div>
+              
+              {/* Slider */}
+              <Slider
+                value={[currentDose]}
+                onValueChange={(value) => setCustomDose(value[0].toString())}
+                min={doseLimits.min}
+                max={doseLimits.max}
+                step={doseLimits.step}
+                className="py-2"
+                data-testid="dose-slider"
+              />
+              
+              {/* Input box with current dose */}
+              <div className="flex items-center gap-3">
+                <Input
+                  type="number"
+                  step={doseLimits.step}
+                  min={doseLimits.min}
+                  max={doseLimits.max}
+                  value={customDose}
+                  onChange={(e) => {
+                    const val = parseFloat(e.target.value);
+                    if (!isNaN(val) && val >= doseLimits.min && val <= doseLimits.max) {
+                      setCustomDose(e.target.value);
+                    } else if (e.target.value === "") {
+                      setCustomDose("");
+                    }
+                  }}
+                  className="font-mono text-lg h-12 w-32"
+                  data-testid="dose-input"
+                />
+                <span className="text-lg font-medium">{currentElectrolyte.resultUnit}</span>
+                <span className="text-sm text-muted-foreground ml-auto">
+                  ({(currentDose / w).toFixed(currentElectrolyte.unit.includes("mEq") || currentElectrolyte.unit.includes("mmol") ? 2 : 1)} {currentElectrolyte.unit})
+                </span>
+              </div>
+            </div>
+          )}
+
           {/* Electrolyte-specific inputs */}
           {selectedElectrolyte === "calcium" && (
             <div>
