@@ -49,6 +49,7 @@ import {
 import { Card, CardContent } from "@/components/ui/card";
 import Layout from "@/components/Layout";
 import BloodGasDialog from "@/components/BloodGasDialog";
+import ElectrolytesDialog from "@/components/ElectrolytesDialog";
 import JaundiceDialog from "@/components/JaundiceDialog";
 import GIRDialog from "@/components/GIRDialog";
 import BloodProductsDialog from "@/components/BloodProductsDialog";
