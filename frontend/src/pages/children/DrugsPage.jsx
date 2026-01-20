@@ -1055,15 +1055,19 @@ const DrugsPage = ({ onBack }) => {
     {
       id: "lidocaine",
       name: "Lidocaine",
-      category: "Antiarrhythmic",
-      route: "IV",
+      category: "Antiarrhythmic/Local Anesthetic",
+      route: "IV/IO/ETT/Topical",
       doses: {
-        bolus: { label: "VF/pVT", value: "1", unit: "mg/kg bolus" },
-        infusion: { label: "Infusion", value: "20-50", unit: "mcg/kg/min" }
+        bolus: { label: "VF/pVT Bolus", value: "1", unit: "mg/kg IV/IO (max 100mg), may repeat q10-15min x2" },
+        infusion: { label: "Infusion", value: "20-50", unit: "mcg/kg/min IV/IO (max 20 in shock/CHF)" },
+        ettDose: { label: "ETT Dose", value: "2-3", unit: "mg/kg (2-3x IV dose)" },
+        topicalChild: { label: "Topical (≥2yr)", value: "4.5", unit: "mg/kg/dose (max 300mg/dose) BID-QID" },
+        viscousOral: { label: "Viscous 2% (≥3yr)", value: "4.5", unit: "mg/kg/dose (max 300mg) swish-spit q3h PRN" },
+        patch4pct: { label: "Patch 4% (≥12yr)", value: "1-3", unit: "patches to painful area x12hr max" }
       },
-      max: "100 mg bolus",
-      indication: "Ventricular arrhythmias, local anesthesia",
-      notes: "Class IB antiarrhythmic. Monitor for CNS toxicity.",
+      max: "100 mg/bolus; 3-5 mg/kg total in first hour; 300 mg topical/dose",
+      indication: "VF/pVT, ventricular arrhythmias, local anesthesia, topical analgesia",
+      notes: "⚠️ Toxicity >7 mg/L (adults), >5 mg/L (neonates due to ↓protein binding). Avoid topical for teething. Contraindicated in WPW, heart block without pacemaker. T½: preterm 3.2hr, adult 1.5-2hr.",
       renalAdjust: null
     },
     {
