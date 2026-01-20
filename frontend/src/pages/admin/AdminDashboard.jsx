@@ -542,8 +542,8 @@ const AdminDashboard = () => {
             </CardHeader>
             <CardContent className="px-4 sm:px-6 pb-4 sm:pb-6">
               <form onSubmit={handleAddUser} className="space-y-3 sm:space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="name">Name *</Label>
+                <div className="space-y-1.5 sm:space-y-2">
+                  <Label htmlFor="name" className="text-sm">Name *</Label>
                   <Input
                     id="name"
                     value={newUser.name}
@@ -553,8 +553,8 @@ const AdminDashboard = () => {
                     data-testid="add-user-name"
                   />
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="email">Email *</Label>
+                <div className="space-y-1.5 sm:space-y-2">
+                  <Label htmlFor="email" className="text-sm">Email *</Label>
                   <Input
                     id="email"
                     type="email"
@@ -565,8 +565,8 @@ const AdminDashboard = () => {
                     data-testid="add-user-email"
                   />
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="password">Password *</Label>
+                <div className="space-y-1.5 sm:space-y-2">
+                  <Label htmlFor="password" className="text-sm">Password *</Label>
                   <Input
                     id="password"
                     type="password"
@@ -578,8 +578,8 @@ const AdminDashboard = () => {
                     data-testid="add-user-password"
                   />
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="subscription">Subscription Type</Label>
+                <div className="space-y-1.5 sm:space-y-2">
+                  <Label htmlFor="subscription" className="text-sm">Subscription Type</Label>
                   <select
                     id="subscription"
                     value={newUser.subscription_type}
