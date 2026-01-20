@@ -1490,6 +1490,28 @@ const DrugsPage = ({ onBack }) => {
       renalAdjust: null
     },
     {
+      id: "piperacillintazobactam",
+      name: "Piperacillin-Tazobactam (Zosyn)",
+      category: "Antibiotic",
+      route: "IV",
+      doses: {
+        neoLess2kg7d: { label: "Neonate ≤2kg, ≤7d", value: "100", unit: "mg/kg/dose q8h IV" },
+        neoLess2kg8to28d: { label: "Neonate ≤2kg, 8-28d", value: "80-100", unit: "mg/kg/dose q6-8h IV" },
+        neoMore2kg: { label: "Neonate >2kg, ≤60d", value: "80", unit: "mg/kg/dose q6h IV" },
+        child2to9mo: { label: "Child 2-9 months", value: "80", unit: "mg/kg/dose q6h IV" },
+        childOver9mo: { label: "Child >9mo/Adolescent", value: "100", unit: "mg/kg/dose q6h IV", maxDose: 4000 },
+        appendicitis: { label: "Appendicitis/Peritonitis", value: "100", unit: "mg/kg/dose q8h IV (≤40kg)", maxDose: 3000 },
+        appendicitisAdol: { label: "Appendicitis >40kg", value: "3", unit: "g/dose q6h IV" },
+        adultIntraAbdominal: { label: "Adult Intra-abdominal", value: "3.375", unit: "g q6h IV" },
+        adultPneumonia: { label: "Adult Nosocomial Pneumonia", value: "4.5", unit: "g q6h IV" },
+        cysticFibrosis: { label: "Cystic Fibrosis", value: "350-600", unit: "mg/kg/day ÷ q4-6h IV", maxDose: 24000 }
+      },
+      max: "16 g/day (general); 24 g/day (CF)",
+      indication: "Severe infections, nosocomial pneumonia, intra-abdominal infections, appendicitis, peritonitis, cystic fibrosis (Pseudomonas)",
+      notes: "Extended infusion (4hr) may enhance efficacy. Contains 2.84 mEq Na/g piperacillin. Tazobactam extends spectrum to beta-lactamase producers.",
+      renalAdjust: { gfr50: "Usual dose", gfr30: "2.25g q6h or 3.375g q8h", gfr10: "2.25g q8h", hd: "2.25g q8h + 0.75g after HD" }
+    },
+    {
       id: "piptazo",
       name: "Piperacillin-Tazobactam (Tazocin)",
       category: "Antibiotic",
