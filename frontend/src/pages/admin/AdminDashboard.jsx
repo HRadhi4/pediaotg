@@ -592,18 +592,18 @@ const AdminDashboard = () => {
                     <option value="annual">Annual (365 days)</option>
                   </select>
                 </div>
-                <div className="flex gap-3 pt-4">
+                <div className="flex gap-2 sm:gap-3 pt-3 sm:pt-4">
                   <Button
                     type="button"
                     variant="outline"
-                    className="flex-1 h-11"
+                    className="flex-1 h-10 sm:h-11 text-sm"
                     onClick={() => setShowAddUser(false)}
                   >
                     Cancel
                   </Button>
                   <Button
                     type="submit"
-                    className="flex-1 h-11 bg-teal-500 hover:bg-teal-600"
+                    className="flex-1 h-10 sm:h-11 text-sm bg-teal-500 hover:bg-teal-600"
                     disabled={addingUser}
                     data-testid="add-user-submit"
                   >
@@ -622,12 +622,12 @@ const AdminDashboard = () => {
 
       {/* Edit User Modal */}
       {showEditUser && editingUser && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4">
-          <Card className="w-[400px] max-w-[calc(100vw-2rem)]">
-            <CardHeader className="pb-4">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 sm:p-6">
+          <Card className="w-full max-w-[400px]">
+            <CardHeader className="pb-3 px-4 sm:px-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <CardTitle className="text-lg">Edit User</CardTitle>
+                  <CardTitle className="text-base sm:text-lg">Edit User</CardTitle>
                   <CardDescription>{editingUser.email}</CardDescription>
                 </div>
                 <Button 
