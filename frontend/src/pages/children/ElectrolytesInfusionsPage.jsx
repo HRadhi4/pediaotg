@@ -4,6 +4,7 @@
  * Unified electrolyte correction calculator with:
  * - Dropdown to select electrolyte
  * - Dose range displayed prominently
+ * - Dose slider/input within allowed range
  * - Current level input
  * - Calculation results with preparation instructions
  */
@@ -15,12 +16,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Slider } from "@/components/ui/slider";
 import { Calculator, AlertCircle, Clock, AlertTriangle, CheckCircle, Syringe } from "lucide-react";
 
 const ElectrolytesInfusionsPage = ({ onBack }) => {
   const [weight, setWeight] = useState("");
   const [selectedElectrolyte, setSelectedElectrolyte] = useState("calcium");
   const [results, setResults] = useState(null);
+  const [customDose, setCustomDose] = useState("");
   const w = parseFloat(weight) || 0;
 
   // Electrolyte-specific states
@@ -37,12 +40,17 @@ const ElectrolytesInfusionsPage = ({ onBack }) => {
   const [phosphateLevel, setPhosphateLevel] = useState("");
   const [phosphateSeverity, setPhosphateSeverity] = useState("moderate");
 
-  // Electrolyte definitions with dose ranges
+  // Electrolyte definitions with dose ranges (numeric for slider)
   const electrolytes = {
     calcium: {
       name: "Calcium",
       medication: "Calcium Gluconate 10%",
       doseRange: "50-100 mg/kg/dose (Max 1g)",
+      doseMin: 50,
+      doseMax: 100,
+      maxAbsolute: 1000,
+      unit: "mg/kg",
+      resultUnit: "mg",
       stock: "100 mg/ml (0.45 mEq/ml)",
       target: "50 mg/ml",
       compatible: "NS, D5W, D10W",
@@ -52,6 +60,11 @@ const ElectrolytesInfusionsPage = ({ onBack }) => {
       name: "Magnesium",
       medication: "Magnesium Sulfate 50%",
       doseRange: "25-50 mg/kg/dose (Max 2g)",
+      doseMin: 25,
+      doseMax: 50,
+      maxAbsolute: 2000,
+      unit: "mg/kg",
+      resultUnit: "mg",
       stock: "500 mg/ml (2 mmol/ml)",
       target: "60 mg/ml",
       compatible: "D5W, NS, LR",
@@ -61,6 +74,11 @@ const ElectrolytesInfusionsPage = ({ onBack }) => {
       name: "Potassium",
       medication: "Potassium Chloride (KCl)",
       doseRange: "0.5-1 mEq/kg/dose (IV Max 40 mEq)",
+      doseMin: 0.5,
+      doseMax: 1,
+      maxAbsolute: 40,
+      unit: "mEq/kg",
+      resultUnit: "mEq",
       stock: "15% KCl = 2 mEq/ml",
       target: "Peripheral: 80 mEq/L | Central: 150 mEq/L",
       compatible: "NS, D5W, LR",
@@ -69,7 +87,12 @@ const ElectrolytesInfusionsPage = ({ onBack }) => {
     nahco3: {
       name: "Sodium Bicarbonate",
       medication: "Sodium Bicarbonate 8.4%",
-      doseRange: "1-2 mEq/kg (acute) | 0.25-2 mEq/hr (infusion)",
+      doseRange: "1-2 mEq/kg (acute)",
+      doseMin: 1,
+      doseMax: 2,
+      maxAbsolute: 50,
+      unit: "mEq/kg",
+      resultUnit: "mEq",
       stock: "1 mEq/ml (8.4%)",
       target: "1:1 dilution",
       compatible: "NS, D5W, D10W",
@@ -78,7 +101,12 @@ const ElectrolytesInfusionsPage = ({ onBack }) => {
     sodium: {
       name: "Sodium",
       medication: "3% NaCl (Hypertonic Saline)",
-      doseRange: "3-5 ml/kg bolus (severe) | Max 10-12 mEq/L rise/day",
+      doseRange: "3-5 ml/kg bolus (severe)",
+      doseMin: 3,
+      doseMax: 5,
+      maxAbsolute: 500,
+      unit: "ml/kg",
+      resultUnit: "ml",
       stock: "513 mEq/L (0.513 mEq/ml)",
       target: "Variable based on deficit",
       compatible: "Compatible with most IV fluids",
@@ -87,7 +115,12 @@ const ElectrolytesInfusionsPage = ({ onBack }) => {
     phosphate: {
       name: "Phosphate",
       medication: "Addiphos (Phosphate)",
-      doseRange: "Moderate: 0.08-0.16 mmol/kg | Severe: 0.25-0.5 mmol/kg (Max 15 mmol)",
+      doseRange: "0.08-0.5 mmol/kg (Max 15 mmol)",
+      doseMin: 0.08,
+      doseMax: 0.5,
+      maxAbsolute: 15,
+      unit: "mmol/kg",
+      resultUnit: "mmol",
       stock: "1 ml = 2 mmol phosphate",
       target: "Peripheral: 0.05 mmol/ml | Central: 0.12 mmol/ml",
       compatible: "Most IV fluids",
