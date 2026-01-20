@@ -1379,6 +1379,22 @@ const DrugsPage = ({ onBack }) => {
       renalAdjust: null
     },
     {
+      id: "nicardipine",
+      name: "Nicardipine (Cardene)",
+      category: "Antihypertensive",
+      route: "IV/PO",
+      doses: {
+        childIVStart: { label: "Child IV (start)", value: "0.5-1", unit: "mcg/kg/min continuous infusion" },
+        childIVMax: { label: "Child IV (titrate)", value: "1-4", unit: "mcg/kg/min, ↑q15-30min PRN", maxDose: 5 },
+        adultIVStart: { label: "Adult IV (start)", value: "5", unit: "mg/hr, ↑by 2.5 mg/hr q5-15min (max 15 mg/hr)" },
+        adultPO: { label: "Adult PO", value: "20", unit: "mg TID, may ↑to 40 mg TID after 3 days" }
+      },
+      max: "4-5 mcg/kg/min (child IV); 15 mg/hr (adult IV); 120 mg/day PO",
+      indication: "Severe/emergent hypertension, hypertensive crisis, perioperative hypertension",
+      notes: "Calcium channel blocker. Continuous BP monitoring during IV infusion. May cause reflex tachycardia, headache, flushing. Peripheral line OK (no extravasation injury).",
+      renalAdjust: { gfr50: "No change", gfr30: "Start low, titrate", gfr10: "Start low, titrate", hd: "No supplement" }
+    },
+    {
       id: "norepinephrine",
       name: "Norepinephrine (Levophed)",
       category: "Vasoactive",
