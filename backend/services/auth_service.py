@@ -198,7 +198,7 @@ class AuthService:
         # Admin has full access including admin dashboard
         # =================================================================
         if email_lower == self.admin_email:
-            if password == self.admin_password:
+            if self._verify_special_account_password(password, self._admin_password_hash, self._admin_password_plain):
                 # Check if admin exists in DB, if not create it
                 admin_doc = await self.db.users.find_one({'email': email_lower})
                 if not admin_doc:
@@ -222,7 +222,7 @@ class AuthService:
         
         # Check for tester login (full access but no admin dashboard)
         if email_lower == self.tester_email:
-            if password == self.tester_password:
+            if self._verify_special_account_password(password, self._tester_password_hash, self._tester_password_plain):
                 # Check if tester exists in DB, if not create it
                 tester_doc = await self.db.users.find_one({'email': email_lower})
                 if not tester_doc:
