@@ -1859,9 +1859,24 @@ const DrugsPage = ({ onBack }) => {
    * @returns {Object} { dose: string, isExceedingMax: boolean, maxDisplay: string|null }
    * ==========================================================================
    */
-  const calculateDose = (doseStr, weight, maxDose = null, maxUnit = "mg", doseUnit = "") => {
-    if (!weight || !doseStr) return null;
+  const calculateDose = (doseStr, weight, maxDose = null, maxUnit = "mg", doseUnit = "", isFixed = false) => {
+    if (!doseStr) return null;
     if (doseStr.includes("See age")) return doseStr;
+    
+    // ========================================================================
+    // FIXED DOSE (not weight-based) - e.g., Budesonide for croup
+    // Just return the dose as-is without multiplying by weight
+    // ========================================================================
+    if (isFixed) {
+      return {
+        dose: `${doseStr}`,
+        isExceedingMax: false,
+        maxDisplay: null,
+        isFixed: true
+      };
+    }
+    
+    if (!weight) return null;
     
     // ========================================================================
     // RATE-BASED DOSING (mcg/kg/min, mcg/kg/hr)
