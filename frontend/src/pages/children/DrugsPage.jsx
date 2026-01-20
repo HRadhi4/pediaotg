@@ -2308,9 +2308,9 @@ const DrugsPage = ({ onBack }) => {
                       </div>
                     )}
                     {/* Age-based dosing indicator */}
-                    {drug.ageDosing && (
+                    {(drug.ageDosing || drug.isFixedDose) && (
                       <span className="text-[9px] px-1 py-0.5 rounded bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400 mt-1 inline-block">
-                        Age-based dosing
+                        {drug.isFixedDose ? "Fixed dose (not weight-based)" : "Age-based dosing"}
                       </span>
                     )}
                   </div>
@@ -2320,7 +2320,7 @@ const DrugsPage = ({ onBack }) => {
                         // Use per-dose maxDose if available
                         const doseSpecificMax = firstDose.maxDose;
                         const maxDoseValue = doseSpecificMax || parseMaxDose(drug.max, w);
-                        const result = calculateDose(firstDose.value, w, maxDoseValue, "mg", firstDose.unit);
+                        const result = calculateDose(firstDose.value, w, maxDoseValue, "mg", firstDose.unit, firstDose.isFixed || drug.isFixedDose);
                         if (!result) return null;
                         const doseResult = typeof result === 'string' ? { dose: result, isExceedingMax: false } : result;
                         
