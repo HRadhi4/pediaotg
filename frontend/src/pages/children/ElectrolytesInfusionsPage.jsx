@@ -402,17 +402,17 @@ const ElectrolytesInfusionsPage = ({ onBack }) => {
     setResults({
       medication: "Addiphos (Phosphate)",
       calculation: {
-        dose: `${doseMin.toFixed(2)} - ${doseMax.toFixed(2)} mmol${isMaxed ? ' (MAX)' : ''}`,
-        formula: `${w} kg x ${range.min}-${range.max} mmol/kg (${phosphateSeverity})`,
-        drugVolume: `${drugVolumeMin.toFixed(2)} - ${drugVolumeMax.toFixed(2)} ml`,
-        diluent: `${diluentMin.toFixed(0)} - ${diluentMax.toFixed(0)} ml NS (Peripheral 0.05 mmol/ml)`,
-        totalVolume: `${totalVolumeMin.toFixed(0)} - ${totalVolumeMax.toFixed(0)} ml`
+        dose: `${doseMmol.toFixed(2)} mmol${isMaxed ? ' (MAX)' : ''} (${dosePerKg} mmol/kg)`,
+        formula: `Selected: ${dosePerKg} mmol/kg x ${w} kg = ${doseMmol.toFixed(2)} mmol`,
+        drugVolume: `${drugVolume.toFixed(2)} ml`,
+        diluent: `${diluent.toFixed(0)} ml NS (Peripheral 0.05 mmol/ml)`,
+        totalVolume: `${totalVolume.toFixed(0)} ml`
       },
       administration: {
         duration: "4-6 hours (slow)",
-        rate: `${(totalVolumeMin/6).toFixed(1)} - ${(totalVolumeMax/4).toFixed(1)} ml/hr`
+        rate: `${(totalVolume/6).toFixed(1)} - ${(totalVolume/4).toFixed(1)} ml/hr`
       },
-      preparation: `${drugVolumeMax.toFixed(2)} ml Addiphos + ${diluentMax.toFixed(0)} ml NS = ${totalVolumeMax.toFixed(0)} ml`,
+      preparation: `${drugVolume.toFixed(2)} ml Addiphos + ${diluent.toFixed(0)} ml NS = ${totalVolume.toFixed(0)} ml`,
       warnings: ["Rapid infusion can cause severe hypocalcemia!"],
       ...(isMaxed && { warning: "Dose capped at maximum (15 mmol)" })
     });
