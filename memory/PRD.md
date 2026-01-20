@@ -35,7 +35,7 @@ Build a full SaaS-style web app "Pediatrics on the Go" with:
 - ✅ Fluid Replacement
 - ✅ Drugs Page (100 drugs with max dose capping) - **UPDATED Jan 19, 2026**
 - ✅ Blood Pressure
-- ✅ Infusions
+- ✅ **Electrolytes & Infusions** (Combined) - **NEW Jan 20, 2026**
 - ✅ Intubation
 - ✅ Scoring/Calculators
 - ✅ CPR
