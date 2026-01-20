@@ -61,7 +61,7 @@ import { CSS } from '@dnd-kit/utilities';
 import DrugsPage from './children/DrugsPage';
 import FluidReplacementPage from './children/FluidReplacementPage';
 import BPPage from './children/BPPage';
-import InfusionsPage from './children/InfusionsPage';
+import ElectrolytesInfusionsPage from './children/ElectrolytesInfusionsPage';
 import IntubationPage from './children/IntubationPage';
 import ScoringPage from './children/ScoringPage';
 import CPRPage from './children/CPRPage';
