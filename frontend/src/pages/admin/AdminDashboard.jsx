@@ -525,23 +525,23 @@ const AdminDashboard = () => {
 
       {/* Add User Modal */}
       {showAddUser && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4">
-          <Card className="w-[400px] max-w-[calc(100vw-2rem)]">
-            <CardHeader className="pb-4">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 sm:p-6">
+          <Card className="w-full max-w-[400px]">
+            <CardHeader className="pb-3 px-4 sm:px-6">
               <div className="flex items-center justify-between">
-                <CardTitle className="text-lg">Add New User</CardTitle>
+                <CardTitle className="text-base sm:text-lg">Add New User</CardTitle>
                 <Button 
                   variant="ghost" 
                   size="icon" 
                   onClick={() => setShowAddUser(false)}
-                  className="h-8 w-8"
+                  className="h-8 w-8 -mr-2"
                 >
                   <X className="h-4 w-4" />
                 </Button>
               </div>
             </CardHeader>
-            <CardContent className="px-6 pb-6">
-              <form onSubmit={handleAddUser} className="space-y-4">
+            <CardContent className="px-4 sm:px-6 pb-4 sm:pb-6">
+              <form onSubmit={handleAddUser} className="space-y-3 sm:space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="name">Name *</Label>
                   <Input
