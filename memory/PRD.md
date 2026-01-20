@@ -81,21 +81,19 @@ Build a full SaaS-style web app "Pediatrics on the Go" with:
 ## Recent Changes (January 16, 2026)
 
 ### Session 8 Updates (Current - January 20, 2026)
-- ✅ **Combined Electrolytes & Infusions Page**:
-  - **Merged ElectrolytesDialog.jsx and InfusionsPage.jsx into single page**
+- ✅ **Simplified Electrolytes Correction Page**:
+  - **Merged and simplified** ElectrolytesDialog into a single unified page
+  - **Removed**: Separate tabs for "Electrolyte IV" and "Corrections" and "Drug Infusions"
   - New file: `/app/frontend/src/pages/children/ElectrolytesInfusionsPage.jsx`
-  - **Three Main Tabs**:
-    1. **Electrolyte IV**: 6 electrolyte buttons (Ca Gluconate, KCl, MgSO4, NaHCO3, CaCl2, Addiphos) with detailed calculations, dilution instructions, and compatibility info
-    2. **Corrections**: 6 sub-tabs (Calcium, Magnesium, Potassium, NaHCO3, Sodium, Phosphate) with **dose ranges prominently displayed in green boxes**
-    3. **Drug Infusions**: 5 categories (Neuromuscular Blockade, Sedatives, Diuretics, Bronchodilators, Inotropic Support) with weight-based calculations
-  - **Features**:
-    - Weight input at top with prominent "X kg" display
-    - Dose ranges visible for all electrolyte corrections (user request)
-    - KCl options: Peripheral/Central/Custom line types, 10%/15% concentration selection
-    - Addiphos options: Peripheral/Central line selection
-    - Inotrope calculations: Low/Med/High doses with mg/hr conversions
-  - Floating nav bar electrolytes button now navigates to this page instead of opening dialog
-  - Widget title on Children dashboard updated to "Electrolytes & Infusions"
+  - **Single Page Layout**:
+    - Weight input at top with prominent display
+    - Dropdown to select electrolyte (Calcium, Magnesium, Potassium, NaHCO3, Sodium, Phosphate)
+    - **Dose Range prominently displayed in green box** for each electrolyte
+    - Optional current level input
+    - Calculate button
+    - Results show: Drug Information, Step-by-step Calculation, Administration (Duration/Rate), Preparation instructions, Compatibility
+  - Widget title updated to "Electrolytes" with subtitle "Correction Calculator"
+  - Floating nav bar electrolytes button navigates to this page
   - **Testing**: 100% pass rate (iteration_21.json - 10/10 tests)
 
 ### Session 7 Updates (January 19, 2026)
