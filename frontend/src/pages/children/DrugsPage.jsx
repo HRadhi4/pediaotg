@@ -1474,16 +1474,19 @@ const DrugsPage = ({ onBack }) => {
       id: "phenytoin",
       name: "Phenytoin/Fosphenytoin",
       category: "Anticonvulsant",
-      route: "IV/IM",
+      route: "IV/PO",
       doses: {
-        loadingStatus: { label: "Loading (Status)", value: "20", unit: "mg PE/kg IV (max 1500mg PE)" },
-        loadingNonEmergent: { label: "Loading (Non-emergent)", value: "15", unit: "mg PE/kg/24hr IV/IM" },
-        maintenanceNeo: { label: "Maintenance (Neonate)", value: "15-20", unit: "mg PE/kg/24hr IV/IM" },
-        maintenanceChild: { label: "Maintenance (Child)", value: "5-7", unit: "mg/kg/day divided q8-12h" }
+        loadingAll: { label: "Loading (All ages)", value: "20", unit: "mg PE/kg IV (max 1500mg PE)" },
+        maintNeo: { label: "Maintenance (Neonate)", value: "5", unit: "mg/kg/day ÷ q8-12h PO/IV" },
+        maint6mo3yr: { label: "Maintenance (6mo-3yr)", value: "8-10", unit: "mg/kg/day ÷ BID-TID" },
+        maint4to6yr: { label: "Maintenance (4-6yr)", value: "7.5-9", unit: "mg/kg/day ÷ BID-TID" },
+        maint7to9yr: { label: "Maintenance (7-9yr)", value: "7-8", unit: "mg/kg/day ÷ BID-TID" },
+        maint10to16yr: { label: "Maintenance (10-16yr)", value: "6-7", unit: "mg/kg/day ÷ BID-TID" },
+        maintAdult: { label: "Maintenance (Adult)", value: "300-600", unit: "mg/day ÷ q8-24h PO/IV" }
       },
-      max: "1500 mg PE load",
-      indication: "Status epilepticus, seizure prophylaxis",
-      notes: "Fosphenytoin preferred (less irritation, can give IM). PE = phenytoin equivalents. Monitor levels and cardiac rhythm.",
+      max: "1500 mg/24hr (loading); 600 mg/day (maintenance)",
+      indication: "Status epilepticus, seizure prophylaxis, Class Ib antiarrhythmic",
+      notes: "⚠️ Avoid IM (erratic absorption, pain). Fosphenytoin preferred. PE = phenytoin equivalents. Monitor levels (10-20 mg/L). Stevens-Johnson syndrome risk. Many drug interactions (CYP450).",
       renalAdjust: null
     },
     {
