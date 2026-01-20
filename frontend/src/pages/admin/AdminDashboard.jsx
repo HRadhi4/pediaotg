@@ -526,22 +526,23 @@ const AdminDashboard = () => {
       {/* Add User Modal */}
       {showAddUser && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <Card className="w-full max-w-md">
-            <CardHeader>
+          <Card className="w-full max-w-lg mx-4">
+            <CardHeader className="pb-4">
               <div className="flex items-center justify-between">
                 <CardTitle className="text-lg">Add New User</CardTitle>
                 <Button 
                   variant="ghost" 
                   size="icon" 
                   onClick={() => setShowAddUser(false)}
+                  className="h-8 w-8"
                 >
                   <X className="h-4 w-4" />
                 </Button>
               </div>
             </CardHeader>
-            <CardContent>
+            <CardContent className="px-6 pb-6">
               <form onSubmit={handleAddUser} className="space-y-4">
-                <div>
+                <div className="space-y-2">
                   <Label htmlFor="name">Name *</Label>
                   <Input
                     id="name"
@@ -552,7 +553,7 @@ const AdminDashboard = () => {
                     data-testid="add-user-name"
                   />
                 </div>
-                <div>
+                <div className="space-y-2">
                   <Label htmlFor="email">Email *</Label>
                   <Input
                     id="email"
@@ -564,7 +565,7 @@ const AdminDashboard = () => {
                     data-testid="add-user-email"
                   />
                 </div>
-                <div>
+                <div className="space-y-2">
                   <Label htmlFor="password">Password *</Label>
                   <Input
                     id="password"
@@ -577,7 +578,7 @@ const AdminDashboard = () => {
                     data-testid="add-user-password"
                   />
                 </div>
-                <div>
+                <div className="space-y-2">
                   <Label htmlFor="subscription">Subscription Type</Label>
                   <select
                     id="subscription"
@@ -591,18 +592,18 @@ const AdminDashboard = () => {
                     <option value="annual">Annual (365 days)</option>
                   </select>
                 </div>
-                <div className="flex gap-3 pt-2">
+                <div className="flex gap-3 pt-4">
                   <Button
                     type="button"
                     variant="outline"
-                    className="flex-1"
+                    className="flex-1 h-11"
                     onClick={() => setShowAddUser(false)}
                   >
                     Cancel
                   </Button>
                   <Button
                     type="submit"
-                    className="flex-1 bg-teal-500 hover:bg-teal-600"
+                    className="flex-1 h-11 bg-teal-500 hover:bg-teal-600"
                     disabled={addingUser}
                     data-testid="add-user-submit"
                   >
