@@ -864,6 +864,24 @@ const DrugsPage = ({ onBack }) => {
       renalAdjust: { gfr50: "Standard initial, redose per levels", gfr30: "Standard initial, extend interval", gfr10: "Standard initial, q48-72h per levels", hd: "2-3x weekly after HD, per levels" }
     },
     {
+      id: "glucagon",
+      name: "Glucagon",
+      category: "Antihypoglycemic/GI",
+      route: "IM/IV/SC/Intranasal",
+      doses: {
+        hypoNeoInfant: { label: "Hypoglycemia (Neonate/Infant <20kg)", value: "0.02-0.03", unit: "mg/kg/dose IM/IV/SC q15-20min PRN", maxDose: 0.5 },
+        hypoChild20kg: { label: "Hypoglycemia (Child ≥20kg)", value: "0.5-1", unit: "mg/dose IM/IV/SC q15-20min PRN" },
+        hypoAdult: { label: "Hypoglycemia (Adult)", value: "1", unit: "mg/dose IM/IV/SC q15-20min PRN" },
+        intranasal: { label: "Intranasal (≥4yr)", value: "3", unit: "mg (1 spray) intranasally × 1, may repeat in 15min" },
+        betaBlockerOD: { label: "Beta-blocker Overdose", value: "0.05-0.15", unit: "mg/kg IV bolus, then 0.05-0.1 mg/kg/hr infusion" },
+        giRelaxant: { label: "GI Relaxation (Radiology)", value: "0.25-2", unit: "mg IV/IM" }
+      },
+      max: "1 mg/dose (hypoglycemia); 10 mg (beta-blocker OD)",
+      indication: "Severe hypoglycemia, beta-blocker/CCB overdose, GI smooth muscle relaxation for radiology",
+      notes: "Give oral carbohydrates when patient awakens. May cause nausea/vomiting. Reconstitute powder with supplied diluent. Gvoke/Baqsimi = ready-to-use formulations.",
+      renalAdjust: null
+    },
+    {
       id: "hydralazine",
       name: "Hydralazine",
       category: "Antihypertensive",
