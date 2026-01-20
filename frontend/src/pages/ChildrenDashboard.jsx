@@ -274,7 +274,7 @@ const ChildrenDashboard = ({ theme, toggleTheme }) => {
       case "bp":
         return <BPPage onBack={() => goToPage("main")} />;
       case "infusions":
-        return <ElectrolytesInfusionsPage onBack={() => goToPage("main")} />;
+        return <InfusionsPage onBack={() => goToPage("main")} />;
       case "intubation":
         return <IntubationPage onBack={() => goToPage("main")} />;
       case "scoring":
