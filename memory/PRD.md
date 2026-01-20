@@ -80,7 +80,25 @@ Build a full SaaS-style web app "Pediatrics on the Go" with:
 
 ## Recent Changes (January 16, 2026)
 
-### Session 7 Updates (Current - January 19, 2026)
+### Session 8 Updates (Current - January 20, 2026)
+- ✅ **Combined Electrolytes & Infusions Page**:
+  - **Merged ElectrolytesDialog.jsx and InfusionsPage.jsx into single page**
+  - New file: `/app/frontend/src/pages/children/ElectrolytesInfusionsPage.jsx`
+  - **Three Main Tabs**:
+    1. **Electrolyte IV**: 6 electrolyte buttons (Ca Gluconate, KCl, MgSO4, NaHCO3, CaCl2, Addiphos) with detailed calculations, dilution instructions, and compatibility info
+    2. **Corrections**: 6 sub-tabs (Calcium, Magnesium, Potassium, NaHCO3, Sodium, Phosphate) with **dose ranges prominently displayed in green boxes**
+    3. **Drug Infusions**: 5 categories (Neuromuscular Blockade, Sedatives, Diuretics, Bronchodilators, Inotropic Support) with weight-based calculations
+  - **Features**:
+    - Weight input at top with prominent "X kg" display
+    - Dose ranges visible for all electrolyte corrections (user request)
+    - KCl options: Peripheral/Central/Custom line types, 10%/15% concentration selection
+    - Addiphos options: Peripheral/Central line selection
+    - Inotrope calculations: Low/Med/High doses with mg/hr conversions
+  - Floating nav bar electrolytes button now navigates to this page instead of opening dialog
+  - Widget title on Children dashboard updated to "Electrolytes & Infusions"
+  - **Testing**: 100% pass rate (iteration_21.json - 10/10 tests)
+
+### Session 7 Updates (January 19, 2026)
 - ✅ **Rumack-Matthew Nomogram - Static SVG Integration**:
   - **Replaced programmatic D3.js chart with user-provided vectorized SVG file**
   - SVG file: `/app/frontend/src/assets/images/rumack_matthew_nomogram.svg`
