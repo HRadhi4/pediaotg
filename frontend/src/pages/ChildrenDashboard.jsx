@@ -195,6 +195,7 @@ const ChildrenDashboard = ({ theme, toggleTheme }) => {
   // Dialog states for floating nav bar
   const [activeTab, setActiveTab] = useState("");
   const [bloodGasOpen, setBloodGasOpen] = useState(false);
+  const [electrolytesOpen, setElectrolytesOpen] = useState(false);
   const [jaundiceOpen, setJaundiceOpen] = useState(false);
   const [girOpen, setGirOpen] = useState(false);
   const [bloodProductsOpen, setBloodProductsOpen] = useState(false);
@@ -202,7 +203,7 @@ const ChildrenDashboard = ({ theme, toggleTheme }) => {
   const handleTabClick = (tab) => {
     setActiveTab(tab);
     if (tab === "bloodgas") setBloodGasOpen(true);
-    else if (tab === "electrolytes") navigate("/children/infusions"); // Navigate to combined page
+    else if (tab === "electrolytes") setElectrolytesOpen(true);
     else if (tab === "jaundice") setJaundiceOpen(true);
     else if (tab === "gir") setGirOpen(true);
     else if (tab === "bloodproducts") setBloodProductsOpen(true);
