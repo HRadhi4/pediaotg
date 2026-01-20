@@ -526,7 +526,7 @@ const AdminDashboard = () => {
       {/* Add User Modal */}
       {showAddUser && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <Card className="w-full max-w-lg mx-4">
+          <Card className="w-full max-w-md mx-4">
             <CardHeader className="pb-4">
               <div className="flex items-center justify-between">
                 <CardTitle className="text-lg">Add New User</CardTitle>
