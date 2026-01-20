@@ -131,11 +131,13 @@ const ElectrolytesInfusionsPage = ({ onBack }) => {
   // Clear results and reset dose when electrolyte or weight changes
   useEffect(() => {
     setResults(null);
-    // Set default dose to middle of range
+    // Set default dose to middle of absolute range
     const elec = electrolytes[selectedElectrolyte];
     if (elec && w > 0) {
-      const midDose = (elec.doseMin + elec.doseMax) / 2;
-      setCustomDose(midDose.toString());
+      const minAbsDose = elec.doseMin * w;
+      const maxAbsDose = Math.min(elec.doseMax * w, elec.maxAbsolute);
+      const midDose = (minAbsDose + maxAbsDose) / 2;
+      setCustomDose(midDose.toFixed(elec.resultUnit === "mEq" || elec.resultUnit === "mmol" ? 2 : 0));
     }
   }, [selectedElectrolyte, weight]);
 
