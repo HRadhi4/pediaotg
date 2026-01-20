@@ -81,7 +81,7 @@ Build a full SaaS-style web app "Pediatrics on the Go" with:
 ## Recent Changes (January 16, 2026)
 
 ### Session 8 Updates (Current - January 20, 2026)
-- ✅ **Simplified Electrolytes Correction Page**:
+- ✅ **Simplified Electrolytes Correction Page with Dose Slider**:
   - **Merged and simplified** ElectrolytesDialog into a single unified page
   - **Removed**: Separate tabs for "Electrolyte IV" and "Corrections" and "Drug Infusions"
   - New file: `/app/frontend/src/pages/children/ElectrolytesInfusionsPage.jsx`
@@ -89,12 +89,17 @@ Build a full SaaS-style web app "Pediatrics on the Go" with:
     - Weight input at top with prominent display
     - Dropdown to select electrolyte (Calcium, Magnesium, Potassium, NaHCO3, Sodium, Phosphate)
     - **Dose Range prominently displayed in green box** for each electrolyte
+    - **NEW: Dose Slider/Input** - Users can select a specific dose within the allowed range
+      - Shows absolute dose range based on weight (e.g., 500-1000 mg for 10kg calcium)
+      - Slider defaults to middle of range
+      - Input box for manual entry
+      - Shows per-kg calculation on the right (e.g., 75.0 mg/kg)
     - Optional current level input
     - Calculate button
-    - Results show: Drug Information, Step-by-step Calculation, Administration (Duration/Rate), Preparation instructions, Compatibility
+    - Results show: Drug Information, Step-by-step Calculation with selected dose, Administration (Duration/Rate), Preparation instructions, Compatibility
   - Widget title updated to "Electrolytes" with subtitle "Correction Calculator"
   - Floating nav bar electrolytes button navigates to this page
-  - **Testing**: 100% pass rate (iteration_21.json - 10/10 tests)
+  - **Testing**: Verified with screenshots
 
 ### Session 7 Updates (January 19, 2026)
 - ✅ **Rumack-Matthew Nomogram - Static SVG Integration**:
