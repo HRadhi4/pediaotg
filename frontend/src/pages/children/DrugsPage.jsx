@@ -1165,6 +1165,21 @@ const DrugsPage = ({ onBack }) => {
       renalAdjust: { gfr50: "100% dose q8-12h", gfr30: "50% dose q12h", gfr10: "50% dose q24h", hd: "Dose after HD; supplement 500mg" }
     },
     {
+      id: "methadone",
+      name: "Methadone",
+      category: "Opioid",
+      route: "PO/IV/IM/SC",
+      doses: {
+        childAnalgesia: { label: "Child Analgesia (initial)", value: "0.7", unit: "mg/kg/day ÷ q4-6h PO/IV/IM/SC PRN", maxDose: 10 },
+        adultAnalgesia: { label: "Adult Analgesia (initial)", value: "2.5-10", unit: "mg/dose q8-12h PO/IV/IM/SC PRN" },
+        neonatalAbstinence: { label: "Neonatal Abstinence", value: "0.05-0.1", unit: "mg/kg/dose PO q6h, titrate per NAS score" }
+      },
+      max: "10 mg/dose (child); variable (adult - titrate)",
+      indication: "Severe pain, neonatal abstinence syndrome, opioid withdrawal/maintenance",
+      notes: "⚠️ LONG QT risk - get baseline ECG. T½ highly variable (15-60hr). Titrate slowly. Fatal respiratory depression reported. Avoid in severe hepatic impairment.",
+      renalAdjust: { gfr50: "No change", gfr30: "50-75% dose", gfr10: "50% dose", hd: "No supplement" }
+    },
+    {
       id: "metoclopramide",
       name: "Metoclopramide",
       category: "Prokinetic",
