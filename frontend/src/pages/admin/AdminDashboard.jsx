@@ -634,16 +634,16 @@ const AdminDashboard = () => {
                   variant="ghost" 
                   size="icon" 
                   onClick={() => { setShowEditUser(false); setEditingUser(null); }}
-                  className="h-8 w-8"
+                  className="h-8 w-8 -mr-2"
                 >
                   <X className="h-4 w-4" />
                 </Button>
               </div>
             </CardHeader>
-            <CardContent className="px-6 pb-6">
-              <form onSubmit={handleEditUser} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="edit-password">New Password (leave blank to keep current)</Label>
+            <CardContent className="px-4 sm:px-6 pb-4 sm:pb-6">
+              <form onSubmit={handleEditUser} className="space-y-3 sm:space-y-4">
+                <div className="space-y-1.5 sm:space-y-2">
+                  <Label htmlFor="edit-password" className="text-sm">New Password (leave blank to keep current)</Label>
                   <Input
                     id="edit-password"
                     type="password"
@@ -654,8 +654,8 @@ const AdminDashboard = () => {
                     data-testid="edit-user-password"
                   />
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="edit-subscription">Subscription Type</Label>
+                <div className="space-y-1.5 sm:space-y-2">
+                  <Label htmlFor="edit-subscription" className="text-sm">Subscription Type</Label>
                   <select
                     id="edit-subscription"
                     value={editForm.subscription_type}
@@ -669,8 +669,8 @@ const AdminDashboard = () => {
                     <option value="annual">Annual</option>
                   </select>
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="edit-days">Subscription Days</Label>
+                <div className="space-y-1.5 sm:space-y-2">
+                  <Label htmlFor="edit-days" className="text-sm">Subscription Days</Label>
                   <Input
                     id="edit-days"
                     type="number"
@@ -684,18 +684,18 @@ const AdminDashboard = () => {
                     Sets subscription to expire in X days from now
                   </p>
                 </div>
-                <div className="flex gap-3 pt-4">
+                <div className="flex gap-2 sm:gap-3 pt-3 sm:pt-4">
                   <Button
                     type="button"
                     variant="outline"
-                    className="flex-1 h-11"
+                    className="flex-1 h-10 sm:h-11 text-sm"
                     onClick={() => { setShowEditUser(false); setEditingUser(null); }}
                   >
                     Cancel
                   </Button>
                   <Button
                     type="submit"
-                    className="flex-1 h-11 bg-blue-500 hover:bg-blue-600"
+                    className="flex-1 h-10 sm:h-11 text-sm bg-blue-500 hover:bg-blue-600"
                     disabled={savingEdit}
                     data-testid="edit-user-submit"
                   >
