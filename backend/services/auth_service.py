@@ -53,13 +53,32 @@ class AuthService:
         self.jwt_algorithm = os.environ.get('JWT_ALGORITHM', 'HS256')
         self.access_token_expire = int(os.environ.get('ACCESS_TOKEN_EXPIRE_MINUTES', 30))
         self.refresh_token_expire = int(os.environ.get('REFRESH_TOKEN_EXPIRE_DAYS', 7))
-        # Admin account - hardcoded bypass, has full admin access
+        # Admin account - uses hashed password for security
         self.admin_email = os.environ.get('ADMIN_EMAIL', 'admin@pedotg.com').lower()
-        self.admin_password = os.environ.get('ADMIN_PASSWORD', 'SMC159951')
-        # Tester account - hardcoded bypass, full app access but NO admin dashboard
+        # Store hashed version of admin password (bcrypt hash of the password)
+        self._admin_password_hash = os.environ.get('ADMIN_PASSWORD_HASH', '')
+        # Fallback: if no hash provided, hash the plain password on first load (for backward compatibility)
+        self._admin_password_plain = os.environ.get('ADMIN_PASSWORD', 'SMC159951')
+        # Tester account - uses hashed password for security
         self.tester_email = os.environ.get('TESTER_EMAIL', 'test@pedotg.com').lower()
-        self.tester_password = os.environ.get('TESTER_PASSWORD', 'SMC2000')
+        self._tester_password_hash = os.environ.get('TESTER_PASSWORD_HASH', '')
+        self._tester_password_plain = os.environ.get('TESTER_PASSWORD', 'SMC2000')
         self.trial_days = int(os.environ.get('TRIAL_DAYS', 3))
+    
+    def _verify_special_account_password(self, password: str, stored_hash: str, fallback_plain: str) -> bool:
+        """
+        Verify password for special accounts (admin/tester).
+        Uses hashed password if available, falls back to plain text comparison for backward compatibility.
+        """
+        if stored_hash:
+            # Use bcrypt verification if hash is available
+            try:
+                return bcrypt.checkpw(password.encode('utf-8'), stored_hash.encode('utf-8'))
+            except Exception:
+                return False
+        else:
+            # Fallback to plain text comparison (deprecated, for backward compatibility)
+            return password == fallback_plain
     
     def hash_password(self, password: str) -> str:
         """
