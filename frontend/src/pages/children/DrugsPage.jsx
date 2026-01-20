@@ -2201,7 +2201,7 @@ const DrugsPage = ({ onBack }) => {
                       {(() => {
                         // Use per-dose maxDose if available
                         const doseSpecificMax = firstDose.maxDose;
-                        const maxDoseValue = doseSpecificMax || parseMaxDose(drug.max);
+                        const maxDoseValue = doseSpecificMax || parseMaxDose(drug.max, w);
                         const result = calculateDose(firstDose.value, w, maxDoseValue, "mg", firstDose.unit);
                         if (!result) return null;
                         const doseResult = typeof result === 'string' ? { dose: result, isExceedingMax: false } : result;
@@ -2286,7 +2286,7 @@ const DrugsPage = ({ onBack }) => {
                           {doseKeys.map(key => {
                             const doseData = drug.doses[key];
                             const doseSpecificMax = doseData.maxDose;
-                            const maxDoseValue = doseSpecificMax || parseMaxDose(drug.max);
+                            const maxDoseValue = doseSpecificMax || parseMaxDose(drug.max, w);
                             const result = calculateDose(doseData.value, w, maxDoseValue, "mg", doseData.unit);
                             if (!result) return null;
                             const doseResult = typeof result === 'string' ? { dose: result, isExceedingMax: false } : result;
