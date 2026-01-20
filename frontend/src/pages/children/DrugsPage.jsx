@@ -2197,7 +2197,7 @@ const DrugsPage = ({ onBack }) => {
                     )}
                   </div>
                   {w > 0 && firstDose && (
-                    <div className="text-right ml-2">
+                    <div className="text-right ml-2 min-w-[90px]">
                       {(() => {
                         // Use per-dose maxDose if available
                         const doseSpecificMax = firstDose.maxDose;
@@ -2208,6 +2208,18 @@ const DrugsPage = ({ onBack }) => {
                         
                         // Show per-dose if daily dose is divided
                         const showPerDose = doseResult.isPerDay && doseResult.divisor > 1 && doseResult.perDoseMin;
+                        
+                        // Extract frequency from unit if not already parsed
+                        let displayFreq = doseResult.frequency;
+                        if (!displayFreq) {
+                          const unitLower = firstDose.unit.toLowerCase();
+                          const freqMatch = unitLower.match(/q(\d+(?:-\d+)?h)/);
+                          if (freqMatch) displayFreq = freqMatch[0];
+                          else if (unitLower.includes('once daily') || unitLower.includes('q24h')) displayFreq = 'q24h';
+                          else if (unitLower.includes('q12h')) displayFreq = 'q12h';
+                          else if (unitLower.includes('q8h')) displayFreq = 'q8h';
+                          else if (unitLower.includes('q6h')) displayFreq = 'q6h';
+                        }
                         
                         return (
                           <div>
@@ -2221,7 +2233,8 @@ const DrugsPage = ({ onBack }) => {
                                   <span className="text-[9px] text-muted-foreground ml-0.5">/dose</span>
                                 </p>
                                 <p className="text-[9px] text-muted-foreground">
-                                  {doseResult.frequency} ({doseResult.dose}/day)
+                                  <span className="bg-slate-100 dark:bg-slate-700 px-1 rounded font-medium">{doseResult.frequency}</span>
+                                  <span className="ml-1">({doseResult.dose}/d)</span>
                                 </p>
                               </>
                             ) : (
@@ -2230,13 +2243,15 @@ const DrugsPage = ({ onBack }) => {
                                   {doseResult.dose}
                                   {doseResult.doseLabel && <span className="text-[9px] text-muted-foreground ml-0.5">{doseResult.doseLabel}</span>}
                                 </p>
-                                {doseResult.frequency && (
-                                  <p className="text-[9px] text-muted-foreground">{doseResult.frequency}</p>
+                                {displayFreq && (
+                                  <p className="text-[9px]">
+                                    <span className="bg-slate-100 dark:bg-slate-700 px-1 rounded font-medium text-slate-600 dark:text-slate-300">{displayFreq}</span>
+                                  </p>
                                 )}
                               </>
                             )}
                             {doseResult.isExceedingMax && (
-                              <p className="text-[9px] text-amber-600 font-medium">⚠️ Max capped</p>
+                              <p className="text-[9px] text-amber-600 font-medium">⚠️ Max</p>
                             )}
                           </div>
                         );
