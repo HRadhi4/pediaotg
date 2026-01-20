@@ -290,6 +290,24 @@ const DrugsPage = ({ onBack }) => {
       renalAdjust: { gfr50: "q6h", gfr30: "q6-8h", gfr10: "q12h", hd: "Give after HD" }
     },
     {
+      id: "aspirin",
+      name: "Aspirin (ASA)",
+      category: "NSAID/Antiplatelet",
+      route: "PO/PR",
+      doses: {
+        analgesic: { label: "Analgesic/Antipyretic", value: "10-15", unit: "mg/kg/dose PO/PR q4-6h", maxDose: 4000 },
+        antiinflam: { label: "Anti-inflammatory", value: "60-100", unit: "mg/kg/day ÷ q6-8h PO", maxDose: 4000 },
+        kawasakiFebrile: { label: "Kawasaki (Febrile)", value: "80-100", unit: "mg/kg/day ÷ q6h PO x14d" },
+        kawasakiMaint: { label: "Kawasaki (Maintenance)", value: "3-5", unit: "mg/kg/day PO once daily x8wk" },
+        antiplatelet: { label: "Antiplatelet (Adult)", value: "81-325", unit: "mg PO once daily" },
+        preeclampsiaPrevention: { label: "Preeclampsia Prevention", value: "81", unit: "mg PO once daily (from 12-16wk)" }
+      },
+      max: "4 g/day (analgesic); 100 mg/kg/day (Kawasaki febrile)",
+      indication: "Kawasaki disease, antiplatelet therapy, analgesic/antipyretic, preeclampsia prevention, rheumatic fever",
+      notes: "⚠️ CONTRAINDICATED <16yr for varicella/flu-like illness (Reye's syndrome risk). Therapeutic levels: analgesic 30-50 mg/L, anti-inflammatory 150-300 mg/L. Tinnitus at 200-400 mg/L.",
+      renalAdjust: { gfr50: "Avoid if possible", gfr30: "Avoid", gfr10: "Contraindicated", hd: "Contraindicated" }
+    },
+    {
       id: "atropine",
       name: "Atropine",
       category: "Anticholinergic",
