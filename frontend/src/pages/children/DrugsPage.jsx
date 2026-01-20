@@ -402,18 +402,18 @@ const DrugsPage = ({ onBack }) => {
       category: "Antibiotic",
       route: "IV/IM",
       doses: {
-        neo0to7d: { label: "Neonate 0-7 days (<2kg)", value: "50", unit: "mg/kg/dose q12h IV" },
-        neo0to7dMeningitis: { label: "Neonate 0-7d Meningitis (<2kg)", value: "50", unit: "mg/kg/dose q12h IV" },
-        neo8to28d: { label: "Neonate 8-28 days", value: "50", unit: "mg/kg/dose q8-12h IV" },
-        neo8to28dMeningitis: { label: "Neonate 8-28d Meningitis", value: "50", unit: "mg/kg/dose q6-8h IV" },
-        childStandard: { label: "Child >28 days", value: "50-100", unit: "mg/kg/dose q6h IV (max 8-10g/day)" },
-        childMeningitis: { label: "Child Meningitis", value: "75", unit: "mg/kg/dose q6h IV (max 12g/day)" },
-        adultStandard: { label: "Adult Standard", value: "1-2", unit: "g IV q6-8h" },
-        adultMeningitis: { label: "Adult Meningitis", value: "2", unit: "g IV q4h (max 12g/day)" }
+        neo0to7d: { label: "Neonate ≤7 days", value: "100", unit: "mg/kg/day ÷ q12h IV" },
+        neo8to28dSmall: { label: "Neonate 8-28d (<1kg)", value: "100-150", unit: "mg/kg/day ÷ q8-12h IV" },
+        neo8to28d: { label: "Neonate 8-28d (≥1kg)", value: "150", unit: "mg/kg/day ÷ q8h IV" },
+        neoMeningitis: { label: "Neonate Meningitis", value: "150-200", unit: "mg/kg/day ÷ q6-8h IV" },
+        childStandard: { label: "Child (1mo-12yr)", value: "150-200", unit: "mg/kg/day ÷ q6-8h IV", maxDose: 12000 },
+        childMeningitis: { label: "Child Meningitis", value: "200-300", unit: "mg/kg/day ÷ q4-6h IV", maxDose: 12000 },
+        adultStandard: { label: "Adult Standard", value: "1-2", unit: "g/dose q6-8h IV" },
+        adultSevere: { label: "Adult Severe/Meningitis", value: "2", unit: "g/dose q4-6h IV", maxDose: 12000 }
       },
-      max: "8-10 g/day standard; 12 g/day meningitis",
+      max: "12 g/day",
       indication: "Meningitis, sepsis, gram-negative infections (preferred in neonates over ceftriaxone)",
-      notes: "Preferred over ceftriaxone in neonates (no bilirubin displacement). Good CSF penetration.",
+      notes: "Preferred over ceftriaxone in neonates (no bilirubin displacement). Good CSF penetration. Use with vancomycin for penicillin-resistant pneumococci meningitis.",
       renalAdjust: { gfr50: "No change", gfr30: "50% dose q12-24h", gfr10: "50% dose q24h", hd: "50% dose q24h, give after HD" }
     },
     {
