@@ -2413,14 +2413,14 @@ const DrugsPage = ({ onBack }) => {
                     {w > 0 && (
                       <div className="space-y-2">
                         <p className="text-[11px] font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-1">
-                          <span>💊</span> Calculated Doses for {w} kg
+                          <span>💊</span> {drug.isFixedDose ? "Fixed Doses (not weight-based)" : `Calculated Doses for ${w} kg`}
                         </p>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                           {doseKeys.map(key => {
                             const doseData = drug.doses[key];
                             const doseSpecificMax = doseData.maxDose;
                             const maxDoseValue = doseSpecificMax || parseMaxDose(drug.max, w);
-                            const result = calculateDose(doseData.value, w, maxDoseValue, "mg", doseData.unit);
+                            const result = calculateDose(doseData.value, w, maxDoseValue, "mg", doseData.unit, doseData.isFixed || drug.isFixedDose);
                             if (!result) return null;
                             const doseResult = typeof result === 'string' ? { dose: result, isExceedingMax: false } : result;
                             
