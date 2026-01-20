@@ -623,8 +623,8 @@ const AdminDashboard = () => {
       {/* Edit User Modal */}
       {showEditUser && editingUser && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <Card className="w-full max-w-md">
-            <CardHeader>
+          <Card className="w-full max-w-lg mx-4">
+            <CardHeader className="pb-4">
               <div className="flex items-center justify-between">
                 <div>
                   <CardTitle className="text-lg">Edit User</CardTitle>
@@ -634,14 +634,15 @@ const AdminDashboard = () => {
                   variant="ghost" 
                   size="icon" 
                   onClick={() => { setShowEditUser(false); setEditingUser(null); }}
+                  className="h-8 w-8"
                 >
                   <X className="h-4 w-4" />
                 </Button>
               </div>
             </CardHeader>
-            <CardContent>
+            <CardContent className="px-6 pb-6">
               <form onSubmit={handleEditUser} className="space-y-4">
-                <div>
+                <div className="space-y-2">
                   <Label htmlFor="edit-password">New Password (leave blank to keep current)</Label>
                   <Input
                     id="edit-password"
@@ -653,7 +654,7 @@ const AdminDashboard = () => {
                     data-testid="edit-user-password"
                   />
                 </div>
-                <div>
+                <div className="space-y-2">
                   <Label htmlFor="edit-subscription">Subscription Type</Label>
                   <select
                     id="edit-subscription"
@@ -668,7 +669,7 @@ const AdminDashboard = () => {
                     <option value="annual">Annual</option>
                   </select>
                 </div>
-                <div>
+                <div className="space-y-2">
                   <Label htmlFor="edit-days">Subscription Days</Label>
                   <Input
                     id="edit-days"
@@ -679,22 +680,22 @@ const AdminDashboard = () => {
                     min={1}
                     data-testid="edit-user-days"
                   />
-                  <p className="text-xs text-muted-foreground mt-1">
+                  <p className="text-xs text-muted-foreground">
                     Sets subscription to expire in X days from now
                   </p>
                 </div>
-                <div className="flex gap-3 pt-2">
+                <div className="flex gap-3 pt-4">
                   <Button
                     type="button"
                     variant="outline"
-                    className="flex-1"
+                    className="flex-1 h-11"
                     onClick={() => { setShowEditUser(false); setEditingUser(null); }}
                   >
                     Cancel
                   </Button>
                   <Button
                     type="submit"
-                    className="flex-1 bg-blue-500 hover:bg-blue-600"
+                    className="flex-1 h-11 bg-blue-500 hover:bg-blue-600"
                     disabled={savingEdit}
                     data-testid="edit-user-submit"
                   >
