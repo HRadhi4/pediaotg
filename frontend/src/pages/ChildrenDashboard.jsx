@@ -194,7 +194,6 @@ const ChildrenDashboard = ({ theme, toggleTheme }) => {
   // Dialog states for floating nav bar
   const [activeTab, setActiveTab] = useState("");
   const [bloodGasOpen, setBloodGasOpen] = useState(false);
-  const [electrolytesOpen, setElectrolytesOpen] = useState(false);
   const [jaundiceOpen, setJaundiceOpen] = useState(false);
   const [girOpen, setGirOpen] = useState(false);
   const [bloodProductsOpen, setBloodProductsOpen] = useState(false);
