@@ -773,12 +773,12 @@ const DrugsPage = ({ onBack }) => {
       category: "Supplement",
       route: "PO",
       doses: {
-        treatment: { label: "Iron Deficiency", value: "3-6", unit: "mg elemental Fe/kg/day divided q8-12h" },
+        treatment: { label: "Iron Deficiency", value: "3-6", unit: "mg elemental Fe/kg/day ÷ q8-12h" },
         prophylaxis: { label: "Prophylaxis", value: "1-2", unit: "mg elemental Fe/kg/day" }
       },
-      max: "6 mg/kg/day elemental iron",
-      indication: "Iron deficiency anemia",
-      notes: "Give between meals with vitamin C. Stool discoloration.",
+      max: "200 mg elemental iron/day (adult)",
+      indication: "Iron deficiency anemia, prophylaxis in preterm infants",
+      notes: "Give between meals with vitamin C. Stool discoloration. 20% elemental iron in ferrous sulfate.",
       renalAdjust: null
     },
     {
