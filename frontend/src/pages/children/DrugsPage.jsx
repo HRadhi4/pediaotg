@@ -833,17 +833,17 @@ const DrugsPage = ({ onBack }) => {
       route: "IV/IM",
       doses: {
         neo0to7d: { label: "Neonate 0-7 days", value: "4", unit: "mg/kg/dose q24h" },
-        neo8to28d: { label: "Neonate 8-28 days", value: "4.5", unit: "mg/kg/dose q12h" },
-        neoOver28d: { label: "Neonate >28 days", value: "5", unit: "mg/kg/dose q8h" },
+        neo8to28d: { label: "Neonate 8-28 days", value: "4.5", unit: "mg/kg/dose q24h" },
+        neoOver28d: { label: "Neonate >28 days", value: "5", unit: "mg/kg/dose q24h" },
         childConv: { label: "Child (Conventional)", value: "2.5", unit: "mg/kg/dose q8h" },
         childOnceDaily: { label: "Child (Once Daily)", value: "5-7.5", unit: "mg/kg/dose q24h" },
         cysticFibrosis: { label: "Cystic Fibrosis", value: "7.5-10.5", unit: "mg/kg/dose q8h" },
         adultConv: { label: "Adult (Conventional)", value: "1.5-2", unit: "mg/kg/dose q8h" }
       },
-      max: "5 mg/kg/dose (conventional); 7.5 mg/kg/dose (once daily)",
-      indication: "Gram-negative sepsis, synergy for endocarditis, serious infections, ophthalmic, intrathecal/intraventricular",
-      notes: "Monitor levels: trough <2 mg/L, peak 20-30 mg/L. Ototoxic and nephrotoxic.",
-      renalAdjust: { gfr50: "Standard initial dose, redose per levels", gfr30: "Standard initial dose, redose per levels", gfr10: "Standard initial dose, redose per levels q48-72h", hd: "2-3x weekly after HD, per levels" }
+      max: "500 mg/dose (adult); weight-based for peds",
+      indication: "Gram-negative sepsis, synergy for endocarditis, serious infections",
+      notes: "Monitor levels: trough <1-2 mg/L, peak 5-10 (conv) or 20-30 (OD). Ototoxic & nephrotoxic. Adjust by levels.",
+      renalAdjust: { gfr50: "Standard initial, redose per levels", gfr30: "Standard initial, extend interval", gfr10: "Standard initial, q48-72h per levels", hd: "2-3x weekly after HD, per levels" }
     },
     {
       id: "hydralazine",
