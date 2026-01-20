@@ -881,16 +881,19 @@ const DrugsPage = ({ onBack }) => {
       id: "hydrocortisone",
       name: "Hydrocortisone",
       category: "Steroid",
-      route: "IV/PO",
+      route: "IV/IM/PO/Topical/PR",
       doses: {
-        antiinflammChild: { label: "Anti-inflammatory (Child)", value: "4-8", unit: "mg/kg/dose IV/PO q6-8h" },
-        antiinflammAdult: { label: "Anti-inflammatory (Adult)", value: "100-500", unit: "mg/dose q6-8h IV" },
-        acuteAdrenal: { label: "Acute Adrenal Insufficiency", value: "100", unit: "mg/kg IV q6h" },
-        stressDose: { label: "Stress Dose", value: "50-100", unit: "mg/m² or 1-2 mg/kg" }
+        childPO: { label: "Child PO", value: "2.5-10", unit: "mg/kg/day ÷ q6-8h" },
+        childIVIM: { label: "Child IV/IM", value: "1-5", unit: "mg/kg/day ÷ q12-24h" },
+        adolAdultIVIMPO: { label: "Adolescent/Adult", value: "15-240", unit: "mg/dose q12h IV/IM/PO" },
+        acuteAdrenal: { label: "Acute Adrenal Insufficiency", value: "1-2", unit: "mg/kg IV bolus, then 25-150 mg/day" },
+        stressDose: { label: "Stress Dose", value: "50-100", unit: "mg/m²/day ÷ q6-8h" },
+        ulcerativeColitis: { label: "Ulcerative Colitis (Enema)", value: "100", unit: "mg PR once daily-BID × 2-3wk" },
+        topical: { label: "Topical", value: "0.5-2.5%", unit: "cream/ointment BID-QID" }
       },
-      max: "500 mg/dose",
-      indication: "Adrenal insufficiency, shock, anti-inflammatory/immunosuppressive",
-      notes: "Stress dosing for illness/surgery in adrenal insufficiency. Has mineralocorticoid activity.",
+      max: "240 mg/dose (systemic); 500 mg/day (IV high dose)",
+      indication: "Adrenal insufficiency, shock, anti-inflammatory/immunosuppressive, ulcerative colitis, topical dermatitis",
+      notes: "Stress dosing for illness/surgery in adrenal insufficiency. Has mineralocorticoid activity (salt retention). Taper if used >5-7 days.",
       renalAdjust: null
     },
     {
