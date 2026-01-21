@@ -250,25 +250,61 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
   };
 
   const calculateNaHCO3 = () => {
-    let correction = currentDose;
+    let correction = 0;
+    let formula = "";
+    
+    if (nahco3Method === "hco3") {
+      // Correction (1): (Desired HCO3 - Lab HCO3) × 0.3 × WT
+      const labValue = parseFloat(labHco3);
+      const desiredValue = parseFloat(desiredHco3) || 24;
+      
+      if (!labValue) {
+        setResults({ error: "Please enter Lab HCO3 value" });
+        return;
+      }
+      
+      correction = (desiredValue - labValue) * 0.3 * w;
+      formula = `(${desiredValue} - ${labValue}) × 0.3 × ${w} kg`;
+    } else {
+      // Correction (2): BE × 0.3 × WT
+      const beValue = parseFloat(baseExcess);
+      
+      if (!beValue && beValue !== 0) {
+        setResults({ error: "Please enter Base Excess value" });
+        return;
+      }
+      
+      correction = Math.abs(beValue) * 0.3 * w;
+      formula = `|${beValue}| × 0.3 × ${w} kg`;
+    }
+    
+    if (correction <= 0) {
+      setResults({ error: "Calculated correction is zero or negative. Check your values." });
+      return;
+    }
+    
     const dosePerKg = (correction / w).toFixed(2);
     const drugVolume = correction;
     const diluentVolume = correction;
     const totalVolume = drugVolume + diluentVolume;
+    const halfDose = correction / 2;
     
     setResults({
       medication: "Sodium Bicarbonate 8.4%",
       calculation: {
-        dose: `${correction.toFixed(1)} mEq (${dosePerKg} mEq/kg)`,
-        formula: `Selected: ${dosePerKg} mEq/kg x ${w} kg`,
-        drugVolume: `${drugVolume.toFixed(1)} ml`,
+        dose: `${correction.toFixed(1)} mEq`,
+        formula: formula,
+        drugVolume: `${drugVolume.toFixed(1)} ml (8.4% = 1 mEq/ml)`,
         diluent: `${diluentVolume.toFixed(1)} ml NS (1:1 dilution)`,
         totalVolume: `${totalVolume.toFixed(1)} ml`
       },
-      administration: { duration: "30 min - 1 hour", rate: `${totalVolume.toFixed(1)} ml/hr` },
+      administration: { 
+        duration: "Split dose", 
+        rate: `1st half (${halfDose.toFixed(1)} mEq) over 1hr, 2nd half over 24hr` 
+      },
       preparation: `Draw ${drugVolume.toFixed(1)} ml NaHCO3 + ${diluentVolume.toFixed(1)} ml NS = ${totalVolume.toFixed(1)} ml`,
-      notes: "Give in 2 halves: 1st half in 1hr, 2nd half over 24hr",
-      warnings: ["Correct calcium FIRST if hypocalcemic"]
+      notes: `Method: ${nahco3Method === "hco3" ? "HCO3 deficit" : "Base Excess"}`,
+      warnings: ["Correct calcium FIRST if hypocalcemic", "Recheck ABG after 1st half"]
     });
   };
 
