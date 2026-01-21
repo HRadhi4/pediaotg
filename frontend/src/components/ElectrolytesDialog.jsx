@@ -537,6 +537,8 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
           targetNa: target,
           maintenance: maintenance.toFixed(0),
           deficit: deficit.toFixed(0),
+          deficitType: hypoDeficitType,
+          deficitPercent: hypoDeficitPercent,
           totalVolume: totalVolume.toFixed(0),
           hourlyRate: hourlyRate.toFixed(1),
           naDeficit: naDeficit.toFixed(1),
