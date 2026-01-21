@@ -1183,6 +1183,74 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
                       </div>
                     </div>
                   </div>
+                ) : results.isHarrietLane ? (
+                  /* Harriet Lane Method for Hypernatremia */
+                  <div className="space-y-3">
+                    {/* Header with Na values */}
+                    <div className="p-2 rounded bg-purple-50 dark:bg-purple-900/20 text-xs">
+                      <div className="flex justify-between">
+                        <span>Current Na: <strong>{results.harrietData.currentNa}</strong> mEq/L</span>
+                        <span>Desired Na: <strong>{results.harrietData.desiredNa}</strong> mEq/L</span>
+                      </div>
+                    </div>
+                    
+                    {/* Step 1: Calculate Deficits */}
+                    <div className="p-3 rounded-lg bg-blue-50 dark:bg-blue-950/30 border border-blue-200">
+                      <p className="text-xs font-bold text-blue-700 dark:text-blue-300 mb-2">Step 1: Calculate Deficits</p>
+                      <div className="space-y-1 text-xs">
+                        <p><strong>Free Water Deficit (FWD)</strong> = 4 × {w} × ({results.harrietData.currentNa} - {results.harrietData.desiredNa})</p>
+                        <p className="pl-4">= <strong>{results.harrietData.freeWaterDeficit} ml</strong></p>
+                        <p className="mt-2"><strong>Solute Fluid Deficit (SFD)</strong> = Total Deficit - FWD</p>
+                        <p className="pl-4">= {results.harrietData.totalDeficit} - {results.harrietData.freeWaterDeficit} = <strong>{results.harrietData.soluteFluidDeficit} ml</strong></p>
+                      </div>
+                    </div>
+                    
+                    {/* Step 2: Calculate Total Fluid */}
+                    <div className="p-3 rounded-lg bg-green-50 dark:bg-green-950/30 border border-green-200">
+                      <p className="text-xs font-bold text-green-700 dark:text-green-300 mb-2">Step 2: Total Fluid Over 24 hrs</p>
+                      <div className="space-y-1 text-xs">
+                        <p>Maintenance: <strong>{results.harrietData.maintenance} ml/day</strong></p>
+                        <p>+ Deficit: <strong>{results.harrietData.totalDeficit} ml</strong></p>
+                        <p className="border-t pt-1 mt-1">= Total: <strong>{results.harrietData.totalFluidVolume} ml</strong></p>
+                      </div>
+                      <div className="mt-2 p-2 bg-white dark:bg-gray-900 rounded">
+                        <p className="font-mono text-lg font-bold text-green-800 dark:text-green-200">
+                          Rate: {results.harrietData.fluidRate} ml/hr
+                        </p>
+                      </div>
+                    </div>
+                    
+                    {/* Step 3: Na Content Calculation */}
+                    <div className="p-3 rounded-lg bg-amber-50 dark:bg-amber-950/30 border border-amber-200">
+                      <p className="text-xs font-bold text-amber-700 dark:text-amber-300 mb-2">Step 3: Fluid Na Content</p>
+                      <div className="space-y-1 text-xs">
+                        <p><strong>Na Required</strong> = (SFD + Maintenance) × 14 mEq/100ml</p>
+                        <p className="pl-4">= <strong>{results.harrietData.naRequired} mEq</strong></p>
+                        <p className="mt-2"><strong>Na in Fluid</strong> = Na Required ÷ Total Volume × 1000</p>
+                        <p className="pl-4">= <strong>{results.harrietData.naContentInFluid} mEq/L</strong></p>
+                      </div>
+                      <div className="mt-2 p-2 bg-white dark:bg-gray-900 rounded text-center">
+                        <p className="text-xs text-muted-foreground">Recommended Fluid:</p>
+                        <p className="font-bold text-amber-800 dark:text-amber-200">{results.harrietData.recommendedFluid}</p>
+                      </div>
+                    </div>
+                    
+                    {/* Step 4: 3% NaCl for severe (Na > 170) */}
+                    {results.harrietData.hypertonicCalc && (
+                      <div className="p-3 rounded-lg bg-red-50 dark:bg-red-950/30 border border-red-300">
+                        <p className="text-xs font-bold text-red-700 dark:text-red-300 mb-2">⚠️ Severe Hypernatremia - 3% NaCl Fortification</p>
+                        <div className="space-y-1 text-xs">
+                          <p>Add <strong>{results.harrietData.hypertonicCalc.toAdd} ml</strong> of 3% NaCl to {results.harrietData.hypertonicCalc.nsBolus} ml NS bolus</p>
+                          <p className="text-muted-foreground">(Calculated: {results.harrietData.hypertonicCalc.ml3Percent} ml per 1000ml)</p>
+                        </div>
+                      </div>
+                    )}
+                    
+                    {/* Monitoring note */}
+                    <div className="p-2 rounded bg-gray-100 dark:bg-gray-800 text-xs text-center">
+                      <p><strong>Monitor:</strong> Na every 4-6 hrs | Max drop: 0.5 mEq/L/hr or 10-12 mEq/24hr</p>
+                    </div>
+                  </div>
                 ) : (
                   <>
                     {/* Drug Info */}
