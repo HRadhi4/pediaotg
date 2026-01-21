@@ -505,8 +505,7 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
               <SelectContent>
                 <SelectItem value="calcium">Calcium</SelectItem>
                 <SelectItem value="magnesium">Magnesium</SelectItem>
-                <SelectItem value="potassium">Potassium (IV)</SelectItem>
-                <SelectItem value="potassiumPO">Potassium (PO)</SelectItem>
+                <SelectItem value="potassium">Potassium</SelectItem>
                 <SelectItem value="nahco3">Sodium Bicarbonate (NaHCO3)</SelectItem>
                 <SelectItem value="sodium">Sodium</SelectItem>
                 <SelectItem value="phosphate">Phosphate</SelectItem>
@@ -514,11 +513,39 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
             </Select>
           </div>
 
+          {/* Potassium IV/PO Switch */}
+          {selectedElectrolyte === "potassium" && (
+            <div className="flex items-center justify-center gap-2 p-2 rounded-lg bg-purple-50 dark:bg-purple-950/30 border border-purple-200">
+              <button
+                type="button"
+                onClick={() => setPotassiumRoute("IV")}
+                className={`px-4 py-1.5 text-sm font-medium rounded-md transition-colors ${
+                  potassiumRoute === "IV" 
+                    ? "bg-purple-600 text-white" 
+                    : "text-purple-700 hover:bg-purple-100"
+                }`}
+              >
+                IV
+              </button>
+              <button
+                type="button"
+                onClick={() => setPotassiumRoute("PO")}
+                className={`px-4 py-1.5 text-sm font-medium rounded-md transition-colors ${
+                  potassiumRoute === "PO" 
+                    ? "bg-purple-600 text-white" 
+                    : "text-purple-700 hover:bg-purple-100"
+                }`}
+              >
+                PO
+              </button>
+            </div>
+          )}
+
           {/* Dose Range Display - Hide for NaHCO3 */}
           {selectedElectrolyte !== "nahco3" && (
             <div className="p-2 rounded-lg bg-green-100 dark:bg-green-900/30 border border-green-300">
               <p className="text-sm font-semibold text-green-800 dark:text-green-300">
-                Dose Range: <span className="text-green-600 dark:text-green-400">{currentElectrolyte.doseRange}</span>
+                Dose Range: <span className="text-green-600 dark:text-green-400">{getCurrentDoseRange()}</span>
               </p>
             </div>
           )}
@@ -528,7 +555,8 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
             <div className="p-3 rounded-lg bg-blue-50 dark:bg-blue-950/30 border border-blue-200 space-y-2">
               <div className="flex justify-between items-center">
                 <Label className="text-xs font-semibold text-blue-800 dark:text-blue-300">
-                  Select Dose ({currentElectrolyte.resultUnit})
+                  Select {selectedElectrolyte === "potassium" && potassiumRoute === "PO" ? "Daily " : ""}Dose ({currentElectrolyte.resultUnit})
+                </Label>
                 </Label>
                 <span className="text-xs text-muted-foreground">
                   {doseLimits.min.toFixed(doseLimits.step < 1 ? 2 : 0)} - {doseLimits.max.toFixed(doseLimits.step < 1 ? 2 : 0)} {currentElectrolyte.resultUnit}
