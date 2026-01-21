@@ -573,6 +573,52 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
             </div>
           )}
 
+          {/* Potassium IV Line Type Selector */}
+          {selectedElectrolyte === "potassium" && potassiumRoute === "IV" && (
+            <div className="space-y-2">
+              <Label className="text-sm font-medium">Line Type</Label>
+              <div className="grid grid-cols-3 gap-2">
+                <button
+                  type="button"
+                  onClick={() => setPotassiumLineType("peripheral")}
+                  className={`p-2 text-xs font-medium rounded-md border transition-colors ${
+                    potassiumLineType === "peripheral"
+                      ? "bg-blue-600 text-white border-blue-600"
+                      : "bg-white dark:bg-gray-800 border-gray-300 hover:bg-blue-50"
+                  }`}
+                >
+                  <div>Peripheral</div>
+                  <div className="text-[10px] opacity-75">80 mEq/L</div>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setPotassiumLineType("central")}
+                  className={`p-2 text-xs font-medium rounded-md border transition-colors ${
+                    potassiumLineType === "central"
+                      ? "bg-blue-600 text-white border-blue-600"
+                      : "bg-white dark:bg-gray-800 border-gray-300 hover:bg-blue-50"
+                  }`}
+                >
+                  <div>Central</div>
+                  <div className="text-[10px] opacity-75">15 mEq/100ml</div>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setPotassiumLineType("central_restricted")}
+                  className={`p-2 text-xs font-medium rounded-md border transition-colors ${
+                    potassiumLineType === "central_restricted"
+                      ? "bg-blue-600 text-white border-blue-600"
+                      : "bg-white dark:bg-gray-800 border-gray-300 hover:bg-blue-50"
+                  }`}
+                >
+                  <div>Central</div>
+                  <div className="text-[10px] opacity-75">Fluid Restricted</div>
+                  <div className="text-[10px] opacity-75">20 mEq/100ml</div>
+                </button>
+              </div>
+            </div>
+          )}
+
           {/* Dose Range Display - Hide for NaHCO3 */}
           {selectedElectrolyte !== "nahco3" && (
             <div className="p-2 rounded-lg bg-green-100 dark:bg-green-900/30 border border-green-300">
