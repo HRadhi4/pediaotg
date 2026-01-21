@@ -475,6 +475,91 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
             </div>
           )}
 
+          {/* NaHCO3-specific options - Correction Method Switch */}
+          {selectedElectrolyte === "nahco3" && w > 0 && (
+            <div className="p-3 rounded-lg bg-orange-50 dark:bg-orange-950/30 border border-orange-200 space-y-3">
+              <div className="flex items-center justify-between">
+                <Label className="text-sm font-semibold text-orange-800 dark:text-orange-300">Correction Method</Label>
+                <div className="flex items-center gap-2 bg-white dark:bg-gray-800 rounded-lg p-1 border">
+                  <button
+                    type="button"
+                    onClick={() => setNahco3Method("hco3")}
+                    className={`px-3 py-1 text-xs rounded-md transition-colors ${
+                      nahco3Method === "hco3" 
+                        ? "bg-orange-500 text-white" 
+                        : "text-gray-600 hover:bg-gray-100"
+                    }`}
+                  >
+                    HCO3 Deficit
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setNahco3Method("be")}
+                    className={`px-3 py-1 text-xs rounded-md transition-colors ${
+                      nahco3Method === "be" 
+                        ? "bg-orange-500 text-white" 
+                        : "text-gray-600 hover:bg-gray-100"
+                    }`}
+                  >
+                    Base Excess
+                  </button>
+                </div>
+              </div>
+              
+              {nahco3Method === "hco3" ? (
+                <div className="space-y-2">
+                  <p className="text-xs text-orange-700 dark:text-orange-400 font-mono">
+                    (Desired HCO3 - Lab HCO3) × 0.3 × WT
+                  </p>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div>
+                      <Label className="text-xs">Lab HCO3 (mEq/L)</Label>
+                      <Input
+                        type="number"
+                        step="0.1"
+                        min="0"
+                        placeholder="e.g., 12"
+                        value={labHco3}
+                        onChange={(e) => setLabHco3(e.target.value)}
+                        className="font-mono h-9"
+                      />
+                    </div>
+                    <div>
+                      <Label className="text-xs">Desired HCO3 (mEq/L)</Label>
+                      <Input
+                        type="number"
+                        step="0.1"
+                        min="0"
+                        placeholder="24"
+                        value={desiredHco3}
+                        onChange={(e) => setDesiredHco3(e.target.value)}
+                        className="font-mono h-9"
+                      />
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  <p className="text-xs text-orange-700 dark:text-orange-400 font-mono">
+                    BE × 0.3 × WT (from ABG)
+                  </p>
+                  <div>
+                    <Label className="text-xs">Base Excess (mEq/L)</Label>
+                    <Input
+                      type="number"
+                      step="0.1"
+                      placeholder="e.g., -10"
+                      value={baseExcess}
+                      onChange={(e) => setBaseExcess(e.target.value)}
+                      className="font-mono h-9"
+                    />
+                    <p className="text-[10px] text-muted-foreground mt-1">Enter negative value (e.g., -10)</p>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
           {/* Sodium-specific options */}
           {selectedElectrolyte === "sodium" && (
             <div className="space-y-2">
