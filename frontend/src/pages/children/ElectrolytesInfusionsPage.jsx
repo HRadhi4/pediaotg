@@ -596,6 +596,32 @@ const ElectrolytesInfusionsPage = ({ onBack }) => {
             </div>
           )}
 
+          {selectedElectrolyte === "potassiumPO" && (
+            <>
+              <div>
+                <Label>Current Potassium Level (optional)</Label>
+                <Input type="number" step="0.1" min="0" placeholder="mEq/L" value={potassiumLevel} onChange={(e) => setPotassiumLevel(e.target.value)} className="font-mono" />
+              </div>
+              <div>
+                <Label>Frequency</Label>
+                <RadioGroup value={kclPoFrequency} onValueChange={setKclPoFrequency} className="flex gap-4 mt-2">
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="BD" id="bd" />
+                    <Label htmlFor="bd">BD (2x/day)</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="TID" id="tid" />
+                    <Label htmlFor="tid">TID (3x/day)</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="QID" id="qid" />
+                    <Label htmlFor="qid">QID (4x/day)</Label>
+                  </div>
+                </RadioGroup>
+              </div>
+            </>
+          )}
+
           {selectedElectrolyte === "nahco3" && (
             <>
               <RadioGroup value={nahco3Method} onValueChange={setNahco3Method} className="flex gap-4">
