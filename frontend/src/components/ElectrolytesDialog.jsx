@@ -1202,40 +1202,129 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
                           className="font-mono h-9 mt-1"
                         />
                       </div>
-                      <div>
-                        <Label className="text-xs">Fluid Deficit (ml) - estimated dehydration</Label>
-                        <Input
-                          type="number"
-                          step="10"
-                          min="0"
-                          placeholder={`e.g., ${(w * 100).toFixed(0)} (10% dehydration)`}
-                          value={fluidDeficit}
-                          onChange={(e) => setFluidDeficit(e.target.value)}
-                          className="font-mono h-9 mt-1"
-                        />
-                        <p className="text-[10px] text-muted-foreground mt-1">
-                          Dehydration %: 5%={w*50}ml, 10%={w*100}ml, 15%={w*150}ml
-                        </p>
+                      
+                      {/* Deficit Selector - Infant/Child with percentages */}
+                      <div className="space-y-2">
+                        <Label className="text-xs">Dehydration Level</Label>
+                        
+                        {/* Infant / Child selector */}
+                        <div className="flex gap-2">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setHarrietDeficitType("infant");
+                              setHarrietDeficitPercent("10");
+                            }}
+                            className={`flex-1 px-2 py-1.5 text-xs font-medium rounded-md border transition-colors ${
+                              harrietDeficitType === "infant"
+                                ? "bg-blue-600 text-white border-blue-600"
+                                : "bg-white dark:bg-gray-800 border-gray-300 hover:bg-blue-50"
+                            }`}
+                          >
+                            Infant
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setHarrietDeficitType("child");
+                              setHarrietDeficitPercent("6");
+                            }}
+                            className={`flex-1 px-2 py-1.5 text-xs font-medium rounded-md border transition-colors ${
+                              harrietDeficitType === "child"
+                                ? "bg-blue-600 text-white border-blue-600"
+                                : "bg-white dark:bg-gray-800 border-gray-300 hover:bg-blue-50"
+                            }`}
+                          >
+                            Child
+                          </button>
+                        </div>
+                        
+                        {/* Percentage selector based on type */}
+                        <div className="grid grid-cols-3 gap-2">
+                          {harrietDeficitType === "infant" ? (
+                            <>
+                              <button
+                                type="button"
+                                onClick={() => setHarrietDeficitPercent("5")}
+                                className={`p-2 text-xs font-medium rounded-md border transition-colors ${
+                                  harrietDeficitPercent === "5"
+                                    ? "bg-teal-600 text-white border-teal-600"
+                                    : "bg-white dark:bg-gray-800 border-gray-300 hover:bg-teal-50"
+                                }`}
+                              >
+                                <div>5%</div>
+                                <div className="text-[10px] opacity-75">{(w*50).toFixed(0)}ml</div>
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => setHarrietDeficitPercent("10")}
+                                className={`p-2 text-xs font-medium rounded-md border transition-colors ${
+                                  harrietDeficitPercent === "10"
+                                    ? "bg-teal-600 text-white border-teal-600"
+                                    : "bg-white dark:bg-gray-800 border-gray-300 hover:bg-teal-50"
+                                }`}
+                              >
+                                <div>10%</div>
+                                <div className="text-[10px] opacity-75">{(w*100).toFixed(0)}ml</div>
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => setHarrietDeficitPercent("15")}
+                                className={`p-2 text-xs font-medium rounded-md border transition-colors ${
+                                  harrietDeficitPercent === "15"
+                                    ? "bg-teal-600 text-white border-teal-600"
+                                    : "bg-white dark:bg-gray-800 border-gray-300 hover:bg-teal-50"
+                                }`}
+                              >
+                                <div>15%</div>
+                                <div className="text-[10px] opacity-75">{(w*150).toFixed(0)}ml</div>
+                              </button>
+                            </>
+                          ) : (
+                            <>
+                              <button
+                                type="button"
+                                onClick={() => setHarrietDeficitPercent("3")}
+                                className={`p-2 text-xs font-medium rounded-md border transition-colors ${
+                                  harrietDeficitPercent === "3"
+                                    ? "bg-teal-600 text-white border-teal-600"
+                                    : "bg-white dark:bg-gray-800 border-gray-300 hover:bg-teal-50"
+                                }`}
+                              >
+                                <div>3%</div>
+                                <div className="text-[10px] opacity-75">{(w*30).toFixed(0)}ml</div>
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => setHarrietDeficitPercent("6")}
+                                className={`p-2 text-xs font-medium rounded-md border transition-colors ${
+                                  harrietDeficitPercent === "6"
+                                    ? "bg-teal-600 text-white border-teal-600"
+                                    : "bg-white dark:bg-gray-800 border-gray-300 hover:bg-teal-50"
+                                }`}
+                              >
+                                <div>6%</div>
+                                <div className="text-[10px] opacity-75">{(w*60).toFixed(0)}ml</div>
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => setHarrietDeficitPercent("9")}
+                                className={`p-2 text-xs font-medium rounded-md border transition-colors ${
+                                  harrietDeficitPercent === "9"
+                                    ? "bg-teal-600 text-white border-teal-600"
+                                    : "bg-white dark:bg-gray-800 border-gray-300 hover:bg-teal-50"
+                                }`}
+                              >
+                                <div>9%</div>
+                                <div className="text-[10px] opacity-75">{(w*90).toFixed(0)}ml</div>
+                              </button>
+                            </>
+                          )}
+                        </div>
                       </div>
                     </>
                   )}
                 </>
-              )}
-              
-              {sodiumType === "hyponatremia" && hyponatremiaType === "mild" && (
-                <div>
-                  <Label className="text-xs">Current Serum Na (mEq/L)</Label>
-                  <Input
-                    type="number"
-                    step="1"
-                    min="100"
-                    max="134"
-                    placeholder="e.g., 125"
-                    value={currentNa}
-                    onChange={(e) => setCurrentNa(e.target.value)}
-                    className="font-mono h-9 mt-1"
-                  />
-                </div>
               )}
             </div>
           )}
