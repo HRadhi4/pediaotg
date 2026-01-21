@@ -1133,12 +1133,6 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
                   )}
                 </>
               )}
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="severe" id="severe" />
-                    <Label htmlFor="severe" className="text-sm">Severe (&lt;125)</Label>
-                  </div>
-                </RadioGroup>
-              )}
               
               {sodiumType === "hypernatremia" && (
                 <>
