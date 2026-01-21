@@ -794,7 +794,6 @@ const AcetaminophenApproach = ({ weight, expandedSections, toggleSection }) => {
                   )}
                 </div>
               </div>
-            </div>
 
             <div className="text-[10px] text-muted-foreground space-y-1 mt-2">
               <p><strong>Upper line:</strong> {nomogramUnit === "SI" ? "1320 µmol/L (200 mcg/mL)" : "200 mcg/mL (1320 µmol/L)"} at 4h</p>
