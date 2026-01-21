@@ -209,20 +209,24 @@ const AcetaminophenApproach = ({ weight, expandedSections, toggleSection }) => {
   //             y_final = 0.76694206 * y_raw + 5.0148173
   //
   // RAW COORDINATES FROM SVG (before transform):
+  // 
   // Y-axis (concentration mcg/mL) - from axis-label text elements:
   //   1000 mcg/mL: y = 100
   //   500 mcg/mL:  y = 170.56723
   //   200 mcg/mL:  y = 272.39224
   //   150 mcg/mL:  y = 302.17673
   //   100 mcg/mL:  y = 347.39224
-  //   50 mcg/mL:   y = 423.82626 (using 424.47882 from grid)
-  //   10 mcg/mL:   y = 600 (using 599.34863 from grid)
+  //   50 mcg/mL:   y = 423.82626
+  //   10 mcg/mL:   y = 600
   //   5 mcg/mL:    y = 673.5658
   //
-  // X-axis (hours post-ingestion):
-  //   Left edge (4 hours):  x = 150 (grid lines start here)
-  //   Right edge (24 hours): x = 650 (grid lines end here)
-  //   Hours 4-24 span 20 hours across 500 pixels (25 px/hour)
+  // X-axis (hours post-ingestion) - from tick-line elements:
+  //   Hour 4:  x = 220.02454
+  //   Hour 8:  x = 292
+  //   Hour 12: x = 363
+  //   Hour 16: x = 435.15863
+  //   Hour 20: x = 506.3959
+  //   Hour 24: x = 577.94629
   //
   // TRANSFORMED COORDINATES (what the browser renders):
   // Apply transform: x' = x * 0.76671865 + 1.1857538
@@ -241,9 +245,15 @@ const AcetaminophenApproach = ({ weight, expandedSections, toggleSection }) => {
   
   // Raw coordinates (before transform)
   const RAW_COORDS = {
-    // X-axis bounds
-    xLeft: 150,    // x at hour 4
-    xRight: 650,   // x at hour 24
+    // X-axis reference points (hours -> raw x coordinate from tick lines)
+    xPoints: [
+      { hour: 4, x: 220.02454 },
+      { hour: 8, x: 292 },
+      { hour: 12, x: 363 },
+      { hour: 16, x: 435.15863 },
+      { hour: 20, x: 506.3959 },
+      { hour: 24, x: 577.94629 }
+    ],
     // Y-axis reference points (mcg/mL -> raw y coordinate)
     yPoints: [
       { conc: 1000, y: 100 },
@@ -251,8 +261,8 @@ const AcetaminophenApproach = ({ weight, expandedSections, toggleSection }) => {
       { conc: 200, y: 272.39 },
       { conc: 150, y: 302.18 },
       { conc: 100, y: 347.39 },
-      { conc: 50, y: 424.48 },
-      { conc: 10, y: 599.35 },
+      { conc: 50, y: 423.83 },
+      { conc: 10, y: 600 },
       { conc: 5, y: 673.57 }
     ]
   };
@@ -261,19 +271,40 @@ const AcetaminophenApproach = ({ weight, expandedSections, toggleSection }) => {
   const transformX = (rawX) => rawX * TRANSFORM.scaleX + TRANSFORM.translateX;
   const transformY = (rawY) => rawY * TRANSFORM.scaleY + TRANSFORM.translateY;
   
-  // Final chart boundaries (after transform)
-  const chartLeft = transformX(RAW_COORDS.xLeft);     // ~116.2
-  const chartRight = transformX(RAW_COORDS.xRight);   // ~499.5
-  const chartTop = transformY(100);                    // ~81.7 (1000 mcg/mL)
-  const chartBottom = transformY(673.57);              // ~521.5 (5 mcg/mL)
+  // Final chart boundaries (after transform) - for reference
+  const chartLeft = transformX(RAW_COORDS.xPoints[0].x);   // Hour 4
+  const chartRight = transformX(RAW_COORDS.xPoints[5].x);  // Hour 24
+  const chartTop = transformY(100);                         // 1000 mcg/mL
+  const chartBottom = transformY(673.57);                   // 5 mcg/mL
   
-  // Scale function for X-axis (hours 4-24)
+  // Scale function for X-axis (hours 4-24) - using linear interpolation between known points
   const xScaleSVG = (hours) => {
     // Clamp hours to valid range 4-24
     const h = Math.max(4, Math.min(24, hours));
-    // Map hours 4-24 to raw x 150-650, then transform
-    const rawX = RAW_COORDS.xLeft + ((h - 4) / 20) * (RAW_COORDS.xRight - RAW_COORDS.xLeft);
-    return transformX(rawX);
+    
+    const xPoints = RAW_COORDS.xPoints;
+    
+    // If exactly at a reference point
+    for (const pt of xPoints) {
+      if (h === pt.hour) {
+        return transformX(pt.x);
+      }
+    }
+    
+    // Find bracketing points and interpolate linearly
+    for (let i = 0; i < xPoints.length - 1; i++) {
+      const left = xPoints[i];
+      const right = xPoints[i + 1];
+      
+      if (h >= left.hour && h <= right.hour) {
+        const ratio = (h - left.hour) / (right.hour - left.hour);
+        const rawX = left.x + ratio * (right.x - left.x);
+        return transformX(rawX);
+      }
+    }
+    
+    // Fallback - shouldn't reach here
+    return transformX(400);
   };
   
   // Scale function for Y-axis (concentration - logarithmic scale)
@@ -282,7 +313,6 @@ const AcetaminophenApproach = ({ weight, expandedSections, toggleSection }) => {
     const c = Math.max(5, Math.min(1000, concentration));
     
     // Use logarithmic interpolation between known points
-    // Find the two reference points that bracket this concentration
     const points = RAW_COORDS.yPoints;
     
     // If at or above highest point
