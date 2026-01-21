@@ -70,15 +70,27 @@ class AuthService:
         Verify password for special accounts (admin/tester).
         Uses hashed password if available, falls back to plain text comparison for backward compatibility.
         """
+        import logging
+        logger = logging.getLogger(__name__)
+        
+        # First try plain text comparison (most reliable)
+        if fallback_plain and password == fallback_plain:
+            logger.info("Password verified via plain text match")
+            return True
+        
+        # Then try hash verification
         if stored_hash:
-            # Use bcrypt verification if hash is available
             try:
-                return bcrypt.checkpw(password.encode('utf-8'), stored_hash.encode('utf-8'))
-            except Exception:
+                # Strip any quotes that might have been included
+                clean_hash = stored_hash.strip('"\'')
+                result = bcrypt.checkpw(password.encode('utf-8'), clean_hash.encode('utf-8'))
+                logger.info(f"Password hash verification result: {result}")
+                return result
+            except Exception as e:
+                logger.error(f"Hash verification error: {e}")
                 return False
-        else:
-            # Fallback to plain text comparison (deprecated, for backward compatibility)
-            return password == fallback_plain
+        
+        return False
     
     def hash_password(self, password: str) -> str:
         """
