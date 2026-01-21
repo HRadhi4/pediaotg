@@ -89,14 +89,16 @@ Build a full SaaS-style web app "Pediatrics on the Go" with:
   - **Testing**: 100% pass rate (iteration_22.json - 8/8 tests)
 
 - ✅ **NEW: Potassium (PO) Option Added to Electrolyte Calculator**:
-  - Added new dropdown option "Potassium (PO)" for oral KCl supplementation
-  - **Dose Range**: 1-4 mEq/kg/day (divided BD-QID)
-  - **Frequency Selector**: BD (2x/day), TID (3x/day), QID (4x/day)
-  - Calculation automatically divides daily dose by selected frequency
-  - Shows: per-dose amount, daily total, preparation instructions
-  - Note: "Give with food or water to reduce GI irritation"
-  - Updated both ElectrolytesDialog.jsx and ElectrolytesInfusionsPage.jsx
-  - **Testing**: 100% pass rate (iteration_22.json - 8/8 tests)
+  - Merged IV and PO into single "Potassium" dropdown option with **IV/PO switch toggle**
+  - **IV Mode**: Full calculation with dose, drug volume, diluent, total volume, administration rate
+  - **PO Mode**: 
+    - Dose Range: 1-4 mEq/kg/day (divided BD-QID)
+    - Frequency Selector: BD (2x/day), TID (3x/day), QID (4x/day)
+    - **Simplified result**: Shows only dose and frequency (e.g., "8.3 mEq TID")
+    - Supporting info: daily total and per-kg calculation
+  - Switch dynamically updates dose range and slider limits
+  - Updated ElectrolytesDialog.jsx
+  - **Testing**: Verified with screenshots
 
 ### Session 8 Updates (January 20, 2026)
 - ✅ **Simplified Electrolytes Correction Page with Dose Slider**:
