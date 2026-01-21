@@ -667,16 +667,29 @@ const AcetaminophenApproach = ({ weight, expandedSections, toggleSection }) => {
 
             {/* Static SVG Nomogram with Patient Point Overlay */}
             <p className="text-[9px] text-center text-muted-foreground mb-2 sm:hidden">← Swipe to scroll →</p>
-            <div className="overflow-auto -mx-2 px-2 pb-2" style={{ maxHeight: '450px' }}>
-              <div className="flex justify-center" style={{ minWidth: '320px' }}>
-                <div className="relative" style={{ width: '100%', maxWidth: '500px', aspectRatio: '620/750' }}>
-                  {/* Static SVG Nomogram Background */}
-                  <img 
-                    src={RumackNomogramSVG} 
-                    alt="Rumack-Matthew Nomogram" 
+            <div className="overflow-auto -mx-2 px-2 pb-2">
+              <div className="flex justify-center" style={{ minWidth: '400px' }}>
+                <div className="relative" style={{ width: '100%', maxWidth: '600px', minHeight: '500px' }}>
+                  {/* Static SVG Nomogram Background - Vector rendering for clarity */}
+                  <object
+                    data={RumackNomogramSVG}
+                    type="image/svg+xml"
                     className="w-full h-auto"
-                    style={{ background: '#ffffff', borderRadius: '4px' }}
-                  />
+                    style={{ 
+                      background: '#ffffff', 
+                      borderRadius: '4px',
+                      minHeight: '500px'
+                    }}
+                    aria-label="Rumack-Matthew Nomogram"
+                  >
+                    {/* Fallback to img if object fails */}
+                    <img 
+                      src={RumackNomogramSVG} 
+                      alt="Rumack-Matthew Nomogram" 
+                      className="w-full h-auto"
+                      style={{ background: '#ffffff', borderRadius: '4px' }}
+                    />
+                  </object>
                   
                   {/* Patient Data Point Overlay */}
                   {hours >= 4 && hours <= 24 && level > 0 && (
