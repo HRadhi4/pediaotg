@@ -806,7 +806,7 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
                 {results.isPO ? (
                   <div className="p-4 rounded-lg bg-green-50 dark:bg-green-950/30 border border-green-200 text-center space-y-2">
                     <p className="text-lg font-bold text-green-800 dark:text-green-300">
-                      {results.poResult.perDose} mEq {results.poResult.frequency}
+                      {results.poResult.perDose} {results.poResult.frequency}
                     </p>
                     <p className="text-sm text-muted-foreground">
                       ({results.poResult.dailyDose} total = {results.poResult.perKg})
