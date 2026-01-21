@@ -11,8 +11,8 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import Section from "./Section";
 
-// Import the static Rumack-Matthew nomogram SVG
-import RumackNomogramSVG from "@/assets/images/rumack_matthew_nomogram.svg";
+// Import the static Rumack-Matthew nomogram SVG (updated version)
+import RumackNomogramSVG from "@/assets/images/rumack_matthew_nomogram_new.svg";
 
 // Common acetaminophen/paracetamol liquid preparations in Bahrain (concentration in mg/ml)
 const LIQUID_PREPARATIONS = [
@@ -197,17 +197,17 @@ const AcetaminophenApproach = ({ weight, expandedSections, toggleSection }) => {
   const mcgToMicromol = (mcg) => Math.round(mcg * 6.62);
 
   // Static SVG nomogram dimensions and coordinate mapping
-  // The SVG viewBox is 0 0 237.82 300 - mapping chart area within it
-  // Based on the SVG structure: chart area starts ~x=45, ends ~x=197 for hours 0-24
-  // Y-axis: top (~y=34) is high concentration, bottom (~y=207) is low concentration
-  const svgViewWidth = 237.82;
-  const svgViewHeight = 300;
+  // The NEW SVG viewBox is 0 0 620 750.40002
+  // Updated chart area boundaries based on the new SVG structure
+  const svgViewWidth = 620;
+  const svgViewHeight = 750.40002;
   
-  // Chart boundaries within the SVG (approximate from the vectorized image)
-  const chartLeft = 45;      // x position at hour 0
-  const chartRight = 197;    // x position at hour 24
-  const chartTop = 34;       // y position at top (high concentration ~500 mcg/mL)
-  const chartBottom = 207;   // y position at bottom (low concentration ~3 mcg/mL)
+  // Chart boundaries within the new SVG (calibrated for RM-Nomogram.svg)
+  // X-axis: hours 0-24, Y-axis: concentration on log scale
+  const chartLeft = 85;       // x position at hour 0
+  const chartRight = 570;     // x position at hour 24
+  const chartTop = 60;        // y position at top (high concentration ~500 mcg/mL)
+  const chartBottom = 650;    // y position at bottom (low concentration ~3 mcg/mL)
   
   // Scale functions for the static SVG overlay
   const xScaleSVG = (h) => {
