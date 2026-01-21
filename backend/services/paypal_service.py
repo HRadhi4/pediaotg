@@ -58,8 +58,10 @@ class PayPalService:
         else:
             self.base_url = 'https://api-m.sandbox.paypal.com'
         
-        # Get frontend URL for callbacks
-        frontend_url = os.environ.get('FRONTEND_URL', 'https://pedcalc.preview.emergentagent.com')
+        # Get frontend URL for callbacks (required)
+        frontend_url = os.environ.get('FRONTEND_URL')
+        if not frontend_url:
+            raise ValueError("FRONTEND_URL environment variable is required for PayPal integration")
         self.return_url = os.environ.get('PAYPAL_RETURN_URL', f'{frontend_url}/subscription/success')
         self.cancel_url = os.environ.get('PAYPAL_CANCEL_URL', f'{frontend_url}/subscription/cancel')
         

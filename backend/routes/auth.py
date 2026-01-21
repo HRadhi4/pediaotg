@@ -345,8 +345,10 @@ async def forgot_password(request_data: ForgotPasswordRequest):
             'created_at': datetime.now(timezone.utc).isoformat()
         })
         
-        # Get frontend URL from environment or use default
-        frontend_url = os.environ.get('FRONTEND_URL', 'https://pedcalc.preview.emergentagent.com')
+        # Get frontend URL from environment (required for production)
+        frontend_url = os.environ.get('FRONTEND_URL')
+        if not frontend_url:
+            raise HTTPException(status_code=500, detail="FRONTEND_URL environment variable not set")
         
         # Send email
         email_service.send_password_reset_email(
