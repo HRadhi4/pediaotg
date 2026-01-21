@@ -252,6 +252,33 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
     let correction = 0;
     let formula = "";
     
+    if (nahco3Method === "infusion") {
+      // Infusion: 0.25-2 mEq/kg/hr
+      const rate = parseFloat(infusionRate) || 1;
+      const mEqPerHour = rate * w;
+      const mlPerHour = mEqPerHour; // 8.4% = 1 mEq/ml
+      
+      setResults({
+        medication: "Sodium Bicarbonate 8.4% Infusion",
+        calculation: {
+          dose: `${rate} mEq/kg/hr`,
+          formula: `${rate} mEq/kg/hr × ${w} kg = ${mEqPerHour.toFixed(1)} mEq/hr`,
+          drugVolume: `${mlPerHour.toFixed(1)} ml/hr (undiluted)`,
+          diluent: "Can dilute 1:1 with NS if needed",
+          totalVolume: `${mlPerHour.toFixed(1)} - ${(mlPerHour * 2).toFixed(1)} ml/hr`
+        },
+        administration: { 
+          duration: "Continuous", 
+          rate: `${mlPerHour.toFixed(1)} ml/hr (undiluted) or ${(mlPerHour * 2).toFixed(1)} ml/hr (1:1 diluted)` 
+        },
+        preparation: `Set infusion at ${mlPerHour.toFixed(1)} ml/hr of NaHCO3 8.4%`,
+        notes: "Method: Continuous Infusion | Range: 0.25-2 mEq/kg/hr",
+        oralNote: "Oral NaHCO3: 600 mg = 7 mEq",
+        warnings: ["Monitor ABG every 2-4 hours", "Adjust rate based on response"]
+      });
+      return;
+    }
+    
     if (nahco3Method === "hco3") {
       // Correction (1): (Desired HCO3 - Lab HCO3) × 0.3 × WT
       const labValue = parseFloat(labHco3);
@@ -282,7 +309,6 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
       return;
     }
     
-    const dosePerKg = (correction / w).toFixed(2);
     const drugVolume = correction;
     const diluentVolume = correction;
     const totalVolume = drugVolume + diluentVolume;
@@ -303,6 +329,7 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
       },
       preparation: `Draw ${drugVolume.toFixed(1)} ml NaHCO3 + ${diluentVolume.toFixed(1)} ml NS = ${totalVolume.toFixed(1)} ml`,
       notes: `Method: ${nahco3Method === "hco3" ? "HCO3 deficit" : "Base Excess"}`,
+      oralNote: "Oral NaHCO3: 600 mg = 7 mEq",
       warnings: ["Correct calcium FIRST if hypocalcemic", "Recheck ABG after 1st half"]
     });
   };
