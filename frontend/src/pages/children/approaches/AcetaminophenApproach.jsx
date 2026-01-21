@@ -671,22 +671,63 @@ const AcetaminophenApproach = ({ weight, expandedSections, toggleSection }) => {
             )}
 
             {/* Static SVG Nomogram with Patient Point Overlay */}
-            <p className="text-[9px] text-center text-muted-foreground mb-2 sm:hidden">← Swipe to scroll →</p>
-            <div className="overflow-auto -mx-2 px-2 pb-2">
-              <div className="flex justify-center" style={{ minWidth: '400px' }}>
-                <div className="relative" style={{ width: '100%', maxWidth: '620px' }}>
-                  {/* Static SVG Nomogram Background - Using img with SVG for vector clarity */}
-                  <img 
-                    src={RumackNomogramSVG} 
-                    alt="Rumack-Matthew Nomogram" 
-                    className="w-full h-auto"
-                    style={{ 
-                      background: '#ffffff', 
-                      borderRadius: '4px',
-                      minHeight: '400px',
-                      imageRendering: 'auto'
-                    }}
-                  />
+            <div className="flex items-center justify-between mb-2">
+              <p className="text-[9px] text-muted-foreground sm:hidden">← Swipe to scroll →</p>
+              {/* Zoom Controls */}
+              <div className="flex items-center gap-1 ml-auto">
+                <button
+                  type="button"
+                  onClick={() => setNomogramZoom(z => Math.max(0.5, z - 0.25))}
+                  className="p-1.5 rounded-md border border-gray-300 hover:bg-gray-100 dark:border-gray-600 dark:hover:bg-gray-800 transition-colors"
+                  title="Zoom Out"
+                >
+                  <ZoomOut className="w-4 h-4" />
+                </button>
+                <span className="text-xs font-mono min-w-[3rem] text-center">{Math.round(nomogramZoom * 100)}%</span>
+                <button
+                  type="button"
+                  onClick={() => setNomogramZoom(z => Math.min(3, z + 0.25))}
+                  className="p-1.5 rounded-md border border-gray-300 hover:bg-gray-100 dark:border-gray-600 dark:hover:bg-gray-800 transition-colors"
+                  title="Zoom In"
+                >
+                  <ZoomIn className="w-4 h-4" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setNomogramZoom(1)}
+                  className="p-1.5 rounded-md border border-gray-300 hover:bg-gray-100 dark:border-gray-600 dark:hover:bg-gray-800 transition-colors"
+                  title="Reset Zoom"
+                >
+                  <RotateCcw className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+            
+            {/* Zoomable Nomogram Container */}
+            <div 
+              ref={nomogramContainerRef}
+              className="overflow-auto border border-gray-200 dark:border-gray-700 rounded-lg bg-white"
+              style={{ maxHeight: '550px' }}
+            >
+              <div 
+                className="relative transition-transform duration-200 origin-top-left"
+                style={{ 
+                  width: `${620 * nomogramZoom}px`,
+                  minWidth: nomogramZoom < 1 ? '100%' : 'auto'
+                }}
+              >
+                {/* High-quality SVG Nomogram - rendered at native size then scaled */}
+                <img 
+                  src={RumackNomogramSVG} 
+                  alt="Rumack-Matthew Nomogram" 
+                  className="block"
+                  style={{ 
+                    width: '100%',
+                    height: 'auto',
+                    imageRendering: 'crisp-edges'
+                  }}
+                  draggable={false}
+                />
                   
                   {/* Patient Data Point Overlay */}
                   {hours >= 4 && hours <= 24 && level > 0 && (
