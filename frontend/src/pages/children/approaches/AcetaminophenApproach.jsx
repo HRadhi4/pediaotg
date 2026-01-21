@@ -669,27 +669,19 @@ const AcetaminophenApproach = ({ weight, expandedSections, toggleSection }) => {
             <p className="text-[9px] text-center text-muted-foreground mb-2 sm:hidden">← Swipe to scroll →</p>
             <div className="overflow-auto -mx-2 px-2 pb-2">
               <div className="flex justify-center" style={{ minWidth: '400px' }}>
-                <div className="relative" style={{ width: '100%', maxWidth: '600px', minHeight: '500px' }}>
-                  {/* Static SVG Nomogram Background - Vector rendering for clarity */}
-                  <object
-                    data={RumackNomogramSVG}
-                    type="image/svg+xml"
+                <div className="relative" style={{ width: '100%', maxWidth: '620px' }}>
+                  {/* Static SVG Nomogram Background - Using img with SVG for vector clarity */}
+                  <img 
+                    src={RumackNomogramSVG} 
+                    alt="Rumack-Matthew Nomogram" 
                     className="w-full h-auto"
                     style={{ 
                       background: '#ffffff', 
                       borderRadius: '4px',
-                      minHeight: '500px'
+                      minHeight: '400px',
+                      imageRendering: 'auto'
                     }}
-                    aria-label="Rumack-Matthew Nomogram"
-                  >
-                    {/* Fallback to img if object fails */}
-                    <img 
-                      src={RumackNomogramSVG} 
-                      alt="Rumack-Matthew Nomogram" 
-                      className="w-full h-auto"
-                      style={{ background: '#ffffff', borderRadius: '4px' }}
-                    />
-                  </object>
+                  />
                   
                   {/* Patient Data Point Overlay */}
                   {hours >= 4 && hours <= 24 && level > 0 && (
