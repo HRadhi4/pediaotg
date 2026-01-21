@@ -305,6 +305,35 @@ const ElectrolytesInfusionsPage = ({ onBack }) => {
     });
   };
 
+  const calculatePotassiumPO = () => {
+    // Use custom dose from slider/input (this is total daily dose)
+    let dailyDose = currentDose;
+    const dosePerKg = (dailyDose / w).toFixed(1);
+    
+    // Get frequency divisor
+    const freqMap = { "BD": 2, "TID": 3, "QID": 4 };
+    const divisor = freqMap[kclPoFrequency] || 2;
+    const perDose = dailyDose / divisor;
+    
+    setResults({
+      medication: "Potassium Chloride (KCl) Oral",
+      calculation: {
+        dose: `${dailyDose.toFixed(1)} mEq/day (${dosePerKg} mEq/kg/day)`,
+        formula: `Selected: ${dosePerKg} mEq/kg/day x ${w} kg = ${dailyDose.toFixed(1)} mEq/day`,
+        drugVolume: `${perDose.toFixed(1)} mEq per dose`,
+        diluent: `Divided ${kclPoFrequency} (${divisor} times/day)`,
+        totalVolume: `${dailyDose.toFixed(1)} mEq total daily`
+      },
+      administration: {
+        duration: kclPoFrequency,
+        rate: `${perDose.toFixed(1)} mEq per dose`
+      },
+      preparation: `Give ${perDose.toFixed(1)} mEq PO ${kclPoFrequency}`,
+      frequency: kclPoFrequency,
+      notes: "Give with food or water to reduce GI irritation"
+    });
+  };
+
   const calculateNaHCO3 = () => {
     // Use custom dose from slider/input
     let correction = currentDose;
