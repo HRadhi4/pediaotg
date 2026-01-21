@@ -1416,6 +1416,9 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
                         <span>Current Na: <strong>{results.harrietData.currentNa}</strong> mEq/L</span>
                         <span>Desired Na: <strong>{results.harrietData.desiredNa}</strong> mEq/L</span>
                       </div>
+                      <div className="text-center mt-1 text-[10px] text-muted-foreground">
+                        Deficit: {results.harrietData.deficitType === "infant" ? "Infant" : "Child"} {results.harrietData.deficitPercent}% = {results.harrietData.totalDeficit} ml
+                      </div>
                     </div>
                     
                     {/* Step 1: Calculate Deficits */}
