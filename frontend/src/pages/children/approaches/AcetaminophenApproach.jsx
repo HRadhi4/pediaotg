@@ -550,7 +550,7 @@ const AcetaminophenApproach = ({ weight, expandedSections, toggleSection }) => {
             <p className="text-[9px] text-center text-muted-foreground mb-2 sm:hidden">← Swipe to scroll →</p>
             <div className="overflow-auto -mx-2 px-2 pb-2">
               <div className="flex justify-center" style={{ minWidth: '320px' }}>
-                <div className="relative" style={{ width: '360px', height: '450px' }}>
+                <div className="relative" style={{ width: '450px', height: '550px' }}>
                   {/* Static SVG Nomogram Background */}
                   <img 
                     src={RumackNomogramSVG} 
