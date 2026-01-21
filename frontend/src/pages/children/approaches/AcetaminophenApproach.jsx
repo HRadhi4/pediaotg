@@ -11,8 +11,9 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import Section from "./Section";
 
-// Import the static Rumack-Matthew nomogram SVG (updated version)
-import RumackNomogramSVG from "@/assets/images/rumack_matthew_nomogram_new.svg";
+// Import the static Rumack-Matthew nomogram SVG (updated version - using as image)
+// Note: Using require for SVG to avoid namespace parsing issues with Inkscape-generated SVGs
+const RumackNomogramSVG = "/images/rumack_matthew_nomogram_new.svg";
 
 // Common acetaminophen/paracetamol liquid preparations in Bahrain (concentration in mg/ml)
 const LIQUID_PREPARATIONS = [
