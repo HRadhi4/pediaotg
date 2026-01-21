@@ -81,31 +81,38 @@ Build a full SaaS-style web app "Pediatrics on the Go" with:
 ## Recent Changes (January 16, 2026)
 
 ### Session 11 Updates (Current - January 21, 2026)
+- ✅ **Hyponatremia Mild/Asymptomatic - Fluid Deficit Selector**:
+  - Replaced fluid deficit entry box with **Infant/Child toggle buttons**
+  - **Infant** options: 5% (50ml/kg), 10% (100ml/kg), 15% (150ml/kg)
+  - **Child** options: 3% (30ml/kg), 6% (60ml/kg), 9% (90ml/kg)
+  - Shows calculated ml values based on patient weight
+  - Results display includes deficit type and percentage
+  - State variables: `hypoDeficitType`, `hypoDeficitPercent`
+  
+- ✅ **IEM Emergencies - Merged with Metabolic Emergencies**:
+  - Added **SMC Guideline / UpToDate toggle** (`data-testid="iem-guideline-switch"`)
+  - **SMC Guideline** (default): Disease Crisis Quick Reference table (9 diseases), Emergency Regimen Principles, Hyperammonemia Management, GSD Emergency, Acidosis Management
+  - **UpToDate**: Clinical Presentations (Neurologic 85%, GI 58%), Initial Laboratory Evaluation, Distinguishing IEM by Lab Findings, Hyperammonemia EMERGENCY Management, Hypoglycemia with/without ketosis, Seizures Cofactor Trials
+  - Removed separate "Metabolic Emergencies" tab from ApproachesPage
+  
+- ✅ **Rumack-Matthew Nomogram Calibrated**:
+  - Downloaded new optimized SVG: `/public/images/rumack_matthew_nomogram_new.svg`
+  - Calibrated coordinates for transformed SVG (scale ~0.767)
+  - Chart boundaries: Left=116, Right=500, Top=82, Bottom=657
+  - X-axis: Hours 4-24 (chart starts at 4 hours)
+  - Y-axis: Log scale 5-1000 mcg/mL
+  - Mobile-friendly container with responsive sizing and scroll support
+  
 - ✅ **DKA Approach SMC Guideline Toggle**:
   - Added **toggle switch** to switch between "Saudi Booklet" (default) and "SMC Guideline"
   - **Saudi Booklet** sections: Recognition & Diagnosis, 1st Hour Management, Fluid Management, Insulin, Potassium, Dextrose, Cerebral Edema, DKA Resolution
   - **SMC Guideline** sections (Kingdom of Bahrain MOH): Introduction, Diagnosis, Initial Investigations, Monitoring, Fluids, Potassium, Insulin, Bicarbonate, Cerebral Edema, Troubleshooting
   - SMC Guideline includes weight-based fluid rates table, corrected sodium formula, serum osmolality formula
   - Toggle data-testid: `dka-guideline-switch`
-  
-- ✅ **IEM Emergencies Approach (NEW)**:
-  - New approach component for Inborn Error of Metabolism emergencies
-  - **Disease Crisis Quick Reference Table** with 9 diseases:
-    - Propionic Acidemia, MMA, MSUD, VLCAD, CPT1, GSD 1, Mitochondrial, PKU, Hunter
-  - Columns: Crisis, Blood Gas, HCO₃, CPK, Lactate, D10%, Carnitine, Ammonia
-  - Sections: Emergency Regimen Principles, Initial Plan & Management, Organic Acid Disorders, MSUD, Fatty Acid Oxidation Defects, Urea Cycle Defects, Hyperammonemia Management, Dialysis, GSD Emergency, Mitochondrial Disorders, Acidosis Management
-  - Weight-based calculations for carnitine, ammonia scavengers, arginine, bicarbonate
-  - File: `/app/frontend/src/pages/children/approaches/IEMEmergencyApproach.jsx`
-  - Tab ID: `iem`
 
-- ✅ **Rumack-Matthew Nomogram Updated**:
-  - Replaced nomogram SVG with user-provided `/images/rumack_matthew_nomogram_new.svg`
-  - New SVG viewBox: `0 0 620 750.40002`
-  - Updated chart boundaries: Left=85, Right=570, Top=60, Bottom=650
-  - Container size updated to 450x550px
-  - SVG served from public folder to avoid Inkscape namespace parsing issues
-  
-- ✅ **Testing**: 100% pass rate (iteration_23.json - 6/6 tests)
+- ✅ **Testing:** 100% pass rate
+  - iteration_23.json: DKA SMC Guideline, IEM Emergencies, Acetaminophen (6/6)
+  - iteration_24.json: Hyponatremia deficit selector, IEM toggle, Nomogram calibration (8/8)
 
 ### Session 10 Updates (January 21, 2026)
 - ✅ **Hyponatremia Calculator Overhaul (Based on User Flowcharts)**:
