@@ -506,13 +506,14 @@ Build a full SaaS-style web app "Pediatrics on the Go" with:
 - Use viewport meta tags for proper mobile rendering
 
 ## Backlog / Future Tasks
-- [ ] Add more drug entries
-- [ ] Add automated blood gas interpretation
 - [ ] Add Salicylate (Aspirin) Toxicity approach
-- [ ] Address minor linting errors in /pages/children/ components
+- [ ] Add automated blood gas interpretation
+- [ ] Refactor ElectrolytesDialog.jsx (currently 1500+ lines) into separate hooks
+- [ ] Delete redundant file: /app/frontend/src/pages/children/ElectrolytesInfusionsPage.jsx
+- [ ] Audit all number inputs for proper validation (min="0" where appropriate)
 - [ ] Production deployment prep
 - [ ] Add dark mode theme toggle
-- [ ] Audit all number inputs for proper validation (min="0" where appropriate)
+- [ ] Continue Drug Formulary review (Formulary.pdf verification)
 
 ## Pending User Verification
 - [ ] Registration bug fix ("Body is disturbed or locked" error in AuthContext.jsx)
