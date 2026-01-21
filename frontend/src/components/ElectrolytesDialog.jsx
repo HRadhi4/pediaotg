@@ -1049,6 +1049,45 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
                       ({results.poResult.dailyDose} total = {results.poResult.perKg})
                     </p>
                   </div>
+                ) : results.isNelsonMethod ? (
+                  /* Nelson Method for Hypernatremia */
+                  <div className="space-y-3">
+                    {/* Step 1: Volume Restoration */}
+                    <div className="p-3 rounded-lg bg-red-50 dark:bg-red-950/30 border border-red-200">
+                      <p className="text-xs font-bold text-red-700 dark:text-red-300 mb-2">Step 1: If Volume Depleted</p>
+                      <p className="font-mono text-sm">NS Bolus: <strong>{results.nelsonData.bolusVolume} ml</strong> (20 ml/kg) over 20 min</p>
+                      <p className="text-xs text-muted-foreground mt-1">Max 2 boluses</p>
+                    </div>
+                    
+                    {/* Step 2: Correction Rate */}
+                    <div className="p-3 rounded-lg bg-teal-50 dark:bg-teal-950/30 border-2 border-teal-400">
+                      <p className="text-xs font-bold text-teal-700 dark:text-teal-300 mb-2">Step 2: Correction (Na {results.nelsonData.naRange} → {results.nelsonData.correctionHours} hrs)</p>
+                      <div className="space-y-1">
+                        <p className="text-xs text-muted-foreground">Formula: 2 × Maintenance ÷ {results.nelsonData.correctionHours} hrs</p>
+                        <p className="text-xs text-muted-foreground">= 2 × {results.nelsonData.maintenance} ml/day ÷ {results.nelsonData.correctionHours}</p>
+                      </div>
+                      <div className="mt-2 p-2 bg-white dark:bg-gray-900 rounded">
+                        <p className="text-xs font-semibold">📋 Order:</p>
+                        <p className="font-mono text-lg font-bold text-teal-800 dark:text-teal-200">IVF NS @ {results.nelsonData.fluidRate} ml/hr</p>
+                      </div>
+                    </div>
+                    
+                    {/* Step 3: Monitoring */}
+                    <div className="p-3 rounded-lg bg-blue-50 dark:bg-blue-950/30 border border-blue-200">
+                      <p className="text-xs font-bold text-blue-700 dark:text-blue-300 mb-1">Step 3: Monitoring</p>
+                      <p className="text-sm">Repeat Na every <strong>4-6 hours</strong></p>
+                      <p className="text-xs text-muted-foreground">Max drop: 0.5 mEq/L/hr</p>
+                    </div>
+                    
+                    {/* Step 4: Emergency */}
+                    <div className="p-3 rounded-lg bg-amber-50 dark:bg-amber-950/30 border border-amber-200">
+                      <p className="text-xs font-bold text-amber-700 dark:text-amber-300 mb-1">Step 4: If Volume Depletion Develops or Seizures</p>
+                      <div className="space-y-1 text-xs">
+                        <p>• Volume depletion: NS bolus {results.nelsonData.bolusVolume} ml (20 ml/kg)</p>
+                        <p>• <strong className="text-red-600">Seizures:</strong> 3% NaCl <strong>{results.nelsonData.seizureRescue} ml</strong> (4-6 ml/kg) over 30 min</p>
+                      </div>
+                    </div>
+                  </div>
                 ) : (
                   <>
                     {/* Drug Info */}
