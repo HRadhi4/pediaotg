@@ -50,6 +50,7 @@ import {
   IronToxicityApproach,
   NSAIDToxicityApproach,
   IEMEmergencyApproach,
+  BloodGasApproach,
 } from "./approaches";
 
 const ApproachesPage = ({ onBack }) => {
