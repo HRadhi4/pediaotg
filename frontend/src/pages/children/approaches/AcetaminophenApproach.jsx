@@ -675,7 +675,7 @@ const AcetaminophenApproach = ({ weight, expandedSections, toggleSection }) => {
             
             <TransformWrapper
               initialScale={1}
-              minScale={0.5}
+              minScale={1}
               maxScale={4}
               centerOnInit={true}
               wheel={{ step: 0.1 }}
