@@ -313,6 +313,7 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
     const diluentVolume = correction;
     const totalVolume = drugVolume + diluentVolume;
     const halfDose = correction / 2;
+    const halfVolume = totalVolume / 2;
     
     setResults({
       medication: "Sodium Bicarbonate 8.4%",
@@ -324,8 +325,8 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
         totalVolume: `${totalVolume.toFixed(1)} ml`
       },
       administration: { 
-        duration: "Split dose", 
-        rate: `1st half (${halfDose.toFixed(1)} mEq) over 1hr, 2nd half over 24hr` 
+        duration: "Split dose (in Metabolic patients)", 
+        rate: `1st half: ${halfDose.toFixed(1)} mEq (${halfVolume.toFixed(1)} ml) over 1st hour | 2nd half: ${halfDose.toFixed(1)} mEq (${halfVolume.toFixed(1)} ml) over next 24 hours` 
       },
       preparation: `Draw ${drugVolume.toFixed(1)} ml NaHCO3 + ${diluentVolume.toFixed(1)} ml NS = ${totalVolume.toFixed(1)} ml`,
       notes: `Method: ${nahco3Method === "hco3" ? "HCO3 deficit" : "Base Excess"}`,
