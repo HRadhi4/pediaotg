@@ -147,7 +147,6 @@ const JaundiceDialog = ({ open, onOpenChange }) => {
     }
     
     // Use appropriate age category function based on gestational age
-    const ga = parseFloat(gestationalAge);
     const isTerm = ga >= 35;
     const ageCategory = isTerm ? getAgeCategoryTerm(ageHours) : getAgeCategoryPreterm(ageHours);
     const thresholds = THRESHOLDS[thresholdKey];
