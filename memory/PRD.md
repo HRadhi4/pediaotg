@@ -532,6 +532,7 @@ Build a full SaaS-style web app "Pediatrics on the Go" with:
 - [ ] Mobile responsiveness fix when accessing from app.pedotg.com (GoDaddy domain)
 
 ## Test Reports
+- `/app/test_reports/iteration_25.json` - Nomogram coordinate rewrite verification (100% - 6/6 tests)
 - `/app/test_reports/iteration_24.json` - Hyponatremia deficit selector, IEM toggle, Nomogram calibration (100% - 8/8)
 - `/app/test_reports/iteration_23.json` - DKA SMC Guideline, IEM Emergencies, Acetaminophen nomogram tests (100% - 6/6)
 - `/app/test_reports/iteration_22.json` - Jaundice Calculator data corrections tests (100% - 8/8)
