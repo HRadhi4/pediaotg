@@ -803,55 +803,69 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3 pt-0">
-                {/* Drug Info */}
-                <div className="p-2 rounded bg-blue-50 dark:bg-blue-950/30 text-xs">
-                  <p><strong>Stock:</strong> {currentElectrolyte.stock}</p>
-                  <p><strong>Target:</strong> {currentElectrolyte.target}</p>
-                </div>
-
-                {/* Calculation */}
-                <div className="p-2 rounded bg-green-50 dark:bg-green-950/30 text-xs space-y-1">
-                  <p className="font-semibold text-green-700 dark:text-green-300">Calculation</p>
-                  <p><strong>Dose:</strong> {results.calculation.dose}</p>
-                  <p className="text-muted-foreground">({results.calculation.formula})</p>
-                  <p><strong>Drug Volume:</strong> {results.calculation.drugVolume}</p>
-                  <p><strong>Diluent:</strong> {results.calculation.diluent}</p>
-                  <p><strong>Total Volume:</strong> <span className="text-lg font-bold">{results.calculation.totalVolume}</span></p>
-                </div>
-
-                {/* Administration */}
-                <div className="p-2 rounded bg-amber-50 dark:bg-amber-950/30 border border-amber-200">
-                  <div className="flex items-center gap-2 mb-1">
-                    <Clock className="h-3 w-3 text-amber-600" />
-                    <p className="text-xs font-semibold text-amber-700">Administration</p>
+                {/* Simplified PO Result */}
+                {results.isPO ? (
+                  <div className="p-4 rounded-lg bg-green-50 dark:bg-green-950/30 border border-green-200 text-center space-y-2">
+                    <p className="text-lg font-bold text-green-800 dark:text-green-300">
+                      {results.poResult.perDose} mEq {results.poResult.frequency}
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      ({results.poResult.dailyDose} total = {results.poResult.perKg})
+                    </p>
                   </div>
-                  <div className="grid grid-cols-2 gap-2 text-xs">
-                    <div><span className="text-muted-foreground">Duration:</span> <strong>{results.administration.duration}</strong></div>
-                    <div><span className="text-muted-foreground">Rate:</span> <strong>{results.administration.rate}</strong></div>
-                  </div>
-                </div>
+                ) : (
+                  <>
+                    {/* Drug Info */}
+                    <div className="p-2 rounded bg-blue-50 dark:bg-blue-950/30 text-xs">
+                      <p><strong>Stock:</strong> {currentElectrolyte.stock}</p>
+                      <p><strong>Target:</strong> {currentElectrolyte.target}</p>
+                    </div>
 
-                {/* Preparation */}
-                <div className="p-2 rounded bg-purple-50 dark:bg-purple-950/30 text-xs">
-                  <p className="font-semibold text-purple-700 dark:text-purple-300 mb-1">Preparation</p>
-                  <p className="font-mono bg-white dark:bg-gray-900 p-1.5 rounded text-xs">{results.preparation}</p>
-                </div>
+                    {/* Calculation */}
+                    <div className="p-2 rounded bg-green-50 dark:bg-green-950/30 text-xs space-y-1">
+                      <p className="font-semibold text-green-700 dark:text-green-300">Calculation</p>
+                      <p><strong>Dose:</strong> {results.calculation.dose}</p>
+                      <p className="text-muted-foreground">({results.calculation.formula})</p>
+                      <p><strong>Drug Volume:</strong> {results.calculation.drugVolume}</p>
+                      <p><strong>Diluent:</strong> {results.calculation.diluent}</p>
+                      <p><strong>Total Volume:</strong> <span className="text-lg font-bold">{results.calculation.totalVolume}</span></p>
+                    </div>
 
-                {/* Frequency & Notes */}
-                {results.frequency && (
-                  <p className="text-xs text-center"><strong>Frequency:</strong> {results.frequency}</p>
-                )}
-                {results.notes && (
-                  <p className="text-xs text-blue-600 dark:text-blue-400 p-1.5 bg-blue-50 dark:bg-blue-900/20 rounded">
-                    <strong>Note:</strong> {results.notes}
-                  </p>
-                )}
-                
-                {/* Oral NaHCO3 Note */}
-                {results.oralNote && (
-                  <p className="text-xs text-purple-600 dark:text-purple-400 p-1.5 bg-purple-50 dark:bg-purple-900/20 rounded">
-                    <strong>💊 {results.oralNote}</strong>
-                  </p>
+                    {/* Administration */}
+                    <div className="p-2 rounded bg-amber-50 dark:bg-amber-950/30 border border-amber-200">
+                      <div className="flex items-center gap-2 mb-1">
+                        <Clock className="h-3 w-3 text-amber-600" />
+                        <p className="text-xs font-semibold text-amber-700">Administration</p>
+                      </div>
+                      <div className="grid grid-cols-2 gap-2 text-xs">
+                        <div><span className="text-muted-foreground">Duration:</span> <strong>{results.administration.duration}</strong></div>
+                        <div><span className="text-muted-foreground">Rate:</span> <strong>{results.administration.rate}</strong></div>
+                      </div>
+                    </div>
+
+                    {/* Preparation */}
+                    <div className="p-2 rounded bg-purple-50 dark:bg-purple-950/30 text-xs">
+                      <p className="font-semibold text-purple-700 dark:text-purple-300 mb-1">Preparation</p>
+                      <p className="font-mono bg-white dark:bg-gray-900 p-1.5 rounded text-xs">{results.preparation}</p>
+                    </div>
+
+                    {/* Frequency & Notes */}
+                    {results.frequency && (
+                      <p className="text-xs text-center"><strong>Frequency:</strong> {results.frequency}</p>
+                    )}
+                    {results.notes && (
+                      <p className="text-xs text-blue-600 dark:text-blue-400 p-1.5 bg-blue-50 dark:bg-blue-900/20 rounded">
+                        <strong>Note:</strong> {results.notes}
+                      </p>
+                    )}
+                    
+                    {/* Oral NaHCO3 Note */}
+                    {results.oralNote && (
+                      <p className="text-xs text-purple-600 dark:text-purple-400 p-1.5 bg-purple-50 dark:bg-purple-900/20 rounded">
+                        <strong>💊 {results.oralNote}</strong>
+                      </p>
+                    )}
+                  </>
                 )}
 
                 {/* Warnings */}
