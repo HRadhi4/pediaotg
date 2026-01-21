@@ -30,6 +30,7 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
   const [calciumLevel, setCalciumLevel] = useState("");
   const [sodiumType, setSodiumType] = useState("hyponatremia");
   const [hyponatremiaType, setHyponatremiaType] = useState("mild");
+  const [hypernatremiaMethod, setHypernatremiaMethod] = useState("nelson"); // "nelson" or "standard"
   const [currentNa, setCurrentNa] = useState("");
   const [targetNa, setTargetNa] = useState("");
   const [phosphateSeverity, setPhosphateSeverity] = useState("moderate");
