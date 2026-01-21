@@ -80,14 +80,32 @@ Build a full SaaS-style web app "Pediatrics on the Go" with:
 
 ## Recent Changes (January 16, 2026)
 
-### Session 8 Updates (Current - January 20, 2026)
+### Session 9 Updates (Current - January 21, 2026)
+- ✅ **Jaundice Calculator Data Corrections**:
+  - Fixed PT and EX threshold values to match user-provided reference table
+  - Updated term infant medium risk values: PT[6]=255, PT[7]=270
+  - Updated term infant low risk EX values: EX[7]=430
+  - Fixed age category selection to use `getAgeCategoryTerm()` vs `getAgeCategoryPreterm()` based on GA
+  - **Testing**: 100% pass rate (iteration_22.json - 8/8 tests)
+
+- ✅ **NEW: Potassium (PO) Option Added to Electrolyte Calculator**:
+  - Added new dropdown option "Potassium (PO)" for oral KCl supplementation
+  - **Dose Range**: 1-4 mEq/kg/day (divided BD-QID)
+  - **Frequency Selector**: BD (2x/day), TID (3x/day), QID (4x/day)
+  - Calculation automatically divides daily dose by selected frequency
+  - Shows: per-dose amount, daily total, preparation instructions
+  - Note: "Give with food or water to reduce GI irritation"
+  - Updated both ElectrolytesDialog.jsx and ElectrolytesInfusionsPage.jsx
+  - **Testing**: 100% pass rate (iteration_22.json - 8/8 tests)
+
+### Session 8 Updates (January 20, 2026)
 - ✅ **Simplified Electrolytes Correction Page with Dose Slider**:
   - **Merged and simplified** ElectrolytesDialog into a single unified page
   - **Removed**: Separate tabs for "Electrolyte IV" and "Corrections" and "Drug Infusions"
   - New file: `/app/frontend/src/pages/children/ElectrolytesInfusionsPage.jsx`
   - **Single Page Layout**:
     - Weight input at top with prominent display
-    - Dropdown to select electrolyte (Calcium, Magnesium, Potassium, NaHCO3, Sodium, Phosphate)
+    - Dropdown to select electrolyte (Calcium, Magnesium, Potassium IV, Potassium PO, NaHCO3, Sodium, Phosphate)
     - **Dose Range prominently displayed in green box** for each electrolyte
     - **NEW: Dose Slider/Input** - Users can select a specific dose within the allowed range
       - Shows absolute dose range based on weight (e.g., 500-1000 mg for 10kg calcium)
