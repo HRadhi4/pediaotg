@@ -1475,6 +1475,122 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
                       <p><strong>Monitor:</strong> Na every 4-6 hrs | Max drop: 0.5 mEq/L/hr or 10-12 mEq/24hr</p>
                     </div>
                   </div>
+                ) : results.isMildHyponatremia ? (
+                  /* Mild/Asymptomatic Hyponatremia (Na 125-134) */
+                  <div className="space-y-3">
+                    {/* Header */}
+                    <div className="p-2 rounded bg-blue-50 dark:bg-blue-900/20 text-xs">
+                      <div className="flex justify-between">
+                        <span>Current Na: <strong>{results.mildData.currentNa}</strong> mEq/L</span>
+                        <span>Target Na: <strong>{results.mildData.targetNa}</strong> mEq/L</span>
+                      </div>
+                    </div>
+                    
+                    {/* Step 1: Volume */}
+                    <div className="p-3 rounded-lg bg-green-50 dark:bg-green-950/30 border border-green-200">
+                      <p className="text-xs font-bold text-green-700 dark:text-green-300 mb-2">Step 1: Determine Volume</p>
+                      <div className="space-y-1 text-xs">
+                        <p>Maintenance (100/50/20): <strong>{results.mildData.maintenance} ml/day</strong></p>
+                        <p>+ Deficit: <strong>{results.mildData.deficit} ml</strong></p>
+                        <p className="border-t pt-1 mt-1">= Total: <strong>{results.mildData.totalVolume} ml/day</strong></p>
+                        <p className="text-[10px] text-muted-foreground">Don't exceed 2.5L/day</p>
+                      </div>
+                    </div>
+                    
+                    {/* Step 2: Sodium Correction */}
+                    <div className="p-3 rounded-lg bg-blue-50 dark:bg-blue-950/30 border border-blue-200">
+                      <p className="text-xs font-bold text-blue-700 dark:text-blue-300 mb-2">Step 2: Sodium Correction</p>
+                      <div className="space-y-1 text-xs">
+                        <p><strong>Na Deficit</strong> = Wt × 0.6 × (Target - Measured)</p>
+                        <p className="pl-4">= {w} × 0.6 × ({results.mildData.targetNa} - {results.mildData.currentNa}) = <strong>{results.mildData.naDeficit} mEq</strong></p>
+                        <p className="mt-2"><strong>Na Maintenance</strong> = Wt × 2 mEq</p>
+                        <p className="pl-4">= {w} × 2 = <strong>{results.mildData.naMaintenance} mEq</strong></p>
+                        <p className="border-t pt-1 mt-1"><strong>Total Na:</strong> {results.mildData.naDeficit} + {results.mildData.naMaintenance} = <strong>{results.mildData.totalNa} mEq</strong></p>
+                        <p className="text-[10px] text-muted-foreground mt-1">Max correction: 10-12 mEq/day = 0.5 mEq/hr</p>
+                      </div>
+                    </div>
+                    
+                    {/* Step 3: Na Concentration */}
+                    <div className="p-3 rounded-lg bg-amber-50 dark:bg-amber-950/30 border border-amber-200">
+                      <p className="text-xs font-bold text-amber-700 dark:text-amber-300 mb-2">Step 3: Determine Fluid Type</p>
+                      <div className="space-y-1 text-xs">
+                        <p><strong>Na Concentration Needed</strong> = Total Na / Volume</p>
+                        <p className="pl-4">= {results.mildData.totalNa} / {(parseInt(results.mildData.totalVolume)/1000).toFixed(1)}L = <strong>{results.mildData.naConcentration} mEq/L</strong></p>
+                        <div className="mt-2 p-2 bg-white dark:bg-gray-900 rounded text-center">
+                          <p className="text-[10px] text-muted-foreground">Available: NS=154, RL=130, 1/2NS=77, 3%NaCl=513</p>
+                          <p className="font-bold text-amber-800 dark:text-amber-200 mt-1">{results.mildData.fluidType}</p>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Step 4: Dextrose */}
+                    <div className="p-3 rounded-lg bg-purple-50 dark:bg-purple-950/30 border border-purple-200">
+                      <p className="text-xs font-bold text-purple-700 dark:text-purple-300 mb-2">Step 4: Add Dextrose</p>
+                      <p className="text-xs">Usually D5% added (mix NS + D50%)</p>
+                      <p className="text-xs text-muted-foreground">Ratio: 450ml NS + 50ml D50% per 500ml</p>
+                    </div>
+                    
+                    {/* Final Order */}
+                    <div className="p-3 rounded-lg bg-teal-50 dark:bg-teal-950/30 border-2 border-teal-400">
+                      <p className="text-xs font-semibold text-teal-700 dark:text-teal-300 mb-1">📋 Order</p>
+                      <p className="font-mono text-sm font-bold text-teal-800 dark:text-teal-200">
+                        IVF {results.mildData.fluidType.split(" ")[0]} {results.mildData.totalVolume} ml ({results.mildData.nsVolume}ml + {results.mildData.d50Volume}ml D50%) / 24 hrs
+                      </p>
+                      <p className="font-mono text-xs text-teal-700 dark:text-teal-300 mt-1">
+                        Rate: {results.mildData.hourlyRate} ml/hr
+                      </p>
+                    </div>
+                  </div>
+                ) : results.isSevereHyponatremia ? (
+                  /* Severe/Symptomatic Hyponatremia (Na < 125 with symptoms) */
+                  <div className="space-y-3">
+                    {/* Header */}
+                    <div className="p-2 rounded bg-red-50 dark:bg-red-900/20 text-xs">
+                      <p className="font-semibold text-red-700">Current Na: <strong>{results.severeData.currentNa}</strong> mEq/L</p>
+                      <p className="text-[10px]">Criteria: Na &lt; 125 with seizures, mental status changes</p>
+                    </div>
+                    
+                    {/* Two Treatment Paths */}
+                    <div className="grid grid-cols-1 gap-3">
+                      {/* Path 1: Infusion */}
+                      <div className="p-3 rounded-lg bg-blue-50 dark:bg-blue-950/30 border border-blue-200">
+                        <p className="text-xs font-bold text-blue-700 dark:text-blue-300 mb-2">Option 1: 3% Saline Infusion</p>
+                        <div className="space-y-1 text-xs">
+                          <p className="font-mono"><strong>{results.severeData.infusionRateLow} - {results.severeData.infusionRateHigh} ml/hr</strong></p>
+                          <p className="text-muted-foreground">(1-2 ml/kg/hr of 3% saline)</p>
+                          <p className="mt-2">Goal: Increase Na by <strong>6-8 mEq/L</strong></p>
+                          <div className="p-2 bg-amber-50 dark:bg-amber-900/20 rounded mt-2 text-[10px]">
+                            <p>⚠️ Max: 10-12 mEq/L in 24h, 18 mEq/L in 48h</p>
+                            <p>Consider desmopressin 1-2 mcg q4-6h</p>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      {/* Path 2: Bolus */}
+                      <div className="p-3 rounded-lg bg-green-50 dark:bg-green-950/30 border border-green-200">
+                        <p className="text-xs font-bold text-green-700 dark:text-green-300 mb-2">Option 2: 3% Saline Bolus</p>
+                        <div className="space-y-1 text-xs">
+                          <p className="font-mono"><strong>{results.severeData.bolusVolumeLow}-{results.severeData.bolusVolumeHigh} ml</strong> IV bolus</p>
+                          <p className="text-muted-foreground">(single dose 3% saline)</p>
+                          <p className="mt-2">Goal: Increase Na by <strong>2-3 mEq/L</strong></p>
+                          <div className="p-2 bg-blue-50 dark:bg-blue-900/20 rounded mt-2 text-[10px]">
+                            <p>• Check Na every 20 min until symptoms resolve</p>
+                            <p>• May repeat bolus twice if symptoms persist</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* After Symptom Resolution */}
+                    <div className="p-3 rounded-lg bg-gray-100 dark:bg-gray-800 border border-gray-300">
+                      <p className="text-xs font-bold text-gray-700 dark:text-gray-300 mb-2">After Symptom Resolution:</p>
+                      <div className="space-y-1 text-xs">
+                        <p>• Check Na every 2 hours</p>
+                        <p>• Adjust infusion rate and switch to isotonic saline</p>
+                        <p>• Determine underlying cause</p>
+                      </div>
+                    </div>
+                  </div>
                 ) : (
                   <>
                     {/* Drug Info */}
