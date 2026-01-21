@@ -732,6 +732,13 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
                     <strong>Note:</strong> {results.notes}
                   </p>
                 )}
+                
+                {/* Oral NaHCO3 Note */}
+                {results.oralNote && (
+                  <p className="text-xs text-purple-600 dark:text-purple-400 p-1.5 bg-purple-50 dark:bg-purple-900/20 rounded">
+                    <strong>💊 {results.oralNote}</strong>
+                  </p>
+                )}
 
                 {/* Warnings */}
                 {results.warnings && (
