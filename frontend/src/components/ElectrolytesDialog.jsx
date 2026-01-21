@@ -675,6 +675,27 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
             </div>
           )}
 
+          {/* Potassium PO-specific options */}
+          {selectedElectrolyte === "potassiumPO" && (
+            <div className="space-y-2">
+              <Label className="text-sm font-medium">Frequency</Label>
+              <RadioGroup value={kclPoFrequency} onValueChange={setKclPoFrequency} className="flex gap-4">
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="BD" id="bd" />
+                  <Label htmlFor="bd" className="text-sm">BD (2x/day)</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="TID" id="tid" />
+                  <Label htmlFor="tid" className="text-sm">TID (3x/day)</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="QID" id="qid" />
+                  <Label htmlFor="qid" className="text-sm">QID (4x/day)</Label>
+                </div>
+              </RadioGroup>
+            </div>
+          )}
+
           {/* Sodium-specific options */}
           {selectedElectrolyte === "sodium" && (
             <div className="space-y-2">
