@@ -504,24 +504,24 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
           {/* NaHCO3-specific options - Correction Method Switch */}
           {selectedElectrolyte === "nahco3" && w > 0 && (
             <div className="p-3 rounded-lg bg-orange-50 dark:bg-orange-950/30 border border-orange-200 space-y-3">
-              <div className="flex items-center justify-between">
-                <Label className="text-sm font-semibold text-orange-800 dark:text-orange-300">Correction Method</Label>
-                <div className="flex items-center gap-2 bg-white dark:bg-gray-800 rounded-lg p-1 border">
+              <div className="flex items-center justify-between flex-wrap gap-2">
+                <Label className="text-sm font-semibold text-orange-800 dark:text-orange-300">Method</Label>
+                <div className="flex items-center gap-1 bg-white dark:bg-gray-800 rounded-lg p-1 border">
                   <button
                     type="button"
                     onClick={() => setNahco3Method("hco3")}
-                    className={`px-3 py-1 text-xs rounded-md transition-colors ${
+                    className={`px-2 py-1 text-xs rounded-md transition-colors ${
                       nahco3Method === "hco3" 
                         ? "bg-orange-500 text-white" 
                         : "text-gray-600 hover:bg-gray-100"
                     }`}
                   >
-                    HCO3 Deficit
+                    HCO3
                   </button>
                   <button
                     type="button"
                     onClick={() => setNahco3Method("be")}
-                    className={`px-3 py-1 text-xs rounded-md transition-colors ${
+                    className={`px-2 py-1 text-xs rounded-md transition-colors ${
                       nahco3Method === "be" 
                         ? "bg-orange-500 text-white" 
                         : "text-gray-600 hover:bg-gray-100"
@@ -529,10 +529,21 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
                   >
                     Base Excess
                   </button>
+                  <button
+                    type="button"
+                    onClick={() => setNahco3Method("infusion")}
+                    className={`px-2 py-1 text-xs rounded-md transition-colors ${
+                      nahco3Method === "infusion" 
+                        ? "bg-orange-500 text-white" 
+                        : "text-gray-600 hover:bg-gray-100"
+                    }`}
+                  >
+                    Infusion
+                  </button>
                 </div>
               </div>
               
-              {nahco3Method === "hco3" ? (
+              {nahco3Method === "hco3" && (
                 <div className="space-y-2">
                   <p className="text-xs text-orange-700 dark:text-orange-400 font-mono">
                     (Desired HCO3 - Lab HCO3) × 0.3 × WT
@@ -564,7 +575,9 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
                     </div>
                   </div>
                 </div>
-              ) : (
+              )}
+              
+              {nahco3Method === "be" && (
                 <div className="space-y-2">
                   <p className="text-xs text-orange-700 dark:text-orange-400 font-mono">
                     BE × 0.3 × WT (from ABG)
@@ -583,6 +596,37 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
                   </div>
                 </div>
               )}
+              
+              {nahco3Method === "infusion" && (
+                <div className="space-y-2">
+                  <p className="text-xs text-orange-700 dark:text-orange-400 font-mono">
+                    Continuous Infusion: 0.25 - 2 mEq/kg/hr
+                  </p>
+                  <div>
+                    <Label className="text-xs">Infusion Rate (mEq/kg/hr)</Label>
+                    <div className="flex items-center gap-2">
+                      <Input
+                        type="number"
+                        step="0.25"
+                        min="0.25"
+                        max="2"
+                        placeholder="1"
+                        value={infusionRate}
+                        onChange={(e) => setInfusionRate(e.target.value)}
+                        className="font-mono h-9 w-24"
+                      />
+                      <span className="text-xs text-muted-foreground">mEq/kg/hr (Range: 0.25-2)</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+              
+              {/* Oral NaHCO3 Note */}
+              <div className="p-2 rounded bg-blue-50 dark:bg-blue-900/30 border border-blue-200">
+                <p className="text-xs text-blue-700 dark:text-blue-300">
+                  <strong>Oral NaHCO3:</strong> 600 mg = 7 mEq
+                </p>
+              </div>
             </div>
           )}
 
