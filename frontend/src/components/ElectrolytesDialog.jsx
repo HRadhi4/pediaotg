@@ -433,8 +433,10 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
   const calculateSodium = () => {
     let doseMl = currentDose;
     const dosePerKg = (doseMl / w).toFixed(1);
+    const na = parseFloat(currentNa) || 140;
     
     if (sodiumType === "hyponatremia" && hyponatremiaType === "severe") {
+      // Severe Hyponatremia - 3% NaCl
       setResults({
         medication: "3% NaCl (Hypertonic Saline)",
         calculation: {
@@ -449,11 +451,11 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
         notes: "May repeat up to 2x | Goal: Increase Na by 6-8 mEq/L",
         warnings: ["Max 10-12 mEq/L rise in 24 hours"]
       });
-    } else {
-      const na = parseFloat(currentNa) || 125;
+    } else if (sodiumType === "hyponatremia") {
+      // Mild Hyponatremia
       const naDeficit = w * 0.6 * (140 - na);
       setResults({
-        medication: "Sodium Correction (Mild)",
+        medication: "Sodium Correction (Mild Hyponatremia)",
         calculation: {
           dose: `${naDeficit.toFixed(1)} mEq Na deficit`,
           formula: `${w} kg x 0.6 x (140 - ${na})`,
@@ -463,6 +465,90 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
         },
         administration: { duration: "24-48 hours", rate: "Max 0.5 mEq/hr" },
         preparation: "Choose appropriate fluid",
+        notes: "Correction max 10-12 mEq/day"
+      });
+    } else if (sodiumType === "hypernatremia" && hypernatremiaMethod === "nelson") {
+      // Nelson Textbook Method for Hypernatremia
+      // Calculate maintenance (Holliday-Segar)
+      let maintenance;
+      if (w <= 10) {
+        maintenance = w * 100;
+      } else if (w <= 20) {
+        maintenance = 1000 + (w - 10) * 50;
+      } else {
+        maintenance = 1500 + (w - 20) * 20;
+      }
+      
+      // Determine correction time based on Na level
+      let correctionHours;
+      let naRange;
+      if (na >= 145 && na <= 157) {
+        correctionHours = 24;
+        naRange = "145-157";
+      } else if (na >= 158 && na <= 170) {
+        correctionHours = 48;
+        naRange = "158-170";
+      } else if (na >= 171 && na <= 183) {
+        correctionHours = 72;
+        naRange = "171-183";
+      } else if (na >= 184 && na <= 196) {
+        correctionHours = 84;
+        naRange = "184-196";
+      } else if (na > 196) {
+        correctionHours = 96;
+        naRange = ">196";
+      } else {
+        correctionHours = 24;
+        naRange = "<145";
+      }
+      
+      // Calculate rate: 2 x maintenance / correction hours
+      const fluidRate = (2 * maintenance) / correctionHours;
+      const bolusVolume = w * 20;
+      const seizureRescue = w * 5; // 4-6 ml/kg, using 5
+      
+      setResults({
+        medication: "Hypernatremia Correction (Nelson Method)",
+        isNelsonMethod: true,
+        nelsonData: {
+          currentNa: na,
+          naRange,
+          correctionHours,
+          maintenance,
+          fluidRate: fluidRate.toFixed(1),
+          bolusVolume: bolusVolume.toFixed(0),
+          seizureRescue: seizureRescue.toFixed(0)
+        },
+        calculation: {
+          dose: `Current Na: ${na} mEq/L (${naRange} range)`,
+          formula: `2 x ${maintenance} ml/day ÷ ${correctionHours} hrs`,
+          drugVolume: `Maintenance: ${maintenance} ml/day`,
+          diluent: "Normal Saline (NS)",
+          totalVolume: `${(2 * maintenance).toFixed(0)} ml over ${correctionHours} hrs`
+        },
+        administration: { 
+          duration: `${correctionHours} hours`, 
+          rate: `${fluidRate.toFixed(1)} ml/hr` 
+        },
+        preparation: `IVF NS @ ${fluidRate.toFixed(1)} ml/hr`,
+        order: `IVF NS ${fluidRate.toFixed(1)} ml/hr x ${correctionHours} hrs`,
+        notes: "Repeat Na every 4-6 hrs | Max drop: 0.5 mEq/L/hr",
+        warnings: na >= 170 ? ["Severe hypernatremia - monitor closely for seizures"] : undefined
+      });
+    } else {
+      // Standard Hypernatremia calculation
+      const freeWaterDeficit = w * 0.6 * ((na / 140) - 1) * 1000;
+      setResults({
+        medication: "Hypernatremia Correction (Standard)",
+        calculation: {
+          dose: `${freeWaterDeficit.toFixed(0)} ml Free Water Deficit`,
+          formula: `${w} x 0.6 x ((${na}/140) - 1) x 1000`,
+          drugVolume: "Variable",
+          diluent: "D5W or 0.45% NaCl",
+          totalVolume: "Replace over 48-72 hrs"
+        },
+        administration: { duration: "48-72 hours", rate: "Max 0.5 mEq/hr drop" },
+        preparation: "Choose appropriate hypotonic fluid",
         notes: "Correction max 10-12 mEq/day"
       });
     }
