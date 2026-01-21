@@ -71,8 +71,8 @@ const ElectrolytesInfusionsPage = ({ onBack }) => {
       incompatible: "Amiodarone, Amphotericin B, Calcium chloride, Cefepime, Sodium bicarbonate"
     },
     potassium: {
-      name: "Potassium",
-      medication: "Potassium Chloride (KCl)",
+      name: "Potassium (IV)",
+      medication: "Potassium Chloride (KCl) IV",
       doseRange: "0.5-1 mEq/kg/dose (IV Max 40 mEq)",
       doseMin: 0.5,
       doseMax: 1,
@@ -83,6 +83,20 @@ const ElectrolytesInfusionsPage = ({ onBack }) => {
       target: "Peripheral: 80 mEq/L | Central: 150 mEq/L",
       compatible: "NS, D5W, LR",
       incompatible: "Amphotericin B, Diazepam, Phenytoin"
+    },
+    potassiumPO: {
+      name: "Potassium (PO)",
+      medication: "Potassium Chloride (KCl) Oral",
+      doseRange: "1-4 mEq/kg/day (divided BD-QID)",
+      doseMin: 1,
+      doseMax: 4,
+      maxAbsolute: 100,
+      unit: "mEq/kg/day",
+      resultUnit: "mEq",
+      stock: "Oral solution: varies",
+      target: "Daily dose divided into 2-4 doses",
+      compatible: "Take with food/water",
+      incompatible: "Avoid on empty stomach"
     },
     nahco3: {
       name: "Sodium Bicarbonate",

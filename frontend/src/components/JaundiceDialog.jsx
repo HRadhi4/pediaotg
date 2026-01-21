@@ -35,21 +35,21 @@ const THRESHOLDS = {
     PT: [100, 130, 160, 190, 210, 230, 240, 250, 250],
     EX: [240, 260, 280, 300, 310, 320, 330, 330, 330]
   },
-  // Term infants high risk (35-37wk + risk factor)
+  // Term infants high risk (35-37wk+6d with risk factor)
   // 10 time points: birth, 12h, 24h, 36h, 48h, 60h, 72h, 84h, 96h, 5days
   "35-37wk_high_risk": {
     PT: [70, 100, 135, 155, 190, 200, 220, 240, 240, 255],
     EX: [200, 220, 255, 270, 290, 310, 310, 330, 330, 330]
   },
-  // Term infants medium risk (>=38wk with risk factor OR 35-37wk well)
+  // Term infants medium risk (>=38wk with risk factor OR 35-37wk+6d well)
   "35-37wk_medium_risk": {
-    PT: [85, 120, 170, 190, 220, 240, 240, 255, 290, 310],
+    PT: [85, 120, 170, 190, 220, 240, 255, 270, 290, 310],
     EX: [240, 255, 270, 310, 330, 340, 360, 370, 370, 370]
   },
   // Term low risk (>=38wk and well)
   ">=38wk_low_risk": {
     PT: [100, 155, 190, 220, 255, 270, 290, 310, 330, 360],
-    EX: [270, 290, 330, 360, 370, 390, 410, 410, 430, 430]
+    EX: [270, 290, 330, 360, 370, 390, 410, 430, 430, 430]
   }
 };
 
@@ -146,7 +146,10 @@ const JaundiceDialog = ({ open, onOpenChange }) => {
       return;
     }
     
-    const ageCategory = getAgeCategory(ageHours);
+    // Use appropriate age category function based on gestational age
+    const ga = parseFloat(gestationalAge);
+    const isTerm = ga >= 35;
+    const ageCategory = isTerm ? getAgeCategoryTerm(ageHours) : getAgeCategoryPreterm(ageHours);
     const thresholds = THRESHOLDS[thresholdKey];
     const ptThreshold = thresholds.PT[ageCategory];
     const exThreshold = thresholds.EX[ageCategory];
