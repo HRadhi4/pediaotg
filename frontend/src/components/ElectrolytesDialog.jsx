@@ -432,41 +432,87 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
   };
 
   const calculateSodium = () => {
-    let doseMl = currentDose;
-    const dosePerKg = (doseMl / w).toFixed(1);
-    const na = parseFloat(currentNa) || 140;
+    const na = parseFloat(currentNa) || 128;
+    const target = parseFloat(targetNa) || 133;
+    const deficit = parseFloat(fluidDeficit) || (w * 100); // Default 10% dehydration
+    
+    // Calculate maintenance (Holliday-Segar) - used in all calculations
+    let maintenance;
+    if (w <= 10) {
+      maintenance = w * 100;
+    } else if (w <= 20) {
+      maintenance = 1000 + (w - 10) * 50;
+    } else {
+      maintenance = 1500 + (w - 20) * 20;
+    }
     
     if (sodiumType === "hyponatremia" && hyponatremiaType === "severe") {
-      // Severe Hyponatremia - 3% NaCl
+      // Severe/Symptomatic Hyponatremia - 3% NaCl
+      // Criteria: Na < 125 with severe symptoms (seizures, mental status changes)
+      const infusionRate = w * 1.5; // 1-2 ml/kg/hr, using 1.5
+      const bolusVolume = Math.min(150, w * 3); // 100-150 ml or ~3 ml/kg
+      
       setResults({
-        medication: "3% NaCl (Hypertonic Saline)",
-        calculation: {
-          dose: `${doseMl.toFixed(0)} ml (${dosePerKg} ml/kg)`,
-          formula: `Selected: ${dosePerKg} ml/kg x ${w} kg`,
-          drugVolume: `${doseMl.toFixed(0)} ml 3% NaCl`,
-          diluent: "No dilution needed",
-          totalVolume: `${doseMl.toFixed(0)} ml`
-        },
-        administration: { duration: "15-30 mins", rate: `${(doseMl * 4).toFixed(0)} ml/hr (over 15 min)` },
-        preparation: `Give ${doseMl.toFixed(0)} ml of 3% NaCl`,
-        notes: "May repeat up to 2x | Goal: Increase Na by 6-8 mEq/L",
-        warnings: ["Max 10-12 mEq/L rise in 24 hours"]
+        medication: "Severe Hyponatremia (Na < 125 with symptoms)",
+        isSevereHyponatremia: true,
+        severeData: {
+          currentNa: na,
+          infusionRate: infusionRate.toFixed(1),
+          bolusVolume: bolusVolume.toFixed(0)
+        }
       });
     } else if (sodiumType === "hyponatremia") {
-      // Mild Hyponatremia
-      const naDeficit = w * 0.6 * (140 - na);
+      // Mild/Asymptomatic Hyponatremia
+      // Step 1: Determine Volume (Maintenance + Deficit)
+      const totalVolume = Math.min(maintenance + deficit, 2500); // Don't exceed 2.5L/day
+      const hourlyRate = totalVolume / 24;
+      
+      // Step 2: Sodium Correction
+      // Na Deficit = Wt x 0.6 x (Target Na - Measured Na)
+      const naDeficit = w * 0.6 * (target - na);
+      // Na Maintenance = Wt x 2 mEq (2-5 mEq/kg/day)
+      const naMaintenance = w * 2;
+      // Total Na needed
+      const totalNa = naDeficit + naMaintenance;
+      
+      // Step 3: Determine Na concentration needed
+      // Na concentration = Total Na / Volume (in L)
+      const naConcentration = (totalNa / (totalVolume / 1000));
+      
+      // Determine fluid type based on concentration
+      let fluidType;
+      let fluidNa;
+      if (naConcentration >= 140) {
+        fluidType = "NS (Normal Saline)";
+        fluidNa = 154;
+      } else if (naConcentration >= 100) {
+        fluidType = "RL (Ringer's Lactate)";
+        fluidNa = 130;
+      } else if (naConcentration >= 60) {
+        fluidType = "1/2 NS (Half Normal Saline)";
+        fluidNa = 77;
+      } else {
+        fluidType = "1/4 NS or D5 0.2% NaCl";
+        fluidNa = 34;
+      }
+      
       setResults({
-        medication: "Sodium Correction (Mild Hyponatremia)",
-        calculation: {
-          dose: `${naDeficit.toFixed(1)} mEq Na deficit`,
-          formula: `${w} kg x 0.6 x (140 - ${na})`,
-          drugVolume: "Variable",
-          diluent: `NS: 154 mEq/L | 3%NaCl: 513 mEq/L`,
-          totalVolume: "Based on fluid choice"
-        },
-        administration: { duration: "24-48 hours", rate: "Max 0.5 mEq/hr" },
-        preparation: "Choose appropriate fluid",
-        notes: "Correction max 10-12 mEq/day"
+        medication: "Hyponatremia Correction (Mild/Asymptomatic)",
+        isMildHyponatremia: true,
+        mildData: {
+          currentNa: na,
+          targetNa: target,
+          maintenance: maintenance.toFixed(0),
+          deficit: deficit.toFixed(0),
+          totalVolume: totalVolume.toFixed(0),
+          hourlyRate: hourlyRate.toFixed(1),
+          naDeficit: naDeficit.toFixed(1),
+          naMaintenance: naMaintenance.toFixed(0),
+          totalNa: totalNa.toFixed(1),
+          naConcentration: naConcentration.toFixed(0),
+          fluidType,
+          fluidNa
+        }
       });
     } else if (sodiumType === "hypernatremia" && hypernatremiaMethod === "nelson") {
       // Nelson Textbook Method for Hypernatremia
