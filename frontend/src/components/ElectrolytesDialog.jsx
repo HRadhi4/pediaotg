@@ -33,7 +33,9 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
   const [hypernatremiaMethod, setHypernatremiaMethod] = useState("nelson"); // "nelson" or "harriet"
   const [currentNa, setCurrentNa] = useState("");
   const [targetNa, setTargetNa] = useState("145"); // Desired Na for correction
-  const [fluidDeficit, setFluidDeficit] = useState(""); // For Harriet Lane method
+  const [fluidDeficit, setFluidDeficit] = useState(""); // For Hyponatremia
+  const [harrietDeficitType, setHarrietDeficitType] = useState("infant"); // "infant" or "child"
+  const [harrietDeficitPercent, setHarrietDeficitPercent] = useState("10"); // "5", "10", "15" for infant; "3", "6", "9" for child
   const [phosphateSeverity, setPhosphateSeverity] = useState("moderate");
   const [potassiumRoute, setPotassiumRoute] = useState("IV"); // "IV" or "PO"
   const [potassiumLineType, setPotassiumLineType] = useState("peripheral"); // "peripheral", "central", "central_restricted"
