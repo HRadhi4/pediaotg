@@ -35,10 +35,11 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
   const [phosphateSeverity, setPhosphateSeverity] = useState("moderate");
   
   // NaHCO3 correction states
-  const [nahco3Method, setNahco3Method] = useState("hco3"); // "hco3" or "be"
+  const [nahco3Method, setNahco3Method] = useState("hco3"); // "hco3", "be", or "infusion"
   const [labHco3, setLabHco3] = useState("");
   const [desiredHco3, setDesiredHco3] = useState("24");
   const [baseExcess, setBaseExcess] = useState("");
+  const [infusionRate, setInfusionRate] = useState("1"); // mEq/kg/hr
 
   // Electrolyte definitions with dose ranges
   const electrolytes = {
