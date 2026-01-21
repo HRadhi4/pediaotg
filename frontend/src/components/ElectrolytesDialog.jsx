@@ -222,6 +222,7 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
     const totalVolume = doseMg / targetConc;
     const diluentMl = totalVolume - doseMl;
     const dosePerKg = (doseMg / w).toFixed(1);
+    const duration = "1 hour";
     
     setResults({
       medication: "Calcium Gluconate 10%",
@@ -232,8 +233,9 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
         diluent: `${diluentMl.toFixed(1)} ml (NS or D5W)`,
         totalVolume: `${totalVolume.toFixed(1)} ml (at 50 mg/ml)`
       },
-      administration: { duration: "1 hour", rate: `${totalVolume.toFixed(1)} ml/hr` },
+      administration: { duration, rate: `${totalVolume.toFixed(1)} ml/hr` },
       preparation: `Draw ${doseMl.toFixed(1)} ml Ca Gluconate + ${diluentMl.toFixed(1)} ml NS = ${totalVolume.toFixed(1)} ml`,
+      order: `${doseMg.toFixed(0)} mg Ca Gluconate in ${totalVolume.toFixed(0)} ml NS over ${duration}`,
       frequency: calciumLevel && parseFloat(calciumLevel) < 7 ? "BD" : "OD"
     });
   };
@@ -247,6 +249,7 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
     const totalVolume = doseMg / targetConc;
     const diluent = totalVolume - drugVolume;
     const dosePerKg = (doseMg / w).toFixed(1);
+    const duration = "2-4 hours";
     
     setResults({
       medication: "Magnesium Sulfate 50%",
@@ -257,8 +260,9 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
         diluent: `${diluent.toFixed(1)} ml (NS or D5W)`,
         totalVolume: `${totalVolume.toFixed(1)} ml (at 60 mg/ml)`
       },
-      administration: { duration: "2-4 hours", rate: `${(totalVolume/3).toFixed(1)} ml/hr` },
+      administration: { duration, rate: `${(totalVolume/3).toFixed(1)} ml/hr` },
       preparation: `Draw ${drugVolume.toFixed(2)} ml MgSO4 50% + ${diluent.toFixed(1)} ml NS = ${totalVolume.toFixed(1)} ml`,
+      order: `${doseMg.toFixed(0)} mg MgSO4 in ${totalVolume.toFixed(0)} ml NS over ${duration}`,
       frequency: "BD for 3 doses"
     });
   };
