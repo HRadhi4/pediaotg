@@ -197,42 +197,121 @@ const AcetaminophenApproach = ({ weight, expandedSections, toggleSection }) => {
   // Conversion: 1 mcg/mL = 6.62 µmol/L (acetaminophen MW = 151.16)
   const mcgToMicromol = (mcg) => Math.round(mcg * 6.62);
 
-  // Static SVG nomogram dimensions and coordinate mapping
-  // The NEW SVG viewBox is 0 0 620 750.40002
-  // Transform matrix applied: 0.76671865, 0, 0, 0.76694206, 1.1857538, 5.0148173
-  // Chart boundaries calibrated from the optimized SVG
+  // ============================================
+  // RUMACK-MATTHEW NOMOGRAM COORDINATE MAPPING
+  // ============================================
+  // SVG file: /public/images/rumack_matthew_nomogram_new.svg
+  // viewBox: "0 0 620 750.40002"
+  // 
+  // The SVG has a transform matrix applied to the main group:
+  // matrix(0.76671865, 0, 0, 0.76694206, 1.1857538, 5.0148173)
+  // This means: x_final = 0.76671865 * x_raw + 1.1857538
+  //             y_final = 0.76694206 * y_raw + 5.0148173
+  //
+  // RAW COORDINATES FROM SVG (before transform):
+  // Y-axis (concentration mcg/mL) - from axis-label text elements:
+  //   1000 mcg/mL: y = 100
+  //   500 mcg/mL:  y = 170.56723
+  //   200 mcg/mL:  y = 272.39224
+  //   150 mcg/mL:  y = 302.17673
+  //   100 mcg/mL:  y = 347.39224
+  //   50 mcg/mL:   y = 423.82626 (using 424.47882 from grid)
+  //   10 mcg/mL:   y = 600 (using 599.34863 from grid)
+  //   5 mcg/mL:    y = 673.5658
+  //
+  // X-axis (hours post-ingestion):
+  //   Left edge (4 hours):  x = 150 (grid lines start here)
+  //   Right edge (24 hours): x = 650 (grid lines end here)
+  //   Hours 4-24 span 20 hours across 500 pixels (25 px/hour)
+  //
+  // TRANSFORMED COORDINATES (what the browser renders):
+  // Apply transform: x' = x * 0.76671865 + 1.1857538
+  //                  y' = y * 0.76694206 + 5.0148173
+  
   const svgViewWidth = 620;
   const svgViewHeight = 750.40002;
   
-  // Chart boundaries within the SVG (calibrated for RM-Nomogram optimized SVG)
-  // X-axis: hours 4-24 (chart doesn't start at 0, starts at 4 hours)
-  // Y-axis: concentration on log scale (1000 to ~5 mcg/mL)
-  // Raw coordinates in SVG before transform:
-  // - Left axis (x): ~150, Right edge (x): ~650
-  // - Top (y): ~100, Bottom (y): ~850
-  // After transform (multiply by ~0.767 and add offset):
-  const chartLeft = 116;       // x position at hour 4 (leftmost data point)
-  const chartRight = 500;      // x position at hour 24
-  const chartTop = 82;         // y position at 1000 mcg/mL
-  const chartBottom = 657;     // y position at ~5 mcg/mL
-  
-  // Scale functions for the static SVG overlay
-  // Note: X-axis spans hours 4-24 (20 hours range), not 0-24
-  const xScaleSVG = (h) => {
-    // Clamp hours to valid range 4-24
-    const clampedHours = Math.max(4, Math.min(24, h));
-    // Hours 4-24 map to chartLeft-chartRight
-    return chartLeft + ((clampedHours - 4) / 20) * (chartRight - chartLeft);
+  // Transform constants from SVG
+  const TRANSFORM = {
+    scaleX: 0.76671865,
+    scaleY: 0.76694206,
+    translateX: 1.1857538,
+    translateY: 5.0148173
   };
   
-  const yScaleSVG = (c) => {
-    // Logarithmic scale: concentration in mcg/mL
-    // Chart shows approximately 1000 at top to 5 at bottom
-    const logMin = Math.log10(5);
-    const logMax = Math.log10(1000);
-    const logC = Math.log10(Math.max(c, 5));
-    const ratio = (logC - logMin) / (logMax - logMin);
-    return chartBottom - ratio * (chartBottom - chartTop);
+  // Raw coordinates (before transform)
+  const RAW_COORDS = {
+    // X-axis bounds
+    xLeft: 150,    // x at hour 4
+    xRight: 650,   // x at hour 24
+    // Y-axis reference points (mcg/mL -> raw y coordinate)
+    yPoints: [
+      { conc: 1000, y: 100 },
+      { conc: 500, y: 170.57 },
+      { conc: 200, y: 272.39 },
+      { conc: 150, y: 302.18 },
+      { conc: 100, y: 347.39 },
+      { conc: 50, y: 424.48 },
+      { conc: 10, y: 599.35 },
+      { conc: 5, y: 673.57 }
+    ]
+  };
+  
+  // Apply transform to get final screen coordinates
+  const transformX = (rawX) => rawX * TRANSFORM.scaleX + TRANSFORM.translateX;
+  const transformY = (rawY) => rawY * TRANSFORM.scaleY + TRANSFORM.translateY;
+  
+  // Final chart boundaries (after transform)
+  const chartLeft = transformX(RAW_COORDS.xLeft);     // ~116.2
+  const chartRight = transformX(RAW_COORDS.xRight);   // ~499.5
+  const chartTop = transformY(100);                    // ~81.7 (1000 mcg/mL)
+  const chartBottom = transformY(673.57);              // ~521.5 (5 mcg/mL)
+  
+  // Scale function for X-axis (hours 4-24)
+  const xScaleSVG = (hours) => {
+    // Clamp hours to valid range 4-24
+    const h = Math.max(4, Math.min(24, hours));
+    // Map hours 4-24 to raw x 150-650, then transform
+    const rawX = RAW_COORDS.xLeft + ((h - 4) / 20) * (RAW_COORDS.xRight - RAW_COORDS.xLeft);
+    return transformX(rawX);
+  };
+  
+  // Scale function for Y-axis (concentration - logarithmic scale)
+  const yScaleSVG = (concentration) => {
+    // Clamp concentration to valid range
+    const c = Math.max(5, Math.min(1000, concentration));
+    
+    // Use logarithmic interpolation between known points
+    // Find the two reference points that bracket this concentration
+    const points = RAW_COORDS.yPoints;
+    
+    // If at or above highest point
+    if (c >= points[0].conc) {
+      return transformY(points[0].y);
+    }
+    // If at or below lowest point
+    if (c <= points[points.length - 1].conc) {
+      return transformY(points[points.length - 1].y);
+    }
+    
+    // Find bracketing points and interpolate logarithmically
+    for (let i = 0; i < points.length - 1; i++) {
+      const upper = points[i];     // higher concentration, lower y
+      const lower = points[i + 1]; // lower concentration, higher y
+      
+      if (c <= upper.conc && c >= lower.conc) {
+        // Logarithmic interpolation
+        const logC = Math.log10(c);
+        const logUpper = Math.log10(upper.conc);
+        const logLower = Math.log10(lower.conc);
+        const ratio = (logC - logLower) / (logUpper - logLower);
+        const rawY = lower.y + ratio * (upper.y - lower.y);
+        return transformY(rawY);
+      }
+    }
+    
+    // Fallback - shouldn't reach here
+    return transformY(400);
   };
 
   return (
