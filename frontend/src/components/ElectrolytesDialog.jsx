@@ -360,7 +360,7 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
       const beValue = parseFloat(baseExcess);
       
       if (!beValue && beValue !== 0) {
-        setResults({ error: "Please enter Base Excess value" });
+        setResults({ error: "Please enter Base Deficit value" });
         return;
       }
       
@@ -393,7 +393,7 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
         rate: `1st half: ${halfDose.toFixed(1)} mEq (${halfVolume.toFixed(1)} ml) over 1st hour | 2nd half: ${halfDose.toFixed(1)} mEq (${halfVolume.toFixed(1)} ml) over next 24 hours` 
       },
       preparation: `Draw ${drugVolume.toFixed(1)} ml NaHCO3 + ${diluentVolume.toFixed(1)} ml NS = ${totalVolume.toFixed(1)} ml`,
-      notes: `Method: ${nahco3Method === "hco3" ? "HCO3 deficit" : "Base Excess"}`,
+      notes: `Method: ${nahco3Method === "hco3" ? "HCO3 deficit" : "Base Deficit"}`,
       oralNote: "Oral NaHCO3: 600 mg = 7 mEq",
       warnings: ["Correct calcium FIRST if hypocalcemic", "Recheck ABG after 1st half"]
     });
@@ -622,7 +622,7 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
                         : "text-gray-600 hover:bg-gray-100"
                     }`}
                   >
-                    Base Excess
+                    Base Deficit
                   </button>
                   <button
                     type="button"
@@ -678,7 +678,7 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
                     BE × 0.3 × WT (from ABG)
                   </p>
                   <div>
-                    <Label className="text-xs">Base Excess (mEq/L)</Label>
+                    <Label className="text-xs">Base Deficit (mEq/L)</Label>
                     <Input
                       type="text"
                       inputMode="numeric"
