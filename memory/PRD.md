@@ -65,6 +65,17 @@ Build a full SaaS-style web app "Pediatrics on the Go" with:
 - Admin: `admin@pedotg.com` / `SMC159951`
 - Tester: `test@pedotg.com` / `SMC2000` (full app access, no admin dashboard)
 
+## Database Configuration
+
+### Development (Current)
+- **MongoDB**: Local (`mongodb://localhost:27017`)
+- **Database**: `test_database`
+
+### Production (Atlas - Ready for Deployment)
+- **Cluster**: `pedotg.oaffcd1.mongodb.net`
+- **Config file**: `/app/backend/.env.atlas`
+- **To deploy**: Replace `MONGO_URL` in `.env` with Atlas connection string from `.env.atlas`
+
 ## Tech Stack
 - Frontend: React, Shadcn/UI, TailwindCSS
 - Backend: FastAPI, Python
