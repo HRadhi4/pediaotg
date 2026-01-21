@@ -483,7 +483,8 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
               <SelectContent>
                 <SelectItem value="calcium">Calcium</SelectItem>
                 <SelectItem value="magnesium">Magnesium</SelectItem>
-                <SelectItem value="potassium">Potassium</SelectItem>
+                <SelectItem value="potassium">Potassium (IV)</SelectItem>
+                <SelectItem value="potassiumPO">Potassium (PO)</SelectItem>
                 <SelectItem value="nahco3">Sodium Bicarbonate (NaHCO3)</SelectItem>
                 <SelectItem value="sodium">Sodium</SelectItem>
                 <SelectItem value="phosphate">Phosphate</SelectItem>
