@@ -474,6 +474,7 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
     const dosePerKg = (doseMmol / w).toFixed(3);
     const totalVolume = doseMmol / 0.05;
     const diluent = totalVolume - drugVolume;
+    const duration = "4-6 hours";
     
     setResults({
       medication: "Addiphos (Phosphate)",
@@ -484,8 +485,9 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
         diluent: `${diluent.toFixed(0)} ml NS (0.05 mmol/ml)`,
         totalVolume: `${totalVolume.toFixed(0)} ml`
       },
-      administration: { duration: "4-6 hours", rate: `${(totalVolume/5).toFixed(1)} ml/hr` },
+      administration: { duration, rate: `${(totalVolume/5).toFixed(1)} ml/hr` },
       preparation: `${drugVolume.toFixed(2)} ml Addiphos + ${diluent.toFixed(0)} ml NS = ${totalVolume.toFixed(0)} ml`,
+      order: `${doseMmol.toFixed(1)} mmol Phosphate in ${totalVolume.toFixed(0)} ml NS over ${duration}`,
       warnings: ["Rapid infusion causes hypocalcemia!"]
     });
   };
