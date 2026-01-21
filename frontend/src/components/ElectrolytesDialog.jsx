@@ -262,7 +262,7 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
     });
   };
 
-  const calculatePotassium = () => {
+  const calculatePotassiumIV = () => {
     let doseMEq = currentDose;
     let isMaxed = doseMEq >= 40;
     
@@ -275,7 +275,7 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
     const rate = parseFloat(dosePerKg) <= 0.5 ? totalVolume : totalVolume / 2;
     
     setResults({
-      medication: "Potassium Chloride (KCl) 15%",
+      medication: "Potassium Chloride (KCl) 15% - IV",
       calculation: {
         dose: `${doseMEq.toFixed(1)} mEq${isMaxed ? ' (MAX)' : ''} (${dosePerKg} mEq/kg)`,
         formula: `Selected: ${dosePerKg} mEq/kg x ${w} kg`,
@@ -299,19 +299,16 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
     const divisor = freqMap[kclPoFrequency] || 2;
     const perDose = dailyDose / divisor;
     
+    // Simplified PO result - just dose and frequency
     setResults({
-      medication: "Potassium Chloride (KCl) Oral",
-      calculation: {
-        dose: `${dailyDose.toFixed(1)} mEq/day (${dosePerKg} mEq/kg/day)`,
-        formula: `Selected: ${dosePerKg} mEq/kg/day x ${w} kg`,
-        drugVolume: `${perDose.toFixed(1)} mEq per dose`,
-        diluent: `Divided ${kclPoFrequency} (${divisor} times/day)`,
-        totalVolume: `${dailyDose.toFixed(1)} mEq total daily`
-      },
-      administration: { duration: kclPoFrequency, rate: `${perDose.toFixed(1)} mEq per dose` },
-      preparation: `Give ${perDose.toFixed(1)} mEq PO ${kclPoFrequency}`,
-      frequency: kclPoFrequency,
-      notes: "Give with food or water to reduce GI irritation"
+      medication: "Potassium Chloride (KCl) - Oral",
+      isPO: true,
+      poResult: {
+        dailyDose: `${dailyDose.toFixed(1)} mEq/day`,
+        perKg: `${dosePerKg} mEq/kg/day`,
+        perDose: `${perDose.toFixed(1)} mEq`,
+        frequency: kclPoFrequency
+      }
     });
   };
 
