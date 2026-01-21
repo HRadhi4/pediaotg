@@ -81,6 +81,43 @@ Build a full SaaS-style web app "Pediatrics on the Go" with:
 ## Recent Changes (January 16, 2026)
 
 ### Session 11 Updates (Current - January 21, 2026)
+- ✅ **Nomogram Pinch-to-Zoom (react-zoom-pan-pinch)**:
+  - Replaced button-based zoom controls (+/- buttons) with modern touch-friendly zoom
+  - Installed `react-zoom-pan-pinch` library
+  - **Features**: Pinch-to-zoom on mobile, scroll-to-zoom on desktop, drag-to-pan, double-tap/click to reset
+  - **minScale=1** (prevents zoom below 100%), **maxScale=4** (allows zoom up to 400%)
+  - Instructions shown: "Scroll to zoom • Drag to pan • Double-click to reset"
+  - Patient data point remains correctly positioned at all zoom levels
+  
+- ✅ **Blood Gas Reading Approach (NEW)**:
+  - New file: `/app/frontend/src/pages/children/approaches/BloodGasApproach.jsx`
+  - **Visual Flowchart Structure** based on user-provided images:
+    - pH node at top with branching arrows to Acidemia/Alkalemia
+    - Expandable flowchart nodes with clickable sections
+    - Color-coded branches: red (acidosis), blue (alkalosis), amber (respiratory)
+  - **Sections**:
+    1. **Enter Blood Gas Values**: pH, pCO₂, HCO₃⁻, Na⁺, Cl⁻, Albumin inputs
+       - Automatic calculations: Anion Gap, Corrected AG, Delta Ratio
+       - Primary disorder detection with compensation analysis
+    2. **📊 ABG Interpretation Flowchart**: Visual pH branching flowchart with Primary Disorder Rules
+    3. **📐 Compensation Rules (Box Rule)**: 
+       - Full compensation table (6 rows)
+       - **Visual Box Rule diagram** (2x2 table with numbers 1,2,4,5)
+       - Winter's Formula for Metabolic Acidosis
+       - Respiratory compensation equations
+    4. **🔴 Metabolic Acidosis → Anion Gap Flowchart**:
+       - MUDPILES mnemonic (High AG)
+       - USED CARP mnemonic (Normal AG)
+       - Delta Ratio calculator with interpretation
+       - HAGMA + High Osmolar Gap (L-LA Type A/B, D-LA)
+       - NAGMA → Urine AG (positive/negative)
+    5. **🔵 Metabolic Alkalosis Flowchart**:
+       - Chloride Responsive (UCl <10) vs Chloride Resistant (UCl >10)
+       - HTN branch with Renin & Aldosterone levels
+       - Detailed approach by Serum Cl
+  - **Quick Reference** step cards at bottom
+  - Added to ApproachesPage navigation with keywords
+
 - ✅ **Hyponatremia Mild/Asymptomatic - Fluid Deficit Selector**:
   - Replaced fluid deficit entry box with **Infant/Child toggle buttons**
   - **Infant** options: 5% (50ml/kg), 10% (100ml/kg), 15% (150ml/kg)
