@@ -1033,11 +1033,74 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
               </RadioGroup>
               
               {sodiumType === "hyponatremia" && (
-                <RadioGroup value={hyponatremiaType} onValueChange={setHyponatremiaType} className="flex gap-4">
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="mild" id="mild" />
-                    <Label htmlFor="mild" className="text-sm">Mild (125-134)</Label>
+                <>
+                  <RadioGroup value={hyponatremiaType} onValueChange={setHyponatremiaType} className="flex gap-4">
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="mild" id="mild" />
+                      <Label htmlFor="mild" className="text-sm">Mild/Asymptomatic</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="severe" id="severe" />
+                      <Label htmlFor="severe" className="text-sm">Severe/Symptomatic</Label>
+                    </div>
+                  </RadioGroup>
+                  
+                  {/* Common inputs for hyponatremia */}
+                  <div>
+                    <Label className="text-xs">Current Serum Na (mEq/L)</Label>
+                    <Input
+                      type="number"
+                      step="1"
+                      min="100"
+                      max="134"
+                      placeholder="e.g., 128"
+                      value={currentNa}
+                      onChange={(e) => setCurrentNa(e.target.value)}
+                      className="font-mono h-9 mt-1"
+                    />
                   </div>
+                  
+                  {hyponatremiaType === "mild" && (
+                    <>
+                      <div>
+                        <Label className="text-xs">Target Na (mEq/L)</Label>
+                        <Input
+                          type="number"
+                          step="1"
+                          min="130"
+                          max="140"
+                          placeholder="133"
+                          value={targetNa}
+                          onChange={(e) => setTargetNa(e.target.value)}
+                          className="font-mono h-9 mt-1"
+                        />
+                      </div>
+                      <div>
+                        <Label className="text-xs">Fluid Deficit (ml) - estimated dehydration</Label>
+                        <Input
+                          type="number"
+                          step="10"
+                          min="0"
+                          placeholder={`e.g., ${(w * 100).toFixed(0)} (10%)`}
+                          value={fluidDeficit}
+                          onChange={(e) => setFluidDeficit(e.target.value)}
+                          className="font-mono h-9 mt-1"
+                        />
+                        <p className="text-[10px] text-muted-foreground mt-1">
+                          Infant: 5%={w*50}ml, 10%={w*100}ml, 15%={w*150}ml | Child: 3%={w*30}ml, 6%={w*60}ml, 9%={w*90}ml
+                        </p>
+                      </div>
+                    </>
+                  )}
+                  
+                  {hyponatremiaType === "severe" && (
+                    <div className="p-2 rounded bg-red-50 dark:bg-red-900/20 text-xs">
+                      <p className="font-semibold text-red-700">Severe Hyponatremia Criteria:</p>
+                      <p>Na &lt; 125 mEq/L with symptoms (seizures, mental status changes)</p>
+                    </div>
+                  )}
+                </>
+              )}
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="severe" id="severe" />
                     <Label htmlFor="severe" className="text-sm">Severe (&lt;125)</Label>
