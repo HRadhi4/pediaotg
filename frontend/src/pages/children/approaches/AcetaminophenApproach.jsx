@@ -667,130 +667,109 @@ const AcetaminophenApproach = ({ weight, expandedSections, toggleSection }) => {
               </div>
             )}
 
-            {/* Static SVG Nomogram with Patient Point Overlay */}
-            <div className="flex items-center justify-between mb-2">
-              <p className="text-[9px] text-muted-foreground sm:hidden">← Swipe to scroll →</p>
-              {/* Zoom Controls */}
-              <div className="flex items-center gap-1 ml-auto">
-                <button
-                  type="button"
-                  onClick={() => setNomogramZoom(z => Math.max(0.5, z - 0.25))}
-                  className="p-1.5 rounded-md border border-gray-300 hover:bg-gray-100 dark:border-gray-600 dark:hover:bg-gray-800 transition-colors"
-                  title="Zoom Out"
-                >
-                  <ZoomOut className="w-4 h-4" />
-                </button>
-                <span className="text-xs font-mono min-w-[3rem] text-center">{Math.round(nomogramZoom * 100)}%</span>
-                <button
-                  type="button"
-                  onClick={() => setNomogramZoom(z => Math.min(3, z + 0.25))}
-                  className="p-1.5 rounded-md border border-gray-300 hover:bg-gray-100 dark:border-gray-600 dark:hover:bg-gray-800 transition-colors"
-                  title="Zoom In"
-                >
-                  <ZoomIn className="w-4 h-4" />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setNomogramZoom(1)}
-                  className="p-1.5 rounded-md border border-gray-300 hover:bg-gray-100 dark:border-gray-600 dark:hover:bg-gray-800 transition-colors"
-                  title="Reset Zoom"
-                >
-                  <RotateCcw className="w-4 h-4" />
-                </button>
-              </div>
+            {/* Pinch-to-Zoom Nomogram Container */}
+            <div className="text-[9px] text-muted-foreground mb-2">
+              <span className="sm:hidden">Pinch to zoom • Double-tap to reset</span>
+              <span className="hidden sm:inline">Scroll to zoom • Drag to pan • Double-click to reset</span>
             </div>
             
-            {/* Zoomable Nomogram Container */}
-            <div 
-              ref={nomogramContainerRef}
-              className="overflow-auto border border-gray-200 dark:border-gray-700 rounded-lg bg-white"
-              style={{ maxHeight: '550px' }}
+            <TransformWrapper
+              initialScale={1}
+              minScale={0.5}
+              maxScale={4}
+              centerOnInit={true}
+              wheel={{ step: 0.1 }}
+              pinch={{ step: 5 }}
+              doubleClick={{ mode: "reset" }}
             >
-              <div 
-                className="relative transition-transform duration-200 origin-top-left"
-                style={{ 
-                  width: `${620 * nomogramZoom}px`,
-                  minWidth: nomogramZoom < 1 ? '100%' : 'auto'
-                }}
-              >
-                {/* High-quality SVG Nomogram - rendered at native size then scaled */}
-                <img 
-                  src={RumackNomogramSVG} 
-                  alt="Rumack-Matthew Nomogram" 
-                  className="block"
-                  style={{ 
-                    width: '100%',
-                    height: 'auto',
-                    imageRendering: 'crisp-edges'
-                  }}
-                  draggable={false}
-                />
-                  
-                  {/* Patient Data Point Overlay */}
-                  {hours >= 4 && hours <= 24 && level > 0 && (
-                    <svg 
-                      viewBox={`0 0 ${svgViewWidth} ${svgViewHeight}`}
-                      className="absolute inset-0 w-full h-full pointer-events-none"
-                      style={{ mixBlendMode: 'normal' }}
-                    >
-                      {(() => {
-                        const mcgLevel = nomogramUnit === "SI" ? level / 6.62 : level;
-                        const clampedLevel = Math.min(Math.max(mcgLevel, 5), 1000);
-                        const cx = xScaleSVG(hours);
-                        const cy = yScaleSVG(clampedLevel);
-                        const pointColor = assessNomogram?.probableToxicity 
-                          ? "#dc2626" 
-                          : assessNomogram?.needsTreatment 
-                            ? "#f59e0b" 
-                            : "#22c55e";
-                        return (
-                          <g>
-                            {/* Outer glow for visibility */}
-                            <circle 
-                              cx={cx} 
-                              cy={cy} 
-                              r="8" 
-                              fill="rgba(255,255,255,0.8)"
-                            />
-                            {/* Main point */}
-                            <circle 
-                              cx={cx} 
-                              cy={cy} 
-                              r="5" 
-                              fill={pointColor}
-                              stroke="#ffffff" 
-                              strokeWidth="2"
-                            />
-                            {/* Pulsing animation indicator */}
-                            <circle 
-                              cx={cx} 
-                              cy={cy} 
-                              r="5" 
-                              fill="none"
-                              stroke={pointColor}
-                              strokeWidth="2"
-                              opacity="0.5"
-                            >
-                              <animate 
-                                attributeName="r" 
-                                values="5;12;5" 
-                                dur="2s" 
-                                repeatCount="indefinite"
-                              />
-                              <animate 
-                                attributeName="opacity" 
-                                values="0.5;0;0.5" 
-                                dur="2s" 
-                                repeatCount="indefinite"
-                              />
-                            </circle>
-                          </g>
-                        );
-                      })()}
-                    </svg>
-                  )}
+              {({ zoomIn, zoomOut, resetTransform, ...rest }) => (
+                <div className="border border-gray-200 dark:border-gray-700 rounded-lg bg-white overflow-hidden">
+                  <TransformComponent
+                    wrapperStyle={{ 
+                      width: '100%', 
+                      maxHeight: '550px',
+                      touchAction: 'none'
+                    }}
+                    contentStyle={{ width: '100%' }}
+                  >
+                    <div className="relative" style={{ width: '620px', maxWidth: '100%' }}>
+                      {/* High-quality SVG Nomogram */}
+                      <img 
+                        src={RumackNomogramSVG} 
+                        alt="Rumack-Matthew Nomogram" 
+                        className="block w-full h-auto"
+                        style={{ imageRendering: 'crisp-edges' }}
+                        draggable={false}
+                      />
+                        
+                      {/* Patient Data Point Overlay */}
+                      {hours >= 4 && hours <= 24 && level > 0 && (
+                        <svg 
+                          viewBox={`0 0 ${svgViewWidth} ${svgViewHeight}`}
+                          className="absolute inset-0 w-full h-full pointer-events-none"
+                          style={{ mixBlendMode: 'normal' }}
+                        >
+                          {(() => {
+                            const mcgLevel = nomogramUnit === "SI" ? level / 6.62 : level;
+                            const clampedLevel = Math.min(Math.max(mcgLevel, 5), 1000);
+                            const cx = xScaleSVG(hours);
+                            const cy = yScaleSVG(clampedLevel);
+                            const pointColor = assessNomogram?.probableToxicity 
+                              ? "#dc2626" 
+                              : assessNomogram?.needsTreatment 
+                                ? "#f59e0b" 
+                                : "#22c55e";
+                            return (
+                              <g>
+                                {/* Outer glow for visibility */}
+                                <circle 
+                                  cx={cx} 
+                                  cy={cy} 
+                                  r="8" 
+                                  fill="rgba(255,255,255,0.8)"
+                                />
+                                {/* Main point */}
+                                <circle 
+                                  cx={cx} 
+                                  cy={cy} 
+                                  r="5" 
+                                  fill={pointColor}
+                                  stroke="#ffffff" 
+                                  strokeWidth="2"
+                                />
+                                {/* Pulsing animation indicator */}
+                                <circle 
+                                  cx={cx} 
+                                  cy={cy} 
+                                  r="5" 
+                                  fill="none"
+                                  stroke={pointColor}
+                                  strokeWidth="2"
+                                  opacity="0.5"
+                                >
+                                  <animate 
+                                    attributeName="r" 
+                                    values="5;12;5" 
+                                    dur="2s" 
+                                    repeatCount="indefinite"
+                                  />
+                                  <animate 
+                                    attributeName="opacity" 
+                                    values="0.5;0;0.5" 
+                                    dur="2s" 
+                                    repeatCount="indefinite"
+                                  />
+                                </circle>
+                              </g>
+                            );
+                          })()}
+                        </svg>
+                      )}
+                    </div>
+                  </TransformComponent>
                 </div>
-              </div>
+              )}
+            </TransformWrapper>
 
             <div className="text-[10px] text-muted-foreground space-y-1 mt-2">
               <p><strong>Upper line:</strong> {nomogramUnit === "SI" ? "1320 µmol/L (200 mcg/mL)" : "200 mcg/mL (1320 µmol/L)"} at 4h</p>
