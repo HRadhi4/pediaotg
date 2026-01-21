@@ -558,14 +558,14 @@ const AcetaminophenApproach = ({ weight, expandedSections, toggleSection }) => {
 
             {/* Static SVG Nomogram with Patient Point Overlay */}
             <p className="text-[9px] text-center text-muted-foreground mb-2 sm:hidden">← Swipe to scroll →</p>
-            <div className="overflow-auto -mx-2 px-2 pb-2">
+            <div className="overflow-auto -mx-2 px-2 pb-2" style={{ maxHeight: '450px' }}>
               <div className="flex justify-center" style={{ minWidth: '320px' }}>
-                <div className="relative" style={{ width: '450px', height: '550px' }}>
+                <div className="relative" style={{ width: '100%', maxWidth: '500px', aspectRatio: '620/750' }}>
                   {/* Static SVG Nomogram Background */}
                   <img 
                     src={RumackNomogramSVG} 
                     alt="Rumack-Matthew Nomogram" 
-                    className="w-full h-full object-contain"
+                    className="w-full h-auto"
                     style={{ background: '#ffffff', borderRadius: '4px' }}
                   />
                   
@@ -578,7 +578,7 @@ const AcetaminophenApproach = ({ weight, expandedSections, toggleSection }) => {
                     >
                       {(() => {
                         const mcgLevel = nomogramUnit === "SI" ? level / 6.62 : level;
-                        const clampedLevel = Math.min(Math.max(mcgLevel, 3), 500);
+                        const clampedLevel = Math.min(Math.max(mcgLevel, 5), 1000);
                         const cx = xScaleSVG(hours);
                         const cy = yScaleSVG(clampedLevel);
                         const pointColor = assessNomogram?.probableToxicity 
