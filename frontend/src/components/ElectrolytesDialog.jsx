@@ -133,23 +133,44 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
     }
   };
 
-  // Clear results and reset dose when electrolyte or weight changes
+  // Clear results and reset dose when electrolyte, weight, or potassium route changes
   useEffect(() => {
     setResults(null);
     const elec = electrolytes[selectedElectrolyte];
     if (elec && w > 0) {
-      const minAbsDose = elec.doseMin * w;
-      const maxAbsDose = Math.min(elec.doseMax * w, elec.maxAbsolute);
+      // Handle potassium's dynamic dose range
+      let doseMin, doseMax, maxAbsolute;
+      if (selectedElectrolyte === "potassium") {
+        doseMin = potassiumRoute === "IV" ? elec.doseMinIV : elec.doseMinPO;
+        doseMax = potassiumRoute === "IV" ? elec.doseMaxIV : elec.doseMaxPO;
+        maxAbsolute = potassiumRoute === "IV" ? elec.maxAbsoluteIV : elec.maxAbsolutePO;
+      } else {
+        doseMin = elec.doseMin;
+        doseMax = elec.doseMax;
+        maxAbsolute = elec.maxAbsolute;
+      }
+      const minAbsDose = doseMin * w;
+      const maxAbsDose = Math.min(doseMax * w, maxAbsolute);
       const midDose = (minAbsDose + maxAbsDose) / 2;
       setCustomDose(midDose.toFixed(elec.resultUnit === "mEq" || elec.resultUnit === "mmol" ? 2 : 0));
     }
-  }, [selectedElectrolyte, weight]);
+  }, [selectedElectrolyte, weight, potassiumRoute]);
 
   // Get dose limits for current electrolyte
   const currentElectrolyte = electrolytes[selectedElectrolyte];
   const getDoseLimits = () => {
     if (!currentElectrolyte || !w) return { min: 0, max: 100, step: 1 };
-    const { doseMin, doseMax, maxAbsolute } = currentElectrolyte;
+    // Handle potassium's dynamic dose range
+    let doseMin, doseMax, maxAbsolute;
+    if (selectedElectrolyte === "potassium") {
+      doseMin = potassiumRoute === "IV" ? currentElectrolyte.doseMinIV : currentElectrolyte.doseMinPO;
+      doseMax = potassiumRoute === "IV" ? currentElectrolyte.doseMaxIV : currentElectrolyte.doseMaxPO;
+      maxAbsolute = potassiumRoute === "IV" ? currentElectrolyte.maxAbsoluteIV : currentElectrolyte.maxAbsolutePO;
+    } else {
+      doseMin = currentElectrolyte.doseMin;
+      doseMax = currentElectrolyte.doseMax;
+      maxAbsolute = currentElectrolyte.maxAbsolute;
+    }
     const minAbsDose = doseMin * w;
     const maxAbsDose = Math.min(doseMax * w, maxAbsolute);
     const step = maxAbsDose < 10 ? 0.1 : maxAbsDose < 100 ? 1 : 10;
@@ -157,6 +178,14 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
   };
   const doseLimits = getDoseLimits();
   const currentDose = parseFloat(customDose) || doseLimits.min;
+
+  // Get current dose range text for potassium
+  const getCurrentDoseRange = () => {
+    if (selectedElectrolyte === "potassium") {
+      return potassiumRoute === "IV" ? currentElectrolyte.doseRangeIV : currentElectrolyte.doseRangePO;
+    }
+    return currentElectrolyte?.doseRange || "";
+  };
 
   // Calculate based on selected electrolyte
   const calculate = () => {
