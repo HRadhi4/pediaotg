@@ -537,20 +537,81 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
         warnings: na >= 170 ? ["Severe hypernatremia - monitor closely for seizures"] : undefined
       });
     } else {
-      // Standard Hypernatremia calculation
-      const freeWaterDeficit = w * 0.6 * ((na / 140) - 1) * 1000;
+      // Harriet Lane Method for Hypernatremia
+      const desiredNa = parseFloat(targetNa) || 145;
+      const deficit = parseFloat(fluidDeficit) || (w * 100); // Default 10% dehydration
+      
+      // Free Water Deficit (FWD) = 4ml × weight × (Serum Na - Desired Na)
+      const freeWaterDeficit = 4 * w * (na - desiredNa);
+      
+      // Solute Fluid Deficit (SFD) = Fluid deficit - FWD
+      const soluteFluadDeficit = Math.max(0, deficit - freeWaterDeficit);
+      
+      // Calculate maintenance (Holliday-Segar)
+      let maintenance;
+      if (w <= 10) {
+        maintenance = w * 100;
+      } else if (w <= 20) {
+        maintenance = 1000 + (w - 10) * 50;
+      } else {
+        maintenance = 1500 + (w - 20) * 20;
+      }
+      
+      // Total fluid volume = Maintenance + Deficit (given over 24 hrs)
+      const totalFluidVolume = maintenance + deficit;
+      const fluidRate = totalFluidVolume / 24;
+      
+      // Na required = (SFD + Maintenance) × 14 mEq/100ml
+      // Using 14 mEq/100ml as the maintenance Na requirement
+      const naRequired = (soluteFluadDeficit + maintenance) * 0.14;
+      
+      // Na content in fluid = Na required / Total fluid volume (gives mEq/L needed)
+      const naContentInFluid = (naRequired / totalFluidVolume) * 1000;
+      
+      // Determine fluid type based on Na content
+      let recommendedFluid;
+      if (naContentInFluid >= 140) {
+        recommendedFluid = "NS (154 mEq/L)";
+      } else if (naContentInFluid >= 70) {
+        recommendedFluid = "0.45% NaCl (77 mEq/L)";
+      } else if (naContentInFluid >= 30) {
+        recommendedFluid = "0.2% NaCl (34 mEq/L)";
+      } else {
+        recommendedFluid = "D5W or D5 0.2% NaCl";
+      }
+      
+      // 3% NaCl calculation if Na > 170
+      let hypertonicCalc = null;
+      if (na > 170) {
+        // ml of 3% saline = 1000ml × (desired Na - 154) / (513 - desired Na)
+        // This is used to fortify NS bolus
+        const ml3Percent = 1000 * (desiredNa - 154) / (513 - desiredNa);
+        const nsBolus = w * 15; // 10-20 ml/kg, using 15
+        const toAdd = (nsBolus * ml3Percent) / 1000;
+        hypertonicCalc = {
+          ml3Percent: Math.abs(ml3Percent).toFixed(1),
+          nsBolus: nsBolus.toFixed(0),
+          toAdd: Math.abs(toAdd).toFixed(1)
+        };
+      }
+      
       setResults({
-        medication: "Hypernatremia Correction (Standard)",
-        calculation: {
-          dose: `${freeWaterDeficit.toFixed(0)} ml Free Water Deficit`,
-          formula: `${w} x 0.6 x ((${na}/140) - 1) x 1000`,
-          drugVolume: "Variable",
-          diluent: "D5W or 0.45% NaCl",
-          totalVolume: "Replace over 48-72 hrs"
-        },
-        administration: { duration: "48-72 hours", rate: "Max 0.5 mEq/hr drop" },
-        preparation: "Choose appropriate hypotonic fluid",
-        notes: "Correction max 10-12 mEq/day"
+        medication: "Hypernatremia Correction (Harriet Lane)",
+        isHarrietLane: true,
+        harrietData: {
+          currentNa: na,
+          desiredNa,
+          freeWaterDeficit: freeWaterDeficit.toFixed(0),
+          soluteFluidDeficit: soluteFluadDeficit.toFixed(0),
+          totalDeficit: deficit.toFixed(0),
+          maintenance: maintenance.toFixed(0),
+          totalFluidVolume: totalFluidVolume.toFixed(0),
+          fluidRate: fluidRate.toFixed(1),
+          naRequired: naRequired.toFixed(1),
+          naContentInFluid: naContentInFluid.toFixed(0),
+          recommendedFluid,
+          hypertonicCalc
+        }
       });
     }
   };
