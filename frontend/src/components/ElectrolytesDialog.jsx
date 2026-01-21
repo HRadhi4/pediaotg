@@ -587,11 +587,17 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
                   <div>
                     <Label className="text-xs">Base Excess (mEq/L)</Label>
                     <Input
-                      type="number"
-                      step="0.1"
+                      type="text"
+                      inputMode="numeric"
+                      pattern="-?[0-9]*\.?[0-9]*"
                       placeholder="e.g., -10"
                       value={baseExcess}
-                      onChange={(e) => setBaseExcess(e.target.value)}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        if (val === '' || val === '-' || /^-?\d*\.?\d*$/.test(val)) {
+                          setBaseExcess(val);
+                        }
+                      }}
                       className="font-mono h-9"
                     />
                     <p className="text-[10px] text-muted-foreground mt-1">Enter negative value (e.g., -10)</p>
@@ -622,13 +628,6 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
                   </div>
                 </div>
               )}
-              
-              {/* Oral NaHCO3 Note */}
-              <div className="p-2 rounded bg-blue-50 dark:bg-blue-900/30 border border-blue-200">
-                <p className="text-xs text-blue-700 dark:text-blue-300">
-                  <strong>Oral NaHCO3:</strong> 600 mg = 7 mEq
-                </p>
-              </div>
             </div>
           )}
 
