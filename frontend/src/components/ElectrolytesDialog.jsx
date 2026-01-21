@@ -912,7 +912,7 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
 
           {/* Sodium-specific options */}
           {selectedElectrolyte === "sodium" && (
-            <div className="space-y-2">
+            <div className="space-y-3">
               <RadioGroup value={sodiumType} onValueChange={setSodiumType} className="flex gap-4">
                 <div className="flex items-center space-x-2">
                   <RadioGroupItem value="hyponatremia" id="hypo" />
@@ -923,6 +923,7 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
                   <Label htmlFor="hyper" className="text-sm">Hypernatremia</Label>
                 </div>
               </RadioGroup>
+              
               {sodiumType === "hyponatremia" && (
                 <RadioGroup value={hyponatremiaType} onValueChange={setHyponatremiaType} className="flex gap-4">
                   <div className="flex items-center space-x-2">
@@ -934,6 +935,77 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
                     <Label htmlFor="severe" className="text-sm">Severe (&lt;125)</Label>
                   </div>
                 </RadioGroup>
+              )}
+              
+              {sodiumType === "hypernatremia" && (
+                <>
+                  <div className="flex items-center justify-center gap-2 p-2 rounded-lg bg-orange-50 dark:bg-orange-950/30 border border-orange-200">
+                    <button
+                      type="button"
+                      onClick={() => setHypernatremiaMethod("nelson")}
+                      className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
+                        hypernatremiaMethod === "nelson"
+                          ? "bg-orange-600 text-white"
+                          : "text-orange-700 hover:bg-orange-100"
+                      }`}
+                    >
+                      Nelson Method
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setHypernatremiaMethod("standard")}
+                      className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
+                        hypernatremiaMethod === "standard"
+                          ? "bg-orange-600 text-white"
+                          : "text-orange-700 hover:bg-orange-100"
+                      }`}
+                    >
+                      Standard
+                    </button>
+                  </div>
+                  
+                  <div>
+                    <Label className="text-xs">Current Serum Na (mEq/L)</Label>
+                    <Input
+                      type="number"
+                      step="1"
+                      min="145"
+                      max="200"
+                      placeholder="e.g., 165"
+                      value={currentNa}
+                      onChange={(e) => setCurrentNa(e.target.value)}
+                      className="font-mono h-9 mt-1"
+                    />
+                  </div>
+                  
+                  {hypernatremiaMethod === "nelson" && (
+                    <div className="p-2 rounded bg-orange-50 dark:bg-orange-900/20 text-xs space-y-1">
+                      <p className="font-semibold text-orange-700">Nelson Method Correction Time:</p>
+                      <div className="grid grid-cols-2 gap-1 text-[10px]">
+                        <span>Na 145-157: 24 hrs</span>
+                        <span>Na 158-170: 48 hrs</span>
+                        <span>Na 171-183: 72 hrs</span>
+                        <span>Na 184-196: 84 hrs</span>
+                      </div>
+                    </div>
+                  )}
+                </>
+              )}
+              
+              {sodiumType === "hyponatremia" && hyponatremiaType === "mild" && (
+                <div>
+                  <Label className="text-xs">Current Serum Na (mEq/L)</Label>
+                  <Input
+                    type="number"
+                    step="1"
+                    min="100"
+                    max="134"
+                    placeholder="e.g., 125"
+                    value={currentNa}
+                    onChange={(e) => setCurrentNa(e.target.value)}
+                    className="font-mono h-9 mt-1"
+                  />
+                </div>
               )}
             </div>
           )}
