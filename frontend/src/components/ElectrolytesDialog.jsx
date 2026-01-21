@@ -448,12 +448,14 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
             </Select>
           </div>
 
-          {/* Dose Range Display */}
-          <div className="p-2 rounded-lg bg-green-100 dark:bg-green-900/30 border border-green-300">
-            <p className="text-sm font-semibold text-green-800 dark:text-green-300">
-              Dose Range: <span className="text-green-600 dark:text-green-400">{currentElectrolyte.doseRange}</span>
-            </p>
-          </div>
+          {/* Dose Range Display - Hide for NaHCO3 */}
+          {selectedElectrolyte !== "nahco3" && (
+            <div className="p-2 rounded-lg bg-green-100 dark:bg-green-900/30 border border-green-300">
+              <p className="text-sm font-semibold text-green-800 dark:text-green-300">
+                Dose Range: <span className="text-green-600 dark:text-green-400">{currentElectrolyte.doseRange}</span>
+              </p>
+            </div>
+          )}
 
           {/* Dose Input with Slider - Hide for NaHCO3 (uses formula instead) */}
           {w > 0 && selectedElectrolyte !== "nahco3" && (
