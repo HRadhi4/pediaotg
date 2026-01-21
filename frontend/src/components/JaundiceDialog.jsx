@@ -68,7 +68,8 @@ const JaundiceDialog = ({ open, onOpenChange }) => {
   const [riskFactors, setRiskFactors] = useState("none");
   const [result, setResult] = useState(null);
 
-  const getAgeCategory = (hours) => {
+  // For pre-terms (9 time points): <12h, 24h, 36h, 48h, 60h, 72h, 84h, 96-108h, 5days
+  const getAgeCategoryPreterm = (hours) => {
     if (hours < 12) return 0;
     if (hours < 24) return 1;
     if (hours < 36) return 2;
@@ -78,6 +79,20 @@ const JaundiceDialog = ({ open, onOpenChange }) => {
     if (hours < 84) return 6;
     if (hours < 108) return 7;
     return 8; // 5 days+
+  };
+
+  // For term infants (10 time points): birth, 12h, 24h, 36h, 48h, 60h, 72h, 84h, 96h, 5days
+  const getAgeCategoryTerm = (hours) => {
+    if (hours < 12) return 0;  // birth to <12h
+    if (hours < 24) return 1;  // 12h
+    if (hours < 36) return 2;  // 24h
+    if (hours < 48) return 3;  // 36h
+    if (hours < 60) return 4;  // 48h
+    if (hours < 72) return 5;  // 60h
+    if (hours < 84) return 6;  // 72h
+    if (hours < 96) return 7;  // 84h
+    if (hours < 120) return 8; // 96h
+    return 9; // 5 days+
   };
 
   const getThresholdKey = () => {
