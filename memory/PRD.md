@@ -80,7 +80,34 @@ Build a full SaaS-style web app "Pediatrics on the Go" with:
 
 ## Recent Changes (January 16, 2026)
 
-### Session 10 Updates (Current - January 21, 2026)
+### Session 11 Updates (Current - January 21, 2026)
+- ✅ **DKA Approach SMC Guideline Toggle**:
+  - Added **toggle switch** to switch between "Saudi Booklet" (default) and "SMC Guideline"
+  - **Saudi Booklet** sections: Recognition & Diagnosis, 1st Hour Management, Fluid Management, Insulin, Potassium, Dextrose, Cerebral Edema, DKA Resolution
+  - **SMC Guideline** sections (Kingdom of Bahrain MOH): Introduction, Diagnosis, Initial Investigations, Monitoring, Fluids, Potassium, Insulin, Bicarbonate, Cerebral Edema, Troubleshooting
+  - SMC Guideline includes weight-based fluid rates table, corrected sodium formula, serum osmolality formula
+  - Toggle data-testid: `dka-guideline-switch`
+  
+- ✅ **IEM Emergencies Approach (NEW)**:
+  - New approach component for Inborn Error of Metabolism emergencies
+  - **Disease Crisis Quick Reference Table** with 9 diseases:
+    - Propionic Acidemia, MMA, MSUD, VLCAD, CPT1, GSD 1, Mitochondrial, PKU, Hunter
+  - Columns: Crisis, Blood Gas, HCO₃, CPK, Lactate, D10%, Carnitine, Ammonia
+  - Sections: Emergency Regimen Principles, Initial Plan & Management, Organic Acid Disorders, MSUD, Fatty Acid Oxidation Defects, Urea Cycle Defects, Hyperammonemia Management, Dialysis, GSD Emergency, Mitochondrial Disorders, Acidosis Management
+  - Weight-based calculations for carnitine, ammonia scavengers, arginine, bicarbonate
+  - File: `/app/frontend/src/pages/children/approaches/IEMEmergencyApproach.jsx`
+  - Tab ID: `iem`
+
+- ✅ **Rumack-Matthew Nomogram Updated**:
+  - Replaced nomogram SVG with user-provided `/images/rumack_matthew_nomogram_new.svg`
+  - New SVG viewBox: `0 0 620 750.40002`
+  - Updated chart boundaries: Left=85, Right=570, Top=60, Bottom=650
+  - Container size updated to 450x550px
+  - SVG served from public folder to avoid Inkscape namespace parsing issues
+  
+- ✅ **Testing**: 100% pass rate (iteration_23.json - 6/6 tests)
+
+### Session 10 Updates (January 21, 2026)
 - ✅ **Hyponatremia Calculator Overhaul (Based on User Flowcharts)**:
   - **Mild/Asymptomatic (Na 125-134)** - Complete 4-step process:
     - Step 1: Determine Volume (Maintenance 100/50/20 + Deficit, Max 2.5L/day)
