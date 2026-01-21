@@ -80,7 +80,34 @@ Build a full SaaS-style web app "Pediatrics on the Go" with:
 
 ## Recent Changes (January 16, 2026)
 
-### Session 9 Updates (Current - January 21, 2026)
+### Session 10 Updates (Current - January 21, 2026)
+- ✅ **Hyponatremia Calculator Overhaul (Based on User Flowcharts)**:
+  - **Mild/Asymptomatic (Na 125-134)** - Complete 4-step process:
+    - Step 1: Determine Volume (Maintenance 100/50/20 + Deficit, Max 2.5L/day)
+    - Step 2: Sodium Correction (Na Deficit = Wt × 0.6 × (Target - Measured), Na Maintenance = Wt × 2)
+    - Step 3: Determine Fluid Type (calculates Na concentration needed, recommends NS/RL/1/2NS/3%NaCl)
+    - Step 4: Add Dextrose (D5% mix ratio: 450ml NS + 50ml D50% per 500ml)
+    - Final Order with rate displayed prominently
+  
+  - **Severe/Symptomatic (Na < 125)** - Two treatment options:
+    - Option 1: 3% Saline Infusion (1-2 ml/kg/hr, Goal: +6-8 mEq/L, with desmopressin note)
+    - Option 2: 3% Saline Bolus (100-150 ml, Goal: +2-3 mEq/L, check q20min)
+    - After Symptom Resolution protocol included
+
+- ✅ **Hypernatremia (Harriet Lane) Deficit Selector**:
+  - Replaced free-text Fluid Deficit input with **Infant/Child toggle selector**
+  - **Infant** options: 5% (50ml/kg), 10% (100ml/kg), 15% (150ml/kg)
+  - **Child** options: 3% (30ml/kg), 6% (60ml/kg), 9% (90ml/kg)
+  - Automatically calculates deficit in ml based on weight and selection
+  - Result header shows selected deficit type (e.g., "Deficit: Infant 10% = 1500 ml")
+
+- ✅ **Fixed Broken JSX in ElectrolytesDialog**:
+  - Removed duplicate/orphaned RadioGroup code (lines 1136-1141)
+  - Cleaned up conditional rendering structure
+
+- ✅ **Testing**: Manual verification via screenshots - all calculations working correctly
+
+### Session 9 Updates (January 21, 2026)
 - ✅ **Jaundice Calculator Data Corrections**:
   - Fixed PT and EX threshold values to match user-provided reference table
   - Updated term infant medium risk values: PT[6]=255, PT[7]=270
