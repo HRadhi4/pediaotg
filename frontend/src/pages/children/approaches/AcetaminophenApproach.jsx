@@ -2,14 +2,15 @@
  * Acetaminophen (Paracetamol) Toxicity Approach Component
  * Includes Rumack-Matthew Nomogram and NAC treatment protocols
  * Updated with collapsible sections and ml/mg converter for Bahrain preparations
+ * Nomogram now uses pinch-to-zoom for mobile-friendly interaction
  */
 
-import { useState, useMemo, useRef } from "react";
+import { useState, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ZoomIn, ZoomOut, RotateCcw } from "lucide-react";
+import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import Section from "./Section";
 
 // Import the static Rumack-Matthew nomogram SVG (updated version - using as image)
