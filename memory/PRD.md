@@ -95,13 +95,16 @@ Build a full SaaS-style web app "Pediatrics on the Go" with:
   - **UpToDate**: Clinical Presentations (Neurologic 85%, GI 58%), Initial Laboratory Evaluation, Distinguishing IEM by Lab Findings, Hyperammonemia EMERGENCY Management, Hypoglycemia with/without ketosis, Seizures Cofactor Trials
   - Removed separate "Metabolic Emergencies" tab from ApproachesPage
   
-- ✅ **Rumack-Matthew Nomogram Calibrated**:
+- ✅ **Rumack-Matthew Nomogram Complete Rewrite**:
   - Downloaded new optimized SVG: `/public/images/rumack_matthew_nomogram_new.svg`
-  - Calibrated coordinates for transformed SVG (scale ~0.767)
-  - Chart boundaries: Left=116, Right=500, Top=82, Bottom=657
-  - X-axis: Hours 4-24 (chart starts at 4 hours)
-  - Y-axis: Log scale 5-1000 mcg/mL
+  - **Completely rewrote coordinate mapping** from scratch using actual SVG coordinates
+  - Transform matrix: `scale(0.76671865, 0.76694206) translate(1.1857538, 5.0148173)`
+  - Y-axis reference points extracted from SVG: 1000@y=100, 500@y=170.57, 200@y=272.39, 150@y=302.18, 100@y=347.39, 50@y=424.48, 10@y=599.35, 5@y=673.57
+  - X-axis: Hour 4 at x=150, Hour 24 at x=650 (25px/hour)
+  - New `yScaleSVG()` function with logarithmic interpolation between known points
   - Mobile-friendly container with responsive sizing and scroll support
+  - Point colors: green (below treatment), orange (above treatment), red (probable toxicity)
+  - **Verified**: 4h/150mcg, 12h/37mcg, 24h/5mcg, 8h/100mcg all plot correctly
   
 - ✅ **DKA Approach SMC Guideline Toggle**:
   - Added **toggle switch** to switch between "Saudi Booklet" (default) and "SMC Guideline"
