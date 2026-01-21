@@ -1,28 +1,38 @@
 /**
  * Blood Gas Reading Approach Component
  * Interactive flowchart for arterial blood gas interpretation
- * Includes pH assessment, compensation analysis, and differential diagnosis
+ * Based on systematic flowchart approach with expandable sections
  */
 
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ChevronDown, ChevronRight, AlertTriangle, CheckCircle2 } from "lucide-react";
+import { ChevronDown, ChevronRight, AlertTriangle, CheckCircle2, ArrowDown, ArrowRight } from "lucide-react";
 import Section from "./Section";
 
-// Expandable flowchart node component
-const FlowNode = ({ title, children, color = "blue", defaultOpen = false, level = 0 }) => {
+// Flowchart Node component - clickable and expandable
+const FlowNode = ({ 
+  title, 
+  children, 
+  color = "blue", 
+  defaultOpen = false, 
+  level = 0,
+  variant = "default", // "default", "rounded", "diamond"
+  highlight = false
+}) => {
   const [isOpen, setIsOpen] = useState(defaultOpen);
   
   const colorClasses = {
-    blue: "bg-blue-50 dark:bg-blue-950/30 border-blue-200 dark:border-blue-800",
-    green: "bg-green-50 dark:bg-green-950/30 border-green-200 dark:border-green-800",
-    red: "bg-red-50 dark:bg-red-950/30 border-red-200 dark:border-red-800",
-    amber: "bg-amber-50 dark:bg-amber-950/30 border-amber-200 dark:border-amber-800",
-    purple: "bg-purple-50 dark:bg-purple-950/30 border-purple-200 dark:border-purple-800",
-    teal: "bg-teal-50 dark:bg-teal-950/30 border-teal-200 dark:border-teal-800",
-    gray: "bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700",
+    blue: "bg-blue-100 dark:bg-blue-950/50 border-blue-300 dark:border-blue-700",
+    green: "bg-green-100 dark:bg-green-950/50 border-green-300 dark:border-green-700",
+    red: "bg-red-100 dark:bg-red-950/50 border-red-300 dark:border-red-700",
+    amber: "bg-amber-100 dark:bg-amber-950/50 border-amber-300 dark:border-amber-700",
+    purple: "bg-purple-100 dark:bg-purple-950/50 border-purple-300 dark:border-purple-700",
+    teal: "bg-teal-100 dark:bg-teal-950/50 border-teal-300 dark:border-teal-700",
+    gray: "bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-600",
+    yellow: "bg-yellow-100 dark:bg-yellow-950/50 border-yellow-400 dark:border-yellow-600",
+    pink: "bg-pink-100 dark:bg-pink-950/50 border-pink-300 dark:border-pink-700",
   };
 
   const titleColors = {
@@ -33,22 +43,30 @@ const FlowNode = ({ title, children, color = "blue", defaultOpen = false, level 
     purple: "text-purple-800 dark:text-purple-200",
     teal: "text-teal-800 dark:text-teal-200",
     gray: "text-gray-800 dark:text-gray-200",
+    yellow: "text-yellow-800 dark:text-yellow-200",
+    pink: "text-pink-800 dark:text-pink-200",
+  };
+
+  const variantClasses = {
+    default: "rounded-lg",
+    rounded: "rounded-full",
+    diamond: "rounded-lg rotate-0",
   };
 
   return (
-    <div className={`border rounded-lg ${colorClasses[color]} ${level > 0 ? 'ml-4' : ''}`}>
+    <div className={`border-2 ${colorClasses[color]} ${variantClasses[variant]} ${level > 0 ? 'ml-4' : ''} ${highlight ? 'ring-2 ring-offset-2 ring-blue-500' : ''}`}>
       <button
         type="button"
-        onClick={() => setIsOpen(!isOpen)}
-        className="w-full p-3 flex items-center justify-between text-left"
+        onClick={() => children && setIsOpen(!isOpen)}
+        className={`w-full p-2 sm:p-3 flex items-center justify-between text-left ${children ? 'cursor-pointer hover:opacity-80' : 'cursor-default'}`}
       >
-        <span className={`font-semibold text-sm ${titleColors[color]}`}>{title}</span>
+        <span className={`font-semibold text-xs sm:text-sm ${titleColors[color]}`}>{title}</span>
         {children && (
-          isOpen ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />
+          isOpen ? <ChevronDown className="w-4 h-4 flex-shrink-0" /> : <ChevronRight className="w-4 h-4 flex-shrink-0" />
         )}
       </button>
       {isOpen && children && (
-        <div className="px-3 pb-3 space-y-2">
+        <div className="px-2 sm:px-3 pb-2 sm:pb-3 space-y-2 border-t border-current/10">
           {children}
         </div>
       )}
@@ -56,24 +74,48 @@ const FlowNode = ({ title, children, color = "blue", defaultOpen = false, level 
   );
 };
 
-// Info box component
-const InfoBox = ({ title, items, color = "gray" }) => {
+// Arrow connector component
+const FlowArrow = ({ direction = "down", label = "", className = "" }) => (
+  <div className={`flex ${direction === "down" ? "flex-col items-center" : "flex-row items-center"} ${className}`}>
+    {direction === "down" ? (
+      <>
+        <div className="w-0.5 h-3 bg-gray-400"></div>
+        {label && <span className="text-[9px] text-gray-600 my-0.5">{label}</span>}
+        <ArrowDown className="w-3 h-3 text-gray-400" />
+      </>
+    ) : (
+      <>
+        <div className="h-0.5 w-3 bg-gray-400"></div>
+        {label && <span className="text-[9px] text-gray-600 mx-0.5">{label}</span>}
+        <ArrowRight className="w-3 h-3 text-gray-400" />
+      </>
+    )}
+  </div>
+);
+
+// Simple list box for mnemonics
+const MnemonicBox = ({ title, items, color = "gray", treatment = null }) => {
   const colorClasses = {
-    blue: "bg-blue-100 dark:bg-blue-900/40 border-blue-300",
-    green: "bg-green-100 dark:bg-green-900/40 border-green-300",
-    red: "bg-red-100 dark:bg-red-900/40 border-red-300",
-    amber: "bg-amber-100 dark:bg-amber-900/40 border-amber-300",
-    gray: "bg-gray-100 dark:bg-gray-800 border-gray-300",
+    red: "bg-red-50 dark:bg-red-950/30 border-red-200",
+    amber: "bg-amber-50 dark:bg-amber-950/30 border-amber-200",
+    blue: "bg-blue-50 dark:bg-blue-950/30 border-blue-200",
+    green: "bg-green-50 dark:bg-green-950/30 border-green-200",
+    gray: "bg-gray-50 dark:bg-gray-800 border-gray-200",
   };
 
   return (
-    <div className={`p-2 rounded border ${colorClasses[color]}`}>
-      {title && <p className="font-semibold text-xs mb-1">{title}</p>}
+    <div className={`p-2 rounded-lg border ${colorClasses[color]}`}>
+      <p className="font-bold text-xs mb-1">{title}</p>
       <ul className="text-[10px] text-muted-foreground space-y-0.5">
         {items.map((item, i) => (
-          <li key={i}>• {item}</li>
+          <li key={i}>• <strong>{item.letter}</strong>{item.text}</li>
         ))}
       </ul>
+      {treatment && (
+        <p className="text-[10px] font-semibold mt-2 text-green-700 dark:text-green-400">
+          Treatment: {treatment}
+        </p>
+      )}
     </div>
   );
 };
@@ -95,11 +137,7 @@ const BloodGasApproach = ({ weight, expandedSections, toggleSection }) => {
 
   // Calculate Anion Gap
   const anionGap = naVal && clVal && hco3Val ? naVal - clVal - hco3Val : null;
-  
-  // Corrected AG for albumin (for every 1 g/dL decrease in albumin, add 2.5 to AG)
   const correctedAG = anionGap !== null ? anionGap + (2.5 * (4 - albVal)) : null;
-  
-  // Delta ratio for mixed disorders
   const deltaAG = correctedAG !== null ? correctedAG - 12 : null;
   const deltaHCO3 = 24 - hco3Val;
   const deltaRatio = deltaAG && deltaHCO3 ? deltaAG / deltaHCO3 : null;
@@ -109,15 +147,12 @@ const BloodGasApproach = ({ weight, expandedSections, toggleSection }) => {
     if (!phVal || !pco2Val || !hco3Val) return null;
     
     if (phVal < 7.35) {
-      // Acidemia
       if (hco3Val < 22) return { type: "Metabolic Acidosis", primary: "metabolic" };
       if (pco2Val > 45) return { type: "Respiratory Acidosis", primary: "respiratory" };
     } else if (phVal > 7.45) {
-      // Alkalemia
       if (hco3Val > 26) return { type: "Metabolic Alkalosis", primary: "metabolic" };
       if (pco2Val < 35) return { type: "Respiratory Alkalosis", primary: "respiratory" };
     } else {
-      // Normal pH - could be compensated or mixed
       if (hco3Val < 22 && pco2Val < 35) return { type: "Compensated Metabolic Acidosis", primary: "metabolic" };
       if (hco3Val > 26 && pco2Val > 45) return { type: "Compensated Metabolic Alkalosis", primary: "metabolic" };
       if (pco2Val > 45 && hco3Val > 26) return { type: "Compensated Respiratory Acidosis", primary: "respiratory" };
@@ -126,7 +161,6 @@ const BloodGasApproach = ({ weight, expandedSections, toggleSection }) => {
     return { type: "Normal or Mixed Disorder", primary: null };
   };
 
-  // Expected compensation calculations
   const getExpectedCompensation = () => {
     const disorder = getPrimaryDisorder();
     if (!disorder || !disorder.primary) return null;
@@ -134,11 +168,10 @@ const BloodGasApproach = ({ weight, expandedSections, toggleSection }) => {
     let expected = {};
     
     if (disorder.type === "Metabolic Acidosis") {
-      // Winter's formula: Expected pCO2 = 1.5 × HCO3 + 8 ± 2
       const expectedPCO2 = 1.5 * hco3Val + 8;
       expected = {
         formula: "Winter's Formula",
-        calculation: `1.5 × ${hco3Val} + 8 = ${expectedPCO2.toFixed(1)}`,
+        calculation: `Expected pCO₂ = [1.5 × ${hco3Val}] + 8 = ${expectedPCO2.toFixed(1)} ± 2`,
         expectedValue: expectedPCO2,
         range: `${(expectedPCO2 - 2).toFixed(1)} - ${(expectedPCO2 + 2).toFixed(1)}`,
         actual: pco2Val,
@@ -146,58 +179,54 @@ const BloodGasApproach = ({ weight, expandedSections, toggleSection }) => {
           ? "Mixed with Respiratory Alkalosis" 
           : pco2Val > expectedPCO2 + 2 
             ? "Mixed with Respiratory Acidosis" 
-            : "Appropriately Compensated"
+            : "Pure Metabolic Acidosis (Appropriately Compensated)"
       };
     } else if (disorder.type === "Metabolic Alkalosis") {
-      // Expected pCO2 = 0.7 × HCO3 + 21 (or increase by 0.7 for every 1 mEq/L increase in HCO3)
-      const expectedPCO2 = 0.7 * hco3Val + 21;
+      const expectedPCO2 = 0.7 * hco3Val + 20;
       expected = {
-        formula: "Expected pCO2 = 0.7 × HCO3 + 21",
-        calculation: `0.7 × ${hco3Val} + 21 = ${expectedPCO2.toFixed(1)}`,
+        formula: "Expected pCO₂ = [0.7 × HCO₃] + 20 ± 5",
+        calculation: `Expected pCO₂ = [0.7 × ${hco3Val}] + 20 = ${expectedPCO2.toFixed(1)}`,
         expectedValue: expectedPCO2,
-        range: `${(expectedPCO2 - 5).toFixed(1)} - ${(expectedPCO2 + 5).toFixed(1)}`,
         actual: pco2Val,
         interpretation: pco2Val < expectedPCO2 - 5 
           ? "Mixed with Respiratory Alkalosis" 
           : pco2Val > expectedPCO2 + 5 
             ? "Mixed with Respiratory Acidosis" 
-            : "Appropriately Compensated"
+            : "Pure Metabolic Alkalosis"
       };
-    } else if (disorder.type === "Respiratory Acidosis") {
-      // Acute: HCO3 increases by 1 for every 10 mmHg rise in pCO2
-      // Chronic: HCO3 increases by 3.5 for every 10 mmHg rise in pCO2
-      const acuteHCO3 = 24 + ((pco2Val - 40) / 10) * 1;
-      const chronicHCO3 = 24 + ((pco2Val - 40) / 10) * 3.5;
+    } else if (disorder.type.includes("Respiratory Acidosis")) {
+      const deltaPCO2 = pco2Val - 40;
+      const acuteHCO3 = 24 + (deltaPCO2 / 10) * 1;
+      const chronicHCO3 = 24 + (deltaPCO2 / 10) * 4;
       expected = {
-        formula: "Acute vs Chronic",
-        acute: `Acute: 24 + (${pco2Val}-40)/10 × 1 = ${acuteHCO3.toFixed(1)}`,
-        chronic: `Chronic: 24 + (${pco2Val}-40)/10 × 3.5 = ${chronicHCO3.toFixed(1)}`,
+        formula: "Box Rule (Respiratory)",
+        acute: `Acute: [Δ paCO₂]/10 × 1 + 24 = ${acuteHCO3.toFixed(1)}`,
+        chronic: `Chronic: [Δ paCO₂]/10 × 4 + 24 = ${chronicHCO3.toFixed(1)}`,
         actual: hco3Val,
         interpretation: hco3Val < acuteHCO3 - 2 
           ? "Mixed with Metabolic Acidosis" 
           : hco3Val > chronicHCO3 + 2 
             ? "Mixed with Metabolic Alkalosis" 
             : hco3Val <= acuteHCO3 + 2 
-              ? "Acute (or Mixed with Metabolic Acidosis)"
-              : "Chronic"
+              ? "Acute Respiratory Acidosis"
+              : "Chronic Respiratory Acidosis"
       };
-    } else if (disorder.type === "Respiratory Alkalosis") {
-      // Acute: HCO3 decreases by 2 for every 10 mmHg fall in pCO2
-      // Chronic: HCO3 decreases by 5 for every 10 mmHg fall in pCO2
-      const acuteHCO3 = 24 - ((40 - pco2Val) / 10) * 2;
-      const chronicHCO3 = 24 - ((40 - pco2Val) / 10) * 5;
+    } else if (disorder.type.includes("Respiratory Alkalosis")) {
+      const deltaPCO2 = 40 - pco2Val;
+      const acuteHCO3 = 24 - (deltaPCO2 / 10) * 2;
+      const chronicHCO3 = 24 - (deltaPCO2 / 10) * 5;
       expected = {
-        formula: "Acute vs Chronic",
-        acute: `Acute: 24 - (40-${pco2Val})/10 × 2 = ${acuteHCO3.toFixed(1)}`,
-        chronic: `Chronic: 24 - (40-${pco2Val})/10 × 5 = ${chronicHCO3.toFixed(1)}`,
+        formula: "Box Rule (Respiratory)",
+        acute: `Acute: 24 - [Δ paCO₂]/10 × 2 = ${acuteHCO3.toFixed(1)}`,
+        chronic: `Chronic: 24 - [Δ paCO₂]/10 × 5 = ${chronicHCO3.toFixed(1)}`,
         actual: hco3Val,
         interpretation: hco3Val > acuteHCO3 + 2 
           ? "Mixed with Metabolic Alkalosis" 
           : hco3Val < chronicHCO3 - 2 
             ? "Mixed with Metabolic Acidosis" 
             : hco3Val >= chronicHCO3 - 2 
-              ? "Chronic"
-              : "Acute"
+              ? "Chronic Respiratory Alkalosis"
+              : "Acute Respiratory Alkalosis"
       };
     }
     
@@ -221,80 +250,30 @@ const BloodGasApproach = ({ weight, expandedSections, toggleSection }) => {
             <div className="grid grid-cols-3 gap-2">
               <div>
                 <Label className="text-xs">pH</Label>
-                <Input
-                  type="number"
-                  step="0.01"
-                  value={ph}
-                  onChange={(e) => setPh(e.target.value)}
-                  placeholder="7.40"
-                  className="h-8 text-sm mt-1"
-                  min="0"
-                  data-testid="abg-ph-input"
-                />
+                <Input type="number" step="0.01" value={ph} onChange={(e) => setPh(e.target.value)} placeholder="7.40" className="h-8 text-sm mt-1" min="0" data-testid="abg-ph-input" />
               </div>
               <div>
                 <Label className="text-xs">pCO₂ (mmHg)</Label>
-                <Input
-                  type="number"
-                  value={pco2}
-                  onChange={(e) => setPco2(e.target.value)}
-                  placeholder="40"
-                  className="h-8 text-sm mt-1"
-                  min="0"
-                  data-testid="abg-pco2-input"
-                />
+                <Input type="number" value={pco2} onChange={(e) => setPco2(e.target.value)} placeholder="40" className="h-8 text-sm mt-1" min="0" data-testid="abg-pco2-input" />
               </div>
               <div>
                 <Label className="text-xs">HCO₃⁻ (mEq/L)</Label>
-                <Input
-                  type="number"
-                  value={hco3}
-                  onChange={(e) => setHco3(e.target.value)}
-                  placeholder="24"
-                  className="h-8 text-sm mt-1"
-                  min="0"
-                  data-testid="abg-hco3-input"
-                />
+                <Input type="number" value={hco3} onChange={(e) => setHco3(e.target.value)} placeholder="24" className="h-8 text-sm mt-1" min="0" data-testid="abg-hco3-input" />
               </div>
             </div>
             
             <div className="grid grid-cols-3 gap-2">
               <div>
                 <Label className="text-xs">Na⁺ (mEq/L)</Label>
-                <Input
-                  type="number"
-                  value={na}
-                  onChange={(e) => setNa(e.target.value)}
-                  placeholder="140"
-                  className="h-8 text-sm mt-1"
-                  min="0"
-                  data-testid="abg-na-input"
-                />
+                <Input type="number" value={na} onChange={(e) => setNa(e.target.value)} placeholder="140" className="h-8 text-sm mt-1" min="0" data-testid="abg-na-input" />
               </div>
               <div>
                 <Label className="text-xs">Cl⁻ (mEq/L)</Label>
-                <Input
-                  type="number"
-                  value={cl}
-                  onChange={(e) => setCl(e.target.value)}
-                  placeholder="102"
-                  className="h-8 text-sm mt-1"
-                  min="0"
-                  data-testid="abg-cl-input"
-                />
+                <Input type="number" value={cl} onChange={(e) => setCl(e.target.value)} placeholder="102" className="h-8 text-sm mt-1" min="0" data-testid="abg-cl-input" />
               </div>
               <div>
                 <Label className="text-xs">Albumin (g/dL)</Label>
-                <Input
-                  type="number"
-                  step="0.1"
-                  value={albumin}
-                  onChange={(e) => setAlbumin(e.target.value)}
-                  placeholder="4.0"
-                  className="h-8 text-sm mt-1"
-                  min="0"
-                  data-testid="abg-albumin-input"
-                />
+                <Input type="number" step="0.1" value={albumin} onChange={(e) => setAlbumin(e.target.value)} placeholder="4.0" className="h-8 text-sm mt-1" min="0" data-testid="abg-albumin-input" />
               </div>
             </div>
 
@@ -304,10 +283,10 @@ const BloodGasApproach = ({ weight, expandedSections, toggleSection }) => {
                 <div className="flex justify-between">
                   <span>Anion Gap (Na - Cl - HCO₃):</span>
                   <span className={`font-bold ${anionGap > 12 ? 'text-red-600' : 'text-green-600'}`}>
-                    {anionGap.toFixed(1)} mEq/L {anionGap > 12 ? '(High)' : '(Normal)'}
+                    {anionGap.toFixed(1)} mEq/L {anionGap > 12 ? '(High)' : '(Normal 8-12)'}
                   </span>
                 </div>
-                {albVal !== 4 && (
+                {albVal !== 4 && correctedAG !== null && (
                   <div className="flex justify-between">
                     <span>Corrected AG (for albumin {albVal}):</span>
                     <span className={`font-bold ${correctedAG > 12 ? 'text-red-600' : 'text-green-600'}`}>
@@ -315,12 +294,12 @@ const BloodGasApproach = ({ weight, expandedSections, toggleSection }) => {
                     </span>
                   </div>
                 )}
-                {correctedAG > 12 && deltaRatio && (
+                {(correctedAG ?? anionGap) > 12 && deltaRatio && (
                   <div className="flex justify-between">
                     <span>Delta Ratio (ΔAG/ΔHCO₃):</span>
                     <span className="font-bold">
                       {deltaRatio.toFixed(2)} 
-                      {deltaRatio < 1 ? ' (Mixed HAGMA + NAGMA)' : deltaRatio > 2 ? ' (Mixed HAGMA + Met Alkalosis)' : ' (Pure HAGMA)'}
+                      {deltaRatio < 1 ? ' → Mixed HAGMA + NAGMA' : deltaRatio > 2 ? ' → Mixed HAGMA + Met Alk' : ' → Pure HAGMA'}
                     </span>
                   </div>
                 )}
@@ -329,10 +308,10 @@ const BloodGasApproach = ({ weight, expandedSections, toggleSection }) => {
 
             {/* Primary Disorder Result */}
             {disorder && (
-              <div className={`p-3 rounded-lg border ${
-                disorder.type.includes('Acidosis') ? 'bg-red-50 dark:bg-red-950/30 border-red-200' :
-                disorder.type.includes('Alkalosis') ? 'bg-blue-50 dark:bg-blue-950/30 border-blue-200' :
-                'bg-gray-50 dark:bg-gray-800 border-gray-200'
+              <div className={`p-3 rounded-lg border-2 ${
+                disorder.type.includes('Acidosis') ? 'bg-red-50 dark:bg-red-950/30 border-red-300' :
+                disorder.type.includes('Alkalosis') ? 'bg-blue-50 dark:bg-blue-950/30 border-blue-300' :
+                'bg-gray-50 dark:bg-gray-800 border-gray-300'
               }`}>
                 <div className="flex items-center gap-2 mb-2">
                   {disorder.type.includes('Acidosis') ? 
@@ -346,242 +325,343 @@ const BloodGasApproach = ({ weight, expandedSections, toggleSection }) => {
                 
                 {compensation && (
                   <div className="text-xs space-y-1 mt-2 pt-2 border-t border-current/10">
-                    <p className="font-semibold">Compensation Analysis:</p>
-                    <p className="text-muted-foreground">{compensation.formula}</p>
-                    {compensation.calculation && <p className="font-mono text-[10px]">{compensation.calculation}</p>}
-                    {compensation.acute && <p className="font-mono text-[10px]">{compensation.acute}</p>}
-                    {compensation.chronic && <p className="font-mono text-[10px]">{compensation.chronic}</p>}
-                    <p className="font-semibold mt-1">
-                      → {compensation.interpretation}
-                    </p>
+                    <p className="font-semibold">Compensation Analysis ({compensation.formula}):</p>
+                    {compensation.calculation && <p className="font-mono text-[10px] bg-white/50 dark:bg-black/20 p-1 rounded">{compensation.calculation}</p>}
+                    {compensation.acute && <p className="font-mono text-[10px] bg-white/50 dark:bg-black/20 p-1 rounded">{compensation.acute}</p>}
+                    {compensation.chronic && <p className="font-mono text-[10px] bg-white/50 dark:bg-black/20 p-1 rounded">{compensation.chronic}</p>}
+                    <p className="font-semibold mt-1 text-green-700 dark:text-green-400">→ {compensation.interpretation}</p>
                   </div>
                 )}
               </div>
             )}
 
-            {/* Normal Values Reference */}
-            <div className="text-[10px] p-2 bg-gray-50 dark:bg-gray-800 rounded">
+            <div className="text-[10px] p-2 bg-gray-50 dark:bg-gray-800 rounded border">
               <p className="font-semibold mb-1">Normal Values:</p>
-              <p className="text-muted-foreground">
-                pH: 7.35-7.45 • pCO₂: 35-45 mmHg • HCO₃⁻: 22-26 mEq/L • AG: 8-12 mEq/L
-              </p>
+              <p className="text-muted-foreground">pH: 7.35-7.45 • pCO₂: 35-45 mmHg • HCO₃⁻: 22-26 mEq/L • AG: 8-12 mEq/L</p>
             </div>
           </div>
         </Section>
 
-        {/* Step 1: pH Assessment */}
-        <Section id="abg-ph" title="Step 1: Assess pH" expandedSections={expandedSections} toggleSection={toggleSection}>
+        {/* Main Flowchart */}
+        <Section id="abg-flowchart" title="📊 ABG Interpretation Flowchart" expandedSections={expandedSections} toggleSection={toggleSection}>
           <div className="space-y-2">
-            <div className="flex gap-2">
-              <FlowNode title="pH < 7.35 → ACIDEMIA" color="red" defaultOpen={true}>
-                <p className="text-xs text-muted-foreground mb-2">
-                  Look for 1ry disorder: Is HCO₃⁻ low → Metabolic, or pCO₂ high → Respiratory?
-                </p>
-                <div className="grid grid-cols-2 gap-2">
-                  <FlowNode title="Low HCO₃⁻ (< 22)" color="red" level={1}>
-                    <p className="text-xs font-bold text-red-700">→ Metabolic Acidosis</p>
-                  </FlowNode>
-                  <FlowNode title="High pCO₂ (> 45)" color="amber" level={1}>
-                    <p className="text-xs font-bold text-amber-700">→ Respiratory Acidosis</p>
-                  </FlowNode>
-                </div>
-              </FlowNode>
+            {/* Start: pH */}
+            <div className="flex flex-col items-center">
+              <div className="px-6 py-2 bg-yellow-200 dark:bg-yellow-900 border-2 border-yellow-500 rounded-lg font-bold text-sm">
+                pH
+              </div>
+              <FlowArrow direction="down" />
               
-              <FlowNode title="pH > 7.45 → ALKALEMIA" color="blue" defaultOpen={true}>
-                <p className="text-xs text-muted-foreground mb-2">
-                  Look for 1ry disorder: Is HCO₃⁻ high → Metabolic, or pCO₂ low → Respiratory?
-                </p>
-                <div className="grid grid-cols-2 gap-2">
-                  <FlowNode title="High HCO₃⁻ (> 26)" color="blue" level={1}>
-                    <p className="text-xs font-bold text-blue-700">→ Metabolic Alkalosis</p>
-                  </FlowNode>
-                  <FlowNode title="Low pCO₂ (< 35)" color="teal" level={1}>
-                    <p className="text-xs font-bold text-teal-700">→ Respiratory Alkalosis</p>
-                  </FlowNode>
-                </div>
-              </FlowNode>
+              {/* pH Branches */}
+              <div className="grid grid-cols-2 gap-4 w-full">
+                {/* pH < 7.4 */}
+                <FlowNode title="pH < 7.4 (Acidemia)" color="red" defaultOpen={true}>
+                  <p className="text-[10px] text-muted-foreground mb-2">
+                    Look for 1ry disorder: Is HCO₃⁻ mainly low → Metabolic, or pCO₂ mainly high → Respiratory?
+                  </p>
+                  <div className="space-y-2">
+                    <FlowNode title="↓ HCO₃⁻ → Metabolic Acidosis" color="red" level={1}>
+                      <FlowArrow direction="down" label="Check AG" />
+                      <FlowNode title="Calculate Anion Gap" color="amber" level={1}>
+                        <p className="text-[10px] font-mono">AG = Na⁺ - (Cl⁻ + HCO₃⁻)</p>
+                        <p className="text-[10px] text-muted-foreground">Correct for albumin: Add 2.5 for each 1 g/dL below 4</p>
+                      </FlowNode>
+                    </FlowNode>
+                    <FlowNode title="↑ pCO₂ → Respiratory Acidosis" color="amber" level={1}>
+                      <p className="text-[10px] text-muted-foreground">Check if Acute or Chronic using Box Rule</p>
+                    </FlowNode>
+                  </div>
+                </FlowNode>
+
+                {/* pH > 7.4 */}
+                <FlowNode title="pH > 7.4 (Alkalemia)" color="blue" defaultOpen={true}>
+                  <p className="text-[10px] text-muted-foreground mb-2">
+                    Look for 1ry disorder: Is HCO₃⁻ mainly high → Metabolic, or pCO₂ mainly low → Respiratory?
+                  </p>
+                  <div className="space-y-2">
+                    <FlowNode title="↑ HCO₃⁻ → Metabolic Alkalosis" color="blue" level={1}>
+                      <p className="text-[10px] text-muted-foreground">Check Urine Chloride (UCl) for classification</p>
+                    </FlowNode>
+                    <FlowNode title="↓ pCO₂ → Respiratory Alkalosis" color="teal" level={1}>
+                      <p className="text-[10px] text-muted-foreground">Check if Acute or Chronic using Box Rule</p>
+                    </FlowNode>
+                  </div>
+                </FlowNode>
+              </div>
             </div>
 
-            {/* Primary Rule */}
-            <div className="p-2 bg-teal-50 dark:bg-teal-950/30 rounded border border-teal-200 text-xs">
-              <p className="font-bold text-teal-800 dark:text-teal-200">
-                1ry Respiratory = pH & pCO₂ opposite directions
-              </p>
-              <p className="font-bold text-red-800 dark:text-red-200 mt-1">
-                1ry Metabolic = pH & pCO₂ & HCO₃⁻ same direction
-              </p>
+            {/* Primary Rules Box */}
+            <div className="p-3 bg-green-50 dark:bg-green-950/30 rounded-lg border-2 border-green-300">
+              <p className="font-bold text-xs text-green-800 dark:text-green-200 mb-2">📌 Primary Disorder Rules:</p>
+              <div className="grid grid-cols-2 gap-2 text-[10px]">
+                <div className="p-2 bg-white dark:bg-gray-900 rounded">
+                  <p className="font-bold text-teal-700">1ry Respiratory:</p>
+                  <p>pH & pCO₂ = opposite directions</p>
+                </div>
+                <div className="p-2 bg-white dark:bg-gray-900 rounded">
+                  <p className="font-bold text-red-700">1ry Metabolic:</p>
+                  <p>pH & pCO₂ & HCO₃⁻ = same direction</p>
+                </div>
+              </div>
             </div>
           </div>
         </Section>
 
-        {/* Step 2: Compensation */}
-        <Section id="abg-compensation" title="Step 2: Check Compensation" expandedSections={expandedSections} toggleSection={toggleSection}>
+        {/* Compensation Rules - Visual Diagram */}
+        <Section id="abg-compensation" title="📐 Compensation Rules (Box Rule)" expandedSections={expandedSections} toggleSection={toggleSection}>
           <div className="space-y-3">
+            {/* Compensation Table */}
             <div className="overflow-x-auto">
-              <table className="w-full text-[10px] border-collapse">
+              <table className="w-full text-[10px] border-collapse border border-gray-300">
                 <thead>
-                  <tr className="bg-gray-100 dark:bg-gray-800">
-                    <th className="border p-2 text-left">1ry Disturbance</th>
-                    <th className="border p-2 text-center">Change</th>
-                    <th className="border p-2 text-center">Compensatory Change</th>
+                  <tr className="bg-gray-200 dark:bg-gray-700">
+                    <th className="border border-gray-300 p-2 text-left">1ry Disturbance</th>
+                    <th className="border border-gray-300 p-2 text-center">Primary Change</th>
+                    <th className="border border-gray-300 p-2 text-center">Compensatory Change</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td className="border p-2 font-semibold text-red-700">Metabolic Acidosis</td>
-                    <td className="border p-2 text-center">↓ HCO₃⁻</td>
-                    <td className="border p-2 text-center">↓ pCO₂</td>
+                  <tr className="bg-red-50 dark:bg-red-950/30">
+                    <td className="border border-gray-300 p-2 font-semibold">Metabolic Acidosis</td>
+                    <td className="border border-gray-300 p-2 text-center">↓ 1 HCO₃⁻</td>
+                    <td className="border border-gray-300 p-2 text-center">↓ 1 pCO₂</td>
                   </tr>
-                  <tr className="bg-gray-50 dark:bg-gray-900">
-                    <td className="border p-2 font-semibold text-blue-700">Metabolic Alkalosis</td>
-                    <td className="border p-2 text-center">↑ HCO₃⁻</td>
-                    <td className="border p-2 text-center">↑ pCO₂ (0.7)</td>
+                  <tr className="bg-blue-50 dark:bg-blue-950/30">
+                    <td className="border border-gray-300 p-2 font-semibold">Metabolic Alkalosis</td>
+                    <td className="border border-gray-300 p-2 text-center">↑ 1 HCO₃⁻</td>
+                    <td className="border border-gray-300 p-2 text-center">↑ 0.7 pCO₂</td>
                   </tr>
-                  <tr>
-                    <td className="border p-2 font-semibold text-amber-700">Acute Resp Acidosis</td>
-                    <td className="border p-2 text-center">↑ pCO₂ (10)</td>
-                    <td className="border p-2 text-center">↑ HCO₃⁻ (1)</td>
+                  <tr className="bg-amber-50 dark:bg-amber-950/30">
+                    <td className="border border-gray-300 p-2 font-semibold">Acute Respiratory Acidosis</td>
+                    <td className="border border-gray-300 p-2 text-center">↑ 10 pCO₂</td>
+                    <td className="border border-gray-300 p-2 text-center">↑ 1 HCO₃⁻</td>
                   </tr>
-                  <tr className="bg-gray-50 dark:bg-gray-900">
-                    <td className="border p-2 font-semibold text-amber-700">Chronic Resp Acidosis</td>
-                    <td className="border p-2 text-center">↑ pCO₂ (10)</td>
-                    <td className="border p-2 text-center">↑ HCO₃⁻ (4)</td>
+                  <tr className="bg-amber-100 dark:bg-amber-900/30">
+                    <td className="border border-gray-300 p-2 font-semibold">Chronic Respiratory Acidosis</td>
+                    <td className="border border-gray-300 p-2 text-center">↑ 10 pCO₂</td>
+                    <td className="border border-gray-300 p-2 text-center">↑ 4 HCO₃⁻</td>
                   </tr>
-                  <tr>
-                    <td className="border p-2 font-semibold text-teal-700">Acute Resp Alkalosis</td>
-                    <td className="border p-2 text-center">↓ pCO₂ (10)</td>
-                    <td className="border p-2 text-center">↓ HCO₃⁻ (2)</td>
+                  <tr className="bg-teal-50 dark:bg-teal-950/30">
+                    <td className="border border-gray-300 p-2 font-semibold">Acute Respiratory Alkalosis</td>
+                    <td className="border border-gray-300 p-2 text-center">↓ 10 pCO₂</td>
+                    <td className="border border-gray-300 p-2 text-center">↓ 2 HCO₃⁻</td>
                   </tr>
-                  <tr className="bg-gray-50 dark:bg-gray-900">
-                    <td className="border p-2 font-semibold text-teal-700">Chronic Resp Alkalosis</td>
-                    <td className="border p-2 text-center">↓ pCO₂ (10)</td>
-                    <td className="border p-2 text-center">↓ HCO₃⁻ (5)</td>
+                  <tr className="bg-teal-100 dark:bg-teal-900/30">
+                    <td className="border border-gray-300 p-2 font-semibold">Chronic Respiratory Alkalosis</td>
+                    <td className="border border-gray-300 p-2 text-center">↓ 10 pCO₂</td>
+                    <td className="border border-gray-300 p-2 text-center">↓ 5 HCO₃⁻</td>
                   </tr>
                 </tbody>
               </table>
             </div>
 
-            {/* Winter's Formula */}
-            <div className="p-2 bg-red-50 dark:bg-red-950/30 rounded border border-red-200 text-xs">
-              <p className="font-bold text-red-800">Winter's Formula (for Metabolic Acidosis):</p>
-              <p className="font-mono mt-1">Expected pCO₂ = (1.5 × HCO₃⁻) + 8 ± 2</p>
-              <ul className="text-[10px] text-muted-foreground mt-1 space-y-0.5">
-                <li>• Measured pCO₂ = Expected → Pure Metabolic Acidosis</li>
-                <li>• Measured pCO₂ &gt; Expected → Mixed with Respiratory Acidosis</li>
-                <li>• Measured pCO₂ &lt; Expected → Mixed with Respiratory Alkalosis</li>
-              </ul>
+            {/* Visual Box Rule Diagram */}
+            <div className="p-3 bg-purple-50 dark:bg-purple-950/30 rounded-lg border border-purple-300">
+              <p className="font-bold text-xs text-purple-800 dark:text-purple-200 mb-2">📦 Box Rule for Respiratory Compensation:</p>
+              <div className="flex justify-center">
+                <div className="border-2 border-purple-500 rounded overflow-hidden">
+                  <table className="text-[10px]">
+                    <thead>
+                      <tr>
+                        <th className="border-b border-r border-purple-300 p-2 bg-purple-200 dark:bg-purple-900"></th>
+                        <th className="border-b border-r border-purple-300 p-2 bg-purple-200 dark:bg-purple-900 text-red-700">Acidosis</th>
+                        <th className="border-b border-purple-300 p-2 bg-purple-200 dark:bg-purple-900 text-blue-700">Alkalosis</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td className="border-r border-b border-purple-300 p-2 bg-purple-100 dark:bg-purple-950 font-bold">Acute</td>
+                        <td className="border-r border-b border-purple-300 p-3 text-center font-mono text-lg font-bold text-red-600">1</td>
+                        <td className="border-b border-purple-300 p-3 text-center font-mono text-lg font-bold text-blue-600">2</td>
+                      </tr>
+                      <tr>
+                        <td className="border-r border-purple-300 p-2 bg-purple-100 dark:bg-purple-950 font-bold">Chronic</td>
+                        <td className="border-r border-purple-300 p-3 text-center font-mono text-lg font-bold text-red-600">4</td>
+                        <td className="p-3 text-center font-mono text-lg font-bold text-blue-600">5</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <p className="text-[10px] text-center mt-2 text-muted-foreground">
+                For every <strong>10 mmHg change in pCO₂</strong>, multiply by the box number for expected HCO₃⁻ change
+              </p>
+            </div>
+
+            {/* Metabolic Compensation Formulas */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <div className="p-2 bg-red-50 dark:bg-red-950/30 rounded border border-red-200">
+                <p className="font-bold text-xs text-red-800">Metabolic Acidosis (Winter's Formula):</p>
+                <p className="font-mono text-[10px] mt-1 bg-white dark:bg-gray-900 p-1 rounded">Expected pCO₂ = [1.5 × HCO₃⁻] + 8 ± 2</p>
+                <ul className="text-[9px] text-muted-foreground mt-1 space-y-0.5">
+                  <li>• Measured = Expected → Pure Metabolic Acidosis</li>
+                  <li>• Measured &gt; Expected → + Respiratory Acidosis</li>
+                  <li>• Measured &lt; Expected → + Respiratory Alkalosis</li>
+                </ul>
+              </div>
+              <div className="p-2 bg-blue-50 dark:bg-blue-950/30 rounded border border-blue-200">
+                <p className="font-bold text-xs text-blue-800">Metabolic Alkalosis:</p>
+                <p className="font-mono text-[10px] mt-1 bg-white dark:bg-gray-900 p-1 rounded">Expected pCO₂ = [0.7 × HCO₃⁻] + 20 ± 5</p>
+                <p className="text-[9px] text-muted-foreground mt-1">
+                  For every 1 mEq/L ↑ in HCO₃⁻ → 0.7 mmHg ↑ in pCO₂
+                </p>
+              </div>
+            </div>
+
+            {/* Respiratory Compensation Formulas */}
+            <div className="p-2 bg-amber-50 dark:bg-amber-950/30 rounded border border-amber-200">
+              <p className="font-bold text-xs text-amber-800 mb-2">Respiratory Compensation Equations:</p>
+              <p className="text-[9px] text-muted-foreground mb-2">
+                Δ paCO₂ = |Normal paCO₂ (40) - Measured paCO₂| • 24 = Normal HCO₃⁻
+              </p>
+              <div className="grid grid-cols-2 gap-2 text-[10px]">
+                <div className="p-1 bg-white dark:bg-gray-900 rounded">
+                  <p className="font-semibold text-red-700">Acute Resp Acidosis</p>
+                  <p className="font-mono">[ΔpaCO₂]/10 × 1 + 24</p>
+                </div>
+                <div className="p-1 bg-white dark:bg-gray-900 rounded">
+                  <p className="font-semibold text-red-700">Chronic Resp Acidosis</p>
+                  <p className="font-mono">[ΔpaCO₂]/10 × 4 + 24</p>
+                </div>
+                <div className="p-1 bg-white dark:bg-gray-900 rounded">
+                  <p className="font-semibold text-blue-700">Acute Resp Alkalosis</p>
+                  <p className="font-mono">24 - [ΔpaCO₂]/10 × 2</p>
+                </div>
+                <div className="p-1 bg-white dark:bg-gray-900 rounded">
+                  <p className="font-semibold text-blue-700">Chronic Resp Alkalosis</p>
+                  <p className="font-mono">24 - [ΔpaCO₂]/10 × 5</p>
+                </div>
+              </div>
             </div>
           </div>
         </Section>
 
-        {/* Step 3: Metabolic Acidosis - Anion Gap */}
-        <Section id="abg-anion-gap" title="Step 3: Metabolic Acidosis → Anion Gap" expandedSections={expandedSections} toggleSection={toggleSection}>
-          <div className="space-y-2">
-            <div className="p-2 bg-gray-100 dark:bg-gray-800 rounded text-xs">
-              <p className="font-bold">Anion Gap = Na⁺ - (Cl⁻ + HCO₃⁻)</p>
-              <p className="text-muted-foreground mt-1">Normal: 8-12 mEq/L</p>
-              <p className="text-[10px] text-amber-600 mt-1">
-                Correct AG for albumin: Add 2.5 for every 1 g/dL below 4
-              </p>
+        {/* Metabolic Acidosis - Anion Gap */}
+        <Section id="abg-anion-gap" title="🔴 Metabolic Acidosis → Anion Gap Flowchart" expandedSections={expandedSections} toggleSection={toggleSection}>
+          <div className="space-y-3">
+            {/* AG Formula */}
+            <div className="p-2 bg-gray-100 dark:bg-gray-800 rounded border text-center">
+              <p className="font-bold text-xs">Anion Gap = Na⁺ - (Cl⁻ + HCO₃⁻)</p>
+              <p className="text-[10px] text-muted-foreground">Normal: 8-12 mEq/L</p>
+              <p className="text-[10px] text-amber-600">Correct for albumin: Add 2.5 for every 1 g/dL below 4</p>
             </div>
 
-            <div className="grid grid-cols-2 gap-2">
-              {/* High Anion Gap */}
-              <FlowNode title="High AG (> 12) - HAGMA" color="red" defaultOpen={true}>
-                <div className="text-xs">
-                  <p className="font-bold text-red-700 mb-2">MUDPILES</p>
-                  <ul className="space-y-0.5 text-muted-foreground">
-                    <li>• <strong>M</strong>ethanol</li>
-                    <li>• <strong>U</strong>remia</li>
-                    <li>• <strong>D</strong>KA</li>
-                    <li>• <strong>P</strong>araldehyde / <strong>P</strong>ropylene glycol</li>
-                    <li>• <strong>I</strong>nborn Errors / <strong>I</strong>soniazid</li>
-                    <li>• <strong>L</strong>actic Acidosis</li>
-                    <li>• <strong>E</strong>thylene Glycol</li>
-                    <li>• <strong>S</strong>alicylates</li>
-                  </ul>
-                </div>
-              </FlowNode>
+            {/* HAGMA vs NAGMA */}
+            <div className="grid grid-cols-2 gap-3">
+              {/* High Anion Gap - MUDPILES */}
+              <MnemonicBox 
+                title="High AG (>12) - MUDPILES" 
+                color="red"
+                items={[
+                  { letter: "M", text: "ethanol" },
+                  { letter: "U", text: "remia" },
+                  { letter: "D", text: "KA" },
+                  { letter: "P", text: "araldehyde / Propylene glycol" },
+                  { letter: "I", text: "nborn Errors / Isoniazid" },
+                  { letter: "L", text: "actic Acidosis" },
+                  { letter: "E", text: "thylene Glycol" },
+                  { letter: "S", text: "alicylates" },
+                ]}
+              />
 
-              {/* Normal Anion Gap */}
-              <FlowNode title="Normal AG - NAGMA" color="amber" defaultOpen={true}>
-                <div className="text-xs">
-                  <p className="font-bold text-amber-700 mb-2">USED CARP</p>
-                  <ul className="space-y-0.5 text-muted-foreground">
-                    <li>• <strong>U</strong>reterostomy</li>
-                    <li>• <strong>S</strong>mall bowel fistula</li>
-                    <li>• <strong>E</strong>xtra Chloride</li>
-                    <li>• <strong>D</strong>iarrhea</li>
-                    <li>• <strong>C</strong>arbonic anhydrase inhibitors</li>
-                    <li>• <strong>A</strong>ddison's disease</li>
-                    <li>• <strong>R</strong>enal tubular acidosis</li>
-                    <li>• <strong>P</strong>ancreatic fistulas</li>
-                  </ul>
-                  <p className="text-[10px] mt-2 font-semibold">Treatment: Replace Bicarbonate</p>
-                </div>
-              </FlowNode>
+              {/* Normal Anion Gap - USED CARP */}
+              <MnemonicBox 
+                title="Normal AG (8-12) - USED CARP" 
+                color="amber"
+                items={[
+                  { letter: "U", text: "reterostomy" },
+                  { letter: "S", text: "mall bowel fistula" },
+                  { letter: "E", text: "xtra Chloride" },
+                  { letter: "D", text: "iarrhea" },
+                  { letter: "C", text: "arbonic anhydrase inhibitors" },
+                  { letter: "A", text: "ddison's disease" },
+                  { letter: "R", text: "enal tubular acidosis" },
+                  { letter: "P", text: "ancreatic fistulas" },
+                ]}
+                treatment="Replace Bicarbonate"
+              />
             </div>
 
             {/* Delta Ratio */}
-            <div className="p-2 bg-purple-50 dark:bg-purple-950/30 rounded border border-purple-200 text-xs">
-              <p className="font-bold text-purple-800">Delta Ratio (for HAGMA):</p>
-              <p className="font-mono mt-1">= (Calculated AG - 12) / (24 - Measured HCO₃⁻)</p>
-              <ul className="text-[10px] text-muted-foreground mt-1 space-y-0.5">
-                <li>• &lt; 1 = Mixed HAGMA + NAGMA</li>
-                <li>• 1-2 = Pure HAGMA</li>
-                <li>• &gt; 2 = Mixed HAGMA + Metabolic Alkalosis</li>
-              </ul>
-              <p className="text-[10px] mt-2 text-purple-600">
-                In HAGMA, there is always no change in Cl⁻. In Lactic Acidosis, avg delta ratio 1.6. In DKA, avg delta ratio closer to 1 (due to urine ketone loss).
-              </p>
-            </div>
-
-            {/* HAGMA with Osmolar Gap */}
-            <FlowNode title="HAGMA + High Osmolar Gap" color="purple">
-              <div className="text-xs space-y-2">
-                <p className="text-muted-foreground">High or Lactic Acid without other osmoles contributing</p>
-                <div className="grid grid-cols-2 gap-2">
-                  <div className="p-2 bg-white dark:bg-gray-900 rounded border">
-                    <p className="font-semibold">High LA (L-Lactic Acid)</p>
-                    <p className="text-[10px] text-red-600 font-bold mt-1">Type A - Impaired tissue oxygenation:</p>
-                    <p className="text-[10px] text-muted-foreground">Shock, Cardiac failure, Sepsis</p>
-                    <p className="text-[10px] text-blue-600 font-bold mt-1">Type B - Mitochondrial dysfunction:</p>
-                    <p className="text-[10px] text-muted-foreground">Drug-induced (Zidovudine, Metformin, Propofol), Tumor-induced, Alcoholism, Metabolic disease</p>
+            <FlowNode title="📊 Delta Ratio (for HAGMA)" color="purple" defaultOpen={true}>
+              <div className="space-y-2">
+                <p className="font-mono text-[10px] bg-white dark:bg-gray-900 p-2 rounded text-center">
+                  Delta Ratio = [Calculated AG - 12] / [24 - Measured HCO₃⁻]
+                </p>
+                <div className="grid grid-cols-3 gap-1 text-[10px]">
+                  <div className="p-2 bg-red-100 dark:bg-red-900/30 rounded text-center">
+                    <p className="font-bold">&lt; 1</p>
+                    <p className="text-muted-foreground">Mixed HAGMA + NAGMA</p>
                   </div>
-                  <div className="p-2 bg-white dark:bg-gray-900 rounded border">
-                    <p className="font-semibold">Normal LA (D-Lactic Acid)</p>
-                    <p className="text-[10px] text-muted-foreground mt-1">
-                      Seen in Short bowel and Malabsorption. <strong>Not</strong> measured by lab, accumulates more quickly and persists longer.
-                    </p>
+                  <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded text-center">
+                    <p className="font-bold">1 - 2</p>
+                    <p className="text-muted-foreground">Pure HAGMA</p>
                   </div>
+                  <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded text-center">
+                    <p className="font-bold">&gt; 2</p>
+                    <p className="text-muted-foreground">Mixed HAGMA + Met Alk</p>
+                  </div>
+                </div>
+                <div className="text-[9px] text-muted-foreground bg-purple-50 dark:bg-purple-900/30 p-2 rounded">
+                  <p>• In HAGMA: No change in Cl⁻</p>
+                  <p>• Lactic Acidosis: avg ratio ~1.6</p>
+                  <p>• DKA: avg ratio closer to 1 (urine ketone loss)</p>
                 </div>
               </div>
             </FlowNode>
 
-            {/* Urine Anion Gap for NAGMA */}
-            <FlowNode title="NAGMA → Calculate Urine AG" color="amber">
-              <div className="text-xs space-y-2">
-                <p className="font-mono">Urine AG = Urine (Na⁺ + K⁺) - Urine Cl⁻</p>
+            {/* HAGMA + High Osmolar Gap */}
+            <FlowNode title="HAGMA + High Osmolar Gap → Lactic Acid" color="red">
+              <div className="grid grid-cols-2 gap-2 text-[10px]">
+                <FlowNode title="High LA → L-Lactic Acid" color="red" level={1} defaultOpen={true}>
+                  <div className="space-y-1">
+                    <div className="p-1 bg-red-200 dark:bg-red-900 rounded">
+                      <p className="font-bold text-red-800">Type A - Impaired tissue O₂</p>
+                      <p className="text-[9px]">Shock, Cardiac failure, Sepsis</p>
+                    </div>
+                    <div className="p-1 bg-amber-200 dark:bg-amber-900 rounded">
+                      <p className="font-bold text-amber-800">Type B - Mitochondrial dysfunction</p>
+                      <p className="text-[9px]">Drug: Zidovudine, Metformin, Propofol</p>
+                      <p className="text-[9px]">Tumor: Leukemia, Lymphoma</p>
+                      <p className="text-[9px]">Alcoholism, GSD</p>
+                    </div>
+                  </div>
+                </FlowNode>
+                <FlowNode title="Normal LA → D-Lactic Acid" color="amber" level={1}>
+                  <p className="text-[9px] text-muted-foreground">
+                    Seen in Short bowel & Malabsorption. <strong>Not measured by lab</strong>, accumulates quickly, persists longer.
+                  </p>
+                </FlowNode>
+              </div>
+            </FlowNode>
+
+            {/* NAGMA - Urine AG */}
+            <FlowNode title="NAGMA → Urine Anion Gap (UAG)" color="amber">
+              <div className="space-y-2">
+                <p className="font-mono text-[10px] bg-white dark:bg-gray-900 p-2 rounded text-center">
+                  UAG = Urine (Na⁺ + K⁺) - Urine Cl⁻
+                </p>
                 <div className="grid grid-cols-2 gap-2">
                   <div className="p-2 bg-red-100 dark:bg-red-900/30 rounded border border-red-300">
-                    <p className="font-semibold text-red-800">UAG Positive (+Ve)</p>
-                    <p className="font-bold text-red-700">→ Renal losses</p>
-                    <p className="text-[10px] text-muted-foreground mt-1">
-                      RTA (Distal RTA type 1 or 4) → Check serum K and Urinary pH
-                    </p>
-                    <p className="text-[10px] text-muted-foreground">
-                      Drugs: Acetazolamide, Amphotericin B → Proximal tubule
-                    </p>
+                    <p className="font-bold text-xs text-red-800">UAG Positive (+Ve)</p>
+                    <p className="font-bold text-[10px] text-red-700">→ Renal losses</p>
+                    <ul className="text-[9px] text-muted-foreground mt-1">
+                      <li>• RTA (Distal type 1 or 4) → Check K & Urine pH</li>
+                      <li>• High K → Type IV</li>
+                      <li>• Low K → Type I</li>
+                      <li>• Drugs: Acetazolamide, Amphotericin B</li>
+                    </ul>
                   </div>
                   <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded border border-green-300">
-                    <p className="font-semibold text-green-800">UAG Negative (-Ve)</p>
-                    <p className="font-bold text-green-700">→ Extrarenal losses</p>
-                    <p className="text-[10px] text-muted-foreground mt-1">
-                      GI causes: Diarrhea, Fistulas → Low K
-                    </p>
-                    <p className="text-[10px] text-muted-foreground">
-                      Others: Sodium infusion, Proximal RTA, Organic acid, TPN, Hyperalimentation → Low K
-                    </p>
+                    <p className="font-bold text-xs text-green-800">UAG Negative (-Ve)</p>
+                    <p className="font-bold text-[10px] text-green-700">→ Extrarenal losses</p>
+                    <ul className="text-[9px] text-muted-foreground mt-1">
+                      <li>• GI: Diarrhea, Fistulas → Low K</li>
+                      <li>• Sodium infusion</li>
+                      <li>• Proximal RTA</li>
+                      <li>• Organic acid, TPN</li>
+                      <li>• Hyperaldosteronism → Low K</li>
+                    </ul>
                   </div>
                 </div>
               </div>
@@ -589,86 +669,85 @@ const BloodGasApproach = ({ weight, expandedSections, toggleSection }) => {
           </div>
         </Section>
 
-        {/* Step 4: Metabolic Alkalosis */}
-        <Section id="abg-met-alk" title="Step 4: Metabolic Alkalosis Approach" expandedSections={expandedSections} toggleSection={toggleSection}>
-          <div className="space-y-2">
-            <div className="p-2 bg-blue-50 dark:bg-blue-950/30 rounded border border-blue-200 text-xs">
-              <p className="font-bold text-blue-800">First: Check Urine Chloride (UCl)</p>
-            </div>
-
-            <div className="grid grid-cols-2 gap-2">
-              {/* Chloride Responsive */}
-              <FlowNode title="UCl < 10 mEq/L → Chloride Responsive" color="green" defaultOpen={true}>
-                <div className="text-xs space-y-1">
-                  <ul className="text-muted-foreground">
+        {/* Metabolic Alkalosis Flowchart */}
+        <Section id="abg-met-alk" title="🔵 Metabolic Alkalosis Flowchart" expandedSections={expandedSections} toggleSection={toggleSection}>
+          <div className="space-y-3">
+            {/* Visual Flowchart */}
+            <div className="flex flex-col items-center space-y-1">
+              <div className="px-4 py-2 bg-blue-200 dark:bg-blue-900 border-2 border-blue-500 rounded-full font-bold text-xs">
+                Metabolic Alkalosis
+              </div>
+              <FlowArrow direction="down" label="Check UCl" />
+              
+              <div className="grid grid-cols-2 gap-4 w-full">
+                {/* Chloride Responsive */}
+                <FlowNode title="Cl Responsive (UCl <10)" color="green" defaultOpen={true}>
+                  <p className="text-[10px] text-green-700 font-bold mb-2">→ Responds to Saline</p>
+                  <ul className="text-[9px] text-muted-foreground space-y-0.5">
                     <li>• Vomiting & NGT aspirate</li>
                     <li>• Diuretics</li>
-                    <li>• After Hypercapnia</li>
+                    <li>• Post-hypercapnia</li>
                     <li>• Cystic Fibrosis (CF)</li>
                   </ul>
-                  <p className="text-green-700 font-bold mt-2">→ Give saline (responds to volume)</p>
-                </div>
-              </FlowNode>
+                </FlowNode>
 
-              {/* Chloride Resistant */}
-              <FlowNode title="UCl > 10 mEq/L → Chloride Resistant" color="red" defaultOpen={true}>
-                <div className="text-xs">
-                  <p className="text-muted-foreground mb-2">Check Blood Pressure:</p>
-                  <FlowNode title="No HTN" color="amber" level={1}>
-                    <ul className="text-[10px] text-muted-foreground">
-                      <li>• Bartter syndrome</li>
-                      <li>• Gitelman syndrome</li>
-                      <li>• Surreptitious syndrome</li>
-                    </ul>
-                  </FlowNode>
-                  <FlowNode title="With HTN" color="red" level={1}>
-                    <ul className="text-[10px] text-muted-foreground">
-                      <li>• Exogenous steroids</li>
-                      <li>• Endogenous steroids</li>
-                      <li>• 1ry Aldosteronism</li>
-                      <li>• Cushing syndrome</li>
-                      <li>• 11-OH deficiency</li>
-                      <li>• Liddle syndrome</li>
-                    </ul>
-                  </FlowNode>
-                </div>
-              </FlowNode>
+                {/* Chloride Resistant */}
+                <FlowNode title="Cl Resistant (UCl >10)" color="red" defaultOpen={true}>
+                  <p className="text-[10px] text-red-700 font-bold mb-2">→ Check Blood Pressure</p>
+                  <div className="space-y-2">
+                    <FlowNode title="No HTN" color="amber" level={1}>
+                      <ul className="text-[9px] text-muted-foreground">
+                        <li>• Bartter syndrome</li>
+                        <li>• Gitelman syndrome</li>
+                        <li>• Surreptitious vomiting/diuretic abuse</li>
+                      </ul>
+                    </FlowNode>
+                    <FlowNode title="With HTN → Check Renin & Aldo" color="red" level={1} defaultOpen={true}>
+                      <div className="space-y-1 text-[9px]">
+                        <div className="p-1 bg-white dark:bg-gray-900 rounded">
+                          <span className="font-bold">All High:</span> Renal Artery Stenosis (RAS)
+                        </div>
+                        <div className="p-1 bg-white dark:bg-gray-900 rounded">
+                          <span className="font-bold">All Low:</span> Liddle, CAH 11-OH, Cushing
+                        </div>
+                        <div className="p-1 bg-white dark:bg-gray-900 rounded">
+                          <span className="font-bold">Low R & High Aldo:</span> Conn syndrome, Adrenal Tumor
+                        </div>
+                      </div>
+                    </FlowNode>
+                  </div>
+                </FlowNode>
+              </div>
             </div>
 
-            {/* Detailed Metabolic Alkalosis Flowchart */}
-            <FlowNode title="Detailed Metabolic Alkalosis Approach (Serum Cl)" color="blue">
-              <div className="text-xs space-y-2">
-                <div className="grid grid-cols-2 gap-2">
-                  {/* Low Serum Cl */}
-                  <div className="p-2 bg-white dark:bg-gray-900 rounded border">
-                    <p className="font-semibold">Low Serum Cl → Check BP</p>
-                    <div className="mt-2 space-y-2">
-                      <div className="p-1 bg-red-50 dark:bg-red-900/30 rounded">
-                        <p className="font-bold text-red-700">HIGH BP → Renin & Aldosterone</p>
-                        <ul className="text-[10px] text-muted-foreground mt-1">
-                          <li>• All high → RAS</li>
-                          <li>• All low → Liddle, CAH 11BH, Cushing</li>
-                          <li>• Low R & High Aldo → Conn syndrome, Adrenal Tumor</li>
-                        </ul>
-                      </div>
-                      <div className="p-1 bg-amber-50 dark:bg-amber-900/30 rounded">
-                        <p className="font-bold text-amber-700">Normal BP → Urine Cl</p>
-                        <ul className="text-[10px] text-muted-foreground mt-1">
-                          <li>• High &gt;20 → Bartter & Gitelman (with high R & A)</li>
-                          <li>• Nl &lt;10 → Pseudobartter skin, CF, Excessive sweating</li>
-                          <li>• Nl &lt;10 GIT → Pyloric stenosis, Excessive vomiting, NGT suction, Chloride diarrhea, Laxative abuse</li>
-                          <li>• Nl &lt;10 Renal → Loop diuretic use</li>
-                        </ul>
-                      </div>
+            {/* Detailed Met Alk Flowchart */}
+            <FlowNode title="📋 Detailed Met Alk Approach (by Serum Cl)" color="blue">
+              <div className="grid grid-cols-2 gap-2 text-[9px]">
+                <div className="p-2 bg-white dark:bg-gray-900 rounded border">
+                  <p className="font-bold text-blue-700 mb-1">Low Serum Cl → Check BP</p>
+                  <div className="space-y-1">
+                    <div className="p-1 bg-red-50 dark:bg-red-900/30 rounded">
+                      <p className="font-bold">HIGH BP → Renin & Aldo</p>
+                      <ul className="text-muted-foreground">
+                        <li>• All High → RAS</li>
+                        <li>• All Low → Liddle, CAH, Cushing</li>
+                        <li>• ↓R ↑A → Conn, Adrenal Tumor</li>
+                      </ul>
+                    </div>
+                    <div className="p-1 bg-amber-50 dark:bg-amber-900/30 rounded">
+                      <p className="font-bold">Normal BP → Urine Cl</p>
+                      <ul className="text-muted-foreground">
+                        <li>• &gt;20 → Bartter, Gitelman (↑R&A)</li>
+                        <li>• &lt;10 Skin → Pseudobartter, CF, Sweating</li>
+                        <li>• &lt;10 GIT → Pyloric stenosis, Vomiting, NGT, Cl diarrhea</li>
+                        <li>• &lt;10 Renal → Loop diuretics</li>
+                      </ul>
                     </div>
                   </div>
-                  {/* Normal Serum Cl */}
-                  <div className="p-2 bg-white dark:bg-gray-900 rounded border">
-                    <p className="font-semibold">Normal Serum Cl</p>
-                    <p className="text-[10px] text-muted-foreground mt-2">
-                      → Exogenous HCO₃⁻ administration
-                    </p>
-                  </div>
+                </div>
+                <div className="p-2 bg-white dark:bg-gray-900 rounded border">
+                  <p className="font-bold text-green-700 mb-1">Normal Serum Cl</p>
+                  <p className="text-muted-foreground">→ Exogenous HCO₃⁻ administration</p>
                 </div>
               </div>
             </FlowNode>
@@ -676,68 +755,28 @@ const BloodGasApproach = ({ weight, expandedSections, toggleSection }) => {
         </Section>
 
         {/* Quick Reference */}
-        <Section id="abg-ref" title="Quick Reference Rules" expandedSections={expandedSections} toggleSection={toggleSection}>
-          <div className="space-y-2 text-xs">
-            <div className="p-2 bg-teal-50 dark:bg-teal-950/30 rounded border border-teal-200">
-              <p className="font-bold text-teal-800">Box Rule: 1ry Respiratory</p>
-              <p className="font-mono mt-1">pH & pCO₂ = HCO₃⁻</p>
-              <p className="text-[10px] text-muted-foreground mt-1">
-                For every 10 increase in pCO₂, there is 1 decrease in HCO₃⁻
-              </p>
-            </div>
-
-            <div className="p-2 bg-amber-50 dark:bg-amber-950/30 rounded border border-amber-200">
-              <p className="font-bold text-amber-800">Respiratory Notes:</p>
-              <ul className="text-[10px] text-muted-foreground mt-1 space-y-0.5">
-                <li>• ΔpCO₂ = Difference between higher and lower value Normal paCO₂ (40) - measured paCO₂</li>
-                <li>• 24 in the equation is Normal HCO₃⁻</li>
-                <li>• For every 1 mEq/L increase in HCO₃⁻, there is 0.7 increase in pCO₂</li>
-              </ul>
-            </div>
-
-            <div className="p-2 bg-purple-50 dark:bg-purple-950/30 rounded border border-purple-200">
-              <p className="font-bold text-purple-800">Respiratory Compensation Equations:</p>
-              <div className="grid grid-cols-2 gap-2 mt-2 text-[10px]">
-                <div>
-                  <p className="font-semibold">Acute Respiratory Acidosis</p>
-                  <p className="text-muted-foreground">(ΔpaCO₂)/10 × 1 + 24</p>
-                </div>
-                <div>
-                  <p className="font-semibold">Chronic Respiratory Acidosis</p>
-                  <p className="text-muted-foreground">(ΔpaCO₂)/10 × 4 + 24</p>
-                </div>
-                <div>
-                  <p className="font-semibold">Acute Respiratory Alkalosis</p>
-                  <p className="text-muted-foreground">(ΔpaCO₂)/10 × 2 - 24</p>
-                </div>
-                <div>
-                  <p className="font-semibold">Chronic Respiratory Alkalosis</p>
-                  <p className="text-muted-foreground">(ΔpaCO₂)/10 × 5 - 24</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </Section>
-
-        {/* Bottom Quick Reference */}
-        <div className="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg border text-center">
-          <p className="font-bold text-sm mb-2">⚡ ABG QUICK APPROACH</p>
+        <div className="p-3 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/30 dark:to-purple-950/30 rounded-lg border-2 border-blue-200">
+          <p className="font-bold text-sm text-center mb-2">⚡ ABG QUICK APPROACH</p>
           <div className="grid grid-cols-4 gap-2 text-[10px]">
-            <div className="p-2 bg-white dark:bg-gray-900 rounded">
+            <div className="p-2 bg-white dark:bg-gray-900 rounded shadow-sm text-center">
               <p className="font-bold text-amber-600">Step 1</p>
-              <p>Check pH</p>
+              <p>pH</p>
+              <p className="text-[9px] text-muted-foreground">&lt;7.35 or &gt;7.45?</p>
             </div>
-            <div className="p-2 bg-white dark:bg-gray-900 rounded">
+            <div className="p-2 bg-white dark:bg-gray-900 rounded shadow-sm text-center">
               <p className="font-bold text-blue-600">Step 2</p>
               <p>1ry Disorder</p>
+              <p className="text-[9px] text-muted-foreground">Met or Resp?</p>
             </div>
-            <div className="p-2 bg-white dark:bg-gray-900 rounded">
+            <div className="p-2 bg-white dark:bg-gray-900 rounded shadow-sm text-center">
               <p className="font-bold text-green-600">Step 3</p>
               <p>Compensation</p>
+              <p className="text-[9px] text-muted-foreground">Expected values</p>
             </div>
-            <div className="p-2 bg-white dark:bg-gray-900 rounded">
+            <div className="p-2 bg-white dark:bg-gray-900 rounded shadow-sm text-center">
               <p className="font-bold text-purple-600">Step 4</p>
-              <p>AG if Acidosis</p>
+              <p>If Met Acidosis</p>
+              <p className="text-[9px] text-muted-foreground">Check AG</p>
             </div>
           </div>
         </div>
