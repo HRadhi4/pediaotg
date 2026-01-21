@@ -178,6 +178,7 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
       case "calcium": calculateCalcium(); break;
       case "magnesium": calculateMagnesium(); break;
       case "potassium": calculatePotassium(); break;
+      case "potassiumPO": calculatePotassiumPO(); break;
       case "nahco3": calculateNaHCO3(); break;
       case "sodium": calculateSodium(); break;
       case "phosphate": calculatePhosphate(); break;
