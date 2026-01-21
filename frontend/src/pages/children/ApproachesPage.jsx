@@ -49,7 +49,6 @@ import {
   AcetaminophenApproach,
   IronToxicityApproach,
   NSAIDToxicityApproach,
-  MetabolicEmergencyApproach,
   IEMEmergencyApproach,
 } from "./approaches";
 
