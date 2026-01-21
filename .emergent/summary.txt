@@ -1,40 +1,61 @@
 <analysis>**original_problem_statement:**
-The initial goal was to add a Postnatal section, a static nomogram, and glucose calculators. However, the project's direction shifted significantly towards building and refining a comprehensive electrolyte and infusion calculation tool.
+The user's primary goal is to build and refine a comprehensive pediatric medical calculator application.
 
-This session involved:
-1.  **Jaundice Calculator:** Correcting data inaccuracies based on a user-provided table.
-2.  **Electrolyte Calculator ():**
-    *   **Potassium (KCL):** Merged separate IV/PO options into a single Potassium selection with an IV/PO toggle. The IV path was enhanced with a line type selector (Peripheral, Central, Central Fluid Restricted) that dictates dilution logic.
-    *   **Sodium (Na):** Completely overhauled the Sodium correction logic.
-        *   **Hypernatremia:** Replaced the Standard method with the Harriet Lane method and added a switch to toggle with the Nelson Textbook method, removing the dose slider.
-        *   **Hyponatremia:** Rewrote the entire feature to follow specific user-provided flowcharts for Mild/Asymptomatic and Severe/Symptomatic cases, removing the dose slider and simplifying the result display.
-    *   **Sodium Bicarbonate (NaHCO3):** Renamed Base Excess to Base Deficit for clarity.
-    *   **UI Enhancements:** Added a formatted Order container to the results for Potassium, Calcium, Magnesium, and Phosphate.
-3.  **Infusions Page ():** The page was completely rewritten to implement a new inotrope calculator based on a user-provided dilution table, including dose limits and line-type options.
-4.  **Authentication & Deployment:**
-    *   Fixed a body stream already read frontend login error.
-    *   Resolved 401 Unauthorized errors for production deployment by correcting  file formatting and backend auth logic.
-    *   Added a show/hide password toggle on the login page.
+In the current session, the user requested the following:
+1.  **Acetaminophen Nomogram:** A complete overhaul of the Rumack-Matthew nomogram, which involved replacing the SVG, multiple rounds of fixing the X and Y coordinate plotting logic, and improving the resolution. The final request was to replace button-based zoom controls with intuitive pinch-to-zoom functionality.
+2.  **DKA Approach:** Add a new SMC Guideline section, toggleable with the existing Saudi booklet content, based on a user-provided Word document.
+3.  **Metabolic Emergencies:** Add a new Inborn Error of Metabolism Emergencies approach and merge the existing Metabolic Emergencies content into it, with a toggle to switch between SMC Guideline and UpToDate content.
+4.  **Hyponatremia Calculator:** In the Mild/Asymptomatic section, replace the manual fluid deficit input with a selector for Infant and Child dehydration percentages.
+5.  **New Feature (Blood Gas):** Add a Blood Gas Reading approach, presented as a flowchart with expandable arrows, based on five user-provided images.
 
 **User's preferred language**: English
 
 **what currently exists?**
-The application is a full-stack React/FastAPI medical calculator. The  component is now a highly advanced, multi-faceted calculator for Potassium, Sodium (Hyper/Hyponatremia), Sodium Bicarbonate, Calcium, Magnesium, and Phosphate, with logic and UI driven by recent, specific user requests. The  page has been completely rebuilt with a new, detailed inotrope calculator. Critical login and deployment bugs have been resolved, and the login page UI has been improved.
+The application is a full-stack React/FastAPI medical calculator. The agent has successfully implemented several major features and fixes in this session, all of which have been verified by the testing subagent. This includes a complete, multi-iteration rework of the Acetaminophen nomogram's coordinates, merging and updating the DKA and IEM emergency approaches with toggleable content, and refining the Hyponatremia calculator's UI. The agent was about to begin work on the user's latest requests: implementing pinch-to-zoom for the nomogram and creating the new Blood Gas Reading approach.
 
 **Last working item**:
--   **Last item agent was working:** The agent finished implementing a complete overhaul of the **Hyponatremia** calculator within . This involved removing the dose slider, changing UI labels from Mild to Mild/Asymptomatic, and rewriting the calculation logic and result display to precisely match two user-provided flowcharts.
--   **Status:** USER VERIFICATION PENDING
--   **Agent Testing Done:** Y (via extensive manual screenshot verification of UI and calculation outputs)
--   **Which testing method agent to use?** Frontend testing agent. The agent should perform a comprehensive regression test on the  component, covering all new calculation paths (Hyponatremia, Hypernatremia, Potassium IV/PO, and the Order box display for other electrolytes). It should also test the new  calculator.
+-   **Last item agent was working:** The agent had just received two new user requests after successfully implementing and testing the previous set of tasks.
+    1.  Remove the existing zoom controls (+/- buttons) from the Acetaminophen nomogram and implement a smooth, intuitive pinch-to-zoom functionality directly on the nomogram container.
+    2.  Create a new Blood Gas Reading approach based on 5 user-provided flowchart images.
+-   **Status:** NOT STARTED
+-   **Agent Testing Done:** N
+-   **Which testing method agent to use?** Frontend testing agent.
+    -   **Pinch-to-Zoom:** The agent should install and use a library like  and then test that the nomogram can be zoomed and panned via simulated touch events.
+    -   **Blood Gas Approach:** After creating the component, the agent should test that the page renders correctly and the flowchart logic with expandable sections works as intended.
 -   **User Testing Done:** N
 
 **All Pending/In progress Issue list**:
--   **Issue 1:** Verify UI standardization of all NICU approach components. (P1)
--   **Issue 2:** Verify patient data point plotting on the Growth Chart. (P1)
--   **Issue 3:** Audit all numerical inputs in the application to prevent negative values. (P2)
+-   **Issue 1 (P0):** Replace nomogram zoom controls with pinch-to-zoom functionality.
+-   **Issue 2 (P2):** Verify UI standardization of all NICU approach components.
+-   **Issue 3 (P2):** Verify patient data point plotting on the Growth Chart.
+-   **Issue 4 (P3):** Audit all numerical inputs in the application to prevent negative values.
 
 **Issues Detail:**
--   **Issue 1:** Verify NICU Approaches UI Standardization
+-   **Issue 1:** Replace Nomogram Zoom Controls
+    -   **Attempted fixes:** The agent previously implemented button-based zoom controls, which the user now wants to replace.
+    -   **Next debug checklist:**
+        1.  Install a suitable library (e.g., yarn add v1.22.22
+[1/4] Resolving packages...
+[2/4] Fetching packages...
+[3/4] Linking dependencies...
+[4/4] Building fresh packages...
+success Saved lockfile.
+success Saved 1 new dependency.
+info Direct dependencies
+└─ react-zoom-pan-pinch@3.7.0
+info All dependencies
+└─ react-zoom-pan-pinch@3.7.0
+Done in 0.38s.).
+        2.  In , remove the current state for zoom () and the button controls.
+        3.  Wrap the nomogram  and the plotted point  inside the  and  provided by the library.
+        4.  Ensure the plotted point's coordinates (, ) are still correctly positioned relative to the scaled and panned image.
+    -   **Why fix this issue and what will be achieved with the fix?** To provide a more modern, mobile-friendly, and intuitive user experience for viewing the detailed nomogram.
+    -   **Status:** NOT STARTED
+    -   **Is recurring issue?** N
+    -   **Should Test frontend/backend/both after fix?** Frontend
+    -   **Blocked on other issue:** None
+
+-   **Issue 2:** Verify NICU Approaches UI Standardization
     -   **Attempted fixes:** None.
     -   **Next debug checklist:** Use the frontend testing agent to take screenshots of multiple NICU approach pages () to visually confirm layout and styling consistency.
     -   **Why fix this issue and what will be achieved with the fix?** Ensures a consistent and professional user experience across a key section of the application.
@@ -43,7 +64,7 @@ The application is a full-stack React/FastAPI medical calculator. The  component
     -   **Should Test frontend/backend/both after fix?** Frontend
     -   **Blocked on other issue:** None
 
--   **Issue 2:** Verify Growth Chart Patient Data Plotting
+-   **Issue 3:** Verify Growth Chart Patient Data Plotting
     -   **Attempted fixes:** None.
     -   **Next debug checklist:** Manually navigate to the Growth Chart, enter sample patient data, click Plot Data, and use the screenshot tool to verify a point appears correctly on the chart.
     -   **Why fix this issue and what will be achieved with the fix?** Confirms a primary interactive feature of the Growth Chart is functional.
@@ -52,8 +73,8 @@ The application is a full-stack React/FastAPI medical calculator. The  component
     -   **Should Test frontend/backend/both after fix?** Frontend
     -   **Blocked on other issue:** None
 
--   **Issue 3:** Audit all numerical inputs in the application for 
-    -   **Attempted fixes:** This was done for the new , but a site-wide audit is still needed.
+-   **Issue 4:** Audit all numerical inputs for 
+    -   **Attempted fixes:** Done for new features, but a site-wide audit is still needed.
     -   **Next debug checklist:** Use /app/frontend/src/pages/nicu/CatheterCalculatorPage.jsx:              type="number"
 /app/frontend/src/pages/nicu/ExchangeCalculatorPage.jsx:                <Input type="number" step="0.01" placeholder="e.g., 3.5" value={weight} onChange={(e) => setWeight(e.target.value)} className="nightingale-input font-mono" />
 /app/frontend/src/pages/nicu/ExchangeCalculatorPage.jsx:                  <Input type="number" placeholder="e.g., 70" value={observedHct} onChange={(e) => setObservedHct(e.target.value)} className="nightingale-input font-mono" />
@@ -149,43 +170,50 @@ The application is a full-stack React/FastAPI medical calculator. The  component
 /app/frontend/src/components/ElectrolytesDialog.jsx:                        type="number"
 /app/frontend/src/components/ElectrolytesDialog.jsx:                      type="number"
 /app/frontend/src/components/ElectrolytesDialog.jsx:                          type="number"
-/app/frontend/src/components/ElectrolytesDialog.jsx:                          type="number"
 /app/frontend/src/components/ElectrolytesDialog.jsx:                      type="number"
-/app/frontend/src/components/ElectrolytesDialog.jsx:                          type="number"
-/app/frontend/src/components/ElectrolytesDialog.jsx:                          type="number"
-/app/frontend/src/components/ElectrolytesDialog.jsx:                    type="number" to find all numerical inputs. Review each file and use  to add  to all inputs used for clinical calculations where a negative value is not permissible.
-    -   **Why fix this issue and what will be achieved with the fix?** Improves data integrity and prevents potentially critical clinical calculation errors.
+/app/frontend/src/components/ElectrolytesDialog.jsx:                          type="number" to find all numerical inputs. Review each file and use  to add  to all inputs where a negative value is not clinically permissible.
+    -   **Why fix this issue and what will be achieved with the fix?** Improves data integrity and prevents potential clinical calculation errors.
     -   **Status:** NOT STARTED
     -   **Is recurring issue?** Y
     -   **Should Test frontend/backend/both after fix?** Frontend
     -   **Blocked on other issue:** None
 
 **In progress Task List**:
--   **Task 1:** Continue Drug Formulary Review (P2)
-    -   **Where to resume:** Periodically extract pages from the  document, analyze them, and compare against the data in .
-    -   **What will be achieved with this?** Increase the accuracy and completeness of the app's drug formulary.
-    -   **Status:** IN PROGRESS
+-   **Task 1: Create Blood Gas Reading Approach (P1)**
+    -   **Where to resume:**
+        1.  Analyze the 5 provided images to understand the flowchart logic for blood gas interpretation.
+        2.  Create a new file: .
+        3.  Implement the UI with input fields for pH, pCO2, and HCO3.
+        4.  Build the logic to display results in an expandable flowchart format as requested by the user.
+        5.  Add the new approach to the main navigation in .
+    -   **What will be achieved with this?** Adds a new, user-requested clinical decision support tool to the application.
+    -   **Status:** NOT STARTED
     -   **Should Test frontend/backend/both after fix?** Frontend
     -   **Blocked on something:** None.
 
 **Upcoming and Future Tasks**
 -   **Upcoming Tasks:**
     -   (P1) Add **Salicylate (Aspirin) Toxicity** approach.
-    -   (P1) Add automated interpretation of blood gas results.
 -   **Future Tasks:**
-    -   (P2) Refactor the large  component into smaller, manageable hooks or components.
+    -   (P2) Refactor the large  component (1700+ lines) into smaller, manageable hooks or components.
+    -   (P2) Continue Drug Formulary review.
+    -   (P2) Delete the redundant file: .
+    -   (P2) Delete the now-obsolete file .
     -   (P2) Prepare the application for production deployment.
     -   (P3) Add a dark mode theme toggle.
     -   (P3) Add PDF generation/printing functionality for approaches.
 
 **Completed work in this session**
--   **Electrolyte Calculator Major Rework (DONE):**
-    -   **Potassium (KCL):** Implemented a unified Potassium option with an IV/PO switch, a line-type selector for IV dilution, and a simplified PO output.
-    -   **Sodium (Na):** Completely rewrote Hypernatremia and Hyponatremia logic to match user-provided flowcharts (Nelson, Harriet Lane, Mild/Severe Hyponatremia), removing sliders and simplifying UI.
-    -   **UI:** Added a formatted Order container for key electrolyte results and changed Base Excess to Base Deficit.
--   **Infusions Page Rework (DONE):** Rebuilt  with a new, data-driven inotrope calculator.
--   **Jaundice Calculator Fix (DONE):** Corrected all data threshold values in .
--   **Authentication & Deployment Fixes (DONE):** Resolved multiple login bugs (frontend body already read error, backend 401 Unauthorized error in production) and added a show/hide password toggle.
+-   **Rumack-Matthew Nomogram Overhaul (DONE & TESTED):**
+    -   Rewrote the coordinate mapping logic from scratch in  to accurately plot points based on an in-depth analysis of the new SVG's coordinates (both X and Y axes).
+    -   Ensured the SVG renders as a high-resolution vector image.
+-   **DKA Approach Update (DONE & TESTED):**
+    -   Implemented a toggle switch in  to show either the Saudi Booklet or the new SMC Guideline content.
+-   **IEM / Metabolic Emergencies Merge (DONE & TESTED):**
+    -   Created  and merged the content from  into it, controlled by a toggle.
+    -   Removed the old  from navigation.
+-   **Hyponatremia Calculator UI Update (DONE & TESTED):**
+    -   In , replaced the manual input for fluid deficit in the Mild/Asymptomatic section with a  for Infant and Child dehydration percentages.
 
 **Earlier issues found/mentioned but not fixed**
 -   See **All Pending/In progress Issue list**.
@@ -197,59 +225,61 @@ The application is a full-stack React/FastAPI medical calculator. The  component
 
 
 **Key Technical Concepts**
--   **User-Flow-Driven Logic:** Translated complex clinical flowcharts (Nelson, Harriet Lane, Hyponatremia protocols) directly into conditional React logic and UI.
--   **Complex State Management:** Managed a large, interdependent state within a single component () to drive a multi-faceted calculator.
--   **Deployment Debugging:** Diagnosed and fixed production-specific bugs related to environment variable parsing and authentication logic.
--   **Frontend Fetch API Robustness:** Solved the body stream already read race condition by using  to ensure the response could be inspected for errors without consuming it.
+-   **SVG Coordinate Mapping:** Extensive analysis of SVG source code (including , ,  elements, and  matrices) to reverse-engineer and create accurate logarithmic and linear scales for plotting data points in React.
+-   **React State Management & UI Toggles:** Used  and UI components like  to switch between different content views (e.g., DKA, IEM guidelines) and UI modes (e.g., new Hyponatremia selectors).
+-   **Component Refactoring/Merging:** Merged two components ( and ) into one, controlled by a state toggle, to streamline the UI.
+-   **Document Content Extraction:** Used  to extract text from a  file and  for a  file to populate new UI components.
+-   **Iterative Debugging & User Feedback:** Responded to multiple rounds of user feedback on the same feature (nomogram coordinates), demonstrating a cycle of analysis, implementation, and verification to achieve correctness.
 
 **key DB schema**
 -   No database schema changes were made.
 
 **All files of reference**
--    (The single source of truth for the electrolyte calculator)
--    (The new inotrope calculator)
--    (Login bug fix)
--    (Show password toggle)
--    (Deployment auth fix)
+-    (For nomogram changes)
+-    (For Hyponatremia changes)
+-    (For IEM/Metabolic merge)
+-    (For DKA toggle)
+-    (For navigation changes)
+-   The 5 new image artifacts for the Blood Gas feature.
 
 **Areas that need refactoring**:
--   **Redundant File:**  is an artifact of a previous implementation and is now unused. It should be confirmed as unreferenced and deleted.
--   **Massive Component:**  has grown to over 1200 lines and is difficult to maintain. The logic for each electrolyte calculator should be extracted into its own custom React hook (e.g., , ) to improve modularity, testability, and readability.
+-   **Pinch-to-Zoom:** The zoom controls in  need to be replaced with a pinch-to-zoom library implementation.
+-   **Massive Component:**  is now over 1700 lines and should be broken down into custom hooks (e.g., ).
+-   **Obsolete Component:**  is no longer used in navigation and can be deleted after confirming no other references exist.
 
 **key api endpoints**
 -   
 
 **Critical Info for New Agent**
--   Your immediate priority is to confirm with the user that the latest changes to the **Hyponatremia calculator** meet their expectations. The implementation is complete, but user validation is required before proceeding.
--   The single source of truth for all electrolyte calculations is . Do not use or modify , as it is obsolete.
--   Once the current work is approved, you should propose a plan that includes the pending tasks (UI standardization, Growth Chart plotting,  audit) and the highly recommended refactoring of .
--   The user provides very specific, iterative feedback, often with images. Pay close attention to these details and implement changes exactly as requested.
+-   Your first priority is to address the user's latest two requests:
+    1.  **Nomogram Pinch-to-Zoom:** Rework  to remove the button-based zoom controls and implement a smooth, intuitive pinch-to-zoom experience. A library like  would be a good choice.
+    2.  **Blood Gas Approach:** Create a new component  based on the 5 provided images. The user wants a flowchart-style UI with expandable sections.
+-   The coordinate mapping logic for the nomogram is now **correct and verified**. Do not change the coordinate calculation functions (, ). Focus only on replacing the zoom interaction model.
+-   After implementing the new features, propose a plan to tackle the long-pending backlog items like the  audit and UI standardization.
 
 **documents and test reports created in this job**
--    (Updated)
 -   
+-   
+-   
+-    (Updated with completed tasks)
 
 **Last 10 User Messages and any pending HUMAN messages**
-1.  **User:** Merge Potassium IV/PO with a switch and simplify the PO output. - **Status: COMPLETED**
-2.  **User:** Change Base Excess to Base Deficit in HCO3. - **Status: COMPLETED**
-3.  **User:** Provided deployment logs with login errors. - **Status: COMPLETED**
-4.  **User:** I am still facing this issue with admin login! with screenshot of body stream already read error. - **Status: COMPLETED**
-5.  **User:** Still facing same problem after deployment only facing the login issue with the admin user. - **Status: COMPLETED**
-6.  **User:** Add show to show password in login page. - **Status: COMPLETED**
-7.  **User:** Requested Order container, enhanced KCL IV calculation with line types, and a complete rewrite of the Infusions page. - **Status: COMPLETED**
-8.  **User:** Add Nelson Textbook method for Hypernatremia correction. - **Status: COMPLETED**
-9.  **User:** Hide slider in Hypernatremia and replace Standard method with Harriet Lane. - **Status: COMPLETED**
-10. **User:** Rework Hyponatremia calculation entirely based on two flowcharts (Mild/Asymptomatic, Severe/Symptomatic), remove slider, and simplify output. - **Status: COMPLETED**
+1.  **User:** Fix the nomogram X-axis coordinates and improve the resolution. - **Status: COMPLETED**
+2.  **Agent:** Implemented the X-axis fix and increased the nomogram size. Verified with screenshots.
+3.  **User:** The nomogram is still not clear when zoomed in; add a zoomable SVG. - **Status: COMPLETED**
+4.  **Agent:** Implemented zoom controls (buttons) and verified with screenshots showing high-quality zoomed-in views.
+5.  **Agent:** Finished the task with a summary.
+6.  **User:** Remove the zoom controls and implement pinch-to-zoom instead. Add a new Blood Gas Reading approach based on attached images. - **Status: PENDING**
 
 **Project Health Check:**
--   **Broken:** No. The application is functional.
+-   **Broken:** No. The application is fully functional.
 -   **Mocked:** None.
 
 **3rd Party Integrations**
 -   None.
 
 **Testing status**
--   **Testing agent used after significant changes:** YES, an early test report exists (). However, the most recent, substantial changes to the electrolyte and infusion calculators were only tested manually via screenshots. A full regression test is highly recommended.
+-   **Testing agent used after significant changes:** YES. The testing agent was used successfully three times (, , ) to verify all major features implemented in this session.
 -   **Troubleshoot agent used after agent stuck in loop:** NO
 -   **Test files created:** None
 -   **Known regressions:** None
@@ -259,5 +289,6 @@ The application is a full-stack React/FastAPI medical calculator. The  component
 -   **Tester:**  / 
 
 **What agent forgot to execute**
--   The agent has consistently deferred the pending tasks from previous forks: UI standardization across NICU pages, verifying Growth Chart plotting, and conducting a full audit for  on number inputs.
--   The agent has not proposed a refactoring plan for the increasingly large  component or the removal of the redundant  file.</analysis>
+-   The agent has not yet started the user's latest requests (pinch-to-zoom, blood gas approach).
+-   The long-standing backlog tasks (NICU UI standardization, Growth Chart plotting,  audit) remain deferred and should be brought to the user's attention for prioritization after the current work is done.
+-   A plan to refactor  and remove obsolete files (, ) has not been actioned.</analysis>
