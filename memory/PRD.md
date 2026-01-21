@@ -539,5 +539,4 @@ Build a full SaaS-style web app "Pediatrics on the Go" with:
 - `/app/test_reports/iteration_7.json` - OCR backend tests (15/15 passed)
 
 ## Last Updated
-January 20, 2026 - Combined Electrolytes & Infusions page with dose ranges
-January 19, 2026 - Added Methylprednisolone to formulary (100 drugs), overhauled drug card UI with divided dose calculations
+January 21, 2026 - Added DKA SMC Guideline toggle, IEM Emergencies approach, updated Acetaminophen nomogram SVG
