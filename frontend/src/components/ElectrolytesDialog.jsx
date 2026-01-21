@@ -920,6 +920,14 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
                       </div>
                     </div>
 
+                    {/* Order - For Ca, Mg, K, PO4 */}
+                    {results.order && (
+                      <div className="p-3 rounded-lg bg-teal-50 dark:bg-teal-950/30 border-2 border-teal-400">
+                        <p className="text-xs font-semibold text-teal-700 dark:text-teal-300 mb-1">📋 Order</p>
+                        <p className="font-mono text-sm font-bold text-teal-800 dark:text-teal-200">{results.order}</p>
+                      </div>
+                    )}
+
                     {/* Preparation */}
                     <div className="p-2 rounded bg-purple-50 dark:bg-purple-950/30 text-xs">
                       <p className="font-semibold text-purple-700 dark:text-purple-300 mb-1">Preparation</p>
