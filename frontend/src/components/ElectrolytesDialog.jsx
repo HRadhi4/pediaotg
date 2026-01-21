@@ -725,8 +725,8 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
             </div>
           )}
 
-          {/* Potassium PO-specific options */}
-          {selectedElectrolyte === "potassiumPO" && (
+          {/* Potassium PO Frequency selector */}
+          {selectedElectrolyte === "potassium" && potassiumRoute === "PO" && (
             <div className="space-y-2">
               <Label className="text-sm font-medium">Frequency</Label>
               <RadioGroup value={kclPoFrequency} onValueChange={setKclPoFrequency} className="flex gap-4">
