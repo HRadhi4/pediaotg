@@ -4,11 +4,12 @@
  * Updated with collapsible sections and ml/mg converter for Bahrain preparations
  */
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { ZoomIn, ZoomOut, RotateCcw } from "lucide-react";
 import Section from "./Section";
 
 // Import the static Rumack-Matthew nomogram SVG (updated version - using as image)
