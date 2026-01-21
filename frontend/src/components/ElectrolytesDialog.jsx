@@ -267,25 +267,50 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
     let doseMEq = currentDose;
     let isMaxed = doseMEq >= 40;
     
+    // KCl 15% = 2 mEq/ml
     const drugVolume = doseMEq / 2;
     const dosePerKg = (doseMEq / w).toFixed(2);
-    const peripheralConc = 0.08;
-    const totalVolume = doseMEq / peripheralConc;
-    const diluent = totalVolume - drugVolume;
+    
+    // Calculate dilution based on line type
+    let concentration, concentrationLabel, totalVolume, diluent;
+    
+    if (potassiumLineType === "peripheral") {
+      // Peripheral: 80 mEq/L = 0.08 mEq/ml
+      concentration = 0.08;
+      concentrationLabel = "80 mEq/L (Peripheral)";
+      totalVolume = doseMEq / concentration;
+      diluent = totalVolume - drugVolume;
+    } else if (potassiumLineType === "central") {
+      // Central without fluid restriction: 15 mEq/100 ml = 0.15 mEq/ml
+      concentration = 0.15;
+      concentrationLabel = "15 mEq/100ml (Central)";
+      totalVolume = doseMEq / concentration;
+      diluent = totalVolume - drugVolume;
+    } else {
+      // Central with fluid restriction: 20 mEq/100 ml = 0.20 mEq/ml
+      concentration = 0.20;
+      concentrationLabel = "20 mEq/100ml (Central - Fluid Restricted)";
+      totalVolume = doseMEq / concentration;
+      diluent = totalVolume - drugVolume;
+    }
+    
     const duration = parseFloat(dosePerKg) <= 0.5 ? "1 hour" : "2 hours";
-    const rate = parseFloat(dosePerKg) <= 0.5 ? totalVolume : totalVolume / 2;
+    const durationHrs = parseFloat(dosePerKg) <= 0.5 ? 1 : 2;
+    const rate = totalVolume / durationHrs;
     
     setResults({
       medication: "Potassium Chloride (KCl) 15% - IV",
+      lineType: potassiumLineType,
       calculation: {
         dose: `${doseMEq.toFixed(1)} mEq${isMaxed ? ' (MAX)' : ''} (${dosePerKg} mEq/kg)`,
         formula: `Selected: ${dosePerKg} mEq/kg x ${w} kg`,
         drugVolume: `${drugVolume.toFixed(2)} ml`,
-        diluent: `${diluent.toFixed(0)} ml NS (Peripheral 80 mEq/L)`,
+        diluent: `${diluent.toFixed(0)} ml NS (${concentrationLabel})`,
         totalVolume: `${totalVolume.toFixed(0)} ml`
       },
       administration: { duration, rate: `${rate.toFixed(0)} ml/hr` },
       preparation: `${drugVolume.toFixed(2)} ml KCl 15% + ${diluent.toFixed(0)} ml NS = ${totalVolume.toFixed(0)} ml`,
+      order: `${doseMEq.toFixed(1)} mEq KCl in ${totalVolume.toFixed(0)} ml NS over ${duration}`,
       notes: "Monitor ECG if >0.5 mEq/kg/hr"
     });
   };
