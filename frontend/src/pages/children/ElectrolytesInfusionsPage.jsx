@@ -30,6 +30,7 @@ const ElectrolytesInfusionsPage = ({ onBack }) => {
   const [calciumLevel, setCalciumLevel] = useState("");
   const [magnesiumLevel, setMagnesiumLevel] = useState("");
   const [potassiumLevel, setPotassiumLevel] = useState("");
+  const [kclPoFrequency, setKclPoFrequency] = useState("BD");
   const [hco3Level, setHco3Level] = useState("");
   const [baseExcess, setBaseExcess] = useState("");
   const [nahco3Method, setNahco3Method] = useState("both");
