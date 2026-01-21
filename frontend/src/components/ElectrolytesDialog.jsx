@@ -1608,6 +1608,9 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
                         <span>Current Na: <strong>{results.mildData.currentNa}</strong> mEq/L</span>
                         <span>Target Na: <strong>{results.mildData.targetNa}</strong> mEq/L</span>
                       </div>
+                      <div className="text-center mt-1 text-[10px] text-muted-foreground">
+                        Deficit: {results.mildData.deficitType === "infant" ? "Infant" : "Child"} {results.mildData.deficitPercent}% = {results.mildData.deficit} ml
+                      </div>
                     </div>
                     
                     {/* Step 1: Volume */}
@@ -1615,7 +1618,7 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
                       <p className="text-xs font-bold text-green-700 dark:text-green-300 mb-2">Step 1: Determine Volume</p>
                       <div className="space-y-1 text-xs">
                         <p>Maintenance (100/50/20): <strong>{results.mildData.maintenance} ml/day</strong></p>
-                        <p>+ Deficit: <strong>{results.mildData.deficit} ml</strong></p>
+                        <p>+ Deficit ({results.mildData.deficitType === "infant" ? "Infant" : "Child"} {results.mildData.deficitPercent}%): <strong>{results.mildData.deficit} ml</strong></p>
                         <p className="border-t pt-1 mt-1">= Total: <strong>{results.mildData.totalVolume} ml/day</strong></p>
                         <p className="text-[10px] text-muted-foreground">Max 2.5L/day</p>
                       </div>
