@@ -1015,14 +1015,14 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
                     </button>
                     <button
                       type="button"
-                      onClick={() => setHypernatremiaMethod("standard")}
+                      onClick={() => setHypernatremiaMethod("harriet")}
                       className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
-                        hypernatremiaMethod === "standard"
+                        hypernatremiaMethod === "harriet"
                           ? "bg-orange-600 text-white"
                           : "text-orange-700 hover:bg-orange-100"
                       }`}
                     >
-                      Standard
+                      Harriet Lane
                     </button>
                   </div>
                   
@@ -1050,6 +1050,39 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
                         <span>Na 184-196: 84 hrs</span>
                       </div>
                     </div>
+                  )}
+                  
+                  {hypernatremiaMethod === "harriet" && (
+                    <>
+                      <div>
+                        <Label className="text-xs">Desired Na (mEq/L)</Label>
+                        <Input
+                          type="number"
+                          step="1"
+                          min="135"
+                          max="145"
+                          placeholder="145"
+                          value={targetNa}
+                          onChange={(e) => setTargetNa(e.target.value)}
+                          className="font-mono h-9 mt-1"
+                        />
+                      </div>
+                      <div>
+                        <Label className="text-xs">Fluid Deficit (ml) - estimated dehydration</Label>
+                        <Input
+                          type="number"
+                          step="10"
+                          min="0"
+                          placeholder={`e.g., ${(w * 100).toFixed(0)} (10% dehydration)`}
+                          value={fluidDeficit}
+                          onChange={(e) => setFluidDeficit(e.target.value)}
+                          className="font-mono h-9 mt-1"
+                        />
+                        <p className="text-[10px] text-muted-foreground mt-1">
+                          Dehydration %: 5%={w*50}ml, 10%={w*100}ml, 15%={w*150}ml
+                        </p>
+                      </div>
+                    </>
                   )}
                 </>
               )}
