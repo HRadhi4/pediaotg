@@ -557,7 +557,6 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
                 <Label className="text-xs font-semibold text-blue-800 dark:text-blue-300">
                   Select {selectedElectrolyte === "potassium" && potassiumRoute === "PO" ? "Daily " : ""}Dose ({currentElectrolyte.resultUnit})
                 </Label>
-                </Label>
                 <span className="text-xs text-muted-foreground">
                   {doseLimits.min.toFixed(doseLimits.step < 1 ? 2 : 0)} - {doseLimits.max.toFixed(doseLimits.step < 1 ? 2 : 0)} {currentElectrolyte.resultUnit}
                 </span>
