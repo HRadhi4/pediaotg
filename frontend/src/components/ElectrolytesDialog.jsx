@@ -33,6 +33,7 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
   const [currentNa, setCurrentNa] = useState("");
   const [targetNa, setTargetNa] = useState("");
   const [phosphateSeverity, setPhosphateSeverity] = useState("moderate");
+  const [potassiumRoute, setPotassiumRoute] = useState("IV"); // "IV" or "PO"
   const [kclPoFrequency, setKclPoFrequency] = useState("BD");
   
   // NaHCO3 correction states
