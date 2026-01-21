@@ -199,29 +199,38 @@ const AcetaminophenApproach = ({ weight, expandedSections, toggleSection }) => {
 
   // Static SVG nomogram dimensions and coordinate mapping
   // The NEW SVG viewBox is 0 0 620 750.40002
-  // Updated chart area boundaries based on the new SVG structure
+  // Transform matrix applied: 0.76671865, 0, 0, 0.76694206, 1.1857538, 5.0148173
+  // Chart boundaries calibrated from the optimized SVG
   const svgViewWidth = 620;
   const svgViewHeight = 750.40002;
   
-  // Chart boundaries within the new SVG (calibrated for RM-Nomogram.svg)
-  // X-axis: hours 0-24, Y-axis: concentration on log scale
-  const chartLeft = 85;       // x position at hour 0
-  const chartRight = 570;     // x position at hour 24
-  const chartTop = 60;        // y position at top (high concentration ~500 mcg/mL)
-  const chartBottom = 650;    // y position at bottom (low concentration ~3 mcg/mL)
+  // Chart boundaries within the SVG (calibrated for RM-Nomogram optimized SVG)
+  // X-axis: hours 4-24 (chart doesn't start at 0, starts at 4 hours)
+  // Y-axis: concentration on log scale (1000 to ~5 mcg/mL)
+  // Raw coordinates in SVG before transform:
+  // - Left axis (x): ~150, Right edge (x): ~650
+  // - Top (y): ~100, Bottom (y): ~850
+  // After transform (multiply by ~0.767 and add offset):
+  const chartLeft = 116;       // x position at hour 4 (leftmost data point)
+  const chartRight = 500;      // x position at hour 24
+  const chartTop = 82;         // y position at 1000 mcg/mL
+  const chartBottom = 657;     // y position at ~5 mcg/mL
   
   // Scale functions for the static SVG overlay
+  // Note: X-axis spans hours 4-24 (20 hours range), not 0-24
   const xScaleSVG = (h) => {
-    // Hours 0-24 map to chartLeft-chartRight
-    return chartLeft + (h / 24) * (chartRight - chartLeft);
+    // Clamp hours to valid range 4-24
+    const clampedHours = Math.max(4, Math.min(24, h));
+    // Hours 4-24 map to chartLeft-chartRight
+    return chartLeft + ((clampedHours - 4) / 20) * (chartRight - chartLeft);
   };
   
   const yScaleSVG = (c) => {
     // Logarithmic scale: concentration in mcg/mL
-    // Top of chart is ~500 mcg/mL, bottom is ~3 mcg/mL
-    const logMin = Math.log10(3);
-    const logMax = Math.log10(500);
-    const logC = Math.log10(Math.max(c, 3));
+    // Chart shows approximately 1000 at top to 5 at bottom
+    const logMin = Math.log10(5);
+    const logMax = Math.log10(1000);
+    const logC = Math.log10(Math.max(c, 5));
     const ratio = (logC - logMin) / (logMax - logMin);
     return chartBottom - ratio * (chartBottom - chartTop);
   };
