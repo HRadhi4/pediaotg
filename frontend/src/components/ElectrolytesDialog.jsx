@@ -429,8 +429,8 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
             </p>
           </div>
 
-          {/* Dose Input with Slider */}
-          {w > 0 && (
+          {/* Dose Input with Slider - Hide for NaHCO3 (uses formula instead) */}
+          {w > 0 && selectedElectrolyte !== "nahco3" && (
             <div className="p-3 rounded-lg bg-blue-50 dark:bg-blue-950/30 border border-blue-200 space-y-2">
               <div className="flex justify-between items-center">
                 <Label className="text-xs font-semibold text-blue-800 dark:text-blue-300">
