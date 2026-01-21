@@ -606,13 +606,22 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
     } else {
       // Harriet Lane Method for Hypernatremia
       const desiredNa = parseFloat(targetNa) || 145;
-      const deficit = parseFloat(fluidDeficit) || (w * 100); // Default 10% dehydration
+      
+      // Calculate deficit based on selector (infant/child + percentage)
+      let deficit;
+      if (harrietDeficitType === "infant") {
+        // Infant: 5% = 50ml/kg, 10% = 100ml/kg, 15% = 150ml/kg
+        deficit = w * parseInt(harrietDeficitPercent) * 10;
+      } else {
+        // Child: 3% = 30ml/kg, 6% = 60ml/kg, 9% = 90ml/kg
+        deficit = w * parseInt(harrietDeficitPercent) * 10;
+      }
       
       // Free Water Deficit (FWD) = 4ml × weight × (Serum Na - Desired Na)
       const freeWaterDeficit = 4 * w * (na - desiredNa);
       
       // Solute Fluid Deficit (SFD) = Fluid deficit - FWD
-      const soluteFluadDeficit = Math.max(0, deficit - freeWaterDeficit);
+      const soluteFluidDeficit = Math.max(0, deficit - freeWaterDeficit);
       
       // Calculate maintenance (Holliday-Segar)
       let maintenance;
@@ -630,7 +639,7 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
       
       // Na required = (SFD + Maintenance) × 14 mEq/100ml
       // Using 14 mEq/100ml as the maintenance Na requirement
-      const naRequired = (soluteFluadDeficit + maintenance) * 0.14;
+      const naRequired = (soluteFluidDeficit + maintenance) * 0.14;
       
       // Na content in fluid = Na required / Total fluid volume (gives mEq/L needed)
       const naContentInFluid = (naRequired / totalFluidVolume) * 1000;
@@ -668,8 +677,10 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
         harrietData: {
           currentNa: na,
           desiredNa,
+          deficitType: harrietDeficitType,
+          deficitPercent: harrietDeficitPercent,
           freeWaterDeficit: freeWaterDeficit.toFixed(0),
-          soluteFluidDeficit: soluteFluadDeficit.toFixed(0),
+          soluteFluidDeficit: soluteFluidDeficit.toFixed(0),
           totalDeficit: deficit.toFixed(0),
           maintenance: maintenance.toFixed(0),
           totalFluidVolume: totalFluidVolume.toFixed(0),
