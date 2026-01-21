@@ -78,15 +78,14 @@ export const AuthProvider = ({ children }) => {
         body: JSON.stringify({ email, password })
       });
 
-      // Clone response to avoid "Body is disturbed or locked" error
-      const responseClone = response.clone();
+      // Read response text first, then parse
+      const responseText = await response.text();
       
       let data;
       try {
-        data = await response.json();
+        data = JSON.parse(responseText);
       } catch (jsonError) {
-        const text = await responseClone.text();
-        console.error('Login response parsing error:', jsonError, 'Response text:', text);
+        console.error('Login response parsing error:', jsonError, 'Response text:', responseText);
         throw new Error('Server response error. Please try again.');
       }
 
