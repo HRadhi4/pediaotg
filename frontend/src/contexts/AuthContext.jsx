@@ -78,14 +78,16 @@ export const AuthProvider = ({ children }) => {
         body: JSON.stringify({ email, password })
       });
 
-      // Read response text first, then parse
-      const responseText = await response.text();
+      // Clone the response before reading to avoid "body stream already read" error
+      const responseClone = response.clone();
       
       let data;
       try {
-        data = JSON.parse(responseText);
+        data = await response.json();
       } catch (jsonError) {
-        console.error('Login response parsing error:', jsonError, 'Response text:', responseText);
+        // If JSON parsing fails, try to get text from clone for debugging
+        const textBody = await responseClone.text();
+        console.error('Login response parsing error:', jsonError, 'Response text:', textBody);
         throw new Error('Server response error. Please try again.');
       }
 
@@ -115,6 +117,7 @@ export const AuthProvider = ({ children }) => {
 
       return { success: true };
     } catch (error) {
+      console.error('Login error:', error);
       return { success: false, error: error.message };
     }
   };
