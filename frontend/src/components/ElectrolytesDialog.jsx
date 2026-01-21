@@ -197,8 +197,13 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
     switch (selectedElectrolyte) {
       case "calcium": calculateCalcium(); break;
       case "magnesium": calculateMagnesium(); break;
-      case "potassium": calculatePotassium(); break;
-      case "potassiumPO": calculatePotassiumPO(); break;
+      case "potassium": 
+        if (potassiumRoute === "IV") {
+          calculatePotassiumIV();
+        } else {
+          calculatePotassiumPO();
+        }
+        break;
       case "nahco3": calculateNaHCO3(); break;
       case "sodium": calculateSodium(); break;
       case "phosphate": calculatePhosphate(); break;
