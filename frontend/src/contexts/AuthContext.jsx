@@ -131,14 +131,15 @@ export const AuthProvider = ({ children }) => {
         body: JSON.stringify({ email, password, name })
       });
 
-      // Read response text first, then parse
-      const responseText = await response.text();
+      // Clone the response before reading to avoid "body stream already read" error
+      const responseClone = response.clone();
       
       let data;
       try {
-        data = JSON.parse(responseText);
+        data = await response.json();
       } catch (jsonError) {
-        console.error('Signup response parsing error:', jsonError, 'Response text:', responseText);
+        const textBody = await responseClone.text();
+        console.error('Signup response parsing error:', jsonError, 'Response text:', textBody);
         throw new Error('Server response error. Please try again.');
       }
 
