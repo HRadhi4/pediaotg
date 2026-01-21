@@ -1,259 +1,263 @@
 <analysis>**original_problem_statement:**
-The user's goal is to build and enhance a Pediatrics on the go SaaS application.
+The initial goal was to add a Postnatal section, a static nomogram, and glucose calculators. However, the project's direction shifted significantly towards building and refining a comprehensive electrolyte and infusion calculation tool.
 
-Initial feature requests included adding new medical approaches, refactoring the , replacing cloud OCR with a local solution, fixing a registration bug, and various UI tweaks.
-
-During this session, the user made several new requests:
-- **Bug Fixes:**
-    - The 2500ml/day fluid replacement cap must apply to 8-hour and 16-hour calculations, not just the 24-hour total.
-    - All calcium dose calculations must be capped at a maximum of 1g (10ml).
-    - On the Approaches page, text is overflowing its containers, and expanding a section scrolls the user to the top of the page.
-    - The CPR and Scoring/Calculators pages are non-functional.
-- **Feature Updates (Drug Dosing):**
-    - Update Augmentin doses to specify ES 600 for high dose (90 mg/kg) and 457 for low dose (45 mg/kg).
-    - Ensure per dose medications are not divided in the dose calculator, unlike per day medications.
-    - Update IV Augmentin dose to 30 mg/kg/dose Q8h with a max of 1.2g/dose.
-    - Verify all maximum medication doses against the Harriet Lane 23rd edition handbook, using adult doses if a pediatric maximum is not specified.
-- **OCR Overhaul:**
-    - The existing OCR is not accurate enough for blood gas reports. The user requested a replacement with a new local model (ChandraOCR), and then a highly optimized Tesseract pipeline. The user provided multiple sample images to improve accuracy.
+This session involved:
+1.  **Jaundice Calculator:** Correcting data inaccuracies based on a user-provided table.
+2.  **Electrolyte Calculator ():**
+    *   **Potassium (KCL):** Merged separate IV/PO options into a single Potassium selection with an IV/PO toggle. The IV path was enhanced with a line type selector (Peripheral, Central, Central Fluid Restricted) that dictates dilution logic.
+    *   **Sodium (Na):** Completely overhauled the Sodium correction logic.
+        *   **Hypernatremia:** Replaced the Standard method with the Harriet Lane method and added a switch to toggle with the Nelson Textbook method, removing the dose slider.
+        *   **Hyponatremia:** Rewrote the entire feature to follow specific user-provided flowcharts for Mild/Asymptomatic and Severe/Symptomatic cases, removing the dose slider and simplifying the result display.
+    *   **Sodium Bicarbonate (NaHCO3):** Renamed Base Excess to Base Deficit for clarity.
+    *   **UI Enhancements:** Added a formatted Order container to the results for Potassium, Calcium, Magnesium, and Phosphate.
+3.  **Infusions Page ():** The page was completely rewritten to implement a new inotrope calculator based on a user-provided dilution table, including dose limits and line-type options.
+4.  **Authentication & Deployment:**
+    *   Fixed a body stream already read frontend login error.
+    *   Resolved 401 Unauthorized errors for production deployment by correcting  file formatting and backend auth logic.
+    *   Added a show/hide password toggle on the login page.
 
 **User's preferred language**: English
 
 **what currently exists?**
-The application is a full-stack medical calculator (React/FastAPI/MongoDB). In this session, the agent successfully implemented several critical fixes and updates:
-- **Bug Fixes:** Resolved issues with the fluid replacement cap, calcium dose caps, and fixed the broken CPR and Scoring pages by adding missing component imports. The Approaches page scrolling and text overflow have also been fixed.
-- **Drug Dose Logic:** The drug calculator in  has been significantly enhanced. It now correctly distinguishes between per dose and per day calculations, applies route-specific maximum doses (e.g., PO vs. IV), and has been updated with verified data from the Harriet Lane handbook for key medications like Augmentin, Ceftriaxone, and Calcium Gluconate.
-- **OCR Enhancement:** The backend OCR was completely overhauled. It now uses a sophisticated pipeline in  that combines  for advanced image preprocessing (upscaling, contrast enhancement, deskewing) with . A highly specific regex parser was developed to extract data from noisy blood gas reports, achieving over 92% accuracy on the initial test image.
+The application is a full-stack React/FastAPI medical calculator. The  component is now a highly advanced, multi-faceted calculator for Potassium, Sodium (Hyper/Hyponatremia), Sodium Bicarbonate, Calcium, Magnesium, and Phosphate, with logic and UI driven by recent, specific user requests. The  page has been completely rebuilt with a new, detailed inotrope calculator. Critical login and deployment bugs have been resolved, and the login page UI has been improved.
 
 **Last working item**:
--   **Last item agent was working:** Improving the accuracy of the blood gas OCR service. After the user provided four new, challenging images, the agent identified that the regex parsing logic in  needed further refinement. The process of adding more patterns led to messy, duplicated code, and the agent's last action was to begin refactoring this parsing function for clarity and maintainability.
--   **Status:** IN PROGRESS
--   **Agent Testing Done:** N
--   **Which testing method agent to use?** Backend testing agent. The agent should create a Python script to test the  endpoint against the four new image artifacts provided by the user to validate accuracy improvements after refactoring.
+-   **Last item agent was working:** The agent finished implementing a complete overhaul of the **Hyponatremia** calculator within . This involved removing the dose slider, changing UI labels from Mild to Mild/Asymptomatic, and rewriting the calculation logic and result display to precisely match two user-provided flowcharts.
+-   **Status:** USER VERIFICATION PENDING
+-   **Agent Testing Done:** Y (via extensive manual screenshot verification of UI and calculation outputs)
+-   **Which testing method agent to use?** Frontend testing agent. The agent should perform a comprehensive regression test on the  component, covering all new calculation paths (Hyponatremia, Hypernatremia, Potassium IV/PO, and the Order box display for other electrolytes). It should also test the new  calculator.
 -   **User Testing Done:** N
 
 **All Pending/In progress Issue list**:
--   **Issue 1:** Improve OCR accuracy for all provided blood gas images (P0)
--   **Issue 2:** The registration bug fix (Body is disturbed or locked) needs user verification (P1)
--   **Issue 3:** UI alignment fixes for the Pediatric Vital Signs Reference table need user verification (P2)
+-   **Issue 1:** Verify UI standardization of all NICU approach components. (P1)
+-   **Issue 2:** Verify patient data point plotting on the Growth Chart. (P1)
+-   **Issue 3:** Audit all numerical inputs in the application to prevent negative values. (P2)
 
 **Issues Detail:**
--   **Issue 1:**
-    -   **Attempted fixes:** A sophisticated OCR pipeline using OpenCV and Pytesseract was built. A complex, multi-pattern regex parser was created in . While effective on the first image, it struggled with new images, leading to ad-hoc additions that made the code messy.
-    -   **Next debug checklist:**
-        1.  View .
-        2.  Refactor the  function to eliminate duplicate code and consolidate the regex patterns into a single, clean, and maintainable logic block.
-        3.  Create a test script () to systematically run the four new user-provided images through the OCR service.
-        4.  Analyze the JSON output for each image to identify any remaining parsing failures.
-        5.  Iteratively refine the regex patterns in  until accuracy is high across all test images.
-    -   **Why fix this issue and what will be achieved with the fix?** OCR is a critical feature, and the user has explicitly requested very high accuracy for this specific medical report format.
-    -   **Status:** IN PROGRESS
-    -   **Is recurring issue?** Y
-    -   **Should Test frontend/backend/both after fix?** Backend
-    -   **Blocked on other issue:** None
-
--   **Issue 2:**
-    -   **Attempted fixes:** The agent modified  to  the response before reading the JSON, which should resolve the error.
-    -   **Why fix this issue and what will be achieved with the fix?** This is a critical bug preventing new users from signing up.
-    -   **Status:** USER VERIFICATION PENDING
+-   **Issue 1:** Verify NICU Approaches UI Standardization
+    -   **Attempted fixes:** None.
+    -   **Next debug checklist:** Use the frontend testing agent to take screenshots of multiple NICU approach pages () to visually confirm layout and styling consistency.
+    -   **Why fix this issue and what will be achieved with the fix?** Ensures a consistent and professional user experience across a key section of the application.
+    -   **Status:** NOT STARTED
     -   **Is recurring issue?** N
     -   **Should Test frontend/backend/both after fix?** Frontend
+    -   **Blocked on other issue:** None
 
--   **Issue 3:**
-    -   **Attempted fixes:** Multiple CSS class adjustments were made in .
-    -   **Why fix this issue and what will be achieved with the fix?** To meet the user's specific UI/UX requirements.
-    -   **Status:** USER VERIFICATION PENDING
+-   **Issue 2:** Verify Growth Chart Patient Data Plotting
+    -   **Attempted fixes:** None.
+    -   **Next debug checklist:** Manually navigate to the Growth Chart, enter sample patient data, click Plot Data, and use the screenshot tool to verify a point appears correctly on the chart.
+    -   **Why fix this issue and what will be achieved with the fix?** Confirms a primary interactive feature of the Growth Chart is functional.
+    -   **Status:** NOT STARTED
+    -   **Is recurring issue?** N
+    -   **Should Test frontend/backend/both after fix?** Frontend
+    -   **Blocked on other issue:** None
+
+-   **Issue 3:** Audit all numerical inputs in the application for 
+    -   **Attempted fixes:** This was done for the new , but a site-wide audit is still needed.
+    -   **Next debug checklist:** Use /app/frontend/src/pages/nicu/CatheterCalculatorPage.jsx:              type="number"
+/app/frontend/src/pages/nicu/ExchangeCalculatorPage.jsx:                <Input type="number" step="0.01" placeholder="e.g., 3.5" value={weight} onChange={(e) => setWeight(e.target.value)} className="nightingale-input font-mono" />
+/app/frontend/src/pages/nicu/ExchangeCalculatorPage.jsx:                  <Input type="number" placeholder="e.g., 70" value={observedHct} onChange={(e) => setObservedHct(e.target.value)} className="nightingale-input font-mono" />
+/app/frontend/src/pages/nicu/ExchangeCalculatorPage.jsx:                  <Input type="number" placeholder="55" value={desiredHct} onChange={(e) => setDesiredHct(e.target.value)} className="nightingale-input font-mono" />
+/app/frontend/src/pages/nicu/ExchangeCalculatorPage.jsx:                <Input type="number" step="0.01" placeholder="e.g., 3.5" value={weight} onChange={(e) => setWeight(e.target.value)} className="nightingale-input font-mono" />
+/app/frontend/src/pages/nicu/NICUDrugsPage.jsx:                type="number"
+/app/frontend/src/pages/nicu/NICUDrugsPage.jsx:                type="number"
+/app/frontend/src/pages/nicu/NICUDrugsPage.jsx:                type="number"
+/app/frontend/src/pages/nicu/PRBCGuidelinePage.jsx:                  <Input type="number" step="0.01" placeholder="1.5" value={weight} onChange={(e) => setWeight(e.target.value)} className="nightingale-input font-mono h-9" />
+/app/frontend/src/pages/nicu/PRBCGuidelinePage.jsx:                  <Input type="number" placeholder="5" value={age} onChange={(e) => setAge(e.target.value)} className="nightingale-input font-mono h-9" />
+/app/frontend/src/pages/nicu/PRBCGuidelinePage.jsx:                  <Input type="number" placeholder="32" value={ga} onChange={(e) => setGa(e.target.value)} className="nightingale-input font-mono h-9" />
+/app/frontend/src/pages/nicu/PRBCGuidelinePage.jsx:                  <Input type="number" step="0.1" placeholder="e.g., 10" value={hb} onChange={(e) => setHb(e.target.value)} className="nightingale-input font-mono h-9" />
+/app/frontend/src/pages/nicu/PRBCGuidelinePage.jsx:                  <Input type="number" step="1" placeholder="e.g., 30" value={hct} onChange={(e) => setHct(e.target.value)} className="nightingale-input font-mono h-9" />
+/app/frontend/src/pages/nicu/GrowthChartPage.jsx:            <div><Label className="text-xs">Age ({isWHO ? 'months' : 'years'}) *</Label><Input type="number" min="0" max={isWHO ? "24" : "20"} value={newEntry.ageValue} onChange={(e) => setNewEntry({...newEntry, ageValue: e.target.value})} className="h-9 font-mono text-sm" data-testid="age-input" /></div>
+/app/frontend/src/pages/nicu/GrowthChartPage.jsx:            <div><Label className="text-xs">Weight (kg)</Label><Input type="number" step="0.01" min="0" value={newEntry.weight} onChange={(e) => setNewEntry({...newEntry, weight: e.target.value})} className="h-9 font-mono text-sm" data-testid="weight-input" /></div>
+/app/frontend/src/pages/nicu/GrowthChartPage.jsx:            <div><Label className="text-xs">{isWHO ? 'Length' : 'Stature'} (cm)</Label><Input type="number" step="0.1" min="0" value={newEntry.length} onChange={(e) => setNewEntry({...newEntry, length: e.target.value})} className="h-9 font-mono text-sm" data-testid="length-input" /></div>
+/app/frontend/src/pages/nicu/GrowthChartPage.jsx:            <div className="col-span-2 sm:col-span-1"><Label className="text-xs">Head Circ (cm)</Label><Input type="number" step="0.1" min="0" value={newEntry.hc} onChange={(e) => setNewEntry({...newEntry, hc: e.target.value})} className="h-9 font-mono text-sm" disabled={isHCDisabled} data-testid="hc-input" /></div>
+/app/frontend/src/pages/nicu/NICUApproachesPage.jsx:                type="number"
+/app/frontend/src/pages/nicu/NICUApproachesPage.jsx:                type="number"
+/app/frontend/src/pages/nicu/NICUApproachesPage.jsx:                type="number"
+/app/frontend/src/pages/nicu/FluidCalculatorPage.jsx:              <Input type="number" step="0.01" placeholder="0.8" value={weight} onChange={(e) => setWeight(e.target.value)} className="nightingale-input font-mono h-9" />
+/app/frontend/src/pages/nicu/FluidCalculatorPage.jsx:              <Input type="number" placeholder="3" value={age} onChange={(e) => setAge(e.target.value)} className="nightingale-input font-mono h-9" />
+/app/frontend/src/pages/nicu/FluidCalculatorPage.jsx:              <Input type="number" placeholder="32" value={gestationalAge} onChange={(e) => setGestationalAge(e.target.value)} className="nightingale-input font-mono h-9" />
+/app/frontend/src/pages/nicu/FluidCalculatorPage.jsx:            <Input type="number" placeholder="140" value={tfi} onChange={(e) => setTfi(e.target.value)} className="nightingale-input font-mono" />
+/app/frontend/src/pages/nicu/FluidCalculatorPage.jsx:                      type="number"
+/app/frontend/src/pages/nicu/FluidCalculatorPage.jsx:            <Input type="number" step="0.1" placeholder="0" value={naclAmount} onChange={(e) => setNaclAmount(e.target.value)} className="nightingale-input font-mono h-9" />
+/app/frontend/src/pages/nicu/FluidCalculatorPage.jsx:              <Input type="number" placeholder="5" value={feedVolume} onChange={(e) => setFeedVolume(e.target.value)} className="nightingale-input font-mono h-9" />
+/app/frontend/src/pages/nicu/FluidCalculatorPage.jsx:                type="number" 
+/app/frontend/src/pages/nicu/FluidCalculatorPage.jsx:                type="number" 
+/app/frontend/src/pages/nicu/IntubationPage.jsx:                type="number"
+/app/frontend/src/pages/nicu/IntubationPage.jsx:                type="number"
+/app/frontend/src/pages/children/ApproachesPage.jsx:                type="number"
+/app/frontend/src/pages/children/ApproachesPage.jsx:                type="number"
+/app/frontend/src/pages/children/FluidReplacementPage.jsx:              type="number"
+/app/frontend/src/pages/children/approaches/NSAIDToxicityApproach.jsx:                      type="number"
+/app/frontend/src/pages/children/approaches/NSAIDToxicityApproach.jsx:                        type="number"
+/app/frontend/src/pages/children/approaches/NSAIDToxicityApproach.jsx:                    type="number"
+/app/frontend/src/pages/children/approaches/NSAIDToxicityApproach.jsx:                      type="number"
+/app/frontend/src/pages/children/approaches/NSAIDToxicityApproach.jsx:                    type="number"
+/app/frontend/src/pages/children/approaches/IronToxicityApproach.jsx:                    type="number"
+/app/frontend/src/pages/children/approaches/IronToxicityApproach.jsx:                        type="number"
+/app/frontend/src/pages/children/approaches/IronToxicityApproach.jsx:                    type="number"
+/app/frontend/src/pages/children/approaches/IronToxicityApproach.jsx:                type="number"
+/app/frontend/src/pages/children/approaches/AcetaminophenApproach.jsx:                      type="number"
+/app/frontend/src/pages/children/approaches/AcetaminophenApproach.jsx:                    type="number"
+/app/frontend/src/pages/children/approaches/AcetaminophenApproach.jsx:                      type="number"
+/app/frontend/src/pages/children/approaches/AcetaminophenApproach.jsx:                    type="number"
+/app/frontend/src/pages/children/approaches/AcetaminophenApproach.jsx:                  type="number"
+/app/frontend/src/pages/children/approaches/AcetaminophenApproach.jsx:                  type="number"
+/app/frontend/src/pages/children/InfusionsPage.jsx:              type="number"
+/app/frontend/src/pages/children/InfusionsPage.jsx:                  type="number"
+/app/frontend/src/pages/children/ScoringPage.jsx:            <Input type="number" placeholder="e.g., 15" value={map} onChange={(e) => setMap(e.target.value)} className="font-mono" />
+/app/frontend/src/pages/children/ScoringPage.jsx:            <Input type="number" step="0.01" placeholder="e.g., 0.6" value={fio2} onChange={(e) => setFio2(e.target.value)} className="font-mono" />
+/app/frontend/src/pages/children/ScoringPage.jsx:            <Input type="number" placeholder="e.g., 60" value={pao2} onChange={(e) => setPao2(e.target.value)} className="font-mono" />
+/app/frontend/src/pages/children/ScoringPage.jsx:              <Input type="number" placeholder="e.g., 15" value={weight} onChange={(e) => setWeight(e.target.value)} className="font-mono" />
+/app/frontend/src/pages/children/ScoringPage.jsx:              <Input type="number" placeholder="e.g., 100" value={height} onChange={(e) => setHeight(e.target.value)} className="font-mono" />
+/app/frontend/src/pages/children/CPRPage.jsx:                type="number"
+/app/frontend/src/pages/children/DrugsPage.jsx:              type="number"
+/app/frontend/src/pages/children/DrugsPage.jsx:                    type="number"
+/app/frontend/src/pages/children/DrugsPage.jsx:                    type="number"
+/app/frontend/src/pages/children/ElectrolytesInfusionsPage.jsx:                type="number"
+/app/frontend/src/pages/children/ElectrolytesInfusionsPage.jsx:                  type="number"
+/app/frontend/src/pages/children/ElectrolytesInfusionsPage.jsx:              <Input type="number" step="0.1" min="0" placeholder="mg/dL" value={calciumLevel} onChange={(e) => setCalciumLevel(e.target.value)} className="font-mono" />
+/app/frontend/src/pages/children/ElectrolytesInfusionsPage.jsx:              <Input type="number" step="0.1" min="0" placeholder="mg/dL" value={magnesiumLevel} onChange={(e) => setMagnesiumLevel(e.target.value)} className="font-mono" />
+/app/frontend/src/pages/children/ElectrolytesInfusionsPage.jsx:              <Input type="number" step="0.1" min="0" placeholder="mEq/L" value={potassiumLevel} onChange={(e) => setPotassiumLevel(e.target.value)} className="font-mono" />
+/app/frontend/src/pages/children/ElectrolytesInfusionsPage.jsx:                <Input type="number" step="0.1" min="0" placeholder="mEq/L" value={potassiumLevel} onChange={(e) => setPotassiumLevel(e.target.value)} className="font-mono" />
+/app/frontend/src/pages/children/ElectrolytesInfusionsPage.jsx:                  <Input type="number" step="0.1" min="0" value={hco3Level} onChange={(e) => setHco3Level(e.target.value)} className="font-mono" disabled={nahco3Method === "be"} />
+/app/frontend/src/pages/children/ElectrolytesInfusionsPage.jsx:                  <Input type="number" step="0.1" placeholder="e.g., -10" value={baseExcess} onChange={(e) => setBaseExcess(e.target.value)} className="font-mono" disabled={nahco3Method === "hco3"} />
+/app/frontend/src/pages/children/ElectrolytesInfusionsPage.jsx:                  <Input type="number" min="0" value={currentNa} onChange={(e) => setCurrentNa(e.target.value)} className="font-mono" />
+/app/frontend/src/pages/children/ElectrolytesInfusionsPage.jsx:                  <Input type="number" min="0" placeholder="140" value={targetNa} onChange={(e) => setTargetNa(e.target.value)} className="font-mono" />
+/app/frontend/src/pages/children/ElectrolytesInfusionsPage.jsx:                <Input type="number" step="0.1" min="0" placeholder="mg/dL" value={phosphateLevel} onChange={(e) => setPhosphateLevel(e.target.value)} className="font-mono" />
+/app/frontend/src/pages/children/BPPage.jsx:              <Input type="number" placeholder="Systolic" value={patientSBP} onChange={(e) => setPatientSBP(e.target.value)} className="h-10 nightingale-input" />
+/app/frontend/src/pages/children/BPPage.jsx:              <Input type="number" placeholder="Diastolic" value={patientDBP} onChange={(e) => setPatientDBP(e.target.value)} className="h-10 nightingale-input" />
+/app/frontend/src/pages/children/IntubationPage.jsx:                  <Input type="number" placeholder="e.g., 5" value={age} onChange={(e) => setAge(e.target.value)} className="font-mono" />
+/app/frontend/src/pages/children/IntubationPage.jsx:                  <Input type="number" placeholder="Optional" value={weight} onChange={(e) => setWeight(e.target.value)} className="font-mono" />
+/app/frontend/src/pages/admin/AdminDashboard.jsx:                    type="number"
+/app/frontend/src/components/GIRDialog.jsx:                type="number"
+/app/frontend/src/components/GIRDialog.jsx:                        type="number"
+/app/frontend/src/components/GIRDialog.jsx:                        type="number"
+/app/frontend/src/components/GIRDialog.jsx:                      type="number"
+/app/frontend/src/components/GIRDialog.jsx:                      type="number"
+/app/frontend/src/components/JaundiceDialog.jsx:                  type="number"
+/app/frontend/src/components/JaundiceDialog.jsx:                  type="number"
+/app/frontend/src/components/JaundiceDialog.jsx:                  type="number"
+/app/frontend/src/components/JaundiceDialog.jsx:                type="number"
+/app/frontend/src/components/BloodProductsDialog.jsx:                type="number"
+/app/frontend/src/components/BloodProductsDialog.jsx:                    type="number"
+/app/frontend/src/components/BloodProductsDialog.jsx:                    type="number"
+/app/frontend/src/components/ElectrolytesDialog.jsx:                  type="number"
+/app/frontend/src/components/ElectrolytesDialog.jsx:                  type="number"
+/app/frontend/src/components/ElectrolytesDialog.jsx:                        type="number"
+/app/frontend/src/components/ElectrolytesDialog.jsx:                        type="number"
+/app/frontend/src/components/ElectrolytesDialog.jsx:                        type="number"
+/app/frontend/src/components/ElectrolytesDialog.jsx:                      type="number"
+/app/frontend/src/components/ElectrolytesDialog.jsx:                          type="number"
+/app/frontend/src/components/ElectrolytesDialog.jsx:                          type="number"
+/app/frontend/src/components/ElectrolytesDialog.jsx:                      type="number"
+/app/frontend/src/components/ElectrolytesDialog.jsx:                          type="number"
+/app/frontend/src/components/ElectrolytesDialog.jsx:                          type="number"
+/app/frontend/src/components/ElectrolytesDialog.jsx:                    type="number" to find all numerical inputs. Review each file and use  to add  to all inputs used for clinical calculations where a negative value is not permissible.
+    -   **Why fix this issue and what will be achieved with the fix?** Improves data integrity and prevents potentially critical clinical calculation errors.
+    -   **Status:** NOT STARTED
     -   **Is recurring issue?** Y
     -   **Should Test frontend/backend/both after fix?** Frontend
+    -   **Blocked on other issue:** None
 
 **In progress Task List**:
--   **Task 1:** Refactor and Finalize OCR Service Improvements (P0)
-    -   **Where to resume:** The  function in  needs to be cleaned up to remove duplicated code and streamline the parsing logic.
-    -   **What will be achieved with this?** A more robust, maintainable, and accurate OCR service capable of handling a wider variety of noisy blood gas report images.
+-   **Task 1:** Continue Drug Formulary Review (P2)
+    -   **Where to resume:** Periodically extract pages from the  document, analyze them, and compare against the data in .
+    -   **What will be achieved with this?** Increase the accuracy and completeness of the app's drug formulary.
     -   **Status:** IN PROGRESS
-    -   **Should Test frontend/backend/both after fix?** Backend
+    -   **Should Test frontend/backend/both after fix?** Frontend
+    -   **Blocked on something:** None.
 
 **Upcoming and Future Tasks**
-- **Upcoming Tasks:**
-    - **(P1)** Delete obsolete OCR service files:  and .
-- **Future Tasks:**
-    - **(P1)** Implement an automated subscription renewal reminder email.
-    - **(P2)** Refactor the large  file into smaller sub-components for better maintainability.
-    - **(P2)** Prepare the application for production deployment.
+-   **Upcoming Tasks:**
+    -   (P1) Add **Salicylate (Aspirin) Toxicity** approach.
+    -   (P1) Add automated interpretation of blood gas results.
+-   **Future Tasks:**
+    -   (P2) Refactor the large  component into smaller, manageable hooks or components.
+    -   (P2) Prepare the application for production deployment.
+    -   (P3) Add a dark mode theme toggle.
+    -   (P3) Add PDF generation/printing functionality for approaches.
 
 **Completed work in this session**
-- **Bug Fixes:**
-  - **Fluid Replacement Cap:** Corrected calculation in .
-  - **Calcium Dose Cap:** Enforced 1g max dose in  and .
-  - **Broken Pages:** Repaired  and  by adding missing imports.
-  - **Approaches Page UI:** Fixed scroll-to-top and text overflow issues in .
-  - **Blank Screen:** Resolved a corrupted  file, which also completed the removal of the old OCR toggle UI.
-- **Feature Enhancements:**
-  - **Drug Dose Calculator:** Overhauled logic in  to handle per dose vs. per day units, route-specific max doses, and updated medication data.
-  - **Medical Data Verification:** Aligned max doses for Augmentin, Ceftriaxone, and Calcium Gluconate with Harriet Lane 23rd edition standards.
-- **OCR Overhaul:**
-  - Replaced the entire backend OCR with an advanced  +  pipeline in .
-  - Installed  system dependency.
-  - Achieved ~92% parsing accuracy on the first test image with a custom regex engine.
+-   **Electrolyte Calculator Major Rework (DONE):**
+    -   **Potassium (KCL):** Implemented a unified Potassium option with an IV/PO switch, a line-type selector for IV dilution, and a simplified PO output.
+    -   **Sodium (Na):** Completely rewrote Hypernatremia and Hyponatremia logic to match user-provided flowcharts (Nelson, Harriet Lane, Mild/Severe Hyponatremia), removing sliders and simplifying UI.
+    -   **UI:** Added a formatted Order container for key electrolyte results and changed Base Excess to Base Deficit.
+-   **Infusions Page Rework (DONE):** Rebuilt  with a new, data-driven inotrope calculator.
+-   **Jaundice Calculator Fix (DONE):** Corrected all data threshold values in .
+-   **Authentication & Deployment Fixes (DONE):** Resolved multiple login bugs (frontend body already read error, backend 401 Unauthorized error in production) and added a show/hide password toggle.
 
 **Earlier issues found/mentioned but not fixed**
--   **Issue 1: Minor Linting Errors**
-    -   **Debug checklist:** Run  on the frontend codebase.
-    -   **Why to solve this issue and what will be achieved with this?** Code hygiene. Low priority.
-    -   **Should Test frontend/backend/both after fix:** None.
-    -   **Is recurring issue?** Y
+-   See **All Pending/In progress Issue list**.
 
 **Known issue recurrence from previous fork**
-  - None.
+-   The issue of numerical inputs not having  was noted in a previous handoff and remains unfixed across most of the application.
 
 **Code Architecture**
 
 
 **Key Technical Concepts**
--   **Advanced OCR Pipeline:** A custom pipeline combining  for image preprocessing (upscaling, contrast enhancement, denoising, deskewing) and .
--   **Domain-Specific Regex Parsing:** A highly tailored, multi-layered regex engine in  designed to extract structured data from noisy, domain-specific text (blood gas reports).
--   **Complex Frontend Logic:** The  contains sophisticated logic for dose calculation, handling different units (per day vs. per dose), and applying route-specific maximum dose caps.
+-   **User-Flow-Driven Logic:** Translated complex clinical flowcharts (Nelson, Harriet Lane, Hyponatremia protocols) directly into conditional React logic and UI.
+-   **Complex State Management:** Managed a large, interdependent state within a single component () to drive a multi-faceted calculator.
+-   **Deployment Debugging:** Diagnosed and fixed production-specific bugs related to environment variable parsing and authentication logic.
+-   **Frontend Fetch API Robustness:** Solved the body stream already read race condition by using  to ensure the response could be inspected for errors without consuming it.
 
 **key DB schema**
-  - No changes in this session.
-
-**changes in tech stack**
--   **OCR Engine:** Evolved from a simple  implementation to a custom pipeline combining ** and **.
--   **System Dependencies:**  was installed via apt 2.6.1 (arm64)
-Usage: apt-get [options] command
-       apt-get [options] install|remove pkg1 [pkg2 ...]
-       apt-get [options] source pkg1 [pkg2 ...]
-
-apt-get is a command line interface for retrieval of packages
-and information about them from authenticated sources and
-for installation, upgrade and removal of packages together
-with their dependencies.
-
-Most used commands:
-  update - Retrieve new lists of packages
-  upgrade - Perform an upgrade
-  install - Install new packages (pkg is libc6 not libc6.deb)
-  reinstall - Reinstall packages (pkg is libc6 not libc6.deb)
-  remove - Remove packages
-  purge - Remove packages and config files
-  autoremove - Remove automatically all unused packages
-  dist-upgrade - Distribution upgrade, see apt-get(8)
-  dselect-upgrade - Follow dselect selections
-  build-dep - Configure build-dependencies for source packages
-  satisfy - Satisfy dependency strings
-  clean - Erase downloaded archive files
-  autoclean - Erase old downloaded archive files
-  check - Verify that there are no broken dependencies
-  source - Download source archives
-  download - Download the binary package into the current directory
-  changelog - Download and display the changelog for the given package
-
-See apt-get(8) for more information about the available commands.
-Configuration options and syntax is detailed in apt.conf(5).
-Information about how to configure sources can be found in sources.list(5).
-Package and version choices can be expressed via apt_preferences(5).
-Security details are available in apt-secure(8).
-                                        This APT has Super Cow Powers.. usage: transformers <command> [<args>]
-
-positional arguments:
-  {chat,convert,download,env,run,serve,add-new-model-like,add-fast-image-processor}
-                        transformers command helpers
-    convert             CLI tool to run convert model from original author
-                        checkpoints to Transformers PyTorch checkpoints.
-    run                 Run a pipeline through the CLI
-
-options:
-  -h, --help            show this help message and exit and  were also installed but are now unused.
+-   No database schema changes were made.
 
 **All files of reference**
--   : **CRITICAL**. The new, active OCR service. The current work is focused on refactoring the  function within this file.
--   : Contains all the complex drug dosing logic.
--   : Updated to use the new .
--   , : Obsolete files that should be deleted.
+-    (The single source of truth for the electrolyte calculator)
+-    (The new inotrope calculator)
+-    (Login bug fix)
+-    (Show password toggle)
+-    (Deployment auth fix)
 
 **Areas that need refactoring**:
--   The  function within  became overly complex and contains duplicated code. It needs to be consolidated into a cleaner, more maintainable function.
--   The large  remains a candidate for being broken down into smaller components in the future.
+-   **Redundant File:**  is an artifact of a previous implementation and is now unused. It should be confirmed as unreferenced and deleted.
+-   **Massive Component:**  has grown to over 1200 lines and is difficult to maintain. The logic for each electrolyte calculator should be extracted into its own custom React hook (e.g., , ) to improve modularity, testability, and readability.
 
 **key api endpoints**
--   : The primary OCR endpoint, powered by the new  engine.
--   : The specialized endpoint for blood gas analysis, which uses the same underlying OCR service.
+-   
 
 **Critical Info for New Agent**
--   **OCR is the top priority.** The immediate task is to refactor the  function in . It is currently messy from rapid prototyping. Clean it up, then test against the 4 new user-provided images to improve accuracy.
--   **Obsolete files exist.** The files  and  are no longer in use and can be deleted to clean up the project.
--   **System dependencies are key.** The current OCR service relies on the  package being installed on the system (apt 2.6.1 (arm64)
-Usage: apt-get [options] command
-       apt-get [options] install|remove pkg1 [pkg2 ...]
-       apt-get [options] source pkg1 [pkg2 ...]
-
-apt-get is a command line interface for retrieval of packages
-and information about them from authenticated sources and
-for installation, upgrade and removal of packages together
-with their dependencies.
-
-Most used commands:
-  update - Retrieve new lists of packages
-  upgrade - Perform an upgrade
-  install - Install new packages (pkg is libc6 not libc6.deb)
-  reinstall - Reinstall packages (pkg is libc6 not libc6.deb)
-  remove - Remove packages
-  purge - Remove packages and config files
-  autoremove - Remove automatically all unused packages
-  dist-upgrade - Distribution upgrade, see apt-get(8)
-  dselect-upgrade - Follow dselect selections
-  build-dep - Configure build-dependencies for source packages
-  satisfy - Satisfy dependency strings
-  clean - Erase downloaded archive files
-  autoclean - Erase old downloaded archive files
-  check - Verify that there are no broken dependencies
-  source - Download source archives
-  download - Download the binary package into the current directory
-  changelog - Download and display the changelog for the given package
-
-See apt-get(8) for more information about the available commands.
-Configuration options and syntax is detailed in apt.conf(5).
-Information about how to configure sources can be found in sources.list(5).
-Package and version choices can be expressed via apt_preferences(5).
-Security details are available in apt-secure(8).
-                                        This APT has Super Cow Powers.).
--   **Verify older fixes.** Two items from the previous session (registration bug, vital signs table alignment) are fixed but still need explicit user confirmation.
+-   Your immediate priority is to confirm with the user that the latest changes to the **Hyponatremia calculator** meet their expectations. The implementation is complete, but user validation is required before proceeding.
+-   The single source of truth for all electrolyte calculations is . Do not use or modify , as it is obsolete.
+-   Once the current work is approved, you should propose a plan that includes the pending tasks (UI standardization, Growth Chart plotting,  audit) and the highly recommended refactoring of .
+-   The user provides very specific, iterative feedback, often with images. Pay close attention to these details and implement changes exactly as requested.
 
 **documents and test reports created in this job**
-  - None.
+-    (Updated)
+-   
 
 **Last 10 User Messages and any pending HUMAN messages**
-1.  **User**: Attached 4 new blood gas images and asked to improve OCR. (Status: **IN PROGRESS**)
-2.  **User (agent summary)**: Confirmed CPR/Scoring pages and OCR were fixed/improved.
-3.  **User**: Reported CPR/Scoring pages were broken and OCR was inaccurate, providing a sample image. (Status: **COMPLETED**)
-4.  **User (agent summary)**: Confirmed OCR service was updated with Chandra model.
-5.  **User**: Requested the ChandraOCR model be pre-downloaded. (Status: **FAILED/SUPERSEDED**)
-6.  **User**: Requested replacement of all OCR with a local ChandraOCR model. (Status: **SUPERSEDED**)
-7.  **User (agent summary)**: Confirmed Calcium and other drug dose fixes.
-8.  **User**: Requested that max drug doses be verified against Harriet Lane 23rd edition. (Status: **COMPLETED**)
-9.  **User**: Reported that per dose medications were being calculated incorrectly and provided the correct IV Augmentin dose. (Status: **COMPLETED**)
-10. **User**: Provided correct dose formulations for Augmentin. (Status: **COMPLETED**)
+1.  **User:** Merge Potassium IV/PO with a switch and simplify the PO output. - **Status: COMPLETED**
+2.  **User:** Change Base Excess to Base Deficit in HCO3. - **Status: COMPLETED**
+3.  **User:** Provided deployment logs with login errors. - **Status: COMPLETED**
+4.  **User:** I am still facing this issue with admin login! with screenshot of body stream already read error. - **Status: COMPLETED**
+5.  **User:** Still facing same problem after deployment only facing the login issue with the admin user. - **Status: COMPLETED**
+6.  **User:** Add show to show password in login page. - **Status: COMPLETED**
+7.  **User:** Requested Order container, enhanced KCL IV calculation with line types, and a complete rewrite of the Infusions page. - **Status: COMPLETED**
+8.  **User:** Add Nelson Textbook method for Hypernatremia correction. - **Status: COMPLETED**
+9.  **User:** Hide slider in Hypernatremia and replace Standard method with Harriet Lane. - **Status: COMPLETED**
+10. **User:** Rework Hyponatremia calculation entirely based on two flowcharts (Mild/Asymptomatic, Severe/Symptomatic), remove slider, and simplify output. - **Status: COMPLETED**
 
 **Project Health Check:**
--   **Broken:** No. The application is running and major bugs from the start of the session have been fixed.
--   **Mocked:** None. All services are fully functional.
+-   **Broken:** No. The application is functional.
+-   **Mocked:** None.
 
 **3rd Party Integrations**
--   **Pytesseract + OpenCV:** The core of the local OCR service.
--   **PayPal:** For subscriptions.
--   **GoDaddy/Microsoft Exchange SMTP:** For transactional emails.
--   **Frontend Libraries:** , , , , .
+-   None.
 
 **Testing status**
--   **Testing agent used after significant changes:** NO
+-   **Testing agent used after significant changes:** YES, an early test report exists (). However, the most recent, substantial changes to the electrolyte and infusion calculators were only tested manually via screenshots. A full regression test is highly recommended.
 -   **Troubleshoot agent used after agent stuck in loop:** NO
--   **Test files created:** A temporary script  was used and deleted. It can be recreated for testing the OCR service.
--   **Known regressions:** None.
+-   **Test files created:** None
+-   **Known regressions:** None
 
 **Credentials to test flow:**
--   **Admin User:**  / 
--   **Tester User:**  / 
+-   **Admin:**  / 
+-   **Tester:**  / 
 
 **What agent forgot to execute**
--   The agent did not complete the refactoring of , leaving it in a messy state with duplicate code.
--   The agent did not delete the obsolete OCR service files (, ) after creating the new one.</analysis>
+-   The agent has consistently deferred the pending tasks from previous forks: UI standardization across NICU pages, verifying Growth Chart plotting, and conducting a full audit for  on number inputs.
+-   The agent has not proposed a refactoring plan for the increasingly large  component or the removal of the redundant  file.</analysis>
