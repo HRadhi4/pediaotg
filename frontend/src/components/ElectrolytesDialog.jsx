@@ -438,7 +438,7 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
     const target = parseFloat(targetNa) || 133;
     const deficit = parseFloat(fluidDeficit) || (w * 100); // Default 10% dehydration
     
-    // Calculate maintenance (Holliday-Segar) - used in all calculations
+    // Calculate maintenance (Holliday-Segar) - 100/50/20 rule
     let maintenance;
     if (w <= 10) {
       maintenance = w * 100;
@@ -449,24 +449,35 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
     }
     
     if (sodiumType === "hyponatremia" && hyponatremiaType === "severe") {
-      // Severe/Symptomatic Hyponatremia - 3% NaCl
-      // Criteria: Na < 125 with severe symptoms (seizures, mental status changes)
-      const infusionRate = w * 1.5; // 1-2 ml/kg/hr, using 1.5
-      const bolusVolume = Math.min(150, w * 3); // 100-150 ml or ~3 ml/kg
+      // Severe/Symptomatic Hyponatremia (Na < 125 with severe symptoms)
+      // Based on flowchart: Two treatment paths
+      
+      // Infusion path: 1-2 ml/kg/hr of 3% saline
+      const infusionRateLow = w * 1; // 1 ml/kg/hr
+      const infusionRateHigh = w * 2; // 2 ml/kg/hr
+      
+      // Bolus path: 100-150 ml of 3% saline
+      const bolusVolumeLow = 100;
+      const bolusVolumeHigh = 150;
       
       setResults({
         medication: "Severe Hyponatremia (Na < 125 with symptoms)",
         isSevereHyponatremia: true,
         severeData: {
           currentNa: na,
-          infusionRate: infusionRate.toFixed(1),
-          bolusVolume: bolusVolume.toFixed(0)
+          infusionRateLow: infusionRateLow.toFixed(1),
+          infusionRateHigh: infusionRateHigh.toFixed(1),
+          bolusVolumeLow,
+          bolusVolumeHigh
         }
       });
     } else if (sodiumType === "hyponatremia") {
-      // Mild/Asymptomatic Hyponatremia
+      // Mild/Asymptomatic Hyponatremia (Na 125-134)
+      // Based on user's flowchart
+      
       // Step 1: Determine Volume (Maintenance + Deficit)
-      const totalVolume = Math.min(maintenance + deficit, 2500); // Don't exceed 2.5L/day
+      // Don't exceed 2.5L/day
+      const totalVolume = Math.min(maintenance + deficit, 2500);
       const hourlyRate = totalVolume / 24;
       
       // Step 2: Sodium Correction
@@ -474,14 +485,15 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
       const naDeficit = w * 0.6 * (target - na);
       // Na Maintenance = Wt x 2 mEq (2-5 mEq/kg/day)
       const naMaintenance = w * 2;
-      // Total Na needed
+      // Total Na needed = Na Deficit + Maintenance
       const totalNa = naDeficit + naMaintenance;
       
-      // Step 3: Determine Na concentration needed
+      // Step 3: Determine Na Concentration needed
       // Na concentration = Total Na / Volume (in L)
       const naConcentration = (totalNa / (totalVolume / 1000));
       
-      // Determine fluid type based on concentration
+      // Choose fluid type based on concentration
+      // NS = 154 mEq/L, 1/2 NS = 77 mEq/L, 3% NaCl = 513 mEq/L, RL = 130 mEq/L
       let fluidType;
       let fluidNa;
       if (naConcentration >= 140) {
@@ -498,6 +510,11 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
         fluidNa = 34;
       }
       
+      // Step 4: Dextrose - Usually D5% added
+      // Mixture made from NS + D50%: 450ml NS + 50ml D50%
+      const nsVolume = Math.round((totalVolume / 500) * 450);
+      const d50Volume = Math.round((totalVolume / 500) * 50);
+      
       setResults({
         medication: "Hyponatremia Correction (Mild/Asymptomatic)",
         isMildHyponatremia: true,
@@ -513,7 +530,9 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
           totalNa: totalNa.toFixed(1),
           naConcentration: naConcentration.toFixed(0),
           fluidType,
-          fluidNa
+          fluidNa,
+          nsVolume,
+          d50Volume
         }
       });
     } else if (sodiumType === "hypernatremia" && hypernatremiaMethod === "nelson") {
