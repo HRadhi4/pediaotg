@@ -670,17 +670,19 @@ const BloodGasApproach = ({ weight, expandedSections, toggleSection }) => {
               </div>
             </FlowNode>
           </div>
+          </div>
         </Section>
 
         {/* Metabolic Alkalosis Flowchart */}
         <Section id="abg-met-alk" title="🔵 Metabolic Alkalosis Flowchart" expandedSections={expandedSections} toggleSection={toggleSection}>
-          <div className="space-y-3">
-            {/* Visual Flowchart */}
-            <div className="flex flex-col items-center space-y-1">
-              <div className="px-4 py-2 bg-blue-200 dark:bg-blue-900 border-2 border-blue-500 rounded-full font-bold text-xs">
-                Metabolic Alkalosis
-              </div>
-              <FlowArrow direction="down" label="Check UCl" />
+          <div className="overflow-x-auto">
+            <div className="min-w-[450px] space-y-3">
+              {/* Visual Flowchart */}
+              <div className="flex flex-col items-center space-y-1">
+                <div className="px-4 py-2 bg-blue-200 dark:bg-blue-900 border-2 border-blue-500 rounded-full font-bold text-xs">
+                  Metabolic Alkalosis
+                </div>
+                <FlowArrow direction="down" label="Check UCl" />
               
               <div className="grid grid-cols-2 gap-4 w-full">
                 {/* Chloride Responsive */}
