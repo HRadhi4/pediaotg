@@ -406,6 +406,7 @@ const BloodGasApproach = ({ weight, expandedSections, toggleSection }) => {
               </div>
             </div>
           </div>
+          </div>
         </Section>
 
         {/* Compensation Rules - Visual Diagram */}
