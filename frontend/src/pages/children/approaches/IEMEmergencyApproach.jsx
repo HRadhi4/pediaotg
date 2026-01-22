@@ -68,24 +68,24 @@ const IEMEmergencyApproach = ({ weight, expandedSections, toggleSection }) => {
           <>
             {/* Overview Table */}
             <Section id="iem-overview" title="Disease Crisis Quick Reference" defaultOpen={true} expandedSections={expandedSections} toggleSection={toggleSection}>
-              <div className="overflow-x-auto">
-                <table className="w-full text-[10px] border">
-                  <thead className="bg-slate-100 dark:bg-slate-800">
+              <div className="overflow-x-auto max-h-[400px] overflow-y-auto border rounded-lg">
+                <table className="w-full text-[10px] border-collapse min-w-[600px]">
+                  <thead className="bg-slate-100 dark:bg-slate-800 sticky top-0">
                     <tr>
-                      <th className="text-left py-1 px-1 border">Disease</th>
-                      <th className="text-center py-1 px-1 border">Crisis</th>
-                      <th className="text-center py-1 px-1 border">Blood Gas</th>
-                      <th className="text-center py-1 px-1 border">HCO₃</th>
-                      <th className="text-center py-1 px-1 border">CPK</th>
-                      <th className="text-center py-1 px-1 border">Lactate</th>
-                      <th className="text-center py-1 px-1 border">D10%</th>
-                      <th className="text-center py-1 px-1 border">Carnitine</th>
-                      <th className="text-center py-1 px-1 border">Ammonia</th>
+                      <th className="text-left py-2 px-2 border font-semibold whitespace-nowrap">Disease</th>
+                      <th className="text-center py-2 px-2 border font-semibold whitespace-nowrap">Crisis</th>
+                      <th className="text-center py-2 px-2 border font-semibold whitespace-nowrap">Blood Gas</th>
+                      <th className="text-center py-2 px-2 border font-semibold whitespace-nowrap">HCO₃</th>
+                      <th className="text-center py-2 px-2 border font-semibold whitespace-nowrap">CPK</th>
+                      <th className="text-center py-2 px-2 border font-semibold whitespace-nowrap">Lactate</th>
+                      <th className="text-center py-2 px-2 border font-semibold whitespace-nowrap">D10%</th>
+                      <th className="text-center py-2 px-2 border font-semibold whitespace-nowrap">Carnitine</th>
+                      <th className="text-center py-2 px-2 border font-semibold whitespace-nowrap">Ammonia</th>
                     </tr>
                   </thead>
                   <tbody className="text-muted-foreground">
                     <tr>
-                      <td className="py-1 px-1 border font-medium">Propionic Acidemia</td>
+                      <td className="py-2 px-2 border font-medium whitespace-nowrap">Propionic Acidemia</td>
                       <td className="text-center py-1 px-1 border text-green-600">Yes</td>
                       <td className="text-center py-1 px-1 border text-green-600">Yes</td>
                       <td className="text-center py-1 px-1 border text-green-600">Yes</td>
