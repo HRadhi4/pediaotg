@@ -785,8 +785,8 @@ const AcetaminophenApproach = ({ weight, expandedSections, toggleSection }) => {
             </TransformWrapper>
 
             <div className="text-[10px] text-muted-foreground space-y-1 mt-2">
-              <p><strong>Upper line:</strong> {nomogramUnit === "SI" ? "1320 µmol/L (200 mcg/mL)" : "200 mcg/mL (1320 µmol/L)"} at 4h</p>
-              <p><strong>Lower line (25%):</strong> {nomogramUnit === "SI" ? "990 µmol/L (150 mcg/mL)" : "150 mcg/mL (990 µmol/L)"} at 4h → {nomogramUnit === "SI" ? "33 µmol/L (5 mcg/mL)" : "5 mcg/mL (33 µmol/L)"} at 24h</p>
+              <p><strong>Upper line (Original):</strong> {nomogramUnit === "SI" ? "1320 µmol/L (200 mcg/mL)" : "200 mcg/mL (1320 µmol/L)"} at 4h</p>
+              <p><strong>Treatment line (25%):</strong> {nomogramUnit === "SI" ? "990 µmol/L (150 mcg/mL)" : "150 mcg/mL (990 µmol/L)"} at 4h → {nomogramUnit === "SI" ? "31 µmol/L (4.7 mcg/mL)" : "4.7 mcg/mL (31 µmol/L)"} at 24h</p>
               <p className="text-[9px] mt-1">Conversion: 1 mcg/mL = 6.62 µmol/L</p>
             </div>
           </div>
