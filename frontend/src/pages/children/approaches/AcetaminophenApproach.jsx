@@ -143,6 +143,11 @@ const AcetaminophenApproach = ({ weight, expandedSections, toggleSection }) => {
   const assessNomogram = useMemo(() => {
     if (hours < 4 || hours > 24 || level <= 0) return null;
     
+    // IMPORTANT: Convert level to mcg/mL if user entered in SI units (µmol/L)
+    // Thresholds are defined in mcg/mL
+    // Conversion: 1 mcg/mL = 6.62 µmol/L, so mcg/mL = µmol/L / 6.62
+    const levelInMcg = nomogramUnit === "SI" ? level / 6.62 : level;
+    
     let treatmentThreshold = 0;
     let probableThreshold = 0;
     
@@ -166,13 +171,17 @@ const AcetaminophenApproach = ({ weight, expandedSections, toggleSection }) => {
       }
     }
     
+    // Compare using mcg/mL (converted level vs thresholds)
     return {
       treatmentThreshold: Math.round(treatmentThreshold),
       probableThreshold: Math.round(probableThreshold),
-      needsTreatment: level >= treatmentThreshold,
-      probableToxicity: level >= probableThreshold
+      treatmentThresholdSI: Math.round(treatmentThreshold * 6.62),
+      probableThresholdSI: Math.round(probableThreshold * 6.62),
+      needsTreatment: levelInMcg >= treatmentThreshold,
+      probableToxicity: levelInMcg >= probableThreshold,
+      levelInMcg: Math.round(levelInMcg * 10) / 10
     };
-  }, [hours, level]);
+  }, [hours, level, nomogramUnit]);
 
   // NAC dosing calculations
   const nacDosing = useMemo(() => {
