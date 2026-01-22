@@ -37,34 +37,38 @@ const LIQUID_PREPARATIONS = [
 // Common tablet strengths
 const TABLET_STRENGTHS = [120, 160, 325, 500, 650, 1000];
 
-// Rumack-Matthew Nomogram treatment line data points
+// Rumack-Matthew Nomogram treatment line data points (mcg/mL)
+// This is the "150 line" - 25% below the original probable toxicity line
+// Values halve approximately every 4 hours (semi-logarithmic decay)
+// Reference: https://en.wikipedia.org/wiki/Rumack-Matthew_nomogram
 const NOMOGRAM_TREATMENT_LINE = [
   { hours: 4, concentration: 150 },
-  { hours: 6, concentration: 100 },
-  { hours: 8, concentration: 70 },
-  { hours: 10, concentration: 50 },
-  { hours: 12, concentration: 37 },
-  { hours: 14, concentration: 27 },
-  { hours: 16, concentration: 20 },
-  { hours: 18, concentration: 15 },
+  { hours: 6, concentration: 75 },
+  { hours: 8, concentration: 37.5 },
+  { hours: 10, concentration: 28 },
+  { hours: 12, concentration: 19 },
+  { hours: 14, concentration: 14 },
+  { hours: 16, concentration: 10 },
+  { hours: 18, concentration: 10 },
   { hours: 20, concentration: 10 },
   { hours: 22, concentration: 7 },
-  { hours: 24, concentration: 5 },
+  { hours: 24, concentration: 4.7 },
 ];
 
-// Probable hepatotoxicity line
+// Probable hepatotoxicity line (original Rumack-Matthew line)
+// 200 mcg/mL at 4 hours, decays similarly
 const PROBABLE_TOXICITY_LINE = [
   { hours: 4, concentration: 200 },
-  { hours: 6, concentration: 133 },
-  { hours: 8, concentration: 100 },
-  { hours: 10, concentration: 67 },
-  { hours: 12, concentration: 50 },
-  { hours: 14, concentration: 37 },
-  { hours: 16, concentration: 27 },
-  { hours: 18, concentration: 20 },
+  { hours: 6, concentration: 100 },
+  { hours: 8, concentration: 50 },
+  { hours: 10, concentration: 37 },
+  { hours: 12, concentration: 25 },
+  { hours: 14, concentration: 19 },
+  { hours: 16, concentration: 13 },
+  { hours: 18, concentration: 13 },
   { hours: 20, concentration: 13 },
   { hours: 22, concentration: 10 },
-  { hours: 24, concentration: 7 },
+  { hours: 24, concentration: 6.25 },
 ];
 
 const AcetaminophenApproach = ({ weight, expandedSections, toggleSection }) => {
