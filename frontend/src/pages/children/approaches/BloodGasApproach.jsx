@@ -413,12 +413,12 @@ const BloodGasApproach = ({ weight, expandedSections, toggleSection }) => {
         <Section id="abg-compensation" title="📐 Compensation Rules (Box Rule)" expandedSections={expandedSections} toggleSection={toggleSection}>
           <div className="space-y-3">
             {/* Compensation Table */}
-            <div className="overflow-x-auto">
-              <table className="w-full text-[10px] border-collapse border border-gray-300">
-                <thead>
+            <div className="overflow-x-auto border rounded-lg">
+              <table className="w-full text-[10px] border-collapse min-w-[450px]">
+                <thead className="sticky top-0">
                   <tr className="bg-gray-200 dark:bg-gray-700">
-                    <th className="border border-gray-300 p-2 text-left">1ry Disturbance</th>
-                    <th className="border border-gray-300 p-2 text-center">Primary Change</th>
+                    <th className="border border-gray-300 p-2 text-left whitespace-nowrap">1ry Disturbance</th>
+                    <th className="border border-gray-300 p-2 text-center whitespace-nowrap">Primary Change</th>
                     <th className="border border-gray-300 p-2 text-center">Compensatory Change</th>
                   </tr>
                 </thead>
