@@ -757,6 +757,7 @@ const BloodGasApproach = ({ weight, expandedSections, toggleSection }) => {
               </div>
             </FlowNode>
           </div>
+          </div>
         </Section>
 
         {/* Quick Reference */}
