@@ -540,16 +540,17 @@ const BloodGasApproach = ({ weight, expandedSections, toggleSection }) => {
 
         {/* Metabolic Acidosis - Anion Gap */}
         <Section id="abg-anion-gap" title="🔴 Metabolic Acidosis → Anion Gap Flowchart" expandedSections={expandedSections} toggleSection={toggleSection}>
-          <div className="space-y-3">
-            {/* AG Formula */}
-            <div className="p-2 bg-gray-100 dark:bg-gray-800 rounded border text-center">
-              <p className="font-bold text-xs">Anion Gap = Na⁺ - (Cl⁻ + HCO₃⁻)</p>
-              <p className="text-[10px] text-muted-foreground">Normal: 8-12 mEq/L</p>
-              <p className="text-[10px] text-amber-600">Correct for albumin: Add 2.5 for every 1 g/dL below 4</p>
-            </div>
+          <div className="overflow-x-auto">
+            <div className="min-w-[450px] space-y-3">
+              {/* AG Formula */}
+              <div className="p-2 bg-gray-100 dark:bg-gray-800 rounded border text-center">
+                <p className="font-bold text-xs">Anion Gap = Na⁺ - (Cl⁻ + HCO₃⁻)</p>
+                <p className="text-[10px] text-muted-foreground">Normal: 8-12 mEq/L</p>
+                <p className="text-[10px] text-amber-600">Correct for albumin: Add 2.5 for every 1 g/dL below 4</p>
+              </div>
 
-            {/* HAGMA vs NAGMA */}
-            <div className="grid grid-cols-2 gap-3">
+              {/* HAGMA vs NAGMA */}
+              <div className="grid grid-cols-2 gap-3">
               {/* High Anion Gap - MUDPILES */}
               <MnemonicBox 
                 title="High AG (>12) - MUDPILES" 
