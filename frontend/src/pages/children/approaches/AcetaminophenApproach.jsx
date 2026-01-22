@@ -39,36 +39,38 @@ const TABLET_STRENGTHS = [120, 160, 325, 500, 650, 1000];
 
 // Rumack-Matthew Nomogram treatment line data points (mcg/mL)
 // This is the "150 line" - 25% below the original probable toxicity line
-// Values halve approximately every 4 hours (semi-logarithmic decay)
+// Semi-logarithmic decay: halves every 4 hours
+// Formula: C(t) = 150 * 2^(-(t-4)/4)
 // Reference: https://en.wikipedia.org/wiki/Rumack-Matthew_nomogram
 const NOMOGRAM_TREATMENT_LINE = [
-  { hours: 4, concentration: 150 },
-  { hours: 6, concentration: 75 },
-  { hours: 8, concentration: 37.5 },
-  { hours: 10, concentration: 28 },
-  { hours: 12, concentration: 19 },
-  { hours: 14, concentration: 14 },
-  { hours: 16, concentration: 10 },
-  { hours: 18, concentration: 10 },
-  { hours: 20, concentration: 10 },
-  { hours: 22, concentration: 7 },
-  { hours: 24, concentration: 4.7 },
+  { hours: 4, concentration: 150 },    // ~993 µmol/L
+  { hours: 6, concentration: 106 },    // ~702 µmol/L
+  { hours: 8, concentration: 75 },     // ~496 µmol/L
+  { hours: 10, concentration: 53 },    // ~351 µmol/L
+  { hours: 12, concentration: 37.5 },  // ~248 µmol/L
+  { hours: 14, concentration: 26.5 },  // ~176 µmol/L
+  { hours: 16, concentration: 18.8 },  // ~124 µmol/L
+  { hours: 18, concentration: 13.3 },  // ~88 µmol/L
+  { hours: 20, concentration: 9.4 },   // ~62 µmol/L
+  { hours: 22, concentration: 6.6 },   // ~44 µmol/L
+  { hours: 24, concentration: 4.7 },   // ~31 µmol/L
 ];
 
 // Probable hepatotoxicity line (original Rumack-Matthew line)
-// 200 mcg/mL at 4 hours, decays similarly
+// 200 mcg/mL at 4 hours, halves every 4 hours
+// Formula: C(t) = 200 * 2^(-(t-4)/4)
 const PROBABLE_TOXICITY_LINE = [
-  { hours: 4, concentration: 200 },
-  { hours: 6, concentration: 100 },
-  { hours: 8, concentration: 50 },
-  { hours: 10, concentration: 37 },
-  { hours: 12, concentration: 25 },
-  { hours: 14, concentration: 19 },
-  { hours: 16, concentration: 13 },
-  { hours: 18, concentration: 13 },
-  { hours: 20, concentration: 13 },
-  { hours: 22, concentration: 10 },
-  { hours: 24, concentration: 6.25 },
+  { hours: 4, concentration: 200 },    // ~1324 µmol/L
+  { hours: 6, concentration: 141 },    // ~936 µmol/L
+  { hours: 8, concentration: 100 },    // ~662 µmol/L
+  { hours: 10, concentration: 71 },    // ~468 µmol/L
+  { hours: 12, concentration: 50 },    // ~331 µmol/L
+  { hours: 14, concentration: 35 },    // ~234 µmol/L
+  { hours: 16, concentration: 25 },    // ~166 µmol/L
+  { hours: 18, concentration: 17.7 },  // ~117 µmol/L
+  { hours: 20, concentration: 12.5 },  // ~83 µmol/L
+  { hours: 22, concentration: 8.8 },   // ~59 µmol/L
+  { hours: 24, concentration: 6.2 },   // ~41 µmol/L
 ];
 
 const AcetaminophenApproach = ({ weight, expandedSections, toggleSection }) => {
