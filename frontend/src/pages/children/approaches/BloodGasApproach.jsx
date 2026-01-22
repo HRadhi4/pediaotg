@@ -344,20 +344,21 @@ const BloodGasApproach = ({ weight, expandedSections, toggleSection }) => {
 
         {/* Main Flowchart */}
         <Section id="abg-flowchart" title="📊 ABG Interpretation Flowchart" expandedSections={expandedSections} toggleSection={toggleSection}>
-          <div className="space-y-2">
-            {/* Start: pH */}
-            <div className="flex flex-col items-center">
-              <div className="px-6 py-2 bg-yellow-200 dark:bg-yellow-900 border-2 border-yellow-500 rounded-lg font-bold text-sm">
-                pH
-              </div>
-              <FlowArrow direction="down" />
-              
-              {/* pH Branches */}
-              <div className="grid grid-cols-2 gap-4 w-full">
-                {/* pH < 7.4 */}
-                <FlowNode title="pH < 7.4 (Acidemia)" color="red" defaultOpen={true}>
-                  <p className="text-[10px] text-muted-foreground mb-2">
-                    Look for 1ry disorder: Is HCO₃⁻ mainly low → Metabolic, or pCO₂ mainly high → Respiratory?
+          <div className="overflow-x-auto">
+            <div className="min-w-[500px] space-y-2">
+              {/* Start: pH */}
+              <div className="flex flex-col items-center">
+                <div className="px-6 py-2 bg-yellow-200 dark:bg-yellow-900 border-2 border-yellow-500 rounded-lg font-bold text-sm">
+                  pH
+                </div>
+                <FlowArrow direction="down" />
+                
+                {/* pH Branches */}
+                <div className="grid grid-cols-2 gap-4 w-full">
+                  {/* pH < 7.4 */}
+                  <FlowNode title="pH < 7.4 (Acidemia)" color="red" defaultOpen={true}>
+                    <p className="text-[10px] text-muted-foreground mb-2 leading-relaxed">
+                      Look for 1ry disorder: Is HCO₃⁻ mainly low → Metabolic, or pCO₂ mainly high → Respiratory?
                   </p>
                   <div className="space-y-2">
                     <FlowNode title="↓ HCO₃⁻ → Metabolic Acidosis" color="red" level={1}>
