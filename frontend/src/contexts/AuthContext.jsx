@@ -182,9 +182,15 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {
       console.error('Logout error:', error);
     } finally {
+      // Clear all auth state
       setUser(null);
       setTokens(null);
       localStorage.removeItem('auth_tokens');
+      // Clear any other auth-related localStorage items
+      localStorage.removeItem('user');
+      localStorage.removeItem('token');
+      // Force a page reload to clear any cached state
+      window.location.href = '/';
     }
   };
 
