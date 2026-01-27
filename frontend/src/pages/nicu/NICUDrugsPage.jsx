@@ -475,16 +475,22 @@ const NICUDrugsPage = () => {
                     )}
                   </div>
                   {calculatedDoses && w > 0 && (
-                    <div className="text-right ml-2">
-                      <div className="space-y-0.5">
+                    <div className="text-right ml-2 flex-shrink-0">
+                      <div className="space-y-1">
                         {quickViewKeys.map(key => calculatedDoses[key] && (
-                          <p key={key} className="text-[11px] font-mono">
+                          <p key={key} className="text-xs font-mono whitespace-nowrap">
                             <span className="text-muted-foreground">{drug.doses[key].label}:</span>{' '}
                             <span className="font-bold text-blue-600">{calculatedDoses[key]}</span>
                           </p>
                         ))}
                       </div>
-                      {interval && <p className="text-[10px] text-muted-foreground mt-0.5">q{interval}</p>}
+                      {interval && (
+                        <p className="mt-1">
+                          <span className="font-semibold bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 px-2 py-0.5 rounded text-sm">
+                            q{interval}
+                          </span>
+                        </p>
+                      )}
                     </div>
                   )}
                 </div>
