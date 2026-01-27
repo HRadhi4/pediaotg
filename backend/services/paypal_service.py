@@ -404,6 +404,7 @@ class PayPalService:
                 "mode": self.mode,
                 "api_url": self.base_url,
                 "client_id": f"{self.client_id[:15]}..." if self.client_id else "NOT SET",
+                "client_secret_preview": f"{self.client_secret[:5]}...{self.client_secret[-5:]} (len:{len(self.client_secret)})" if self.client_secret else "NOT SET",
                 "token_obtained": bool(token)
             }
         except Exception as e:
@@ -412,5 +413,6 @@ class PayPalService:
                 "mode": self.mode,
                 "api_url": self.base_url,
                 "client_id": f"{self.client_id[:15]}..." if self.client_id else "NOT SET",
+                "client_secret_preview": f"{self.client_secret[:5]}...{self.client_secret[-5:]} (len:{len(self.client_secret)})" if self.client_secret else "NOT SET",
                 "error": str(e)
             }
