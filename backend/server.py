@@ -595,7 +595,8 @@ if cors_origins_env == '*':
         "https://pedsmed.preview.emergentagent.com",
         "https://app.pedotg.com",
         "https://pedotg.com",
-        "https://www.pedotg.com"
+        "https://www.pedotg.com",
+        "https://peds-go.emergent.host"
     ]
 else:
     cors_origins = cors_origins_env.split(',')
