@@ -124,6 +124,7 @@ class PayPalService:
                     logger.error(f"PayPal auth failed with status {response.status_code}")
                     logger.error(f"Response: {error_detail}")
                     logger.error(f"Using client ID: {self.client_id[:15]}... in {self.mode} mode")
+                    logger.error(f"Using client secret: {self.client_secret[:10]}...{self.client_secret[-5:]} (length: {len(self.client_secret)})")
                     logger.error(f"API URL: {self.base_url}")
                     
                     # Check for specific error types
