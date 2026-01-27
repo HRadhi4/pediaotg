@@ -500,12 +500,12 @@ const NICUDrugsPage = () => {
                   <div className="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700 space-y-3">
                     {calculatedDoses && w > 0 && (
                       <div>
-                        <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide mb-1">Calculated Doses ({w}kg)</p>
+                        <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-2">Calculated Doses ({w}kg)</p>
                         <div className="grid grid-cols-2 gap-2">
                           {doseKeys.map(key => (
                             <div key={key} className="p-2 rounded bg-blue-50 dark:bg-blue-900/20">
-                              <p className="text-[10px] text-muted-foreground">{drug.doses[key].label}</p>
-                              <p className="font-mono font-bold text-blue-600">{calculatedDoses[key]}</p>
+                              <p className="text-xs text-muted-foreground">{drug.doses[key].label}</p>
+                              <p className="font-mono font-bold text-blue-600 text-base">{calculatedDoses[key]}</p>
                             </div>
                           ))}
                         </div>
@@ -513,17 +513,17 @@ const NICUDrugsPage = () => {
                     )}
 
                     <div>
-                      <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">Indication</p>
-                      <p className="text-xs">{drug.indication}</p>
+                      <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Indication</p>
+                      <p className="text-sm mt-1">{drug.indication}</p>
                     </div>
                     
                     <div>
-                      <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">Route</p>
-                      <p className="text-xs">{drug.route}</p>
+                      <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Route</p>
+                      <p className="text-sm mt-1">{drug.route}</p>
                     </div>
 
                     <div>
-                      <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide mb-1">Dosing Interval</p>
+                      <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-2">Dosing Interval</p>
                       <div className="overflow-x-auto -mx-1">
                         <table className="w-full text-[10px] min-w-[250px]">
                           <thead>
