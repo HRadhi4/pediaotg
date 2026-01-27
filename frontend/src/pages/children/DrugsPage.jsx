@@ -2444,46 +2444,46 @@ const DrugsPage = ({ onBack }) => {
                                 {showDividedDose ? (
                                   <>
                                     {/* Per Dose - Main Display */}
-                                    <div className="flex items-baseline gap-1">
-                                      <p className="text-lg font-mono font-bold text-green-600 dark:text-green-400">
+                                    <div className="flex items-baseline gap-1 flex-wrap">
+                                      <p className="text-lg font-mono font-bold text-green-600 dark:text-green-400 whitespace-nowrap">
                                         {doseResult.perDoseMin === doseResult.perDoseMax 
                                           ? `${doseResult.perDoseMin} mg` 
                                           : `${doseResult.perDoseMin}-${doseResult.perDoseMax} mg`}
                                       </p>
-                                      <span className="text-[10px] text-slate-500">/dose</span>
+                                      <span className="text-xs text-slate-500">/dose</span>
                                     </div>
                                     
                                     {/* Frequency and total */}
-                                    <div className="mt-1 text-[10px] text-slate-600 dark:text-slate-400">
-                                      <span className="font-medium bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded">
+                                    <div className="mt-2 text-xs text-slate-600 dark:text-slate-400">
+                                      <span className="font-semibold bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 px-2 py-1 rounded text-sm">
                                         {doseResult.frequency}
                                       </span>
-                                      <span className="ml-2">
-                                        × {doseResult.divisor} doses = <span className="font-mono">{doseResult.dose}</span>/day
+                                      <span className="ml-2 whitespace-nowrap">
+                                        × {doseResult.divisor} doses = <span className="font-mono font-bold">{doseResult.dose}</span>/day
                                       </span>
                                     </div>
                                   </>
                                 ) : (
                                   <>
                                     {/* Standard dose display */}
-                                    <div className="flex items-baseline gap-1">
-                                      <p className={`text-lg font-mono font-bold ${
+                                    <div className="flex items-baseline gap-1 flex-wrap">
+                                      <p className={`text-lg font-mono font-bold whitespace-nowrap ${
                                         doseResult.isExceedingMax ? 'text-amber-600' : 'text-blue-600 dark:text-blue-400'
                                       }`}>
                                         {doseResult.dose}
                                       </p>
                                       {doseResult.isPerDay && (
-                                        <span className="text-[10px] text-slate-500">/day</span>
+                                        <span className="text-xs text-slate-500">/day</span>
                                       )}
                                       {doseResult.isPerDose && (
-                                        <span className="text-[10px] text-slate-500">/dose</span>
+                                        <span className="text-xs text-slate-500">/dose</span>
                                       )}
                                     </div>
                                     
                                     {/* Show frequency if available */}
                                     {doseResult.frequency && (
-                                      <p className="mt-1 text-[10px] text-slate-600 dark:text-slate-400">
-                                        <span className="font-medium bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded">
+                                      <p className="mt-2">
+                                        <span className="font-semibold bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 px-2 py-1 rounded text-sm">
                                           {doseResult.frequency}
                                         </span>
                                       </p>
