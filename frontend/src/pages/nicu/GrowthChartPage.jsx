@@ -88,20 +88,28 @@ const GrowthChartPage = () => {
   };
 
   // Calculate PDF coordinates for a data point
+  // PDF coordinate system: origin at bottom-left, Y increases upward
   const calculatePdfCoords = (age, value, chartType) => {
-    const coords = activeChart === 'bmi' 
-      ? CHART_COORDS.bmi.bmi 
-      : CHART_COORDS.statureWeight[chartType];
+    const chartData = activeChart === 'bmi' 
+      ? CHART_COORDS.bmi 
+      : CHART_COORDS.statureWeight;
+    
+    const coords = chartData[chartType];
+    const pageHeight = chartData.pageHeight;
     
     if (!coords) return null;
     
-    // Linear interpolation for X (age)
+    // Linear interpolation for X (age) - same for both coordinate systems
     const xRatio = (age - coords.ageMin) / (coords.ageMax - coords.ageMin);
     const x = coords.xMin + xRatio * (coords.xMax - coords.xMin);
     
-    // Linear interpolation for Y (value)
+    // Linear interpolation for Y (value) in screen coordinates
+    // yMinScreen is at valueMin, yMaxScreen is at valueMax
     const yRatio = (value - coords.valueMin) / (coords.valueMax - coords.valueMin);
-    const y = coords.yMin + yRatio * (coords.yMax - coords.yMin);
+    const yScreen = coords.yMinScreen + yRatio * (coords.yMaxScreen - coords.yMinScreen);
+    
+    // Convert screen Y to PDF Y (flip: PDF Y = pageHeight - screenY)
+    const y = pageHeight - yScreen;
     
     return { x, y };
   };
