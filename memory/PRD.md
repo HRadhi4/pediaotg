@@ -92,31 +92,28 @@ Build a full SaaS-style web app "Pediatrics on the Go" with:
 ## Recent Changes (January 16, 2026)
 
 ### Session 12 Updates (January 28, 2026)
+- ✅ **NICU Growth Chart Overhaul** (Matching CDC/WHO PDF Charts):
+  - Completely rewrote `/app/frontend/src/pages/nicu/GrowthChartPage.jsx`
+  - **WHO Charts (0-24 months)**: Weight, Length, Head Circumference, BMI with percentiles 3rd, 15th, 50th, 85th, 97th
+  - **CDC Charts (2-20 years)**: Weight, Stature with percentiles 3rd, 5th, 10th, 25th, 50th, 75th, 90th, 95th, 97th
+  - Added **PDF export** using jsPDF + html2canvas
+  - Added **PNG export** functionality
+  - **Gender-specific backgrounds**: Blue for boys, pink for girls
+  - **Color-coded percentile lines**: Red (extreme), Orange (mid), Green (median)
+  - Patient data plotting with percentile calculation and interpretation
+  - Fullscreen mode for detailed viewing
+  - Reference section explaining percentile ranges
+
 - ✅ **PayPal Integration Complete Overhaul**:
   - **Root Cause Fixed:** Generic "An error occurred" alert replaced with structured error responses
-  - Completely rewrote `/app/backend/services/paypal_service.py`:
-    - Custom `PayPalError` exception class with error codes
-    - `PayPalErrorCode` enum for machine-readable errors
-    - Proper logging without exposing secrets
-    - Modern API URLs (`api-m.sandbox.paypal.com` / `api-m.paypal.com`)
-  - Updated `/app/backend/routes/subscription.py`:
-    - All errors return structured JSON with `error_code`, `error_message`, `user_message`
-    - Added `GET /api/subscription/self-test` endpoint for comprehensive diagnostics
-  - Updated frontend error handling:
-    - `PricingPage.jsx`: Shows detailed error alerts instead of generic dialog
-    - `SuccessPage.jsx`: Displays specific error messages with helpful hints
-    - Error code mapping to user-friendly messages
-    - Retry functionality with limit
+  - Custom `PayPalError` exception class with 12 error codes
+  - Added `GET /api/subscription/self-test` endpoint for diagnostics
+  - Updated frontend error handling with user-friendly messages
   - Created `/app/docs/PAYPAL_INTEGRATION.md` documentation
   
 - ✅ **Children Drugs Page UI Fixes**:
-  - Fixed text wrapping in calculated dose display with `whitespace-nowrap` and `flex-shrink-0`
-  - Increased frequency badge size from `text-[9px]` to `text-sm` (matching NICU)
-  - Blue pill styling for frequency badges
-  
-- ✅ **Deployment Configuration**:
-  - Fixed `.gitignore` to allow `.env` files
-  - Added `peds-go.emergent.host` to CORS origins
+  - Fixed text wrapping with `whitespace-nowrap` and `flex-shrink-0`
+  - Increased frequency badge size from `text-[9px]` to `text-sm`
 
 ### Session 11 Updates (January 21, 2026)
 - ✅ **Nomogram Pinch-to-Zoom (react-zoom-pan-pinch)**:
