@@ -122,6 +122,7 @@ const PostnatalPage = () => {
 
       {/* Approach Content */}
       <div className="space-y-3 mt-4">
+        {activeApproach === "neonatal-exam" && <NeonatalExaminationApproach {...commonProps} />}
         {activeApproach === "routine" && <RoutineManagementApproach {...commonProps} />}
         {activeApproach === "assessment" && <NewbornAssessmentApproach {...commonProps} />}
         {activeApproach === "hemoglobinopathy" && <HemoglobinopathyApproach {...commonProps} />}
