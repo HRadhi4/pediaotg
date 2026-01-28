@@ -20,9 +20,10 @@ import { toPng } from 'html-to-image';
 
 // ============== WHO CHARTS ==============
 // ViewBox: 1122.5197 x 793.70074
-// OCR from 2245x1587 image (2x scale), divided by 2
-// X: Birth(0mo)=64, 12mo=324, 24mo=586 | Grid: 54-610
-// Y: 2kg=418, 10kg=228, 16kg=83 | Grid: 418(bottom)-76(top)
+// Coordinates extracted from SVG path analysis (Jan 2026):
+// - Internal SVG transform: matrix(1.3333333, 0, 0, 1.3333333, 0, 793.7008)
+// - Grid lines at x=110.84 (untransformed) with length 626.8
+// - Converted to viewBox: X: 148-984, Y: 167(top)-669(bottom)
 const WHO_CHARTS = {
   boys: {
     weight: {
@@ -30,21 +31,21 @@ const WHO_CHARTS = {
       label: "Weight-for-age",
       yLabel: "Weight (kg)",
       viewBox: "0 0 1122.5197 793.70074",
-      grid: { xMin: 54, xMax: 610, yMin: 418, yMax: 76, ageMin: 0, ageMax: 24, valueMin: 2, valueMax: 16 }
+      grid: { xMin: 148, xMax: 984, yMin: 669, yMax: 167, ageMin: 0, ageMax: 24, valueMin: 2, valueMax: 16 }
     },
     length: {
       file: "/charts/who/boys_length_0_2.svg",
       label: "Length-for-age",
       yLabel: "Length (cm)",
       viewBox: "0 0 1122.5197 793.70074",
-      grid: { xMin: 54, xMax: 610, yMin: 418, yMax: 76, ageMin: 0, ageMax: 24, valueMin: 45, valueMax: 95 }
+      grid: { xMin: 148, xMax: 984, yMin: 665, yMax: 170, ageMin: 0, ageMax: 24, valueMin: 45, valueMax: 95 }
     },
     bmi: {
       file: "/charts/who/boys_bmi_0_2.svg",
       label: "BMI-for-age",
       yLabel: "BMI (kg/m²)",
       viewBox: "0 0 1122.5197 793.70074",
-      grid: { xMin: 54, xMax: 610, yMin: 418, yMax: 76, ageMin: 0, ageMax: 24, valueMin: 10, valueMax: 22 }
+      grid: { xMin: 148, xMax: 983, yMin: 667, yMax: 169, ageMin: 0, ageMax: 24, valueMin: 10, valueMax: 22 }
     }
   },
   girls: {
@@ -53,28 +54,28 @@ const WHO_CHARTS = {
       label: "Weight-for-age",
       yLabel: "Weight (kg)",
       viewBox: "0 0 1122.5197 793.70074",
-      grid: { xMin: 54, xMax: 610, yMin: 418, yMax: 76, ageMin: 0, ageMax: 24, valueMin: 2, valueMax: 16 }
+      grid: { xMin: 148, xMax: 983, yMin: 668, yMax: 167, ageMin: 0, ageMax: 24, valueMin: 2, valueMax: 16 }
     },
     length: {
       file: "/charts/who/girls_length_0_2.svg",
       label: "Length-for-age",
       yLabel: "Length (cm)",
       viewBox: "0 0 1122.5197 793.70074",
-      grid: { xMin: 54, xMax: 610, yMin: 418, yMax: 76, ageMin: 0, ageMax: 24, valueMin: 45, valueMax: 95 }
+      grid: { xMin: 148, xMax: 984, yMin: 665, yMax: 170, ageMin: 0, ageMax: 24, valueMin: 45, valueMax: 95 }
     },
     bmi: {
       file: "/charts/who/girls_bmi_0_2.svg",
       label: "BMI-for-age",
       yLabel: "BMI (kg/m²)",
       viewBox: "0 0 1122.5197 793.70074",
-      grid: { xMin: 54, xMax: 610, yMin: 418, yMax: 76, ageMin: 0, ageMax: 24, valueMin: 10, valueMax: 22 }
+      grid: { xMin: 148, xMax: 983, yMin: 667, yMax: 169, ageMin: 0, ageMax: 24, valueMin: 10, valueMax: 22 }
     },
     headCircumference: {
       file: "/charts/who/girls_head_circumference_0_2.svg",
       label: "Head Circumference",
       yLabel: "HC (cm)",
-      viewBox: "0 0 1122.5197 793.70074",
-      grid: { xMin: 54, xMax: 610, yMin: 418, yMax: 76, ageMin: 0, ageMax: 24, valueMin: 32, valueMax: 52 }
+      viewBox: "0 0 1054.6667 744",
+      grid: { xMin: 177, xMax: 858, yMin: 655, yMax: 140, ageMin: 0, ageMax: 24, valueMin: 32, valueMax: 52 }
     }
   }
 };
