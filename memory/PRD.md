@@ -620,4 +620,4 @@ Build a full SaaS-style web app "Pediatrics on the Go" with:
 - `/app/test_reports/iteration_7.json` - OCR backend tests (15/15 passed)
 
 ## Last Updated
-January 21, 2026 - Hyponatremia Mild deficit selector (Infant/Child toggle), IEM Emergencies merged with Metabolic (SMC/UpToDate toggle), Rumack-Matthew Nomogram calibrated with optimized SVG
+January 28, 2026 - PayPal service rebuilt, Children Drugs UI fixes (frequency size, text wrapping), deployment configuration fixes
