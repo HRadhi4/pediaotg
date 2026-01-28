@@ -1,5 +1,5 @@
-import React, { useState, useRef, useEffect, useCallback } from "react";
-import { Plus, Trash2, Download, Maximize2, Minimize2 } from "lucide-react";
+import React, { useState, useRef } from "react";
+import { Plus, Trash2, Download, Maximize2, Minimize2, ExternalLink } from "lucide-react";
 import { GrowthChartIcon as HealthGrowthIcon } from "@/components/HealthIcons";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { PDFDocument, rgb } from 'pdf-lib';
 
 /**
- * Growth Chart Page - Using Official CDC PDFs with Direct Overlay
+ * Growth Chart Page - Using Official CDC PDFs
  * CDC Charts (2-20 years): Stature + Weight combined, BMI separate
  * Points are plotted directly on the PDF for export
  */
@@ -26,36 +26,29 @@ const CDC_PDFS = {
 };
 
 // Chart coordinate mappings for plotting points on the PDF
-// These are calibrated to the CDC PDF layout (PDF coordinates - origin at bottom-left)
+// Calibrated to CDC PDF layout (PDF coordinates - origin at bottom-left)
 // Standard CDC charts are letter size: 612 x 792 points
 const CHART_COORDS = {
   statureWeight: {
     // Stature chart area (top chart on combined PDF)
     stature: {
-      // X-axis: Age 2-20 years
-      xMin: 122, xMax: 559, // PDF points
+      xMin: 122, xMax: 559,
       ageMin: 2, ageMax: 20,
-      // Y-axis: Stature in cm
-      yMin: 385, yMax: 710, // PDF points (inverted because PDF y goes up)
-      valueMin: 77, valueMax: 200 // cm range
+      yMin: 385, yMax: 710,
+      valueMin: 77, valueMax: 200
     },
     // Weight chart area (bottom chart on combined PDF)
     weight: {
-      // X-axis: Age 2-20 years
       xMin: 122, xMax: 559,
       ageMin: 2, ageMax: 20,
-      // Y-axis: Weight in kg
       yMin: 82, yMax: 340,
-      valueMin: 8, valueMax: 105 // kg range
+      valueMin: 8, valueMax: 105
     }
   },
   bmi: {
-    // BMI chart area
     bmi: {
-      // X-axis: Age 2-20 years
       xMin: 122, xMax: 559,
       ageMin: 2, ageMax: 20,
-      // Y-axis: BMI in kg/m²
       yMin: 100, yMax: 680,
       valueMin: 12, valueMax: 35
     }
@@ -64,11 +57,10 @@ const CHART_COORDS = {
 
 const GrowthChartPage = () => {
   const [gender, setGender] = useState("male");
-  const [activeChart, setActiveChart] = useState("statureWeight"); // "statureWeight" or "bmi"
+  const [activeChart, setActiveChart] = useState("statureWeight");
   const [entries, setEntries] = useState([]);
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [pdfImageUrl, setPdfImageUrl] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [exporting, setExporting] = useState(false);
   const [newEntry, setNewEntry] = useState({ 
     date: new Date().toISOString().split('T')[0], 
     age: "", 
@@ -76,62 +68,13 @@ const GrowthChartPage = () => {
     stature: "", 
     bmi: "" 
   });
-  
-  const canvasRef = useRef(null);
-  const containerRef = useRef(null);
-  const pdfBytesRef = useRef(null);
 
-  // Load PDF and convert to image for display
-  const loadPdfAsImage = useCallback(async () => {
-    setLoading(true);
-    try {
-      const pdfUrl = activeChart === 'bmi' 
-        ? CDC_PDFS.bmi[gender] 
-        : CDC_PDFS.statureWeight[gender];
-      
-      // Fetch PDF
-      const response = await fetch(pdfUrl);
-      const pdfBytes = await response.arrayBuffer();
-      pdfBytesRef.current = pdfBytes;
-      
-      // Load PDF and render to canvas for display
-      const pdfDoc = await PDFDocument.load(pdfBytes);
-      const page = pdfDoc.getPages()[0];
-      const { width, height } = page.getSize();
-      
-      // Create a canvas to render the PDF page
-      // We'll use pdf.js for rendering
-      const pdfjsLib = await import('pdfjs-dist');
-      pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
-      
-      const loadingTask = pdfjsLib.getDocument({ data: pdfBytes });
-      const pdf = await loadingTask.promise;
-      const pdfPage = await pdf.getPage(1);
-      
-      const scale = 2; // Higher scale for better quality
-      const viewport = pdfPage.getViewport({ scale });
-      
-      const canvas = document.createElement('canvas');
-      canvas.width = viewport.width;
-      canvas.height = viewport.height;
-      const ctx = canvas.getContext('2d');
-      
-      await pdfPage.render({
-        canvasContext: ctx,
-        viewport: viewport
-      }).promise;
-      
-      setPdfImageUrl(canvas.toDataURL('image/png'));
-      setLoading(false);
-    } catch (error) {
-      console.error('Error loading PDF:', error);
-      setLoading(false);
-    }
-  }, [gender, activeChart]);
-
-  useEffect(() => {
-    loadPdfAsImage();
-  }, [loadPdfAsImage]);
+  // Get current PDF URL
+  const getPdfUrl = () => {
+    return activeChart === 'bmi' 
+      ? CDC_PDFS.bmi[gender] 
+      : CDC_PDFS.statureWeight[gender];
+  };
 
   // Calculate PDF coordinates for a data point
   const calculatePdfCoords = (age, value, chartType) => {
@@ -152,78 +95,6 @@ const GrowthChartPage = () => {
     return { x, y };
   };
 
-  // Draw points on overlay canvas
-  const drawPoints = useCallback(() => {
-    const canvas = canvasRef.current;
-    if (!canvas || !pdfImageUrl) return;
-    
-    const ctx = canvas.getContext('2d');
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
-    // Scale factor: canvas is scaled 2x relative to PDF points
-    const scale = 2;
-    
-    entries.forEach((entry, index) => {
-      const age = parseFloat(entry.age);
-      if (isNaN(age) || age < 2 || age > 20) return;
-      
-      if (activeChart === 'statureWeight') {
-        // Plot stature point
-        if (entry.stature) {
-          const statureVal = parseFloat(entry.stature);
-          const coords = calculatePdfCoords(age, statureVal, 'stature');
-          if (coords) {
-            drawPoint(ctx, coords.x * scale, (792 - coords.y) * scale, '#2563eb', index + 1);
-          }
-        }
-        // Plot weight point
-        if (entry.weight) {
-          const weightVal = parseFloat(entry.weight);
-          const coords = calculatePdfCoords(age, weightVal, 'weight');
-          if (coords) {
-            drawPoint(ctx, coords.x * scale, (792 - coords.y) * scale, '#dc2626', index + 1);
-          }
-        }
-      } else {
-        // Plot BMI point
-        if (entry.bmi) {
-          const bmiVal = parseFloat(entry.bmi);
-          const coords = calculatePdfCoords(age, bmiVal, 'bmi');
-          if (coords) {
-            drawPoint(ctx, coords.x * scale, (792 - coords.y) * scale, '#7c3aed', index + 1);
-          }
-        }
-      }
-    });
-  }, [entries, activeChart, pdfImageUrl]);
-
-  // Draw a single point with label
-  const drawPoint = (ctx, x, y, color, label) => {
-    // Outer circle
-    ctx.beginPath();
-    ctx.arc(x, y, 10, 0, 2 * Math.PI);
-    ctx.fillStyle = color;
-    ctx.fill();
-    ctx.strokeStyle = '#ffffff';
-    ctx.lineWidth = 2;
-    ctx.stroke();
-    
-    // Inner dot
-    ctx.beginPath();
-    ctx.arc(x, y, 4, 0, 2 * Math.PI);
-    ctx.fillStyle = '#ffffff';
-    ctx.fill();
-    
-    // Label
-    ctx.fillStyle = '#1f2937';
-    ctx.font = 'bold 12px Arial';
-    ctx.fillText(label.toString(), x + 14, y + 4);
-  };
-
-  useEffect(() => {
-    drawPoints();
-  }, [drawPoints]);
-
   // Add entry
   const addEntry = () => {
     if (newEntry.date && newEntry.age) {
@@ -243,11 +114,14 @@ const GrowthChartPage = () => {
 
   // Export PDF with plotted points
   const exportPDF = async () => {
-    if (!pdfBytesRef.current) return;
-    
+    setExporting(true);
     try {
-      // Load the original PDF
-      const pdfDoc = await PDFDocument.load(pdfBytesRef.current);
+      // Fetch the original PDF
+      const response = await fetch(getPdfUrl());
+      const pdfBytes = await response.arrayBuffer();
+      
+      // Load the PDF
+      const pdfDoc = await PDFDocument.load(pdfBytes);
       const page = pdfDoc.getPages()[0];
       
       // Draw points on the PDF
@@ -256,30 +130,30 @@ const GrowthChartPage = () => {
         if (isNaN(age) || age < 2 || age > 20) return;
         
         if (activeChart === 'statureWeight') {
-          // Plot stature point
+          // Plot stature point (blue)
           if (entry.stature) {
             const statureVal = parseFloat(entry.stature);
             const coords = calculatePdfCoords(age, statureVal, 'stature');
             if (coords) {
-              // Draw circle
+              // Draw filled circle
               page.drawCircle({
                 x: coords.x,
                 y: coords.y,
-                size: 6,
-                color: rgb(0.145, 0.388, 0.922), // Blue
+                size: 5,
+                color: rgb(0.145, 0.388, 0.922),
                 borderColor: rgb(1, 1, 1),
-                borderWidth: 1.5
+                borderWidth: 1
               });
               // Draw label
-              page.drawText((index + 1).toString(), {
-                x: coords.x + 10,
-                y: coords.y - 4,
-                size: 10,
+              page.drawText(`S${index + 1}`, {
+                x: coords.x + 8,
+                y: coords.y - 3,
+                size: 8,
                 color: rgb(0.145, 0.388, 0.922)
               });
             }
           }
-          // Plot weight point
+          // Plot weight point (red)
           if (entry.weight) {
             const weightVal = parseFloat(entry.weight);
             const coords = calculatePdfCoords(age, weightVal, 'weight');
@@ -287,21 +161,21 @@ const GrowthChartPage = () => {
               page.drawCircle({
                 x: coords.x,
                 y: coords.y,
-                size: 6,
-                color: rgb(0.863, 0.149, 0.149), // Red
+                size: 5,
+                color: rgb(0.863, 0.149, 0.149),
                 borderColor: rgb(1, 1, 1),
-                borderWidth: 1.5
+                borderWidth: 1
               });
-              page.drawText((index + 1).toString(), {
-                x: coords.x + 10,
-                y: coords.y - 4,
-                size: 10,
+              page.drawText(`W${index + 1}`, {
+                x: coords.x + 8,
+                y: coords.y - 3,
+                size: 8,
                 color: rgb(0.863, 0.149, 0.149)
               });
             }
           }
         } else {
-          // Plot BMI point
+          // Plot BMI point (purple)
           if (entry.bmi) {
             const bmiVal = parseFloat(entry.bmi);
             const coords = calculatePdfCoords(age, bmiVal, 'bmi');
@@ -309,21 +183,48 @@ const GrowthChartPage = () => {
               page.drawCircle({
                 x: coords.x,
                 y: coords.y,
-                size: 6,
-                color: rgb(0.486, 0.227, 0.929), // Purple
+                size: 5,
+                color: rgb(0.486, 0.227, 0.929),
                 borderColor: rgb(1, 1, 1),
-                borderWidth: 1.5
+                borderWidth: 1
               });
-              page.drawText((index + 1).toString(), {
-                x: coords.x + 10,
-                y: coords.y - 4,
-                size: 10,
+              page.drawText(`${index + 1}`, {
+                x: coords.x + 8,
+                y: coords.y - 3,
+                size: 8,
                 color: rgb(0.486, 0.227, 0.929)
               });
             }
           }
         }
       });
+      
+      // Add patient data legend at bottom of page
+      if (entries.length > 0) {
+        let legendY = 50;
+        page.drawText('Patient Data:', {
+          x: 50,
+          y: legendY,
+          size: 9,
+          color: rgb(0, 0, 0)
+        });
+        legendY -= 12;
+        
+        entries.forEach((entry, index) => {
+          let text = `#${index + 1}: ${entry.date}, Age ${entry.age}y`;
+          if (entry.stature) text += `, Stature: ${entry.stature}cm`;
+          if (entry.weight) text += `, Weight: ${entry.weight}kg`;
+          if (entry.bmi) text += `, BMI: ${entry.bmi}`;
+          
+          page.drawText(text, {
+            x: 50,
+            y: legendY,
+            size: 7,
+            color: rgb(0.3, 0.3, 0.3)
+          });
+          legendY -= 10;
+        });
+      }
       
       // Save and download
       const pdfBytesModified = await pdfDoc.save();
@@ -336,6 +237,9 @@ const GrowthChartPage = () => {
       URL.revokeObjectURL(url);
     } catch (error) {
       console.error('Error exporting PDF:', error);
+      alert('Error exporting PDF. Please try again.');
+    } finally {
+      setExporting(false);
     }
   };
 
@@ -403,14 +307,14 @@ const GrowthChartPage = () => {
       {/* Fullscreen Modal */}
       {isFullscreen && (
         <div 
-          className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4" 
+          className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-2" 
           onClick={() => setIsFullscreen(false)}
         >
           <div 
-            className="relative bg-white rounded-lg p-4 max-w-[95vw] max-h-[95vh] overflow-auto" 
+            className="relative bg-white rounded-lg w-full h-full max-w-[98vw] max-h-[98vh] flex flex-col" 
             onClick={e => e.stopPropagation()}
           >
-            <div className="flex justify-between items-center mb-3">
+            <div className="flex justify-between items-center p-3 border-b">
               <div>
                 <h3 className="text-lg font-semibold">{chartLabels[activeChart]}</h3>
                 <p className="text-sm text-muted-foreground">
@@ -418,28 +322,39 @@ const GrowthChartPage = () => {
                 </p>
               </div>
               <div className="flex gap-2">
-                <Button variant="outline" size="sm" onClick={exportPDF} className="h-9 px-3">
-                  <Download className="h-4 w-4 mr-1" />Export PDF
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={exportPDF}
+                  disabled={exporting || entries.length === 0}
+                  className="h-9 px-3"
+                >
+                  <Download className="h-4 w-4 mr-1" />
+                  {exporting ? 'Exporting...' : 'Export with Data'}
                 </Button>
-                <Button variant="outline" size="sm" onClick={() => setIsFullscreen(false)} className="h-9 w-9 p-0">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={() => window.open(getPdfUrl(), '_blank')}
+                  className="h-9 px-3"
+                >
+                  <ExternalLink className="h-4 w-4 mr-1" />Open Original
+                </Button>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={() => setIsFullscreen(false)} 
+                  className="h-9 w-9 p-0"
+                >
                   <Minimize2 className="h-4 w-4" />
                 </Button>
               </div>
             </div>
-            <div className="relative">
-              {pdfImageUrl && (
-                <img 
-                  src={pdfImageUrl} 
-                  alt="CDC Growth Chart" 
-                  className="max-w-full h-auto"
-                />
-              )}
-              <canvas
-                ref={canvasRef}
-                width={1224}
-                height={1584}
-                className="absolute top-0 left-0 pointer-events-none"
-                style={{ width: '100%', height: '100%' }}
+            <div className="flex-1 p-2">
+              <iframe
+                src={`${getPdfUrl()}#view=FitH`}
+                className="w-full h-full border-0 rounded"
+                title="CDC Growth Chart"
               />
             </div>
           </div>
@@ -453,19 +368,20 @@ const GrowthChartPage = () => {
             <div>
               <CardTitle className="text-sm">{chartLabels[activeChart]}</CardTitle>
               <CardDescription className="text-xs">
-                CDC • {gender === 'male' ? 'Boys' : 'Girls'} • Percentiles: 3, 5, 10, 25, 50, 75, 85, 90, 95, 97
+                CDC • {gender === 'male' ? 'Boys' : 'Girls'} • Official CDC growth chart PDF
               </CardDescription>
             </div>
             <div className="flex gap-1">
               <Button 
                 variant="outline" 
                 size="sm" 
-                onClick={exportPDF} 
+                onClick={exportPDF}
+                disabled={exporting || entries.length === 0}
                 className="h-8 px-2"
                 data-testid="export-pdf-btn"
-                disabled={loading}
               >
-                <Download className="h-3.5 w-3.5 mr-1" />PDF
+                <Download className="h-3.5 w-3.5 mr-1" />
+                {exporting ? '...' : 'PDF'}
               </Button>
               <Button 
                 variant="outline" 
@@ -473,7 +389,6 @@ const GrowthChartPage = () => {
                 onClick={() => setIsFullscreen(true)} 
                 className="h-8 w-8 p-0"
                 data-testid="fullscreen-btn"
-                disabled={loading}
               >
                 <Maximize2 className="h-3.5 w-3.5" />
               </Button>
@@ -481,68 +396,32 @@ const GrowthChartPage = () => {
           </div>
         </CardHeader>
         <CardContent className="p-3">
-          <div ref={containerRef} className="relative w-full overflow-auto bg-gray-50 rounded-lg">
-            {loading ? (
-              <div className="flex items-center justify-center h-64">
-                <div className="text-center">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-teal-600 mx-auto mb-2"></div>
-                  <p className="text-sm text-muted-foreground">Loading chart...</p>
-                </div>
-              </div>
-            ) : pdfImageUrl ? (
-              <div className="relative inline-block">
-                <img 
-                  src={pdfImageUrl} 
-                  alt="CDC Growth Chart" 
-                  className="max-w-full h-auto"
-                  style={{ minWidth: '600px' }}
-                />
-                <canvas
-                  ref={canvasRef}
-                  width={1224}
-                  height={1584}
-                  className="absolute top-0 left-0 pointer-events-none"
-                  style={{ width: '100%', height: '100%' }}
-                />
-              </div>
-            ) : (
-              <div className="flex items-center justify-center h-64">
-                <p className="text-sm text-muted-foreground">Failed to load chart</p>
-              </div>
-            )}
+          <div className="w-full bg-gray-100 rounded-lg overflow-hidden" style={{ height: '500px' }}>
+            <iframe
+              src={`${getPdfUrl()}#view=FitH`}
+              className="w-full h-full border-0"
+              title="CDC Growth Chart"
+            />
           </div>
           
-          {/* Legend for plotted points */}
-          {entries.length > 0 && (
-            <div className="mt-3 flex gap-4 text-xs">
-              {activeChart === 'statureWeight' ? (
-                <>
-                  <div className="flex items-center gap-1">
-                    <div className="w-3 h-3 rounded-full bg-blue-600"></div>
-                    <span>Stature</span>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <div className="w-3 h-3 rounded-full bg-red-600"></div>
-                    <span>Weight</span>
-                  </div>
-                </>
-              ) : (
-                <div className="flex items-center gap-1">
-                  <div className="w-3 h-3 rounded-full bg-purple-600"></div>
-                  <span>BMI</span>
-                </div>
-              )}
-            </div>
-          )}
+          {/* Instructions */}
+          <div className="mt-3 p-3 bg-blue-50 rounded-lg text-xs text-blue-800">
+            <p className="font-medium mb-1">How to use:</p>
+            <ol className="list-decimal list-inside space-y-1">
+              <li>Add patient measurements using the form below</li>
+              <li>Click "PDF" button to export the chart with your data points plotted</li>
+              <li>Use fullscreen mode for better viewing</li>
+            </ol>
+          </div>
         </CardContent>
       </Card>
 
       {/* Add Measurement */}
       <Card>
         <CardHeader className="pb-2">
-          <CardTitle className="text-sm">Plot Patient Measurement</CardTitle>
+          <CardTitle className="text-sm">Add Patient Measurement</CardTitle>
           <CardDescription className="text-xs">
-            Age range: 2-20 years
+            Data will be plotted on the PDF when exported • Age range: 2-20 years
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-3">
@@ -632,53 +511,69 @@ const GrowthChartPage = () => {
             }
             data-testid="add-measurement-btn"
           >
-            <Plus className="h-4 w-4 mr-1" />Plot Data Point
+            <Plus className="h-4 w-4 mr-1" />Add Measurement
           </Button>
         </CardContent>
       </Card>
 
-      {/* Plotted Measurements */}
+      {/* Patient Measurements */}
       {entries.length > 0 && (
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm">Plotted Measurements ({entries.length})</CardTitle>
+            <CardTitle className="text-sm">Patient Measurements ({entries.length})</CardTitle>
+            <CardDescription className="text-xs">
+              These will be plotted on the PDF when you export
+            </CardDescription>
           </CardHeader>
           <CardContent className="space-y-2">
             {entries.map((entry, index) => (
               <div 
                 key={entry.id} 
-                className="p-2 rounded-lg bg-gray-50 dark:bg-gray-800/50 text-xs"
+                className="p-3 rounded-lg bg-gray-50 dark:bg-gray-800/50 text-sm"
               >
-                <div className="flex justify-between items-center mb-1">
-                  <span className="font-medium text-teal-600">
-                    #{index + 1} • {entry.date} • Age: {entry.age} years
-                  </span>
+                <div className="flex justify-between items-start">
+                  <div>
+                    <span className="font-medium text-teal-600">
+                      #{index + 1} • {entry.date}
+                    </span>
+                    <span className="text-gray-500 ml-2">Age: {entry.age} years</span>
+                  </div>
                   <button 
                     onClick={() => setEntries(entries.filter(e => e.id !== entry.id))} 
                     className="text-red-500 p-1 hover:bg-red-50 rounded"
                   >
-                    <Trash2 className="h-3 w-3" />
+                    <Trash2 className="h-4 w-4" />
                   </button>
                 </div>
-                <div className="flex gap-4">
+                <div className="mt-1 flex flex-wrap gap-3 text-sm">
                   {entry.stature && (
-                    <span className="text-blue-600">
+                    <span className="text-blue-600 font-medium">
                       Stature: {entry.stature} cm
                     </span>
                   )}
                   {entry.weight && (
-                    <span className="text-red-600">
+                    <span className="text-red-600 font-medium">
                       Weight: {entry.weight} kg
                     </span>
                   )}
                   {entry.bmi && (
-                    <span className="text-purple-600">
+                    <span className="text-purple-600 font-medium">
                       BMI: {entry.bmi} kg/m²
                     </span>
                   )}
                 </div>
               </div>
             ))}
+            
+            <Button 
+              onClick={exportPDF}
+              disabled={exporting}
+              className="w-full mt-2"
+              data-testid="export-all-btn"
+            >
+              <Download className="h-4 w-4 mr-2" />
+              {exporting ? 'Exporting PDF...' : 'Export PDF with All Data Points'}
+            </Button>
           </CardContent>
         </Card>
       )}
@@ -688,14 +583,20 @@ const GrowthChartPage = () => {
         <CardHeader className="pb-2">
           <CardTitle className="text-sm">Reference</CardTitle>
         </CardHeader>
-        <CardContent className="text-xs text-muted-foreground space-y-1">
-          <p className="font-medium">CDC Percentiles (3rd, 5th, 10th, 25th, 50th, 75th, 85th, 90th, 95th, 97th):</p>
-          <p>• <span className="text-green-600 font-medium">25th-75th:</span> Normal range</p>
-          <p>• <span className="text-yellow-600 font-medium">10th-25th / 75th-90th:</span> Monitor</p>
-          <p>• <span className="text-orange-600 font-medium">5th-10th / 90th-95th:</span> At risk</p>
-          <p>• <span className="text-red-600 font-medium">&lt;5th / &gt;95th:</span> Evaluation needed</p>
+        <CardContent className="text-xs text-muted-foreground space-y-2">
+          <p className="font-medium">CDC Percentiles:</p>
+          <div className="grid grid-cols-2 gap-2">
+            <div>
+              <p>• <span className="text-green-600 font-medium">5th-85th:</span> Healthy weight</p>
+              <p>• <span className="text-yellow-600 font-medium">85th-95th:</span> Overweight</p>
+            </div>
+            <div>
+              <p>• <span className="text-red-600 font-medium">&lt;5th:</span> Underweight</p>
+              <p>• <span className="text-red-600 font-medium">&gt;95th:</span> Obese</p>
+            </div>
+          </div>
           <p className="pt-2 border-t text-[10px]">
-            Source: CDC Growth Charts (cdc.gov) • Data plotted directly on official CDC PDF
+            Source: CDC Growth Charts (cdc.gov) • Official CDC PDF charts
           </p>
         </CardContent>
       </Card>
