@@ -12,16 +12,17 @@ import { toPng } from 'html-to-image';
 
 /**
  * Combined Growth Charts Page
- * - WHO Charts: Birth to 2 Years (SVG with pinch-to-zoom)
- * - CDC Charts: 2-20 Years (SVG with pinch-to-zoom)
+ * WHO Charts: Birth to 2 Years | CDC Charts: 2-20 Years
  * 
- * COORDINATE SYSTEM: All coordinates are calibrated to match SVG viewBox dimensions
+ * COORDINATE CALIBRATION (Jan 2026):
+ * All coordinates measured from high-resolution PNG exports and converted to viewBox units.
  * WHO viewBox: 0 0 1122.5197 793.70074
  * CDC viewBox: 0 0 816 1056
  */
 
 // ============== WHO CHARTS CONFIGURATION ==============
-// Coordinates calibrated from actual chart analysis (PNG pixel coords -> viewBox coords)
+// Calibrated from 2x resolution PNG analysis (2245x1587 -> divide by 2)
+// Grid boundaries: X 62-1076, Y 773(bottom)-94(top)
 const WHO_CHARTS = {
   boys: {
     weight: {
@@ -29,23 +30,21 @@ const WHO_CHARTS = {
       label: "Weight-for-age",
       yLabel: "Weight (kg)",
       viewBox: "0 0 1122.5197 793.70074",
-      // Calibrated: X 0mo=85, 24mo=1037; Y 2kg=580, 16kg=147
-      grid: { xMin: 85, xMax: 1037, yMin: 580, yMax: 147, ageMin: 0, ageMax: 24, valueMin: 2, valueMax: 16 }
+      grid: { xMin: 62, xMax: 1076, yMin: 773, yMax: 94, ageMin: 0, ageMax: 24, valueMin: 2, valueMax: 16 }
     },
     length: {
       file: "/charts/who/boys_length_0_2.svg",
       label: "Length-for-age",
       yLabel: "Length (cm)",
       viewBox: "0 0 1122.5197 793.70074",
-      // Similar grid structure as weight chart
-      grid: { xMin: 85, xMax: 1037, yMin: 580, yMax: 147, ageMin: 0, ageMax: 24, valueMin: 45, valueMax: 95 }
+      grid: { xMin: 62, xMax: 1076, yMin: 773, yMax: 94, ageMin: 0, ageMax: 24, valueMin: 45, valueMax: 95 }
     },
     bmi: {
       file: "/charts/who/boys_bmi_0_2.svg",
       label: "BMI-for-age",
       yLabel: "BMI (kg/m²)",
       viewBox: "0 0 1122.5197 793.70074",
-      grid: { xMin: 85, xMax: 1037, yMin: 580, yMax: 147, ageMin: 0, ageMax: 24, valueMin: 10, valueMax: 22 }
+      grid: { xMin: 62, xMax: 1076, yMin: 773, yMax: 94, ageMin: 0, ageMax: 24, valueMin: 10, valueMax: 22 }
     }
   },
   girls: {
@@ -54,34 +53,34 @@ const WHO_CHARTS = {
       label: "Weight-for-age",
       yLabel: "Weight (kg)",
       viewBox: "0 0 1122.5197 793.70074",
-      grid: { xMin: 85, xMax: 1037, yMin: 580, yMax: 147, ageMin: 0, ageMax: 24, valueMin: 2, valueMax: 16 }
+      grid: { xMin: 62, xMax: 1076, yMin: 773, yMax: 94, ageMin: 0, ageMax: 24, valueMin: 2, valueMax: 16 }
     },
     length: {
       file: "/charts/who/girls_length_0_2.svg",
       label: "Length-for-age",
       yLabel: "Length (cm)",
       viewBox: "0 0 1122.5197 793.70074",
-      grid: { xMin: 85, xMax: 1037, yMin: 580, yMax: 147, ageMin: 0, ageMax: 24, valueMin: 45, valueMax: 95 }
+      grid: { xMin: 62, xMax: 1076, yMin: 773, yMax: 94, ageMin: 0, ageMax: 24, valueMin: 45, valueMax: 95 }
     },
     bmi: {
       file: "/charts/who/girls_bmi_0_2.svg",
       label: "BMI-for-age",
       yLabel: "BMI (kg/m²)",
       viewBox: "0 0 1122.5197 793.70074",
-      grid: { xMin: 85, xMax: 1037, yMin: 580, yMax: 147, ageMin: 0, ageMax: 24, valueMin: 10, valueMax: 22 }
+      grid: { xMin: 62, xMax: 1076, yMin: 773, yMax: 94, ageMin: 0, ageMax: 24, valueMin: 10, valueMax: 22 }
     },
     headCircumference: {
       file: "/charts/who/girls_head_circumference_0_2.svg",
       label: "Head Circumference",
       yLabel: "HC (cm)",
       viewBox: "0 0 1122.5197 793.70074",
-      grid: { xMin: 85, xMax: 1037, yMin: 580, yMax: 147, ageMin: 0, ageMax: 24, valueMin: 32, valueMax: 52 }
+      grid: { xMin: 62, xMax: 1076, yMin: 773, yMax: 94, ageMin: 0, ageMax: 24, valueMin: 32, valueMax: 52 }
     }
   }
 };
 
 // ============== CDC CHARTS CONFIGURATION ==============
-// Coordinates calibrated from actual chart analysis
+// Calibrated from 2x resolution PNG analysis (1632x2112 -> divide by 2)
 const CDC_CHARTS = {
   boys: {
     statureWeight: {
@@ -91,13 +90,13 @@ const CDC_CHARTS = {
       measurements: {
         stature: {
           yLabel: "Stature (cm)",
-          // Calibrated: X 2yr=112, 20yr=766; Y 77cm=687, 200cm=109
-          grid: { xMin: 112, xMax: 766, yMin: 687, yMax: 109, ageMin: 2, ageMax: 20, valueMin: 77, valueMax: 200 }
+          // X: 260-766, Y: 506(80cm)-54(190cm)
+          grid: { xMin: 260, xMax: 766, yMin: 506, yMax: 54, ageMin: 2, ageMax: 20, valueMin: 80, valueMax: 190 }
         },
         weight: {
           yLabel: "Weight (kg)",
-          // Calibrated: X same; Y 10kg=802, 105kg=511
-          grid: { xMin: 112, xMax: 766, yMin: 802, yMax: 511, ageMin: 2, ageMax: 20, valueMin: 10, valueMax: 105 }
+          // X: 260-766, Y: 1008(10kg)-652(100kg)
+          grid: { xMin: 260, xMax: 766, yMin: 1008, yMax: 652, ageMin: 2, ageMax: 20, valueMin: 10, valueMax: 100 }
         }
       }
     },
@@ -108,8 +107,8 @@ const CDC_CHARTS = {
       measurements: {
         bmi: {
           yLabel: "BMI (kg/m²)",
-          // Calibrated: X 2yr=146, 20yr=766; Y 12=845, 35=144
-          grid: { xMin: 146, xMax: 766, yMin: 845, yMax: 144, ageMin: 2, ageMax: 20, valueMin: 12, valueMax: 35 }
+          // X: 80-454, Y: 430(12)-50(35)
+          grid: { xMin: 80, xMax: 454, yMin: 430, yMax: 50, ageMin: 2, ageMax: 20, valueMin: 12, valueMax: 35 }
         }
       }
     }
@@ -122,11 +121,11 @@ const CDC_CHARTS = {
       measurements: {
         stature: {
           yLabel: "Stature (cm)",
-          grid: { xMin: 112, xMax: 766, yMin: 687, yMax: 109, ageMin: 2, ageMax: 20, valueMin: 77, valueMax: 200 }
+          grid: { xMin: 260, xMax: 766, yMin: 506, yMax: 54, ageMin: 2, ageMax: 20, valueMin: 80, valueMax: 190 }
         },
         weight: {
           yLabel: "Weight (kg)",
-          grid: { xMin: 112, xMax: 766, yMin: 802, yMax: 511, ageMin: 2, ageMax: 20, valueMin: 10, valueMax: 105 }
+          grid: { xMin: 260, xMax: 766, yMin: 1008, yMax: 652, ageMin: 2, ageMax: 20, valueMin: 10, valueMax: 100 }
         }
       }
     },
@@ -137,7 +136,7 @@ const CDC_CHARTS = {
       measurements: {
         bmi: {
           yLabel: "BMI (kg/m²)",
-          grid: { xMin: 146, xMax: 766, yMin: 845, yMax: 144, ageMin: 2, ageMax: 20, valueMin: 12, valueMax: 35 }
+          grid: { xMin: 80, xMax: 454, yMin: 430, yMax: 50, ageMin: 2, ageMax: 20, valueMin: 12, valueMax: 35 }
         }
       }
     }
@@ -156,7 +155,6 @@ const WHOChartsSection = ({ gender }) => {
   const currentChart = WHO_CHARTS[whoGender]?.[chartType] || WHO_CHARTS.boys.weight;
   const availableCharts = Object.keys(WHO_CHARTS[whoGender] || {});
 
-  // Calculate SVG coordinates from age/value - using calibrated grid coordinates
   const calculateSvgCoords = useCallback((ageMonths, value) => {
     const { grid } = currentChart;
     if (!grid) return null;
@@ -166,11 +164,11 @@ const WHOChartsSection = ({ gender }) => {
     if (age < grid.ageMin || age > grid.ageMax) return null;
     if (val < grid.valueMin || val > grid.valueMax) return null;
     
-    // Linear interpolation for X (age)
+    // X: linear interpolation (age)
     const xRatio = (age - grid.ageMin) / (grid.ageMax - grid.ageMin);
     const x = grid.xMin + xRatio * (grid.xMax - grid.xMin);
     
-    // Linear interpolation for Y (value) - note: yMin is at bottom (higher pixel value)
+    // Y: linear interpolation (value) - yMin is at bottom (higher pixel), yMax at top (lower pixel)
     const yRatio = (val - grid.valueMin) / (grid.valueMax - grid.valueMin);
     const y = grid.yMin - yRatio * (grid.yMin - grid.yMax);
     
@@ -244,7 +242,6 @@ const WHOChartsSection = ({ gender }) => {
               <TransformComponent wrapperClass="!w-full !h-full" contentClass="!w-full !h-full flex items-center justify-center">
                 <div className="relative w-full h-full flex items-center justify-center">
                   <img src={currentChart.file} alt={`WHO ${currentChart.label} Chart`} className="max-w-full max-h-full object-contain" data-testid="who-growth-chart-svg" />
-                  {/* SVG Overlay for data points - uses same viewBox as the chart */}
                   <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox={currentChart.viewBox} preserveAspectRatio="xMidYMid meet" style={{ mixBlendMode: 'multiply' }}>
                     {currentEntries.map((entry, index) => entry.coords && (
                       <g key={entry.id}>
@@ -313,7 +310,6 @@ const CDCChartsSection = ({ gender }) => {
   const availableCharts = Object.keys(CDC_CHARTS[cdcGender] || {});
   const isStatureWeightChart = chartType === "statureWeight";
 
-  // Calculate SVG coordinates from age/value for a specific measurement type
   const calculateSvgCoords = useCallback((ageYears, value, measurementType) => {
     const measurement = currentChart.measurements[measurementType];
     if (!measurement) return null;
@@ -325,11 +321,11 @@ const CDCChartsSection = ({ gender }) => {
     if (age < grid.ageMin || age > grid.ageMax) return null;
     if (val < grid.valueMin || val > grid.valueMax) return null;
     
-    // Linear interpolation for X (age)
+    // X: linear interpolation (age)
     const xRatio = (age - grid.ageMin) / (grid.ageMax - grid.ageMin);
     const x = grid.xMin + xRatio * (grid.xMax - grid.xMin);
     
-    // Linear interpolation for Y (value) - note: yMin is at bottom (higher pixel value)
+    // Y: linear interpolation (value)
     const yRatio = (val - grid.valueMin) / (grid.valueMax - grid.valueMin);
     const y = grid.yMin - yRatio * (grid.yMin - grid.yMax);
     
@@ -342,29 +338,14 @@ const CDCChartsSection = ({ gender }) => {
     if (age < 2 || age > 20) return;
 
     if (isStatureWeightChart) {
-      // For stature/weight chart, need at least one measurement
       if (!newEntry.stature && !newEntry.weight) return;
       const statureCoords = newEntry.stature ? calculateSvgCoords(newEntry.ageYears, newEntry.stature, 'stature') : null;
       const weightCoords = newEntry.weight ? calculateSvgCoords(newEntry.ageYears, newEntry.weight, 'weight') : null;
-      setEntries(prev => [...prev, { 
-        ...newEntry, 
-        id: Date.now(), 
-        chartType, 
-        gender: cdcGender, 
-        statureCoords, 
-        weightCoords 
-      }]);
+      setEntries(prev => [...prev, { ...newEntry, id: Date.now(), chartType, gender: cdcGender, statureCoords, weightCoords }]);
     } else {
-      // For BMI chart
       if (!newEntry.bmi) return;
       const bmiCoords = calculateSvgCoords(newEntry.ageYears, newEntry.bmi, 'bmi');
-      setEntries(prev => [...prev, { 
-        ...newEntry, 
-        id: Date.now(), 
-        chartType, 
-        gender: cdcGender, 
-        bmiCoords 
-      }]);
+      setEntries(prev => [...prev, { ...newEntry, id: Date.now(), chartType, gender: cdcGender, bmiCoords }]);
     }
     setNewEntry({ date: new Date().toISOString().split('T')[0], ageYears: "", stature: "", weight: "", bmi: "" });
   };
@@ -388,7 +369,6 @@ const CDCChartsSection = ({ gender }) => {
     }
   };
 
-  // Count total data points for display
   const getTotalPoints = () => {
     if (isStatureWeightChart) {
       return currentEntries.reduce((count, e) => count + (e.statureCoords ? 1 : 0) + (e.weightCoords ? 1 : 0), 0);
@@ -398,22 +378,14 @@ const CDCChartsSection = ({ gender }) => {
 
   return (
     <div className="space-y-4">
-      {/* Chart Type Selection */}
       <div className="grid grid-cols-2 gap-2">
         {availableCharts.map(type => (
-          <Button 
-            key={type}
-            variant={chartType === type ? "default" : "outline"} 
-            onClick={() => setChartType(type)} 
-            className="text-xs h-9" 
-            data-testid={`cdc-${type}-btn`}
-          >
+          <Button key={type} variant={chartType === type ? "default" : "outline"} onClick={() => setChartType(type)} className="text-xs h-9" data-testid={`cdc-${type}-btn`}>
             {CDC_CHARTS[cdcGender][type].label}
           </Button>
         ))}
       </div>
 
-      {/* Chart Display with Pinch-to-Zoom */}
       <Card>
         <CardHeader className="pb-2">
           <div className="flex justify-between items-start">
@@ -432,20 +404,16 @@ const CDCChartsSection = ({ gender }) => {
               <TransformComponent wrapperClass="!w-full !h-full" contentClass="!w-full !h-full flex items-center justify-center">
                 <div className="relative w-full h-full flex items-center justify-center">
                   <img src={currentChart.file} alt={`CDC ${currentChart.label} Chart`} className="max-w-full max-h-full object-contain" data-testid="cdc-growth-chart-svg" />
-                  {/* SVG Overlay for data points */}
                   <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox={currentChart.viewBox} preserveAspectRatio="xMidYMid meet" style={{ mixBlendMode: 'multiply' }}>
                     {isStatureWeightChart ? (
-                      // Stature & Weight chart - plot both types with different colors
                       currentEntries.map((entry, index) => (
                         <g key={entry.id}>
-                          {/* Stature point - Blue */}
                           {entry.statureCoords && (
                             <g>
                               <circle cx={entry.statureCoords.x} cy={entry.statureCoords.y} r="8" fill="#2563eb" stroke="white" strokeWidth="2" />
                               <text x={entry.statureCoords.x} y={entry.statureCoords.y + 3} textAnchor="middle" fill="white" fontSize="8" fontWeight="bold">S{index + 1}</text>
                             </g>
                           )}
-                          {/* Weight point - Red */}
                           {entry.weightCoords && (
                             <g>
                               <circle cx={entry.weightCoords.x} cy={entry.weightCoords.y} r="8" fill="#dc2626" stroke="white" strokeWidth="2" />
@@ -455,7 +423,6 @@ const CDCChartsSection = ({ gender }) => {
                         </g>
                       ))
                     ) : (
-                      // BMI chart - single color
                       currentEntries.map((entry, index) => entry.bmiCoords && (
                         <g key={entry.id}>
                           <circle cx={entry.bmiCoords.x} cy={entry.bmiCoords.y} r="8" fill={cdcGender === 'boys' ? '#2563eb' : '#db2777'} stroke="white" strokeWidth="2" />
@@ -475,7 +442,6 @@ const CDCChartsSection = ({ gender }) => {
         </CardContent>
       </Card>
 
-      {/* Add Measurement */}
       <Card>
         <CardHeader className="pb-2"><CardTitle className="text-sm">Add Measurement</CardTitle></CardHeader>
         <CardContent className="space-y-3">
@@ -485,32 +451,18 @@ const CDCChartsSection = ({ gender }) => {
           </div>
           {isStatureWeightChart ? (
             <div className="grid grid-cols-2 gap-2">
-              <div><Label className="text-xs">Stature (cm) <span className="text-blue-600">●</span></Label><Input type="number" step="0.1" min="0" value={newEntry.stature} onChange={e => setNewEntry({...newEntry, stature: e.target.value})} className="h-9 font-mono text-sm" placeholder="77-200" data-testid="cdc-stature-input" /></div>
-              <div><Label className="text-xs">Weight (kg) <span className="text-red-600">●</span></Label><Input type="number" step="0.1" min="0" value={newEntry.weight} onChange={e => setNewEntry({...newEntry, weight: e.target.value})} className="h-9 font-mono text-sm" placeholder="10-105" data-testid="cdc-weight-input" /></div>
+              <div><Label className="text-xs">Stature (cm) <span className="text-blue-600">●</span></Label><Input type="number" step="0.1" min="0" value={newEntry.stature} onChange={e => setNewEntry({...newEntry, stature: e.target.value})} className="h-9 font-mono text-sm" placeholder="80-190" data-testid="cdc-stature-input" /></div>
+              <div><Label className="text-xs">Weight (kg) <span className="text-red-600">●</span></Label><Input type="number" step="0.1" min="0" value={newEntry.weight} onChange={e => setNewEntry({...newEntry, weight: e.target.value})} className="h-9 font-mono text-sm" placeholder="10-100" data-testid="cdc-weight-input" /></div>
             </div>
           ) : (
             <div><Label className="text-xs">BMI (kg/m²)</Label><Input type="number" step="0.1" min="0" value={newEntry.bmi} onChange={e => setNewEntry({...newEntry, bmi: e.target.value})} className="h-9 font-mono text-sm" placeholder="12-35" data-testid="cdc-bmi-input" /></div>
           )}
-          <Button 
-            onClick={addEntry} 
-            className="w-full" 
-            size="sm" 
-            disabled={
-              !newEntry.date || 
-              !newEntry.ageYears || 
-              parseFloat(newEntry.ageYears) < 2 || 
-              parseFloat(newEntry.ageYears) > 20 ||
-              (isStatureWeightChart && !newEntry.stature && !newEntry.weight) ||
-              (!isStatureWeightChart && !newEntry.bmi)
-            } 
-            data-testid="cdc-add-measurement-btn"
-          >
+          <Button onClick={addEntry} className="w-full" size="sm" disabled={!newEntry.date || !newEntry.ageYears || parseFloat(newEntry.ageYears) < 2 || parseFloat(newEntry.ageYears) > 20 || (isStatureWeightChart && !newEntry.stature && !newEntry.weight) || (!isStatureWeightChart && !newEntry.bmi)} data-testid="cdc-add-measurement-btn">
             <Plus className="h-4 w-4 mr-1" />Add to Chart
           </Button>
         </CardContent>
       </Card>
 
-      {/* Plotted Measurements */}
       {currentEntries.length > 0 && (
         <Card>
           <CardHeader className="pb-2"><CardTitle className="text-sm">Plotted Measurements ({getTotalPoints()} points)</CardTitle></CardHeader>
