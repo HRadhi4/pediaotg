@@ -29,6 +29,7 @@ const PostnatalPage = () => {
 
   // Define all Postnatal approaches with search keywords - sorted alphabetically
   const postnatalApproaches = [
+    { id: "neonatal-exam", label: "24-Hours Neonatal Examination", keywords: ["24 hour", "neonatal", "examination", "common findings", "hypospadias", "hydrocele", "tongue tie", "murmur", "hip click", "sacral dimple", "jaundice", "hypotonia"] },
     { id: "assessment", label: "Assessment of Newborn", keywords: ["assessment", "examination", "physical exam", "newborn exam", "check", "evaluation", "apgar"] },
     { id: "hemoglobinopathy", label: "Hemoglobinopathy Screening", keywords: ["hemoglobinopathy", "sickle cell", "thalassemia", "screening", "newborn screen", "blood", "anemia", "carrier"] },
     { id: "bacteriuria", label: "Infant of Mother with ASB", keywords: ["bacteriuria", "asb", "asymptomatic", "uti", "urinary", "maternal", "infection", "urine"] },
