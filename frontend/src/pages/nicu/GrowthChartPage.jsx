@@ -117,18 +117,11 @@ const GrowthChartPage = () => {
 
   // Add entry
   const addEntry = () => {
-    console.log('addEntry called with:', newEntry);
     if (newEntry.date && newEntry.age) {
       const age = parseFloat(newEntry.age);
-      console.log('Parsed age:', age);
       if (age >= 2 && age <= 20) {
         const newEntryWithId = { ...newEntry, id: Date.now() };
-        console.log('Adding entry:', newEntryWithId);
-        setEntries(prev => {
-          const updated = [...prev, newEntryWithId];
-          console.log('Updated entries:', updated);
-          return updated;
-        });
+        setEntries(prev => [...prev, newEntryWithId]);
         setNewEntry({ 
           date: new Date().toISOString().split('T')[0], 
           age: "", 
@@ -136,11 +129,7 @@ const GrowthChartPage = () => {
           stature: "", 
           bmi: "" 
         });
-      } else {
-        console.log('Age validation failed:', age);
       }
-    } else {
-      console.log('Missing date or age');
     }
   };
 
