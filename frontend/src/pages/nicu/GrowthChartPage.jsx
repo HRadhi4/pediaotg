@@ -11,7 +11,7 @@ import html2canvas from 'html2canvas';
 /**
  * Growth Chart Page - Using Official CDC/WHO Data
  * WHO (0-24 months): Weight, Length, Head circumference, BMI - Percentiles: 3, 15, 50, 85, 97
- * CDC (2-20 years): Weight, Stature - Percentiles: 3, 5, 10, 25, 50, 75, 90, 95, 97
+ * CDC (2-20 years): Weight, Stature, BMI - Percentiles: 3, 5, 10, 25, 50, 75, 90, 95, 97
  */
 
 // WHO Growth Standards Data (0-24 months) - 25 data points
@@ -134,7 +134,6 @@ const CDC_DATA = {
   },
   bmi: {
     male: {
-      // CDC BMI-for-age Boys 2-20 years
       p3:  [13.0, 13.5, 13.8, 14.0, 14.2, 14.3, 14.5, 14.8, 15.2, 15.7, 16.2, 17.0, 17.8, 18.6, 19.4, 20.1, 20.7, 21.3, 21.8],
       p5:  [13.2, 13.8, 14.0, 14.2, 14.4, 14.5, 14.7, 15.0, 15.4, 15.9, 16.5, 17.2, 18.0, 18.8, 19.6, 20.3, 20.9, 21.5, 22.0],
       p10: [13.5, 14.0, 14.3, 14.5, 14.7, 14.8, 15.0, 15.3, 15.7, 16.2, 16.8, 17.5, 18.3, 19.1, 19.9, 20.6, 21.2, 21.8, 22.3],
@@ -147,7 +146,6 @@ const CDC_DATA = {
       p97: [16.0, 16.5, 16.8, 17.0, 17.2, 17.3, 17.5, 17.8, 18.2, 18.7, 19.3, 20.0, 20.8, 21.6, 22.4, 23.1, 23.7, 24.3, 24.8]
     },
     female: {
-      // CDC BMI-for-age Girls 2-20 years
       p3:  [12.2, 12.0, 11.9, 11.9, 12.0, 12.2, 12.5, 12.9, 13.5, 14.2, 15.1, 16.2, 17.3, 18.4, 19.4, 20.3, 21.1, 21.7, 22.1],
       p5:  [12.5, 12.3, 12.1, 12.1, 12.2, 12.5, 12.8, 13.2, 13.8, 14.6, 15.5, 16.7, 17.8, 18.9, 20.0, 20.9, 21.7, 22.3, 22.7],
       p10: [13.0, 12.8, 12.6, 12.6, 12.7, 13.0, 13.4, 13.8, 14.5, 15.3, 16.3, 17.5, 18.7, 19.9, 21.0, 21.9, 22.7, 23.3, 23.7],
@@ -162,8 +160,8 @@ const CDC_DATA = {
   }
 };
 
-const WHO_COLORS = { p3: '#E53935', p15: '#FF9800', p50: '#4CAF50', p85: '#FF9800', p97: '#E53935' };
-const CDC_COLORS = { p3: '#C41E3A', p5: '#E55B3C', p10: '#FD8D3C', p25: '#FDAE6B', p50: '#31A354', p75: '#FDAE6B', p90: '#FD8D3C', p95: '#E55B3C', p97: '#C41E3A' };
+const WHO_COLORS = { p3: '#dc2626', p15: '#f97316', p50: '#16a34a', p85: '#f97316', p97: '#dc2626' };
+const CDC_COLORS = { p3: '#dc2626', p5: '#ea580c', p10: '#f97316', p25: '#fbbf24', p50: '#16a34a', p75: '#fbbf24', p85: '#f97316', p90: '#ea580c', p95: '#ea580c', p97: '#dc2626' };
 
 const GrowthChartPage = () => {
   const [chartType, setChartType] = useState("WHO");
@@ -175,9 +173,12 @@ const GrowthChartPage = () => {
   const chartContainerRef = useRef(null);
 
   const isWHO = chartType === "WHO";
-  const width = isFullscreen ? Math.min(window.innerWidth - 40, 900) : 680;
-  const height = isFullscreen ? Math.min(window.innerHeight - 100, 600) : 400;
-  const margin = { top: 30, right: 60, bottom: 60, left: 60 };
+  
+  // Responsive width for mobile
+  const containerWidth = typeof window !== 'undefined' ? Math.min(window.innerWidth - 32, 800) : 680;
+  const width = isFullscreen ? Math.min(window.innerWidth - 40, 900) : containerWidth;
+  const height = isFullscreen ? Math.min(window.innerHeight - 100, 600) : 360;
+  const margin = { top: 25, right: 50, bottom: 50, left: 50 };
   const innerWidth = width - margin.left - margin.right;
   const innerHeight = height - margin.top - margin.bottom;
 
@@ -200,9 +201,27 @@ const GrowthChartPage = () => {
   const xScale = useCallback((val) => margin.left + ((val - xMin) / (xMax - xMin)) * innerWidth, [margin.left, xMin, xMax, innerWidth]);
   const yScale = useCallback((val) => margin.top + innerHeight - ((val - yValues.min) / (yValues.max - yValues.min)) * innerHeight, [margin.top, innerHeight, yValues.min, yValues.max]);
 
-  const generatePath = useCallback((data) => {
+  // Generate smooth curve path using monotone cubic interpolation
+  const generateSmoothPath = useCallback((data) => {
     if (!data?.length) return "";
-    return `M ${data.map((v, i) => `${xScale(isWHO ? i : i + 2)},${yScale(v)}`).join(' L ')}`;
+    const points = data.map((v, i) => ({ x: xScale(isWHO ? i : i + 2), y: yScale(v) }));
+    if (points.length < 2) return "";
+    
+    let path = `M ${points[0].x},${points[0].y}`;
+    for (let i = 0; i < points.length - 1; i++) {
+      const p0 = points[Math.max(0, i - 1)];
+      const p1 = points[i];
+      const p2 = points[i + 1];
+      const p3 = points[Math.min(points.length - 1, i + 2)];
+      
+      const cp1x = p1.x + (p2.x - p0.x) / 6;
+      const cp1y = p1.y + (p2.y - p0.y) / 6;
+      const cp2x = p2.x - (p3.x - p1.x) / 6;
+      const cp2y = p2.y - (p3.y - p1.y) / 6;
+      
+      path += ` C ${cp1x},${cp1y} ${cp2x},${cp2y} ${p2.x},${p2.y}`;
+    }
+    return path;
   }, [isWHO, xScale, yScale]);
 
   const addEntry = () => {
@@ -216,12 +235,23 @@ const GrowthChartPage = () => {
   const exportToPDF = async () => {
     if (!chartContainerRef.current) return;
     try {
-      const canvas = await html2canvas(chartContainerRef.current, { scale: 2, backgroundColor: gender === 'male' ? '#e8f4fc' : '#fce8f4' });
+      const canvas = await html2canvas(chartContainerRef.current, { 
+        scale: 2, 
+        backgroundColor: gender === 'male' ? '#e8f4fc' : '#fce8f4',
+        useCORS: true,
+        allowTaint: true,
+        scrollX: 0,
+        scrollY: 0,
+        windowWidth: chartContainerRef.current.scrollWidth,
+        windowHeight: chartContainerRef.current.scrollHeight
+      });
       const pdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
       const title = `${chartLabels[activeChart].title} - ${gender === 'male' ? 'Boys' : 'Girls'} (${chartType})`;
       pdf.setFontSize(16);
       pdf.text(title, 148, 15, { align: 'center' });
-      pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 15, 25, 270, Math.min((canvas.height * 270) / canvas.width, 160));
+      const imgWidth = 270;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 15, 25, imgWidth, Math.min(imgHeight, 160));
       if (entries.length > 0) {
         let yPos = 190;
         pdf.setFontSize(10);
@@ -245,7 +275,16 @@ const GrowthChartPage = () => {
   const savePNG = async () => {
     if (!chartContainerRef.current) return;
     try {
-      const canvas = await html2canvas(chartContainerRef.current, { scale: 2, backgroundColor: gender === 'male' ? '#e8f4fc' : '#fce8f4' });
+      const canvas = await html2canvas(chartContainerRef.current, { 
+        scale: 2, 
+        backgroundColor: gender === 'male' ? '#e8f4fc' : '#fce8f4',
+        useCORS: true,
+        allowTaint: true,
+        scrollX: 0,
+        scrollY: 0,
+        windowWidth: chartContainerRef.current.scrollWidth,
+        windowHeight: chartContainerRef.current.scrollHeight
+      });
       const link = document.createElement('a');
       link.download = `growth-chart-${chartType}-${gender}-${activeChart}.png`;
       link.href = canvas.toDataURL('image/png');
@@ -290,60 +329,108 @@ const GrowthChartPage = () => {
     bmi: { title: "BMI-for-Age", yLabel: "BMI (kg/m²)" }
   };
 
-  const xTicks = isWHO ? [0, 3, 6, 9, 12, 15, 18, 21, 24] : [2, 4, 6, 8, 10, 12, 14, 16, 18, 20];
-  const yTicks = Array.from({ length: 9 }, (_, i) => Math.round(yValues.min + i * ((yValues.max - yValues.min) / 8)));
+  const xTicks = isWHO ? [0, 6, 12, 18, 24] : [2, 5, 8, 11, 14, 17, 20];
+  const yTickCount = 6;
+  const yTicks = Array.from({ length: yTickCount + 1 }, (_, i) => Math.round(yValues.min + i * ((yValues.max - yValues.min) / yTickCount)));
 
-  const renderSVG = () => (
-    <div ref={chartContainerRef} className="rounded-lg overflow-x-auto" style={{ backgroundColor: gender === 'male' ? '#e8f4fc' : '#fce8f4', padding: '10px' }}>
-      <svg width={width} height={height} style={{ display: 'block' }}>
-        <text x={width / 2} y={18} textAnchor="middle" fontSize="14" fontWeight="bold" fill="#333">{chartLabels[activeChart].title} • {gender === 'male' ? 'Boys' : 'Girls'} ({chartType})</text>
-        {yTicks.map(t => <line key={t} x1={margin.left} y1={yScale(t)} x2={width - margin.right} y2={yScale(t)} stroke="#ccc" strokeDasharray="2,2" />)}
+  const renderChart = () => (
+    <div 
+      ref={chartContainerRef} 
+      className="rounded-lg w-full" 
+      style={{ 
+        backgroundColor: gender === 'male' ? '#e8f4fc' : '#fce8f4', 
+        padding: '12px',
+        minWidth: width
+      }}
+    >
+      <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} style={{ display: 'block', width: '100%', height: 'auto' }}>
+        {/* Title */}
+        <text x={width / 2} y={16} textAnchor="middle" fontSize="13" fontWeight="600" fill="#374151">
+          {chartLabels[activeChart].title} • {gender === 'male' ? 'Boys' : 'Girls'} ({chartType})
+        </text>
+        
+        {/* Grid lines - lighter */}
+        {yTicks.map(t => (
+          <line key={t} x1={margin.left} y1={yScale(t)} x2={width - margin.right} y2={yScale(t)} stroke="#d1d5db" strokeWidth="0.5" />
+        ))}
+        
+        {/* WHO Curves - smooth */}
         {getData && isWHO && <>
-          <path d={generatePath(getData.p97)} fill="none" stroke={WHO_COLORS.p97} strokeWidth="2" />
-          <path d={generatePath(getData.p85)} fill="none" stroke={WHO_COLORS.p85} strokeWidth="1.5" strokeDasharray="4,2" />
-          <path d={generatePath(getData.p50)} fill="none" stroke={WHO_COLORS.p50} strokeWidth="2.5" />
-          <path d={generatePath(getData.p15)} fill="none" stroke={WHO_COLORS.p15} strokeWidth="1.5" strokeDasharray="4,2" />
-          <path d={generatePath(getData.p3)} fill="none" stroke={WHO_COLORS.p3} strokeWidth="2" />
+          <path d={generateSmoothPath(getData.p97)} fill="none" stroke={WHO_COLORS.p97} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+          <path d={generateSmoothPath(getData.p85)} fill="none" stroke={WHO_COLORS.p85} strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" opacity="0.7" />
+          <path d={generateSmoothPath(getData.p50)} fill="none" stroke={WHO_COLORS.p50} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          <path d={generateSmoothPath(getData.p15)} fill="none" stroke={WHO_COLORS.p15} strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" opacity="0.7" />
+          <path d={generateSmoothPath(getData.p3)} fill="none" stroke={WHO_COLORS.p3} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        </>}
+        
+        {/* CDC Curves - smooth */}
+        {getData && !isWHO && <>
+          <path d={generateSmoothPath(getData.p97)} fill="none" stroke={CDC_COLORS.p97} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+          <path d={generateSmoothPath(getData.p95)} fill="none" stroke={CDC_COLORS.p95} strokeWidth="0.8" strokeLinecap="round" opacity="0.5" />
+          <path d={generateSmoothPath(getData.p90)} fill="none" stroke={CDC_COLORS.p90} strokeWidth="1" strokeLinecap="round" opacity="0.7" />
+          <path d={generateSmoothPath(getData.p75)} fill="none" stroke={CDC_COLORS.p75} strokeWidth="0.8" strokeLinecap="round" opacity="0.5" />
+          <path d={generateSmoothPath(getData.p50)} fill="none" stroke={CDC_COLORS.p50} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          <path d={generateSmoothPath(getData.p25)} fill="none" stroke={CDC_COLORS.p25} strokeWidth="0.8" strokeLinecap="round" opacity="0.5" />
+          <path d={generateSmoothPath(getData.p10)} fill="none" stroke={CDC_COLORS.p10} strokeWidth="1" strokeLinecap="round" opacity="0.7" />
+          <path d={generateSmoothPath(getData.p5)} fill="none" stroke={CDC_COLORS.p5} strokeWidth="0.8" strokeLinecap="round" opacity="0.5" />
+          <path d={generateSmoothPath(getData.p3)} fill="none" stroke={CDC_COLORS.p3} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        </>}
+        
+        {/* Patient points */}
+        {patientPoints.map((p, i) => (
+          <g key={i}>
+            <circle cx={xScale(p.x)} cy={yScale(p.y)} r="6" fill="#1f2937" stroke="#fff" strokeWidth="2" />
+            <circle cx={xScale(p.x)} cy={yScale(p.y)} r="3" fill="#fff" />
+          </g>
+        ))}
+        
+        {/* X-axis */}
+        <line x1={margin.left} y1={height - margin.bottom} x2={width - margin.right} y2={height - margin.bottom} stroke="#374151" strokeWidth="1" />
+        {xTicks.map(t => (
+          <g key={t}>
+            <line x1={xScale(t)} y1={height - margin.bottom} x2={xScale(t)} y2={height - margin.bottom + 4} stroke="#374151" />
+            <text x={xScale(t)} y={height - margin.bottom + 16} textAnchor="middle" fontSize="10" fill="#6b7280">{t}</text>
+          </g>
+        ))}
+        <text x={width / 2} y={height - 8} textAnchor="middle" fontSize="11" fill="#374151">Age ({isWHO ? 'months' : 'years'})</text>
+        
+        {/* Y-axis */}
+        <line x1={margin.left} y1={margin.top} x2={margin.left} y2={height - margin.bottom} stroke="#374151" strokeWidth="1" />
+        {yTicks.map(t => (
+          <g key={t}>
+            <line x1={margin.left - 4} y1={yScale(t)} x2={margin.left} y2={yScale(t)} stroke="#374151" />
+            <text x={margin.left - 7} y={yScale(t) + 3} textAnchor="end" fontSize="10" fill="#6b7280">{t}</text>
+          </g>
+        ))}
+        <text x={14} y={height / 2} textAnchor="middle" fontSize="11" fill="#374151" transform={`rotate(-90,14,${height / 2})`}>{chartLabels[activeChart].yLabel}</text>
+        
+        {/* Percentile labels */}
+        {getData && isWHO && <>
+          <text x={width - margin.right + 4} y={yScale(getData.p97[dataLength - 1])} fontSize="9" fill={WHO_COLORS.p97} fontWeight="600">97</text>
+          <text x={width - margin.right + 4} y={yScale(getData.p85[dataLength - 1])} fontSize="8" fill={WHO_COLORS.p85}>85</text>
+          <text x={width - margin.right + 4} y={yScale(getData.p50[dataLength - 1])} fontSize="9" fill={WHO_COLORS.p50} fontWeight="600">50</text>
+          <text x={width - margin.right + 4} y={yScale(getData.p15[dataLength - 1])} fontSize="8" fill={WHO_COLORS.p15}>15</text>
+          <text x={width - margin.right + 4} y={yScale(getData.p3[dataLength - 1])} fontSize="9" fill={WHO_COLORS.p3} fontWeight="600">3</text>
         </>}
         {getData && !isWHO && <>
-          <path d={generatePath(getData.p97)} fill="none" stroke={CDC_COLORS.p97} strokeWidth="1.5" />
-          <path d={generatePath(getData.p95)} fill="none" stroke={CDC_COLORS.p95} strokeWidth="1" strokeDasharray="3,2" />
-          <path d={generatePath(getData.p90)} fill="none" stroke={CDC_COLORS.p90} strokeWidth="1.5" />
-          <path d={generatePath(getData.p75)} fill="none" stroke={CDC_COLORS.p75} strokeWidth="1" strokeDasharray="4,2" />
-          <path d={generatePath(getData.p50)} fill="none" stroke={CDC_COLORS.p50} strokeWidth="2.5" />
-          <path d={generatePath(getData.p25)} fill="none" stroke={CDC_COLORS.p25} strokeWidth="1" strokeDasharray="4,2" />
-          <path d={generatePath(getData.p10)} fill="none" stroke={CDC_COLORS.p10} strokeWidth="1.5" />
-          <path d={generatePath(getData.p5)} fill="none" stroke={CDC_COLORS.p5} strokeWidth="1" strokeDasharray="3,2" />
-          <path d={generatePath(getData.p3)} fill="none" stroke={CDC_COLORS.p3} strokeWidth="1.5" />
+          <text x={width - margin.right + 4} y={yScale(getData.p97[dataLength - 1])} fontSize="8" fill={CDC_COLORS.p97}>97</text>
+          <text x={width - margin.right + 4} y={yScale(getData.p90[dataLength - 1])} fontSize="8" fill={CDC_COLORS.p90}>90</text>
+          <text x={width - margin.right + 4} y={yScale(getData.p50[dataLength - 1])} fontSize="9" fill={CDC_COLORS.p50} fontWeight="600">50</text>
+          <text x={width - margin.right + 4} y={yScale(getData.p10[dataLength - 1])} fontSize="8" fill={CDC_COLORS.p10}>10</text>
+          <text x={width - margin.right + 4} y={yScale(getData.p3[dataLength - 1])} fontSize="8" fill={CDC_COLORS.p3}>3</text>
         </>}
-        {patientPoints.map((p, i) => <g key={i}><circle cx={xScale(p.x)} cy={yScale(p.y)} r="7" fill="#1a1a1a" stroke="#fff" strokeWidth="2" /><circle cx={xScale(p.x)} cy={yScale(p.y)} r="4" fill="#fff" /></g>)}
-        <line x1={margin.left} y1={height - margin.bottom} x2={width - margin.right} y2={height - margin.bottom} stroke="#333" strokeWidth="1.5" />
-        {xTicks.map(t => <g key={t}><line x1={xScale(t)} y1={height - margin.bottom} x2={xScale(t)} y2={height - margin.bottom + 5} stroke="#333" /><text x={xScale(t)} y={height - margin.bottom + 18} textAnchor="middle" fontSize="11" fill="#666">{t}</text></g>)}
-        <text x={width / 2} y={height - 15} textAnchor="middle" fontSize="12" fill="#333">Age ({isWHO ? 'months' : 'years'})</text>
-        <line x1={margin.left} y1={margin.top} x2={margin.left} y2={height - margin.bottom} stroke="#333" strokeWidth="1.5" />
-        {yTicks.map(t => <g key={t}><line x1={margin.left - 5} y1={yScale(t)} x2={margin.left} y2={yScale(t)} stroke="#333" /><text x={margin.left - 8} y={yScale(t) + 4} textAnchor="end" fontSize="11" fill="#666">{t}</text></g>)}
-        <text x={18} y={height / 2} textAnchor="middle" fontSize="12" fill="#333" transform={`rotate(-90,18,${height / 2})`}>{chartLabels[activeChart].yLabel}</text>
-        {getData && isWHO && <>
-          <text x={width - margin.right + 5} y={yScale(getData.p97[dataLength - 1])} fontSize="10" fill={WHO_COLORS.p97} fontWeight="bold">97th</text>
-          <text x={width - margin.right + 5} y={yScale(getData.p85[dataLength - 1])} fontSize="10" fill={WHO_COLORS.p85}>85th</text>
-          <text x={width - margin.right + 5} y={yScale(getData.p50[dataLength - 1])} fontSize="10" fill={WHO_COLORS.p50} fontWeight="bold">50th</text>
-          <text x={width - margin.right + 5} y={yScale(getData.p15[dataLength - 1])} fontSize="10" fill={WHO_COLORS.p15}>15th</text>
-          <text x={width - margin.right + 5} y={yScale(getData.p3[dataLength - 1])} fontSize="10" fill={WHO_COLORS.p3} fontWeight="bold">3rd</text>
-        </>}
-        {getData && !isWHO && <>
-          <text x={width - margin.right + 5} y={yScale(getData.p97[dataLength - 1])} fontSize="9" fill={CDC_COLORS.p97}>97th</text>
-          <text x={width - margin.right + 5} y={yScale(getData.p90[dataLength - 1])} fontSize="9" fill={CDC_COLORS.p90}>90th</text>
-          <text x={width - margin.right + 5} y={yScale(getData.p50[dataLength - 1])} fontSize="9" fill={CDC_COLORS.p50} fontWeight="bold">50th</text>
-          <text x={width - margin.right + 5} y={yScale(getData.p10[dataLength - 1])} fontSize="9" fill={CDC_COLORS.p10}>10th</text>
-          <text x={width - margin.right + 5} y={yScale(getData.p3[dataLength - 1])} fontSize="9" fill={CDC_COLORS.p3}>3rd</text>
-        </>}
-        <text x={width / 2} y={height - 3} textAnchor="middle" fontSize="9" fill="#888">Source: {isWHO ? 'WHO Child Growth Standards' : 'CDC Growth Charts'}</text>
+        
+        {/* Source */}
+        <text x={width / 2} y={height - 1} textAnchor="middle" fontSize="8" fill="#9ca3af">
+          {isWHO ? 'WHO Child Growth Standards' : 'CDC Growth Charts'}
+        </text>
       </svg>
     </div>
   );
 
   return (
     <div className="space-y-4 p-4" data-testid="growth-chart-page">
+      {/* Controls */}
       <Card>
         <CardHeader className="pb-2">
           <CardTitle className="text-base flex items-center gap-2"><HealthGrowthIcon className="h-5 w-5 text-teal-500" />{chartLabels[activeChart].title}</CardTitle>
@@ -367,6 +454,7 @@ const GrowthChartPage = () => {
         </CardContent>
       </Card>
 
+      {/* Fullscreen Modal */}
       {isFullscreen && (
         <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4" onClick={() => setIsFullscreen(false)}>
           <div className="relative bg-white dark:bg-gray-900 rounded-lg p-4 max-w-full max-h-full overflow-auto" onClick={e => e.stopPropagation()}>
@@ -378,25 +466,32 @@ const GrowthChartPage = () => {
                 <Button variant="outline" size="sm" onClick={() => setIsFullscreen(false)} className="h-9 w-9 p-0"><Minimize2 className="h-4 w-4" /></Button>
               </div>
             </div>
-            {renderSVG()}
+            {renderChart()}
           </div>
         </div>
       )}
 
+      {/* Chart Card - Export buttons OUTSIDE chart container */}
       <Card>
         <CardHeader className="pb-2">
           <div className="flex justify-between items-center">
-            <div><CardTitle className="text-sm">{chartLabels[activeChart].title}</CardTitle><CardDescription className="text-xs">{isWHO ? 'WHO' : 'CDC'} • {gender === 'male' ? 'Boys' : 'Girls'} • Percentiles: {isWHO ? '3, 15, 50, 85, 97' : '3, 5, 10, 25, 50, 75, 90, 95, 97'}</CardDescription></div>
+            <div>
+              <CardTitle className="text-sm">{chartLabels[activeChart].title}</CardTitle>
+              <CardDescription className="text-xs">{isWHO ? 'WHO' : 'CDC'} • {gender === 'male' ? 'Boys' : 'Girls'} • Percentiles: {isWHO ? '3, 15, 50, 85, 97' : '3, 5, 10, 25, 50, 75, 90, 95, 97'}</CardDescription>
+            </div>
             <div className="flex gap-1">
-              <Button variant="outline" size="sm" onClick={exportToPDF} className="h-8 px-2"><FileText className="h-3.5 w-3.5 mr-1" />PDF</Button>
-              <Button variant="outline" size="sm" onClick={savePNG} className="h-8 w-8 p-0"><Download className="h-3.5 w-3.5" /></Button>
-              <Button variant="outline" size="sm" onClick={() => setIsFullscreen(true)} className="h-8 w-8 p-0"><Maximize2 className="h-3.5 w-3.5" /></Button>
+              <Button variant="outline" size="sm" onClick={exportToPDF} className="h-8 px-2" data-testid="export-pdf-btn"><FileText className="h-3.5 w-3.5 mr-1" />PDF</Button>
+              <Button variant="outline" size="sm" onClick={savePNG} className="h-8 w-8 p-0" data-testid="export-png-btn"><Download className="h-3.5 w-3.5" /></Button>
+              <Button variant="outline" size="sm" onClick={() => setIsFullscreen(true)} className="h-8 w-8 p-0" data-testid="fullscreen-btn"><Maximize2 className="h-3.5 w-3.5" /></Button>
             </div>
           </div>
         </CardHeader>
-        <CardContent className="p-3">{renderSVG()}</CardContent>
+        <CardContent className="p-3 overflow-x-auto">
+          {renderChart()}
+        </CardContent>
       </Card>
 
+      {/* Add Measurement */}
       <Card>
         <CardHeader className="pb-2"><CardTitle className="text-sm">Plot Patient Measurement</CardTitle></CardHeader>
         <CardContent className="space-y-3">
@@ -414,6 +509,7 @@ const GrowthChartPage = () => {
         </CardContent>
       </Card>
 
+      {/* Plotted Measurements */}
       {entries.length > 0 && (
         <Card>
           <CardHeader className="pb-2"><CardTitle className="text-sm">Plotted Measurements ({entries.length})</CardTitle></CardHeader>
@@ -440,6 +536,7 @@ const GrowthChartPage = () => {
         </Card>
       )}
 
+      {/* Reference */}
       <Card>
         <CardHeader className="pb-2"><CardTitle className="text-sm">Reference</CardTitle></CardHeader>
         <CardContent className="text-xs text-muted-foreground space-y-1">
