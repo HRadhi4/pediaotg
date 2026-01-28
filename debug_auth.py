@@ -2,7 +2,7 @@ import requests
 import json
 
 # Test the user token authentication
-base_url = "https://pedsmed.preview.emergentagent.com"
+base_url = "https://pediatric-tools-2.preview.emergentagent.com"
 
 # First, create a user and get token
 signup_data = {
