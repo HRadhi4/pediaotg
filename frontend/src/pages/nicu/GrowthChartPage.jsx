@@ -240,7 +240,7 @@ const WHOChartsSection = ({ gender }) => {
         </CardHeader>
         <CardContent className="p-2">
           <div ref={chartContainerRef} className={`relative border rounded-lg overflow-hidden ${whoGender === 'boys' ? 'bg-blue-50' : 'bg-pink-50'} h-[350px]`}>
-            <TransformWrapper initialScale={1} minScale={0.5} maxScale={5} centerOnInit doubleClick={{ mode: "reset" }} panning={{ velocityDisabled: true }} wheel={{ step: 0.1 }}>
+            <TransformWrapper initialScale={1} minScale={1} maxScale={5} centerOnInit doubleClick={{ mode: "reset" }} panning={{ velocityDisabled: true }} wheel={{ step: 0.1 }}>
               <TransformComponent wrapperClass="!w-full !h-full" contentClass="!w-full !h-full flex items-center justify-center">
                 <div className="relative w-full h-full flex items-center justify-center">
                   <img src={currentChart.file} alt={`WHO ${currentChart.label} Chart`} className="max-w-full max-h-full object-contain" data-testid="who-growth-chart-svg" />
@@ -428,7 +428,7 @@ const CDCChartsSection = ({ gender }) => {
         </CardHeader>
         <CardContent className="p-2">
           <div ref={chartContainerRef} className={`relative border rounded-lg overflow-hidden ${cdcGender === 'boys' ? 'bg-blue-50' : 'bg-pink-50'} h-[400px]`}>
-            <TransformWrapper initialScale={1} minScale={0.5} maxScale={5} centerOnInit doubleClick={{ mode: "reset" }} panning={{ velocityDisabled: true }} wheel={{ step: 0.1 }}>
+            <TransformWrapper initialScale={1} minScale={1} maxScale={5} centerOnInit doubleClick={{ mode: "reset" }} panning={{ velocityDisabled: true }} wheel={{ step: 0.1 }}>
               <TransformComponent wrapperClass="!w-full !h-full" contentClass="!w-full !h-full flex items-center justify-center">
                 <div className="relative w-full h-full flex items-center justify-center">
                   <img src={currentChart.file} alt={`CDC ${currentChart.label} Chart`} className="max-w-full max-h-full object-contain" data-testid="cdc-growth-chart-svg" />
