@@ -46,6 +46,8 @@
     "jspdf": "^4.0.0",
     "lucide-react": "^0.507.0",
     "next-themes": "^0.4.6",
+    "pdf-lib": "^1.17.1",
+    "pdfjs-dist": "^5.4.530",
     "react": "^19.0.0",
     "react-day-picker": "8.10.1",
     "react-dom": "^19.0.0",
