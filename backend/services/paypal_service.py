@@ -554,7 +554,7 @@ class PayPalService:
             result["client_id_preview"] = f"{self.client_id[:15]}..."
         
         try:
-            token = await self._get_access_token()
+            await self._get_access_token()  # Verify credentials work
             result["success"] = True
             result["token_obtained"] = True
             result["message"] = f"PayPal {self.mode} mode configured correctly"
