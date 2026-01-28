@@ -93,26 +93,26 @@ Build a full SaaS-style web app "Pediatrics on the Go" with:
 
 ### Session 13 Updates (January 28, 2026 - Continued)
 - ✅ **WHO Growth Charts Integration (Birth to 2 Years)**:
-  - Completely rewrote `/app/frontend/src/pages/nicu/GrowthChartPage.jsx` to support BOTH WHO and CDC charts
   - **7 WHO SVG Charts** added to `/app/frontend/public/charts/who/`:
-    - `boys_weight_0_2.svg` - Weight-for-age Boys (0-24 months)
-    - `boys_length_0_2.svg` - Length-for-age Boys (0-24 months)
-    - `boys_bmi_0_2.svg` - BMI-for-age Boys (0-24 months) **NEW**
-    - `girls_weight_0_2.svg` - Weight-for-age Girls (0-24 months)
-    - `girls_length_0_2.svg` - Length-for-age Girls (0-24 months)
-    - `girls_bmi_0_2.svg` - BMI-for-age Girls (0-24 months)
-    - `girls_head_circumference_0_2.svg` - Head Circumference Girls (0-24 months) **NEW**
-  - **Features**:
-    - **Pinch-to-zoom** functionality using `react-zoom-pan-pinch` library (no zoom buttons)
-    - **Save as PNG** button with camera icon for exporting charts
-    - **Smaller plotting points** (radius=6, font-size=7) for accurate data visualization
-    - **Data Point Plotting**: SVG overlay with numbered circles
-    - Gender-specific color coding (Blue for Boys, Pink for Girls)
-    - WHO percentiles: 3rd, 15th, 50th, 85th, 97th
-  - **Unified UI**: Tabs for switching between WHO (0-2 years) and CDC (2-20 years)
-  - **Dependencies Added**:
-    - `react-zoom-pan-pinch@3.7.0` - Pinch-to-zoom functionality
-    - `html-to-image@1.11.13` - PNG export functionality
+    - `boys_weight_0_2.svg`, `boys_length_0_2.svg`, `boys_bmi_0_2.svg`
+    - `girls_weight_0_2.svg`, `girls_length_0_2.svg`, `girls_bmi_0_2.svg`, `girls_head_circumference_0_2.svg`
+  - **Features**: Pinch-to-zoom, Save as PNG, smaller plotting points (r=6)
+  
+- ✅ **CDC Growth Charts Integration (2-20 Years)**:
+  - **4 CDC SVG Charts** added to `/app/frontend/public/charts/cdc/`:
+    - `boys_stature_weight_2_20.svg` - Stature & Weight for Boys
+    - `boys_bmi_2_20.svg` - BMI for Boys
+    - `girls_stature_weight_2_20.svg` - Stature & Weight for Girls
+    - `girls_bmi_2_20.svg` - BMI for Girls
+  - **Features**: Same as WHO - Pinch-to-zoom, Save as PNG, data point plotting
+  - **Measurement Selection**: Stature or Weight dropdown for dual-axis charts
+  - CDC percentiles: 3rd, 5th, 10th, 25th, 50th, 75th, 85th, 90th, 95th, 97th
+
+- **Unified Growth Charts Page** (`/app/frontend/src/pages/nicu/GrowthChartPage.jsx`):
+  - Combined WHO (0-2 years) and CDC (2-20 years) in tabbed interface
+  - Gender selection (Boys/Girls) with color-coded styling
+  - No zoom buttons - pure pinch-to-zoom interaction
+  - Dependencies: `react-zoom-pan-pinch@3.7.0`, `html-to-image@1.11.13`
 
 ### Session 12 Updates (January 28, 2026)
 - ✅ **NICU Growth Chart Overhaul - Using Official CDC PDFs**:
