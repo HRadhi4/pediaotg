@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Plus, Trash2, Download, ExternalLink } from "lucide-react";
+import { Plus, Trash2, Download, ExternalLink, FileText } from "lucide-react";
 import { GrowthChartIcon as HealthGrowthIcon } from "@/components/HealthIcons";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -242,6 +242,15 @@ const GrowthChartPage = () => {
     }
   };
 
+  // Download blank chart
+  const downloadBlankChart = async () => {
+    const link = document.createElement('a');
+    link.href = getPdfUrl();
+    link.download = `cdc-growth-chart-${gender}-${activeChart}.pdf`;
+    link.target = '_blank';
+    link.click();
+  };
+
   const chartLabels = {
     statureWeight: "Stature & Weight for Age",
     bmi: "BMI for Age"
@@ -257,7 +266,7 @@ const GrowthChartPage = () => {
             CDC Growth Charts (2-20 years)
           </CardTitle>
           <CardDescription className="text-xs">
-            {gender === 'male' ? 'Boys' : 'Girls'} • {chartLabels[activeChart]}
+            Official CDC growth charts with patient data plotting
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-3">
@@ -303,59 +312,71 @@ const GrowthChartPage = () => {
         </CardContent>
       </Card>
 
-      {/* Chart Display */}
+      {/* Chart Actions */}
       <Card>
         <CardHeader className="pb-2">
-          <div className="flex justify-between items-center">
-            <div>
-              <CardTitle className="text-sm">{chartLabels[activeChart]}</CardTitle>
-              <CardDescription className="text-xs">
-                CDC • {gender === 'male' ? 'Boys' : 'Girls'} • Official CDC growth chart
-              </CardDescription>
+          <CardTitle className="text-sm">{chartLabels[activeChart]}</CardTitle>
+          <CardDescription className="text-xs">
+            {gender === 'male' ? 'Boys' : 'Girls'} • Age 2-20 years
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          {/* Chart Info Box */}
+          <div className={`p-4 rounded-lg border-2 ${gender === 'male' ? 'bg-blue-50 border-blue-200' : 'bg-pink-50 border-pink-200'}`}>
+            <div className="flex items-center gap-3 mb-3">
+              <FileText className={`h-10 w-10 ${gender === 'male' ? 'text-blue-600' : 'text-pink-600'}`} />
+              <div>
+                <p className="font-medium text-sm">
+                  {activeChart === 'statureWeight' ? 'Stature-for-Age & Weight-for-Age' : 'BMI-for-Age'}
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  CDC Growth Chart • {gender === 'male' ? 'Boys' : 'Girls'} • 2-20 years
+                </p>
+              </div>
             </div>
-            <div className="flex gap-1">
+            <p className="text-xs text-muted-foreground mb-3">
+              Percentiles: 3rd, 5th, 10th, 25th, 50th, 75th, 85th, 90th, 95th, 97th
+            </p>
+            <div className="flex flex-col sm:flex-row gap-2">
               <Button 
-                variant="outline" 
-                size="sm" 
                 onClick={() => window.open(getPdfUrl(), '_blank')}
-                className="h-8 px-2"
+                variant="outline"
+                className="flex-1"
                 data-testid="view-pdf-btn"
               >
-                <ExternalLink className="h-3.5 w-3.5 mr-1" />
-                View
+                <ExternalLink className="h-4 w-4 mr-2" />
+                View Chart
               </Button>
               <Button 
-                variant="outline" 
-                size="sm" 
-                onClick={exportPDF}
-                disabled={exporting || entries.length === 0}
-                className="h-8 px-2"
-                data-testid="export-pdf-btn"
+                onClick={downloadBlankChart}
+                variant="outline"
+                className="flex-1"
+                data-testid="download-blank-btn"
               >
-                <Download className="h-3.5 w-3.5 mr-1" />
-                {exporting ? '...' : 'Export'}
+                <Download className="h-4 w-4 mr-2" />
+                Download Blank
               </Button>
             </div>
           </div>
-        </CardHeader>
-        <CardContent className="p-3">
-          {/* PDF Preview using Google Docs Viewer */}
-          <div className="w-full bg-white rounded-lg overflow-hidden border" style={{ height: '500px' }}>
-            <iframe
-              src={`https://docs.google.com/viewer?url=${encodeURIComponent(getPdfUrl())}&embedded=true`}
-              className="w-full h-full border-0"
-              title="CDC Growth Chart"
-            />
-          </div>
           
-          {/* Instructions */}
-          <div className="mt-3 p-3 bg-blue-50 rounded-lg text-xs text-blue-800">
-            <p className="font-medium mb-1">How to use:</p>
-            <ol className="list-decimal list-inside space-y-1">
-              <li>Add patient measurements using the form below</li>
-              <li>Click "Export" to download the chart with your data points plotted directly on the PDF</li>
-              <li>Click "View" to open the original PDF in a new tab</li>
-            </ol>
+          {/* Quick Info */}
+          <div className="grid grid-cols-2 gap-2 text-xs">
+            <div className="p-2 rounded bg-green-50 border border-green-200">
+              <span className="font-medium text-green-700">Normal:</span>
+              <span className="text-green-600 ml-1">5th-85th percentile</span>
+            </div>
+            <div className="p-2 rounded bg-yellow-50 border border-yellow-200">
+              <span className="font-medium text-yellow-700">At Risk:</span>
+              <span className="text-yellow-600 ml-1">85th-95th percentile</span>
+            </div>
+            <div className="p-2 rounded bg-red-50 border border-red-200">
+              <span className="font-medium text-red-700">Underweight:</span>
+              <span className="text-red-600 ml-1">&lt;5th percentile</span>
+            </div>
+            <div className="p-2 rounded bg-red-50 border border-red-200">
+              <span className="font-medium text-red-700">Obese:</span>
+              <span className="text-red-600 ml-1">&gt;95th percentile</span>
+            </div>
           </div>
         </CardContent>
       </Card>
@@ -363,9 +384,9 @@ const GrowthChartPage = () => {
       {/* Add Measurement */}
       <Card>
         <CardHeader className="pb-2">
-          <CardTitle className="text-sm">Add Patient Measurement</CardTitle>
+          <CardTitle className="text-sm">Plot Patient Data</CardTitle>
           <CardDescription className="text-xs">
-            Data will be plotted on the PDF when exported • Age range: 2-20 years
+            Add measurements to plot directly on the PDF chart
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-3">
@@ -466,7 +487,7 @@ const GrowthChartPage = () => {
           <CardHeader className="pb-2">
             <CardTitle className="text-sm">Patient Measurements ({entries.length})</CardTitle>
             <CardDescription className="text-xs">
-              These will be plotted on the PDF when you export
+              Export to get a PDF with these points plotted on the chart
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-2">
@@ -516,7 +537,7 @@ const GrowthChartPage = () => {
               data-testid="export-all-btn"
             >
               <Download className="h-4 w-4 mr-2" />
-              {exporting ? 'Exporting PDF...' : 'Export PDF with All Data Points'}
+              {exporting ? 'Creating PDF...' : 'Export Chart with Patient Data'}
             </Button>
           </CardContent>
         </Card>
@@ -525,22 +546,17 @@ const GrowthChartPage = () => {
       {/* Reference Info */}
       <Card>
         <CardHeader className="pb-2">
-          <CardTitle className="text-sm">Reference</CardTitle>
+          <CardTitle className="text-sm">BMI Categories</CardTitle>
         </CardHeader>
         <CardContent className="text-xs text-muted-foreground space-y-2">
-          <p className="font-medium">CDC Percentiles:</p>
-          <div className="grid grid-cols-2 gap-2">
-            <div>
-              <p>• <span className="text-green-600 font-medium">5th-85th:</span> Healthy weight</p>
-              <p>• <span className="text-yellow-600 font-medium">85th-95th:</span> Overweight</p>
-            </div>
-            <div>
-              <p>• <span className="text-red-600 font-medium">&lt;5th:</span> Underweight</p>
-              <p>• <span className="text-red-600 font-medium">&gt;95th:</span> Obese</p>
-            </div>
+          <div className="grid grid-cols-1 gap-1">
+            <p>• <span className="text-red-600 font-medium">Underweight:</span> BMI &lt; 5th percentile</p>
+            <p>• <span className="text-green-600 font-medium">Healthy Weight:</span> BMI 5th to &lt; 85th percentile</p>
+            <p>• <span className="text-yellow-600 font-medium">Overweight:</span> BMI 85th to &lt; 95th percentile</p>
+            <p>• <span className="text-red-600 font-medium">Obesity:</span> BMI ≥ 95th percentile</p>
           </div>
           <p className="pt-2 border-t text-[10px]">
-            Source: CDC Growth Charts (cdc.gov) • Official CDC PDF charts
+            Source: CDC Growth Charts (cdc.gov) • Official 2000 CDC growth charts
           </p>
         </CardContent>
       </Card>
