@@ -10,22 +10,11 @@ import html2canvas from 'html2canvas';
 
 /**
  * Growth Chart Page - Using Official CDC/WHO Data
- * 
- * WHO Data Source: https://www.who.int/tools/child-growth-standards (0-24 months)
- * - Weight-for-age, Length-for-age, Head circumference-for-age, BMI-for-age
- * - Percentiles: 3rd, 15th, 50th, 85th, 97th (as per WHO charts)
- * 
- * CDC Data Source: https://www.cdc.gov/growthcharts/cdc-data-files.htm (2-20 years)
- * - Weight-for-age, Stature-for-age
- * - Percentiles: 3rd, 5th, 10th, 25th, 50th, 75th, 90th, 95th, 97th
+ * WHO (0-24 months): Weight, Length, Head circumference, BMI - Percentiles: 3, 15, 50, 85, 97
+ * CDC (2-20 years): Weight, Stature - Percentiles: 3, 5, 10, 25, 50, 75, 90, 95, 97
  */
 
-// ============================================================================
-// OFFICIAL WHO GROWTH STANDARDS DATA (0-24 months)
-// Percentiles: 3rd, 15th, 50th, 85th, 97th
-// Data points: Birth (0), 1, 2, 3, ... 24 months (25 data points)
-// ============================================================================
-
+// WHO Growth Standards Data (0-24 months) - 25 data points
 const WHO_DATA = {
   weight: {
     male: {
@@ -93,12 +82,7 @@ const WHO_DATA = {
   }
 };
 
-// ============================================================================
-// OFFICIAL CDC GROWTH CHARTS DATA (2-20 years)
-// Percentiles: 3rd, 5th, 10th, 25th, 50th, 75th, 90th, 95th, 97th
-// Ages: 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20
-// ============================================================================
-
+// CDC Growth Charts Data (2-20 years) - 19 data points
 const CDC_DATA = {
   weight: {
     male: {
@@ -150,27 +134,8 @@ const CDC_DATA = {
   }
 };
 
-// Percentile line colors (WHO style)
-const WHO_PERCENTILE_COLORS = {
-  p3: '#E53935',   // Red
-  p15: '#FF9800',  // Orange
-  p50: '#4CAF50',  // Green
-  p85: '#FF9800',  // Orange
-  p97: '#E53935'   // Red
-};
-
-// CDC Percentile colors
-const CDC_PERCENTILE_COLORS = {
-  p3: '#C41E3A',
-  p5: '#E55B3C',
-  p10: '#FD8D3C',
-  p25: '#FDAE6B',
-  p50: '#31A354',
-  p75: '#FDAE6B',
-  p90: '#FD8D3C',
-  p95: '#E55B3C',
-  p97: '#C41E3A'
-};
+const WHO_COLORS = { p3: '#E53935', p15: '#FF9800', p50: '#4CAF50', p85: '#FF9800', p97: '#E53935' };
+const CDC_COLORS = { p3: '#C41E3A', p5: '#E55B3C', p10: '#FD8D3C', p25: '#FDAE6B', p50: '#31A354', p75: '#FDAE6B', p90: '#FD8D3C', p95: '#E55B3C', p97: '#C41E3A' };
 
 const GrowthChartPage = () => {
   const [chartType, setChartType] = useState("WHO");
@@ -178,36 +143,22 @@ const GrowthChartPage = () => {
   const [activeChart, setActiveChart] = useState("weight");
   const [entries, setEntries] = useState([]);
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [newEntry, setNewEntry] = useState({
-    date: new Date().toISOString().split('T')[0],
-    ageValue: "",
-    weight: "",
-    length: "",
-    hc: ""
-  });
-  const svgRef = useRef(null);
+  const [newEntry, setNewEntry] = useState({ date: new Date().toISOString().split('T')[0], ageValue: "", weight: "", length: "", hc: "", bmi: "" });
   const chartContainerRef = useRef(null);
 
   const isWHO = chartType === "WHO";
-
-  // Chart dimensions
   const width = isFullscreen ? Math.min(window.innerWidth - 40, 900) : 680;
   const height = isFullscreen ? Math.min(window.innerHeight - 100, 600) : 400;
   const margin = { top: 30, right: 60, bottom: 60, left: 60 };
   const innerWidth = width - margin.left - margin.right;
   const innerHeight = height - margin.top - margin.bottom;
 
-  // Get data for the selected chart
   const getData = useMemo(() => {
-    if (isWHO) {
-      return WHO_DATA[activeChart]?.[gender];
-    } else {
-      const key = activeChart === 'length' ? 'stature' : activeChart;
-      return CDC_DATA[key]?.[gender];
-    }
+    if (isWHO) return WHO_DATA[activeChart]?.[gender];
+    const key = activeChart === 'length' ? 'stature' : activeChart;
+    return CDC_DATA[key]?.[gender];
   }, [isWHO, activeChart, gender]);
 
-  // X and Y scale calculations
   const xMin = isWHO ? 0 : 2;
   const xMax = isWHO ? 24 : 20;
   const dataLength = isWHO ? 25 : 19;
@@ -215,334 +166,160 @@ const GrowthChartPage = () => {
   const yValues = useMemo(() => {
     if (!getData) return { min: 0, max: 100 };
     const allValues = [...getData.p3, ...getData.p97];
-    return {
-      min: Math.floor(Math.min(...allValues) * 0.95),
-      max: Math.ceil(Math.max(...allValues) * 1.05)
-    };
+    return { min: Math.floor(Math.min(...allValues) * 0.95), max: Math.ceil(Math.max(...allValues) * 1.05) };
   }, [getData]);
 
-  // Scale functions
   const xScale = useCallback((val) => margin.left + ((val - xMin) / (xMax - xMin)) * innerWidth, [margin.left, xMin, xMax, innerWidth]);
   const yScale = useCallback((val) => margin.top + innerHeight - ((val - yValues.min) / (yValues.max - yValues.min)) * innerHeight, [margin.top, innerHeight, yValues.min, yValues.max]);
 
-  // Generate path for a percentile line
-  const generatePath = useCallback((percentileData) => {
-    if (!percentileData || percentileData.length === 0) return "";
-    
-    const points = percentileData.map((value, index) => {
-      const x = isWHO ? index : index + 2;
-      return `${xScale(x)},${yScale(value)}`;
-    });
-    
-    return `M ${points.join(' L ')}`;
+  const generatePath = useCallback((data) => {
+    if (!data?.length) return "";
+    return `M ${data.map((v, i) => `${xScale(isWHO ? i : i + 2)},${yScale(v)}`).join(' L ')}`;
   }, [isWHO, xScale, yScale]);
 
-  // Add entry
   const addEntry = () => {
     if (newEntry.date && newEntry.ageValue) {
-      const ageInMonths = isWHO 
-        ? parseFloat(newEntry.ageValue) || 0
-        : (parseFloat(newEntry.ageValue) || 0) * 12;
-      
-      setEntries([...entries, { 
-        ...newEntry, 
-        id: Date.now(),
-        ageInMonths,
-        ageUnit: isWHO ? 'months' : 'years',
-        chartTypeUsed: chartType
-      }]);
-      setNewEntry({
-        date: new Date().toISOString().split('T')[0],
-        ageValue: "",
-        weight: "",
-        length: "",
-        hc: ""
-      });
+      const ageInMonths = isWHO ? parseFloat(newEntry.ageValue) || 0 : (parseFloat(newEntry.ageValue) || 0) * 12;
+      setEntries([...entries, { ...newEntry, id: Date.now(), ageInMonths, ageUnit: isWHO ? 'months' : 'years' }]);
+      setNewEntry({ date: new Date().toISOString().split('T')[0], ageValue: "", weight: "", length: "", hc: "", bmi: "" });
     }
   };
 
-  const removeEntry = (id) => setEntries(entries.filter(e => e.id !== id));
-
-  // Export to PDF
   const exportToPDF = async () => {
     if (!chartContainerRef.current) return;
-    
     try {
-      const canvas = await html2canvas(chartContainerRef.current, {
-        scale: 2,
-        backgroundColor: gender === 'male' ? '#e8f4fc' : '#fce8f4',
-        logging: false
-      });
-      
-      const imgData = canvas.toDataURL('image/png');
-      const pdf = new jsPDF({
-        orientation: 'landscape',
-        unit: 'mm',
-        format: 'a4'
-      });
-      
-      // Add title
+      const canvas = await html2canvas(chartContainerRef.current, { scale: 2, backgroundColor: gender === 'male' ? '#e8f4fc' : '#fce8f4' });
+      const pdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
       const title = `${chartLabels[activeChart].title} - ${gender === 'male' ? 'Boys' : 'Girls'} (${chartType})`;
       pdf.setFontSize(16);
       pdf.text(title, 148, 15, { align: 'center' });
-      
-      // Add chart image
-      const imgWidth = 270;
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
-      pdf.addImage(imgData, 'PNG', 15, 25, imgWidth, Math.min(imgHeight, 160));
-      
-      // Add patient data if present
+      pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 15, 25, 270, Math.min((canvas.height * 270) / canvas.width, 160));
       if (entries.length > 0) {
         let yPos = 190;
         pdf.setFontSize(10);
         pdf.text('Patient Measurements:', 15, yPos);
         yPos += 6;
-        
-        entries.forEach(entry => {
-          const ageStr = `${entry.ageValue}${entry.ageUnit === 'years' ? 'y' : 'm'}`;
-          let line = `${entry.date} (Age: ${ageStr})`;
-          if (entry.weight) line += ` • Weight: ${entry.weight} kg`;
-          if (entry.length) line += ` • ${isWHO ? 'Length' : 'Stature'}: ${entry.length} cm`;
-          if (entry.hc) line += ` • HC: ${entry.hc} cm`;
+        entries.forEach(e => {
+          let line = `${e.date} (Age: ${e.ageValue}${e.ageUnit === 'years' ? 'y' : 'm'})`;
+          if (e.weight) line += ` • Weight: ${e.weight} kg`;
+          if (e.length) line += ` • ${isWHO ? 'Length' : 'Stature'}: ${e.length} cm`;
+          if (e.hc) line += ` • HC: ${e.hc} cm`;
           pdf.text(line, 15, yPos);
           yPos += 5;
         });
       }
-      
-      // Add footer
       pdf.setFontSize(8);
-      pdf.text(`Source: ${isWHO ? 'WHO Child Growth Standards' : 'CDC Growth Charts'} • Generated: ${new Date().toLocaleDateString()}`, 148, 205, { align: 'center' });
-      
-      pdf.save(`growth-chart-${chartType}-${gender}-${activeChart}-${new Date().toISOString().split('T')[0]}.pdf`);
-    } catch (error) {
-      console.error('PDF export error:', error);
-    }
+      pdf.text(`Source: ${isWHO ? 'WHO Child Growth Standards' : 'CDC Growth Charts'}`, 148, 205, { align: 'center' });
+      pdf.save(`growth-chart-${chartType}-${gender}-${activeChart}.pdf`);
+    } catch (e) { console.error('PDF error:', e); }
   };
 
-  // Save chart to PNG
-  const saveChartToPng = async () => {
+  const savePNG = async () => {
     if (!chartContainerRef.current) return;
-    
     try {
-      const canvas = await html2canvas(chartContainerRef.current, {
-        scale: 2,
-        backgroundColor: gender === 'male' ? '#e8f4fc' : '#fce8f4',
-        logging: false
-      });
-      
+      const canvas = await html2canvas(chartContainerRef.current, { scale: 2, backgroundColor: gender === 'male' ? '#e8f4fc' : '#fce8f4' });
       const link = document.createElement('a');
-      link.download = `growth-chart-${chartType}-${gender}-${activeChart}-${new Date().toISOString().split('T')[0]}.png`;
+      link.download = `growth-chart-${chartType}-${gender}-${activeChart}.png`;
       link.href = canvas.toDataURL('image/png');
       link.click();
-    } catch (error) {
-      console.error('Save error:', error);
-    }
+    } catch (e) { console.error('PNG error:', e); }
   };
 
-  // Get patient points to plot
   const patientPoints = useMemo(() => {
-    const value = activeChart === 'length' ? 'length' : activeChart;
-    return entries
-      .filter(e => e[value] && parseFloat(e[value]) > 0)
-      .map(e => ({
-        x: isWHO ? e.ageInMonths : e.ageInMonths / 12,
-        y: parseFloat(e[value]),
-        date: e.date
-      }));
+    const val = activeChart === 'length' ? 'length' : activeChart;
+    return entries.filter(e => e[val] && parseFloat(e[val]) > 0).map(e => ({ x: isWHO ? e.ageInMonths : e.ageInMonths / 12, y: parseFloat(e[val]), date: e.date }));
   }, [entries, activeChart, isWHO]);
 
-  // Calculate percentile for a measurement (WHO style: 3, 15, 50, 85, 97)
-  const getPercentileInfo = (ageInMonths, value, measureType) => {
+  const getPercentileInfo = (ageMonths, value, type) => {
     if (!value) return null;
     const val = parseFloat(value);
-    const data = isWHO ? WHO_DATA[measureType]?.[gender] : CDC_DATA[measureType === 'length' ? 'stature' : measureType]?.[gender];
+    const data = isWHO ? WHO_DATA[type]?.[gender] : CDC_DATA[type === 'length' ? 'stature' : type]?.[gender];
     if (!data) return null;
-    
-    const idx = isWHO ? Math.min(Math.max(Math.round(ageInMonths), 0), 24) : Math.min(Math.max(Math.round(ageInMonths / 12) - 2, 0), 18);
-    
-    let percentile, interpretation, color;
-    
+    const idx = isWHO ? Math.min(Math.max(Math.round(ageMonths), 0), 24) : Math.min(Math.max(Math.round(ageMonths / 12) - 2, 0), 18);
     if (isWHO) {
-      const p3 = data.p3[idx], p15 = data.p15[idx], p50 = data.p50[idx], p85 = data.p85[idx], p97 = data.p97[idx];
-      
-      if (val < p3) { percentile = "<3"; interpretation = "Below 3rd - Evaluation needed"; color = "text-red-600"; }
-      else if (val < p15) { percentile = "3-15"; interpretation = "Low-normal"; color = "text-orange-500"; }
-      else if (val < p50) { percentile = "15-50"; interpretation = "Normal"; color = "text-green-600"; }
-      else if (val < p85) { percentile = "50-85"; interpretation = "Normal"; color = "text-green-600"; }
-      else if (val < p97) { percentile = "85-97"; interpretation = "High-normal"; color = "text-orange-500"; }
-      else { percentile = ">97"; interpretation = "Above 97th - Evaluation needed"; color = "text-red-600"; }
-    } else {
-      const p3 = data.p3[idx], p10 = data.p10[idx], p25 = data.p25[idx];
-      const p50 = data.p50[idx], p75 = data.p75[idx], p90 = data.p90[idx], p97 = data.p97[idx];
-      
-      if (val < p3) { percentile = "<3"; interpretation = "Below 3rd - Evaluation needed"; color = "text-red-600"; }
-      else if (val < p10) { percentile = "3-10"; interpretation = "Below 10th - Monitor"; color = "text-orange-500"; }
-      else if (val < p25) { percentile = "10-25"; interpretation = "Low-normal"; color = "text-yellow-600"; }
-      else if (val < p50) { percentile = "25-50"; interpretation = "Normal"; color = "text-green-600"; }
-      else if (val < p75) { percentile = "50-75"; interpretation = "Normal"; color = "text-green-600"; }
-      else if (val < p90) { percentile = "75-90"; interpretation = "Normal"; color = "text-green-600"; }
-      else if (val < p97) { percentile = "90-97"; interpretation = "High-normal"; color = "text-yellow-600"; }
-      else { percentile = ">97"; interpretation = "Above 97th - Evaluation needed"; color = "text-red-600"; }
+      const { p3, p15, p50, p85, p97 } = { p3: data.p3[idx], p15: data.p15[idx], p50: data.p50[idx], p85: data.p85[idx], p97: data.p97[idx] };
+      if (val < p3) return { percentile: "<3", interpretation: "Below 3rd - Evaluation needed", color: "text-red-600" };
+      if (val < p15) return { percentile: "3-15", interpretation: "Low-normal", color: "text-orange-500" };
+      if (val < p50) return { percentile: "15-50", interpretation: "Normal", color: "text-green-600" };
+      if (val < p85) return { percentile: "50-85", interpretation: "Normal", color: "text-green-600" };
+      if (val < p97) return { percentile: "85-97", interpretation: "High-normal", color: "text-orange-500" };
+      return { percentile: ">97", interpretation: "Above 97th - Evaluation needed", color: "text-red-600" };
     }
-    
-    return { percentile, interpretation, color };
+    const { p3, p10, p25, p50, p75, p90, p97 } = { p3: data.p3[idx], p10: data.p10[idx], p25: data.p25[idx], p50: data.p50[idx], p75: data.p75[idx], p90: data.p90[idx], p97: data.p97[idx] };
+    if (val < p3) return { percentile: "<3", interpretation: "Below 3rd - Evaluation needed", color: "text-red-600" };
+    if (val < p10) return { percentile: "3-10", interpretation: "Below 10th - Monitor", color: "text-orange-500" };
+    if (val < p25) return { percentile: "10-25", interpretation: "Low-normal", color: "text-yellow-600" };
+    if (val < p75) return { percentile: "25-75", interpretation: "Normal", color: "text-green-600" };
+    if (val < p90) return { percentile: "75-90", interpretation: "High-normal", color: "text-green-600" };
+    if (val < p97) return { percentile: "90-97", interpretation: "Monitor", color: "text-yellow-600" };
+    return { percentile: ">97", interpretation: "Above 97th - Evaluation needed", color: "text-red-600" };
   };
 
   const chartLabels = {
-    weight: { title: "Weight-for-Age", unit: "kg", yLabel: "Weight (kg)" },
-    length: { title: isWHO ? "Length-for-Age" : "Stature-for-Age", unit: "cm", yLabel: isWHO ? "Length (cm)" : "Stature (cm)" },
-    hc: { title: "Head Circumference-for-Age", unit: "cm", yLabel: "Head Circ (cm)" },
-    bmi: { title: "BMI-for-Age", unit: "kg/m²", yLabel: "BMI (kg/m²)" }
+    weight: { title: "Weight-for-Age", yLabel: "Weight (kg)" },
+    length: { title: isWHO ? "Length-for-Age" : "Stature-for-Age", yLabel: isWHO ? "Length (cm)" : "Stature (cm)" },
+    hc: { title: "Head Circumference-for-Age", yLabel: "Head Circ (cm)" },
+    bmi: { title: "BMI-for-Age", yLabel: "BMI (kg/m²)" }
   };
 
-  const isHCDisabled = !isWHO;
-  const isBMIDisabled = !isWHO;
-
-  // Generate X-axis ticks
   const xTicks = isWHO ? [0, 3, 6, 9, 12, 15, 18, 21, 24] : [2, 4, 6, 8, 10, 12, 14, 16, 18, 20];
-  
-  // Generate Y-axis ticks
-  const yTickCount = 8;
-  const yTickStep = (yValues.max - yValues.min) / yTickCount;
-  const yTicks = Array.from({ length: yTickCount + 1 }, (_, i) => Math.round(yValues.min + i * yTickStep));
+  const yTicks = Array.from({ length: 9 }, (_, i) => Math.round(yValues.min + i * ((yValues.max - yValues.min) / 8)));
 
-  // Render percentile lines based on chart type
-  const renderPercentileLines = () => {
-    if (!getData) return null;
-    
-    if (isWHO) {
-      return (
-        <>
-          <path d={generatePath(getData.p97)} fill="none" stroke={WHO_PERCENTILE_COLORS.p97} strokeWidth="2" />
-          <path d={generatePath(getData.p85)} fill="none" stroke={WHO_PERCENTILE_COLORS.p85} strokeWidth="1.5" strokeDasharray="4,2" />
-          <path d={generatePath(getData.p50)} fill="none" stroke={WHO_PERCENTILE_COLORS.p50} strokeWidth="2.5" />
-          <path d={generatePath(getData.p15)} fill="none" stroke={WHO_PERCENTILE_COLORS.p15} strokeWidth="1.5" strokeDasharray="4,2" />
-          <path d={generatePath(getData.p3)} fill="none" stroke={WHO_PERCENTILE_COLORS.p3} strokeWidth="2" />
-        </>
-      );
-    } else {
-      return (
-        <>
-          <path d={generatePath(getData.p97)} fill="none" stroke={CDC_PERCENTILE_COLORS.p97} strokeWidth="1.5" />
-          <path d={generatePath(getData.p95)} fill="none" stroke={CDC_PERCENTILE_COLORS.p95} strokeWidth="1" strokeDasharray="3,2" />
-          <path d={generatePath(getData.p90)} fill="none" stroke={CDC_PERCENTILE_COLORS.p90} strokeWidth="1.5" />
-          <path d={generatePath(getData.p75)} fill="none" stroke={CDC_PERCENTILE_COLORS.p75} strokeWidth="1" strokeDasharray="4,2" />
-          <path d={generatePath(getData.p50)} fill="none" stroke={CDC_PERCENTILE_COLORS.p50} strokeWidth="2.5" />
-          <path d={generatePath(getData.p25)} fill="none" stroke={CDC_PERCENTILE_COLORS.p25} strokeWidth="1" strokeDasharray="4,2" />
-          <path d={generatePath(getData.p10)} fill="none" stroke={CDC_PERCENTILE_COLORS.p10} strokeWidth="1.5" />
-          <path d={generatePath(getData.p5)} fill="none" stroke={CDC_PERCENTILE_COLORS.p5} strokeWidth="1" strokeDasharray="3,2" />
-          <path d={generatePath(getData.p3)} fill="none" stroke={CDC_PERCENTILE_COLORS.p3} strokeWidth="1.5" />
-        </>
-      );
-    }
-  };
-
-  // Render percentile labels
-  const renderPercentileLabels = () => {
-    if (!getData) return null;
-    
-    if (isWHO) {
-      return (
-        <>
-          <text x={width - margin.right + 5} y={yScale(getData.p97[dataLength - 1])} fontSize="10" fill={WHO_PERCENTILE_COLORS.p97} fontWeight="bold">97th</text>
-          <text x={width - margin.right + 5} y={yScale(getData.p85[dataLength - 1])} fontSize="10" fill={WHO_PERCENTILE_COLORS.p85}>85th</text>
-          <text x={width - margin.right + 5} y={yScale(getData.p50[dataLength - 1])} fontSize="10" fill={WHO_PERCENTILE_COLORS.p50} fontWeight="bold">50th</text>
-          <text x={width - margin.right + 5} y={yScale(getData.p15[dataLength - 1])} fontSize="10" fill={WHO_PERCENTILE_COLORS.p15}>15th</text>
-          <text x={width - margin.right + 5} y={yScale(getData.p3[dataLength - 1])} fontSize="10" fill={WHO_PERCENTILE_COLORS.p3} fontWeight="bold">3rd</text>
-        </>
-      );
-    } else {
-      return (
-        <>
-          <text x={width - margin.right + 5} y={yScale(getData.p97[dataLength - 1])} fontSize="9" fill={CDC_PERCENTILE_COLORS.p97}>97th</text>
-          <text x={width - margin.right + 5} y={yScale(getData.p90[dataLength - 1])} fontSize="9" fill={CDC_PERCENTILE_COLORS.p90}>90th</text>
-          <text x={width - margin.right + 5} y={yScale(getData.p50[dataLength - 1])} fontSize="9" fill={CDC_PERCENTILE_COLORS.p50} fontWeight="bold">50th</text>
-          <text x={width - margin.right + 5} y={yScale(getData.p10[dataLength - 1])} fontSize="9" fill={CDC_PERCENTILE_COLORS.p10}>10th</text>
-          <text x={width - margin.right + 5} y={yScale(getData.p3[dataLength - 1])} fontSize="9" fill={CDC_PERCENTILE_COLORS.p3}>3rd</text>
-        </>
-      );
-    }
-  };
-
-  // SVG Chart Component
-  const ChartSVG = ({ containerRef }) => (
-    <div 
-      ref={containerRef}
-      className="rounded-lg overflow-x-auto" 
-      style={{ 
-        backgroundColor: gender === 'male' ? '#e8f4fc' : '#fce8f4',
-        padding: '10px'
-      }}
-    >
+  const renderSVG = () => (
+    <div ref={chartContainerRef} className="rounded-lg overflow-x-auto" style={{ backgroundColor: gender === 'male' ? '#e8f4fc' : '#fce8f4', padding: '10px' }}>
       <svg width={width} height={height} style={{ display: 'block' }}>
-        {/* Title */}
-        <text x={width / 2} y={18} textAnchor="middle" fontSize="14" fontWeight="bold" fill="#333">
-          {chartLabels[activeChart].title} • {gender === 'male' ? 'Boys' : 'Girls'} ({chartType})
-        </text>
-        
-        {/* Grid lines */}
-        {yTicks.map(tick => (
-          <line key={`grid-${tick}`} x1={margin.left} y1={yScale(tick)} x2={width - margin.right} y2={yScale(tick)} stroke="#ccc" strokeDasharray="2,2" />
-        ))}
-        
-        {/* Percentile curves */}
-        {renderPercentileLines()}
-        
-        {/* Patient data points */}
-        {patientPoints.map((point, idx) => (
-          <g key={idx}>
-            <circle cx={xScale(point.x)} cy={yScale(point.y)} r="7" fill="#1a1a1a" stroke="#fff" strokeWidth="2" />
-            <circle cx={xScale(point.x)} cy={yScale(point.y)} r="4" fill="#fff" />
-          </g>
-        ))}
-        
-        {/* X-axis */}
+        <text x={width / 2} y={18} textAnchor="middle" fontSize="14" fontWeight="bold" fill="#333">{chartLabels[activeChart].title} • {gender === 'male' ? 'Boys' : 'Girls'} ({chartType})</text>
+        {yTicks.map(t => <line key={t} x1={margin.left} y1={yScale(t)} x2={width - margin.right} y2={yScale(t)} stroke="#ccc" strokeDasharray="2,2" />)}
+        {getData && isWHO && <>
+          <path d={generatePath(getData.p97)} fill="none" stroke={WHO_COLORS.p97} strokeWidth="2" />
+          <path d={generatePath(getData.p85)} fill="none" stroke={WHO_COLORS.p85} strokeWidth="1.5" strokeDasharray="4,2" />
+          <path d={generatePath(getData.p50)} fill="none" stroke={WHO_COLORS.p50} strokeWidth="2.5" />
+          <path d={generatePath(getData.p15)} fill="none" stroke={WHO_COLORS.p15} strokeWidth="1.5" strokeDasharray="4,2" />
+          <path d={generatePath(getData.p3)} fill="none" stroke={WHO_COLORS.p3} strokeWidth="2" />
+        </>}
+        {getData && !isWHO && <>
+          <path d={generatePath(getData.p97)} fill="none" stroke={CDC_COLORS.p97} strokeWidth="1.5" />
+          <path d={generatePath(getData.p95)} fill="none" stroke={CDC_COLORS.p95} strokeWidth="1" strokeDasharray="3,2" />
+          <path d={generatePath(getData.p90)} fill="none" stroke={CDC_COLORS.p90} strokeWidth="1.5" />
+          <path d={generatePath(getData.p75)} fill="none" stroke={CDC_COLORS.p75} strokeWidth="1" strokeDasharray="4,2" />
+          <path d={generatePath(getData.p50)} fill="none" stroke={CDC_COLORS.p50} strokeWidth="2.5" />
+          <path d={generatePath(getData.p25)} fill="none" stroke={CDC_COLORS.p25} strokeWidth="1" strokeDasharray="4,2" />
+          <path d={generatePath(getData.p10)} fill="none" stroke={CDC_COLORS.p10} strokeWidth="1.5" />
+          <path d={generatePath(getData.p5)} fill="none" stroke={CDC_COLORS.p5} strokeWidth="1" strokeDasharray="3,2" />
+          <path d={generatePath(getData.p3)} fill="none" stroke={CDC_COLORS.p3} strokeWidth="1.5" />
+        </>}
+        {patientPoints.map((p, i) => <g key={i}><circle cx={xScale(p.x)} cy={yScale(p.y)} r="7" fill="#1a1a1a" stroke="#fff" strokeWidth="2" /><circle cx={xScale(p.x)} cy={yScale(p.y)} r="4" fill="#fff" /></g>)}
         <line x1={margin.left} y1={height - margin.bottom} x2={width - margin.right} y2={height - margin.bottom} stroke="#333" strokeWidth="1.5" />
-        {xTicks.map(tick => (
-          <g key={`x-${tick}`}>
-            <line x1={xScale(tick)} y1={height - margin.bottom} x2={xScale(tick)} y2={height - margin.bottom + 5} stroke="#333" />
-            <text x={xScale(tick)} y={height - margin.bottom + 18} textAnchor="middle" fontSize="11" fill="#666">{tick}</text>
-          </g>
-        ))}
-        <text x={width / 2} y={height - 15} textAnchor="middle" fontSize="12" fill="#333" fontWeight="500">
-          Age ({isWHO ? 'completed months' : 'years'})
-        </text>
-        
-        {/* Y-axis */}
+        {xTicks.map(t => <g key={t}><line x1={xScale(t)} y1={height - margin.bottom} x2={xScale(t)} y2={height - margin.bottom + 5} stroke="#333" /><text x={xScale(t)} y={height - margin.bottom + 18} textAnchor="middle" fontSize="11" fill="#666">{t}</text></g>)}
+        <text x={width / 2} y={height - 15} textAnchor="middle" fontSize="12" fill="#333">Age ({isWHO ? 'months' : 'years'})</text>
         <line x1={margin.left} y1={margin.top} x2={margin.left} y2={height - margin.bottom} stroke="#333" strokeWidth="1.5" />
-        {yTicks.map(tick => (
-          <g key={`y-${tick}`}>
-            <line x1={margin.left - 5} y1={yScale(tick)} x2={margin.left} y2={yScale(tick)} stroke="#333" />
-            <text x={margin.left - 8} y={yScale(tick) + 4} textAnchor="end" fontSize="11" fill="#666">{tick}</text>
-          </g>
-        ))}
-        <text x={18} y={height / 2} textAnchor="middle" fontSize="12" fill="#333" fontWeight="500" transform={`rotate(-90, 18, ${height / 2})`}>
-          {chartLabels[activeChart].yLabel}
-        </text>
-        
-        {/* Percentile labels on right */}
-        {renderPercentileLabels()}
-        
-        {/* Source */}
-        <text x={width / 2} y={height - 3} textAnchor="middle" fontSize="9" fill="#888">
-          Source: {isWHO ? 'WHO Child Growth Standards' : 'CDC Growth Charts'}
-        </text>
+        {yTicks.map(t => <g key={t}><line x1={margin.left - 5} y1={yScale(t)} x2={margin.left} y2={yScale(t)} stroke="#333" /><text x={margin.left - 8} y={yScale(t) + 4} textAnchor="end" fontSize="11" fill="#666">{t}</text></g>)}
+        <text x={18} y={height / 2} textAnchor="middle" fontSize="12" fill="#333" transform={`rotate(-90,18,${height / 2})`}>{chartLabels[activeChart].yLabel}</text>
+        {getData && isWHO && <>
+          <text x={width - margin.right + 5} y={yScale(getData.p97[dataLength - 1])} fontSize="10" fill={WHO_COLORS.p97} fontWeight="bold">97th</text>
+          <text x={width - margin.right + 5} y={yScale(getData.p85[dataLength - 1])} fontSize="10" fill={WHO_COLORS.p85}>85th</text>
+          <text x={width - margin.right + 5} y={yScale(getData.p50[dataLength - 1])} fontSize="10" fill={WHO_COLORS.p50} fontWeight="bold">50th</text>
+          <text x={width - margin.right + 5} y={yScale(getData.p15[dataLength - 1])} fontSize="10" fill={WHO_COLORS.p15}>15th</text>
+          <text x={width - margin.right + 5} y={yScale(getData.p3[dataLength - 1])} fontSize="10" fill={WHO_COLORS.p3} fontWeight="bold">3rd</text>
+        </>}
+        {getData && !isWHO && <>
+          <text x={width - margin.right + 5} y={yScale(getData.p97[dataLength - 1])} fontSize="9" fill={CDC_COLORS.p97}>97th</text>
+          <text x={width - margin.right + 5} y={yScale(getData.p90[dataLength - 1])} fontSize="9" fill={CDC_COLORS.p90}>90th</text>
+          <text x={width - margin.right + 5} y={yScale(getData.p50[dataLength - 1])} fontSize="9" fill={CDC_COLORS.p50} fontWeight="bold">50th</text>
+          <text x={width - margin.right + 5} y={yScale(getData.p10[dataLength - 1])} fontSize="9" fill={CDC_COLORS.p10}>10th</text>
+          <text x={width - margin.right + 5} y={yScale(getData.p3[dataLength - 1])} fontSize="9" fill={CDC_COLORS.p3}>3rd</text>
+        </>}
+        <text x={width / 2} y={height - 3} textAnchor="middle" fontSize="9" fill="#888">Source: {isWHO ? 'WHO Child Growth Standards' : 'CDC Growth Charts'}</text>
       </svg>
     </div>
   );
 
   return (
     <div className="space-y-4 p-4" data-testid="growth-chart-page">
-      {/* Controls */}
       <Card>
         <CardHeader className="pb-2">
-          <CardTitle className="text-base flex items-center gap-2">
-            <HealthGrowthIcon className="h-5 w-5 text-teal-500" />
-            {chartLabels[activeChart].title}
-          </CardTitle>
-          <CardDescription className="text-xs">
-            {gender === 'male' ? 'Boys' : 'Girls'} • {chartType} • {isWHO ? '0-24 months' : '2-20 years'}
-          </CardDescription>
+          <CardTitle className="text-base flex items-center gap-2"><HealthGrowthIcon className="h-5 w-5 text-teal-500" />{chartLabels[activeChart].title}</CardTitle>
+          <CardDescription className="text-xs">{gender === 'male' ? 'Boys' : 'Girls'} • {chartType} • {isWHO ? '0-24 months' : '2-20 years'}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-3">
           <div className="grid grid-cols-2 gap-2">
@@ -556,116 +333,78 @@ const GrowthChartPage = () => {
           <div className="grid grid-cols-4 gap-2">
             <Button variant={activeChart === 'weight' ? "default" : "outline"} onClick={() => setActiveChart('weight')} className="text-xs h-9" data-testid="weight-btn">Weight</Button>
             <Button variant={activeChart === 'length' ? "default" : "outline"} onClick={() => setActiveChart('length')} className="text-xs h-9" data-testid="length-btn">{isWHO ? 'Length' : 'Stature'}</Button>
-            <Button variant={activeChart === 'hc' ? "default" : "outline"} onClick={() => setActiveChart('hc')} className="text-xs h-9" disabled={isHCDisabled} data-testid="hc-btn">Head C.</Button>
-            <Button variant={activeChart === 'bmi' ? "default" : "outline"} onClick={() => setActiveChart('bmi')} className="text-xs h-9" disabled={isBMIDisabled} data-testid="bmi-btn">BMI</Button>
+            <Button variant={activeChart === 'hc' ? "default" : "outline"} onClick={() => setActiveChart('hc')} className="text-xs h-9" disabled={!isWHO} data-testid="hc-btn">Head C.</Button>
+            <Button variant={activeChart === 'bmi' ? "default" : "outline"} onClick={() => setActiveChart('bmi')} className="text-xs h-9" disabled={!isWHO} data-testid="bmi-btn">BMI</Button>
           </div>
         </CardContent>
       </Card>
 
-      {/* Fullscreen Modal */}
       {isFullscreen && (
-        <div 
-          className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4"
-          onClick={() => setIsFullscreen(false)}
-        >
-          <div 
-            className="relative bg-white dark:bg-gray-900 rounded-lg p-4 max-w-full max-h-full overflow-auto"
-            onClick={(e) => e.stopPropagation()}
-          >
+        <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4" onClick={() => setIsFullscreen(false)}>
+          <div className="relative bg-white dark:bg-gray-900 rounded-lg p-4 max-w-full max-h-full overflow-auto" onClick={e => e.stopPropagation()}>
             <div className="flex justify-between items-center mb-3">
-              <div>
-                <h3 className="text-lg font-semibold">{chartLabels[activeChart].title}</h3>
-                <p className="text-sm text-muted-foreground">
-                  {isWHO ? 'WHO' : 'CDC'} • {gender === 'male' ? 'Boys' : 'Girls'} • Percentiles: {isWHO ? '3rd, 15th, 50th, 85th, 97th' : '3rd, 5th, 10th, 25th, 50th, 75th, 90th, 95th, 97th'}
-                </p>
-              </div>
+              <div><h3 className="text-lg font-semibold">{chartLabels[activeChart].title}</h3><p className="text-sm text-muted-foreground">{isWHO ? 'WHO' : 'CDC'} • {gender === 'male' ? 'Boys' : 'Girls'}</p></div>
               <div className="flex gap-2">
-                <Button variant="outline" size="sm" onClick={exportToPDF} className="h-9 px-3" data-testid="export-pdf-btn-fullscreen" title="Export as PDF">
-                  <FileText className="h-4 w-4 mr-1" /> PDF
-                </Button>
-                <Button variant="outline" size="sm" onClick={saveChartToPng} className="h-9 w-9 p-0" data-testid="save-chart-btn-fullscreen" title="Save as PNG">
-                  <Download className="h-4 w-4" />
-                </Button>
-                <Button variant="outline" size="sm" onClick={() => setIsFullscreen(false)} className="h-9 w-9 p-0" data-testid="minimize-btn" title="Exit fullscreen">
-                  <Minimize2 className="h-4 w-4" />
-                </Button>
+                <Button variant="outline" size="sm" onClick={exportToPDF} className="h-9 px-3"><FileText className="h-4 w-4 mr-1" />PDF</Button>
+                <Button variant="outline" size="sm" onClick={savePNG} className="h-9 w-9 p-0"><Download className="h-4 w-4" /></Button>
+                <Button variant="outline" size="sm" onClick={() => setIsFullscreen(false)} className="h-9 w-9 p-0"><Minimize2 className="h-4 w-4" /></Button>
               </div>
             </div>
-            <ChartSVG containerRef={chartContainerRef} />
+            {renderSVG()}
           </div>
         </div>
       )}
 
-      {/* Main Chart Card */}
       <Card>
         <CardHeader className="pb-2">
           <div className="flex justify-between items-center">
-            <div>
-              <CardTitle className="text-sm">{chartLabels[activeChart].title}</CardTitle>
-              <CardDescription className="text-xs">
-                {isWHO ? 'WHO' : 'CDC'} • {gender === 'male' ? 'Boys' : 'Girls'} • Percentiles: {isWHO ? '3, 15, 50, 85, 97' : '3, 5, 10, 25, 50, 75, 90, 95, 97'}
-              </CardDescription>
-            </div>
+            <div><CardTitle className="text-sm">{chartLabels[activeChart].title}</CardTitle><CardDescription className="text-xs">{isWHO ? 'WHO' : 'CDC'} • {gender === 'male' ? 'Boys' : 'Girls'} • Percentiles: {isWHO ? '3, 15, 50, 85, 97' : '3, 5, 10, 25, 50, 75, 90, 95, 97'}</CardDescription></div>
             <div className="flex gap-1">
-              <Button variant="outline" size="sm" onClick={exportToPDF} className="h-8 px-2" data-testid="export-pdf-btn" title="Export as PDF">
-                <FileText className="h-3.5 w-3.5 mr-1" /> PDF
-              </Button>
-              <Button variant="outline" size="sm" onClick={saveChartToPng} className="h-8 w-8 p-0" data-testid="save-chart-btn" title="Save as PNG">
-                <Download className="h-3.5 w-3.5" />
-              </Button>
-              <Button variant="outline" size="sm" onClick={() => setIsFullscreen(true)} className="h-8 w-8 p-0" data-testid="maximize-btn" title="Fullscreen view">
-                <Maximize2 className="h-3.5 w-3.5" />
-              </Button>
+              <Button variant="outline" size="sm" onClick={exportToPDF} className="h-8 px-2"><FileText className="h-3.5 w-3.5 mr-1" />PDF</Button>
+              <Button variant="outline" size="sm" onClick={savePNG} className="h-8 w-8 p-0"><Download className="h-3.5 w-3.5" /></Button>
+              <Button variant="outline" size="sm" onClick={() => setIsFullscreen(true)} className="h-8 w-8 p-0"><Maximize2 className="h-3.5 w-3.5" /></Button>
             </div>
           </div>
         </CardHeader>
-        <CardContent className="p-3">
-          <ChartSVG containerRef={!isFullscreen ? chartContainerRef : null} />
-        </CardContent>
+        <CardContent className="p-3">{renderSVG()}</CardContent>
       </Card>
 
-      {/* Add Measurement */}
       <Card>
-        <CardHeader className="pb-2">
-          <CardTitle className="text-sm">Plot Patient Measurement</CardTitle>
-        </CardHeader>
+        <CardHeader className="pb-2"><CardTitle className="text-sm">Plot Patient Measurement</CardTitle></CardHeader>
         <CardContent className="space-y-3">
           <div className="grid grid-cols-2 gap-2">
-            <div><Label className="text-xs">Date *</Label><Input type="date" value={newEntry.date} onChange={(e) => setNewEntry({...newEntry, date: e.target.value})} className="h-9 text-sm" data-testid="date-input" /></div>
-            <div><Label className="text-xs">Age ({isWHO ? 'months' : 'years'}) *</Label><Input type="number" min="0" max={isWHO ? "24" : "20"} value={newEntry.ageValue} onChange={(e) => setNewEntry({...newEntry, ageValue: e.target.value})} className="h-9 font-mono text-sm" data-testid="age-input" /></div>
+            <div><Label className="text-xs">Date *</Label><Input type="date" value={newEntry.date} onChange={e => setNewEntry({...newEntry, date: e.target.value})} className="h-9 text-sm" data-testid="date-input" /></div>
+            <div><Label className="text-xs">Age ({isWHO ? 'months' : 'years'}) *</Label><Input type="number" min="0" max={isWHO ? "24" : "20"} value={newEntry.ageValue} onChange={e => setNewEntry({...newEntry, ageValue: e.target.value})} className="h-9 font-mono text-sm" data-testid="age-input" /></div>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-            <div><Label className="text-xs">Weight (kg)</Label><Input type="number" step="0.01" min="0" value={newEntry.weight} onChange={(e) => setNewEntry({...newEntry, weight: e.target.value})} className="h-9 font-mono text-sm" data-testid="weight-input" /></div>
-            <div><Label className="text-xs">{isWHO ? 'Length' : 'Stature'} (cm)</Label><Input type="number" step="0.1" min="0" value={newEntry.length} onChange={(e) => setNewEntry({...newEntry, length: e.target.value})} className="h-9 font-mono text-sm" data-testid="length-input" /></div>
-            <div><Label className="text-xs">Head Circ (cm)</Label><Input type="number" step="0.1" min="0" value={newEntry.hc} onChange={(e) => setNewEntry({...newEntry, hc: e.target.value})} className="h-9 font-mono text-sm" disabled={isHCDisabled} data-testid="hc-input" /></div>
-            <div><Label className="text-xs">BMI (kg/m²)</Label><Input type="number" step="0.1" min="0" value={newEntry.bmi || ""} onChange={(e) => setNewEntry({...newEntry, bmi: e.target.value})} className="h-9 font-mono text-sm" disabled={isBMIDisabled} data-testid="bmi-input" /></div>
+            <div><Label className="text-xs">Weight (kg)</Label><Input type="number" step="0.01" min="0" value={newEntry.weight} onChange={e => setNewEntry({...newEntry, weight: e.target.value})} className="h-9 font-mono text-sm" data-testid="weight-input" /></div>
+            <div><Label className="text-xs">{isWHO ? 'Length' : 'Stature'} (cm)</Label><Input type="number" step="0.1" min="0" value={newEntry.length} onChange={e => setNewEntry({...newEntry, length: e.target.value})} className="h-9 font-mono text-sm" data-testid="length-input" /></div>
+            <div><Label className="text-xs">Head Circ (cm)</Label><Input type="number" step="0.1" min="0" value={newEntry.hc} onChange={e => setNewEntry({...newEntry, hc: e.target.value})} className="h-9 font-mono text-sm" disabled={!isWHO} data-testid="hc-input" /></div>
+            <div><Label className="text-xs">BMI (kg/m²)</Label><Input type="number" step="0.1" min="0" value={newEntry.bmi} onChange={e => setNewEntry({...newEntry, bmi: e.target.value})} className="h-9 font-mono text-sm" disabled={!isWHO} data-testid="bmi-input" /></div>
           </div>
-          <Button onClick={addEntry} className="w-full" size="sm" disabled={!newEntry.date || !newEntry.ageValue || (!newEntry.weight && !newEntry.length && !newEntry.hc)} data-testid="add-measurement-btn">
-            <Plus className="h-4 w-4 mr-1" /> Plot Data Point
-          </Button>
+          <Button onClick={addEntry} className="w-full" size="sm" disabled={!newEntry.date || !newEntry.ageValue || (!newEntry.weight && !newEntry.length && !newEntry.hc && !newEntry.bmi)} data-testid="add-measurement-btn"><Plus className="h-4 w-4 mr-1" />Plot Data Point</Button>
         </CardContent>
       </Card>
 
-      {/* Plotted Data */}
       {entries.length > 0 && (
         <Card>
           <CardHeader className="pb-2"><CardTitle className="text-sm">Plotted Measurements ({entries.length})</CardTitle></CardHeader>
           <CardContent className="space-y-2">
-            {entries.map((entry) => {
-              const weightInfo = entry.weight ? getPercentileInfo(entry.ageInMonths, entry.weight, 'weight') : null;
-              const lengthInfo = entry.length ? getPercentileInfo(entry.ageInMonths, entry.length, 'length') : null;
-              const hcInfo = entry.hc && isWHO ? getPercentileInfo(entry.ageInMonths, entry.hc, 'hc') : null;
-              const bmiInfo = entry.bmi && isWHO ? getPercentileInfo(entry.ageInMonths, entry.bmi, 'bmi') : null;
+            {entries.map(entry => {
+              const wI = entry.weight ? getPercentileInfo(entry.ageInMonths, entry.weight, 'weight') : null;
+              const lI = entry.length ? getPercentileInfo(entry.ageInMonths, entry.length, 'length') : null;
+              const hI = entry.hc && isWHO ? getPercentileInfo(entry.ageInMonths, entry.hc, 'hc') : null;
+              const bI = entry.bmi && isWHO ? getPercentileInfo(entry.ageInMonths, entry.bmi, 'bmi') : null;
               return (
                 <div key={entry.id} className="p-2 rounded-lg bg-gray-50 dark:bg-gray-800/50 text-xs">
                   <div className="flex justify-between items-center mb-1">
                     <span className="font-medium text-teal-600">{entry.date} • {entry.ageValue}{entry.ageUnit === 'years' ? 'y' : 'm'}</span>
-                    <button onClick={() => removeEntry(entry.id)} className="text-red-500 p-1"><Trash2 className="h-3 w-3" /></button>
+                    <button onClick={() => setEntries(entries.filter(e => e.id !== entry.id))} className="text-red-500 p-1"><Trash2 className="h-3 w-3" /></button>
                   </div>
-                  {weightInfo && <p>Weight: {entry.weight} kg → <span className={weightInfo.color}>{weightInfo.percentile} percentile ({weightInfo.interpretation})</span></p>}
-                  {lengthInfo && <p>{isWHO ? 'Length' : 'Stature'}: {entry.length} cm → <span className={lengthInfo.color}>{lengthInfo.percentile} percentile ({lengthInfo.interpretation})</span></p>}
-                  {hcInfo && <p>Head Circ: {entry.hc} cm → <span className={hcInfo.color}>{hcInfo.percentile} percentile ({hcInfo.interpretation})</span></p>}
-                  {bmiInfo && <p>BMI: {entry.bmi} kg/m² → <span className={bmiInfo.color}>{bmiInfo.percentile} percentile ({bmiInfo.interpretation})</span></p>}
+                  {wI && <p>Weight: {entry.weight} kg → <span className={wI.color}>{wI.percentile} percentile ({wI.interpretation})</span></p>}
+                  {lI && <p>{isWHO ? 'Length' : 'Stature'}: {entry.length} cm → <span className={lI.color}>{lI.percentile} percentile ({lI.interpretation})</span></p>}
+                  {hI && <p>Head Circ: {entry.hc} cm → <span className={hI.color}>{hI.percentile} percentile ({hI.interpretation})</span></p>}
+                  {bI && <p>BMI: {entry.bmi} kg/m² → <span className={bI.color}>{bI.percentile} percentile ({bI.interpretation})</span></p>}
                 </div>
               );
             })}
@@ -673,26 +412,21 @@ const GrowthChartPage = () => {
         </Card>
       )}
 
-      {/* Reference */}
       <Card>
         <CardHeader className="pb-2"><CardTitle className="text-sm">Reference</CardTitle></CardHeader>
         <CardContent className="text-xs text-muted-foreground space-y-1">
-          {isWHO ? (
-            <>
-              <p className="font-medium">WHO Percentiles:</p>
-              <p>• <span className="text-green-600 font-medium">15th-85th:</span> Normal range</p>
-              <p>• <span className="text-orange-500 font-medium">3rd-15th / 85th-97th:</span> Monitor growth</p>
-              <p>• <span className="text-red-600 font-medium">&lt;3rd / &gt;97th:</span> Evaluation needed</p>
-            </>
-          ) : (
-            <>
-              <p className="font-medium">CDC Percentiles:</p>
-              <p>• <span className="text-green-600 font-medium">10th-90th:</span> Normal range</p>
-              <p>• <span className="text-orange-500 font-medium">3rd-10th / 90th-97th:</span> Monitor growth</p>
-              <p>• <span className="text-red-600 font-medium">&lt;3rd / &gt;97th:</span> Evaluation needed</p>
-            </>
-          )}
-          <p className="pt-2 border-t text-[10px]">Data: {isWHO ? 'WHO Child Growth Standards (who.int)' : 'CDC Growth Charts (cdc.gov/growthcharts)'}</p>
+          {isWHO ? <>
+            <p className="font-medium">WHO Percentiles (3rd, 15th, 50th, 85th, 97th):</p>
+            <p>• <span className="text-green-600 font-medium">15th-85th:</span> Normal range</p>
+            <p>• <span className="text-orange-500 font-medium">3rd-15th / 85th-97th:</span> Monitor growth</p>
+            <p>• <span className="text-red-600 font-medium">&lt;3rd / &gt;97th:</span> Evaluation needed</p>
+          </> : <>
+            <p className="font-medium">CDC Percentiles (3rd, 5th, 10th, 25th, 50th, 75th, 90th, 95th, 97th):</p>
+            <p>• <span className="text-green-600 font-medium">25th-75th:</span> Normal range</p>
+            <p>• <span className="text-yellow-600 font-medium">10th-25th / 75th-90th:</span> Monitor</p>
+            <p>• <span className="text-red-600 font-medium">&lt;3rd / &gt;97th:</span> Evaluation needed</p>
+          </>}
+          <p className="pt-2 border-t text-[10px]">Data: {isWHO ? 'WHO Child Growth Standards (who.int)' : 'CDC Growth Charts (cdc.gov)'}</p>
         </CardContent>
       </Card>
     </div>
