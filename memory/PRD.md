@@ -96,25 +96,33 @@ Build a full SaaS-style web app "Pediatrics on the Go" with:
   - Completely rewrote `/app/frontend/src/pages/nicu/GrowthChartPage.jsx`
   - **Uses actual CDC PDF charts** uploaded by the user (not SVG recreations)
   - **4 CDC Charts**: Stature & Weight for Age (Boys/Girls), BMI for Age (Boys/Girls)
-  - **PDF URLs**:
-    - Boys Stature & Weight: `5hpnooem_Stature for afe and weight for age Boys percentiles.pdf`
-    - Girls Stature & Weight: `f49s7ypi_Stature for afe and weight for age Girls percentiles.pdf`
-    - Boys BMI: `zgvqqqk9_BMI for age Boys percentiles.pdf`
-    - Girls BMI: `bwb6u7fn_BMI for age Girls percentiles.pdf`
+  - **Backend PDF Proxy**: Added `/api/growth-charts/pdf/{chart-type}/{gender}` endpoint to bypass CORS
   - **Features**:
     - View Chart button: Opens PDF in new tab
     - Download Blank button: Downloads the original PDF
     - Patient Data Entry: Date, Age (2-20), Stature, Weight, BMI fields
     - **Export with Plotted Points**: Uses `pdf-lib` to draw data points directly on the PDF
-    - Coordinate mapping calibrated for CDC chart layout
-    - Color-coded points: Blue (Stature), Red (Weight), Purple (BMI)
+    - Coordinate mapping calibrated from PDF analysis (accurate positioning)
+    - Color-coded points: Blue (Stature S#), Red (Weight W#), Purple (BMI #)
     - Patient data legend added at bottom of exported PDF
   - **Reference cards** showing percentile categories (Normal, At Risk, Underweight, Obese)
-  - **Gender-specific backgrounds**: Blue for boys, pink for girls
-  - **Color-coded percentile lines**: Red (extreme), Orange (mid), Green (median)
-  - Patient data plotting with percentile calculation and interpretation
-  - Fullscreen mode for detailed viewing
-  - Reference section explaining percentile ranges
+
+- ✅ **24-Hours Neonatal Examination** (NICU > Postnatal):
+  - New comprehensive reference for common findings during neonatal exams
+  - **10 System Categories**:
+    1. Surgical (Hypospadias, Hydrocele, Undescended Testis, Skin Tag)
+    2. ENT/Dental (Tongue Tie, Ear Tag, Choanal Atresia, Ranula, Natal Teeth)
+    3. Orthopedic (Fused Toes, Hip Click/DDH, Shoulder Dystocia, Talipes, Sacral Dimple)
+    4. Cardiovascular (Murmur grading and management)
+    5. Growth/Measurements (LBW, Small/Large HC, AF abnormalities)
+    6. Dermatology (Cutis Aplasia, ETN, Neonatal Acne, Pustular Melanosis)
+    7. Ophthalmology (Eye Discharge, Absent Red Reflex)
+    8. Maternal History (Hep B, Metabolic, UTI, Autoimmune, HIV)
+    9. Antenatal Findings (Renal pelvis dilation, PKD, Intracranial abnormalities)
+    10. Others (Hypotonia, Jittery Baby, Jaundice, Late Preterm, SUA)
+  - **AAP Guidelines Dialog** for each finding with evidence-based recommendations
+  - Urgent findings highlighted in red
+  - Created `/app/frontend/src/pages/nicu/postnatal/NeonatalExaminationApproach.jsx`
 
 - ✅ **PayPal Integration Complete Overhaul**:
   - **Root Cause Fixed:** Generic "An error occurred" alert replaced with structured error responses
