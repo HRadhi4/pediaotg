@@ -368,10 +368,20 @@ const GrowthChartPage = () => {
             <div>
               <CardTitle className="text-sm">{chartLabels[activeChart]}</CardTitle>
               <CardDescription className="text-xs">
-                CDC • {gender === 'male' ? 'Boys' : 'Girls'} • Official CDC growth chart PDF
+                CDC • {gender === 'male' ? 'Boys' : 'Girls'} • Official CDC growth chart
               </CardDescription>
             </div>
             <div className="flex gap-1">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={() => window.open(getPdfUrl(), '_blank')}
+                className="h-8 px-2"
+                data-testid="view-pdf-btn"
+              >
+                <ExternalLink className="h-3.5 w-3.5 mr-1" />
+                View
+              </Button>
               <Button 
                 variant="outline" 
                 size="sm" 
@@ -381,24 +391,16 @@ const GrowthChartPage = () => {
                 data-testid="export-pdf-btn"
               >
                 <Download className="h-3.5 w-3.5 mr-1" />
-                {exporting ? '...' : 'PDF'}
-              </Button>
-              <Button 
-                variant="outline" 
-                size="sm" 
-                onClick={() => setIsFullscreen(true)} 
-                className="h-8 w-8 p-0"
-                data-testid="fullscreen-btn"
-              >
-                <Maximize2 className="h-3.5 w-3.5" />
+                {exporting ? '...' : 'Export'}
               </Button>
             </div>
           </div>
         </CardHeader>
         <CardContent className="p-3">
-          <div className="w-full bg-gray-100 rounded-lg overflow-hidden" style={{ height: '500px' }}>
+          {/* PDF Preview using Google Docs Viewer */}
+          <div className="w-full bg-white rounded-lg overflow-hidden border" style={{ height: '500px' }}>
             <iframe
-              src={`${getPdfUrl()}#view=FitH`}
+              src={`https://docs.google.com/viewer?url=${encodeURIComponent(getPdfUrl())}&embedded=true`}
               className="w-full h-full border-0"
               title="CDC Growth Chart"
             />
@@ -409,8 +411,8 @@ const GrowthChartPage = () => {
             <p className="font-medium mb-1">How to use:</p>
             <ol className="list-decimal list-inside space-y-1">
               <li>Add patient measurements using the form below</li>
-              <li>Click "PDF" button to export the chart with your data points plotted</li>
-              <li>Use fullscreen mode for better viewing</li>
+              <li>Click "Export" to download the chart with your data points plotted directly on the PDF</li>
+              <li>Click "View" to open the original PDF in a new tab</li>
             </ol>
           </div>
         </CardContent>
