@@ -422,7 +422,7 @@ const GrowthChartPage = () => {
               const wI = entry.weight ? getPercentileInfo(entry.ageInMonths, entry.weight, 'weight') : null;
               const lI = entry.length ? getPercentileInfo(entry.ageInMonths, entry.length, 'length') : null;
               const hI = entry.hc && isWHO ? getPercentileInfo(entry.ageInMonths, entry.hc, 'hc') : null;
-              const bI = entry.bmi && isWHO ? getPercentileInfo(entry.ageInMonths, entry.bmi, 'bmi') : null;
+              const bI = entry.bmi ? getPercentileInfo(entry.ageInMonths, entry.bmi, 'bmi') : null;
               return (
                 <div key={entry.id} className="p-2 rounded-lg bg-gray-50 dark:bg-gray-800/50 text-xs">
                   <div className="flex justify-between items-center mb-1">
