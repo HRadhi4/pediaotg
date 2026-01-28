@@ -303,63 +303,6 @@ const GrowthChartPage = () => {
         </CardContent>
       </Card>
 
-      {/* Fullscreen Modal */}
-      {isFullscreen && (
-        <div 
-          className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-2" 
-          onClick={() => setIsFullscreen(false)}
-        >
-          <div 
-            className="relative bg-white rounded-lg w-full h-full max-w-[98vw] max-h-[98vh] flex flex-col" 
-            onClick={e => e.stopPropagation()}
-          >
-            <div className="flex justify-between items-center p-3 border-b">
-              <div>
-                <h3 className="text-lg font-semibold">{chartLabels[activeChart]}</h3>
-                <p className="text-sm text-muted-foreground">
-                  CDC • {gender === 'male' ? 'Boys' : 'Girls'} • 2-20 years
-                </p>
-              </div>
-              <div className="flex gap-2">
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  onClick={exportPDF}
-                  disabled={exporting || entries.length === 0}
-                  className="h-9 px-3"
-                >
-                  <Download className="h-4 w-4 mr-1" />
-                  {exporting ? 'Exporting...' : 'Export with Data'}
-                </Button>
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  onClick={() => window.open(getPdfUrl(), '_blank')}
-                  className="h-9 px-3"
-                >
-                  <ExternalLink className="h-4 w-4 mr-1" />Open Original
-                </Button>
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  onClick={() => setIsFullscreen(false)} 
-                  className="h-9 w-9 p-0"
-                >
-                  <Minimize2 className="h-4 w-4" />
-                </Button>
-              </div>
-            </div>
-            <div className="flex-1 p-2">
-              <iframe
-                src={`${getPdfUrl()}#view=FitH`}
-                className="w-full h-full border-0 rounded"
-                title="CDC Growth Chart"
-              />
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* Chart Display */}
       <Card>
         <CardHeader className="pb-2">
