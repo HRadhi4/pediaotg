@@ -53,7 +53,7 @@ class PayPalService:
         self._token_expires = None
         
         # Log configuration (safe)
-        logger.info(f"PayPal Service initialized:")
+        logger.info("PayPal Service initialized:")
         logger.info(f"  Mode: {self.mode}")
         logger.info(f"  API: {self.base_url}")
         logger.info(f"  Client ID: {self.client_id[:15]}..." if self.client_id else "  Client ID: NOT SET")
