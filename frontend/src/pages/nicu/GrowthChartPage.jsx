@@ -59,7 +59,6 @@ const GrowthChartPage = () => {
   const [gender, setGender] = useState("male");
   const [activeChart, setActiveChart] = useState("statureWeight");
   const [entries, setEntries] = useState([]);
-  const [isFullscreen, setIsFullscreen] = useState(false);
   const [exporting, setExporting] = useState(false);
   const [newEntry, setNewEntry] = useState({ 
     date: new Date().toISOString().split('T')[0], 
