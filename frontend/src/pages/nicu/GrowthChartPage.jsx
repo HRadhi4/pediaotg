@@ -1,6 +1,6 @@
 import React, { useState, useRef, useCallback } from "react";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
-import { Plus, Trash2, ZoomIn, ZoomOut, RotateCcw, Maximize2, Download, ExternalLink, FileText } from "lucide-react";
+import { Plus, Trash2, Download, ExternalLink, FileText, Camera } from "lucide-react";
 import { GrowthChartIcon as HealthGrowthIcon } from "@/components/HealthIcons";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PDFDocument, rgb } from 'pdf-lib';
+import { toPng } from 'html-to-image';
 
 /**
  * Combined Growth Charts Page
@@ -43,6 +44,19 @@ const WHO_CHARTS = {
         yMin: 680, yMax: 100,
         ageMin: 0, ageMax: 24,
         valueMin: 45, valueMax: 95
+      }
+    },
+    bmi: {
+      file: "/charts/who/boys_bmi_0_2.svg",
+      label: "BMI-for-age",
+      yLabel: "BMI (kg/m²)",
+      yMin: 10,
+      yMax: 22,
+      grid: {
+        xMin: 140, xMax: 1060,
+        yMin: 680, yMax: 100,
+        ageMin: 0, ageMax: 24,
+        valueMin: 10, valueMax: 22
       }
     }
   },
@@ -84,6 +98,19 @@ const WHO_CHARTS = {
         yMin: 680, yMax: 100,
         ageMin: 0, ageMax: 24,
         valueMin: 10, valueMax: 22
+      }
+    },
+    headCircumference: {
+      file: "/charts/who/girls_head_circumference_0_2.svg",
+      label: "Head Circumference",
+      yLabel: "HC (cm)",
+      yMin: 32,
+      yMax: 52,
+      grid: {
+        xMin: 140, xMax: 1060,
+        yMin: 680, yMax: 100,
+        ageMin: 0, ageMax: 24,
+        valueMin: 32, valueMax: 52
       }
     }
   }
@@ -130,7 +157,7 @@ const CDC_CHART_COORDS = {
 };
 
 // ============== WHO CHARTS COMPONENT ==============
-const WHOChartsSection = ({ gender, setGender }) => {
+const WHOChartsSection = ({ gender }) => {
   const [chartType, setChartType] = useState("weight");
   const [entries, setEntries] = useState([]);
   const [newEntry, setNewEntry] = useState({ 
@@ -138,9 +165,8 @@ const WHOChartsSection = ({ gender, setGender }) => {
     ageMonths: "", 
     value: "" 
   });
-  const [isFullscreen, setIsFullscreen] = useState(false);
-  const transformRef = useRef(null);
-  const containerRef = useRef(null);
+  const [saving, setSaving] = useState(false);
+  const chartContainerRef = useRef(null);
 
   const whoGender = gender === "male" ? "boys" : "girls";
   const currentChart = WHO_CHARTS[whoGender]?.[chartType] || WHO_CHARTS.boys.weight;
@@ -187,24 +213,32 @@ const WHOChartsSection = ({ gender, setGender }) => {
 
   const currentEntries = entries.filter(e => e.gender === whoGender && e.chartType === chartType);
 
-  const toggleFullscreen = () => {
-    if (!document.fullscreenElement) {
-      containerRef.current?.requestFullscreen();
-      setIsFullscreen(true);
-    } else {
-      document.exitFullscreen();
-      setIsFullscreen(false);
+  // Save chart as PNG
+  const saveAsPng = async () => {
+    if (!chartContainerRef.current) return;
+    setSaving(true);
+    try {
+      const dataUrl = await toPng(chartContainerRef.current, {
+        quality: 1.0,
+        backgroundColor: '#ffffff',
+        pixelRatio: 2
+      });
+      const link = document.createElement('a');
+      link.download = `who-${currentChart.label.toLowerCase().replace(/\s+/g, '-')}-${whoGender}-${new Date().toISOString().split('T')[0]}.png`;
+      link.href = dataUrl;
+      link.click();
+    } catch (error) {
+      console.error('Error saving as PNG:', error);
+      alert('Error saving chart. Please try again.');
+    } finally {
+      setSaving(false);
     }
-  };
-
-  const handleChartTypeChange = (newType) => {
-    if (availableCharts.includes(newType)) setChartType(newType);
   };
 
   return (
     <div className="space-y-4">
       {/* Chart Type Selection */}
-      <Select value={chartType} onValueChange={handleChartTypeChange}>
+      <Select value={chartType} onValueChange={setChartType}>
         <SelectTrigger className="h-9" data-testid="who-chart-type-select">
           <SelectValue placeholder="Select chart type" />
         </SelectTrigger>
@@ -217,8 +251,8 @@ const WHOChartsSection = ({ gender, setGender }) => {
         </SelectContent>
       </Select>
 
-      {/* Chart Display with Zoom */}
-      <Card ref={containerRef} className={isFullscreen ? "fixed inset-0 z-50 m-0 rounded-none" : ""}>
+      {/* Chart Display with Pinch-to-Zoom */}
+      <Card>
         <CardHeader className="pb-2">
           <div className="flex justify-between items-start">
             <div>
@@ -229,28 +263,28 @@ const WHOChartsSection = ({ gender, setGender }) => {
                 Pinch to zoom • Drag to pan • Double-tap to reset
               </CardDescription>
             </div>
-            <div className="flex gap-1">
-              <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => transformRef.current?.zoomIn()} data-testid="who-zoom-in-btn">
-                <ZoomIn className="h-4 w-4" />
-              </Button>
-              <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => transformRef.current?.zoomOut()} data-testid="who-zoom-out-btn">
-                <ZoomOut className="h-4 w-4" />
-              </Button>
-              <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => transformRef.current?.resetTransform()} data-testid="who-reset-zoom-btn">
-                <RotateCcw className="h-4 w-4" />
-              </Button>
-              <Button variant="outline" size="icon" className="h-8 w-8" onClick={toggleFullscreen} data-testid="who-fullscreen-btn">
-                <Maximize2 className="h-4 w-4" />
-              </Button>
-            </div>
+            {/* Save as PNG Button */}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={saveAsPng}
+              disabled={saving}
+              className="h-8"
+              data-testid="who-save-png-btn"
+            >
+              <Camera className="h-4 w-4 mr-1" />
+              {saving ? 'Saving...' : 'Save PNG'}
+            </Button>
           </div>
         </CardHeader>
         <CardContent className="p-2">
-          <div className={`relative border rounded-lg overflow-hidden ${
-            whoGender === 'boys' ? 'bg-blue-50' : 'bg-pink-50'
-          } ${isFullscreen ? 'h-[calc(100vh-120px)]' : 'h-[350px]'}`}>
+          <div 
+            ref={chartContainerRef}
+            className={`relative border rounded-lg overflow-hidden ${
+              whoGender === 'boys' ? 'bg-blue-50' : 'bg-pink-50'
+            } h-[350px]`}
+          >
             <TransformWrapper
-              ref={transformRef}
               initialScale={1}
               minScale={0.5}
               maxScale={5}
@@ -267,6 +301,7 @@ const WHOChartsSection = ({ gender, setGender }) => {
                     className="max-w-full max-h-full object-contain"
                     data-testid="who-growth-chart-svg"
                   />
+                  {/* Data Points Overlay - Smaller points */}
                   <svg
                     className="absolute inset-0 w-full h-full pointer-events-none"
                     viewBox="0 0 1122.5197 793.70074"
@@ -280,12 +315,19 @@ const WHOChartsSection = ({ gender, setGender }) => {
                           <circle
                             cx={entry.coords.x}
                             cy={entry.coords.y}
-                            r="12"
+                            r="6"
                             fill={whoGender === 'boys' ? '#2563eb' : '#db2777'}
                             stroke="white"
-                            strokeWidth="3"
+                            strokeWidth="2"
                           />
-                          <text x={entry.coords.x} y={entry.coords.y + 4} textAnchor="middle" fill="white" fontSize="10" fontWeight="bold">
+                          <text 
+                            x={entry.coords.x} 
+                            y={entry.coords.y + 3} 
+                            textAnchor="middle" 
+                            fill="white" 
+                            fontSize="7" 
+                            fontWeight="bold"
+                          >
                             {index + 1}
                           </text>
                         </g>
@@ -345,17 +387,17 @@ const WHOChartsSection = ({ gender, setGender }) => {
               <div key={entry.id} className={`p-3 rounded-lg text-sm ${whoGender === 'boys' ? 'bg-blue-50' : 'bg-pink-50'}`}>
                 <div className="flex justify-between items-center">
                   <div className="flex items-center gap-3">
-                    <span className={`w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-bold ${whoGender === 'boys' ? 'bg-blue-600' : 'bg-pink-600'}`}>
+                    <span className={`w-5 h-5 rounded-full flex items-center justify-center text-white text-xs font-bold ${whoGender === 'boys' ? 'bg-blue-600' : 'bg-pink-600'}`}>
                       {index + 1}
                     </span>
                     <div>
                       <span className="font-medium">{entry.date}</span>
-                      <span className="text-muted-foreground ml-2">{entry.ageMonths} months</span>
+                      <span className="text-muted-foreground ml-2">{entry.ageMonths} mo</span>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
                     <span className={`font-mono font-medium ${whoGender === 'boys' ? 'text-blue-600' : 'text-pink-600'}`}>
-                      {entry.value} {chartType === 'weight' ? 'kg' : chartType === 'length' ? 'cm' : 'kg/m²'}
+                      {entry.value} {chartType === 'weight' ? 'kg' : chartType === 'length' ? 'cm' : chartType === 'headCircumference' ? 'cm' : 'kg/m²'}
                     </span>
                     <button onClick={() => removeEntry(entry.id)} className="text-red-500 p-1 hover:bg-red-100 rounded">
                       <Trash2 className="h-4 w-4" />
@@ -372,7 +414,7 @@ const WHOChartsSection = ({ gender, setGender }) => {
 };
 
 // ============== CDC CHARTS COMPONENT ==============
-const CDCChartsSection = ({ gender, setGender }) => {
+const CDCChartsSection = ({ gender }) => {
   const [activeChart, setActiveChart] = useState("statureWeight");
   const [entries, setEntries] = useState([]);
   const [exporting, setExporting] = useState(false);
@@ -651,10 +693,10 @@ const GrowthChartPage = () => {
           <TabsTrigger value="cdc" data-testid="cdc-tab">CDC (2-20 years)</TabsTrigger>
         </TabsList>
         <TabsContent value="who" className="mt-4">
-          <WHOChartsSection gender={gender} setGender={setGender} />
+          <WHOChartsSection gender={gender} />
         </TabsContent>
         <TabsContent value="cdc" className="mt-4">
-          <CDCChartsSection gender={gender} setGender={setGender} />
+          <CDCChartsSection gender={gender} />
         </TabsContent>
       </Tabs>
 
