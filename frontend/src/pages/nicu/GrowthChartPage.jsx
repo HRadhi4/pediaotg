@@ -26,30 +26,42 @@ const CDC_PDFS = {
 };
 
 // Chart coordinate mappings for plotting points on the PDF
-// Calibrated to CDC PDF layout (PDF coordinates - origin at bottom-left)
-// Standard CDC charts are letter size: 612 x 792 points
+// Calibrated from PDF extraction analysis - coordinates in screen space (y=0 at top)
+// Need to convert to PDF space (y=0 at bottom) when drawing
+
+// Stature & Weight PDF: 896 x 1080 points (page size extracted)
+// BMI PDF: 877 x 948 points (page size extracted)
+
 const CHART_COORDS = {
   statureWeight: {
+    pageHeight: 1080, // PDF page height for Y-flip
     // Stature chart area (top chart on combined PDF)
     stature: {
-      xMin: 122, xMax: 559,
+      xMin: 134, xMax: 873,  // Age 2 to Age 20
       ageMin: 2, ageMax: 20,
-      yMin: 385, yMax: 710,
-      valueMin: 77, valueMax: 200
+      // Screen coords: y=300 at 30cm, y=61 at 190cm
+      // PDF coords (flipped): y=780 at 30cm, y=1019 at 190cm
+      yMinScreen: 300, yMaxScreen: 61,
+      valueMin: 30, valueMax: 190  // cm range from chart
     },
     // Weight chart area (bottom chart on combined PDF)
     weight: {
-      xMin: 122, xMax: 559,
+      xMin: 134, xMax: 873,
       ageMin: 2, ageMax: 20,
-      yMin: 82, yMax: 340,
-      valueMin: 8, valueMax: 105
+      // Screen coords: y=814 at 1kg, y=597 at 100kg
+      // PDF coords (flipped): y=266 at 1kg, y=483 at 100kg
+      yMinScreen: 814, yMaxScreen: 597,
+      valueMin: 1, valueMax: 100  // kg range from chart
     }
   },
   bmi: {
+    pageHeight: 948, // PDF page height for Y-flip
     bmi: {
-      xMin: 122, xMax: 559,
+      xMin: 165, xMax: 800,
       ageMin: 2, ageMax: 20,
-      yMin: 100, yMax: 680,
+      // Screen coords: y=842 at BMI 12, y=140 at BMI 35
+      // PDF coords (flipped): y=106 at BMI 12, y=808 at BMI 35
+      yMinScreen: 842, yMaxScreen: 140,
       valueMin: 12, valueMax: 35
     }
   }
