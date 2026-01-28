@@ -955,15 +955,6 @@ const NeonatalExaminationApproach = () => {
           }
         />
       </CollapsibleSection>
-
-      {/* Footer Reference */}
-      <Card className="border-slate-200 dark:border-slate-700">
-        <CardContent className="py-3">
-          <p className="text-[10px] text-muted-foreground text-center">
-            Reference: AAP Guidelines / UpToDate / WHO Newborn Care Recommendations
-          </p>
-        </CardContent>
-      </Card>
     </div>
   );
 };
