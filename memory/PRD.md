@@ -93,26 +93,19 @@ Build a full SaaS-style web app "Pediatrics on the Go" with:
 
 ### Session 13 Updates (January 28, 2026 - Continued)
 - ✅ **WHO Growth Charts Integration (Birth to 2 Years)**:
-  - **7 WHO SVG Charts** added to `/app/frontend/public/charts/who/`:
-    - `boys_weight_0_2.svg`, `boys_length_0_2.svg`, `boys_bmi_0_2.svg`
-    - `girls_weight_0_2.svg`, `girls_length_0_2.svg`, `girls_bmi_0_2.svg`, `girls_head_circumference_0_2.svg`
-  - **Features**: Pinch-to-zoom, Save as PNG, smaller plotting points (r=6)
+  - **7 WHO SVG Charts** in `/app/frontend/public/charts/who/`
+  - Coordinates calibrated from 2x PNG analysis: X 62-1076, Y 773(bottom)-94(top)
   
 - ✅ **CDC Growth Charts Integration (2-20 Years)**:
-  - **4 CDC SVG Charts** added to `/app/frontend/public/charts/cdc/`:
-    - `boys_stature_weight_2_20.svg` - Stature & Weight for Boys
-    - `boys_bmi_2_20.svg` - BMI for Boys
-    - `girls_stature_weight_2_20.svg` - Stature & Weight for Girls
-    - `girls_bmi_2_20.svg` - BMI for Girls
-  - **Features**: Same as WHO - Pinch-to-zoom, Save as PNG, data point plotting
-  - **Measurement Selection**: Stature or Weight dropdown for dual-axis charts
-  - CDC percentiles: 3rd, 5th, 10th, 25th, 50th, 75th, 85th, 90th, 95th, 97th
+  - **4 CDC SVG Charts** in `/app/frontend/public/charts/cdc/`
+  - Coordinates calibrated from 2x PNG analysis:
+    - Stature/Weight: X 260-766, Stature Y 506-54, Weight Y 1008-652
+    - BMI: X 80-454, Y 430-50
+  - Combined Stature & Weight on single chart (no switching)
+  - Color coding: Blue ● Stature, Red ● Weight
 
-- **Unified Growth Charts Page** (`/app/frontend/src/pages/nicu/GrowthChartPage.jsx`):
-  - Combined WHO (0-2 years) and CDC (2-20 years) in tabbed interface
-  - Gender selection (Boys/Girls) with color-coded styling
-  - No zoom buttons - pure pinch-to-zoom interaction
-  - Dependencies: `react-zoom-pan-pinch@3.7.0`, `html-to-image@1.11.13`
+- **Features**: Pinch-to-zoom (min 100%), Save PNG, data point plotting
+- **Dependencies**: `react-zoom-pan-pinch@3.7.0`, `html-to-image@1.11.13`
 
 ### Session 12 Updates (January 28, 2026)
 - ✅ **NICU Growth Chart Overhaul - Using Official CDC PDFs**:
