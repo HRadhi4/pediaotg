@@ -94,22 +94,25 @@ Build a full SaaS-style web app "Pediatrics on the Go" with:
 ### Session 13 Updates (January 28, 2026 - Continued)
 - ✅ **WHO Growth Charts Integration (Birth to 2 Years)**:
   - Completely rewrote `/app/frontend/src/pages/nicu/GrowthChartPage.jsx` to support BOTH WHO and CDC charts
-  - **5 WHO SVG Charts** added to `/app/frontend/public/charts/who/`:
+  - **7 WHO SVG Charts** added to `/app/frontend/public/charts/who/`:
     - `boys_weight_0_2.svg` - Weight-for-age Boys (0-24 months)
     - `boys_length_0_2.svg` - Length-for-age Boys (0-24 months)
+    - `boys_bmi_0_2.svg` - BMI-for-age Boys (0-24 months) **NEW**
     - `girls_weight_0_2.svg` - Weight-for-age Girls (0-24 months)
     - `girls_length_0_2.svg` - Length-for-age Girls (0-24 months)
     - `girls_bmi_0_2.svg` - BMI-for-age Girls (0-24 months)
+    - `girls_head_circumference_0_2.svg` - Head Circumference Girls (0-24 months) **NEW**
   - **Features**:
-    - **Pinch-to-zoom** functionality using `react-zoom-pan-pinch` library
-    - Zoom controls: Zoom In, Zoom Out, Reset, Fullscreen
+    - **Pinch-to-zoom** functionality using `react-zoom-pan-pinch` library (no zoom buttons)
+    - **Save as PNG** button with camera icon for exporting charts
+    - **Smaller plotting points** (radius=6, font-size=7) for accurate data visualization
     - **Data Point Plotting**: SVG overlay with numbered circles
     - Gender-specific color coding (Blue for Boys, Pink for Girls)
     - WHO percentiles: 3rd, 15th, 50th, 85th, 97th
   - **Unified UI**: Tabs for switching between WHO (0-2 years) and CDC (2-20 years)
-  - **Files Modified**:
-    - `/app/frontend/src/pages/nicu/GrowthChartPage.jsx` - Complete rewrite with WHO + CDC sections
-    - `/app/frontend/package.json` - Added `react-zoom-pan-pinch@3.7.0`
+  - **Dependencies Added**:
+    - `react-zoom-pan-pinch@3.7.0` - Pinch-to-zoom functionality
+    - `html-to-image@1.11.13` - PNG export functionality
 
 ### Session 12 Updates (January 28, 2026)
 - ✅ **NICU Growth Chart Overhaul - Using Official CDC PDFs**:
