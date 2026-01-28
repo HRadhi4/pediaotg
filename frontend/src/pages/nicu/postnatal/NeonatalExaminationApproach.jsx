@@ -698,7 +698,7 @@ const NeonatalExaminationApproach = () => {
         <FindingItem 
           title="History of Neonatal Death / Metabolic Disorder"
           management={[
-            "Follow up Dr Zahra in clinic"
+            "Follow up Metabolic clinic in clinic"
           ]}
           aapGuideline={
             <div className="space-y-2">
@@ -736,7 +736,7 @@ const NeonatalExaminationApproach = () => {
           management={[
             "CBC",
             "ECG",
-            "Follow up Dr Wafa at 4-6 months"
+            "Follow up Rheumatology clinic at 4-6 months"
           ]}
           aapGuideline={
             <div className="space-y-2">
