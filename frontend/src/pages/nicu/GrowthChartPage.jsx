@@ -14,28 +14,38 @@ import { toPng } from 'html-to-image';
  * Combined Growth Charts Page
  * - WHO Charts: Birth to 2 Years (SVG with pinch-to-zoom)
  * - CDC Charts: 2-20 Years (SVG with pinch-to-zoom)
+ * 
+ * COORDINATE SYSTEM: All coordinates are calibrated to match SVG viewBox dimensions
+ * WHO viewBox: 0 0 1122.5197 793.70074
+ * CDC viewBox: 0 0 816 1056
  */
 
 // ============== WHO CHARTS CONFIGURATION ==============
+// Coordinates calibrated from actual chart analysis (PNG pixel coords -> viewBox coords)
 const WHO_CHARTS = {
   boys: {
     weight: {
       file: "/charts/who/boys_weight_0_2.svg",
       label: "Weight-for-age",
       yLabel: "Weight (kg)",
-      grid: { xMin: 140, xMax: 1060, yMin: 680, yMax: 100, ageMin: 0, ageMax: 24, valueMin: 2, valueMax: 16 }
+      viewBox: "0 0 1122.5197 793.70074",
+      // Calibrated: X 0mo=85, 24mo=1037; Y 2kg=580, 16kg=147
+      grid: { xMin: 85, xMax: 1037, yMin: 580, yMax: 147, ageMin: 0, ageMax: 24, valueMin: 2, valueMax: 16 }
     },
     length: {
       file: "/charts/who/boys_length_0_2.svg",
       label: "Length-for-age",
       yLabel: "Length (cm)",
-      grid: { xMin: 140, xMax: 1060, yMin: 680, yMax: 100, ageMin: 0, ageMax: 24, valueMin: 45, valueMax: 95 }
+      viewBox: "0 0 1122.5197 793.70074",
+      // Similar grid structure as weight chart
+      grid: { xMin: 85, xMax: 1037, yMin: 580, yMax: 147, ageMin: 0, ageMax: 24, valueMin: 45, valueMax: 95 }
     },
     bmi: {
       file: "/charts/who/boys_bmi_0_2.svg",
       label: "BMI-for-age",
       yLabel: "BMI (kg/m²)",
-      grid: { xMin: 140, xMax: 1060, yMin: 680, yMax: 100, ageMin: 0, ageMax: 24, valueMin: 10, valueMax: 22 }
+      viewBox: "0 0 1122.5197 793.70074",
+      grid: { xMin: 85, xMax: 1037, yMin: 580, yMax: 147, ageMin: 0, ageMax: 24, valueMin: 10, valueMax: 22 }
     }
   },
   girls: {
@@ -43,56 +53,63 @@ const WHO_CHARTS = {
       file: "/charts/who/girls_weight_0_2.svg",
       label: "Weight-for-age",
       yLabel: "Weight (kg)",
-      grid: { xMin: 140, xMax: 1060, yMin: 680, yMax: 100, ageMin: 0, ageMax: 24, valueMin: 2, valueMax: 16 }
+      viewBox: "0 0 1122.5197 793.70074",
+      grid: { xMin: 85, xMax: 1037, yMin: 580, yMax: 147, ageMin: 0, ageMax: 24, valueMin: 2, valueMax: 16 }
     },
     length: {
       file: "/charts/who/girls_length_0_2.svg",
       label: "Length-for-age",
       yLabel: "Length (cm)",
-      grid: { xMin: 140, xMax: 1060, yMin: 680, yMax: 100, ageMin: 0, ageMax: 24, valueMin: 45, valueMax: 95 }
+      viewBox: "0 0 1122.5197 793.70074",
+      grid: { xMin: 85, xMax: 1037, yMin: 580, yMax: 147, ageMin: 0, ageMax: 24, valueMin: 45, valueMax: 95 }
     },
     bmi: {
       file: "/charts/who/girls_bmi_0_2.svg",
       label: "BMI-for-age",
       yLabel: "BMI (kg/m²)",
-      grid: { xMin: 140, xMax: 1060, yMin: 680, yMax: 100, ageMin: 0, ageMax: 24, valueMin: 10, valueMax: 22 }
+      viewBox: "0 0 1122.5197 793.70074",
+      grid: { xMin: 85, xMax: 1037, yMin: 580, yMax: 147, ageMin: 0, ageMax: 24, valueMin: 10, valueMax: 22 }
     },
     headCircumference: {
       file: "/charts/who/girls_head_circumference_0_2.svg",
       label: "Head Circumference",
       yLabel: "HC (cm)",
-      grid: { xMin: 140, xMax: 1060, yMin: 680, yMax: 100, ageMin: 0, ageMax: 24, valueMin: 32, valueMax: 52 }
+      viewBox: "0 0 1122.5197 793.70074",
+      grid: { xMin: 85, xMax: 1037, yMin: 580, yMax: 147, ageMin: 0, ageMax: 24, valueMin: 32, valueMax: 52 }
     }
   }
 };
 
 // ============== CDC CHARTS CONFIGURATION ==============
-// CDC SVG charts with coordinate grids derived from chart analysis
+// Coordinates calibrated from actual chart analysis
 const CDC_CHARTS = {
   boys: {
     statureWeight: {
       file: "/charts/cdc/boys_stature_weight_2_20.svg",
       label: "Stature & Weight",
-      viewBox: "0 0 1650 1275",
+      viewBox: "0 0 816 1056",
       measurements: {
         stature: {
           yLabel: "Stature (cm)",
-          grid: { xMin: 195, xMax: 1430, yMin: 285, yMax: 960, ageMin: 2, ageMax: 20, valueMin: 80, valueMax: 200 }
+          // Calibrated: X 2yr=112, 20yr=766; Y 77cm=687, 200cm=109
+          grid: { xMin: 112, xMax: 766, yMin: 687, yMax: 109, ageMin: 2, ageMax: 20, valueMin: 77, valueMax: 200 }
         },
         weight: {
           yLabel: "Weight (kg)",
-          grid: { xMin: 195, xMax: 1430, yMin: 285, yMax: 960, ageMin: 2, ageMax: 20, valueMin: 10, valueMax: 105 }
+          // Calibrated: X same; Y 10kg=802, 105kg=511
+          grid: { xMin: 112, xMax: 766, yMin: 802, yMax: 511, ageMin: 2, ageMax: 20, valueMin: 10, valueMax: 105 }
         }
       }
     },
     bmi: {
       file: "/charts/cdc/boys_bmi_2_20.svg",
       label: "BMI-for-age",
-      viewBox: "0 0 1650 1275",
+      viewBox: "0 0 816 1056",
       measurements: {
         bmi: {
           yLabel: "BMI (kg/m²)",
-          grid: { xMin: 195, xMax: 1430, yMin: 285, yMax: 960, ageMin: 2, ageMax: 20, valueMin: 12, valueMax: 35 }
+          // Calibrated: X 2yr=146, 20yr=766; Y 12=845, 35=144
+          grid: { xMin: 146, xMax: 766, yMin: 845, yMax: 144, ageMin: 2, ageMax: 20, valueMin: 12, valueMax: 35 }
         }
       }
     }
@@ -101,26 +118,26 @@ const CDC_CHARTS = {
     statureWeight: {
       file: "/charts/cdc/girls_stature_weight_2_20.svg",
       label: "Stature & Weight",
-      viewBox: "0 0 1650 1275",
+      viewBox: "0 0 816 1056",
       measurements: {
         stature: {
           yLabel: "Stature (cm)",
-          grid: { xMin: 195, xMax: 1430, yMin: 285, yMax: 960, ageMin: 2, ageMax: 20, valueMin: 80, valueMax: 200 }
+          grid: { xMin: 112, xMax: 766, yMin: 687, yMax: 109, ageMin: 2, ageMax: 20, valueMin: 77, valueMax: 200 }
         },
         weight: {
           yLabel: "Weight (kg)",
-          grid: { xMin: 195, xMax: 1430, yMin: 285, yMax: 960, ageMin: 2, ageMax: 20, valueMin: 10, valueMax: 105 }
+          grid: { xMin: 112, xMax: 766, yMin: 802, yMax: 511, ageMin: 2, ageMax: 20, valueMin: 10, valueMax: 105 }
         }
       }
     },
     bmi: {
       file: "/charts/cdc/girls_bmi_2_20.svg",
       label: "BMI-for-age",
-      viewBox: "0 0 1650 1275",
+      viewBox: "0 0 816 1056",
       measurements: {
         bmi: {
           yLabel: "BMI (kg/m²)",
-          grid: { xMin: 195, xMax: 1430, yMin: 285, yMax: 960, ageMin: 2, ageMax: 20, valueMin: 12, valueMax: 35 }
+          grid: { xMin: 146, xMax: 766, yMin: 845, yMax: 144, ageMin: 2, ageMax: 20, valueMin: 12, valueMax: 35 }
         }
       }
     }
@@ -139,6 +156,7 @@ const WHOChartsSection = ({ gender }) => {
   const currentChart = WHO_CHARTS[whoGender]?.[chartType] || WHO_CHARTS.boys.weight;
   const availableCharts = Object.keys(WHO_CHARTS[whoGender] || {});
 
+  // Calculate SVG coordinates from age/value - using calibrated grid coordinates
   const calculateSvgCoords = useCallback((ageMonths, value) => {
     const { grid } = currentChart;
     if (!grid) return null;
@@ -147,10 +165,15 @@ const WHOChartsSection = ({ gender }) => {
     if (isNaN(age) || isNaN(val)) return null;
     if (age < grid.ageMin || age > grid.ageMax) return null;
     if (val < grid.valueMin || val > grid.valueMax) return null;
+    
+    // Linear interpolation for X (age)
     const xRatio = (age - grid.ageMin) / (grid.ageMax - grid.ageMin);
     const x = grid.xMin + xRatio * (grid.xMax - grid.xMin);
+    
+    // Linear interpolation for Y (value) - note: yMin is at bottom (higher pixel value)
     const yRatio = (val - grid.valueMin) / (grid.valueMax - grid.valueMin);
     const y = grid.yMin - yRatio * (grid.yMin - grid.yMax);
+    
     return { x, y };
   }, [currentChart]);
 
@@ -221,7 +244,8 @@ const WHOChartsSection = ({ gender }) => {
               <TransformComponent wrapperClass="!w-full !h-full" contentClass="!w-full !h-full flex items-center justify-center">
                 <div className="relative w-full h-full flex items-center justify-center">
                   <img src={currentChart.file} alt={`WHO ${currentChart.label} Chart`} className="max-w-full max-h-full object-contain" data-testid="who-growth-chart-svg" />
-                  <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 1122.5197 793.70074" preserveAspectRatio="xMidYMid meet" style={{ mixBlendMode: 'multiply' }}>
+                  {/* SVG Overlay for data points - uses same viewBox as the chart */}
+                  <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox={currentChart.viewBox} preserveAspectRatio="xMidYMid meet" style={{ mixBlendMode: 'multiply' }}>
                     {currentEntries.map((entry, index) => entry.coords && (
                       <g key={entry.id}>
                         <circle cx={entry.coords.x} cy={entry.coords.y} r="6" fill={whoGender === 'boys' ? '#2563eb' : '#db2777'} stroke="white" strokeWidth="2" />
@@ -299,6 +323,7 @@ const CDCChartsSection = ({ gender }) => {
     }
   }, [chartType, currentChart.measurements, measurementType]);
 
+  // Calculate SVG coordinates from age/value - using calibrated grid coordinates
   const calculateSvgCoords = useCallback((ageYears, value) => {
     const { grid } = currentMeasurement;
     if (!grid) return null;
@@ -307,10 +332,15 @@ const CDCChartsSection = ({ gender }) => {
     if (isNaN(age) || isNaN(val)) return null;
     if (age < grid.ageMin || age > grid.ageMax) return null;
     if (val < grid.valueMin || val > grid.valueMax) return null;
+    
+    // Linear interpolation for X (age)
     const xRatio = (age - grid.ageMin) / (grid.ageMax - grid.ageMin);
     const x = grid.xMin + xRatio * (grid.xMax - grid.xMin);
+    
+    // Linear interpolation for Y (value) - note: yMin is at bottom (higher pixel value)
     const yRatio = (val - grid.valueMin) / (grid.valueMax - grid.valueMin);
     const y = grid.yMin - yRatio * (grid.yMin - grid.yMax);
+    
     return { x, y };
   }, [currentMeasurement]);
 
@@ -402,6 +432,7 @@ const CDCChartsSection = ({ gender }) => {
               <TransformComponent wrapperClass="!w-full !h-full" contentClass="!w-full !h-full flex items-center justify-center">
                 <div className="relative w-full h-full flex items-center justify-center">
                   <img src={currentChart.file} alt={`CDC ${currentChart.label} Chart`} className="max-w-full max-h-full object-contain" data-testid="cdc-growth-chart-svg" />
+                  {/* SVG Overlay for data points - uses same viewBox as the chart */}
                   <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox={currentChart.viewBox} preserveAspectRatio="xMidYMid meet" style={{ mixBlendMode: 'multiply' }}>
                     {currentEntries.map((entry, index) => entry.coords && (
                       <g key={entry.id}>
