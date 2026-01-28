@@ -303,29 +303,21 @@ const WHOChartsSection = ({ gender }) => {
 // ============== CDC CHARTS COMPONENT ==============
 const CDCChartsSection = ({ gender }) => {
   const [chartType, setChartType] = useState("statureWeight");
-  const [measurementType, setMeasurementType] = useState("stature");
   const [entries, setEntries] = useState([]);
-  const [newEntry, setNewEntry] = useState({ date: new Date().toISOString().split('T')[0], ageYears: "", value: "" });
+  const [newEntry, setNewEntry] = useState({ date: new Date().toISOString().split('T')[0], ageYears: "", stature: "", weight: "", bmi: "" });
   const [saving, setSaving] = useState(false);
   const chartContainerRef = useRef(null);
 
   const cdcGender = gender === "male" ? "boys" : "girls";
   const currentChart = CDC_CHARTS[cdcGender]?.[chartType] || CDC_CHARTS.boys.statureWeight;
   const availableCharts = Object.keys(CDC_CHARTS[cdcGender] || {});
-  const availableMeasurements = Object.keys(currentChart.measurements || {});
-  const currentMeasurement = currentChart.measurements[measurementType] || currentChart.measurements[availableMeasurements[0]];
+  const isStatureWeightChart = chartType === "statureWeight";
 
-  // Update measurement type when chart type changes
-  React.useEffect(() => {
-    const firstMeasurement = Object.keys(currentChart.measurements || {})[0];
-    if (firstMeasurement && !currentChart.measurements[measurementType]) {
-      setMeasurementType(firstMeasurement);
-    }
-  }, [chartType, currentChart.measurements, measurementType]);
-
-  // Calculate SVG coordinates from age/value - using calibrated grid coordinates
-  const calculateSvgCoords = useCallback((ageYears, value) => {
-    const { grid } = currentMeasurement;
+  // Calculate SVG coordinates from age/value for a specific measurement type
+  const calculateSvgCoords = useCallback((ageYears, value, measurementType) => {
+    const measurement = currentChart.measurements[measurementType];
+    if (!measurement) return null;
+    const { grid } = measurement;
     if (!grid) return null;
     const age = parseFloat(ageYears);
     const val = parseFloat(value);
@@ -342,21 +334,43 @@ const CDCChartsSection = ({ gender }) => {
     const y = grid.yMin - yRatio * (grid.yMin - grid.yMax);
     
     return { x, y };
-  }, [currentMeasurement]);
+  }, [currentChart]);
 
   const addEntry = () => {
-    if (newEntry.date && newEntry.ageYears && newEntry.value) {
-      const age = parseFloat(newEntry.ageYears);
-      if (age >= 2 && age <= 20) {
-        const coords = calculateSvgCoords(newEntry.ageYears, newEntry.value);
-        setEntries(prev => [...prev, { ...newEntry, id: Date.now(), chartType, measurementType, gender: cdcGender, coords }]);
-        setNewEntry({ date: new Date().toISOString().split('T')[0], ageYears: "", value: "" });
-      }
+    if (!newEntry.date || !newEntry.ageYears) return;
+    const age = parseFloat(newEntry.ageYears);
+    if (age < 2 || age > 20) return;
+
+    if (isStatureWeightChart) {
+      // For stature/weight chart, need at least one measurement
+      if (!newEntry.stature && !newEntry.weight) return;
+      const statureCoords = newEntry.stature ? calculateSvgCoords(newEntry.ageYears, newEntry.stature, 'stature') : null;
+      const weightCoords = newEntry.weight ? calculateSvgCoords(newEntry.ageYears, newEntry.weight, 'weight') : null;
+      setEntries(prev => [...prev, { 
+        ...newEntry, 
+        id: Date.now(), 
+        chartType, 
+        gender: cdcGender, 
+        statureCoords, 
+        weightCoords 
+      }]);
+    } else {
+      // For BMI chart
+      if (!newEntry.bmi) return;
+      const bmiCoords = calculateSvgCoords(newEntry.ageYears, newEntry.bmi, 'bmi');
+      setEntries(prev => [...prev, { 
+        ...newEntry, 
+        id: Date.now(), 
+        chartType, 
+        gender: cdcGender, 
+        bmiCoords 
+      }]);
     }
+    setNewEntry({ date: new Date().toISOString().split('T')[0], ageYears: "", stature: "", weight: "", bmi: "" });
   };
 
   const removeEntry = (id) => setEntries(entries.filter(e => e.id !== id));
-  const currentEntries = entries.filter(e => e.gender === cdcGender && e.chartType === chartType && e.measurementType === measurementType);
+  const currentEntries = entries.filter(e => e.gender === cdcGender && e.chartType === chartType);
 
   const saveAsPng = async () => {
     if (!chartContainerRef.current) return;
@@ -374,10 +388,12 @@ const CDCChartsSection = ({ gender }) => {
     }
   };
 
-  const getUnit = () => {
-    if (measurementType === 'weight') return 'kg';
-    if (measurementType === 'stature') return 'cm';
-    return 'kg/m²';
+  // Count total data points for display
+  const getTotalPoints = () => {
+    if (isStatureWeightChart) {
+      return currentEntries.reduce((count, e) => count + (e.statureCoords ? 1 : 0) + (e.weightCoords ? 1 : 0), 0);
+    }
+    return currentEntries.length;
   };
 
   return (
@@ -397,28 +413,12 @@ const CDCChartsSection = ({ gender }) => {
         ))}
       </div>
 
-      {/* Measurement Type Selection (for statureWeight chart) */}
-      {availableMeasurements.length > 1 && (
-        <Select value={measurementType} onValueChange={setMeasurementType}>
-          <SelectTrigger className="h-9" data-testid="cdc-measurement-type-select">
-            <SelectValue placeholder="Select measurement" />
-          </SelectTrigger>
-          <SelectContent>
-            {availableMeasurements.map(type => (
-              <SelectItem key={type} value={type}>
-                {currentChart.measurements[type].yLabel}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      )}
-
       {/* Chart Display with Pinch-to-Zoom */}
       <Card>
         <CardHeader className="pb-2">
           <div className="flex justify-between items-start">
             <div>
-              <CardTitle className="text-sm">{currentChart.label} ({currentMeasurement.yLabel}) - {cdcGender === 'boys' ? 'Boys' : 'Girls'}</CardTitle>
+              <CardTitle className="text-sm">{currentChart.label} - {cdcGender === 'boys' ? 'Boys' : 'Girls'}</CardTitle>
               <CardDescription className="text-xs">Pinch to zoom • Drag to pan • Double-tap to reset</CardDescription>
             </div>
             <Button variant="outline" size="sm" onClick={saveAsPng} disabled={saving} className="h-8" data-testid="cdc-save-png-btn">
@@ -432,20 +432,46 @@ const CDCChartsSection = ({ gender }) => {
               <TransformComponent wrapperClass="!w-full !h-full" contentClass="!w-full !h-full flex items-center justify-center">
                 <div className="relative w-full h-full flex items-center justify-center">
                   <img src={currentChart.file} alt={`CDC ${currentChart.label} Chart`} className="max-w-full max-h-full object-contain" data-testid="cdc-growth-chart-svg" />
-                  {/* SVG Overlay for data points - uses same viewBox as the chart */}
+                  {/* SVG Overlay for data points */}
                   <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox={currentChart.viewBox} preserveAspectRatio="xMidYMid meet" style={{ mixBlendMode: 'multiply' }}>
-                    {currentEntries.map((entry, index) => entry.coords && (
-                      <g key={entry.id}>
-                        <circle cx={entry.coords.x} cy={entry.coords.y} r="8" fill={cdcGender === 'boys' ? '#2563eb' : '#db2777'} stroke="white" strokeWidth="2" />
-                        <text x={entry.coords.x} y={entry.coords.y + 3} textAnchor="middle" fill="white" fontSize="9" fontWeight="bold">{index + 1}</text>
-                      </g>
-                    ))}
+                    {isStatureWeightChart ? (
+                      // Stature & Weight chart - plot both types with different colors
+                      currentEntries.map((entry, index) => (
+                        <g key={entry.id}>
+                          {/* Stature point - Blue */}
+                          {entry.statureCoords && (
+                            <g>
+                              <circle cx={entry.statureCoords.x} cy={entry.statureCoords.y} r="8" fill="#2563eb" stroke="white" strokeWidth="2" />
+                              <text x={entry.statureCoords.x} y={entry.statureCoords.y + 3} textAnchor="middle" fill="white" fontSize="8" fontWeight="bold">S{index + 1}</text>
+                            </g>
+                          )}
+                          {/* Weight point - Red */}
+                          {entry.weightCoords && (
+                            <g>
+                              <circle cx={entry.weightCoords.x} cy={entry.weightCoords.y} r="8" fill="#dc2626" stroke="white" strokeWidth="2" />
+                              <text x={entry.weightCoords.x} y={entry.weightCoords.y + 3} textAnchor="middle" fill="white" fontSize="8" fontWeight="bold">W{index + 1}</text>
+                            </g>
+                          )}
+                        </g>
+                      ))
+                    ) : (
+                      // BMI chart - single color
+                      currentEntries.map((entry, index) => entry.bmiCoords && (
+                        <g key={entry.id}>
+                          <circle cx={entry.bmiCoords.x} cy={entry.bmiCoords.y} r="8" fill={cdcGender === 'boys' ? '#2563eb' : '#db2777'} stroke="white" strokeWidth="2" />
+                          <text x={entry.bmiCoords.x} y={entry.bmiCoords.y + 3} textAnchor="middle" fill="white" fontSize="9" fontWeight="bold">{index + 1}</text>
+                        </g>
+                      ))
+                    )}
                   </svg>
                 </div>
               </TransformComponent>
             </TransformWrapper>
           </div>
-          <div className="mt-2 text-xs text-muted-foreground text-center">CDC Growth Charts (2000) • Percentiles: 3rd, 5th, 10th, 25th, 50th, 75th, 85th, 90th, 95th, 97th</div>
+          <div className="mt-2 text-xs text-muted-foreground text-center">
+            CDC Growth Charts (2000) • Percentiles: 3rd, 5th, 10th, 25th, 50th, 75th, 85th, 90th, 95th, 97th
+            {isStatureWeightChart && <span className="block mt-1"><span className="text-blue-600">●</span> Stature <span className="text-red-600 ml-2">●</span> Weight</span>}
+          </div>
         </CardContent>
       </Card>
 
@@ -453,12 +479,32 @@ const CDCChartsSection = ({ gender }) => {
       <Card>
         <CardHeader className="pb-2"><CardTitle className="text-sm">Add Measurement</CardTitle></CardHeader>
         <CardContent className="space-y-3">
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-2 gap-2">
             <div><Label className="text-xs">Date</Label><Input type="date" value={newEntry.date} onChange={e => setNewEntry({...newEntry, date: e.target.value})} className="h-9 text-sm" data-testid="cdc-date-input" /></div>
             <div><Label className="text-xs">Age (years)</Label><Input type="number" min="2" max="20" step="0.5" value={newEntry.ageYears} onChange={e => setNewEntry({...newEntry, ageYears: e.target.value})} className="h-9 font-mono text-sm" placeholder="2-20" data-testid="cdc-age-input" /></div>
-            <div><Label className="text-xs">{currentMeasurement.yLabel}</Label><Input type="number" step="0.1" min="0" value={newEntry.value} onChange={e => setNewEntry({...newEntry, value: e.target.value})} className="h-9 font-mono text-sm" placeholder={`${currentMeasurement.grid.valueMin}-${currentMeasurement.grid.valueMax}`} data-testid="cdc-value-input" /></div>
           </div>
-          <Button onClick={addEntry} className="w-full" size="sm" disabled={!newEntry.date || !newEntry.ageYears || !newEntry.value || parseFloat(newEntry.ageYears) < 2 || parseFloat(newEntry.ageYears) > 20} data-testid="cdc-add-measurement-btn">
+          {isStatureWeightChart ? (
+            <div className="grid grid-cols-2 gap-2">
+              <div><Label className="text-xs">Stature (cm) <span className="text-blue-600">●</span></Label><Input type="number" step="0.1" min="0" value={newEntry.stature} onChange={e => setNewEntry({...newEntry, stature: e.target.value})} className="h-9 font-mono text-sm" placeholder="77-200" data-testid="cdc-stature-input" /></div>
+              <div><Label className="text-xs">Weight (kg) <span className="text-red-600">●</span></Label><Input type="number" step="0.1" min="0" value={newEntry.weight} onChange={e => setNewEntry({...newEntry, weight: e.target.value})} className="h-9 font-mono text-sm" placeholder="10-105" data-testid="cdc-weight-input" /></div>
+            </div>
+          ) : (
+            <div><Label className="text-xs">BMI (kg/m²)</Label><Input type="number" step="0.1" min="0" value={newEntry.bmi} onChange={e => setNewEntry({...newEntry, bmi: e.target.value})} className="h-9 font-mono text-sm" placeholder="12-35" data-testid="cdc-bmi-input" /></div>
+          )}
+          <Button 
+            onClick={addEntry} 
+            className="w-full" 
+            size="sm" 
+            disabled={
+              !newEntry.date || 
+              !newEntry.ageYears || 
+              parseFloat(newEntry.ageYears) < 2 || 
+              parseFloat(newEntry.ageYears) > 20 ||
+              (isStatureWeightChart && !newEntry.stature && !newEntry.weight) ||
+              (!isStatureWeightChart && !newEntry.bmi)
+            } 
+            data-testid="cdc-add-measurement-btn"
+          >
             <Plus className="h-4 w-4 mr-1" />Add to Chart
           </Button>
         </CardContent>
@@ -467,19 +513,20 @@ const CDCChartsSection = ({ gender }) => {
       {/* Plotted Measurements */}
       {currentEntries.length > 0 && (
         <Card>
-          <CardHeader className="pb-2"><CardTitle className="text-sm">Plotted Measurements ({currentEntries.length})</CardTitle></CardHeader>
+          <CardHeader className="pb-2"><CardTitle className="text-sm">Plotted Measurements ({getTotalPoints()} points)</CardTitle></CardHeader>
           <CardContent className="space-y-2">
             {currentEntries.map((entry, index) => (
               <div key={entry.id} className={`p-3 rounded-lg text-sm ${cdcGender === 'boys' ? 'bg-blue-50' : 'bg-pink-50'}`}>
-                <div className="flex justify-between items-center">
-                  <div className="flex items-center gap-3">
-                    <span className={`w-5 h-5 rounded-full flex items-center justify-center text-white text-xs font-bold ${cdcGender === 'boys' ? 'bg-blue-600' : 'bg-pink-600'}`}>{index + 1}</span>
-                    <div><span className="font-medium">{entry.date}</span><span className="text-muted-foreground ml-2">{entry.ageYears} yr</span></div>
+                <div className="flex justify-between items-start">
+                  <div>
+                    <div className="font-medium">{entry.date} <span className="text-muted-foreground ml-1">• {entry.ageYears} yr</span></div>
+                    <div className="flex flex-wrap gap-3 mt-1">
+                      {entry.stature && <span className="text-blue-600 font-mono">S{index + 1}: {entry.stature} cm</span>}
+                      {entry.weight && <span className="text-red-600 font-mono">W{index + 1}: {entry.weight} kg</span>}
+                      {entry.bmi && <span className={`font-mono ${cdcGender === 'boys' ? 'text-blue-600' : 'text-pink-600'}`}>BMI: {entry.bmi} kg/m²</span>}
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <span className={`font-mono font-medium ${cdcGender === 'boys' ? 'text-blue-600' : 'text-pink-600'}`}>{entry.value} {getUnit()}</span>
-                    <button onClick={() => removeEntry(entry.id)} className="text-red-500 p-1 hover:bg-red-100 rounded"><Trash2 className="h-4 w-4" /></button>
-                  </div>
+                  <button onClick={() => removeEntry(entry.id)} className="text-red-500 p-1 hover:bg-red-100 rounded"><Trash2 className="h-4 w-4" /></button>
                 </div>
               </div>
             ))}
