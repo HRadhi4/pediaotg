@@ -82,9 +82,9 @@ const WHO_CHARTS = {
 
 // ============== CDC CHARTS ==============
 // ViewBox: 816 x 1056
-// OCR from 1632x2112 image (2x scale), divided by 2
-// Stature-Weight: X: 2yr=95, 10yr=352, 20yr=610 | Stature Y: 80cm=382, 190cm=79 | Weight Y: 10kg=399, 105kg=163
-// BMI: X: 2yr=331, 10yr=574, 20yr=818 | Y: 12=933, 35=158
+// Coordinates extracted from SVG path analysis (Jan 2026):
+// - Stature-Weight chart: X=83-546 (age 2-20), Y varies by measurement
+// - BMI chart: X=42-562 (age 2-20), Y=122-714 (BMI 12-35)
 const CDC_CHARTS = {
   boys: {
     statureWeight: {
@@ -94,13 +94,13 @@ const CDC_CHARTS = {
       measurements: {
         stature: {
           yLabel: "Stature (cm)",
-          // Using OCR label positions: 2yr=95, 20yr=610, 80cm=382, 190cm=79
-          grid: { xMin: 95, xMax: 610, yMin: 382, yMax: 79, ageMin: 2, ageMax: 20, valueMin: 80, valueMax: 190 }
+          // Stature grid: X=83-546 (age), Y=382(80cm bottom) to 83(190cm top)
+          grid: { xMin: 83, xMax: 546, yMin: 382, yMax: 83, ageMin: 2, ageMax: 20, valueMin: 80, valueMax: 190 }
         },
         weight: {
           yLabel: "Weight (kg)",
-          // Using OCR label positions: 10kg=399, 105kg=163
-          grid: { xMin: 95, xMax: 610, yMin: 399, yMax: 163, ageMin: 2, ageMax: 20, valueMin: 10, valueMax: 105 }
+          // Weight grid: X=83-546 (age), Y=702(10kg bottom) to 163(105kg top)
+          grid: { xMin: 83, xMax: 546, yMin: 702, yMax: 163, ageMin: 2, ageMax: 20, valueMin: 10, valueMax: 105 }
         }
       }
     },
@@ -111,9 +111,8 @@ const CDC_CHARTS = {
       measurements: {
         bmi: {
           yLabel: "BMI (kg/m²)",
-          // Using OCR: 2yr=331, 20yr=818, 12=933, 35=158
-          // Note: These exceed viewBox but match the actual rendered chart positions
-          grid: { xMin: 331, xMax: 818, yMin: 933, yMax: 158, ageMin: 2, ageMax: 20, valueMin: 12, valueMax: 35 }
+          // BMI grid: X=42-562 (age 2-20), Y=714(12 bottom) to 122(35 top)
+          grid: { xMin: 42, xMax: 562, yMin: 714, yMax: 122, ageMin: 2, ageMax: 20, valueMin: 12, valueMax: 35 }
         }
       }
     }
@@ -126,11 +125,11 @@ const CDC_CHARTS = {
       measurements: {
         stature: {
           yLabel: "Stature (cm)",
-          grid: { xMin: 95, xMax: 610, yMin: 382, yMax: 79, ageMin: 2, ageMax: 20, valueMin: 80, valueMax: 190 }
+          grid: { xMin: 83, xMax: 546, yMin: 382, yMax: 83, ageMin: 2, ageMax: 20, valueMin: 80, valueMax: 190 }
         },
         weight: {
           yLabel: "Weight (kg)",
-          grid: { xMin: 95, xMax: 610, yMin: 399, yMax: 163, ageMin: 2, ageMax: 20, valueMin: 10, valueMax: 105 }
+          grid: { xMin: 83, xMax: 546, yMin: 702, yMax: 163, ageMin: 2, ageMax: 20, valueMin: 10, valueMax: 105 }
         }
       }
     },
@@ -141,7 +140,7 @@ const CDC_CHARTS = {
       measurements: {
         bmi: {
           yLabel: "BMI (kg/m²)",
-          grid: { xMin: 331, xMax: 818, yMin: 933, yMax: 158, ageMin: 2, ageMax: 20, valueMin: 12, valueMax: 35 }
+          grid: { xMin: 42, xMax: 562, yMin: 714, yMax: 122, ageMin: 2, ageMax: 20, valueMin: 12, valueMax: 35 }
         }
       }
     }
