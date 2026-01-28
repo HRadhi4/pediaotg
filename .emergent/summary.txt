@@ -2,193 +2,75 @@
 The user's primary goal is to build and refine a comprehensive pediatric medical calculator application.
 
 In this session, the user's requests were:
-1.  **Fix Production Deployment:** The initial focus was on a failing PayPal integration in the production environment.
-2.  **UI Fixes for Drugs Pages:**
-    *   Address text wrapping issues when drug dosages are calculated.
-    *   Increase the font size for the frequency text on the Children Paypal api from scratch with the same credentials to be ready for deployment through emergent.
-4.  **Fix Generic PayPal Error:** Replace the generic An error occurred dialog with detailed, user-friendly error messages on the frontend and add structured logging on the backend.
-5.  **Overhaul NICU Growth Chart:**
-    *   Implement new Growth Charts based on 12 PDF files provided by the user (WHO and CDC standards).
-    *   The implementation must include correct percentile lines, data plotting, and the ability to export the chart as a PDF.
-    *   Address UI/UX feedback to make the chart lines smoother, fix rendering on mobile, and move export buttons outside the main chart container.
+1.  **Revamp Growth Charts (Initial Request):** The user was unsatisfied with the SVG-recreated charts and requested to use the official CDC PDF charts as a background, with data points plotted directly on top.
+2.  **Fix Growth Chart Plotting:** After the agent implemented the PDF-based approach, the user reported that The points is not plotted over the PDF!. The agent then attempted to fix the coordinate mapping.
+3.  **Add Neonatal Examination Guide:** The user provided a large block of text to be turned into a 24-hours Neonatal Examination guide within the NICU > Postnatal section, organized by system, with management plans and AAP guideline links.
+4.  **Refactor Names:** Replace specific doctor names (Dr Tahera, Dr Wafa, Dr Zahra) with generic clinic names (Postnatal consultant clinic, Rheumatology clinic, Metabolic clinic).
+5.  **Revamp Growth Charts (New Request):** The user has now requested to switch the growth chart implementation again, this time using high-resolution SVG files for the WHO charts, and wants to have plotting and pinch-to-zoom functionality.
 
 **User's preferred language**: English
 
 **what currently exists?**
 The application is a full-stack React/FastAPI medical calculator.
-
-The most recent work focused on a complete overhaul of the Growth Chart feature. The  component was rewritten to integrate 12 different WHO and CDC charts (for Boys/Girls, covering Weight, Length/Stature, Head Circumference, and BMI from 0-20 years). It includes dynamic data loading, chart rendering using D3.js, interactive controls, and PDF export functionality.
-
-Additionally, the PayPal integration was entirely rebuilt from scratch with robust error handling, structured logging, and a self-test endpoint (). UI bugs on the drug dosage pages have also been fixed.
+1.  **Growth Charts (CDC):** The  component has been completely rewritten to use official CDC PDF charts as a background. It fetches the PDFs via a new backend proxy to avoid CORS issues. It allows users to input patient data and exports a new PDF with the data points plotted. However, the accuracy of the plotting is unverified.
+2.  **Neonatal Examination Guide:** A new, comprehensive component  has been created and integrated into the . It displays the 24-Hours Neonatal Examination guide, organized into collapsible sections by body system, and includes dialogs for AAP guidelines.
+3.  **General:** Various text updates and refactoring have been completed as requested by the user, such as replacing doctor names with clinic names and consolidating references.
 
 **Last working item**:
--   **Last item agent was working:** The agent was addressing user feedback on the newly implemented Growth Chart. The user reported issues with line smoothness, mobile view rendering (capturing only half the container), and the position of the PDF export button. The agent rewrote the  component to fix these issues.
+-   **Last item agent was working:** The agent was beginning to implement the user's latest request to integrate WHO growth charts using provided SVG files. After initial analysis of the SVG files failed, the agent started inspecting the raw SVG code to understand their structure and content to prepare for implementation.
 -   **Status:** IN PROGRESS
--   **Agent Testing Done:** N (The agent overwrote the file with the fixes but did not take a screenshot or perform any verification before the session ended).
--   **Which testing method agent to use?** screenshot tool. The agent needs to navigate to the NICU > Growth Charts page and visually verify that the lines are smoother, the layout is correct on a simulated mobile view, and the export buttons are positioned correctly outside the chart's main container.
+-   **Agent Testing Done:** N
+-   **Which testing method agent to use?** screenshot tool. First, to verify the SVG chart renders correctly within the component. Second, to test the pinch-to-zoom and data plotting functionality once implemented.
 -   **User Testing Done:** N
 
 **All Pending/In progress Issue list**:
--   **Issue 1 (P0):** Verify UI fixes on the Growth Chart page.
--   **Issue 2 (P1):** Deploy and test the rebuilt PayPal integration in the production environment.
--   **Issue 3 (P2):** Verify UI standardization of all NICU approach components.
--   **Issue 4 (P2):** Verify patient data point plotting on the Growth Chart.
+-   **Issue 1 (P0):** Implement WHO Growth Charts using SVG files.
+-   **Issue 2 (P1):** Verify data point plotting accuracy on the CDC PDF Growth Charts.
+-   **Issue 3 (P2):** Deploy and test the rebuilt PayPal integration in the production environment.
+-   **Issue 4 (P3):** Verify UI standardization of all NICU approach components.
 -   **Issue 5 (P3):** Audit all numerical inputs in the application to prevent  from being missed.
 
 **Issues Detail:**
--   **Issue 1: Verify UI fixes on the Growth Chart page**
-    -   **Attempted fixes:** The agent completely rewrote the  component to use cubic bezier interpolation for smoother lines, improve responsive layout with flexbox, and reposition the action buttons.
+-   **Issue 1: Implement WHO Growth Charts using SVG files**
+    -   **Attempted fixes:** The agent attempted to use the  on the new SVGs, which failed. It then began inspecting the raw XML content of the SVG files.
     -   **Next debug checklist:**
-        1.  Navigate to the NICU > Growth Charts page.
-        2.  Use the screenshot tool to visually confirm the changes:
-            -   Are the percentile lines smooth curves instead of jagged lines?
-            -   Is the Export as PDF button located outside and below the chart card?
-            -   Does the layout look correct and not cut off on a smaller viewport?
-    -   **Why fix this issue and what will be achieved with the fix?** To resolve the user's direct feedback and improve the usability and professional appearance of the Growth Chart feature.
+        1.  Determine what each of the 5 SVG files represents (e.g., Boys/Girls, Weight/Length).
+        2.  Update  to render the selected SVG as an inline component.
+        3.  Integrate a library like  to enable zooming and panning within the SVG container.
+        4.  Analyze the SVG coordinate system to map patient data points for plotting.
+    -   **Why fix this issue and what will be achieved with the fix?** To fulfill the user's direct request for a high-resolution, interactive growth chart experience using the official WHO SVGs.
     -   **Status:** IN PROGRESS
     -   **Is recurring issue?** N
     -   **Should Test frontend/backend/both after fix?** Frontend
 
--   **Issue 2: Deploy and test the rebuilt PayPal integration in production**
-    -   **Attempted fixes:** The agent rebuilt  from the ground up, adding structured error handling, a self-test endpoint (), and improved configuration management. The frontend (, ) was updated to display specific error messages. The integration works correctly in the local preview environment.
+-   **Issue 2: Verify data point plotting accuracy on the CDC PDF Growth Charts**
+    -   **Attempted fixes:** The user stated, The points is not plotted over the PDF!. The agent recalibrated the coordinate mapping logic in  and created a backend proxy to solve a CORS issue that was preventing the export. The agent confirmed a PDF file was *downloaded* but **never visually inspected the downloaded PDF** to see if the plotted point was now in the correct location.
     -   **Next debug checklist:**
-        1.  Guide the user through deploying the latest changes to their production environment.
-        2.  Ask the user to ensure the correct environment variables (, , ) are set in their Emergent deployment settings.
-        3.  Test the production endpoint: .
-        4.  Perform an end-to-end test purchase in the production application.
-    -   **Why fix this issue and what will be achieved with the fix?** This will restore the application's primary monetization feature.
-    -   **Status:** NOT STARTED
+        1.  Navigate to the NICU > Growth Charts page.
+        2.  Enter sample patient data (e.g., Age: 10, Stature: 140).
+        3.  Click the Export Chart with Patient Data button.
+        4.  Ask the user to manually inspect the downloaded PDF to confirm if the point is plotted correctly. Or, if possible, use a tool to convert the PDF to an image and display it for verification.
+    -   **Why fix this issue and what will be achieved with the fix?** This is a critical bug in a core feature. The feature is not complete until the plotting is accurate.
+    -   **Status:** USER VERIFICATION PENDING
     -   **Is recurring issue?** Y
-    -   **Should Test frontend/backend/both after fix?** Both
-
--   **Issue 3: Verify NICU Approaches UI Standardization**
-    -   **Attempted fixes:** None.
-    -   **Next debug checklist:** Use the frontend testing agent to take screenshots of multiple NICU approach pages to visually confirm layout and styling consistency.
-    -   **Status:** NOT STARTED
-    -   **Is recurring issue?** N
     -   **Should Test frontend/backend/both after fix?** Frontend
 
--   **Issue 4: Verify Growth Chart Patient Data Plotting**
-    -   **Attempted fixes:** The chart was completely rebuilt, so the original plotting logic is gone. The new logic needs verification.
-    -   **Next debug checklist:** Manually navigate to the Growth Chart, enter sample patient data (e.g., age, weight), click Plot Data, and use the screenshot tool to verify a point appears correctly on the chart.
+-   **Issue 3: Deploy and test the rebuilt PayPal integration in production**
+    -   **Status:** NOT STARTED (in this session)
+    -   See previous handoff for details. This remains a pending task.
+
+-   **Issue 4: Verify NICU Approaches UI Standardization**
     -   **Status:** NOT STARTED
-    -   **Is recurring issue?** N
-    -   **Should Test frontend/backend/both after fix?** Frontend
+    -   See previous handoff for details.
 
 -   **Issue 5: Audit all numerical inputs for **
-    -   **Attempted fixes:** None in this session.
-    -   **Next debug checklist:** Use /app/frontend/src/pages/nicu/CatheterCalculatorPage.jsx:              type="number"
-/app/frontend/src/pages/nicu/ExchangeCalculatorPage.jsx:                <Input type="number" step="0.01" placeholder="e.g., 3.5" value={weight} onChange={(e) => setWeight(e.target.value)} className="nightingale-input font-mono" />
-/app/frontend/src/pages/nicu/ExchangeCalculatorPage.jsx:                  <Input type="number" placeholder="e.g., 70" value={observedHct} onChange={(e) => setObservedHct(e.target.value)} className="nightingale-input font-mono" />
-/app/frontend/src/pages/nicu/ExchangeCalculatorPage.jsx:                  <Input type="number" placeholder="55" value={desiredHct} onChange={(e) => setDesiredHct(e.target.value)} className="nightingale-input font-mono" />
-/app/frontend/src/pages/nicu/ExchangeCalculatorPage.jsx:                <Input type="number" step="0.01" placeholder="e.g., 3.5" value={weight} onChange={(e) => setWeight(e.target.value)} className="nightingale-input font-mono" />
-/app/frontend/src/pages/nicu/NICUDrugsPage.jsx:                type="number"
-/app/frontend/src/pages/nicu/NICUDrugsPage.jsx:                type="number"
-/app/frontend/src/pages/nicu/NICUDrugsPage.jsx:                type="number"
-/app/frontend/src/pages/nicu/PRBCGuidelinePage.jsx:                  <Input type="number" step="0.01" placeholder="1.5" value={weight} onChange={(e) => setWeight(e.target.value)} className="nightingale-input font-mono h-9" />
-/app/frontend/src/pages/nicu/PRBCGuidelinePage.jsx:                  <Input type="number" placeholder="5" value={age} onChange={(e) => setAge(e.target.value)} className="nightingale-input font-mono h-9" />
-/app/frontend/src/pages/nicu/PRBCGuidelinePage.jsx:                  <Input type="number" placeholder="32" value={ga} onChange={(e) => setGa(e.target.value)} className="nightingale-input font-mono h-9" />
-/app/frontend/src/pages/nicu/PRBCGuidelinePage.jsx:                  <Input type="number" step="0.1" placeholder="e.g., 10" value={hb} onChange={(e) => setHb(e.target.value)} className="nightingale-input font-mono h-9" />
-/app/frontend/src/pages/nicu/PRBCGuidelinePage.jsx:                  <Input type="number" step="1" placeholder="e.g., 30" value={hct} onChange={(e) => setHct(e.target.value)} className="nightingale-input font-mono h-9" />
-/app/frontend/src/pages/nicu/GrowthChartPage.jsx:            <div><Label className="text-xs">Age ({isWHO ? 'months' : 'years'}) *</Label><Input type="number" min="0" max={isWHO ? "24" : "20"} value={newEntry.ageValue} onChange={e => setNewEntry({...newEntry, ageValue: e.target.value})} className="h-9 font-mono text-sm" data-testid="age-input" /></div>
-/app/frontend/src/pages/nicu/GrowthChartPage.jsx:            <div><Label className="text-xs">Weight (kg)</Label><Input type="number" step="0.01" min="0" value={newEntry.weight} onChange={e => setNewEntry({...newEntry, weight: e.target.value})} className="h-9 font-mono text-sm" data-testid="weight-input" /></div>
-/app/frontend/src/pages/nicu/GrowthChartPage.jsx:            <div><Label className="text-xs">{isWHO ? 'Length' : 'Stature'} (cm)</Label><Input type="number" step="0.1" min="0" value={newEntry.length} onChange={e => setNewEntry({...newEntry, length: e.target.value})} className="h-9 font-mono text-sm" data-testid="length-input" /></div>
-/app/frontend/src/pages/nicu/GrowthChartPage.jsx:            <div><Label className="text-xs">Head Circ (cm)</Label><Input type="number" step="0.1" min="0" value={newEntry.hc} onChange={e => setNewEntry({...newEntry, hc: e.target.value})} className="h-9 font-mono text-sm" disabled={!isWHO} data-testid="hc-input" /></div>
-/app/frontend/src/pages/nicu/GrowthChartPage.jsx:            <div><Label className="text-xs">BMI (kg/m²)</Label><Input type="number" step="0.1" min="0" value={newEntry.bmi} onChange={e => setNewEntry({...newEntry, bmi: e.target.value})} className="h-9 font-mono text-sm" data-testid="bmi-input" /></div>
-/app/frontend/src/pages/nicu/NICUApproachesPage.jsx:                type="number"
-/app/frontend/src/pages/nicu/NICUApproachesPage.jsx:                type="number"
-/app/frontend/src/pages/nicu/NICUApproachesPage.jsx:                type="number"
-/app/frontend/src/pages/nicu/FluidCalculatorPage.jsx:              <Input type="number" step="0.01" placeholder="0.8" value={weight} onChange={(e) => setWeight(e.target.value)} className="nightingale-input font-mono h-9" />
-/app/frontend/src/pages/nicu/FluidCalculatorPage.jsx:              <Input type="number" placeholder="3" value={age} onChange={(e) => setAge(e.target.value)} className="nightingale-input font-mono h-9" />
-/app/frontend/src/pages/nicu/FluidCalculatorPage.jsx:              <Input type="number" placeholder="32" value={gestationalAge} onChange={(e) => setGestationalAge(e.target.value)} className="nightingale-input font-mono h-9" />
-/app/frontend/src/pages/nicu/FluidCalculatorPage.jsx:            <Input type="number" placeholder="140" value={tfi} onChange={(e) => setTfi(e.target.value)} className="nightingale-input font-mono" />
-/app/frontend/src/pages/nicu/FluidCalculatorPage.jsx:                      type="number"
-/app/frontend/src/pages/nicu/FluidCalculatorPage.jsx:            <Input type="number" step="0.1" placeholder="0" value={naclAmount} onChange={(e) => setNaclAmount(e.target.value)} className="nightingale-input font-mono h-9" />
-/app/frontend/src/pages/nicu/FluidCalculatorPage.jsx:              <Input type="number" placeholder="5" value={feedVolume} onChange={(e) => setFeedVolume(e.target.value)} className="nightingale-input font-mono h-9" />
-/app/frontend/src/pages/nicu/FluidCalculatorPage.jsx:                type="number" 
-/app/frontend/src/pages/nicu/FluidCalculatorPage.jsx:                type="number" 
-/app/frontend/src/pages/nicu/IntubationPage.jsx:                type="number"
-/app/frontend/src/pages/nicu/IntubationPage.jsx:                type="number"
-/app/frontend/src/pages/children/ApproachesPage.jsx:                type="number"
-/app/frontend/src/pages/children/ApproachesPage.jsx:                type="number"
-/app/frontend/src/pages/children/FluidReplacementPage.jsx:              type="number"
-/app/frontend/src/pages/children/approaches/BloodGasApproach.jsx:                <Input type="number" step="0.01" value={ph} onChange={(e) => setPh(e.target.value)} placeholder="7.40" className="h-8 text-sm mt-1" min="0" data-testid="abg-ph-input" />
-/app/frontend/src/pages/children/approaches/BloodGasApproach.jsx:                <Input type="number" value={pco2} onChange={(e) => setPco2(e.target.value)} placeholder="40" className="h-8 text-sm mt-1" min="0" data-testid="abg-pco2-input" />
-/app/frontend/src/pages/children/approaches/BloodGasApproach.jsx:                <Input type="number" value={hco3} onChange={(e) => setHco3(e.target.value)} placeholder="24" className="h-8 text-sm mt-1" min="0" data-testid="abg-hco3-input" />
-/app/frontend/src/pages/children/approaches/BloodGasApproach.jsx:                <Input type="number" value={na} onChange={(e) => setNa(e.target.value)} placeholder="140" className="h-8 text-sm mt-1" min="0" data-testid="abg-na-input" />
-/app/frontend/src/pages/children/approaches/BloodGasApproach.jsx:                <Input type="number" value={cl} onChange={(e) => setCl(e.target.value)} placeholder="102" className="h-8 text-sm mt-1" min="0" data-testid="abg-cl-input" />
-/app/frontend/src/pages/children/approaches/BloodGasApproach.jsx:                <Input type="number" step="0.1" value={albumin} onChange={(e) => setAlbumin(e.target.value)} placeholder="4.0" className="h-8 text-sm mt-1" min="0" data-testid="abg-albumin-input" />
-/app/frontend/src/pages/children/approaches/NSAIDToxicityApproach.jsx:                      type="number"
-/app/frontend/src/pages/children/approaches/NSAIDToxicityApproach.jsx:                        type="number"
-/app/frontend/src/pages/children/approaches/NSAIDToxicityApproach.jsx:                    type="number"
-/app/frontend/src/pages/children/approaches/NSAIDToxicityApproach.jsx:                      type="number"
-/app/frontend/src/pages/children/approaches/NSAIDToxicityApproach.jsx:                    type="number"
-/app/frontend/src/pages/children/approaches/IronToxicityApproach.jsx:                    type="number"
-/app/frontend/src/pages/children/approaches/IronToxicityApproach.jsx:                        type="number"
-/app/frontend/src/pages/children/approaches/IronToxicityApproach.jsx:                    type="number"
-/app/frontend/src/pages/children/approaches/IronToxicityApproach.jsx:                type="number"
-/app/frontend/src/pages/children/approaches/AcetaminophenApproach.jsx:                      type="number"
-/app/frontend/src/pages/children/approaches/AcetaminophenApproach.jsx:                    type="number"
-/app/frontend/src/pages/children/approaches/AcetaminophenApproach.jsx:                      type="number"
-/app/frontend/src/pages/children/approaches/AcetaminophenApproach.jsx:                    type="number"
-/app/frontend/src/pages/children/approaches/AcetaminophenApproach.jsx:                  type="number"
-/app/frontend/src/pages/children/approaches/AcetaminophenApproach.jsx:                  type="number"
-/app/frontend/src/pages/children/InfusionsPage.jsx:              type="number"
-/app/frontend/src/pages/children/InfusionsPage.jsx:                  type="number"
-/app/frontend/src/pages/children/ScoringPage.jsx:            <Input type="number" placeholder="e.g., 15" value={map} onChange={(e) => setMap(e.target.value)} className="font-mono" />
-/app/frontend/src/pages/children/ScoringPage.jsx:            <Input type="number" step="0.01" placeholder="e.g., 0.6" value={fio2} onChange={(e) => setFio2(e.target.value)} className="font-mono" />
-/app/frontend/src/pages/children/ScoringPage.jsx:            <Input type="number" placeholder="e.g., 60" value={pao2} onChange={(e) => setPao2(e.target.value)} className="font-mono" />
-/app/frontend/src/pages/children/ScoringPage.jsx:              <Input type="number" placeholder="e.g., 15" value={weight} onChange={(e) => setWeight(e.target.value)} className="font-mono" />
-/app/frontend/src/pages/children/ScoringPage.jsx:              <Input type="number" placeholder="e.g., 100" value={height} onChange={(e) => setHeight(e.target.value)} className="font-mono" />
-/app/frontend/src/pages/children/CPRPage.jsx:                type="number"
-/app/frontend/src/pages/children/DrugsPage.jsx:              type="number"
-/app/frontend/src/pages/children/DrugsPage.jsx:                    type="number"
-/app/frontend/src/pages/children/DrugsPage.jsx:                    type="number"
-/app/frontend/src/pages/children/ElectrolytesInfusionsPage.jsx:                type="number"
-/app/frontend/src/pages/children/ElectrolytesInfusionsPage.jsx:                  type="number"
-/app/frontend/src/pages/children/ElectrolytesInfusionsPage.jsx:              <Input type="number" step="0.1" min="0" placeholder="mg/dL" value={calciumLevel} onChange={(e) => setCalciumLevel(e.target.value)} className="font-mono" />
-/app/frontend/src/pages/children/ElectrolytesInfusionsPage.jsx:              <Input type="number" step="0.1" min="0" placeholder="mg/dL" value={magnesiumLevel} onChange={(e) => setMagnesiumLevel(e.target.value)} className="font-mono" />
-/app/frontend/src/pages/children/ElectrolytesInfusionsPage.jsx:              <Input type="number" step="0.1" min="0" placeholder="mEq/L" value={potassiumLevel} onChange={(e) => setPotassiumLevel(e.target.value)} className="font-mono" />
-/app/frontend/src/pages/children/ElectrolytesInfusionsPage.jsx:                <Input type="number" step="0.1" min="0" placeholder="mEq/L" value={potassiumLevel} onChange={(e) => setPotassiumLevel(e.target.value)} className="font-mono" />
-/app/frontend/src/pages/children/ElectrolytesInfusionsPage.jsx:                  <Input type="number" step="0.1" min="0" value={hco3Level} onChange={(e) => setHco3Level(e.target.value)} className="font-mono" disabled={nahco3Method === "be"} />
-/app/frontend/src/pages/children/ElectrolytesInfusionsPage.jsx:                  <Input type="number" step="0.1" placeholder="e.g., -10" value={baseExcess} onChange={(e) => setBaseExcess(e.target.value)} className="font-mono" disabled={nahco3Method === "hco3"} />
-/app/frontend/src/pages/children/ElectrolytesInfusionsPage.jsx:                  <Input type="number" min="0" value={currentNa} onChange={(e) => setCurrentNa(e.target.value)} className="font-mono" />
-/app/frontend/src/pages/children/ElectrolytesInfusionsPage.jsx:                  <Input type="number" min="0" placeholder="140" value={targetNa} onChange={(e) => setTargetNa(e.target.value)} className="font-mono" />
-/app/frontend/src/pages/children/ElectrolytesInfusionsPage.jsx:                <Input type="number" step="0.1" min="0" placeholder="mg/dL" value={phosphateLevel} onChange={(e) => setPhosphateLevel(e.target.value)} className="font-mono" />
-/app/frontend/src/pages/children/BPPage.jsx:              <Input type="number" placeholder="Systolic" value={patientSBP} onChange={(e) => setPatientSBP(e.target.value)} className="h-10 nightingale-input" />
-/app/frontend/src/pages/children/BPPage.jsx:              <Input type="number" placeholder="Diastolic" value={patientDBP} onChange={(e) => setPatientDBP(e.target.value)} className="h-10 nightingale-input" />
-/app/frontend/src/pages/children/IntubationPage.jsx:                  <Input type="number" placeholder="e.g., 5" value={age} onChange={(e) => setAge(e.target.value)} className="font-mono" />
-/app/frontend/src/pages/children/IntubationPage.jsx:                  <Input type="number" placeholder="Optional" value={weight} onChange={(e) => setWeight(e.target.value)} className="font-mono" />
-/app/frontend/src/pages/admin/AdminDashboard.jsx:                    type="number"
-/app/frontend/src/components/GIRDialog.jsx:                type="number"
-/app/frontend/src/components/GIRDialog.jsx:                        type="number"
-/app/frontend/src/components/GIRDialog.jsx:                        type="number"
-/app/frontend/src/components/GIRDialog.jsx:                      type="number"
-/app/frontend/src/components/GIRDialog.jsx:                      type="number"
-/app/frontend/src/components/JaundiceDialog.jsx:                  type="number"
-/app/frontend/src/components/JaundiceDialog.jsx:                  type="number"
-/app/frontend/src/components/JaundiceDialog.jsx:                  type="number"
-/app/frontend/src/components/JaundiceDialog.jsx:                type="number"
-/app/frontend/src/components/BloodProductsDialog.jsx:                type="number"
-/app/frontend/src/components/BloodProductsDialog.jsx:                    type="number"
-/app/frontend/src/components/BloodProductsDialog.jsx:                    type="number"
-/app/frontend/src/components/ElectrolytesDialog.jsx:                  type="number"
-/app/frontend/src/components/ElectrolytesDialog.jsx:                  type="number"
-/app/frontend/src/components/ElectrolytesDialog.jsx:                        type="number"
-/app/frontend/src/components/ElectrolytesDialog.jsx:                        type="number"
-/app/frontend/src/components/ElectrolytesDialog.jsx:                        type="number"
-/app/frontend/src/components/ElectrolytesDialog.jsx:                      type="number"
-/app/frontend/src/components/ElectrolytesDialog.jsx:                          type="number"
-/app/frontend/src/components/ElectrolytesDialog.jsx:                      type="number"
-/app/frontend/src/components/ElectrolytesDialog.jsx:                          type="number" to find all numerical inputs. Review each file and add  where appropriate to prevent negative values.
     -   **Status:** NOT STARTED
-    -   **Is recurring issue?** Y
-    -   **Should Test frontend/backend/both after fix?** Frontend
+    -   See previous handoff for details. This is a recurring issue.
 
 **In progress Task List**:
--   **Task 1: Growth Chart UI/UX Refinement**
-    -   **Where to resume:** The file  has been updated. The next step is to test it.
-    -   **What will be achieved with this?** A polished, user-friendly, and mobile-responsive Growth Chart feature.
+-   **Task 1: WHO SVG Growth Chart Implementation**
+    -   **Where to resume:** Analyzing the raw content of the 5 provided SVG files (, etc.) to understand their structure and identify which chart each represents.
+    -   **What will be achieved with this?** A new version of the growth chart feature that uses high-resolution, zoomable SVG charts instead of PDFs.
     -   **Status:** IN PROGRESS
     -   **Should Test frontend/backend/both after fix?** Frontend
     -   **Blocked on something:** None.
@@ -197,7 +79,7 @@ Additionally, the PayPal integration was entirely rebuilt from scratch with robu
 -   **Upcoming Tasks:**
     -   (P1) Add **Salicylate (Aspirin) Toxicity** approach.
 -   **Future Tasks:**
-    -   (P2) Refactor the large  component (1700+ lines).
+    -   (P2) Refactor the large  component.
     -   (P2) Continue Drug Formulary review.
     -   (P2) Add PayPal webhook signature verification.
     -   (P2) Delete the redundant file: .
@@ -206,25 +88,20 @@ Additionally, the PayPal integration was entirely rebuilt from scratch with robu
     -   (P3) Add a tutorial or guided walkthrough for the Blood Gas calculator.
 
 **Completed work in this session**
--   **Drugs Page UI Fixes (DONE):**
-    -   Fixed text wrapping for calculated doses on .
-    -   Increased frequency font size on  to match .
--   **PayPal Integration Rebuild (DONE - Local Preview):**
-    -   Rebuilt  from scratch.
-    -   Implemented structured error handling between backend and frontend.
-    -   Added a  endpoint to verify configuration.
-    -   Updated  and  to show user-friendly error messages from the backend.
-    -   Created  with setup instructions.
--   **NICU Growth Chart Overhaul (DONE - Awaiting Final UI Verification):**
-    -   Replaced the existing chart with a new implementation in .
-    -   Integrated data for all 12 WHO & CDC charts provided by the user (Weight, Length/Stature, Head C., BMI).
-    -   Implemented correct percentile lines (e.g., 3, 15, 50, 85, 97 for WHO) and color-coding.
-    -   Added UI controls to switch between WHO/CDC, Boys/Girls, and chart types.
-    -   Added PDF export functionality using  and .
-    -   Added support for CDC BMI-for-age charts.
+-   **CDC Growth Chart (PDF-based) (DONE - Plotting accuracy pending verification):**
+    -   Rewrote  to display chart selection UI and data input forms.
+    -   Implemented functionality to export a PDF with patient data plotted on top of the official CDC chart background using .
+    -   Created a backend proxy at  to fetch chart PDFs and bypass browser CORS issues.
+-   **24-Hours Neonatal Examination Guide (DONE):**
+    -   Created  to display a detailed, system-organized guide based on user-provided text.
+    -   Integrated the new component into .
+    -   Implemented collapsible sections and dialogs for showing AAP guidelines.
+-   **Content Refactoring (DONE):**
+    -   Replaced all instances of Dr Tahera, Dr Wafa, and Dr Zahra with generic clinic names in .
+    -   Consolidated reference footers on the  and removed duplicates from the child component.
 
 **Earlier issues found/mentioned but not fixed**
--   See **All Pending/In progress Issue list**.
+-   **Issue 1: Inaccurate plotting on CDC Growth Charts.** The user explicitly stated the plotting was incorrect. The agent's fix has not been verified visually.
 
 **Known issue recurrence from previous fork**
 -   The issue of numerical inputs not having  was noted in a previous handoff and remains unfixed across most of the application.
@@ -233,11 +110,10 @@ Additionally, the PayPal integration was entirely rebuilt from scratch with robu
 
 
 **Key Technical Concepts**
--   **Data Visualization (D3.js):** Using D3 within a React component to render complex SVG charts, including paths, axes, and scales based on medical data sets.
--   **PDF Generation (jsPDF, html2canvas):** Capturing a React component (the chart) as an image and embedding it into a PDF document for export.
--   **Backend Service Refactoring:** Rebuilding a critical service () to improve reliability, error handling, and configuration management.
--   **Responsive UI/UX:** Using CSS Flexbox and responsive design principles to ensure a complex component like the Growth Chart is usable on both desktop and mobile.
--   **API Error Handling:** Implementing a robust error-handling pattern where the backend provides structured error codes/messages that the frontend can interpret and display to the user.
+-   **PDF Manipulation ():** Using a JavaScript library to programmatically load an existing PDF, draw shapes (data points) onto its pages at specific coordinates, and generate a new PDF for download.
+-   **Backend Proxy for CORS:** Creating a dedicated backend API endpoint that fetches a resource from an external domain and serves it from the application's own domain, effectively bypassing browser Same-Origin Policy restrictions.
+-   **SVG Integration in React:** The next step will involve rendering complex, externally provided SVG files as React components to allow for interactivity like zooming and plotting.
+-   **Dynamic Component Rendering:** Using React state to conditionally render different UI components, such as the various accordions and dialogs in the .
 
 **key DB schema**
 -   No database schema changes were made.
@@ -249,53 +125,56 @@ Additionally, the PayPal integration was entirely rebuilt from scratch with robu
 -   
 -   
 -   
--   
 
 **Areas that need refactoring**:
--    is still a very large component (1700+ lines).
+-    remains a very large component (1700+ lines).
+-    has undergone multiple significant rewrites. Once the user settles on the final SVG-based approach, it should be reviewed for clarity and cleanup.
 
 **key api endpoints**
--   
--   
--   
 -    **(NEW)**
 
 **Critical Info for New Agent**
--   Your first task is to verify the latest UI fixes on the . The agent rewrote the component to address user feedback but did not test it. Use the screenshot tool to check for smoother lines, correct button placement, and proper mobile layout.
--   The PayPal service was rebuilt as requested. It now works locally and includes a self-test endpoint. The next major step is to guide the user to deploy this and test it in their production environment. The original issue was related to production environment variables, so pay close attention to the deployment configuration.
--   The  is a complex component that integrates multiple datasets and uses D3 for rendering. Be mindful of this when making any further changes.
+-   The user has changed their mind on the Growth Chart implementation multiple times. The current and highest priority is to implement the charts using the newly provided SVG files.
+-   **Crucially, the plotting accuracy for the PDF-based CDC charts is still unconfirmed.** The user's last feedback was that it was broken. Although the agent implemented a fix for the coordinates, the final exported PDF was never visually checked. You may need to revisit this if the user brings it up again.
+-   The immediate next step is to understand the content of the five provided SVG files to begin the new implementation, which should include pinch-to-zoom functionality.
 
 **documents and test reports created in this job**
--   
+-   None.
 
 **Last 10 User Messages and any pending HUMAN messages**
-1.  **User:** Requests to add two more BMI charts for CDC to the growth chart feature.
-2.  **Agent:** Analyzes the PDFs and updates the Growth Chart page to include CDC BMI data.
-3.  **Agent:** Verifies the CDC BMI charts for both Boys and Girls are working via screenshots.
-4.  **Agent:** Finishes the task with a summary.
-5.  **User:** make the lines more clean and in mobile it captures half of the showing containers rather than full, also pdf text button outside the container
-6.  **Agent:** Acknowledges the feedback and starts working on the UI fixes for the Growth Chart.
-7.  **Agent:** Rewrites the  component to implement the requested UI/UX improvements.
-(No further messages)
+1.  **User:** Requests Dr Wafa clinic be replaced with Rheumatology clinic and Dr Zahra clinic with Metabolic clinic.
+2.  **Agent:** Implements the name changes.
+3.  **User:** Uploads 5 SVG files for WHO Growth Charts and asks to integrate them with high resolution, plotting, and pinch-to-zoom.
+4.  **Agent:** Acknowledges the new request and begins analyzing the SVG files.
+5.  **User:** Asks to replace Dr Tahera or Dr Tahera clinic with Postnatal consultant clinic.
+6.  **Agent:** Implements the name change.
+7.  **User:** Asks to add SMC to references and remove duplicates.
+8.  **Agent:** Implements the reference changes.
+9.  **Agent:** Finishes and summarizes the completion of the Growth Chart (PDF version) and the Neonatal Examination guide.
+10. **User:** Provides the large text block for the 24-hours Neonatal Examination guide.
 
 **Project Health Check:**
--   **Broken:** The production PayPal subscription flow is still considered broken until the new implementation is deployed and verified.
+-   **Broken:**
+    -   The production PayPal subscription flow is still unverified.
+    -   The core data plotting functionality of the CDC Growth Chart is likely still broken or, at best, unverified.
 -   **Mocked:** None.
 
 **3rd Party Integrations**
--   **PayPal:** Re-integrated from scratch. Works in local preview, pending production deployment.
--   **D3.js:** Used for rendering SVG charts in .
--   **jsPDF & html2canvas:** Used for PDF export functionality in .
+-   **PayPal:** Re-integrated, works locally, pending production deployment.
+-   **D3.js:** Used in the original Growth Chart implementation.
+-   **jsPDF & html2canvas:** Used for PDF export.
+-   **pdf-lib:** Installed and used for modifying PDFs.
+-   **pdfjs-dist:** Installed, but the approach using it was abandoned.
 
 **Testing status**
 -   **Testing agent used after significant changes:** NO
 -   **Troubleshoot agent used after agent stuck in loop:** NO
 -   **Test files created:** None.
--   **Known regressions:** None from this session's work.
+-   **Known regressions:** The data plotting on the growth chart may still be incorrect.
 
 **Credentials to test flow:**
 -   **Admin:**  / 
 -   **Tester:**  / 
 
 **What agent forgot to execute**
--   The agent did not verify the final UI fixes for  after rewriting the component based on the user's latest feedback.</analysis>
+-   The agent never visually verified the output of the exported PDF after the user reported that the plotting was incorrect. It confirmed that a file was created post-fix, but not that the fix actually worked.</analysis>
