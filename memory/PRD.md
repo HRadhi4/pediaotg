@@ -92,26 +92,33 @@ Build a full SaaS-style web app "Pediatrics on the Go" with:
 ## Recent Changes (January 16, 2026)
 
 ### Session 12 Updates (January 28, 2026)
-- ✅ **PayPal Service Rebuilt from Scratch**:
-  - Completely rewrote `/app/backend/services/paypal_service.py` for cleaner Emergent deployment
-  - Uses `FRONTEND_URL` environment variable dynamically for return/cancel URLs
-  - Removed hardcoded URLs - now builds callback URLs from env vars at runtime
-  - Added comprehensive `verify_credentials()` endpoint for deployment debugging
-  - Clean error handling with informative error messages
-  - Live credentials configured: Mode=live, API=api-m.paypal.com
+- ✅ **PayPal Integration Complete Overhaul**:
+  - **Root Cause Fixed:** Generic "An error occurred" alert replaced with structured error responses
+  - Completely rewrote `/app/backend/services/paypal_service.py`:
+    - Custom `PayPalError` exception class with error codes
+    - `PayPalErrorCode` enum for machine-readable errors
+    - Proper logging without exposing secrets
+    - Modern API URLs (`api-m.sandbox.paypal.com` / `api-m.paypal.com`)
+  - Updated `/app/backend/routes/subscription.py`:
+    - All errors return structured JSON with `error_code`, `error_message`, `user_message`
+    - Added `GET /api/subscription/self-test` endpoint for comprehensive diagnostics
+  - Updated frontend error handling:
+    - `PricingPage.jsx`: Shows detailed error alerts instead of generic dialog
+    - `SuccessPage.jsx`: Displays specific error messages with helpful hints
+    - Error code mapping to user-friendly messages
+    - Retry functionality with limit
+  - Created `/app/docs/PAYPAL_INTEGRATION.md` documentation
   
 - ✅ **Children Drugs Page UI Fixes**:
-  - Fixed text wrapping issue in calculated dose display by adding `whitespace-nowrap` and `flex-shrink-0`
-  - Increased frequency badge size from `text-[9px]` to `text-sm` to match NICU styling
-  - Changed frequency badge styling to blue pill design: `bg-blue-100 text-blue-700 px-2 py-0.5 rounded`
-  - Both NICU and Children Drugs pages now have consistent UI
+  - Fixed text wrapping in calculated dose display with `whitespace-nowrap` and `flex-shrink-0`
+  - Increased frequency badge size from `text-[9px]` to `text-sm` (matching NICU)
+  - Blue pill styling for frequency badges
   
-- ✅ **Deployment Configuration Fixes**:
-  - Fixed `.gitignore` to allow `.env` files for deployment (removed lines blocking `*.env`)
-  - Added `peds-go.emergent.host` to CORS origins in `server.py`
-  - Removed hardcoded `PAYPAL_RETURN_URL` and `PAYPAL_CANCEL_URL` from `.env`
+- ✅ **Deployment Configuration**:
+  - Fixed `.gitignore` to allow `.env` files
+  - Added `peds-go.emergent.host` to CORS origins
 
-### Session 11 Updates (Current - January 21, 2026)
+### Session 11 Updates (January 21, 2026)
 - ✅ **Nomogram Pinch-to-Zoom (react-zoom-pan-pinch)**:
   - Replaced button-based zoom controls (+/- buttons) with modern touch-friendly zoom
   - Installed `react-zoom-pan-pinch` library
