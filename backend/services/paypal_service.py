@@ -623,7 +623,7 @@ class PayPalService:
         }
         
         try:
-            token = await self._get_access_token()
+            await self._get_access_token()  # Test token acquisition
             step2["passed"] = True
             step2["message"] = "Successfully obtained access token"
         except PayPalError as e:
