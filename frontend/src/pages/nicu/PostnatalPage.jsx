@@ -20,6 +20,7 @@ import RoutineManagementApproach from "./postnatal/RoutineManagementApproach";
 import NewbornAssessmentApproach from "./postnatal/NewbornAssessmentApproach";
 import HemoglobinopathyApproach from "./postnatal/HemoglobinopathyApproach";
 import AsymptomaticBacteriuriaApproach from "./postnatal/AsymptomaticBacteriuriaApproach";
+import NeonatalExaminationApproach from "./postnatal/NeonatalExaminationApproach";
 
 const PostnatalPage = () => {
   const [activeApproach, setActiveApproach] = useState("routine");
