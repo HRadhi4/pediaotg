@@ -92,12 +92,24 @@ Build a full SaaS-style web app "Pediatrics on the Go" with:
 ## Recent Changes (January 16, 2026)
 
 ### Session 12 Updates (January 28, 2026)
-- ✅ **NICU Growth Chart Overhaul** (Matching CDC/WHO PDF Charts):
+- ✅ **NICU Growth Chart Overhaul - Using Official CDC PDFs**:
   - Completely rewrote `/app/frontend/src/pages/nicu/GrowthChartPage.jsx`
-  - **WHO Charts (0-24 months)**: Weight, Length, Head Circumference, BMI with percentiles 3rd, 15th, 50th, 85th, 97th
-  - **CDC Charts (2-20 years)**: Weight, Stature with percentiles 3rd, 5th, 10th, 25th, 50th, 75th, 90th, 95th, 97th
-  - Added **PDF export** using jsPDF + html2canvas
-  - Added **PNG export** functionality
+  - **Uses actual CDC PDF charts** uploaded by the user (not SVG recreations)
+  - **4 CDC Charts**: Stature & Weight for Age (Boys/Girls), BMI for Age (Boys/Girls)
+  - **PDF URLs**:
+    - Boys Stature & Weight: `5hpnooem_Stature for afe and weight for age Boys percentiles.pdf`
+    - Girls Stature & Weight: `f49s7ypi_Stature for afe and weight for age Girls percentiles.pdf`
+    - Boys BMI: `zgvqqqk9_BMI for age Boys percentiles.pdf`
+    - Girls BMI: `bwb6u7fn_BMI for age Girls percentiles.pdf`
+  - **Features**:
+    - View Chart button: Opens PDF in new tab
+    - Download Blank button: Downloads the original PDF
+    - Patient Data Entry: Date, Age (2-20), Stature, Weight, BMI fields
+    - **Export with Plotted Points**: Uses `pdf-lib` to draw data points directly on the PDF
+    - Coordinate mapping calibrated for CDC chart layout
+    - Color-coded points: Blue (Stature), Red (Weight), Purple (BMI)
+    - Patient data legend added at bottom of exported PDF
+  - **Reference cards** showing percentile categories (Normal, At Risk, Underweight, Obese)
   - **Gender-specific backgrounds**: Blue for boys, pink for girls
   - **Color-coded percentile lines**: Red (extreme), Orange (mid), Green (median)
   - Patient data plotting with percentile calculation and interpretation
