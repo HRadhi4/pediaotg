@@ -1,19 +1,95 @@
-import React, { useState } from "react";
-import { Plus, Trash2, Download, ExternalLink, FileText } from "lucide-react";
+import React, { useState, useRef, useCallback } from "react";
+import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
+import { Plus, Trash2, ZoomIn, ZoomOut, RotateCcw, Maximize2, Download, ExternalLink, FileText } from "lucide-react";
 import { GrowthChartIcon as HealthGrowthIcon } from "@/components/HealthIcons";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PDFDocument, rgb } from 'pdf-lib';
 
 /**
- * Growth Chart Page - Using Official CDC PDFs
- * CDC Charts (2-20 years): Stature + Weight combined, BMI separate
- * Points are plotted directly on the PDF for export
+ * Combined Growth Charts Page
+ * - WHO Charts: Birth to 2 Years (SVG with pinch-to-zoom)
+ * - CDC Charts: 2-20 Years (PDF with plotting and export)
  */
 
-// CDC PDF URLs - use backend proxy to avoid CORS issues
+// ============== WHO CHARTS CONFIGURATION ==============
+const WHO_CHARTS = {
+  boys: {
+    weight: {
+      file: "/charts/who/boys_weight_0_2.svg",
+      label: "Weight-for-age",
+      yLabel: "Weight (kg)",
+      yMin: 2,
+      yMax: 16,
+      grid: {
+        xMin: 140, xMax: 1060,
+        yMin: 680, yMax: 100,
+        ageMin: 0, ageMax: 24,
+        valueMin: 2, valueMax: 16
+      }
+    },
+    length: {
+      file: "/charts/who/boys_length_0_2.svg",
+      label: "Length-for-age",
+      yLabel: "Length (cm)",
+      yMin: 45,
+      yMax: 95,
+      grid: {
+        xMin: 140, xMax: 1060,
+        yMin: 680, yMax: 100,
+        ageMin: 0, ageMax: 24,
+        valueMin: 45, valueMax: 95
+      }
+    }
+  },
+  girls: {
+    weight: {
+      file: "/charts/who/girls_weight_0_2.svg",
+      label: "Weight-for-age",
+      yLabel: "Weight (kg)",
+      yMin: 2,
+      yMax: 16,
+      grid: {
+        xMin: 140, xMax: 1060,
+        yMin: 680, yMax: 100,
+        ageMin: 0, ageMax: 24,
+        valueMin: 2, valueMax: 16
+      }
+    },
+    length: {
+      file: "/charts/who/girls_length_0_2.svg",
+      label: "Length-for-age",
+      yLabel: "Length (cm)",
+      yMin: 45,
+      yMax: 95,
+      grid: {
+        xMin: 140, xMax: 1060,
+        yMin: 680, yMax: 100,
+        ageMin: 0, ageMax: 24,
+        valueMin: 45, valueMax: 95
+      }
+    },
+    bmi: {
+      file: "/charts/who/girls_bmi_0_2.svg",
+      label: "BMI-for-age",
+      yLabel: "BMI (kg/m²)",
+      yMin: 10,
+      yMax: 22,
+      grid: {
+        xMin: 140, xMax: 1060,
+        yMin: 680, yMax: 100,
+        ageMin: 0, ageMax: 24,
+        valueMin: 10, valueMax: 22
+      }
+    }
+  }
+};
+
+// ============== CDC CHARTS CONFIGURATION ==============
 const API_URL = process.env.REACT_APP_BACKEND_URL || '';
 const CDC_PDFS = {
   statureWeight: {
@@ -26,50 +102,277 @@ const CDC_PDFS = {
   }
 };
 
-// Chart coordinate mappings for plotting points on the PDF
-// Calibrated from PDF extraction analysis - coordinates in screen space (y=0 at top)
-// Need to convert to PDF space (y=0 at bottom) when drawing
-
-// Stature & Weight PDF: 896 x 1080 points (page size extracted)
-// BMI PDF: 877 x 948 points (page size extracted)
-
-const CHART_COORDS = {
+const CDC_CHART_COORDS = {
   statureWeight: {
-    pageHeight: 1080, // PDF page height for Y-flip
-    // Stature chart area (top chart on combined PDF)
+    pageHeight: 1080,
     stature: {
-      xMin: 134, xMax: 873,  // Age 2 to Age 20
+      xMin: 134, xMax: 873,
       ageMin: 2, ageMax: 20,
-      // Screen coords: y=300 at 30cm, y=61 at 190cm
-      // PDF coords (flipped): y=780 at 30cm, y=1019 at 190cm
       yMinScreen: 300, yMaxScreen: 61,
-      valueMin: 30, valueMax: 190  // cm range from chart
+      valueMin: 30, valueMax: 190
     },
-    // Weight chart area (bottom chart on combined PDF)
     weight: {
       xMin: 134, xMax: 873,
       ageMin: 2, ageMax: 20,
-      // Screen coords: y=814 at 1kg, y=597 at 100kg
-      // PDF coords (flipped): y=266 at 1kg, y=483 at 100kg
       yMinScreen: 814, yMaxScreen: 597,
-      valueMin: 1, valueMax: 100  // kg range from chart
+      valueMin: 1, valueMax: 100
     }
   },
   bmi: {
-    pageHeight: 948, // PDF page height for Y-flip
+    pageHeight: 948,
     bmi: {
       xMin: 165, xMax: 800,
       ageMin: 2, ageMax: 20,
-      // Screen coords: y=842 at BMI 12, y=140 at BMI 35
-      // PDF coords (flipped): y=106 at BMI 12, y=808 at BMI 35
       yMinScreen: 842, yMaxScreen: 140,
       valueMin: 12, valueMax: 35
     }
   }
 };
 
-const GrowthChartPage = () => {
-  const [gender, setGender] = useState("male");
+// ============== WHO CHARTS COMPONENT ==============
+const WHOChartsSection = ({ gender, setGender }) => {
+  const [chartType, setChartType] = useState("weight");
+  const [entries, setEntries] = useState([]);
+  const [newEntry, setNewEntry] = useState({ 
+    date: new Date().toISOString().split('T')[0], 
+    ageMonths: "", 
+    value: "" 
+  });
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const transformRef = useRef(null);
+  const containerRef = useRef(null);
+
+  const whoGender = gender === "male" ? "boys" : "girls";
+  const currentChart = WHO_CHARTS[whoGender]?.[chartType] || WHO_CHARTS.boys.weight;
+  const availableCharts = Object.keys(WHO_CHARTS[whoGender] || {});
+
+  const calculateSvgCoords = useCallback((ageMonths, value) => {
+    const { grid } = currentChart;
+    if (!grid) return null;
+    
+    const age = parseFloat(ageMonths);
+    const val = parseFloat(value);
+    
+    if (isNaN(age) || isNaN(val)) return null;
+    if (age < grid.ageMin || age > grid.ageMax) return null;
+    if (val < grid.valueMin || val > grid.valueMax) return null;
+    
+    const xRatio = (age - grid.ageMin) / (grid.ageMax - grid.ageMin);
+    const x = grid.xMin + xRatio * (grid.xMax - grid.xMin);
+    
+    const yRatio = (val - grid.valueMin) / (grid.valueMax - grid.valueMin);
+    const y = grid.yMin - yRatio * (grid.yMin - grid.yMax);
+    
+    return { x, y };
+  }, [currentChart]);
+
+  const addEntry = () => {
+    if (newEntry.date && newEntry.ageMonths && newEntry.value) {
+      const age = parseFloat(newEntry.ageMonths);
+      if (age >= 0 && age <= 24) {
+        const coords = calculateSvgCoords(newEntry.ageMonths, newEntry.value);
+        setEntries(prev => [...prev, { 
+          ...newEntry, 
+          id: Date.now(),
+          chartType,
+          gender: whoGender,
+          coords
+        }]);
+        setNewEntry({ date: new Date().toISOString().split('T')[0], ageMonths: "", value: "" });
+      }
+    }
+  };
+
+  const removeEntry = (id) => setEntries(entries.filter(e => e.id !== id));
+
+  const currentEntries = entries.filter(e => e.gender === whoGender && e.chartType === chartType);
+
+  const toggleFullscreen = () => {
+    if (!document.fullscreenElement) {
+      containerRef.current?.requestFullscreen();
+      setIsFullscreen(true);
+    } else {
+      document.exitFullscreen();
+      setIsFullscreen(false);
+    }
+  };
+
+  const handleChartTypeChange = (newType) => {
+    if (availableCharts.includes(newType)) setChartType(newType);
+  };
+
+  return (
+    <div className="space-y-4">
+      {/* Chart Type Selection */}
+      <Select value={chartType} onValueChange={handleChartTypeChange}>
+        <SelectTrigger className="h-9" data-testid="who-chart-type-select">
+          <SelectValue placeholder="Select chart type" />
+        </SelectTrigger>
+        <SelectContent>
+          {availableCharts.map(type => (
+            <SelectItem key={type} value={type}>
+              {WHO_CHARTS[whoGender][type].label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+
+      {/* Chart Display with Zoom */}
+      <Card ref={containerRef} className={isFullscreen ? "fixed inset-0 z-50 m-0 rounded-none" : ""}>
+        <CardHeader className="pb-2">
+          <div className="flex justify-between items-start">
+            <div>
+              <CardTitle className="text-sm">
+                {currentChart.label} - {whoGender === 'boys' ? 'Boys' : 'Girls'}
+              </CardTitle>
+              <CardDescription className="text-xs">
+                Pinch to zoom • Drag to pan • Double-tap to reset
+              </CardDescription>
+            </div>
+            <div className="flex gap-1">
+              <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => transformRef.current?.zoomIn()} data-testid="who-zoom-in-btn">
+                <ZoomIn className="h-4 w-4" />
+              </Button>
+              <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => transformRef.current?.zoomOut()} data-testid="who-zoom-out-btn">
+                <ZoomOut className="h-4 w-4" />
+              </Button>
+              <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => transformRef.current?.resetTransform()} data-testid="who-reset-zoom-btn">
+                <RotateCcw className="h-4 w-4" />
+              </Button>
+              <Button variant="outline" size="icon" className="h-8 w-8" onClick={toggleFullscreen} data-testid="who-fullscreen-btn">
+                <Maximize2 className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent className="p-2">
+          <div className={`relative border rounded-lg overflow-hidden ${
+            whoGender === 'boys' ? 'bg-blue-50' : 'bg-pink-50'
+          } ${isFullscreen ? 'h-[calc(100vh-120px)]' : 'h-[350px]'}`}>
+            <TransformWrapper
+              ref={transformRef}
+              initialScale={1}
+              minScale={0.5}
+              maxScale={5}
+              centerOnInit
+              doubleClick={{ mode: "reset" }}
+              panning={{ velocityDisabled: true }}
+              wheel={{ step: 0.1 }}
+            >
+              <TransformComponent wrapperClass="!w-full !h-full" contentClass="!w-full !h-full flex items-center justify-center">
+                <div className="relative w-full h-full flex items-center justify-center">
+                  <img
+                    src={currentChart.file}
+                    alt={`WHO ${currentChart.label} Chart - ${whoGender}`}
+                    className="max-w-full max-h-full object-contain"
+                    data-testid="who-growth-chart-svg"
+                  />
+                  <svg
+                    className="absolute inset-0 w-full h-full pointer-events-none"
+                    viewBox="0 0 1122.5197 793.70074"
+                    preserveAspectRatio="xMidYMid meet"
+                    style={{ mixBlendMode: 'multiply' }}
+                  >
+                    {currentEntries.map((entry, index) => {
+                      if (!entry.coords) return null;
+                      return (
+                        <g key={entry.id}>
+                          <circle
+                            cx={entry.coords.x}
+                            cy={entry.coords.y}
+                            r="12"
+                            fill={whoGender === 'boys' ? '#2563eb' : '#db2777'}
+                            stroke="white"
+                            strokeWidth="3"
+                          />
+                          <text x={entry.coords.x} y={entry.coords.y + 4} textAnchor="middle" fill="white" fontSize="10" fontWeight="bold">
+                            {index + 1}
+                          </text>
+                        </g>
+                      );
+                    })}
+                  </svg>
+                </div>
+              </TransformComponent>
+            </TransformWrapper>
+          </div>
+          <div className="mt-2 text-xs text-muted-foreground text-center">
+            WHO Child Growth Standards • Percentiles: 3rd, 15th, 50th, 85th, 97th
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Add Measurement */}
+      <Card>
+        <CardHeader className="pb-2">
+          <CardTitle className="text-sm">Add Measurement</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <div className="grid grid-cols-3 gap-2">
+            <div>
+              <Label className="text-xs">Date</Label>
+              <Input type="date" value={newEntry.date} onChange={e => setNewEntry({...newEntry, date: e.target.value})} className="h-9 text-sm" data-testid="who-date-input" />
+            </div>
+            <div>
+              <Label className="text-xs">Age (months)</Label>
+              <Input type="number" min="0" max="24" step="0.5" value={newEntry.ageMonths} onChange={e => setNewEntry({...newEntry, ageMonths: e.target.value})} className="h-9 font-mono text-sm" placeholder="0-24" data-testid="who-age-input" />
+            </div>
+            <div>
+              <Label className="text-xs">{currentChart.yLabel}</Label>
+              <Input type="number" step="0.1" min="0" value={newEntry.value} onChange={e => setNewEntry({...newEntry, value: e.target.value})} className="h-9 font-mono text-sm" placeholder={`${currentChart.yMin}-${currentChart.yMax}`} data-testid="who-value-input" />
+            </div>
+          </div>
+          <Button 
+            onClick={addEntry} 
+            className="w-full" 
+            size="sm" 
+            disabled={!newEntry.date || !newEntry.ageMonths || !newEntry.value || parseFloat(newEntry.ageMonths) < 0 || parseFloat(newEntry.ageMonths) > 24}
+            data-testid="who-add-measurement-btn"
+          >
+            <Plus className="h-4 w-4 mr-1" />Add to Chart
+          </Button>
+        </CardContent>
+      </Card>
+
+      {/* Plotted Measurements */}
+      {currentEntries.length > 0 && (
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm">Plotted Measurements ({currentEntries.length})</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            {currentEntries.map((entry, index) => (
+              <div key={entry.id} className={`p-3 rounded-lg text-sm ${whoGender === 'boys' ? 'bg-blue-50' : 'bg-pink-50'}`}>
+                <div className="flex justify-between items-center">
+                  <div className="flex items-center gap-3">
+                    <span className={`w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-bold ${whoGender === 'boys' ? 'bg-blue-600' : 'bg-pink-600'}`}>
+                      {index + 1}
+                    </span>
+                    <div>
+                      <span className="font-medium">{entry.date}</span>
+                      <span className="text-muted-foreground ml-2">{entry.ageMonths} months</span>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className={`font-mono font-medium ${whoGender === 'boys' ? 'text-blue-600' : 'text-pink-600'}`}>
+                      {entry.value} {chartType === 'weight' ? 'kg' : chartType === 'length' ? 'cm' : 'kg/m²'}
+                    </span>
+                    <button onClick={() => removeEntry(entry.id)} className="text-red-500 p-1 hover:bg-red-100 rounded">
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+      )}
+    </div>
+  );
+};
+
+// ============== CDC CHARTS COMPONENT ==============
+const CDCChartsSection = ({ gender, setGender }) => {
   const [activeChart, setActiveChart] = useState("statureWeight");
   const [entries, setEntries] = useState([]);
   const [exporting, setExporting] = useState(false);
@@ -81,173 +384,87 @@ const GrowthChartPage = () => {
     bmi: "" 
   });
 
-  // Get current PDF URL
-  const getPdfUrl = () => {
-    return activeChart === 'bmi' 
-      ? CDC_PDFS.bmi[gender] 
-      : CDC_PDFS.statureWeight[gender];
-  };
+  const getPdfUrl = () => activeChart === 'bmi' ? CDC_PDFS.bmi[gender] : CDC_PDFS.statureWeight[gender];
 
-  // Calculate PDF coordinates for a data point
-  // PDF coordinate system: origin at bottom-left, Y increases upward
   const calculatePdfCoords = (age, value, chartType) => {
-    const chartData = activeChart === 'bmi' 
-      ? CHART_COORDS.bmi 
-      : CHART_COORDS.statureWeight;
-    
+    const chartData = activeChart === 'bmi' ? CDC_CHART_COORDS.bmi : CDC_CHART_COORDS.statureWeight;
     const coords = chartData[chartType];
     const pageHeight = chartData.pageHeight;
     
     if (!coords) return null;
     
-    // Linear interpolation for X (age) - same for both coordinate systems
     const xRatio = (age - coords.ageMin) / (coords.ageMax - coords.ageMin);
     const x = coords.xMin + xRatio * (coords.xMax - coords.xMin);
     
-    // Linear interpolation for Y (value) in screen coordinates
-    // yMinScreen is at valueMin, yMaxScreen is at valueMax
     const yRatio = (value - coords.valueMin) / (coords.valueMax - coords.valueMin);
     const yScreen = coords.yMinScreen + yRatio * (coords.yMaxScreen - coords.yMinScreen);
     
-    // Convert screen Y to PDF Y (flip: PDF Y = pageHeight - screenY)
     const y = pageHeight - yScreen;
-    
     return { x, y };
   };
 
-  // Add entry
   const addEntry = () => {
     if (newEntry.date && newEntry.age) {
       const age = parseFloat(newEntry.age);
       if (age >= 2 && age <= 20) {
-        const newEntryWithId = { ...newEntry, id: Date.now() };
-        setEntries(prev => [...prev, newEntryWithId]);
-        setNewEntry({ 
-          date: new Date().toISOString().split('T')[0], 
-          age: "", 
-          weight: "", 
-          stature: "", 
-          bmi: "" 
-        });
+        setEntries(prev => [...prev, { ...newEntry, id: Date.now() }]);
+        setNewEntry({ date: new Date().toISOString().split('T')[0], age: "", weight: "", stature: "", bmi: "" });
       }
     }
   };
 
-  // Export PDF with plotted points
   const exportPDF = async () => {
     setExporting(true);
     try {
-      // Fetch the original PDF
       const response = await fetch(getPdfUrl());
       const pdfBytes = await response.arrayBuffer();
-      
-      // Load the PDF
       const pdfDoc = await PDFDocument.load(pdfBytes);
       const page = pdfDoc.getPages()[0];
       
-      // Draw points on the PDF
       entries.forEach((entry, index) => {
         const age = parseFloat(entry.age);
         if (isNaN(age) || age < 2 || age > 20) return;
         
         if (activeChart === 'statureWeight') {
-          // Plot stature point (blue)
           if (entry.stature) {
-            const statureVal = parseFloat(entry.stature);
-            const coords = calculatePdfCoords(age, statureVal, 'stature');
+            const coords = calculatePdfCoords(age, parseFloat(entry.stature), 'stature');
             if (coords) {
-              // Draw filled circle
-              page.drawCircle({
-                x: coords.x,
-                y: coords.y,
-                size: 5,
-                color: rgb(0.145, 0.388, 0.922),
-                borderColor: rgb(1, 1, 1),
-                borderWidth: 1
-              });
-              // Draw label
-              page.drawText(`S${index + 1}`, {
-                x: coords.x + 8,
-                y: coords.y - 3,
-                size: 8,
-                color: rgb(0.145, 0.388, 0.922)
-              });
+              page.drawCircle({ x: coords.x, y: coords.y, size: 5, color: rgb(0.145, 0.388, 0.922), borderColor: rgb(1, 1, 1), borderWidth: 1 });
+              page.drawText(`S${index + 1}`, { x: coords.x + 8, y: coords.y - 3, size: 8, color: rgb(0.145, 0.388, 0.922) });
             }
           }
-          // Plot weight point (red)
           if (entry.weight) {
-            const weightVal = parseFloat(entry.weight);
-            const coords = calculatePdfCoords(age, weightVal, 'weight');
+            const coords = calculatePdfCoords(age, parseFloat(entry.weight), 'weight');
             if (coords) {
-              page.drawCircle({
-                x: coords.x,
-                y: coords.y,
-                size: 5,
-                color: rgb(0.863, 0.149, 0.149),
-                borderColor: rgb(1, 1, 1),
-                borderWidth: 1
-              });
-              page.drawText(`W${index + 1}`, {
-                x: coords.x + 8,
-                y: coords.y - 3,
-                size: 8,
-                color: rgb(0.863, 0.149, 0.149)
-              });
+              page.drawCircle({ x: coords.x, y: coords.y, size: 5, color: rgb(0.863, 0.149, 0.149), borderColor: rgb(1, 1, 1), borderWidth: 1 });
+              page.drawText(`W${index + 1}`, { x: coords.x + 8, y: coords.y - 3, size: 8, color: rgb(0.863, 0.149, 0.149) });
             }
           }
         } else {
-          // Plot BMI point (purple)
           if (entry.bmi) {
-            const bmiVal = parseFloat(entry.bmi);
-            const coords = calculatePdfCoords(age, bmiVal, 'bmi');
+            const coords = calculatePdfCoords(age, parseFloat(entry.bmi), 'bmi');
             if (coords) {
-              page.drawCircle({
-                x: coords.x,
-                y: coords.y,
-                size: 5,
-                color: rgb(0.486, 0.227, 0.929),
-                borderColor: rgb(1, 1, 1),
-                borderWidth: 1
-              });
-              page.drawText(`${index + 1}`, {
-                x: coords.x + 8,
-                y: coords.y - 3,
-                size: 8,
-                color: rgb(0.486, 0.227, 0.929)
-              });
+              page.drawCircle({ x: coords.x, y: coords.y, size: 5, color: rgb(0.486, 0.227, 0.929), borderColor: rgb(1, 1, 1), borderWidth: 1 });
+              page.drawText(`${index + 1}`, { x: coords.x + 8, y: coords.y - 3, size: 8, color: rgb(0.486, 0.227, 0.929) });
             }
           }
         }
       });
       
-      // Add patient data legend at bottom of page
       if (entries.length > 0) {
         let legendY = 50;
-        page.drawText('Patient Data:', {
-          x: 50,
-          y: legendY,
-          size: 9,
-          color: rgb(0, 0, 0)
-        });
+        page.drawText('Patient Data:', { x: 50, y: legendY, size: 9, color: rgb(0, 0, 0) });
         legendY -= 12;
-        
         entries.forEach((entry, index) => {
           let text = `#${index + 1}: ${entry.date}, Age ${entry.age}y`;
           if (entry.stature) text += `, Stature: ${entry.stature}cm`;
           if (entry.weight) text += `, Weight: ${entry.weight}kg`;
           if (entry.bmi) text += `, BMI: ${entry.bmi}`;
-          
-          page.drawText(text, {
-            x: 50,
-            y: legendY,
-            size: 7,
-            color: rgb(0.3, 0.3, 0.3)
-          });
+          page.drawText(text, { x: 50, y: legendY, size: 7, color: rgb(0.3, 0.3, 0.3) });
           legendY -= 10;
         });
       }
       
-      // Save and download
       const pdfBytesModified = await pdfDoc.save();
       const blob = new Blob([pdfBytesModified], { type: 'application/pdf' });
       const url = URL.createObjectURL(blob);
@@ -264,31 +481,144 @@ const GrowthChartPage = () => {
     }
   };
 
-  // Download blank chart
-  const downloadBlankChart = async () => {
-    const link = document.createElement('a');
-    link.href = getPdfUrl();
-    link.download = `cdc-growth-chart-${gender}-${activeChart}.pdf`;
-    link.target = '_blank';
-    link.click();
-  };
+  return (
+    <div className="space-y-4">
+      {/* Chart Type Selection */}
+      <div className="grid grid-cols-2 gap-2">
+        <Button variant={activeChart === "statureWeight" ? "default" : "outline"} onClick={() => setActiveChart("statureWeight")} className="text-xs h-9" data-testid="cdc-stature-weight-btn">
+          Stature & Weight
+        </Button>
+        <Button variant={activeChart === "bmi" ? "default" : "outline"} onClick={() => setActiveChart("bmi")} className="text-xs h-9" data-testid="cdc-bmi-btn">
+          BMI
+        </Button>
+      </div>
 
-  const chartLabels = {
-    statureWeight: "Stature & Weight for Age",
-    bmi: "BMI for Age"
-  };
+      {/* Chart Info Box */}
+      <Card>
+        <CardHeader className="pb-2">
+          <CardTitle className="text-sm">{activeChart === 'statureWeight' ? 'Stature & Weight for Age' : 'BMI for Age'}</CardTitle>
+          <CardDescription className="text-xs">{gender === 'male' ? 'Boys' : 'Girls'} • Age 2-20 years</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className={`p-4 rounded-lg border-2 ${gender === 'male' ? 'bg-blue-50 border-blue-200' : 'bg-pink-50 border-pink-200'}`}>
+            <div className="flex items-center gap-3 mb-3">
+              <FileText className={`h-10 w-10 ${gender === 'male' ? 'text-blue-600' : 'text-pink-600'}`} />
+              <div>
+                <p className="font-medium text-sm">{activeChart === 'statureWeight' ? 'Stature-for-Age & Weight-for-Age' : 'BMI-for-Age'}</p>
+                <p className="text-xs text-muted-foreground">CDC Growth Chart • {gender === 'male' ? 'Boys' : 'Girls'} • 2-20 years</p>
+              </div>
+            </div>
+            <p className="text-xs text-muted-foreground mb-3">Percentiles: 3rd, 5th, 10th, 25th, 50th, 75th, 85th, 90th, 95th, 97th</p>
+            <div className="flex flex-col sm:flex-row gap-2">
+              <Button onClick={() => window.open(getPdfUrl(), '_blank')} variant="outline" className="flex-1" data-testid="cdc-view-pdf-btn">
+                <ExternalLink className="h-4 w-4 mr-2" />View Chart
+              </Button>
+              <Button onClick={() => { const link = document.createElement('a'); link.href = getPdfUrl(); link.download = `cdc-growth-chart-${gender}-${activeChart}.pdf`; link.click(); }} variant="outline" className="flex-1" data-testid="cdc-download-blank-btn">
+                <Download className="h-4 w-4 mr-2" />Download Blank
+              </Button>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Add Measurement */}
+      <Card>
+        <CardHeader className="pb-2">
+          <CardTitle className="text-sm">Plot Patient Data</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <div className="grid grid-cols-2 gap-2">
+            <div>
+              <Label className="text-xs">Date *</Label>
+              <Input type="date" value={newEntry.date} onChange={e => setNewEntry({...newEntry, date: e.target.value})} className="h-9 text-sm" data-testid="cdc-date-input" />
+            </div>
+            <div>
+              <Label className="text-xs">Age (years) *</Label>
+              <Input type="number" min="2" max="20" step="0.5" value={newEntry.age} onChange={e => setNewEntry({...newEntry, age: e.target.value})} className="h-9 font-mono text-sm" placeholder="2-20" data-testid="cdc-age-input" />
+            </div>
+          </div>
+          
+          {activeChart === 'statureWeight' ? (
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <Label className="text-xs">Stature (cm)</Label>
+                <Input type="number" step="0.1" min="0" value={newEntry.stature} onChange={e => setNewEntry({...newEntry, stature: e.target.value})} className="h-9 font-mono text-sm" placeholder="77-200" data-testid="cdc-stature-input" />
+              </div>
+              <div>
+                <Label className="text-xs">Weight (kg)</Label>
+                <Input type="number" step="0.1" min="0" value={newEntry.weight} onChange={e => setNewEntry({...newEntry, weight: e.target.value})} className="h-9 font-mono text-sm" placeholder="8-105" data-testid="cdc-weight-input" />
+              </div>
+            </div>
+          ) : (
+            <div>
+              <Label className="text-xs">BMI (kg/m²)</Label>
+              <Input type="number" step="0.1" min="0" value={newEntry.bmi} onChange={e => setNewEntry({...newEntry, bmi: e.target.value})} className="h-9 font-mono text-sm" placeholder="12-35" data-testid="cdc-bmi-input" />
+            </div>
+          )}
+          
+          <Button 
+            onClick={addEntry} 
+            className="w-full" 
+            size="sm" 
+            disabled={!newEntry.date || !newEntry.age || parseFloat(newEntry.age) < 2 || parseFloat(newEntry.age) > 20 || (activeChart === 'statureWeight' && !newEntry.weight && !newEntry.stature) || (activeChart === 'bmi' && !newEntry.bmi)}
+            data-testid="cdc-add-measurement-btn"
+          >
+            <Plus className="h-4 w-4 mr-1" />Add Measurement
+          </Button>
+        </CardContent>
+      </Card>
+
+      {/* Patient Measurements */}
+      {entries.length > 0 && (
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm">Patient Measurements ({entries.length})</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            {entries.map((entry, index) => (
+              <div key={entry.id} className="p-3 rounded-lg bg-gray-50 dark:bg-gray-800/50 text-sm">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <span className="font-medium text-teal-600">#{index + 1} • {entry.date}</span>
+                    <span className="text-gray-500 ml-2">Age: {entry.age} years</span>
+                  </div>
+                  <button onClick={() => setEntries(entries.filter(e => e.id !== entry.id))} className="text-red-500 p-1 hover:bg-red-50 rounded">
+                    <Trash2 className="h-4 w-4" />
+                  </button>
+                </div>
+                <div className="mt-1 flex flex-wrap gap-3 text-sm">
+                  {entry.stature && <span className="text-blue-600 font-medium">Stature: {entry.stature} cm</span>}
+                  {entry.weight && <span className="text-red-600 font-medium">Weight: {entry.weight} kg</span>}
+                  {entry.bmi && <span className="text-purple-600 font-medium">BMI: {entry.bmi} kg/m²</span>}
+                </div>
+              </div>
+            ))}
+            <Button onClick={exportPDF} disabled={exporting} className="w-full mt-2" data-testid="cdc-export-btn">
+              <Download className="h-4 w-4 mr-2" />{exporting ? 'Creating PDF...' : 'Export Chart with Patient Data'}
+            </Button>
+          </CardContent>
+        </Card>
+      )}
+    </div>
+  );
+};
+
+// ============== MAIN COMPONENT ==============
+const GrowthChartPage = () => {
+  const [gender, setGender] = useState("male");
+  const [activeTab, setActiveTab] = useState("who");
 
   return (
     <div className="space-y-4 p-4" data-testid="growth-chart-page">
-      {/* Controls */}
+      {/* Header */}
       <Card>
         <CardHeader className="pb-2">
           <CardTitle className="text-base flex items-center gap-2">
             <HealthGrowthIcon className="h-5 w-5 text-teal-500" />
-            CDC Growth Charts (2-20 years)
+            Growth Charts
           </CardTitle>
           <CardDescription className="text-xs">
-            Official CDC growth charts with patient data plotting
+            WHO (Birth-2 years) & CDC (2-20 years) growth standards
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-3">
@@ -311,274 +641,37 @@ const GrowthChartPage = () => {
               Girls
             </Button>
           </div>
-          
-          {/* Chart Type Selection */}
-          <div className="grid grid-cols-2 gap-2">
-            <Button 
-              variant={activeChart === "statureWeight" ? "default" : "outline"} 
-              onClick={() => setActiveChart("statureWeight")} 
-              className="text-xs h-9"
-              data-testid="stature-weight-btn"
-            >
-              Stature & Weight
-            </Button>
-            <Button 
-              variant={activeChart === "bmi" ? "default" : "outline"} 
-              onClick={() => setActiveChart("bmi")} 
-              className="text-xs h-9"
-              data-testid="bmi-btn"
-            >
-              BMI
-            </Button>
-          </div>
         </CardContent>
       </Card>
 
-      {/* Chart Actions */}
-      <Card>
-        <CardHeader className="pb-2">
-          <CardTitle className="text-sm">{chartLabels[activeChart]}</CardTitle>
-          <CardDescription className="text-xs">
-            {gender === 'male' ? 'Boys' : 'Girls'} • Age 2-20 years
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          {/* Chart Info Box */}
-          <div className={`p-4 rounded-lg border-2 ${gender === 'male' ? 'bg-blue-50 border-blue-200' : 'bg-pink-50 border-pink-200'}`}>
-            <div className="flex items-center gap-3 mb-3">
-              <FileText className={`h-10 w-10 ${gender === 'male' ? 'text-blue-600' : 'text-pink-600'}`} />
-              <div>
-                <p className="font-medium text-sm">
-                  {activeChart === 'statureWeight' ? 'Stature-for-Age & Weight-for-Age' : 'BMI-for-Age'}
-                </p>
-                <p className="text-xs text-muted-foreground">
-                  CDC Growth Chart • {gender === 'male' ? 'Boys' : 'Girls'} • 2-20 years
-                </p>
-              </div>
-            </div>
-            <p className="text-xs text-muted-foreground mb-3">
-              Percentiles: 3rd, 5th, 10th, 25th, 50th, 75th, 85th, 90th, 95th, 97th
-            </p>
-            <div className="flex flex-col sm:flex-row gap-2">
-              <Button 
-                onClick={() => window.open(getPdfUrl(), '_blank')}
-                variant="outline"
-                className="flex-1"
-                data-testid="view-pdf-btn"
-              >
-                <ExternalLink className="h-4 w-4 mr-2" />
-                View Chart
-              </Button>
-              <Button 
-                onClick={downloadBlankChart}
-                variant="outline"
-                className="flex-1"
-                data-testid="download-blank-btn"
-              >
-                <Download className="h-4 w-4 mr-2" />
-                Download Blank
-              </Button>
-            </div>
-          </div>
-          
-          {/* Quick Info */}
-          <div className="grid grid-cols-2 gap-2 text-xs">
-            <div className="p-2 rounded bg-green-50 border border-green-200">
-              <span className="font-medium text-green-700">Normal:</span>
-              <span className="text-green-600 ml-1">5th-85th percentile</span>
-            </div>
-            <div className="p-2 rounded bg-yellow-50 border border-yellow-200">
-              <span className="font-medium text-yellow-700">At Risk:</span>
-              <span className="text-yellow-600 ml-1">85th-95th percentile</span>
-            </div>
-            <div className="p-2 rounded bg-red-50 border border-red-200">
-              <span className="font-medium text-red-700">Underweight:</span>
-              <span className="text-red-600 ml-1">&lt;5th percentile</span>
-            </div>
-            <div className="p-2 rounded bg-red-50 border border-red-200">
-              <span className="font-medium text-red-700">Obese:</span>
-              <span className="text-red-600 ml-1">&gt;95th percentile</span>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Add Measurement */}
-      <Card>
-        <CardHeader className="pb-2">
-          <CardTitle className="text-sm">Plot Patient Data</CardTitle>
-          <CardDescription className="text-xs">
-            Add measurements to plot directly on the PDF chart
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          <div className="grid grid-cols-2 gap-2">
-            <div>
-              <Label className="text-xs">Date *</Label>
-              <Input 
-                type="date" 
-                value={newEntry.date} 
-                onChange={e => setNewEntry({...newEntry, date: e.target.value})} 
-                className="h-9 text-sm"
-                data-testid="date-input"
-              />
-            </div>
-            <div>
-              <Label className="text-xs">Age (years) *</Label>
-              <Input 
-                type="number" 
-                min="2" 
-                max="20" 
-                step="0.5"
-                value={newEntry.age} 
-                onChange={e => setNewEntry({...newEntry, age: e.target.value})} 
-                className="h-9 font-mono text-sm"
-                placeholder="2-20"
-                data-testid="age-input"
-              />
-            </div>
-          </div>
-          
-          {activeChart === 'statureWeight' ? (
-            <div className="grid grid-cols-2 gap-2">
-              <div>
-                <Label className="text-xs">Stature (cm)</Label>
-                <Input 
-                  type="number" 
-                  step="0.1" 
-                  min="0" 
-                  value={newEntry.stature} 
-                  onChange={e => setNewEntry({...newEntry, stature: e.target.value})} 
-                  className="h-9 font-mono text-sm"
-                  placeholder="77-200"
-                  data-testid="stature-input"
-                />
-              </div>
-              <div>
-                <Label className="text-xs">Weight (kg)</Label>
-                <Input 
-                  type="number" 
-                  step="0.1" 
-                  min="0" 
-                  value={newEntry.weight} 
-                  onChange={e => setNewEntry({...newEntry, weight: e.target.value})} 
-                  className="h-9 font-mono text-sm"
-                  placeholder="8-105"
-                  data-testid="weight-input"
-                />
-              </div>
-            </div>
-          ) : (
-            <div>
-              <Label className="text-xs">BMI (kg/m²)</Label>
-              <Input 
-                type="number" 
-                step="0.1" 
-                min="0" 
-                value={newEntry.bmi} 
-                onChange={e => setNewEntry({...newEntry, bmi: e.target.value})} 
-                className="h-9 font-mono text-sm"
-                placeholder="12-35"
-                data-testid="bmi-input"
-              />
-            </div>
-          )}
-          
-          <Button 
-            onClick={addEntry} 
-            className="w-full" 
-            size="sm" 
-            disabled={
-              !newEntry.date || 
-              !newEntry.age || 
-              parseFloat(newEntry.age) < 2 || 
-              parseFloat(newEntry.age) > 20 ||
-              (activeChart === 'statureWeight' && !newEntry.weight && !newEntry.stature) ||
-              (activeChart === 'bmi' && !newEntry.bmi)
-            }
-            data-testid="add-measurement-btn"
-          >
-            <Plus className="h-4 w-4 mr-1" />Add Measurement
-          </Button>
-        </CardContent>
-      </Card>
-
-      {/* Patient Measurements */}
-      {entries.length > 0 && (
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm">Patient Measurements ({entries.length})</CardTitle>
-            <CardDescription className="text-xs">
-              Export to get a PDF with these points plotted on the chart
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-2">
-            {entries.map((entry, index) => (
-              <div 
-                key={entry.id} 
-                className="p-3 rounded-lg bg-gray-50 dark:bg-gray-800/50 text-sm"
-              >
-                <div className="flex justify-between items-start">
-                  <div>
-                    <span className="font-medium text-teal-600">
-                      #{index + 1} • {entry.date}
-                    </span>
-                    <span className="text-gray-500 ml-2">Age: {entry.age} years</span>
-                  </div>
-                  <button 
-                    onClick={() => setEntries(entries.filter(e => e.id !== entry.id))} 
-                    className="text-red-500 p-1 hover:bg-red-50 rounded"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </button>
-                </div>
-                <div className="mt-1 flex flex-wrap gap-3 text-sm">
-                  {entry.stature && (
-                    <span className="text-blue-600 font-medium">
-                      Stature: {entry.stature} cm
-                    </span>
-                  )}
-                  {entry.weight && (
-                    <span className="text-red-600 font-medium">
-                      Weight: {entry.weight} kg
-                    </span>
-                  )}
-                  {entry.bmi && (
-                    <span className="text-purple-600 font-medium">
-                      BMI: {entry.bmi} kg/m²
-                    </span>
-                  )}
-                </div>
-              </div>
-            ))}
-            
-            <Button 
-              onClick={exportPDF}
-              disabled={exporting}
-              className="w-full mt-2"
-              data-testid="export-all-btn"
-            >
-              <Download className="h-4 w-4 mr-2" />
-              {exporting ? 'Creating PDF...' : 'Export Chart with Patient Data'}
-            </Button>
-          </CardContent>
-        </Card>
-      )}
+      {/* Tabs for WHO vs CDC */}
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="who" data-testid="who-tab">WHO (0-2 years)</TabsTrigger>
+          <TabsTrigger value="cdc" data-testid="cdc-tab">CDC (2-20 years)</TabsTrigger>
+        </TabsList>
+        <TabsContent value="who" className="mt-4">
+          <WHOChartsSection gender={gender} setGender={setGender} />
+        </TabsContent>
+        <TabsContent value="cdc" className="mt-4">
+          <CDCChartsSection gender={gender} setGender={setGender} />
+        </TabsContent>
+      </Tabs>
 
       {/* Reference Info */}
       <Card>
         <CardHeader className="pb-2">
-          <CardTitle className="text-sm">BMI Categories</CardTitle>
+          <CardTitle className="text-sm">Growth Standards Reference</CardTitle>
         </CardHeader>
         <CardContent className="text-xs text-muted-foreground space-y-2">
           <div className="grid grid-cols-1 gap-1">
-            <p>• <span className="text-red-600 font-medium">Underweight:</span> BMI &lt; 5th percentile</p>
-            <p>• <span className="text-green-600 font-medium">Healthy Weight:</span> BMI 5th to &lt; 85th percentile</p>
-            <p>• <span className="text-yellow-600 font-medium">Overweight:</span> BMI 85th to &lt; 95th percentile</p>
-            <p>• <span className="text-red-600 font-medium">Obesity:</span> BMI ≥ 95th percentile</p>
+            <p>• <span className="text-red-600 font-medium">Below 3rd/5th percentile:</span> May indicate growth concern</p>
+            <p>• <span className="text-green-600 font-medium">3rd/5th to 85th percentile:</span> Normal range</p>
+            <p>• <span className="text-yellow-600 font-medium">85th to 95th percentile:</span> Overweight risk</p>
+            <p>• <span className="text-red-600 font-medium">Above 95th/97th percentile:</span> Obesity/overnutrition</p>
           </div>
           <p className="pt-2 border-t text-[10px]">
-            Source: CDC Growth Charts (cdc.gov) • Official 2000 CDC growth charts
+            Sources: WHO Child Growth Standards • CDC 2000 Growth Charts
           </p>
         </CardContent>
       </Card>
