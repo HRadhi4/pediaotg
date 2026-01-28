@@ -330,7 +330,7 @@ const NeonatalExaminationApproach = () => {
         <FindingItem 
           title="Hip Click (DDH Screening)"
           management={[
-            "Reassessment in Dr Tahera clinic in 2 weeks"
+            "Reassessment in Postnatal consultant clinic in 2 weeks"
           ]}
           aapGuideline={
             <div className="space-y-2">
