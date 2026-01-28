@@ -77,3 +77,4 @@ frontend/node_modules/.cache/default-development/14.pack
 -e 
 # Sensitive credentials (NOT .env files - Emergent needs those for deployment)
 frontend/node_modules/.cache/default-development/0.pack
+frontend/node_modules/.cache/default-development/1.pack

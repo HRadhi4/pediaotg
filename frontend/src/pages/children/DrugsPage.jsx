@@ -2315,7 +2315,7 @@ const DrugsPage = ({ onBack }) => {
                     )}
                   </div>
                   {w > 0 && firstDose && (
-                    <div className="text-right ml-2 min-w-[90px]">
+                    <div className="text-right ml-2 flex-shrink-0">
                       {(() => {
                         // Use per-dose maxDose if available
                         const doseSpecificMax = firstDose.maxDose;
@@ -2344,32 +2344,34 @@ const DrugsPage = ({ onBack }) => {
                             {/* Show per-dose amount prominently if divided */}
                             {showPerDose ? (
                               <>
-                                <p className={`text-[11px] font-mono font-bold ${doseResult.isExceedingMax ? 'text-amber-600' : 'text-green-600'}`}>
+                                <p className={`text-xs font-mono font-bold whitespace-nowrap ${doseResult.isExceedingMax ? 'text-amber-600' : 'text-green-600'}`}>
                                   {doseResult.perDoseMin === doseResult.perDoseMax 
                                     ? `${doseResult.perDoseMin} mg` 
                                     : `${doseResult.perDoseMin}-${doseResult.perDoseMax} mg`}
-                                  <span className="text-[9px] text-muted-foreground ml-0.5">/dose</span>
+                                  <span className="text-[10px] text-muted-foreground ml-0.5">/dose</span>
                                 </p>
-                                <p className="text-[9px] text-muted-foreground">
-                                  <span className="bg-slate-100 dark:bg-slate-700 px-1 rounded font-medium">{doseResult.frequency}</span>
-                                  <span className="ml-1">({doseResult.dose}/d)</span>
+                                <p className="text-[10px] text-muted-foreground whitespace-nowrap">
+                                  ({doseResult.dose}/d)
+                                </p>
+                                <p className="mt-1">
+                                  <span className="font-semibold bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 px-2 py-0.5 rounded text-sm">{doseResult.frequency}</span>
                                 </p>
                               </>
                             ) : (
                               <>
-                                <p className={`text-[11px] font-mono font-bold ${doseResult.isExceedingMax ? 'text-amber-600' : 'text-blue-600'}`}>
+                                <p className={`text-xs font-mono font-bold whitespace-nowrap ${doseResult.isExceedingMax ? 'text-amber-600' : 'text-blue-600'}`}>
                                   {doseResult.dose}
-                                  {doseResult.doseLabel && <span className="text-[9px] text-muted-foreground ml-0.5">{doseResult.doseLabel}</span>}
+                                  {doseResult.doseLabel && <span className="text-[10px] text-muted-foreground ml-0.5">{doseResult.doseLabel}</span>}
                                 </p>
                                 {displayFreq && (
-                                  <p className="text-[9px]">
-                                    <span className="bg-slate-100 dark:bg-slate-700 px-1 rounded font-medium text-slate-600 dark:text-slate-300">{displayFreq}</span>
+                                  <p className="mt-1">
+                                    <span className="font-semibold bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 px-2 py-0.5 rounded text-sm">{displayFreq}</span>
                                   </p>
                                 )}
                               </>
                             )}
                             {doseResult.isExceedingMax && (
-                              <p className="text-[9px] text-amber-600 font-medium">⚠️ Max</p>
+                              <p className="text-[10px] text-amber-600 font-medium">⚠️ Max</p>
                             )}
                           </div>
                         );
