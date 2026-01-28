@@ -13,15 +13,16 @@ import { PDFDocument, rgb } from 'pdf-lib';
  * Points are plotted directly on the PDF for export
  */
 
-// CDC PDF URLs - directly from uploaded files
+// CDC PDF URLs - use backend proxy to avoid CORS issues
+const API_URL = process.env.REACT_APP_BACKEND_URL || '';
 const CDC_PDFS = {
   statureWeight: {
-    male: "https://customer-assets.emergentagent.com/job_pediatric-tools-2/artifacts/5hpnooem_Stature%20for%20afe%20and%20weight%20for%20age%20Boys%20percentiles.pdf",
-    female: "https://customer-assets.emergentagent.com/job_pediatric-tools-2/artifacts/f49s7ypi_Stature%20for%20afe%20and%20weight%20for%20age%20Girls%20percentiles.pdf"
+    male: `${API_URL}/api/growth-charts/pdf/stature-weight/boys`,
+    female: `${API_URL}/api/growth-charts/pdf/stature-weight/girls`
   },
   bmi: {
-    male: "https://customer-assets.emergentagent.com/job_pediatric-tools-2/artifacts/zgvqqqk9_BMI%20for%20age%20Boys%20percentiles.pdf",
-    female: "https://customer-assets.emergentagent.com/job_pediatric-tools-2/artifacts/bwb6u7fn_BMI%20for%20age%20Girls%20percentiles.pdf"
+    male: `${API_URL}/api/growth-charts/pdf/bmi/boys`,
+    female: `${API_URL}/api/growth-charts/pdf/bmi/girls`
   }
 };
 
