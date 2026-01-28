@@ -11,6 +11,7 @@ Handles subscription-related API endpoints:
 - POST /change-plan: Change subscription plan
 - POST /webhook/paypal: Handle PayPal webhooks
 - GET /verify-paypal: Debug endpoint to verify PayPal config
+- GET /self-test: Comprehensive PayPal integration test
 
 FLOW:
 1. User clicks Subscribe → POST /create-order
@@ -18,10 +19,15 @@ FLOW:
 3. User approves → PayPal redirects to return_url with token
 4. Frontend calls POST /capture-order with order_id
 5. Subscription activated, email sent
+
+ERROR HANDLING:
+- All PayPal errors return structured JSON with error_code, error_message, error_details
+- Frontend can display user-friendly messages based on error_code
 =============================================================================
 """
 
 from fastapi import APIRouter, HTTPException, Depends, Request
+from fastapi.responses import JSONResponse
 from typing import Optional
 from datetime import datetime, timezone, timedelta
 import os
@@ -32,7 +38,7 @@ import secrets
 sys.path.insert(0, '/app/backend')
 
 from models.subscription import PlanType, PayPalOrderCreate, PayPalOrderCapture, SubscriptionResponse
-from services.paypal_service import PayPalService
+from services.paypal_service import PayPalService, PayPalError, PayPalErrorCode
 from services.subscription_service import SubscriptionService
 from routes.auth import require_auth, require_subscription
 from services.auth_service import AuthService
@@ -61,6 +67,48 @@ class PricingResponse(BaseModel):
     trial_days: int
 
 
+class ErrorResponse(BaseModel):
+    """Structured error response for PayPal errors."""
+    success: bool = False
+    error_code: str
+    error_message: str
+    error_details: dict = {}
+    user_message: str  # User-friendly message for display
+
+
+def get_user_friendly_message(error: PayPalError) -> str:
+    """Convert PayPal error code to user-friendly message."""
+    messages = {
+        PayPalErrorCode.CONFIG_MISSING: "Payment service is not configured. Please contact support.",
+        PayPalErrorCode.CONFIG_INVALID: "Payment configuration error. Please contact support.",
+        PayPalErrorCode.AUTH_FAILED: "Unable to connect to payment service. Please try again later.",
+        PayPalErrorCode.CREDENTIALS_INVALID: "Payment service configuration error. Please contact support.",
+        PayPalErrorCode.ORDER_CREATE_FAILED: "Unable to create payment. Please try again.",
+        PayPalErrorCode.ORDER_NOT_FOUND: "Payment not found. Please start a new subscription.",
+        PayPalErrorCode.ORDER_NOT_APPROVED: "Payment was not approved. Please complete the PayPal approval.",
+        PayPalErrorCode.CAPTURE_FAILED: "Payment could not be completed. Please try again.",
+        PayPalErrorCode.NETWORK_ERROR: "Network error. Please check your connection and try again.",
+        PayPalErrorCode.TIMEOUT: "Request timed out. Please try again.",
+        PayPalErrorCode.INVALID_PLAN: "Invalid subscription plan selected.",
+        PayPalErrorCode.REFUND_FAILED: "Refund could not be processed. Please contact support."
+    }
+    return messages.get(error.code, "An unexpected error occurred. Please try again.")
+
+
+def paypal_error_response(error: PayPalError, status_code: int = 400) -> JSONResponse:
+    """Create a structured JSON response from a PayPal error."""
+    return JSONResponse(
+        status_code=status_code,
+        content={
+            "success": False,
+            "error_code": error.code.value if isinstance(error.code, PayPalErrorCode) else error.code,
+            "error_message": error.message,
+            "error_details": error.details,
+            "user_message": get_user_friendly_message(error)
+        }
+    )
+
+
 @router.get("/pricing", response_model=PricingResponse)
 async def get_pricing():
     """Get subscription pricing information"""
@@ -80,6 +128,22 @@ async def verify_paypal_config():
     """
     result = await paypal_service.verify_credentials()
     return result
+
+
+@router.get("/self-test")
+async def paypal_self_test():
+    """
+    Run comprehensive PayPal integration self-test.
+    
+    Tests:
+    1. Environment variables are set
+    2. OAuth token can be obtained
+    3. API is reachable
+    
+    Returns detailed report of each step.
+    """
+    report = await paypal_service.self_test()
+    return report
 
 
 @router.get("/status")
@@ -151,15 +215,27 @@ async def create_paypal_order(
             "success": True,
             "order_id": result['order_id'],
             "approval_url": result['approval_url'],
-            "state_token": state_token  # Frontend stores this for use on return
+            "state_token": state_token,  # Frontend stores this for use on return
+            "amount_usd": result['amount_usd'],
+            "amount_bhd": result['amount_bhd']
         }
-    except ValueError as e:
-        # Invalid plan name
-        logger.error(f"Invalid plan: {e}")
-        raise HTTPException(status_code=400, detail=str(e))
+        
+    except PayPalError as e:
+        logger.error(f"PayPal error creating order: {e.code} - {e.message}")
+        return paypal_error_response(e, status_code=400 if e.code == PayPalErrorCode.INVALID_PLAN else 502)
+        
     except Exception as e:
-        logger.error(f"Error creating PayPal order: {e}", exc_info=True)
-        raise HTTPException(status_code=500, detail=str(e))
+        logger.error(f"Unexpected error creating PayPal order: {e}", exc_info=True)
+        return JSONResponse(
+            status_code=500,
+            content={
+                "success": False,
+                "error_code": "INTERNAL_ERROR",
+                "error_message": str(e),
+                "error_details": {},
+                "user_message": "An unexpected error occurred. Please try again or contact support."
+            }
+        )
 
 
 @router.post("/capture-order")
@@ -181,10 +257,15 @@ async def capture_paypal_order(
         
         if order_status != 'APPROVED':
             logger.error(f"Order not approved. Status: {order_status}")
-            raise HTTPException(
+            return JSONResponse(
                 status_code=400,
-                detail=f"Order not approved by PayPal. Current status: {order_status}. "
-                       "Please complete the PayPal approval process first."
+                content={
+                    "success": False,
+                    "error_code": PayPalErrorCode.ORDER_NOT_APPROVED.value,
+                    "error_message": f"Order not approved. Current status: {order_status}",
+                    "error_details": {"order_status": order_status},
+                    "user_message": "Payment was not approved. Please complete the PayPal approval process."
+                }
             )
         
         # Verify the order belongs to this user (custom_id should match)
@@ -194,9 +275,15 @@ async def capture_paypal_order(
         
         if custom_id and custom_id != user.id:
             logger.error(f"Order user mismatch: {custom_id} vs {user.id}")
-            raise HTTPException(
+            return JSONResponse(
                 status_code=403,
-                detail="This order does not belong to the current user"
+                content={
+                    "success": False,
+                    "error_code": "ORDER_USER_MISMATCH",
+                    "error_message": "This order does not belong to the current user",
+                    "error_details": {},
+                    "user_message": "This payment belongs to a different account. Please log in with the correct account."
+                }
             )
         
         # Capture the payment
@@ -205,9 +292,15 @@ async def capture_paypal_order(
         
         if capture_result['status'] != 'COMPLETED':
             logger.error(f"Payment not completed: {capture_result}")
-            raise HTTPException(
+            return JSONResponse(
                 status_code=400,
-                detail=f"Payment not completed. Status: {capture_result['status']}"
+                content={
+                    "success": False,
+                    "error_code": PayPalErrorCode.CAPTURE_FAILED.value,
+                    "error_message": f"Payment not completed. Status: {capture_result['status']}",
+                    "error_details": {"capture_status": capture_result['status']},
+                    "user_message": "Payment could not be completed. Please try again or use a different payment method."
+                }
             )
         
         # Fetch user email and name for notification
@@ -269,11 +362,25 @@ async def capture_paypal_order(
             }
         }
         
+    except PayPalError as e:
+        logger.error(f"PayPal error capturing order: {e.code} - {e.message}")
+        return paypal_error_response(e)
+        
     except HTTPException:
         raise
+        
     except Exception as e:
         logger.error(f"Error capturing PayPal order: {str(e)}", exc_info=True)
-        raise HTTPException(status_code=500, detail=str(e))
+        return JSONResponse(
+            status_code=500,
+            content={
+                "success": False,
+                "error_code": "INTERNAL_ERROR",
+                "error_message": str(e),
+                "error_details": {},
+                "user_message": "An unexpected error occurred. Please contact support if this persists."
+            }
+        )
 
 
 class CaptureWithStateRequest(BaseModel):
@@ -301,14 +408,32 @@ async def capture_paypal_order_with_state(request_data: CaptureWithStateRequest)
         
         if not state_doc:
             logger.error(f"Invalid state token: {request_data.state_token[:20]}...")
-            raise HTTPException(status_code=400, detail="Invalid or expired state token. Please try subscribing again.")
+            return JSONResponse(
+                status_code=400,
+                content={
+                    "success": False,
+                    "error_code": "INVALID_STATE_TOKEN",
+                    "error_message": "Invalid or expired state token",
+                    "error_details": {},
+                    "user_message": "Your session has expired. Please try subscribing again."
+                }
+            )
         
         # Check expiration
         expires_at = datetime.fromisoformat(state_doc['expires_at'])
         if datetime.now(timezone.utc) > expires_at:
             await db.paypal_states.delete_one({'state_token': request_data.state_token})
             logger.error(f"State token expired for user {state_doc.get('user_id')}")
-            raise HTTPException(status_code=400, detail="Session expired. Please try subscribing again.")
+            return JSONResponse(
+                status_code=400,
+                content={
+                    "success": False,
+                    "error_code": "STATE_TOKEN_EXPIRED",
+                    "error_message": "State token has expired",
+                    "error_details": {},
+                    "user_message": "Your session has expired. Please try subscribing again."
+                }
+            )
         
         user_id = state_doc['user_id']
         plan_name = state_doc['plan_name']
@@ -328,9 +453,15 @@ async def capture_paypal_order_with_state(request_data: CaptureWithStateRequest)
         
         if order_status != 'APPROVED':
             logger.error(f"Order not approved. Status: {order_status}")
-            raise HTTPException(
+            return JSONResponse(
                 status_code=400,
-                detail=f"Payment not approved by PayPal. Current status: {order_status}. Please complete the PayPal approval."
+                content={
+                    "success": False,
+                    "error_code": PayPalErrorCode.ORDER_NOT_APPROVED.value,
+                    "error_message": f"Order not approved. Status: {order_status}",
+                    "error_details": {"order_status": order_status},
+                    "user_message": "Payment was not approved by PayPal. Please complete the approval process."
+                }
             )
         
         # Capture the payment
@@ -339,16 +470,31 @@ async def capture_paypal_order_with_state(request_data: CaptureWithStateRequest)
         
         if capture_result['status'] != 'COMPLETED':
             logger.error(f"Payment not completed: {capture_result}")
-            raise HTTPException(
+            return JSONResponse(
                 status_code=400,
-                detail=f"Payment not completed. Status: {capture_result['status']}"
+                content={
+                    "success": False,
+                    "error_code": PayPalErrorCode.CAPTURE_FAILED.value,
+                    "error_message": f"Payment not completed. Status: {capture_result['status']}",
+                    "error_details": {"capture_status": capture_result['status']},
+                    "user_message": "Payment could not be completed. Please try again."
+                }
             )
         
         # Fetch user details
         user_doc = await db.users.find_one({'id': user_id}, {'_id': 0})
         if not user_doc:
             logger.error(f"User not found: {user_id}")
-            raise HTTPException(status_code=404, detail="User not found")
+            return JSONResponse(
+                status_code=404,
+                content={
+                    "success": False,
+                    "error_code": "USER_NOT_FOUND",
+                    "error_message": "User not found",
+                    "error_details": {},
+                    "user_message": "Account not found. Please contact support."
+                }
+            )
         
         # Create/update subscription
         subscription = await subscription_service.create_paid_subscription(
@@ -408,11 +554,22 @@ async def capture_paypal_order_with_state(request_data: CaptureWithStateRequest)
             }
         }
         
-    except HTTPException:
-        raise
+    except PayPalError as e:
+        logger.error(f"PayPal error capturing order with state: {e.code} - {e.message}")
+        return paypal_error_response(e)
+        
     except Exception as e:
         logger.error(f"Error capturing PayPal order with state: {str(e)}", exc_info=True)
-        raise HTTPException(status_code=500, detail=str(e))
+        return JSONResponse(
+            status_code=500,
+            content={
+                "success": False,
+                "error_code": "INTERNAL_ERROR",
+                "error_message": str(e),
+                "error_details": {},
+                "user_message": "An unexpected error occurred. Please contact support."
+            }
+        )
 
 
 @router.post("/cancel")
@@ -467,9 +624,23 @@ async def change_plan(
             "approval_url": result['approval_url'],
             "message": "Redirect to PayPal to complete plan change"
         }
+        
+    except PayPalError as e:
+        logger.error(f"PayPal error during plan change: {e.code} - {e.message}")
+        return paypal_error_response(e)
+        
     except Exception as e:
         logger.error(f"Error creating plan change order: {e}", exc_info=True)
-        raise HTTPException(status_code=500, detail=str(e))
+        return JSONResponse(
+            status_code=500,
+            content={
+                "success": False,
+                "error_code": "INTERNAL_ERROR",
+                "error_message": str(e),
+                "error_details": {},
+                "user_message": "Failed to change plan. Please try again."
+            }
+        )
 
 
 # PayPal Webhook Handler
