@@ -11,18 +11,18 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toPng } from 'html-to-image';
 
 /**
- * Combined Growth Charts Page
- * WHO Charts: Birth to 2 Years | CDC Charts: 2-20 Years
+ * Growth Charts - WHO (Birth-2yr) & CDC (2-20yr)
  * 
- * COORDINATE CALIBRATION (Jan 2026):
- * All coordinates measured from high-resolution PNG exports and converted to viewBox units.
- * WHO viewBox: 0 0 1122.5197 793.70074
- * CDC viewBox: 0 0 816 1056
+ * COORDINATE CALIBRATION (OCR-based, Jan 2026):
+ * Coordinates extracted via OCR from 2x rendered PNG images.
+ * Values converted to viewBox coordinates.
  */
 
-// ============== WHO CHARTS CONFIGURATION ==============
-// Calibrated from 2x resolution PNG analysis (2245x1587 -> divide by 2)
-// Grid boundaries: X 62-1076, Y 773(bottom)-94(top)
+// ============== WHO CHARTS ==============
+// ViewBox: 1122.5197 x 793.70074
+// OCR from 2245x1587 image (2x scale), divided by 2
+// X: Birth(0mo)=64, 12mo=324, 24mo=586 | Grid: 54-610
+// Y: 2kg=418, 10kg=228, 16kg=83 | Grid: 418(bottom)-76(top)
 const WHO_CHARTS = {
   boys: {
     weight: {
@@ -30,21 +30,21 @@ const WHO_CHARTS = {
       label: "Weight-for-age",
       yLabel: "Weight (kg)",
       viewBox: "0 0 1122.5197 793.70074",
-      grid: { xMin: 62, xMax: 1076, yMin: 773, yMax: 94, ageMin: 0, ageMax: 24, valueMin: 2, valueMax: 16 }
+      grid: { xMin: 54, xMax: 610, yMin: 418, yMax: 76, ageMin: 0, ageMax: 24, valueMin: 2, valueMax: 16 }
     },
     length: {
       file: "/charts/who/boys_length_0_2.svg",
       label: "Length-for-age",
       yLabel: "Length (cm)",
       viewBox: "0 0 1122.5197 793.70074",
-      grid: { xMin: 62, xMax: 1076, yMin: 773, yMax: 94, ageMin: 0, ageMax: 24, valueMin: 45, valueMax: 95 }
+      grid: { xMin: 54, xMax: 610, yMin: 418, yMax: 76, ageMin: 0, ageMax: 24, valueMin: 45, valueMax: 95 }
     },
     bmi: {
       file: "/charts/who/boys_bmi_0_2.svg",
       label: "BMI-for-age",
       yLabel: "BMI (kg/m²)",
       viewBox: "0 0 1122.5197 793.70074",
-      grid: { xMin: 62, xMax: 1076, yMin: 773, yMax: 94, ageMin: 0, ageMax: 24, valueMin: 10, valueMax: 22 }
+      grid: { xMin: 54, xMax: 610, yMin: 418, yMax: 76, ageMin: 0, ageMax: 24, valueMin: 10, valueMax: 22 }
     }
   },
   girls: {
@@ -53,34 +53,37 @@ const WHO_CHARTS = {
       label: "Weight-for-age",
       yLabel: "Weight (kg)",
       viewBox: "0 0 1122.5197 793.70074",
-      grid: { xMin: 62, xMax: 1076, yMin: 773, yMax: 94, ageMin: 0, ageMax: 24, valueMin: 2, valueMax: 16 }
+      grid: { xMin: 54, xMax: 610, yMin: 418, yMax: 76, ageMin: 0, ageMax: 24, valueMin: 2, valueMax: 16 }
     },
     length: {
       file: "/charts/who/girls_length_0_2.svg",
       label: "Length-for-age",
       yLabel: "Length (cm)",
       viewBox: "0 0 1122.5197 793.70074",
-      grid: { xMin: 62, xMax: 1076, yMin: 773, yMax: 94, ageMin: 0, ageMax: 24, valueMin: 45, valueMax: 95 }
+      grid: { xMin: 54, xMax: 610, yMin: 418, yMax: 76, ageMin: 0, ageMax: 24, valueMin: 45, valueMax: 95 }
     },
     bmi: {
       file: "/charts/who/girls_bmi_0_2.svg",
       label: "BMI-for-age",
       yLabel: "BMI (kg/m²)",
       viewBox: "0 0 1122.5197 793.70074",
-      grid: { xMin: 62, xMax: 1076, yMin: 773, yMax: 94, ageMin: 0, ageMax: 24, valueMin: 10, valueMax: 22 }
+      grid: { xMin: 54, xMax: 610, yMin: 418, yMax: 76, ageMin: 0, ageMax: 24, valueMin: 10, valueMax: 22 }
     },
     headCircumference: {
       file: "/charts/who/girls_head_circumference_0_2.svg",
       label: "Head Circumference",
       yLabel: "HC (cm)",
       viewBox: "0 0 1122.5197 793.70074",
-      grid: { xMin: 62, xMax: 1076, yMin: 773, yMax: 94, ageMin: 0, ageMax: 24, valueMin: 32, valueMax: 52 }
+      grid: { xMin: 54, xMax: 610, yMin: 418, yMax: 76, ageMin: 0, ageMax: 24, valueMin: 32, valueMax: 52 }
     }
   }
 };
 
-// ============== CDC CHARTS CONFIGURATION ==============
-// Calibrated from 2x resolution PNG analysis (1632x2112 -> divide by 2)
+// ============== CDC CHARTS ==============
+// ViewBox: 816 x 1056
+// OCR from 1632x2112 image (2x scale), divided by 2
+// Stature-Weight: X: 2yr=95, 10yr=352, 20yr=610 | Stature Y: 80cm=382, 190cm=79 | Weight Y: 10kg=399, 105kg=163
+// BMI: X: 2yr=331, 10yr=574, 20yr=818 | Y: 12=933, 35=158
 const CDC_CHARTS = {
   boys: {
     statureWeight: {
@@ -90,13 +93,13 @@ const CDC_CHARTS = {
       measurements: {
         stature: {
           yLabel: "Stature (cm)",
-          // X: 260-766, Y: 506(80cm)-54(190cm)
-          grid: { xMin: 260, xMax: 766, yMin: 506, yMax: 54, ageMin: 2, ageMax: 20, valueMin: 80, valueMax: 190 }
+          // Using OCR label positions: 2yr=95, 20yr=610, 80cm=382, 190cm=79
+          grid: { xMin: 95, xMax: 610, yMin: 382, yMax: 79, ageMin: 2, ageMax: 20, valueMin: 80, valueMax: 190 }
         },
         weight: {
           yLabel: "Weight (kg)",
-          // X: 260-766, Y: 1008(10kg)-652(100kg)
-          grid: { xMin: 260, xMax: 766, yMin: 1008, yMax: 652, ageMin: 2, ageMax: 20, valueMin: 10, valueMax: 100 }
+          // Using OCR label positions: 10kg=399, 105kg=163
+          grid: { xMin: 95, xMax: 610, yMin: 399, yMax: 163, ageMin: 2, ageMax: 20, valueMin: 10, valueMax: 105 }
         }
       }
     },
@@ -107,8 +110,9 @@ const CDC_CHARTS = {
       measurements: {
         bmi: {
           yLabel: "BMI (kg/m²)",
-          // X: 80-454, Y: 430(12)-50(35)
-          grid: { xMin: 80, xMax: 454, yMin: 430, yMax: 50, ageMin: 2, ageMax: 20, valueMin: 12, valueMax: 35 }
+          // Using OCR: 2yr=331, 20yr=818, 12=933, 35=158
+          // Note: These exceed viewBox but match the actual rendered chart positions
+          grid: { xMin: 331, xMax: 818, yMin: 933, yMax: 158, ageMin: 2, ageMax: 20, valueMin: 12, valueMax: 35 }
         }
       }
     }
@@ -121,11 +125,11 @@ const CDC_CHARTS = {
       measurements: {
         stature: {
           yLabel: "Stature (cm)",
-          grid: { xMin: 260, xMax: 766, yMin: 506, yMax: 54, ageMin: 2, ageMax: 20, valueMin: 80, valueMax: 190 }
+          grid: { xMin: 95, xMax: 610, yMin: 382, yMax: 79, ageMin: 2, ageMax: 20, valueMin: 80, valueMax: 190 }
         },
         weight: {
           yLabel: "Weight (kg)",
-          grid: { xMin: 260, xMax: 766, yMin: 1008, yMax: 652, ageMin: 2, ageMax: 20, valueMin: 10, valueMax: 100 }
+          grid: { xMin: 95, xMax: 610, yMin: 399, yMax: 163, ageMin: 2, ageMax: 20, valueMin: 10, valueMax: 105 }
         }
       }
     },
@@ -136,7 +140,7 @@ const CDC_CHARTS = {
       measurements: {
         bmi: {
           yLabel: "BMI (kg/m²)",
-          grid: { xMin: 80, xMax: 454, yMin: 430, yMax: 50, ageMin: 2, ageMax: 20, valueMin: 12, valueMax: 35 }
+          grid: { xMin: 331, xMax: 818, yMin: 933, yMax: 158, ageMin: 2, ageMax: 20, valueMin: 12, valueMax: 35 }
         }
       }
     }
@@ -164,11 +168,9 @@ const WHOChartsSection = ({ gender }) => {
     if (age < grid.ageMin || age > grid.ageMax) return null;
     if (val < grid.valueMin || val > grid.valueMax) return null;
     
-    // X: linear interpolation (age)
     const xRatio = (age - grid.ageMin) / (grid.ageMax - grid.ageMin);
     const x = grid.xMin + xRatio * (grid.xMax - grid.xMin);
     
-    // Y: linear interpolation (value) - yMin is at bottom (higher pixel), yMax at top (lower pixel)
     const yRatio = (val - grid.valueMin) / (grid.valueMax - grid.valueMin);
     const y = grid.yMin - yRatio * (grid.yMin - grid.yMax);
     
@@ -321,11 +323,9 @@ const CDCChartsSection = ({ gender }) => {
     if (age < grid.ageMin || age > grid.ageMax) return null;
     if (val < grid.valueMin || val > grid.valueMax) return null;
     
-    // X: linear interpolation (age)
     const xRatio = (age - grid.ageMin) / (grid.ageMax - grid.ageMin);
     const x = grid.xMin + xRatio * (grid.xMax - grid.xMin);
     
-    // Y: linear interpolation (value)
     const yRatio = (val - grid.valueMin) / (grid.valueMax - grid.valueMin);
     const y = grid.yMin - yRatio * (grid.yMin - grid.yMax);
     
@@ -452,7 +452,7 @@ const CDCChartsSection = ({ gender }) => {
           {isStatureWeightChart ? (
             <div className="grid grid-cols-2 gap-2">
               <div><Label className="text-xs">Stature (cm) <span className="text-blue-600">●</span></Label><Input type="number" step="0.1" min="0" value={newEntry.stature} onChange={e => setNewEntry({...newEntry, stature: e.target.value})} className="h-9 font-mono text-sm" placeholder="80-190" data-testid="cdc-stature-input" /></div>
-              <div><Label className="text-xs">Weight (kg) <span className="text-red-600">●</span></Label><Input type="number" step="0.1" min="0" value={newEntry.weight} onChange={e => setNewEntry({...newEntry, weight: e.target.value})} className="h-9 font-mono text-sm" placeholder="10-100" data-testid="cdc-weight-input" /></div>
+              <div><Label className="text-xs">Weight (kg) <span className="text-red-600">●</span></Label><Input type="number" step="0.1" min="0" value={newEntry.weight} onChange={e => setNewEntry({...newEntry, weight: e.target.value})} className="h-9 font-mono text-sm" placeholder="10-105" data-testid="cdc-weight-input" /></div>
             </div>
           ) : (
             <div><Label className="text-xs">BMI (kg/m²)</Label><Input type="number" step="0.1" min="0" value={newEntry.bmi} onChange={e => setNewEntry({...newEntry, bmi: e.target.value})} className="h-9 font-mono text-sm" placeholder="12-35" data-testid="cdc-bmi-input" /></div>
