@@ -352,7 +352,7 @@ const GrowthChartPage = () => {
         <CardContent className="space-y-3">
           <div className="grid grid-cols-2 gap-2">
             <Button variant={chartType === "WHO" ? "default" : "outline"} onClick={() => setChartType("WHO")} className="text-xs h-9" data-testid="who-btn">WHO (0-24m)</Button>
-            <Button variant={chartType === "CDC" ? "default" : "outline"} onClick={() => { setChartType("CDC"); if (activeChart === 'hc' || activeChart === 'bmi') setActiveChart('weight'); }} className="text-xs h-9" data-testid="cdc-btn">CDC (2-20y)</Button>
+            <Button variant={chartType === "CDC" ? "default" : "outline"} onClick={() => { setChartType("CDC"); if (activeChart === 'hc') setActiveChart('weight'); }} className="text-xs h-9" data-testid="cdc-btn">CDC (2-20y)</Button>
           </div>
           <div className="grid grid-cols-2 gap-2">
             <Button variant={gender === "male" ? "default" : "outline"} onClick={() => setGender("male")} className={`text-xs h-9 ${gender === 'male' ? 'bg-blue-600 hover:bg-blue-700' : ''}`} data-testid="male-btn">Boys</Button>
