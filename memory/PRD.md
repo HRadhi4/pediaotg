@@ -91,6 +91,26 @@ Build a full SaaS-style web app "Pediatrics on the Go" with:
 
 ## Recent Changes (January 16, 2026)
 
+### Session 12 Updates (January 28, 2026)
+- ✅ **PayPal Service Rebuilt from Scratch**:
+  - Completely rewrote `/app/backend/services/paypal_service.py` for cleaner Emergent deployment
+  - Uses `FRONTEND_URL` environment variable dynamically for return/cancel URLs
+  - Removed hardcoded URLs - now builds callback URLs from env vars at runtime
+  - Added comprehensive `verify_credentials()` endpoint for deployment debugging
+  - Clean error handling with informative error messages
+  - Live credentials configured: Mode=live, API=api-m.paypal.com
+  
+- ✅ **Children Drugs Page UI Fixes**:
+  - Fixed text wrapping issue in calculated dose display by adding `whitespace-nowrap` and `flex-shrink-0`
+  - Increased frequency badge size from `text-[9px]` to `text-sm` to match NICU styling
+  - Changed frequency badge styling to blue pill design: `bg-blue-100 text-blue-700 px-2 py-0.5 rounded`
+  - Both NICU and Children Drugs pages now have consistent UI
+  
+- ✅ **Deployment Configuration Fixes**:
+  - Fixed `.gitignore` to allow `.env` files for deployment (removed lines blocking `*.env`)
+  - Added `peds-go.emergent.host` to CORS origins in `server.py`
+  - Removed hardcoded `PAYPAL_RETURN_URL` and `PAYPAL_CANCEL_URL` from `.env`
+
 ### Session 11 Updates (Current - January 21, 2026)
 - ✅ **Nomogram Pinch-to-Zoom (react-zoom-pan-pinch)**:
   - Replaced button-based zoom controls (+/- buttons) with modern touch-friendly zoom
