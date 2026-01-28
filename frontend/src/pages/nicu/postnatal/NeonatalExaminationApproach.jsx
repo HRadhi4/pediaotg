@@ -142,7 +142,7 @@ const NeonatalExaminationApproach = () => {
           title="Hypospadias"
           management={[
             "Renal Ultrasound",
-            "Dr Tahera follow up after ultrasound",
+            "Postnatal consultant clinic follow up after ultrasound",
             "Counsel mom: Do NOT circumcise",
             "Pediatric Surgery follow up"
           ]}
@@ -236,7 +236,7 @@ const NeonatalExaminationApproach = () => {
           title="Ear Tag & Preauricular Sinus"
           management={[
             "Renal Ultrasound",
-            "Follow up Dr Tahera after ultrasound"
+            "Follow up Postnatal consultant clinic after ultrasound"
           ]}
           aapGuideline={
             <div className="space-y-2">
@@ -388,7 +388,7 @@ const NeonatalExaminationApproach = () => {
           title="Sacral Dimple"
           management={[
             "Spine ultrasound",
-            "Follow up Dr Tahera after ultrasound"
+            "Follow up Postnatal consultant clinic after ultrasound"
           ]}
           aapGuideline={
             <div className="space-y-2">
@@ -409,7 +409,7 @@ const NeonatalExaminationApproach = () => {
         <FindingItem 
           title="Murmur Grade 1-2 (Soft)"
           management={[
-            "Follow up Dr Tahera in 3 weeks"
+            "Follow up Postnatal consultant clinic in 3 weeks"
           ]}
           aapGuideline={
             <div className="space-y-2">
@@ -474,7 +474,7 @@ const NeonatalExaminationApproach = () => {
           title="Low Birth Weight - AGA (Preterm)"
           management={[
             "LBW Formula + EBM (expressed breast milk)",
-            "Follow up Dr Tahera in 2-3 weeks",
+            "Follow up Postnatal consultant clinic in 2-3 weeks",
             "Daily weight monitoring",
             "HGT (Heel-prick Glucose Testing) protocol"
           ]}
@@ -494,7 +494,7 @@ const NeonatalExaminationApproach = () => {
           title="Isolated Small Head Circumference (Microcephaly)"
           management={[
             "TORCH screening",
-            "Follow up Dr Tahera in 3 weeks"
+            "Follow up Postnatal consultant clinic in 3 weeks"
           ]}
           aapGuideline={
             <div className="space-y-2">
@@ -535,7 +535,7 @@ const NeonatalExaminationApproach = () => {
             "Vitamin D level",
             "TSH",
             "Bone profile (Ca, PO4, ALP)",
-            "Follow up Dr Tahera"
+            "Follow up Postnatal consultant clinic"
           ]}
           aapGuideline={
             <div className="space-y-2">
@@ -559,7 +559,7 @@ const NeonatalExaminationApproach = () => {
           management={[
             "Skull ultrasound",
             "Dermatology follow up",
-            "Follow up Dr Tahera"
+            "Follow up Postnatal consultant clinic"
           ]}
           aapGuideline={
             <div className="space-y-2">
@@ -845,7 +845,7 @@ const NeonatalExaminationApproach = () => {
             "TMS (Tandem Mass Spectrometry)",
             "UOA (Urine Organic Acids)",
             "Physiotherapy",
-            "Follow up Dr Tahera in 2-3 weeks"
+            "Follow up Postnatal consultant clinic in 2-3 weeks"
           ]}
           aapGuideline={
             <div className="space-y-2">
@@ -883,7 +883,7 @@ const NeonatalExaminationApproach = () => {
         <FindingItem 
           title="Neonatal Jaundice"
           management={[
-            "If ABO incompatibility: CBC and follow up in 1 month with Dr Tahera"
+            "If ABO incompatibility: CBC and follow up in 1 month with Postnatal consultant clinic"
           ]}
           aapGuideline={
             <div className="space-y-2">
@@ -901,7 +901,7 @@ const NeonatalExaminationApproach = () => {
         <FindingItem 
           title="Late Preterm (34-36+6 weeks)"
           management={[
-            "Follow up Dr Tahera in 3 weeks"
+            "Follow up Postnatal consultant clinic in 3 weeks"
           ]}
           aapGuideline={
             <div className="space-y-2">
@@ -920,7 +920,7 @@ const NeonatalExaminationApproach = () => {
           title="Single Umbilical Artery"
           management={[
             "Renal Ultrasound",
-            "Follow up Dr Tahera after ultrasound"
+            "Follow up Postnatal consultant clinic after ultrasound"
           ]}
           aapGuideline={
             <div className="space-y-2">
