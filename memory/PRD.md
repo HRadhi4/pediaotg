@@ -92,9 +92,19 @@ Build a full SaaS-style web app "Pediatrics on the Go" with:
 ## Recent Changes (January 16, 2026)
 
 ### Session 13 Updates (January 28, 2026 - Continued)
+- ✅ **Growth Chart Coordinate Fix (COMPLETED)**:
+  - **Root cause identified**: SVG internal `transform` matrix was not accounted for
+  - **WHO Charts**: Recalculated from SVG path analysis - X:148-984, Y:167(top)-669(bottom)
+  - **CDC Charts**: Recalculated from SVG path analysis
+    - Stature grid: X:83-546, Y:83(top/190cm)-382(bottom/80cm)
+    - Weight grid: X:83-546, Y:163(top/105kg)-702(bottom/10kg)
+    - BMI grid: X:42-562, Y:122(top/35)-714(bottom/12)
+  - **Testing verified**: 50th percentile points (0mo/3.3kg, 12mo/9.6kg, 24mo/12.2kg) align with 50th percentile curve
+  - **Removed obsolete files**: `/app/backend/routes/growth_charts.py` (PDF proxy no longer needed)
+  
 - ✅ **WHO Growth Charts Integration (Birth to 2 Years)**:
   - **7 WHO SVG Charts** in `/app/frontend/public/charts/who/`
-  - Coordinates calibrated from 2x PNG analysis: X 62-1076, Y 773(bottom)-94(top)
+  - Coordinates calibrated from SVG path analysis
   
 - ✅ **CDC Growth Charts Integration (2-20 Years)**:
   - **4 CDC SVG Charts** in `/app/frontend/public/charts/cdc/`
