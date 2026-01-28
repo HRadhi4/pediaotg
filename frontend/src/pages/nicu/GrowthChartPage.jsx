@@ -408,7 +408,7 @@ const GrowthChartPage = () => {
             <div><Label className="text-xs">Weight (kg)</Label><Input type="number" step="0.01" min="0" value={newEntry.weight} onChange={e => setNewEntry({...newEntry, weight: e.target.value})} className="h-9 font-mono text-sm" data-testid="weight-input" /></div>
             <div><Label className="text-xs">{isWHO ? 'Length' : 'Stature'} (cm)</Label><Input type="number" step="0.1" min="0" value={newEntry.length} onChange={e => setNewEntry({...newEntry, length: e.target.value})} className="h-9 font-mono text-sm" data-testid="length-input" /></div>
             <div><Label className="text-xs">Head Circ (cm)</Label><Input type="number" step="0.1" min="0" value={newEntry.hc} onChange={e => setNewEntry({...newEntry, hc: e.target.value})} className="h-9 font-mono text-sm" disabled={!isWHO} data-testid="hc-input" /></div>
-            <div><Label className="text-xs">BMI (kg/m²)</Label><Input type="number" step="0.1" min="0" value={newEntry.bmi} onChange={e => setNewEntry({...newEntry, bmi: e.target.value})} className="h-9 font-mono text-sm" disabled={!isWHO} data-testid="bmi-input" /></div>
+            <div><Label className="text-xs">BMI (kg/m²)</Label><Input type="number" step="0.1" min="0" value={newEntry.bmi} onChange={e => setNewEntry({...newEntry, bmi: e.target.value})} className="h-9 font-mono text-sm" data-testid="bmi-input" /></div>
           </div>
           <Button onClick={addEntry} className="w-full" size="sm" disabled={!newEntry.date || !newEntry.ageValue || (!newEntry.weight && !newEntry.length && !newEntry.hc && !newEntry.bmi)} data-testid="add-measurement-btn"><Plus className="h-4 w-4 mr-1" />Plot Data Point</Button>
         </CardContent>
