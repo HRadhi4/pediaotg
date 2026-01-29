@@ -42,9 +42,9 @@ const WHO_CHARTS = {
       label: "Length-for-age",
       yLabel: "Length (cm)",
       viewBox: "0 0 1122.5197 793.70074",
-      // Y: MAJOR gridlines at 5cm intervals - 95cm=211.46 (top), 55cm=624.01
-      // 45cm extrapolated: 624.01 + (55-45)*10.314 = 727.16
-      grid: { xMin: 147.76, xMax: 953.87, yMin: 727.16, yMax: 211.46, ageMin: 0, ageMax: 24, valueMin: 45, valueMax: 95 }
+      // Y: Chart boundary at 50cm = 675.33, major gridline 55cm = 624.01, 95cm = 211.46
+      // Using chart boundary as 50cm reference: yMin = 675.33 + 5*10.26 = 726.63
+      grid: { xMin: 147.76, xMax: 953.87, yMin: 726.63, yMax: 211.46, ageMin: 0, ageMax: 24, valueMin: 45, valueMax: 95 }
     },
     bmi: {
       file: "/charts/who/boys_bmi_0_2.svg",
