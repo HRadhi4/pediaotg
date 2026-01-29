@@ -104,6 +104,13 @@ const WHO_CHARTS = {
 // Coordinates extracted from SVG path analysis (Jan 2026):
 // - Stature-Weight chart: X=83-546 (age 2-20), Y varies by measurement
 // - BMI chart: X=42-562 (age 2-20), Y=122-714 (BMI 12-35)
+// ============== CDC CHARTS (2-20 years) ==============
+// ViewBox: 816 x 1056
+// CDC Weight-for-age has dual axes:
+// - X-axis: Age in years (2-20, with month subdivisions early on)
+// - Y-axis (left/right): Weight kg (10-110 kg)
+// - Top scale: Stature/height cm (75-195 cm) - reference only, not for plotting
+// Curves: Percentiles (3rd/5th, 10th, 25th, 50th, 75th, 85th, 90th, 95th, 97th)
 const CDC_CHARTS = {
   boys: {
     statureWeight: {
@@ -113,13 +120,15 @@ const CDC_CHARTS = {
       measurements: {
         stature: {
           yLabel: "Stature (cm)",
-          // Stature grid: X=83-546 (age), Y=382(80cm bottom) to 83(190cm top)
-          grid: { xMin: 83, xMax: 546, yMin: 382, yMax: 83, ageMin: 2, ageMax: 20, valueMin: 80, valueMax: 190 }
+          // Stature grid: Top scale (75-195 cm reference)
+          // X=83-546 (age 2-20 years), Y=382(75cm bottom) to 83(195cm top)
+          grid: { xMin: 83, xMax: 546, yMin: 382, yMax: 83, ageMin: 2, ageMax: 20, valueMin: 75, valueMax: 195 }
         },
         weight: {
           yLabel: "Weight (kg)",
-          // Weight grid: X=83-546 (age), Y=702(10kg bottom) to 163(105kg top)
-          grid: { xMin: 83, xMax: 546, yMin: 702, yMax: 163, ageMin: 2, ageMax: 20, valueMin: 10, valueMax: 105 }
+          // Weight grid: Left/right Y-axis (10-110 kg)
+          // X=83-546 (age 2-20 years), Y=702(10kg bottom) to 163(110kg top)
+          grid: { xMin: 83, xMax: 546, yMin: 702, yMax: 163, ageMin: 2, ageMax: 20, valueMin: 10, valueMax: 110 }
         }
       }
     },
@@ -144,11 +153,13 @@ const CDC_CHARTS = {
       measurements: {
         stature: {
           yLabel: "Stature (cm)",
-          grid: { xMin: 83, xMax: 546, yMin: 382, yMax: 83, ageMin: 2, ageMax: 20, valueMin: 80, valueMax: 190 }
+          // Stature grid: Top scale (75-195 cm reference)
+          grid: { xMin: 83, xMax: 546, yMin: 382, yMax: 83, ageMin: 2, ageMax: 20, valueMin: 75, valueMax: 195 }
         },
         weight: {
           yLabel: "Weight (kg)",
-          grid: { xMin: 83, xMax: 546, yMin: 702, yMax: 163, ageMin: 2, ageMax: 20, valueMin: 10, valueMax: 105 }
+          // Weight grid: Left/right Y-axis (10-110 kg)
+          grid: { xMin: 83, xMax: 546, yMin: 702, yMax: 163, ageMin: 2, ageMax: 20, valueMin: 10, valueMax: 110 }
         }
       }
     },
