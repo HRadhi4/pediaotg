@@ -106,11 +106,17 @@ const WHO_CHARTS = {
 // - BMI chart: X=42-562 (age 2-20), Y=122-714 (BMI 12-35)
 // ============== CDC CHARTS (2-20 years) ==============
 // ViewBox: 816 x 1056
-// CDC Weight-for-age has dual axes:
-// - X-axis: Age in years (2-20, with month subdivisions early on)
-// - Y-axis (left/right): Weight kg (10-110 kg)
-// - Top scale: Stature/height cm (75-195 cm) - reference only, not for plotting
-// Curves: Percentiles (3rd/5th, 10th, 25th, 50th, 75th, 85th, 90th, 95th, 97th)
+// 
+// CDC 2-20 years uses TWO chart types:
+// 1. Weight-for-age: Weight (kg) vs Age (years) - tracks weight gain over time
+// 2. BMI-for-age: BMI (kg/m²) vs Age (years) - primary screening for body fatness
+//
+// The stature_weight SVG file contains TWO charts on one page:
+// - Upper portion: Stature-for-age (cm vs age)
+// - Lower portion: Weight-for-age (kg vs age)
+//
+// Percentile curves: 3rd, 5th, 10th, 25th, 50th, 75th, 85th, 90th, 95th, 97th
+// BMI interpretation: <5th=underweight, 85th-95th=overweight, ≥95th=obesity
 const CDC_CHARTS = {
   boys: {
     statureWeight: {
@@ -120,15 +126,17 @@ const CDC_CHARTS = {
       measurements: {
         stature: {
           yLabel: "Stature (cm)",
-          // Stature grid: Top scale (75-195 cm reference)
-          // X=83-546 (age 2-20 years), Y=382(75cm bottom) to 83(195cm top)
+          // UPPER CHART: Stature-for-age
+          // X-axis: Age 2-20 years | Y-axis: Stature ~75-195 cm
+          // X=83-546 (age), Y=382(bottom ~75cm) to 83(top ~195cm)
           grid: { xMin: 83, xMax: 546, yMin: 382, yMax: 83, ageMin: 2, ageMax: 20, valueMin: 75, valueMax: 195 }
         },
         weight: {
           yLabel: "Weight (kg)",
-          // Weight grid: Left/right Y-axis (10-110 kg)
-          // X=83-546 (age 2-20 years), Y=702(10kg bottom) to 163(110kg top)
-          grid: { xMin: 83, xMax: 546, yMin: 702, yMax: 163, ageMin: 2, ageMax: 20, valueMin: 10, valueMax: 110 }
+          // LOWER CHART: Weight-for-age
+          // X-axis: Age 2-20 years | Y-axis: Weight ~10-100 kg
+          // X=83-546 (age), Y=702(bottom 10kg) to 163(top ~100kg)
+          grid: { xMin: 83, xMax: 546, yMin: 702, yMax: 163, ageMin: 2, ageMax: 20, valueMin: 10, valueMax: 100 }
         }
       }
     },
@@ -139,8 +147,11 @@ const CDC_CHARTS = {
       measurements: {
         bmi: {
           yLabel: "BMI (kg/m²)",
-          // BMI grid: X=42-562 (age 2-20), Y=714(12 bottom) to 122(35 top)
-          grid: { xMin: 42, xMax: 562, yMin: 714, yMax: 122, ageMin: 2, ageMax: 20, valueMin: 12, valueMax: 35 }
+          // BMI-for-age chart
+          // X-axis: Age 2-20 years | Y-axis: BMI ~13-40 kg/m²
+          // BMI = weight_kg / (height_m)²
+          // X=42-562 (age 2-20), Y=714(bottom ~13) to 122(top ~40)
+          grid: { xMin: 42, xMax: 562, yMin: 714, yMax: 122, ageMin: 2, ageMax: 20, valueMin: 13, valueMax: 40 }
         }
       }
     }
@@ -153,13 +164,13 @@ const CDC_CHARTS = {
       measurements: {
         stature: {
           yLabel: "Stature (cm)",
-          // Stature grid: Top scale (75-195 cm reference)
+          // UPPER CHART: Stature-for-age
           grid: { xMin: 83, xMax: 546, yMin: 382, yMax: 83, ageMin: 2, ageMax: 20, valueMin: 75, valueMax: 195 }
         },
         weight: {
           yLabel: "Weight (kg)",
-          // Weight grid: Left/right Y-axis (10-110 kg)
-          grid: { xMin: 83, xMax: 546, yMin: 702, yMax: 163, ageMin: 2, ageMax: 20, valueMin: 10, valueMax: 110 }
+          // LOWER CHART: Weight-for-age
+          grid: { xMin: 83, xMax: 546, yMin: 702, yMax: 163, ageMin: 2, ageMax: 20, valueMin: 10, valueMax: 100 }
         }
       }
     },
@@ -170,7 +181,8 @@ const CDC_CHARTS = {
       measurements: {
         bmi: {
           yLabel: "BMI (kg/m²)",
-          grid: { xMin: 42, xMax: 562, yMin: 714, yMax: 122, ageMin: 2, ageMax: 20, valueMin: 12, valueMax: 35 }
+          // BMI-for-age chart
+          grid: { xMin: 42, xMax: 562, yMin: 714, yMax: 122, ageMin: 2, ageMax: 20, valueMin: 13, valueMax: 40 }
         }
       }
     }
