@@ -58,10 +58,9 @@ const WHO_CHARTS = {
       label: "Head Circumference",
       yLabel: "HC (cm)",
       viewBox: "0 0 791 558",
-      // Transform: matrix(1.041796, 0, 0, -0.959881, -1, -27)
-      // X: Month 0 = 105.98, Month 24 = 668.66
-      // Y: 52cm = 104.98 (top), 31cm = 467.22 (bottom)
-      grid: { xMin: 105.98, xMax: 668.66, yMin: 467.22, yMax: 104.98, ageMin: 0, ageMax: 24, valueMin: 31, valueMax: 52 }
+      // Y: 21 major gridlines from 32cm (Y=467.22) to 52cm (Y=104.94)
+      // Spacing: 18.11 pixels per cm
+      grid: { xMin: 105.98, xMax: 668.66, yMin: 467.22, yMax: 104.94, ageMin: 0, ageMax: 24, valueMin: 32, valueMax: 52 }
     }
   },
   girls: {
