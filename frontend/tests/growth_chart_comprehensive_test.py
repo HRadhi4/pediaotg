@@ -214,7 +214,7 @@ class GrowthChartTester:
             "failed": 0,
             "test_details": []
         }
-        self.base_url = "https://pedimetrics.preview.emergentagent.com"
+        self.base_url = "https://growth-chart-pro.preview.emergentagent.com"
     
     async def login(self, page):
         """Login to the application"""
