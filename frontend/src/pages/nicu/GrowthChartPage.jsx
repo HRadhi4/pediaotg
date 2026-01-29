@@ -69,8 +69,8 @@ const WHO_CHARTS = {
       label: "Weight-for-age",
       yLabel: "Weight (kg)",
       viewBox: "0 0 1122.5197 793.70074",
-      // Same Y coordinates as boys weight chart
-      grid: { xMin: 147.76, xMax: 953.87, yMin: 654.71, yMax: 180.71, ageMin: 0, ageMax: 24, valueMin: 2, valueMax: 16 }
+      // Y: 14 major gridlines from 2kg (Y=653.76) to 15kg (Y=181.66), 16kg extrapolated (Y=145.34)
+      grid: { xMin: 147.76, xMax: 953.87, yMin: 653.76, yMax: 145.34, ageMin: 0, ageMax: 24, valueMin: 2, valueMax: 16 }
     },
     length: {
       file: "/charts/who/girls_length_0_2.svg",
