@@ -53,6 +53,16 @@ const WHO_CHARTS = {
       viewBox: "0 0 1122.5197 793.70074",
       // Need to find major gridlines for BMI chart separately  
       grid: { xMin: 147.76, xMax: 953.87, yMin: 653.27, yMax: 182.20, ageMin: 0, ageMax: 24, valueMin: 10, valueMax: 22 }
+    },
+    headCircumference: {
+      file: "/charts/who/boys_hc_0_2.svg",
+      label: "Head Circumference",
+      yLabel: "HC (cm)",
+      viewBox: "0 0 791 558",
+      // Transform: matrix(1.041796, 0, 0, -0.959881, -1, -27)
+      // X: Month 0 = 105.98, Month 24 = 668.66
+      // Y: 52cm = 104.98 (top), 31cm = 467.22 (bottom)
+      grid: { xMin: 105.98, xMax: 668.66, yMin: 467.22, yMax: 104.98, ageMin: 0, ageMax: 24, valueMin: 31, valueMax: 52 }
     }
   },
   girls: {
