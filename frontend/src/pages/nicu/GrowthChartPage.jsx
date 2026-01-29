@@ -92,9 +92,9 @@ const WHO_CHARTS = {
       file: "/charts/who/girls_hc_0_2.svg",
       label: "Head Circumference",
       yLabel: "HC (cm)",
-      viewBox: "0 0 791 558",
-      // Same structure as boys HC - 21 major gridlines from 32cm to 52cm
-      grid: { xMin: 105.98, xMax: 668.66, yMin: 467.22, yMax: 104.94, ageMin: 0, ageMax: 24, valueMin: 32, valueMax: 52 }
+      viewBox: "0 0 1055.9599 780.10272",
+      // Scaled from boys HC viewBox (791x558) to girls viewBox (1055.96x780.10) - scale factors: X=1.335, Y=1.398
+      grid: { xMin: 141.48, xMax: 892.64, yMin: 653.19, yMax: 146.71, ageMin: 0, ageMax: 24, valueMin: 32, valueMax: 52 }
     }
   }
 };
