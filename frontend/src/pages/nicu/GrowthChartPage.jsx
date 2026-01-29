@@ -93,8 +93,9 @@ const WHO_CHARTS = {
       label: "Head Circumference",
       yLabel: "HC (cm)",
       viewBox: "0 0 1054.6667 744",
-      // This chart has different structure - needs separate calibration
-      grid: { xMin: 143, xMax: 858, yMin: 641, yMax: 154, ageMin: 0, ageMax: 24, valueMin: 32, valueMax: 52 }
+      // Chart area: Internal (132.72, 108.06) to (503.34, 694.62) with transform matrix(0,1.333,1.333,0,0,0)
+      // ViewBox: X 144.08-926.16 (0-24mo), Y 176.96-671.12 (52-32cm)
+      grid: { xMin: 144.08, xMax: 926.16, yMin: 671.12, yMax: 176.96, ageMin: 0, ageMax: 24, valueMin: 32, valueMax: 52 }
     }
   }
 };
