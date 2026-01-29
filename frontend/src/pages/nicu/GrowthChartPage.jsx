@@ -50,8 +50,8 @@ const WHO_CHARTS = {
       label: "BMI-for-age",
       yLabel: "BMI (kg/m²)",
       viewBox: "0 0 1122.5197 793.70074",
-      // Need to find major gridlines for BMI chart separately  
-      grid: { xMin: 147.76, xMax: 953.87, yMin: 653.27, yMax: 182.20, ageMin: 0, ageMax: 24, valueMin: 10, valueMax: 22 }
+      // Y: 12 major gridlines from 10 (Y=658.10) to 21 (Y=177.37), 22 extrapolated (Y=133.67)
+      grid: { xMin: 147.76, xMax: 953.87, yMin: 658.10, yMax: 133.67, ageMin: 0, ageMax: 24, valueMin: 10, valueMax: 22 }
     },
     headCircumference: {
       file: "/charts/who/boys_hc_0_2.svg",
