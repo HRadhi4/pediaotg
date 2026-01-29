@@ -69,7 +69,8 @@ const WHO_CHARTS = {
       label: "Length-for-age",
       yLabel: "Length (cm)",
       viewBox: "0 0 1122.5197 793.70074",
-      grid: { xMin: 147.76, xMax: 953.87, yMin: 651.70, yMax: 183.78, ageMin: 0, ageMax: 24, valueMin: 45, valueMax: 95 }
+      // Y: Same as boys length - 95cm=211.46, 45cm=727.16
+      grid: { xMin: 147.76, xMax: 953.87, yMin: 727.16, yMax: 211.46, ageMin: 0, ageMax: 24, valueMin: 45, valueMax: 95 }
     },
     bmi: {
       file: "/charts/who/girls_bmi_0_2.svg",
