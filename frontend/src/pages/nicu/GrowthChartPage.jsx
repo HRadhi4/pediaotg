@@ -22,10 +22,10 @@ import { toPng } from 'html-to-image';
 // ViewBox: 1122.5197 x 793.70074
 // PRECISE coordinates from SVG gridline analysis (Jan 2026):
 // - Internal SVG transform: matrix(1.3333333, 0, 0, 1.3333333, 0, 793.7008)
-// - 24 vertical gridlines from X=181.34 (month 1) to X=953.87 (month 24), spacing=33.58px
-// - CRITICAL: First gridline is month 1, NOT Birth. Birth is extrapolated backward.
-// - xMin = 147.76 (Birth/month 0, extrapolated: 181.34 - 33.58)
-// - xMax = 953.87 (month 24, last gridline)
+// - X-axis: 24 vertical gridlines from X=181.34 (month 1) to X=953.87 (month 24)
+//   Birth (month 0) extrapolated to X=147.76
+// - Y-axis: MAJOR gridlines (at whole kg/cm values) are DIFFERENT from minor gridlines
+// - CRITICAL FIX: Use MAJOR gridline positions for yMin/yMax
 const WHO_CHARTS = {
   boys: {
     weight: {
@@ -33,25 +33,25 @@ const WHO_CHARTS = {
       label: "Weight-for-age",
       yLabel: "Weight (kg)",
       viewBox: "0 0 1122.5197 793.70074",
-      // X: Birth at 147.76 (extrapolated), gridlines at months 1-24
-      // Y: 75 horizontal gridlines from 166.70 (16kg) to 668.80 (2kg)
-      grid: { xMin: 147.76, xMax: 953.87, yMin: 668.80, yMax: 166.70, ageMin: 0, ageMax: 24, valueMin: 2, valueMax: 16 }
+      // X: Birth=147.76, Month24=953.87
+      // Y: MAJOR gridlines at 1kg intervals - 16kg=180.27 (top), 2kg=655.23 (bottom)
+      grid: { xMin: 147.76, xMax: 953.87, yMin: 655.23, yMax: 180.27, ageMin: 0, ageMax: 24, valueMin: 2, valueMax: 16 }
     },
     length: {
       file: "/charts/who/boys_length_0_2.svg",
       label: "Length-for-age",
       yLabel: "Length (cm)",
       viewBox: "0 0 1122.5197 793.70074",
-      // Y: 49 horizontal gridlines from 170.21 (95cm) to 665.27 (45cm)
-      grid: { xMin: 147.76, xMax: 953.87, yMin: 665.27, yMax: 170.21, ageMin: 0, ageMax: 24, valueMin: 45, valueMax: 95 }
+      // Need to find major gridlines for length chart separately
+      grid: { xMin: 147.76, xMax: 953.87, yMin: 651.70, yMax: 183.78, ageMin: 0, ageMax: 24, valueMin: 45, valueMax: 95 }
     },
     bmi: {
       file: "/charts/who/boys_bmi_0_2.svg",
       label: "BMI-for-age",
       yLabel: "BMI (kg/m²)",
       viewBox: "0 0 1122.5197 793.70074",
-      // Y: 58 horizontal gridlines from 168.63 (22) to 666.84 (10)
-      grid: { xMin: 147.76, xMax: 953.87, yMin: 666.84, yMax: 168.63, ageMin: 0, ageMax: 24, valueMin: 10, valueMax: 22 }
+      // Need to find major gridlines for BMI chart separately  
+      grid: { xMin: 147.76, xMax: 953.87, yMin: 653.27, yMax: 182.20, ageMin: 0, ageMax: 24, valueMin: 10, valueMax: 22 }
     }
   },
   girls: {
@@ -60,24 +60,22 @@ const WHO_CHARTS = {
       label: "Weight-for-age",
       yLabel: "Weight (kg)",
       viewBox: "0 0 1122.5197 793.70074",
-      // Y: 70 horizontal gridlines from 167.14 (16kg) to 668.28 (2kg)
-      grid: { xMin: 147.76, xMax: 953.87, yMin: 668.28, yMax: 167.14, ageMin: 0, ageMax: 24, valueMin: 2, valueMax: 16 }
+      // Same Y coordinates as boys weight chart
+      grid: { xMin: 147.76, xMax: 953.87, yMin: 654.71, yMax: 180.71, ageMin: 0, ageMax: 24, valueMin: 2, valueMax: 16 }
     },
     length: {
       file: "/charts/who/girls_length_0_2.svg",
       label: "Length-for-age",
       yLabel: "Length (cm)",
       viewBox: "0 0 1122.5197 793.70074",
-      // Y: 49 horizontal gridlines from 170.21 (95cm) to 665.27 (45cm)
-      grid: { xMin: 147.76, xMax: 953.87, yMin: 665.27, yMax: 170.21, ageMin: 0, ageMax: 24, valueMin: 45, valueMax: 95 }
+      grid: { xMin: 147.76, xMax: 953.87, yMin: 651.70, yMax: 183.78, ageMin: 0, ageMax: 24, valueMin: 45, valueMax: 95 }
     },
     bmi: {
       file: "/charts/who/girls_bmi_0_2.svg",
       label: "BMI-for-age",
       yLabel: "BMI (kg/m²)",
       viewBox: "0 0 1122.5197 793.70074",
-      // Y: 58 horizontal gridlines from 168.63 (22) to 666.84 (10)
-      grid: { xMin: 147.76, xMax: 953.87, yMin: 666.84, yMax: 168.63, ageMin: 0, ageMax: 24, valueMin: 10, valueMax: 22 }
+      grid: { xMin: 147.76, xMax: 953.87, yMin: 653.27, yMax: 182.20, ageMin: 0, ageMax: 24, valueMin: 10, valueMax: 22 }
     },
     headCircumference: {
       file: "/charts/who/girls_head_circumference_0_2.svg",
@@ -85,7 +83,7 @@ const WHO_CHARTS = {
       yLabel: "HC (cm)",
       viewBox: "0 0 1054.6667 744",
       // This chart has different structure - needs separate calibration
-      grid: { xMin: 143, xMax: 858, yMin: 655, yMax: 140, ageMin: 0, ageMax: 24, valueMin: 32, valueMax: 52 }
+      grid: { xMin: 143, xMax: 858, yMin: 641, yMax: 154, ageMin: 0, ageMax: 24, valueMin: 32, valueMax: 52 }
     }
   }
 };
