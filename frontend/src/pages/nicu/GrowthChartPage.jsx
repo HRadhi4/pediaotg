@@ -270,9 +270,10 @@ const WHOChartsSection = ({ gender }) => {
                 >
                   <image 
                     href={currentChart.file} 
-                    width="100%" 
-                    height="100%" 
-                    preserveAspectRatio="xMidYMid meet"
+                    x="0"
+                    y="0"
+                    width={currentChart.viewBox.split(' ')[2]}
+                    height={currentChart.viewBox.split(' ')[3]}
                   />
                   {currentEntries.map((entry, index) => entry.coords && (
                     <g key={entry.id}>
