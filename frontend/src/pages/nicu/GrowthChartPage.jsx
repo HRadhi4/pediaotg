@@ -420,36 +420,44 @@ const CDCChartsSection = ({ gender }) => {
           <div ref={chartContainerRef} className={`relative border rounded-lg overflow-hidden ${cdcGender === 'boys' ? 'bg-blue-50' : 'bg-pink-50'} h-[400px]`}>
             <TransformWrapper initialScale={1} minScale={1} maxScale={5} centerOnInit doubleClick={{ mode: "reset" }} panning={{ velocityDisabled: true }} wheel={{ step: 0.1 }}>
               <TransformComponent wrapperClass="!w-full !h-full" contentClass="!w-full !h-full flex items-center justify-center">
-                <div className="relative w-full h-full flex items-center justify-center">
-                  <img src={currentChart.file} alt={`CDC ${currentChart.label} Chart`} className="max-w-full max-h-full object-contain" data-testid="cdc-growth-chart-svg" />
-                  <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox={currentChart.viewBox} preserveAspectRatio="xMidYMid meet" style={{ mixBlendMode: 'multiply' }}>
-                    {isStatureWeightChart ? (
-                      currentEntries.map((entry, index) => (
-                        <g key={entry.id}>
-                          {entry.statureCoords && (
-                            <g>
-                              <circle cx={entry.statureCoords.x} cy={entry.statureCoords.y} r="8" fill="#2563eb" stroke="white" strokeWidth="2" />
-                              <text x={entry.statureCoords.x} y={entry.statureCoords.y + 3} textAnchor="middle" fill="white" fontSize="8" fontWeight="bold">S{index + 1}</text>
-                            </g>
-                          )}
-                          {entry.weightCoords && (
-                            <g>
-                              <circle cx={entry.weightCoords.x} cy={entry.weightCoords.y} r="8" fill="#dc2626" stroke="white" strokeWidth="2" />
-                              <text x={entry.weightCoords.x} y={entry.weightCoords.y + 3} textAnchor="middle" fill="white" fontSize="8" fontWeight="bold">W{index + 1}</text>
-                            </g>
-                          )}
-                        </g>
-                      ))
-                    ) : (
-                      currentEntries.map((entry, index) => entry.bmiCoords && (
-                        <g key={entry.id}>
-                          <circle cx={entry.bmiCoords.x} cy={entry.bmiCoords.y} r="8" fill={cdcGender === 'boys' ? '#2563eb' : '#db2777'} stroke="white" strokeWidth="2" />
-                          <text x={entry.bmiCoords.x} y={entry.bmiCoords.y + 3} textAnchor="middle" fill="white" fontSize="9" fontWeight="bold">{index + 1}</text>
-                        </g>
-                      ))
-                    )}
-                  </svg>
-                </div>
+                <svg 
+                  viewBox={currentChart.viewBox} 
+                  className="max-w-full max-h-full"
+                  preserveAspectRatio="xMidYMid meet"
+                  data-testid="cdc-growth-chart-svg"
+                >
+                  <image 
+                    href={currentChart.file} 
+                    width="100%" 
+                    height="100%" 
+                    preserveAspectRatio="xMidYMid meet"
+                  />
+                  {isStatureWeightChart ? (
+                    currentEntries.map((entry, index) => (
+                      <g key={entry.id}>
+                        {entry.statureCoords && (
+                          <g>
+                            <circle cx={entry.statureCoords.x} cy={entry.statureCoords.y} r="8" fill="#2563eb" stroke="white" strokeWidth="2" />
+                            <text x={entry.statureCoords.x} y={entry.statureCoords.y + 3} textAnchor="middle" fill="white" fontSize="8" fontWeight="bold">S{index + 1}</text>
+                          </g>
+                        )}
+                        {entry.weightCoords && (
+                          <g>
+                            <circle cx={entry.weightCoords.x} cy={entry.weightCoords.y} r="8" fill="#dc2626" stroke="white" strokeWidth="2" />
+                            <text x={entry.weightCoords.x} y={entry.weightCoords.y + 3} textAnchor="middle" fill="white" fontSize="8" fontWeight="bold">W{index + 1}</text>
+                          </g>
+                        )}
+                      </g>
+                    ))
+                  ) : (
+                    currentEntries.map((entry, index) => entry.bmiCoords && (
+                      <g key={entry.id}>
+                        <circle cx={entry.bmiCoords.x} cy={entry.bmiCoords.y} r="8" fill={cdcGender === 'boys' ? '#2563eb' : '#db2777'} stroke="white" strokeWidth="2" />
+                        <text x={entry.bmiCoords.x} y={entry.bmiCoords.y + 3} textAnchor="middle" fill="white" fontSize="9" fontWeight="bold">{index + 1}</text>
+                      </g>
+                    ))
+                  )}
+                </svg>
               </TransformComponent>
             </TransformWrapper>
           </div>
