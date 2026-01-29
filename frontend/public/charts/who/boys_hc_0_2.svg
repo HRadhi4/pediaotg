@@ -413,7 +413,7 @@
 </g>
 </defs>
 <g id="surface1">
-<rect x="0" y="0" width="791" height="558" style="fill:rgb(100%,100%,100%);fill-opacity:1;stroke:none;"/>
+<rect x="0" y="0" width="791" height="558" style="fill:none;stroke:none;"/>
 <path style="fill-rule:nonzero;fill:rgb(0%,59.608459%,85.882568%);fill-opacity:1;stroke-width:0.705;stroke-linecap:round;stroke-linejoin:miter;stroke:rgb(100%,100%,100%);stroke-opacity:1;stroke-miterlimit:8;" d="M 113.460938 49.378906 L 546 49.378906 L 546 742.621094 L 113.460938 742.621094 Z M 113.460938 49.378906 " transform="matrix(0,1,1,0,-1,-27)"/>
 <path style="fill-rule:nonzero;fill:rgb(100%,100%,100%);fill-opacity:1;stroke-width:0.705;stroke-linecap:round;stroke-linejoin:miter;stroke:rgb(100%,100%,100%);stroke-opacity:1;stroke-miterlimit:8;" d="M 132.71875 108.058594 L 503.339844 108.058594 L 503.339844 694.621094 L 132.71875 694.621094 Z M 132.71875 108.058594 " transform="matrix(0,1,1,0,-1,-27)"/>
 <g style="fill:rgb(0%,0%,0%);fill-opacity:1;">
