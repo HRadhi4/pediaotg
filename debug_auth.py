@@ -2,7 +2,7 @@ import requests
 import json
 
 # Test the user token authentication
-base_url = "https://growth-chart-pro.preview.emergentagent.com"
+base_url = "https://pedicharts.preview.emergentagent.com"
 
 # First, create a user and get token
 signup_data = {
