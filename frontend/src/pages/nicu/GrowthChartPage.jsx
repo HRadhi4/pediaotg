@@ -252,29 +252,25 @@ const WHOChartsSection = ({ gender }) => {
           <div ref={chartContainerRef} className={`relative border rounded-lg overflow-hidden ${whoGender === 'boys' ? 'bg-blue-50' : 'bg-pink-50'} h-[350px]`}>
             <TransformWrapper initialScale={1} minScale={1} maxScale={5} centerOnInit doubleClick={{ mode: "reset" }} panning={{ velocityDisabled: true }} wheel={{ step: 0.1 }}>
               <TransformComponent wrapperClass="!w-full !h-full" contentClass="!w-full !h-full flex items-center justify-center">
-                <div className="relative" style={{ width: 'fit-content', height: 'fit-content' }}>
-                  <object 
-                    type="image/svg+xml" 
-                    data={currentChart.file} 
-                    aria-label={`WHO ${currentChart.label} Chart`}
-                    className="max-w-full max-h-[330px]"
-                    style={{ display: 'block' }}
-                    data-testid="who-growth-chart-svg"
-                  />
-                  <svg 
-                    className="absolute top-0 left-0 pointer-events-none" 
-                    viewBox={currentChart.viewBox} 
+                <svg 
+                  viewBox={currentChart.viewBox} 
+                  className="max-w-full max-h-full"
+                  preserveAspectRatio="xMidYMid meet"
+                  data-testid="who-growth-chart-svg"
+                >
+                  <image 
+                    href={currentChart.file} 
+                    width="100%" 
+                    height="100%" 
                     preserveAspectRatio="xMidYMid meet"
-                    style={{ width: '100%', height: '100%' }}
-                  >
-                    {currentEntries.map((entry, index) => entry.coords && (
-                      <g key={entry.id}>
-                        <circle cx={entry.coords.x} cy={entry.coords.y} r="6" fill={whoGender === 'boys' ? '#2563eb' : '#db2777'} stroke="white" strokeWidth="2" />
-                        <text x={entry.coords.x} y={entry.coords.y + 3} textAnchor="middle" fill="white" fontSize="7" fontWeight="bold">{index + 1}</text>
-                      </g>
-                    ))}
-                  </svg>
-                </div>
+                  />
+                  {currentEntries.map((entry, index) => entry.coords && (
+                    <g key={entry.id}>
+                      <circle cx={entry.coords.x} cy={entry.coords.y} r="8" fill={whoGender === 'boys' ? '#2563eb' : '#db2777'} stroke="white" strokeWidth="2" />
+                      <text x={entry.coords.x} y={entry.coords.y + 4} textAnchor="middle" fill="white" fontSize="10" fontWeight="bold">{index + 1}</text>
+                    </g>
+                  ))}
+                </svg>
               </TransformComponent>
             </TransformWrapper>
           </div>
