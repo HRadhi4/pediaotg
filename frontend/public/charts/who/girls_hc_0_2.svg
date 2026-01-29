@@ -30,7 +30,7 @@
     <path
        id="path1"
        d="M 25.98,0.029999 H 586.02 V 792 H 25.98 Z"
-       style="fill:none;fill-opacity:0;fill-rule:nonzero;stroke:none"
+       style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
        transform="matrix(0,1.3929411,1.3333333,0,0,-34.931363)"
        clip-path="url(#clipPath2)" />
     <path
@@ -41,7 +41,7 @@
     <path
        id="path4"
        d="M 132.72,108.06 H 503.34 V 694.62 H 132.72 Z"
-       style="fill:none;fill-opacity:0;fill-rule:nonzero;stroke:#ffffff;stroke-width:0.705;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:8;stroke-dasharray:none;stroke-opacity:1"
+       style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:#ffffff;stroke-width:0.705;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:8;stroke-dasharray:none;stroke-opacity:1"
        transform="matrix(0,1.3333333,1.3333333,0,0,0)" />
     <text
        id="text4"
