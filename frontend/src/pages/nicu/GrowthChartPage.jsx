@@ -89,12 +89,12 @@ const WHO_CHARTS = {
       grid: { xMin: 147.76, xMax: 953.87, yMin: 658.10, yMax: 133.67, ageMin: 0, ageMax: 24, valueMin: 10, valueMax: 22 }
     },
     headCircumference: {
-      file: "/charts/who/girls_head_circumference_0_2.svg",
+      file: "/charts/who/girls_hc_0_2.svg",
       label: "Head Circumference",
       yLabel: "HC (cm)",
-      viewBox: "0 0 1054.6667 744",
-      // Empirically adjusted coordinates based on visual gridline positions
-      grid: { xMin: 134, xMax: 916, yMin: 678, yMax: 184, ageMin: 0, ageMax: 24, valueMin: 32, valueMax: 52 }
+      viewBox: "0 0 791 558",
+      // Same structure as boys HC - 21 major gridlines from 32cm to 52cm
+      grid: { xMin: 105.98, xMax: 668.66, yMin: 467.22, yMax: 104.94, ageMin: 0, ageMax: 24, valueMin: 32, valueMax: 52 }
     }
   }
 };
