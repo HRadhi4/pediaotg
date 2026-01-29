@@ -252,9 +252,21 @@ const WHOChartsSection = ({ gender }) => {
           <div ref={chartContainerRef} className={`relative border rounded-lg overflow-hidden ${whoGender === 'boys' ? 'bg-blue-50' : 'bg-pink-50'} h-[350px]`}>
             <TransformWrapper initialScale={1} minScale={1} maxScale={5} centerOnInit doubleClick={{ mode: "reset" }} panning={{ velocityDisabled: true }} wheel={{ step: 0.1 }}>
               <TransformComponent wrapperClass="!w-full !h-full" contentClass="!w-full !h-full flex items-center justify-center">
-                <div className="relative w-full h-full flex items-center justify-center">
-                  <img src={currentChart.file} alt={`WHO ${currentChart.label} Chart`} className="max-w-full max-h-full object-contain" data-testid="who-growth-chart-svg" />
-                  <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox={currentChart.viewBox} preserveAspectRatio="xMidYMid meet" style={{ mixBlendMode: 'multiply' }}>
+                <div className="relative" style={{ width: 'fit-content', height: 'fit-content' }}>
+                  <object 
+                    type="image/svg+xml" 
+                    data={currentChart.file} 
+                    aria-label={`WHO ${currentChart.label} Chart`}
+                    className="max-w-full max-h-[330px]"
+                    style={{ display: 'block' }}
+                    data-testid="who-growth-chart-svg"
+                  />
+                  <svg 
+                    className="absolute top-0 left-0 pointer-events-none" 
+                    viewBox={currentChart.viewBox} 
+                    preserveAspectRatio="xMidYMid meet"
+                    style={{ width: '100%', height: '100%' }}
+                  >
                     {currentEntries.map((entry, index) => entry.coords && (
                       <g key={entry.id}>
                         <circle cx={entry.coords.x} cy={entry.coords.y} r="6" fill={whoGender === 'boys' ? '#2563eb' : '#db2777'} stroke="white" strokeWidth="2" />
