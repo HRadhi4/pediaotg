@@ -126,17 +126,17 @@ const CDC_CHARTS = {
       measurements: {
         stature: {
           yLabel: "Stature (cm)",
-          // UPPER CHART: Stature-for-age (cm scale)
-          // VERIFIED from user's correct plot: 80cm@y=300, 100cm@y=209, 120cm@y=118
-          // X: Age 2 at x=165, Age 20 at x=723
-          grid: { xMin: 165, xMax: 723, yMin: 300, yMax: 118, ageMin: 2, ageMax: 20, valueMin: 80, valueMax: 120 }
+          // UPPER CHART: Stature-for-age
+          // VERIFIED: 80cm@y=695, 100cm@y=567, 120cm@y=439
+          // X: Age 2@x=143, Age 20@x=760
+          grid: { xMin: 143, xMax: 760, yMin: 695, yMax: 439, ageMin: 2, ageMax: 20, valueMin: 80, valueMax: 120 }
         },
         weight: {
           yLabel: "Weight (kg)",
-          // LOWER CHART: Weight-for-age (kg scale)
-          // VERIFIED from user's correct plot: 10kg@y=424, 50kg@y=347, 100kg@y=251
-          // X: Age 2 at x=165, Age 20 at x=723
-          grid: { xMin: 165, xMax: 723, yMin: 424, yMax: 251, ageMin: 2, ageMax: 20, valueMin: 10, valueMax: 100 }
+          // LOWER CHART: Weight-for-age
+          // VERIFIED: 10kg@y=1015, 50kg@y=744, 100kg@y=405
+          // X: Age 2@x=143, Age 20@x=760
+          grid: { xMin: 143, xMax: 760, yMin: 1015, yMax: 405, ageMin: 2, ageMax: 20, valueMin: 10, valueMax: 100 }
         }
       }
     },
@@ -147,8 +147,8 @@ const CDC_CHARTS = {
       measurements: {
         bmi: {
           yLabel: "BMI (kg/m²)",
-          // BMI-for-age chart - uses same X coordinates
-          grid: { xMin: 165, xMax: 723, yMin: 424, yMax: 118, ageMin: 2, ageMax: 20, valueMin: 12, valueMax: 35 }
+          // BMI-for-age chart
+          grid: { xMin: 143, xMax: 760, yMin: 900, yMax: 200, ageMin: 2, ageMax: 20, valueMin: 12, valueMax: 35 }
         }
       }
     }
@@ -161,13 +161,11 @@ const CDC_CHARTS = {
       measurements: {
         stature: {
           yLabel: "Stature (cm)",
-          // UPPER CHART: Same coordinates as boys
-          grid: { xMin: 165, xMax: 723, yMin: 300, yMax: 118, ageMin: 2, ageMax: 20, valueMin: 80, valueMax: 120 }
+          grid: { xMin: 143, xMax: 760, yMin: 695, yMax: 439, ageMin: 2, ageMax: 20, valueMin: 80, valueMax: 120 }
         },
         weight: {
           yLabel: "Weight (kg)",
-          // LOWER CHART: Same coordinates as boys
-          grid: { xMin: 165, xMax: 723, yMin: 424, yMax: 251, ageMin: 2, ageMax: 20, valueMin: 10, valueMax: 100 }
+          grid: { xMin: 143, xMax: 760, yMin: 1015, yMax: 405, ageMin: 2, ageMax: 20, valueMin: 10, valueMax: 100 }
         }
       }
     },
