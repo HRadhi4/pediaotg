@@ -182,8 +182,8 @@ const CDC_CHARTS = {
       measurements: {
         bmi: {
           yLabel: "BMI (kg/m²)",
-          // BMI-for-age chart
-          grid: { xMin: 42, xMax: 562, yMin: 714, yMax: 122, ageMin: 2, ageMax: 20, valueMin: 13, valueMax: 40 }
+          // BMI-for-age chart - needs calibration (using same X as stature/weight)
+          grid: { xMin: 118, xMax: 738, yMin: 923, yMax: 122, ageMin: 2, ageMax: 20, valueMin: 12, valueMax: 35 }
         }
       }
     }
