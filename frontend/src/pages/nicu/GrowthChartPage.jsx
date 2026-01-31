@@ -179,7 +179,7 @@ const CDC_CHARTS = {
         bmi: {
           yLabel: "BMI (kg/m²)",
           // BMI-for-age chart - uses same X coordinates
-          grid: { xMin: 165, xMax: 723, yMin: 900, yMax: 200, ageMin: 2, ageMax: 20, valueMin: 12, valueMax: 35 }
+          grid: { xMin: 165, xMax: 723, yMin: 424, yMax: 118, ageMin: 2, ageMax: 20, valueMin: 12, valueMax: 35 }
         }
       }
     }
