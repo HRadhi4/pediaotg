@@ -127,16 +127,16 @@ const CDC_CHARTS = {
         stature: {
           yLabel: "Stature (cm)",
           // UPPER CHART: Stature-for-age (cm scale)
-          // VERIFIED: 100cm at y=250, chart area y=100-450
+          // VERIFIED from user's correct plot: 80cm@y=300, 100cm@y=209, 120cm@y=118
           // X: Age 2 at x=165, Age 20 at x=723
-          grid: { xMin: 165, xMax: 723, yMin: 350, yMax: 150, ageMin: 2, ageMax: 20, valueMin: 80, valueMax: 120 }
+          grid: { xMin: 165, xMax: 723, yMin: 300, yMax: 118, ageMin: 2, ageMax: 20, valueMin: 80, valueMax: 120 }
         },
         weight: {
           yLabel: "Weight (kg)",
           // LOWER CHART: Weight-for-age (kg scale)
-          // VERIFIED: 50kg at y=750, chart area y=500-950
+          // VERIFIED from user's correct plot: 10kg@y=424, 50kg@y=347, 100kg@y=251
           // X: Age 2 at x=165, Age 20 at x=723
-          grid: { xMin: 165, xMax: 723, yMin: 950, yMax: 500, ageMin: 2, ageMax: 20, valueMin: 10, valueMax: 100 }
+          grid: { xMin: 165, xMax: 723, yMin: 424, yMax: 251, ageMin: 2, ageMax: 20, valueMin: 10, valueMax: 100 }
         }
       }
     },
@@ -148,7 +148,7 @@ const CDC_CHARTS = {
         bmi: {
           yLabel: "BMI (kg/m²)",
           // BMI-for-age chart - uses same X coordinates
-          grid: { xMin: 165, xMax: 723, yMin: 900, yMax: 200, ageMin: 2, ageMax: 20, valueMin: 12, valueMax: 35 }
+          grid: { xMin: 165, xMax: 723, yMin: 424, yMax: 118, ageMin: 2, ageMax: 20, valueMin: 12, valueMax: 35 }
         }
       }
     }
@@ -162,12 +162,12 @@ const CDC_CHARTS = {
         stature: {
           yLabel: "Stature (cm)",
           // UPPER CHART: Same coordinates as boys
-          grid: { xMin: 165, xMax: 723, yMin: 350, yMax: 150, ageMin: 2, ageMax: 20, valueMin: 80, valueMax: 120 }
+          grid: { xMin: 165, xMax: 723, yMin: 300, yMax: 118, ageMin: 2, ageMax: 20, valueMin: 80, valueMax: 120 }
         },
         weight: {
           yLabel: "Weight (kg)",
           // LOWER CHART: Same coordinates as boys
-          grid: { xMin: 165, xMax: 723, yMin: 950, yMax: 500, ageMin: 2, ageMax: 20, valueMin: 10, valueMax: 100 }
+          grid: { xMin: 165, xMax: 723, yMin: 424, yMax: 251, ageMin: 2, ageMax: 20, valueMin: 10, valueMax: 100 }
         }
       }
     },
