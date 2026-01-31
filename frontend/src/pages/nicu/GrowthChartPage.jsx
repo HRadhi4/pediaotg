@@ -133,10 +133,11 @@ const CDC_CHARTS = {
         },
         weight: {
           yLabel: "Weight (kg)",
-          // LOWER CHART: Weight-for-age
-          // X-axis: Age 2-20 years | Y-axis: Weight ~10-100 kg
-          // X=83-546 (age), Y=702(bottom 10kg) to 163(top ~100kg)
-          grid: { xMin: 83, xMax: 546, yMin: 702, yMax: 163, ageMin: 2, ageMax: 20, valueMin: 10, valueMax: 100 }
+          // LOWER CHART: Weight-for-age (separate chart area below stature)
+          // X-axis: Age 2-20 years | Y-axis: Weight 10-105 kg
+          // Note: Left axis shows 10-35 kg, right axis extends to 105 kg
+          // X=83-546 (age), Y=702(bottom 10kg) to 430(top ~105kg)
+          grid: { xMin: 83, xMax: 546, yMin: 702, yMax: 430, ageMin: 2, ageMax: 20, valueMin: 10, valueMax: 105 }
         }
       }
     },
@@ -169,8 +170,8 @@ const CDC_CHARTS = {
         },
         weight: {
           yLabel: "Weight (kg)",
-          // LOWER CHART: Weight-for-age
-          grid: { xMin: 83, xMax: 546, yMin: 702, yMax: 163, ageMin: 2, ageMax: 20, valueMin: 10, valueMax: 100 }
+          // LOWER CHART: Weight-for-age (separate chart area below stature)
+          grid: { xMin: 83, xMax: 546, yMin: 702, yMax: 430, ageMin: 2, ageMax: 20, valueMin: 10, valueMax: 105 }
         }
       }
     },
