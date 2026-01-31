@@ -126,21 +126,19 @@ const CDC_CHARTS = {
       measurements: {
         stature: {
           yLabel: "Stature (cm)",
-          // UPPER CHART: Stature-for-age (cm scale on LEFT)
-          // VERIFIED coordinates from iterative SVG analysis (Jan 2026):
-          // Test data: Age 2/100cm, Age 4/120cm - confirmed accurate
-          // X: Age 2 at x=165, Age 20 at x=724
-          // Y: 80cm at y=502, 160cm at y=205
-          grid: { xMin: 165, xMax: 724, yMin: 502, yMax: 205, ageMin: 2, ageMax: 20, valueMin: 80, valueMax: 160 }
+          // UPPER CHART: Stature-for-age (cm scale)
+          // VERIFIED from SVG pixel analysis (Jan 2026):
+          // Reference: 80cm at y=774, 100cm at y=425, 120cm at y=76
+          // X: Age 2 at x=165, Age 20 at x=723
+          grid: { xMin: 165, xMax: 723, yMin: 774, yMax: 76, ageMin: 2, ageMax: 20, valueMin: 80, valueMax: 120 }
         },
         weight: {
           yLabel: "Weight (kg)",
-          // LOWER CHART: Weight-for-age (kg scale on LEFT)
-          // VERIFIED coordinates from iterative SVG analysis (Jan 2026):
-          // Test data: Age 2/20kg, Age 4/40kg - confirmed accurate
-          // X: Age 2 at x=165, Age 20 at x=724
-          // Y: 10kg at y=843, 40kg at y=623
-          grid: { xMin: 165, xMax: 724, yMin: 843, yMax: 623, ageMin: 2, ageMax: 20, valueMin: 10, valueMax: 40 }
+          // LOWER CHART: Weight-for-age (kg scale)
+          // VERIFIED from SVG pixel analysis (Jan 2026):
+          // Reference: 10kg at y=966, 50kg at y=800, 100kg at y=592
+          // X: Age 2 at x=165, Age 20 at x=723
+          grid: { xMin: 165, xMax: 723, yMin: 966, yMax: 592, ageMin: 2, ageMax: 20, valueMin: 10, valueMax: 100 }
         }
       }
     },
@@ -151,9 +149,8 @@ const CDC_CHARTS = {
       measurements: {
         bmi: {
           yLabel: "BMI (kg/m²)",
-          // BMI-for-age chart - uses same X coordinates as stature/weight
-          // Y-axis needs separate calibration for BMI scale
-          grid: { xMin: 165, xMax: 724, yMin: 843, yMax: 205, ageMin: 2, ageMax: 20, valueMin: 12, valueMax: 35 }
+          // BMI-for-age chart - uses same X coordinates
+          grid: { xMin: 165, xMax: 723, yMin: 900, yMax: 200, ageMin: 2, ageMax: 20, valueMin: 12, valueMax: 35 }
         }
       }
     }
@@ -166,13 +163,13 @@ const CDC_CHARTS = {
       measurements: {
         stature: {
           yLabel: "Stature (cm)",
-          // UPPER CHART: Stature-for-age (same verified coordinates as boys)
-          grid: { xMin: 165, xMax: 724, yMin: 502, yMax: 205, ageMin: 2, ageMax: 20, valueMin: 80, valueMax: 160 }
+          // UPPER CHART: Stature-for-age (same coordinates as boys)
+          grid: { xMin: 165, xMax: 723, yMin: 774, yMax: 76, ageMin: 2, ageMax: 20, valueMin: 80, valueMax: 120 }
         },
         weight: {
           yLabel: "Weight (kg)",
-          // LOWER CHART: Weight-for-age (same verified coordinates as boys)
-          grid: { xMin: 165, xMax: 724, yMin: 843, yMax: 623, ageMin: 2, ageMax: 20, valueMin: 10, valueMax: 40 }
+          // LOWER CHART: Weight-for-age (same coordinates as boys)
+          grid: { xMin: 165, xMax: 723, yMin: 966, yMax: 592, ageMin: 2, ageMax: 20, valueMin: 10, valueMax: 100 }
         }
       }
     },
