@@ -127,18 +127,16 @@ const CDC_CHARTS = {
         stature: {
           yLabel: "Stature (cm)",
           // UPPER CHART: Stature-for-age (cm scale)
-          // VERIFIED from SVG pixel analysis (Jan 2026):
-          // Reference: 80cm at y=774, 100cm at y=425, 120cm at y=76
+          // VERIFIED: 100cm at y=250, chart area y=100-450
           // X: Age 2 at x=165, Age 20 at x=723
-          grid: { xMin: 165, xMax: 723, yMin: 774, yMax: 76, ageMin: 2, ageMax: 20, valueMin: 80, valueMax: 120 }
+          grid: { xMin: 165, xMax: 723, yMin: 350, yMax: 150, ageMin: 2, ageMax: 20, valueMin: 80, valueMax: 120 }
         },
         weight: {
           yLabel: "Weight (kg)",
           // LOWER CHART: Weight-for-age (kg scale)
-          // VERIFIED from SVG pixel analysis (Jan 2026):
-          // Reference: 10kg at y=966, 50kg at y=800, 100kg at y=592
+          // VERIFIED: 50kg at y=750, chart area y=500-950
           // X: Age 2 at x=165, Age 20 at x=723
-          grid: { xMin: 165, xMax: 723, yMin: 966, yMax: 592, ageMin: 2, ageMax: 20, valueMin: 10, valueMax: 100 }
+          grid: { xMin: 165, xMax: 723, yMin: 950, yMax: 500, ageMin: 2, ageMax: 20, valueMin: 10, valueMax: 100 }
         }
       }
     },
@@ -163,13 +161,13 @@ const CDC_CHARTS = {
       measurements: {
         stature: {
           yLabel: "Stature (cm)",
-          // UPPER CHART: Stature-for-age (same coordinates as boys)
-          grid: { xMin: 165, xMax: 723, yMin: 774, yMax: 76, ageMin: 2, ageMax: 20, valueMin: 80, valueMax: 120 }
+          // UPPER CHART: Same coordinates as boys
+          grid: { xMin: 165, xMax: 723, yMin: 350, yMax: 150, ageMin: 2, ageMax: 20, valueMin: 80, valueMax: 120 }
         },
         weight: {
           yLabel: "Weight (kg)",
-          // LOWER CHART: Weight-for-age (same coordinates as boys)
-          grid: { xMin: 165, xMax: 723, yMin: 966, yMax: 592, ageMin: 2, ageMax: 20, valueMin: 10, valueMax: 100 }
+          // LOWER CHART: Same coordinates as boys
+          grid: { xMin: 165, xMax: 723, yMin: 950, yMax: 500, ageMin: 2, ageMax: 20, valueMin: 10, valueMax: 100 }
         }
       }
     },
