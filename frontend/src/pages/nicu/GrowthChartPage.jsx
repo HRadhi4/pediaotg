@@ -126,20 +126,20 @@ const CDC_CHARTS = {
       measurements: {
         stature: {
           yLabel: "Stature (cm)",
-          // UPPER CHART: Stature-for-age (cm scale on LEFT, inches on right)
-          // X-axis: Age 2-20 years | Y-axis: Stature 77-195 cm
-          // Coordinates based on SVG analysis: left Y-axis shows cm values
-          // X=83-546 (age 2-20), Y=382(bottom 77cm) to 83(top 195cm)
-          grid: { xMin: 83, xMax: 546, yMin: 382, yMax: 83, ageMin: 2, ageMax: 20, valueMin: 77, valueMax: 195 }
+          // UPPER CHART: Stature-for-age (cm scale on LEFT)
+          // Verified coordinates from SVG→PNG analysis (Jan 2026):
+          // X: Age 2 at x=118, Age 20 at x=738
+          // Y: 80cm at y=290, 140cm at y=51 (slope: -3.98 px/cm)
+          grid: { xMin: 118, xMax: 738, yMin: 290, yMax: 51, ageMin: 2, ageMax: 20, valueMin: 80, valueMax: 140 }
         },
         weight: {
           yLabel: "Weight (kg)",
-          // LOWER CHART: Weight-for-age (kg scale on LEFT, lb on right)
-          // X-axis: Age 2-20 years | Y-axis: Weight 10-35 kg (left axis limit)
-          // NOTE: The weight chart has non-linear Y scaling!
-          // Left axis (ages 2-11): 10-35 kg | Right axis (ages 15-20): up to 105 kg
-          // X=83-546 (age 2-20), Y=702(bottom 10kg) to 430(top 35kg)
-          grid: { xMin: 83, xMax: 546, yMin: 702, yMax: 430, ageMin: 2, ageMax: 20, valueMin: 10, valueMax: 35 }
+          // LOWER CHART: Weight-for-age (kg scale on LEFT)
+          // Verified coordinates from SVG→PNG analysis (Jan 2026):
+          // X: Age 2 at x=118, Age 20 at x=738
+          // Y: 10kg at y=923, 35kg at y=552 (slope: -14.84 px/kg)
+          // NOTE: Weight >35kg will plot above visible chart area for young ages
+          grid: { xMin: 118, xMax: 738, yMin: 923, yMax: 552, ageMin: 2, ageMax: 20, valueMin: 10, valueMax: 35 }
         }
       }
     },
@@ -150,11 +150,9 @@ const CDC_CHARTS = {
       measurements: {
         bmi: {
           yLabel: "BMI (kg/m²)",
-          // BMI-for-age chart
-          // X-axis: Age 2-20 years | Y-axis: BMI ~13-40 kg/m²
-          // BMI = weight_kg / (height_m)²
-          // X=42-562 (age 2-20), Y=714(bottom ~13) to 122(top ~40)
-          grid: { xMin: 42, xMax: 562, yMin: 714, yMax: 122, ageMin: 2, ageMax: 20, valueMin: 13, valueMax: 40 }
+          // BMI-for-age chart - needs calibration
+          // X-axis: Age 2-20 years | Y-axis: BMI ~12-35 kg/m²
+          grid: { xMin: 118, xMax: 738, yMin: 923, yMax: 122, ageMin: 2, ageMax: 20, valueMin: 12, valueMax: 35 }
         }
       }
     }
@@ -167,13 +165,13 @@ const CDC_CHARTS = {
       measurements: {
         stature: {
           yLabel: "Stature (cm)",
-          // UPPER CHART: Stature-for-age (cm scale)
-          grid: { xMin: 83, xMax: 546, yMin: 382, yMax: 83, ageMin: 2, ageMax: 20, valueMin: 77, valueMax: 195 }
+          // UPPER CHART: Stature-for-age (same coordinates as boys)
+          grid: { xMin: 118, xMax: 738, yMin: 290, yMax: 51, ageMin: 2, ageMax: 20, valueMin: 80, valueMax: 140 }
         },
         weight: {
           yLabel: "Weight (kg)",
-          // LOWER CHART: Weight-for-age (kg scale, left axis 10-35kg)
-          grid: { xMin: 83, xMax: 546, yMin: 702, yMax: 430, ageMin: 2, ageMax: 20, valueMin: 10, valueMax: 35 }
+          // LOWER CHART: Weight-for-age (same coordinates as boys)
+          grid: { xMin: 118, xMax: 738, yMin: 923, yMax: 552, ageMin: 2, ageMax: 20, valueMin: 10, valueMax: 35 }
         }
       }
     },
