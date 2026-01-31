@@ -126,18 +126,20 @@ const CDC_CHARTS = {
       measurements: {
         stature: {
           yLabel: "Stature (cm)",
-          // UPPER CHART: Stature-for-age
-          // X-axis: Age 2-20 years | Y-axis: Stature ~75-195 cm
-          // X=83-546 (age), Y=382(bottom ~75cm) to 83(top ~195cm)
-          grid: { xMin: 83, xMax: 546, yMin: 382, yMax: 83, ageMin: 2, ageMax: 20, valueMin: 75, valueMax: 195 }
+          // UPPER CHART: Stature-for-age (cm scale on LEFT, inches on right)
+          // X-axis: Age 2-20 years | Y-axis: Stature 77-195 cm
+          // Coordinates based on SVG analysis: left Y-axis shows cm values
+          // X=83-546 (age 2-20), Y=382(bottom 77cm) to 83(top 195cm)
+          grid: { xMin: 83, xMax: 546, yMin: 382, yMax: 83, ageMin: 2, ageMax: 20, valueMin: 77, valueMax: 195 }
         },
         weight: {
           yLabel: "Weight (kg)",
-          // LOWER CHART: Weight-for-age (separate chart area below stature)
-          // X-axis: Age 2-20 years | Y-axis: Weight 10-105 kg
-          // Note: Left axis shows 10-35 kg, right axis extends to 105 kg
-          // X=83-546 (age), Y=702(bottom 10kg) to 430(top ~105kg)
-          grid: { xMin: 83, xMax: 546, yMin: 702, yMax: 430, ageMin: 2, ageMax: 20, valueMin: 10, valueMax: 105 }
+          // LOWER CHART: Weight-for-age (kg scale on LEFT, lb on right)
+          // X-axis: Age 2-20 years | Y-axis: Weight 10-35 kg (left axis limit)
+          // NOTE: The weight chart has non-linear Y scaling!
+          // Left axis (ages 2-11): 10-35 kg | Right axis (ages 15-20): up to 105 kg
+          // X=83-546 (age 2-20), Y=702(bottom 10kg) to 430(top 35kg)
+          grid: { xMin: 83, xMax: 546, yMin: 702, yMax: 430, ageMin: 2, ageMax: 20, valueMin: 10, valueMax: 35 }
         }
       }
     },
@@ -165,13 +167,13 @@ const CDC_CHARTS = {
       measurements: {
         stature: {
           yLabel: "Stature (cm)",
-          // UPPER CHART: Stature-for-age
-          grid: { xMin: 83, xMax: 546, yMin: 382, yMax: 83, ageMin: 2, ageMax: 20, valueMin: 75, valueMax: 195 }
+          // UPPER CHART: Stature-for-age (cm scale)
+          grid: { xMin: 83, xMax: 546, yMin: 382, yMax: 83, ageMin: 2, ageMax: 20, valueMin: 77, valueMax: 195 }
         },
         weight: {
           yLabel: "Weight (kg)",
-          // LOWER CHART: Weight-for-age (separate chart area below stature)
-          grid: { xMin: 83, xMax: 546, yMin: 702, yMax: 430, ageMin: 2, ageMax: 20, valueMin: 10, valueMax: 105 }
+          // LOWER CHART: Weight-for-age (kg scale, left axis 10-35kg)
+          grid: { xMin: 83, xMax: 546, yMin: 702, yMax: 430, ageMin: 2, ageMax: 20, valueMin: 10, valueMax: 35 }
         }
       }
     },
