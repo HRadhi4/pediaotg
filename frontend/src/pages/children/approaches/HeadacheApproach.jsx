@@ -15,7 +15,6 @@ const HeadacheApproach = ({ weight }) => {
       <CardHeader className="pb-2">
         <CardTitle className="text-base">Pediatric Headache Approach</CardTitle>
         <CardDescription className="text-xs">Complete algorithm with diagnosis and management</CardDescription>
-        <p className="text-[10px] text-blue-600 mt-1 font-medium">Reference: SMC Neuro Guideline</p>
       </CardHeader>
       <CardContent className="space-y-3">
 
