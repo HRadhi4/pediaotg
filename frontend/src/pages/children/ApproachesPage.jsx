@@ -86,6 +86,7 @@ const ApproachesPage = ({ onBack }) => {
     { id: "iron", label: "Iron Toxicity", keywords: ["iron", "ferrous", "sulfate", "gluconate", "fumarate", "deferoxamine", "desferal", "chelation", "poisoning", "overdose", "elemental iron"] },
     { id: "iem", label: "IEM Emergencies", keywords: ["iem", "inborn error", "metabolism", "propionic", "methylmalonic", "mma", "msud", "maple syrup", "vlcad", "cpt", "gsd", "glycogen", "urea cycle", "hyperammonemia", "ammonia", "carnitine", "organic acidemia", "metabolic", "fatty acid", "hypoglycemia", "lactic acidosis", "mcad"] },
     { id: "nsaid", label: "NSAID Toxicity", keywords: ["nsaid", "ibuprofen", "naproxen", "diclofenac", "advil", "motrin", "aleve", "mefenamic", "ponstan", "indomethacin", "ketorolac", "poisoning", "overdose"] },
+    { id: "pards", label: "PARDS", keywords: ["pards", "ards", "respiratory distress", "palicc", "oxygenation index", "oi", "osi", "hfov", "oscillatory", "lung protective", "peep", "ecmo", "hypoxemia"] },
     { id: "sepsis", label: "Septic Shock", keywords: ["sepsis", "septic", "shock", "cold", "warm", "vasopressor", "fluid", "bolus"] },
     { id: "asthma", label: "Status Asthmaticus", keywords: ["asthma", "wheeze", "bronchospasm", "salbutamol", "ventolin", "magnesium", "respiratory"] },
     { id: "seizure", label: "Status Epilepticus", keywords: ["seizure", "epilepsy", "convulsion", "phenytoin", "diazepam", "midazolam", "levetiracetam"] },
