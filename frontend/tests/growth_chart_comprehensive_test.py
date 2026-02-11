@@ -214,7 +214,7 @@ class GrowthChartTester:
             "failed": 0,
             "test_details": []
         }
-        self.base_url = "https://pediatric-tools-3.preview.emergentagent.com"
+        self.base_url = "https://child-airway.preview.emergentagent.com"
     
     async def login(self, page):
         """Login to the application"""
