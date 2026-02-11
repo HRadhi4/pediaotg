@@ -52,6 +52,7 @@ import {
   IEMEmergencyApproach,
   BloodGasApproach,
   PARDSApproach,
+  MechanicalVentilationApproach,
 } from "./approaches";
 
 const ApproachesPage = ({ onBack }) => {
