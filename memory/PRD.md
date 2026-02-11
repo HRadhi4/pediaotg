@@ -38,6 +38,11 @@ A pediatric medical calculator app featuring:
   - Removed Option 1 (infusion path)
   - Shows "Over 30 mins, preferably in central line"
   - Clear max correction limits displayed
+- **3% NaCl Method for Mild Hyponatremia (Feb 2026 - Fixed):**
+  - Maintenance and deficit are now shown **separately** (not summed)
+  - **Option A: With Bolus** - 1/2 deficit as bolus + 1/2 deficit as IV over 24hrs
+  - **Option B: Without Bolus** - Full deficit over 24hrs (shows hourly rate)
+  - Added N.B. note: "If the patient is already on maintenance fluids, the above deficit correction should be added to the maintenance amount"
 
 ### Children's Section - Mechanical Ventilation Approach (Feb 2026)
 - **New Approach Added:** Mechanical Ventilation in PICU
