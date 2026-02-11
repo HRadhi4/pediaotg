@@ -27,3 +27,4 @@ export { default as MetabolicEmergencyApproach } from './MetabolicEmergencyAppro
 export { default as IEMEmergencyApproach } from './IEMEmergencyApproach';
 export { default as BloodGasApproach } from './BloodGasApproach';
 export { default as PARDSApproach } from './PARDSApproach';
+export { default as MechanicalVentilationApproach } from './MechanicalVentilationApproach';
