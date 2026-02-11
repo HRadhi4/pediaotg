@@ -7,6 +7,7 @@ Build and refine a comprehensive pediatric medical calculator application with:
 - Accurate data point plotting on charts
 - Save chart as PNG functionality
 - Intuitive UI for switching between chart types, genders, and measurements
+- Electrolyte correction calculators with dose rounding feature
 
 ## User's Preferred Language
 English
@@ -17,14 +18,26 @@ A pediatric medical calculator app featuring:
 - Children's ward tools
 - Drug formulary
 - Admin dashboard with PayPal subscription
+- Electrolyte correction calculators
 
 ## What's Been Implemented
 
 ### Growth Charts (Jan 2026)
 - **WHO Charts (0-2 years):** Weight, Length, BMI, Head Circumference for both Boys and Girls
+- **CDC Charts (2-20 years):** Stature-for-age, Weight-for-age - CALIBRATED
 - **SVG Rendering Fix:** Changed from `<img>` + `<svg>` overlay to single `<svg>` with embedded `<image>` to fix alignment issues
-- **Coordinate Calibration:** Most WHO charts calibrated via SVG gridline analysis
-- **Girls HC Chart:** Replaced with new user-provided SVG (viewBox: 0 0 1055.9599 780.10272)
+- **Coordinate Calibration:** All charts calibrated via iterative image analysis method
+
+### Electrolyte Calculator Enhancements (Feb 2026)
+- **Round dose to 5s Toggle:** When enabled, slider snaps to multiples of 5 for easier clinical dilution
+  - Slider min rounds DOWN to nearest 5
+  - Slider max rounds UP to nearest 5
+  - Step changes to 5
+  - Shows "(adjusted from X - Y)" to indicate original range
+- **Severe Hyponatremia Update:** Simplified to show only 3% Saline Bolus treatment
+  - Removed Option 1 (infusion path)
+  - Shows "Over 30 mins, preferably in central line"
+  - Clear max correction limits displayed
 
 ### Authentication
 - JWT-based authentication
@@ -43,63 +56,60 @@ A pediatric medical calculator app featuring:
     ├── public/
     │   └── charts/
     │       ├── who/   # WHO growth chart SVGs (calibrated)
-    │       └── cdc/   # CDC growth chart SVGs (NOT calibrated)
+    │       └── cdc/   # CDC growth chart SVGs (calibrated)
     └── src/
+        ├── components/
+        │   └── ElectrolytesDialog.jsx  # Electrolyte correction calculator
         └── pages/
             └── nicu/
                 └── GrowthChartPage.jsx  # Main chart component
 ```
 
 ## Key Files
-- `/app/frontend/src/pages/nicu/GrowthChartPage.jsx` - Growth chart logic and coordinates
-- `/app/frontend/public/charts/who/` - WHO SVG files
-- `/app/frontend/public/charts/cdc/` - CDC SVG files (need calibration)
 
-## Pending Issues (P0-P2)
+### ElectrolytesDialog.jsx
+- Location: `/app/frontend/src/components/ElectrolytesDialog.jsx`
+- Features:
+  - Calcium, Magnesium, Potassium, NaHCO3, Sodium, Phosphate calculations
+  - "Round dose to 5s" toggle for easier dilution
+  - IV/PO routes for Potassium
+  - Peripheral/Central line options
+  - Hyponatremia (Mild/Severe) and Hypernatremia (Nelson/Harriet Lane) methods
+
+### GrowthChartPage.jsx
+- Location: `/app/frontend/src/pages/nicu/GrowthChartPage.jsx`
+- Features:
+  - WHO charts (0-2 years)
+  - CDC charts (2-20 years)
+  - Pinch-to-zoom and panning
+  - Save as PNG
+  - Multiple measurement types
+
+## Prioritized Backlog
 
 ### P0 - Critical
-- Verify plotting accuracy for Girls Head Circumference (user verification pending)
+- None currently
 
 ### P1 - High Priority
-- Calibrate all CDC growth charts
-- PayPal production deployment testing
+- Add Salicylate (Aspirin) Toxicity approach
+- Deploy and test PayPal integration in production
 
 ### P2 - Medium Priority
-- NICU UI standardization verification
-- Numerical input `min="0"` audit
-- Refactor ElectrolytesDialog.jsx
-
-## Upcoming Tasks
-- Add Salicylate (Aspirin) Toxicity approach
-- Continue Drug Formulary review
-- PayPal webhook signature verification
+- Refactor ElectrolytesDialog.jsx (large component)
+- UI standardization of NICU approach components
+- Audit numerical inputs for missing min="0" attributes
 - Delete redundant file: `/app/frontend/src/pages/children/ElectrolytesInfusionsPage.jsx`
+- Add PayPal webhook signature verification
 
-## Future Tasks
+### P3 - Low Priority
 - Dark mode theme toggle
-- Tutorial/guided walkthrough for Blood Gas calculator
+- Blood Gas calculator tutorial
 
 ## Test Credentials
 - **Admin:** admin@pedotg.com / SMC159951
 - **Tester:** test@pedotg.com / SMC2000
 
-## Third-Party Integrations
-- `react-zoom-pan-pinch`: v3.7.0 (chart zoom/pan)
-- `html-to-image`: v1.11.13 (save PNG)
-- PayPal SDK (subscriptions)
-
-## Technical Notes
-
-### SVG Coordinate Calibration Method
-1. Analyze SVG file to find path elements representing major gridlines
-2. Extract pixel coordinates for chart boundaries (xMin, xMax, yMin, yMax)
-3. Map to data ranges (ageMin, ageMax, valueMin, valueMax)
-4. Update chartCoordinates object in GrowthChartPage.jsx
-
-### SVG Rendering Pattern (Important)
-```jsx
-<svg viewBox={viewBox}>
-  <image href={svgFile} width="100%" height="100%" />
-  {/* Plot circles here - shares coordinate space with image */}
-</svg>
-```
+## 3rd Party Integrations
+- `react-zoom-pan-pinch`: v3.7.0
+- `html-to-image`: v1.11.13
+- PayPal SDK for subscriptions
