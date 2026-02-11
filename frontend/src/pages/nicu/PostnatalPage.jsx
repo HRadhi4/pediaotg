@@ -128,15 +128,6 @@ const PostnatalPage = () => {
         {activeApproach === "hemoglobinopathy" && <HemoglobinopathyApproach {...commonProps} />}
         {activeApproach === "bacteriuria" && <AsymptomaticBacteriuriaApproach {...commonProps} />}
       </div>
-
-      {/* Reference Footer */}
-      <Card className="border-slate-200 dark:border-slate-700 mt-6">
-        <CardContent className="py-3">
-          <p className="text-[10px] text-muted-foreground text-center">
-            Reference: SMC Guidelines / AAP / UpToDate / WHO Postnatal Care
-          </p>
-        </CardContent>
-      </Card>
     </div>
   );
 };
