@@ -227,6 +227,7 @@ const NICUApproachesPage = () => {
         {activeApproach === "seizures" && <SeizuresApproach {...commonProps} />}
         {activeApproach === "pphn" && <PPHNApproach {...commonProps} />}
         {activeApproach === "mas" && <MASApproach {...commonProps} />}
+        {activeApproach === "mechanical-ventilation" && <MechanicalVentilationApproach {...commonProps} />}
         {activeApproach === "ttnb" && <TTNBApproach {...commonProps} />}
         {activeApproach === "bpd" && <BPDApproach {...commonProps} />}
         {activeApproach === "anemia" && <AnemiaApproach {...commonProps} />}
