@@ -255,8 +255,12 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
   };
 
   const calculateMagnesium = () => {
-    let doseMg = currentDose;
-    let isMaxed = doseMg >= 2000;
+    const maxDose = 2000;
+    // Apply rounding to dose if enabled
+    let doseMg = roundToFives ? roundToFive(currentDose) : currentDose;
+    // Ensure rounded dose doesn't exceed max
+    doseMg = Math.min(doseMg, maxDose);
+    let isMaxed = doseMg >= maxDose;
     
     const drugVolume = doseMg / 500;
     const targetConc = 60;
@@ -267,8 +271,9 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
     
     setResults({
       medication: "Magnesium Sulfate 50%",
+      isRounded: roundToFives,
       calculation: {
-        dose: `${doseMg.toFixed(0)} mg${isMaxed ? ' (MAX)' : ''} (${dosePerKg} mg/kg)`,
+        dose: `${doseMg.toFixed(0)} mg${isMaxed ? ' (MAX)' : ''}${roundToFives ? ' ≈' : ''} (${dosePerKg} mg/kg)`,
         formula: `Selected: ${dosePerKg} mg/kg x ${w} kg`,
         drugVolume: `${drugVolume.toFixed(2)} ml`,
         diluent: `${diluent.toFixed(1)} ml (NS or D5W)`,
