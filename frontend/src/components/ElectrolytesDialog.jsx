@@ -900,8 +900,7 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
           {/* Round to 5s Toggle */}
           <div className="flex items-center justify-between p-2 rounded-lg bg-amber-50 dark:bg-amber-950/30 border border-amber-200">
             <div className="flex items-center gap-2">
-              <span className="text-sm font-medium text-amber-800 dark:text-amber-200">Round dose to 5s</span>
-              <span className="text-xs text-amber-600 dark:text-amber-400">(easier dilution)</span>
+              <span className="text-sm font-medium text-amber-800 dark:text-amber-200">Round dose</span>
             </div>
             <button
               type="button"
