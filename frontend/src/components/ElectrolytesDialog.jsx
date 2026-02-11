@@ -246,9 +246,9 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
 
   const calculateCalcium = () => {
     const maxDose = 1000;
-    // Apply rounding to dose if enabled
-    let doseMg = roundToFives ? roundToFive(currentDose) : currentDose;
-    // Ensure rounded dose doesn't exceed max
+    // Dose is already rounded by slider when roundToFives is enabled
+    let doseMg = currentDose;
+    // Ensure dose doesn't exceed max
     doseMg = Math.min(doseMg, maxDose);
     let isMaxed = doseMg >= maxDose;
     
