@@ -310,9 +310,9 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
 
   const calculatePotassiumIV = () => {
     const maxDose = 40;
-    // Apply rounding to dose if enabled
-    let doseMEq = roundToFives ? roundToFive(currentDose) : currentDose;
-    // Ensure rounded dose doesn't exceed max
+    // Dose is already rounded by slider when roundToFives is enabled
+    let doseMEq = currentDose;
+    // Ensure dose doesn't exceed max
     doseMEq = Math.min(doseMEq, maxDose);
     let isMaxed = doseMEq >= maxDose;
     
@@ -352,7 +352,7 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
       lineType: potassiumLineType,
       isRounded: roundToFives,
       calculation: {
-        dose: `${doseMEq.toFixed(1)} mEq${isMaxed ? ' (MAX)' : ''}${roundToFives ? ' ≈' : ''} (${dosePerKg} mEq/kg)`,
+        dose: `${doseMEq.toFixed(roundToFives ? 0 : 1)} mEq${isMaxed ? ' (MAX)' : ''}${roundToFives ? ' ≈' : ''} (${dosePerKg} mEq/kg)`,
         formula: `Selected: ${dosePerKg} mEq/kg x ${w} kg`,
         drugVolume: `${drugVolume.toFixed(2)} ml`,
         diluent: `${diluent.toFixed(0)} ml NS (${concentrationLabel})`,
@@ -360,7 +360,7 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
       },
       administration: { duration, rate: `${rate.toFixed(0)} ml/hr` },
       preparation: `${drugVolume.toFixed(2)} ml KCl 15% + ${diluent.toFixed(0)} ml NS = ${totalVolume.toFixed(0)} ml`,
-      order: `${doseMEq.toFixed(1)} mEq KCl in ${totalVolume.toFixed(0)} ml NS over ${duration}`,
+      order: `${doseMEq.toFixed(roundToFives ? 0 : 1)} mEq KCl in ${totalVolume.toFixed(0)} ml NS over ${duration}`,
       notes: "Monitor ECG if >0.5 mEq/kg/hr"
     });
   };
