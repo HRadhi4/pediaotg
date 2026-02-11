@@ -370,12 +370,6 @@ const IEMEmergencyApproach = ({ weight, expandedSections, toggleSection }) => {
                 </div>
               </div>
             </Section>
-
-            {/* Reference */}
-            <div className="mt-4 p-3 bg-slate-50 dark:bg-slate-800 rounded text-[9px] text-muted-foreground">
-              <p className="font-semibold mb-1">Reference:</p>
-              <p>British Inherited Metabolic Diseases Group (BIMDG) Guidelines</p>
-            </div>
           </>
         ) : (
           /* UpToDate Content (Metabolic Emergencies) */
