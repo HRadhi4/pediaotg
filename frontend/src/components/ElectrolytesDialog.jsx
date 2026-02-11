@@ -1002,8 +1002,10 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
             </div>
           )}
 
-          {/* Dose Range Display - Hide for NaHCO3 and Hypernatremia */}
-          {selectedElectrolyte !== "nahco3" && !(selectedElectrolyte === "sodium" && sodiumType === "hypernatremia") && (
+          {/* Dose Range Display - Hide for NaHCO3, Hypernatremia, and Mild Hyponatremia */}
+          {selectedElectrolyte !== "nahco3" && 
+           !(selectedElectrolyte === "sodium" && sodiumType === "hypernatremia") && 
+           !(selectedElectrolyte === "sodium" && sodiumType === "hyponatremia" && hyponatremiaType === "mild") && (
             <div className="p-2 rounded-lg bg-green-100 dark:bg-green-900/30 border border-green-300">
               <p className="text-sm font-semibold text-green-800 dark:text-green-300">
                 Dose Range: <span className="text-green-600 dark:text-green-400">{getCurrentDoseRange()}</span>
@@ -1011,8 +1013,10 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
             </div>
           )}
 
-          {/* Dose Input with Slider - Hide for NaHCO3 and Hypernatremia */}
-          {w > 0 && selectedElectrolyte !== "nahco3" && !(selectedElectrolyte === "sodium" && sodiumType === "hypernatremia") && (
+          {/* Dose Input with Slider - Hide for NaHCO3, Hypernatremia, and Mild Hyponatremia */}
+          {w > 0 && selectedElectrolyte !== "nahco3" && 
+           !(selectedElectrolyte === "sodium" && sodiumType === "hypernatremia") && 
+           !(selectedElectrolyte === "sodium" && sodiumType === "hyponatremia" && hyponatremiaType === "mild") && (
             <div className="p-3 rounded-lg bg-blue-50 dark:bg-blue-950/30 border border-blue-200 space-y-2">
               <div className="flex justify-between items-center">
                 <Label className="text-xs font-semibold text-blue-800 dark:text-blue-300">
