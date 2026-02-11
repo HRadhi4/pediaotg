@@ -106,7 +106,7 @@ A pediatric medical calculator app featuring:
 - None currently
 
 ### P1 - High Priority
-- Add Salicylate (Aspirin) Toxicity approach
+- Refactor ElectrolytesDialog.jsx (large component with many states)
 - Deploy and test PayPal integration in production
 
 ### P2 - Medium Priority
