@@ -344,23 +344,28 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
   };
 
   const calculatePotassiumPO = () => {
-    // This is total daily dose from slider
-    let dailyDose = currentDose;
+    // Apply rounding to daily dose if enabled
+    let dailyDose = roundToFives ? roundToFive(currentDose) : currentDose;
     const dosePerKg = (dailyDose / w).toFixed(1);
     
     // Get frequency divisor
     const freqMap = { "BD": 2, "TID": 3, "QID": 4 };
     const divisor = freqMap[kclPoFrequency] || 2;
-    const perDose = dailyDose / divisor;
+    let perDose = dailyDose / divisor;
+    // Round per dose to nearest 5 if enabled
+    if (roundToFives) {
+      perDose = roundToFive(perDose);
+    }
     
     // Simplified PO result - just dose and frequency
     setResults({
       medication: "Potassium Chloride (KCl) - Oral",
       isPO: true,
+      isRounded: roundToFives,
       poResult: {
-        dailyDose: `${dailyDose.toFixed(1)} mEq/day`,
+        dailyDose: `${dailyDose.toFixed(1)} mEq/day${roundToFives ? ' ≈' : ''}`,
         perKg: `${dosePerKg} mEq/kg/day`,
-        perDose: `${perDose.toFixed(1)} mEq`,
+        perDose: `${perDose.toFixed(1)} mEq${roundToFives ? ' ≈' : ''}`,
         frequency: kclPoFrequency
       }
     });
