@@ -238,14 +238,6 @@ const NICUApproachesPage = () => {
         {activeApproach === "omphalocele" && <OmphaloceleApproach {...commonProps} />}
       </div>
 
-      {/* Reference Footer */}
-      <Card className="border-slate-200 dark:border-slate-700 mt-6">
-        <CardContent className="py-3">
-          <p className="text-[10px] text-muted-foreground text-center">
-            Reference: WHO/Belize Neonatal Clinical Practice Guidelines 2018-2021
-          </p>
-        </CardContent>
-      </Card>
     </div>
   );
 };
