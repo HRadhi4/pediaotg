@@ -67,6 +67,7 @@ const NICUApproachesPage = () => {
     { id: "hypoglycemia", label: "Hypoglycemia", keywords: ["hypoglycemia", "hypoglycaemia", "glucose", "sugar", "dextrose", "gir", "low blood sugar"] },
     { id: "jaundice", label: "Jaundice (Hyperbilirubinemia)", keywords: ["jaundice", "bilirubin", "hyperbilirubinemia", "phototherapy", "exchange", "kernicterus", "yellow"] },
     { id: "mas", label: "Meconium Aspiration (MAS)", keywords: ["meconium", "mas", "aspiration", "msaf", "respiratory distress"] },
+    { id: "mechanical-ventilation", label: "Mechanical Ventilation", keywords: ["mechanical", "ventilation", "hfo", "hfov", "oscillatory", "cmv", "conventional", "cpap", "ventilator", "intubation", "amplitude", "map", "peep"] },
     { id: "nec", label: "Necrotizing Enterocolitis", keywords: ["nec", "necrotizing", "enterocolitis", "abdominal", "distension", "bell staging", "feeding intolerance"] },
     { id: "omphalocele", label: "Omphalocele", keywords: ["omphalocele", "exomphalos", "abdominal wall", "umbilical", "beckwith", "surgical"] },
     { id: "pda", label: "Patent Ductus Arteriosus", keywords: ["pda", "patent", "ductus", "arteriosus", "murmur", "ibuprofen", "indomethacin", "heart"] },
