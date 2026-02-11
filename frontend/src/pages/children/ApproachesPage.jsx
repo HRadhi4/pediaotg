@@ -51,6 +51,7 @@ import {
   NSAIDToxicityApproach,
   IEMEmergencyApproach,
   BloodGasApproach,
+  PARDSApproach,
 } from "./approaches";
 
 const ApproachesPage = ({ onBack }) => {
