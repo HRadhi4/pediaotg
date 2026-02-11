@@ -737,12 +737,6 @@ const IEMEmergencyApproach = ({ weight, expandedSections, toggleSection }) => {
                 <li>Unusual odor (maple syrup, sweaty feet, musty)</li>
               </ul>
             </div>
-
-            {/* Reference */}
-            <div className="mt-4 p-3 bg-slate-50 dark:bg-slate-800 rounded text-[9px] text-muted-foreground">
-              <p className="font-semibold mb-1">Reference:</p>
-              <p>UpToDate - Inborn Errors of Metabolism, AAP Guidelines</p>
-            </div>
           </>
         )}
       </CardContent>
