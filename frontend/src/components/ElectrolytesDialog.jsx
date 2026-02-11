@@ -432,16 +432,20 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
       return;
     }
     
-    const drugVolume = correction;
-    const diluentVolume = correction;
+    // Apply rounding to correction dose if enabled
+    let correctionRounded = roundToFives ? roundToFive(correction) : correction;
+    
+    const drugVolume = correctionRounded;
+    const diluentVolume = correctionRounded;
     const totalVolume = drugVolume + diluentVolume;
-    const halfDose = correction / 2;
+    const halfDose = correctionRounded / 2;
     const halfVolume = totalVolume / 2;
     
     setResults({
       medication: "Sodium Bicarbonate 8.4%",
+      isRounded: roundToFives,
       calculation: {
-        dose: `${correction.toFixed(1)} mEq`,
+        dose: `${correctionRounded.toFixed(1)} mEq${roundToFives ? ' ≈' : ''}`,
         formula: formula,
         drugVolume: `${drugVolume.toFixed(1)} ml (8.4% = 1 mEq/ml)`,
         diluent: `${diluentVolume.toFixed(1)} ml NS (1:1 dilution)`,
