@@ -761,9 +761,9 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
 
   const calculatePhosphate = () => {
     const maxDose = 15;
-    // Apply rounding to dose if enabled
-    let doseMmol = roundToFives ? roundToFive(currentDose) : currentDose;
-    // Ensure rounded dose doesn't exceed max
+    // Dose is already rounded by slider when roundToFives is enabled
+    let doseMmol = currentDose;
+    // Ensure dose doesn't exceed max
     doseMmol = Math.min(doseMmol, maxDose);
     let isMaxed = doseMmol >= maxDose;
     
@@ -777,7 +777,7 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
       medication: "Addiphos (Phosphate)",
       isRounded: roundToFives,
       calculation: {
-        dose: `${doseMmol.toFixed(2)} mmol${isMaxed ? ' (MAX)' : ''}${roundToFives ? ' ≈' : ''} (${dosePerKg} mmol/kg)`,
+        dose: `${doseMmol.toFixed(roundToFives ? 0 : 2)} mmol${isMaxed ? ' (MAX)' : ''}${roundToFives ? ' ≈' : ''} (${dosePerKg} mmol/kg)`,
         formula: `Selected: ${dosePerKg} mmol/kg x ${w} kg`,
         drugVolume: `${drugVolume.toFixed(2)} ml`,
         diluent: `${diluent.toFixed(0)} ml NS (0.05 mmol/ml)`,
@@ -785,7 +785,7 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
       },
       administration: { duration, rate: `${(totalVolume/5).toFixed(1)} ml/hr` },
       preparation: `${drugVolume.toFixed(2)} ml Addiphos + ${diluent.toFixed(0)} ml NS = ${totalVolume.toFixed(0)} ml`,
-      order: `${doseMmol.toFixed(1)} mmol Phosphate in ${totalVolume.toFixed(0)} ml NS over ${duration}`,
+      order: `${doseMmol.toFixed(roundToFives ? 0 : 1)} mmol Phosphate in ${totalVolume.toFixed(0)} ml NS over ${duration}`,
       warnings: ["Rapid infusion causes hypocalcemia!"]
     });
   };
