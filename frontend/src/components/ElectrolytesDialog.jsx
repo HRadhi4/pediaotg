@@ -24,7 +24,11 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
   const [selectedElectrolyte, setSelectedElectrolyte] = useState("calcium");
   const [results, setResults] = useState(null);
   const [customDose, setCustomDose] = useState("");
+  const [roundToFives, setRoundToFives] = useState(false); // Round dose to nearest 5
   const w = parseFloat(weight) || 0;
+
+  // Helper function to round to nearest multiple of 5
+  const roundToFive = (value) => Math.round(value / 5) * 5;
 
   // Electrolyte-specific states
   const [calciumLevel, setCalciumLevel] = useState("");
