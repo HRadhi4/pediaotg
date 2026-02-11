@@ -1841,7 +1841,7 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
                       <div className="space-y-2 text-xs">
                         <div className="p-2 bg-amber-100 dark:bg-amber-900/30 rounded">
                           <p className="font-bold">Option A: With Bolus</p>
-                          <p className="font-mono">1. Give <strong>{results.threePercentData.halfDeficitMl} ml</strong> of 3% NaCl as bolus</p>
+                          <p className="font-mono">1. Give <strong>{results.threePercentData.halfDeficitMl} ml</strong> of 3% NaCl as bolus over 1 hr</p>
                           <p className="font-mono">2. Then <strong>{results.threePercentData.halfDeficitMl} ml</strong> of 3% NaCl over 24 hrs ({results.threePercentData.halfDeficitHourlyRate} ml/hr)</p>
                           <p className="text-[10px] text-muted-foreground mt-1">(1/2 deficit as bolus + 1/2 deficit as IV over 24hrs)</p>
                         </div>
