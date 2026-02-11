@@ -287,8 +287,12 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
   };
 
   const calculatePotassiumIV = () => {
-    let doseMEq = currentDose;
-    let isMaxed = doseMEq >= 40;
+    const maxDose = 40;
+    // Apply rounding to dose if enabled
+    let doseMEq = roundToFives ? roundToFive(currentDose) : currentDose;
+    // Ensure rounded dose doesn't exceed max
+    doseMEq = Math.min(doseMEq, maxDose);
+    let isMaxed = doseMEq >= maxDose;
     
     // KCl 15% = 2 mEq/ml
     const drugVolume = doseMEq / 2;
@@ -324,8 +328,9 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
     setResults({
       medication: "Potassium Chloride (KCl) 15% - IV",
       lineType: potassiumLineType,
+      isRounded: roundToFives,
       calculation: {
-        dose: `${doseMEq.toFixed(1)} mEq${isMaxed ? ' (MAX)' : ''} (${dosePerKg} mEq/kg)`,
+        dose: `${doseMEq.toFixed(1)} mEq${isMaxed ? ' (MAX)' : ''}${roundToFives ? ' ≈' : ''} (${dosePerKg} mEq/kg)`,
         formula: `Selected: ${dosePerKg} mEq/kg x ${w} kg`,
         drugVolume: `${drugVolume.toFixed(2)} ml`,
         diluent: `${diluent.toFixed(0)} ml NS (${concentrationLabel})`,
