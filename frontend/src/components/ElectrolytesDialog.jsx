@@ -366,8 +366,8 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
   };
 
   const calculatePotassiumPO = () => {
-    // Apply rounding to daily dose if enabled
-    let dailyDose = roundToFives ? roundToFive(currentDose) : currentDose;
+    // Dose is already rounded by slider when roundToFives is enabled
+    let dailyDose = currentDose;
     const dosePerKg = (dailyDose / w).toFixed(1);
     
     // Get frequency divisor
@@ -385,9 +385,9 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
       isPO: true,
       isRounded: roundToFives,
       poResult: {
-        dailyDose: `${dailyDose.toFixed(1)} mEq/day${roundToFives ? ' ≈' : ''}`,
+        dailyDose: `${dailyDose.toFixed(roundToFives ? 0 : 1)} mEq/day${roundToFives ? ' ≈' : ''}`,
         perKg: `${dosePerKg} mEq/kg/day`,
-        perDose: `${perDose.toFixed(1)} mEq${roundToFives ? ' ≈' : ''}`,
+        perDose: `${perDose.toFixed(roundToFives ? 0 : 1)} mEq${roundToFives ? ' ≈' : ''}`,
         frequency: kclPoFrequency
       }
     });
