@@ -130,9 +130,11 @@ const InfusionsPage = ({ onBack }) => {
     }
 
     // Calculate mg/kg to add to 50ml
+    // For epi/norepi: concentration factor = mg/kg directly
+    // e.g., 0.3 concentration means add 0.3 mg/kg to 50ml
     let mgPerKg;
     if (selectedDrug === "epinephrine" || selectedDrug === "norepinephrine") {
-      mgPerKg = concentration * 0.5;
+      mgPerKg = concentration;
     } else {
       mgPerKg = concentration;
     }
