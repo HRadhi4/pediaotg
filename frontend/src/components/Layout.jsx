@@ -3,10 +3,43 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { Menu, X, Moon, Sun, Info, Home, Baby, Users, User, Shield, CreditCard, LogOut, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/contexts/AuthContext";
 
 const APP_VERSION = "1.0.0";
+
+// All references collected from the app
+const APP_REFERENCES = [
+  // NICU References
+  { category: "NICU - Resuscitation", source: "AHA/AAP Neonatal Resuscitation Guidelines 2025 (9th Edition)" },
+  { category: "NICU - Jaundice", source: "AAP 2022 Clinical Practice Guideline - Pediatrics 2022;150(3):e2022058859" },
+  { category: "NICU - Sepsis", source: "AAP 2019 Clinical Report & 2024 Updates, Red Book" },
+  { category: "NICU - RDS", source: "2024 European Consensus Guidelines on RDS" },
+  { category: "NICU - Hypoglycemia", source: "AAP 2024 Guidelines" },
+  { category: "NICU - Anemia", source: "JAMA Network Open 2024, ETTNO/TOP Trials, Transfusion Medicine Reviews" },
+  { category: "NICU - Apnea", source: "CAP Trial, MOMBABY 2023 Guidelines, Pediatrics" },
+  { category: "NICU - Polycythemia", source: "UCSF 2023, CAHS Guidelines, Cochrane Review" },
+  { category: "NICU - NEC", source: "2024 Evidence-Based Guidelines" },
+  { category: "NICU - PDA", source: "2024 Guidelines" },
+  { category: "NICU - PPHN", source: "2024 Guidelines" },
+  { category: "NICU - Seizures", source: "2024 Guidelines" },
+  { category: "NICU - BPD", source: "2024 Guidelines" },
+  { category: "NICU - Gastroschisis/Omphalocele", source: "2024 APSA Guidelines, J Pediatr Surg" },
+  { category: "NICU - Drugs", source: "Neofax 2024" },
+  { category: "NICU - Postnatal Care", source: "SMC Guidelines, AAP, UpToDate, WHO Postnatal Care" },
+  { category: "NICU - Growth Charts", source: "WHO Child Growth Standards, CDC 2000 Growth Charts" },
+  // Children References
+  { category: "Children - PARDS", source: "PALICC Guidelines" },
+  { category: "Children - DKA", source: "Saudi Booklet, SMC Guideline (Kingdom of Bahrain Ministry of Health)" },
+  { category: "Children - DLOC", source: "SMC Neuro Guideline" },
+  { category: "Children - Weakness/Gait", source: "SMC Neuro Guideline" },
+  { category: "Children - IEM Emergencies", source: "SMC Guideline, UpToDate" },
+  { category: "Children - NSAID Toxicity", source: "UpToDate Guidelines" },
+  { category: "Children - Iron Toxicity", source: "UpToDate" },
+  // General
+  { category: "General", source: "Salmaniya Medical Complex (SMC) Clinical Guidelines" },
+];
 
 // Disclaimer Dialog for first-time users
 const DisclaimerDialog = ({ open, onAgree }) => {
