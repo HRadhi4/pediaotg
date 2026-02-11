@@ -26,3 +26,4 @@ export { default as NSAIDToxicityApproach } from './NSAIDToxicityApproach';
 export { default as MetabolicEmergencyApproach } from './MetabolicEmergencyApproach';
 export { default as IEMEmergencyApproach } from './IEMEmergencyApproach';
 export { default as BloodGasApproach } from './BloodGasApproach';
+export { default as PARDSApproach } from './PARDSApproach';
