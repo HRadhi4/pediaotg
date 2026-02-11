@@ -734,8 +734,13 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
   };
 
   const calculatePhosphate = () => {
-    let doseMmol = currentDose;
-    let isMaxed = doseMmol >= 15;
+    const maxDose = 15;
+    // Apply rounding to dose if enabled
+    let doseMmol = roundToFives ? roundToFive(currentDose) : currentDose;
+    // Ensure rounded dose doesn't exceed max
+    doseMmol = Math.min(doseMmol, maxDose);
+    let isMaxed = doseMmol >= maxDose;
+    
     const drugVolume = doseMmol / 2;
     const dosePerKg = (doseMmol / w).toFixed(3);
     const totalVolume = doseMmol / 0.05;
@@ -744,8 +749,9 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
     
     setResults({
       medication: "Addiphos (Phosphate)",
+      isRounded: roundToFives,
       calculation: {
-        dose: `${doseMmol.toFixed(2)} mmol${isMaxed ? ' (MAX)' : ''} (${dosePerKg} mmol/kg)`,
+        dose: `${doseMmol.toFixed(2)} mmol${isMaxed ? ' (MAX)' : ''}${roundToFives ? ' ≈' : ''} (${dosePerKg} mmol/kg)`,
         formula: `Selected: ${dosePerKg} mmol/kg x ${w} kg`,
         drugVolume: `${drugVolume.toFixed(2)} ml`,
         diluent: `${diluent.toFixed(0)} ml NS (0.05 mmol/ml)`,
