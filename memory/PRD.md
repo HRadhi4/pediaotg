@@ -39,6 +39,21 @@ A pediatric medical calculator app featuring:
   - Shows "Over 30 mins, preferably in central line"
   - Clear max correction limits displayed
 
+### Children's Section - Mechanical Ventilation Approach (Feb 2026)
+- **New Approach Added:** Mechanical Ventilation in PICU
+- **Location:** `/app/frontend/src/pages/children/approaches/MechanicalVentilationApproach.jsx`
+- **Features:**
+  - Tabbed interface with 4 tabs:
+    1. **General** - Initial settings table (Tidal Volume, Frequency, FiO2, Ti, PS)
+    2. **Special Considerations** - ARDS and Asthma-specific ventilation strategies
+    3. **HFOV** - High Frequency Oscillatory Ventilation (principles, indications, settings, troubleshooting)
+    4. **Equations** - Useful respiratory equations table
+  - Weight-based calculations for tidal volume
+  - Age-based recommendations for frequency and inspiratory time
+  - HFOV frequency table by age group (Preterm, Term, Children, Adult)
+  - Troubleshooting guides for Hypoxemia, Hypercarpia
+  - Pitfalls and complications sections
+
 ### Authentication
 - JWT-based authentication
 - Admin and user roles
