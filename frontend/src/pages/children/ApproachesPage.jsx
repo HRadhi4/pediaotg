@@ -336,6 +336,7 @@ const ApproachesPage = ({ onBack }) => {
         {activeTab === "acetaminophen" && <AcetaminophenApproach {...commonProps} />}
         {activeTab === "iron" && <IronToxicityApproach {...commonProps} />}
         {activeTab === "iem" && <IEMEmergencyApproach {...commonProps} />}
+        {activeTab === "mechvent" && <MechanicalVentilationApproach {...commonProps} />}
         {activeTab === "nsaid" && <NSAIDToxicityApproach {...commonProps} />}
         {activeTab === "pards" && <PARDSApproach {...commonProps} />}
         {activeTab === "bloodgas" && <BloodGasApproach {...commonProps} />}
