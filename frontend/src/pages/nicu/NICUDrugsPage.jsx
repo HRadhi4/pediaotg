@@ -567,10 +567,9 @@ const NICUDrugsPage = () => {
         </Card>
       )}
 
-      {/* Reference */}
+      {/* Notes */}
       <Card className="nightingale-card">
         <CardContent className="pt-4 text-xs text-muted-foreground">
-          <p className="font-medium text-foreground mb-1">Reference: Neofax 2024</p>
           <p>• PMA = Postmenstrual Age (gestational age + postnatal age)</p>
           <p>• PNA = Postnatal Age (days since birth)</p>
           <p>• Always verify doses and adjust based on renal/hepatic function</p>
