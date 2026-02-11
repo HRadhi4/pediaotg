@@ -1760,33 +1760,19 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
                       <p className="text-[10px]">Criteria: Na &lt; 125 with seizures, mental status changes</p>
                     </div>
                     
-                    {/* Two Treatment Paths */}
-                    <div className="grid grid-cols-1 gap-3">
-                      {/* Path 1: Infusion */}
-                      <div className="p-3 rounded-lg bg-blue-50 dark:bg-blue-950/30 border border-blue-200">
-                        <p className="text-xs font-bold text-blue-700 dark:text-blue-300 mb-2">Option 1: 3% Saline Infusion</p>
-                        <div className="space-y-1 text-xs">
-                          <p className="font-mono"><strong>{results.severeData.infusionRateLow} - {results.severeData.infusionRateHigh} ml/hr</strong></p>
-                          <p className="text-muted-foreground">(1-2 ml/kg/hr of 3% saline)</p>
-                          <p className="mt-2">Goal: Increase Na by <strong>6-8 mEq/L</strong></p>
-                          <div className="p-2 bg-amber-50 dark:bg-amber-900/20 rounded mt-2 text-[10px]">
-                            <p>⚠️ Max: 10-12 mEq/L in 24h, 18 mEq/L in 48h</p>
-                            <p>Consider desmopressin 1-2 mcg q4-6h</p>
-                          </div>
+                    {/* 3% Saline Bolus Treatment */}
+                    <div className="p-3 rounded-lg bg-green-50 dark:bg-green-950/30 border border-green-200">
+                      <p className="text-xs font-bold text-green-700 dark:text-green-300 mb-2">3% Saline Bolus</p>
+                      <div className="space-y-1 text-xs">
+                        <p className="font-mono"><strong>{results.severeData.bolusVolumeLow}-{results.severeData.bolusVolumeHigh} ml</strong> IV bolus</p>
+                        <p className="text-muted-foreground">Over 30 mins, preferably in central line</p>
+                        <p className="mt-2">Goal: Increase Na by <strong>2-3 mEq/L</strong></p>
+                        <div className="p-2 bg-blue-50 dark:bg-blue-900/20 rounded mt-2 text-[10px]">
+                          <p>• Check Na every 20 min until symptoms resolve</p>
+                          <p>• May repeat bolus twice if symptoms persist</p>
                         </div>
-                      </div>
-                      
-                      {/* Path 2: Bolus */}
-                      <div className="p-3 rounded-lg bg-green-50 dark:bg-green-950/30 border border-green-200">
-                        <p className="text-xs font-bold text-green-700 dark:text-green-300 mb-2">Option 2: 3% Saline Bolus</p>
-                        <div className="space-y-1 text-xs">
-                          <p className="font-mono"><strong>{results.severeData.bolusVolumeLow}-{results.severeData.bolusVolumeHigh} ml</strong> IV bolus</p>
-                          <p className="text-muted-foreground">(single dose 3% saline)</p>
-                          <p className="mt-2">Goal: Increase Na by <strong>2-3 mEq/L</strong></p>
-                          <div className="p-2 bg-blue-50 dark:bg-blue-900/20 rounded mt-2 text-[10px]">
-                            <p>• Check Na every 20 min until symptoms resolve</p>
-                            <p>• May repeat bolus twice if symptoms persist</p>
-                          </div>
+                        <div className="p-2 bg-amber-50 dark:bg-amber-900/20 rounded mt-2 text-[10px]">
+                          <p>⚠️ Max: 10-12 mEq/L in 24h, 18 mEq/L in 48h</p>
                         </div>
                       </div>
                     </div>
@@ -1796,7 +1782,7 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
                       <p className="text-xs font-bold text-gray-700 dark:text-gray-300 mb-2">After Symptom Resolution:</p>
                       <div className="space-y-1 text-xs">
                         <p>• Check Na every 2 hours</p>
-                        <p>• Adjust infusion rate and switch to isotonic saline</p>
+                        <p>• Switch to isotonic saline</p>
                         <p>• Determine underlying cause</p>
                       </div>
                     </div>
