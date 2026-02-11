@@ -296,9 +296,18 @@ const SidePanel = ({ isOpen, onClose, theme, toggleTheme }) => {
             
             {/* About Us Tab */}
             <TabsContent value="about" className="flex-1 overflow-auto mt-4">
-              <div className="p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50 text-sm">
-                <p className="text-muted-foreground text-center py-8">
-                  Coming soon...
+              <div className="p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50 text-sm text-center space-y-4">
+                <p className="text-muted-foreground leading-relaxed">
+                  An app crafted by those who know pediatrics best — <strong>pediatricians themselves</strong>.
+                </p>
+                <p className="text-muted-foreground text-xs">
+                  For feedback or suggestions contact us through{" "}
+                  <a 
+                    href="mailto:feedback@pedotg.com" 
+                    className="text-[#00d9c5] hover:underline font-medium"
+                  >
+                    feedback@pedotg.com
+                  </a>
                 </p>
               </div>
             </TabsContent>
