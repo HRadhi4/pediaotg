@@ -544,7 +544,7 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
         
         const maintenanceRate = parseFloat(naMaintenanceRate) || 2; // 2-5 mEq/kg/day
         
-        // 1. Maintenance 3% NaCl
+        // 1. Maintenance 3% NaCl (shown separately, NOT summed with deficit)
         const maintenanceNaMEq = maintenanceRate * w; // mEq/day
         const maintenance3PercentMl = maintenanceNaMEq * 2; // ml/day (1 mEq = 2 ml)
         
@@ -553,21 +553,14 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
         const naDeficitMEq = (target - na) * 0.6 * w;
         const deficit3PercentMl = naDeficitMEq * 2; // ml (1 mEq = 2 ml)
         
-        // 3. Initial Bolus to correct first 5 mEq (over 1 hour)
-        // 5 × 0.6 × weight = mEq
-        const initialBolusNaMEq = 5 * 0.6 * w;
-        const initialBolusMl = initialBolusNaMEq * 2; // ml
+        // Option A: With Bolus - 1/2 deficit as bolus, 1/2 deficit as IV over 24hrs
+        const halfDeficitMEq = naDeficitMEq / 2;
+        const halfDeficitMl = deficit3PercentMl / 2;
         
-        // 4. Remaining deficit after initial bolus
-        const remainingDeficitMEq = Math.max(0, naDeficitMEq - initialBolusNaMEq);
-        const remainingDeficitMl = remainingDeficitMEq * 2;
-        
-        // 5. Total daily (maintenance + remaining deficit over 24 hrs)
-        const totalDaily3PercentMl = maintenance3PercentMl + remainingDeficitMl;
-        const hourlyRate3Percent = totalDaily3PercentMl / 24;
+        // Option B: Without Bolus - full deficit over 24hrs
+        const deficitHourlyRate = deficit3PercentMl / 24;
         
         // Calculate expected Na correction
-        const totalNaCorrectionMEq = naDeficitMEq; // Total mEq to correct
         const expectedNaRise = (target - na); // Expected rise in Na
         
         setResults({
@@ -578,21 +571,18 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
             targetNa: target,
             weight: w,
             maintenanceRate: maintenanceRate,
-            // Maintenance
+            // Maintenance (shown separately)
             maintenanceNaMEq: maintenanceNaMEq.toFixed(1),
             maintenance3PercentMl: maintenance3PercentMl.toFixed(1),
             // Deficit
             naDeficitMEq: naDeficitMEq.toFixed(1),
             deficit3PercentMl: deficit3PercentMl.toFixed(1),
-            // Initial Bolus
-            initialBolusNaMEq: initialBolusNaMEq.toFixed(1),
-            initialBolusMl: initialBolusMl.toFixed(1),
-            // Remaining after bolus
-            remainingDeficitMEq: remainingDeficitMEq.toFixed(1),
-            remainingDeficitMl: remainingDeficitMl.toFixed(1),
-            // Total daily
-            totalDaily3PercentMl: totalDaily3PercentMl.toFixed(1),
-            hourlyRate3Percent: hourlyRate3Percent.toFixed(1),
+            // Option A: Half deficit for bolus, half for IV
+            halfDeficitMEq: halfDeficitMEq.toFixed(1),
+            halfDeficitMl: halfDeficitMl.toFixed(1),
+            halfDeficitHourlyRate: (halfDeficitMl / 24).toFixed(1),
+            // Option B: Full deficit over 24hrs
+            deficitHourlyRate: deficitHourlyRate.toFixed(1),
             // Expected correction
             expectedNaRise: expectedNaRise.toFixed(0)
           }
