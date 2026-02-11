@@ -45,6 +45,7 @@ import CHDApproach from "./approaches/CHDApproach";
 import GastroschisisApproach from "./approaches/GastroschisisApproach";
 import OmphaloceleApproach from "./approaches/OmphaloceleApproach";
 import CDHApproach from "./approaches/CDHApproach";
+import MechanicalVentilationApproach from "./approaches/MechanicalVentilationApproach";
 
 const NICUApproachesPage = () => {
   const [activeApproach, setActiveApproach] = useState("resuscitation");
