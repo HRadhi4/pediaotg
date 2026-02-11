@@ -537,71 +537,133 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
         }
       });
     } else if (sodiumType === "hyponatremia") {
-      // Mild/Asymptomatic Hyponatremia (Na 125-134)
-      // Based on user's flowchart
-      
-      // Step 1: Determine Volume (Maintenance + Deficit)
-      // Don't exceed 2.5L/day
-      const totalVolume = Math.min(maintenance + deficit, 2500);
-      const hourlyRate = totalVolume / 24;
-      
-      // Step 2: Sodium Correction
-      // Na Deficit = Wt x 0.6 x (Target Na - Measured Na)
-      const naDeficit = w * 0.6 * (target - na);
-      // Na Maintenance = Wt x 2 mEq (2-5 mEq/kg/day)
-      const naMaintenance = w * 2;
-      // Total Na needed = Na Deficit + Maintenance
-      const totalNa = naDeficit + naMaintenance;
-      
-      // Step 3: Determine Na Concentration needed
-      // Na concentration = Total Na / Volume (in L)
-      const naConcentration = (totalNa / (totalVolume / 1000));
-      
-      // Choose fluid type based on concentration
-      // NS = 154 mEq/L, 1/2 NS = 77 mEq/L, 3% NaCl = 513 mEq/L, RL = 130 mEq/L
-      let fluidType;
-      let fluidNa;
-      if (naConcentration >= 140) {
-        fluidType = "NS (Normal Saline)";
-        fluidNa = 154;
-      } else if (naConcentration >= 100) {
-        fluidType = "RL (Ringer's Lactate)";
-        fluidNa = 130;
-      } else if (naConcentration >= 60) {
-        fluidType = "1/2 NS (Half Normal Saline)";
-        fluidNa = 77;
+      // Check which method to use
+      if (hyponatremiaMethod === "3percent") {
+        // 3% NaCl Method for Hyponatremia
+        // 1 mEq Na = 2 ml of 3% NaCl
+        
+        const maintenanceRate = parseFloat(naMaintenanceRate) || 2; // 2-5 mEq/kg/day
+        
+        // 1. Maintenance 3% NaCl
+        const maintenanceNaMEq = maintenanceRate * w; // mEq/day
+        const maintenance3PercentMl = maintenanceNaMEq * 2; // ml/day (1 mEq = 2 ml)
+        
+        // 2. Deficit Correction
+        // (Na desired - Na observed) × 0.6 × weight = mEq of Na
+        const naDeficitMEq = (target - na) * 0.6 * w;
+        const deficit3PercentMl = naDeficitMEq * 2; // ml (1 mEq = 2 ml)
+        
+        // 3. Initial Bolus to correct first 5 mEq (over 1 hour)
+        // 5 × 0.6 × weight = mEq
+        const initialBolusNaMEq = 5 * 0.6 * w;
+        const initialBolusMl = initialBolusNaMEq * 2; // ml
+        
+        // 4. Remaining deficit after initial bolus
+        const remainingDeficitMEq = Math.max(0, naDeficitMEq - initialBolusNaMEq);
+        const remainingDeficitMl = remainingDeficitMEq * 2;
+        
+        // 5. Total daily (maintenance + remaining deficit over 24 hrs)
+        const totalDaily3PercentMl = maintenance3PercentMl + remainingDeficitMl;
+        const hourlyRate3Percent = totalDaily3PercentMl / 24;
+        
+        // Calculate expected Na correction
+        const totalNaCorrectionMEq = naDeficitMEq; // Total mEq to correct
+        const expectedNaRise = (target - na); // Expected rise in Na
+        
+        setResults({
+          medication: "Hyponatremia Correction (3% NaCl Method)",
+          is3PercentNaCl: true,
+          threePercentData: {
+            currentNa: na,
+            targetNa: target,
+            weight: w,
+            maintenanceRate: maintenanceRate,
+            // Maintenance
+            maintenanceNaMEq: maintenanceNaMEq.toFixed(1),
+            maintenance3PercentMl: maintenance3PercentMl.toFixed(1),
+            // Deficit
+            naDeficitMEq: naDeficitMEq.toFixed(1),
+            deficit3PercentMl: deficit3PercentMl.toFixed(1),
+            // Initial Bolus
+            initialBolusNaMEq: initialBolusNaMEq.toFixed(1),
+            initialBolusMl: initialBolusMl.toFixed(1),
+            // Remaining after bolus
+            remainingDeficitMEq: remainingDeficitMEq.toFixed(1),
+            remainingDeficitMl: remainingDeficitMl.toFixed(1),
+            // Total daily
+            totalDaily3PercentMl: totalDaily3PercentMl.toFixed(1),
+            hourlyRate3Percent: hourlyRate3Percent.toFixed(1),
+            // Expected correction
+            expectedNaRise: expectedNaRise.toFixed(0)
+          }
+        });
       } else {
-        fluidType = "1/4 NS or D5 0.2% NaCl";
-        fluidNa = 34;
-      }
-      
-      // Step 4: Dextrose - Usually D5% added
-      // Mixture made from NS + D50%: 450ml NS + 50ml D50%
-      const nsVolume = Math.round((totalVolume / 500) * 450);
-      const d50Volume = Math.round((totalVolume / 500) * 50);
-      
-      setResults({
-        medication: "Hyponatremia Correction (Mild/Asymptomatic)",
-        isMildHyponatremia: true,
-        mildData: {
-          currentNa: na,
-          targetNa: target,
-          maintenance: maintenance.toFixed(0),
-          deficit: deficit.toFixed(0),
-          deficitType: hypoDeficitType,
-          deficitPercent: hypoDeficitPercent,
-          totalVolume: totalVolume.toFixed(0),
-          hourlyRate: hourlyRate.toFixed(1),
-          naDeficit: naDeficit.toFixed(1),
-          naMaintenance: naMaintenance.toFixed(0),
-          totalNa: totalNa.toFixed(1),
-          naConcentration: naConcentration.toFixed(0),
-          fluidType,
-          fluidNa,
-          nsVolume,
-          d50Volume
+        // Standard Method - Mild/Asymptomatic Hyponatremia (Na 125-134)
+        // Based on user's flowchart
+        
+        // Step 1: Determine Volume (Maintenance + Deficit)
+        // Don't exceed 2.5L/day
+        const totalVolume = Math.min(maintenance + deficit, 2500);
+        const hourlyRate = totalVolume / 24;
+        
+        // Step 2: Sodium Correction
+        // Na Deficit = Wt x 0.6 x (Target Na - Measured Na)
+        const naDeficit = w * 0.6 * (target - na);
+        // Na Maintenance = Wt x 2 mEq (2-5 mEq/kg/day)
+        const naMaintenance = w * 2;
+        // Total Na needed = Na Deficit + Maintenance
+        const totalNa = naDeficit + naMaintenance;
+        
+        // Step 3: Determine Na Concentration needed
+        // Na concentration = Total Na / Volume (in L)
+        const naConcentration = (totalNa / (totalVolume / 1000));
+        
+        // Choose fluid type based on concentration
+        // NS = 154 mEq/L, 1/2 NS = 77 mEq/L, 3% NaCl = 513 mEq/L, RL = 130 mEq/L
+        let fluidType;
+        let fluidNa;
+        if (naConcentration >= 140) {
+          fluidType = "NS (Normal Saline)";
+          fluidNa = 154;
+        } else if (naConcentration >= 100) {
+          fluidType = "RL (Ringer's Lactate)";
+          fluidNa = 130;
+        } else if (naConcentration >= 60) {
+          fluidType = "1/2 NS (Half Normal Saline)";
+          fluidNa = 77;
+        } else {
+          fluidType = "1/4 NS or D5 0.2% NaCl";
+          fluidNa = 34;
         }
-      });
+        
+        // Step 4: Dextrose - Usually D5% added
+        // Mixture made from NS + D50%: 450ml NS + 50ml D50%
+        const nsVolume = Math.round((totalVolume / 500) * 450);
+        const d50Volume = Math.round((totalVolume / 500) * 50);
+        
+        setResults({
+          medication: "Hyponatremia Correction (Mild/Asymptomatic)",
+          isMildHyponatremia: true,
+          mildData: {
+            currentNa: na,
+            targetNa: target,
+            maintenance: maintenance.toFixed(0),
+            deficit: deficit.toFixed(0),
+            deficitType: hypoDeficitType,
+            deficitPercent: hypoDeficitPercent,
+            totalVolume: totalVolume.toFixed(0),
+            hourlyRate: hourlyRate.toFixed(1),
+            naDeficit: naDeficit.toFixed(1),
+            naMaintenance: naMaintenance.toFixed(0),
+            totalNa: totalNa.toFixed(1),
+            naConcentration: naConcentration.toFixed(0),
+            fluidType,
+            fluidNa,
+            nsVolume,
+            d50Volume
+          }
+        });
+      }
     } else if (sodiumType === "hypernatremia" && hypernatremiaMethod === "nelson") {
       // Nelson Textbook Method for Hypernatremia
       // Calculate maintenance (Holliday-Segar)
