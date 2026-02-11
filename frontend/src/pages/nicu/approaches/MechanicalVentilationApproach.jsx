@@ -92,6 +92,25 @@ const MechanicalVentilationApproach = ({ weight, gestationalAge }) => {
               </div>
             </div>
 
+            {/* Frequency by Age - moved here */}
+            <div className="p-3 bg-purple-50 dark:bg-purple-900/20 rounded-lg border border-purple-200">
+              <p className="font-semibold text-purple-800 dark:text-purple-200 mb-2">Frequency by Age</p>
+              <div className="grid grid-cols-3 gap-2 text-xs text-center">
+                <div className="p-2 bg-white dark:bg-gray-900 rounded">
+                  <p className="font-bold text-purple-700">Preterm</p>
+                  <p className="text-lg font-mono">10-13 Hz</p>
+                </div>
+                <div className="p-2 bg-white dark:bg-gray-900 rounded">
+                  <p className="font-bold text-purple-700">Term</p>
+                  <p className="text-lg font-mono">8-10 Hz</p>
+                </div>
+                <div className="p-2 bg-white dark:bg-gray-900 rounded">
+                  <p className="font-bold text-purple-700">Children</p>
+                  <p className="text-lg font-mono">6-8 Hz</p>
+                </div>
+              </div>
+            </div>
+
             {/* Adjustments Table */}
             <div className="p-3 bg-white dark:bg-slate-800 rounded-lg border border-slate-200">
               <p className="font-semibold text-slate-700 dark:text-slate-200 mb-3">Adjustments on HFOV</p>
