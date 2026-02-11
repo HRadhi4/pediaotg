@@ -261,7 +261,7 @@ const SidePanel = ({ isOpen, onClose, theme, toggleTheme }) => {
 
       {/* About Dialog */}
       <Dialog open={showAbout} onOpenChange={setShowAbout}>
-        <DialogContent className="max-w-md z-[70]">
+        <DialogContent className="max-w-md z-[70] max-h-[80vh] overflow-hidden flex flex-col">
           <DialogHeader>
             <DialogTitle className="font-heading flex items-center gap-2">
               <div className="w-10 h-10 rounded-xl bg-[#00d9c5]/10 flex items-center justify-center overflow-hidden p-1">
@@ -271,19 +271,50 @@ const SidePanel = ({ isOpen, onClose, theme, toggleTheme }) => {
             </DialogTitle>
             <DialogDescription>Version {APP_VERSION}</DialogDescription>
           </DialogHeader>
-          <div className="space-y-4">
-            <div className="p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50 text-sm">
-              <p className="text-muted-foreground leading-relaxed">
-                This application is designed for use by <strong>qualified physicians</strong> and is based on multiple clinical guidelines, including <strong>Salmaniya Medical Complex guidelines</strong>.
-              </p>
-              <p className="text-muted-foreground leading-relaxed mt-3">
-                It is intended as a <strong>decision-support tool only</strong> and does not replace professional clinical judgment.
-              </p>
-              <p className="text-muted-foreground leading-relaxed mt-3">
-                Use of this application is at the user&apos;s own risk.
-              </p>
-            </div>
-          </div>
+          
+          <Tabs defaultValue="disclaimer" className="flex-1 flex flex-col overflow-hidden">
+            <TabsList className="grid w-full grid-cols-3">
+              <TabsTrigger value="disclaimer" className="text-xs">Disclaimer</TabsTrigger>
+              <TabsTrigger value="about" className="text-xs">About Us</TabsTrigger>
+              <TabsTrigger value="references" className="text-xs">References</TabsTrigger>
+            </TabsList>
+            
+            {/* Disclaimer Tab */}
+            <TabsContent value="disclaimer" className="flex-1 overflow-auto mt-4">
+              <div className="p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50 text-sm">
+                <p className="text-muted-foreground leading-relaxed">
+                  This application is designed for use by <strong>qualified physicians</strong> and is based on multiple clinical guidelines, including <strong>Salmaniya Medical Complex guidelines</strong>.
+                </p>
+                <p className="text-muted-foreground leading-relaxed mt-3">
+                  It is intended as a <strong>decision-support tool only</strong> and does not replace professional clinical judgment.
+                </p>
+                <p className="text-muted-foreground leading-relaxed mt-3">
+                  Use of this application is at the user&apos;s own risk.
+                </p>
+              </div>
+            </TabsContent>
+            
+            {/* About Us Tab */}
+            <TabsContent value="about" className="flex-1 overflow-auto mt-4">
+              <div className="p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50 text-sm">
+                <p className="text-muted-foreground text-center py-8">
+                  Coming soon...
+                </p>
+              </div>
+            </TabsContent>
+            
+            {/* References Tab */}
+            <TabsContent value="references" className="flex-1 overflow-auto mt-4">
+              <div className="space-y-2 max-h-[40vh] overflow-y-auto pr-2">
+                {APP_REFERENCES.map((ref, idx) => (
+                  <div key={idx} className="p-2 rounded-lg bg-gray-50 dark:bg-gray-800/50 text-xs">
+                    <p className="font-medium text-[#00d9c5]">{ref.category}</p>
+                    <p className="text-muted-foreground">{ref.source}</p>
+                  </div>
+                ))}
+              </div>
+            </TabsContent>
+          </Tabs>
         </DialogContent>
       </Dialog>
     </>
