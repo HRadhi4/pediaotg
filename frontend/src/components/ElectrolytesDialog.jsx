@@ -1257,97 +1257,192 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
                   
                   {hyponatremiaType === "mild" && (
                     <>
+                      {/* Method selector: Standard vs 3% NaCl */}
+                      <div className="flex items-center justify-center gap-2 p-2 rounded-lg bg-cyan-50 dark:bg-cyan-950/30 border border-cyan-200">
+                        <button
+                          type="button"
+                          onClick={() => setHyponatremiaMethod("standard")}
+                          className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
+                            hyponatremiaMethod === "standard"
+                              ? "bg-cyan-600 text-white"
+                              : "text-cyan-700 hover:bg-cyan-100"
+                          }`}
+                        >
+                          Standard
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setHyponatremiaMethod("3percent")}
+                          className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
+                            hyponatremiaMethod === "3percent"
+                              ? "bg-cyan-600 text-white"
+                              : "text-cyan-700 hover:bg-cyan-100"
+                          }`}
+                        >
+                          3% NaCl
+                        </button>
+                      </div>
+                      
                       <div>
                         <Label className="text-xs">Target Na (mEq/L)</Label>
                         <Input
                           type="number"
                           step="1"
                           min="130"
-                          max="140"
-                          placeholder="133"
+                          max="145"
+                          placeholder="135"
                           value={targetNa}
                           onChange={(e) => setTargetNa(e.target.value)}
                           className="font-mono h-9 mt-1"
                         />
                       </div>
                       
-                      {/* Deficit Selector - Infant/Child with percentages */}
-                      <div className="space-y-2">
-                        <Label className="text-xs">Fluid Deficit (Dehydration Level)</Label>
-                        
-                        {/* Infant / Child selector */}
-                        <div className="flex gap-2">
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setHypoDeficitType("infant");
-                              setHypoDeficitPercent("10");
-                            }}
-                            className={`flex-1 px-2 py-1.5 text-xs font-medium rounded-md border transition-colors ${
-                              hypoDeficitType === "infant"
-                                ? "bg-blue-600 text-white border-blue-600"
-                                : "bg-white dark:bg-gray-800 border-gray-300 hover:bg-blue-50"
-                            }`}
-                          >
-                            Infant
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setHypoDeficitType("child");
-                              setHypoDeficitPercent("6");
-                            }}
-                            className={`flex-1 px-2 py-1.5 text-xs font-medium rounded-md border transition-colors ${
-                              hypoDeficitType === "child"
-                                ? "bg-blue-600 text-white border-blue-600"
-                                : "bg-white dark:bg-gray-800 border-gray-300 hover:bg-blue-50"
-                            }`}
-                          >
-                            Child
-                          </button>
+                      {/* 3% NaCl specific inputs */}
+                      {hyponatremiaMethod === "3percent" && (
+                        <div className="space-y-2">
+                          <Label className="text-xs">Na Maintenance Rate (mEq/kg/day)</Label>
+                          <div className="flex items-center gap-2">
+                            <Input
+                              type="number"
+                              step="0.5"
+                              min="2"
+                              max="5"
+                              value={naMaintenanceRate}
+                              onChange={(e) => setNaMaintenanceRate(e.target.value)}
+                              className="font-mono h-9 w-20"
+                            />
+                            <span className="text-xs text-muted-foreground">(Range: 2-5 mEq/kg/day)</span>
+                          </div>
+                          <p className="text-[10px] text-cyan-700 dark:text-cyan-400">
+                            1 mEq Na = 2 ml of 3% NaCl
+                          </p>
                         </div>
-                        
-                        {/* Percentage selector based on type */}
-                        <div className="grid grid-cols-3 gap-2">
-                          {hypoDeficitType === "infant" ? (
-                            <>
+                      )}
+                      
+                      {/* Standard method inputs */}
+                      {hyponatremiaMethod === "standard" && (
+                        <>
+                          {/* Deficit Selector - Infant/Child with percentages */}
+                          <div className="space-y-2">
+                            <Label className="text-xs">Fluid Deficit (Dehydration Level)</Label>
+                            
+                            {/* Infant / Child selector */}
+                            <div className="flex gap-2">
                               <button
                                 type="button"
-                                onClick={() => setHypoDeficitPercent("5")}
-                                className={`p-2 text-xs font-medium rounded-md border transition-colors ${
-                                  hypoDeficitPercent === "5"
-                                    ? "bg-teal-600 text-white border-teal-600"
-                                    : "bg-white dark:bg-gray-800 border-gray-300 hover:bg-teal-50"
+                                onClick={() => {
+                                  setHypoDeficitType("infant");
+                                  setHypoDeficitPercent("10");
+                                }}
+                                className={`flex-1 px-2 py-1.5 text-xs font-medium rounded-md border transition-colors ${
+                                  hypoDeficitType === "infant"
+                                    ? "bg-blue-600 text-white border-blue-600"
+                                    : "bg-white dark:bg-gray-800 border-gray-300 hover:bg-blue-50"
                                 }`}
                               >
-                                <div>5%</div>
-                                <div className="text-[10px] opacity-75">{(w*50).toFixed(0)}ml</div>
+                                Infant
                               </button>
                               <button
                                 type="button"
-                                onClick={() => setHypoDeficitPercent("10")}
-                                className={`p-2 text-xs font-medium rounded-md border transition-colors ${
-                                  hypoDeficitPercent === "10"
-                                    ? "bg-teal-600 text-white border-teal-600"
-                                    : "bg-white dark:bg-gray-800 border-gray-300 hover:bg-teal-50"
+                                onClick={() => {
+                                  setHypoDeficitType("child");
+                                  setHypoDeficitPercent("6");
+                                }}
+                                className={`flex-1 px-2 py-1.5 text-xs font-medium rounded-md border transition-colors ${
+                                  hypoDeficitType === "child"
+                                    ? "bg-blue-600 text-white border-blue-600"
+                                    : "bg-white dark:bg-gray-800 border-gray-300 hover:bg-blue-50"
                                 }`}
                               >
-                                <div>10%</div>
-                                <div className="text-[10px] opacity-75">{(w*100).toFixed(0)}ml</div>
+                                Child
                               </button>
-                              <button
-                                type="button"
-                                onClick={() => setHypoDeficitPercent("15")}
-                                className={`p-2 text-xs font-medium rounded-md border transition-colors ${
-                                  hypoDeficitPercent === "15"
-                                    ? "bg-teal-600 text-white border-teal-600"
-                                    : "bg-white dark:bg-gray-800 border-gray-300 hover:bg-teal-50"
-                                }`}
-                              >
-                                <div>15%</div>
-                                <div className="text-[10px] opacity-75">{(w*150).toFixed(0)}ml</div>
-                              </button>
-                            </>
+                            </div>
+                            
+                            {/* Percentage selector based on type */}
+                            <div className="grid grid-cols-3 gap-2">
+                              {hypoDeficitType === "infant" ? (
+                                <>
+                                  <button
+                                    type="button"
+                                    onClick={() => setHypoDeficitPercent("5")}
+                                    className={`p-2 text-xs font-medium rounded-md border transition-colors ${
+                                      hypoDeficitPercent === "5"
+                                        ? "bg-teal-600 text-white border-teal-600"
+                                        : "bg-white dark:bg-gray-800 border-gray-300 hover:bg-teal-50"
+                                    }`}
+                                  >
+                                    <div>5%</div>
+                                    <div className="text-[10px] opacity-75">{(w*50).toFixed(0)}ml</div>
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => setHypoDeficitPercent("10")}
+                                    className={`p-2 text-xs font-medium rounded-md border transition-colors ${
+                                      hypoDeficitPercent === "10"
+                                        ? "bg-teal-600 text-white border-teal-600"
+                                        : "bg-white dark:bg-gray-800 border-gray-300 hover:bg-teal-50"
+                                    }`}
+                                  >
+                                    <div>10%</div>
+                                    <div className="text-[10px] opacity-75">{(w*100).toFixed(0)}ml</div>
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => setHypoDeficitPercent("15")}
+                                    className={`p-2 text-xs font-medium rounded-md border transition-colors ${
+                                      hypoDeficitPercent === "15"
+                                        ? "bg-teal-600 text-white border-teal-600"
+                                        : "bg-white dark:bg-gray-800 border-gray-300 hover:bg-teal-50"
+                                    }`}
+                                  >
+                                    <div>15%</div>
+                                    <div className="text-[10px] opacity-75">{(w*150).toFixed(0)}ml</div>
+                                  </button>
+                                </>
+                              ) : (
+                                <>
+                                  <button
+                                    type="button"
+                                    onClick={() => setHypoDeficitPercent("3")}
+                                    className={`p-2 text-xs font-medium rounded-md border transition-colors ${
+                                      hypoDeficitPercent === "3"
+                                        ? "bg-teal-600 text-white border-teal-600"
+                                        : "bg-white dark:bg-gray-800 border-gray-300 hover:bg-teal-50"
+                                    }`}
+                                  >
+                                    <div>3%</div>
+                                    <div className="text-[10px] opacity-75">{(w*30).toFixed(0)}ml</div>
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => setHypoDeficitPercent("6")}
+                                    className={`p-2 text-xs font-medium rounded-md border transition-colors ${
+                                      hypoDeficitPercent === "6"
+                                        ? "bg-teal-600 text-white border-teal-600"
+                                        : "bg-white dark:bg-gray-800 border-gray-300 hover:bg-teal-50"
+                                    }`}
+                                  >
+                                    <div>6%</div>
+                                    <div className="text-[10px] opacity-75">{(w*60).toFixed(0)}ml</div>
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => setHypoDeficitPercent("9")}
+                                    className={`p-2 text-xs font-medium rounded-md border transition-colors ${
+                                      hypoDeficitPercent === "9"
+                                        ? "bg-teal-600 text-white border-teal-600"
+                                        : "bg-white dark:bg-gray-800 border-gray-300 hover:bg-teal-50"
+                                    }`}
+                                  >
+                                    <div>9%</div>
+                                    <div className="text-[10px] opacity-75">{(w*90).toFixed(0)}ml</div>
+                                  </button>
+                                </>
+                              )}
+                            </div>
+                          </div>
+                        </>
+                      )}
                           ) : (
                             <>
                               <button
