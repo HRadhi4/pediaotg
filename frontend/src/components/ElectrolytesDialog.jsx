@@ -1809,9 +1809,9 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
                       </div>
                     </div>
                     
-                    {/* Part 1: Maintenance */}
+                    {/* Part 1: Maintenance (Shown Separately) */}
                     <div className="p-3 rounded-lg bg-green-50 dark:bg-green-950/30 border border-green-200">
-                      <p className="text-xs font-bold text-green-700 dark:text-green-300 mb-2">1. Daily Maintenance 3% NaCl</p>
+                      <p className="text-xs font-bold text-green-700 dark:text-green-300 mb-2">1. Daily Maintenance 3% NaCl (if needed)</p>
                       <div className="space-y-1 text-xs">
                         <p>Na Maintenance: <strong>{results.threePercentData.maintenanceRate} mEq/kg/day</strong> (Range: 2-5)</p>
                         <p>= {results.threePercentData.maintenanceRate} × {results.threePercentData.weight} kg = <strong>{results.threePercentData.maintenanceNaMEq} mEq/day</strong></p>
@@ -1832,23 +1832,6 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
                         <p className="border-t pt-1 mt-2">
                           <strong className="text-blue-800 dark:text-blue-200">3% NaCl Deficit: {results.threePercentData.deficit3PercentMl} ml</strong>
                         </p>
-                        <p className="text-[10px] text-muted-foreground">Can be added to maintenance over 24hrs or given in divided oral doses</p>
-                      </div>
-                    </div>
-                    
-                    {/* Part 3: Initial Bolus Option */}
-                    <div className="p-3 rounded-lg bg-amber-50 dark:bg-amber-950/30 border border-amber-200">
-                      <p className="text-xs font-bold text-amber-700 dark:text-amber-300 mb-2">3. Initial Bolus (Optional - to correct first 5 mEq)</p>
-                      <div className="space-y-1 text-xs">
-                        <p className="font-mono text-[10px]">5 × 0.6 × weight = mEq</p>
-                        <p>= 5 × 0.6 × {results.threePercentData.weight} = <strong>{results.threePercentData.initialBolusNaMEq} mEq</strong></p>
-                        <p className="border-t pt-1 mt-2">
-                          <strong className="text-amber-800 dark:text-amber-200">Initial Bolus: {results.threePercentData.initialBolusMl} ml of 3% NaCl over 1 hour</strong>
-                        </p>
-                        <div className="p-2 bg-white dark:bg-gray-900 rounded mt-2 text-[10px]">
-                          <p>After initial bolus, remaining deficit:</p>
-                          <p>{results.threePercentData.naDeficitMEq} - {results.threePercentData.initialBolusNaMEq} = <strong>{results.threePercentData.remainingDeficitMEq} mEq</strong> = {results.threePercentData.remainingDeficitMl} ml over 24hrs</p>
-                        </div>
                       </div>
                     </div>
                     
@@ -1857,16 +1840,23 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
                       <p className="text-xs font-semibold text-teal-700 dark:text-teal-300 mb-2">📋 Order Summary</p>
                       <div className="space-y-2 text-xs">
                         <div className="p-2 bg-amber-100 dark:bg-amber-900/30 rounded">
-                          <p className="font-bold">Option A: With Initial Bolus</p>
-                          <p className="font-mono">1. Give {results.threePercentData.initialBolusMl} ml 3% NaCl over 1 hour</p>
-                          <p className="font-mono">2. Then {results.threePercentData.totalDaily3PercentMl} ml 3% NaCl over 24 hrs ({results.threePercentData.hourlyRate3Percent} ml/hr)</p>
+                          <p className="font-bold">Option A: With Bolus</p>
+                          <p className="font-mono">1. Give <strong>{results.threePercentData.halfDeficitMl} ml</strong> of 3% NaCl as bolus</p>
+                          <p className="font-mono">2. Then <strong>{results.threePercentData.halfDeficitMl} ml</strong> of 3% NaCl over 24 hrs ({results.threePercentData.halfDeficitHourlyRate} ml/hr)</p>
+                          <p className="text-[10px] text-muted-foreground mt-1">(1/2 deficit as bolus + 1/2 deficit as IV over 24hrs)</p>
                         </div>
                         <div className="p-2 bg-cyan-100 dark:bg-cyan-900/30 rounded">
-                          <p className="font-bold">Option B: Over 24 hrs only</p>
-                          <p className="font-mono">Give {(parseFloat(results.threePercentData.maintenance3PercentMl) + parseFloat(results.threePercentData.deficit3PercentMl)).toFixed(1)} ml 3% NaCl over 24 hrs</p>
-                          <p className="font-mono">= {((parseFloat(results.threePercentData.maintenance3PercentMl) + parseFloat(results.threePercentData.deficit3PercentMl)) / 24).toFixed(1)} ml/hr</p>
+                          <p className="font-bold">Option B: Without Bolus</p>
+                          <p className="font-mono">Give <strong>{results.threePercentData.deficit3PercentMl} ml</strong> of 3% NaCl over 24 hrs</p>
+                          <p className="font-mono">= <strong>{results.threePercentData.deficitHourlyRate} ml/hr</strong></p>
                         </div>
                       </div>
+                    </div>
+                    
+                    {/* Important Note */}
+                    <div className="p-2 rounded bg-blue-50 dark:bg-blue-900/20 text-xs border border-blue-300">
+                      <p className="font-semibold text-blue-700">📝 N.B.</p>
+                      <p className="text-blue-600 dark:text-blue-400">If the patient is already on maintenance fluids, the above deficit correction should be <strong>added to</strong> the maintenance amount.</p>
                     </div>
                     
                     {/* Warning */}
