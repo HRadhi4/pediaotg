@@ -144,7 +144,7 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
     }
   };
 
-  // Clear results and reset dose when electrolyte, weight, or potassium route changes
+  // Clear results and reset dose when electrolyte, weight, potassium route, or rounding toggle changes
   useEffect(() => {
     setResults(null);
     const elec = electrolytes[selectedElectrolyte];
@@ -162,10 +162,16 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
       }
       const minAbsDose = doseMin * w;
       const maxAbsDose = Math.min(doseMax * w, maxAbsolute);
-      const midDose = (minAbsDose + maxAbsDose) / 2;
-      setCustomDose(midDose.toFixed(elec.resultUnit === "mEq" || elec.resultUnit === "mmol" ? 2 : 0));
+      let midDose = (minAbsDose + maxAbsDose) / 2;
+      
+      // When rounding is enabled, snap midpoint to nearest multiple of 5
+      if (roundToFives) {
+        midDose = Math.round(midDose / 5) * 5;
+      }
+      
+      setCustomDose(midDose.toFixed(elec.resultUnit === "mEq" || elec.resultUnit === "mmol" ? (roundToFives ? 0 : 2) : 0));
     }
-  }, [selectedElectrolyte, weight, potassiumRoute]);
+  }, [selectedElectrolyte, weight, potassiumRoute, roundToFives]);
 
   // Get dose limits for current electrolyte
   const currentElectrolyte = electrolytes[selectedElectrolyte];
