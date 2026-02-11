@@ -1443,48 +1443,6 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
                           </div>
                         </>
                       )}
-                          ) : (
-                            <>
-                              <button
-                                type="button"
-                                onClick={() => setHypoDeficitPercent("3")}
-                                className={`p-2 text-xs font-medium rounded-md border transition-colors ${
-                                  hypoDeficitPercent === "3"
-                                    ? "bg-teal-600 text-white border-teal-600"
-                                    : "bg-white dark:bg-gray-800 border-gray-300 hover:bg-teal-50"
-                                }`}
-                              >
-                                <div>3%</div>
-                                <div className="text-[10px] opacity-75">{(w*30).toFixed(0)}ml</div>
-                              </button>
-                              <button
-                                type="button"
-                                onClick={() => setHypoDeficitPercent("6")}
-                                className={`p-2 text-xs font-medium rounded-md border transition-colors ${
-                                  hypoDeficitPercent === "6"
-                                    ? "bg-teal-600 text-white border-teal-600"
-                                    : "bg-white dark:bg-gray-800 border-gray-300 hover:bg-teal-50"
-                                }`}
-                              >
-                                <div>6%</div>
-                                <div className="text-[10px] opacity-75">{(w*60).toFixed(0)}ml</div>
-                              </button>
-                              <button
-                                type="button"
-                                onClick={() => setHypoDeficitPercent("9")}
-                                className={`p-2 text-xs font-medium rounded-md border transition-colors ${
-                                  hypoDeficitPercent === "9"
-                                    ? "bg-teal-600 text-white border-teal-600"
-                                    : "bg-white dark:bg-gray-800 border-gray-300 hover:bg-teal-50"
-                                }`}
-                              >
-                                <div>9%</div>
-                                <div className="text-[10px] opacity-75">{(w*90).toFixed(0)}ml</div>
-                              </button>
-                            </>
-                          )}
-                        </div>
-                      </div>
                     </>
                   )}
                   
