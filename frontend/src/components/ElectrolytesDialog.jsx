@@ -817,6 +817,27 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
             </Select>
           </div>
 
+          {/* Round to 5s Toggle */}
+          <div className="flex items-center justify-between p-2 rounded-lg bg-amber-50 dark:bg-amber-950/30 border border-amber-200">
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-medium text-amber-800 dark:text-amber-200">Round dose to 5s</span>
+              <span className="text-xs text-amber-600 dark:text-amber-400">(easier dilution)</span>
+            </div>
+            <button
+              type="button"
+              onClick={() => { setRoundToFives(!roundToFives); setResults(null); }}
+              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                roundToFives ? 'bg-amber-500' : 'bg-gray-300'
+              }`}
+            >
+              <span
+                className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                  roundToFives ? 'translate-x-6' : 'translate-x-1'
+                }`}
+              />
+            </button>
+          </div>
+
           {/* Potassium IV/PO Switch */}
           {selectedElectrolyte === "potassium" && (
             <div className="flex items-center justify-center gap-2 p-2 rounded-lg bg-purple-50 dark:bg-purple-950/30 border border-purple-200">
