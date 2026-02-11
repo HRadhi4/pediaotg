@@ -170,7 +170,7 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
   // Get dose limits for current electrolyte
   const currentElectrolyte = electrolytes[selectedElectrolyte];
   const getDoseLimits = () => {
-    if (!currentElectrolyte || !w) return { min: 0, max: 100, step: 1 };
+    if (!currentElectrolyte || !w) return { min: 0, max: 100, step: 1, originalMin: 0, originalMax: 100 };
     // Handle potassium's dynamic dose range
     let doseMin, doseMax, maxAbsolute;
     if (selectedElectrolyte === "potassium") {
@@ -184,8 +184,24 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
     }
     const minAbsDose = doseMin * w;
     const maxAbsDose = Math.min(doseMax * w, maxAbsolute);
+    
+    // When rounding is enabled, snap to multiples of 5
+    if (roundToFives) {
+      // Round min DOWN to nearest 5 (allow slightly below range for easier dilution)
+      const roundedMin = Math.floor(minAbsDose / 5) * 5;
+      // Round max UP to nearest 5
+      const roundedMax = Math.ceil(maxAbsDose / 5) * 5;
+      return { 
+        min: roundedMin, 
+        max: roundedMax, 
+        step: 5,
+        originalMin: minAbsDose,
+        originalMax: maxAbsDose
+      };
+    }
+    
     const step = maxAbsDose < 10 ? 0.1 : maxAbsDose < 100 ? 1 : 10;
-    return { min: minAbsDose, max: maxAbsDose, step };
+    return { min: minAbsDose, max: maxAbsDose, step, originalMin: minAbsDose, originalMax: maxAbsDose };
   };
   const doseLimits = getDoseLimits();
   const currentDose = parseFloat(customDose) || doseLimits.min;
