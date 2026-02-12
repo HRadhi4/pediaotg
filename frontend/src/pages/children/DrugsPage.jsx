@@ -577,7 +577,7 @@ const DrugsPage = ({ onBack }) => {
       </p>
 
       {/* Drug List */}
-      <div className="space-y-2">
+      <div className="space-y-3">
         {filteredDrugs.map((drug) => {
           const isExpanded = expandedDrug === drug.id;
           const doseKeys = drug.doses ? Object.keys(drug.doses) : [];
@@ -590,13 +590,13 @@ const DrugsPage = ({ onBack }) => {
               className="nightingale-card cursor-pointer hover:border-blue-300 dark:hover:border-blue-700 transition-colors"
               onClick={() => setExpandedDrug(isExpanded ? null : drug.id)}
             >
-              <CardContent className="p-3">
-                {/* Drug Header - Two-row layout for better readability */}
-                <div className="space-y-2">
+              <CardContent className="p-4 min-h-[88px]">
+                {/* Drug Header - Two-row layout with unified container size */}
+                <div className="space-y-3">
                   {/* Row 1: Drug Name and Category */}
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <h3 className="font-semibold text-sm">{drug.name}</h3>
-                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-gray-100 dark:bg-gray-800 text-muted-foreground">
+                  <div className="flex items-start gap-2">
+                    <h3 className="font-semibold text-base leading-tight">{drug.name}</h3>
+                    <span className="text-[10px] px-2 py-1 rounded bg-gray-100 dark:bg-gray-800 text-muted-foreground whitespace-nowrap flex-shrink-0">
                       {drug.category}
                     </span>
                   </div>
