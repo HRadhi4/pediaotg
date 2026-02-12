@@ -1817,15 +1817,18 @@ const DrugsPage = ({ onBack }) => {
     }
   ];
 
-  // Sort drugs alphabetically by name
-  const sortedDrugs = [...drugs].sort((a, b) => a.name.localeCompare(b.name));
+  // Sort drugs alphabetically by name - using data from childrenFormulary.js
+  const sortedDrugs = useMemo(() => 
+    [...childrenFormulary].sort((a, b) => a.name.localeCompare(b.name)), 
+    []
+  );
 
   // Filter drugs based on search term (searches name, category, and indication)
-  const filteredDrugs = sortedDrugs.filter(drug => 
+  const filteredDrugs = useMemo(() => sortedDrugs.filter(drug => 
     drug.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     drug.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    drug.indication.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+    (drug.indication && drug.indication.toLowerCase().includes(searchTerm.toLowerCase()))
+  ), [searchTerm, sortedDrugs]);
 
   /**
    * ==========================================================================
