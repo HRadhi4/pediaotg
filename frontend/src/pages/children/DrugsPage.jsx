@@ -602,10 +602,10 @@ const DrugsPage = ({ onBack }) => {
                   </div>
                   
                   {/* Row 2: Dosing Info and Calculated Dose */}
-                  <div className="flex items-center justify-between gap-3">
+                  <div className="flex items-center justify-between gap-4 pt-1">
                     {/* Left: First dose info */}
                     {firstDose && (
-                      <div className="text-[10px] text-muted-foreground">
+                      <div className="text-xs text-muted-foreground flex-1 min-w-0">
                         <span className="text-blue-600 dark:text-blue-400 font-medium">{firstDose.label}:</span>{' '}
                         <span className="font-mono">{firstDose.value} {firstDose.unit}</span>
                       </div>
@@ -638,27 +638,27 @@ const DrugsPage = ({ onBack }) => {
                             <div className="flex items-center gap-2">
                               {showPerDose ? (
                                 <>
-                                  <span className={`text-sm font-mono font-bold ${doseResult.isExceedingMax ? 'text-amber-600' : 'text-green-600'}`}>
+                                  <span className={`text-base font-mono font-bold ${doseResult.isExceedingMax ? 'text-amber-600' : 'text-green-600'}`}>
                                     {doseResult.perDoseMin === doseResult.perDoseMax 
                                       ? `${doseResult.perDoseMin} mg` 
                                       : `${doseResult.perDoseMin}-${doseResult.perDoseMax} mg`}
                                   </span>
                                   {displayFreq && (
-                                    <span className="font-semibold bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 px-2 py-0.5 rounded text-xs">{displayFreq}</span>
+                                    <span className="font-semibold bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 px-2 py-1 rounded text-xs">{displayFreq}</span>
                                   )}
                                 </>
                               ) : (
                                 <>
-                                  <span className={`text-sm font-mono font-bold ${doseResult.isExceedingMax ? 'text-amber-600' : 'text-blue-600'}`}>
+                                  <span className={`text-base font-mono font-bold ${doseResult.isExceedingMax ? 'text-amber-600' : 'text-blue-600'}`}>
                                     {doseResult.dose}
                                   </span>
                                   {displayFreq && (
-                                    <span className="font-semibold bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 px-2 py-0.5 rounded text-xs">{displayFreq}</span>
+                                    <span className="font-semibold bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 px-2 py-1 rounded text-xs">{displayFreq}</span>
                                   )}
                                 </>
                               )}
                               {doseResult.isExceedingMax && (
-                                <span className="text-[10px] text-amber-600 font-medium">⚠️</span>
+                                <span className="text-xs text-amber-600 font-medium">⚠️</span>
                               )}
                             </div>
                           );
