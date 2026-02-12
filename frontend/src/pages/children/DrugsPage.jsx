@@ -684,63 +684,116 @@ const DrugsPage = ({ onBack }) => {
                       <div className="p-3 rounded-lg bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-200 dark:border-indigo-800">
                         <p className="text-[11px] font-semibold text-indigo-700 dark:text-indigo-300 mb-2 flex items-center gap-1">
                           <span>📊</span> {drug.dosingTable.title}
+                          {w > 0 && <span className="ml-auto text-emerald-600 dark:text-emerald-400 text-[10px]">⚖️ {w} kg</span>}
                         </p>
-                        <div className="overflow-x-auto -mx-3 px-3">
-                          <table className="w-full text-xs min-w-max">
+                        <div className="overflow-x-auto">
+                          <table className="text-xs border-collapse" style={{ minWidth: 'max-content' }}>
                             <thead>
                               <tr className="bg-indigo-100 dark:bg-indigo-900/40">
                                 {drug.dosingTable.columns.map((col, idx) => (
-                                  <th key={idx} className="px-2 py-1.5 text-left font-semibold text-indigo-800 dark:text-indigo-200 whitespace-nowrap">
+                                  <th key={idx} className="px-3 py-1.5 text-left font-semibold text-indigo-800 dark:text-indigo-200 whitespace-nowrap border-r border-indigo-200 dark:border-indigo-700 last:border-r-0">
                                     {col}
                                   </th>
                                 ))}
+                                {/* Add calculated dose column header if weight entered and table has dose data */}
+                                {w > 0 && drug.dosingTable.columns.some(col => 
+                                  col.toLowerCase().includes('dose') || 
+                                  col.toLowerCase().includes('mg') ||
+                                  col.toLowerCase().includes('weight')
+                                ) && (
+                                  <th className="px-3 py-1.5 text-left font-semibold text-emerald-700 dark:text-emerald-300 whitespace-nowrap bg-emerald-100 dark:bg-emerald-900/40">
+                                    📊 Calc ({w}kg)
+                                  </th>
+                                )}
                               </tr>
                             </thead>
                             <tbody>
-                              {drug.dosingTable.rows.map((row, rowIdx) => (
-                                <tr key={rowIdx} className={rowIdx % 2 === 0 ? 'bg-white dark:bg-slate-800' : 'bg-indigo-50/50 dark:bg-indigo-900/10'}>
-                                  {row.map((cell, cellIdx) => (
-                                    <td key={cellIdx} className="px-2 py-1.5 font-mono text-slate-700 dark:text-slate-300 whitespace-nowrap">
-                                      {cell}
-                                    </td>
-                                  ))}
-                                </tr>
-                              ))}
-                              {/* Calculated dose row based on patient weight */}
-                              {w > 0 && drug.dosingTable.columns.some(col => col.toLowerCase().includes('weight')) && (
-                                <tr className="bg-emerald-100 dark:bg-emerald-900/30 border-t-2 border-emerald-400">
-                                  {drug.dosingTable.columns.map((col, idx) => {
-                                    const colLower = col.toLowerCase();
-                                    if (colLower.includes('weight')) {
-                                      return <td key={idx} className="px-2 py-2 font-bold text-emerald-700 dark:text-emerald-300 whitespace-nowrap">⚖️ {w} kg (patient)</td>;
-                                    } else if (colLower.includes('dose') || colLower.includes('mg')) {
-                                      // Try to find matching weight range and calculate
-                                      const matchedRow = drug.dosingTable.rows.find(row => {
-                                        const weightCell = row[0];
-                                        if (!weightCell) return false;
-                                        const match = weightCell.toString().match(/(\d+\.?\d*)\s*-\s*(\d+\.?\d*)|[>≥](\d+\.?\d*)|[<≤](\d+\.?\d*)/);
-                                        if (match) {
-                                          if (match[1] && match[2]) {
-                                            return w >= parseFloat(match[1]) && w <= parseFloat(match[2]);
-                                          } else if (match[3]) {
-                                            return w >= parseFloat(match[3]);
-                                          } else if (match[4]) {
-                                            return w < parseFloat(match[4]);
-                                          }
+                              {drug.dosingTable.rows.map((row, rowIdx) => {
+                                // Calculate dose for this row if applicable
+                                let calculatedDose = null;
+                                if (w > 0) {
+                                  // Find dose column
+                                  const doseColIdx = drug.dosingTable.columns.findIndex(col => 
+                                    col.toLowerCase().includes('dose') || col.toLowerCase().includes('mg')
+                                  );
+                                  if (doseColIdx >= 0) {
+                                    const doseCell = row[doseColIdx];
+                                    if (doseCell) {
+                                      // Parse dose value (e.g., "18 mg/kg", "15 mg/kg", "40")
+                                      const doseStr = doseCell.toString();
+                                      const numMatch = doseStr.match(/(\d+(?:\.\d+)?)/);
+                                      if (numMatch) {
+                                        const dosePerKg = parseFloat(numMatch[1]);
+                                        // Check if it's mg/kg type
+                                        if (doseStr.toLowerCase().includes('mg/kg') || doseStr.toLowerCase().includes('/kg')) {
+                                          calculatedDose = (dosePerKg * w).toFixed(1) + ' mg';
+                                        } else if (!doseStr.toLowerCase().includes('mg')) {
+                                          // Assume it's mg/kg if just a number
+                                          calculatedDose = (dosePerKg * w).toFixed(1) + ' mg';
+                                        } else {
+                                          // Fixed dose
+                                          calculatedDose = doseStr;
                                         }
-                                        return false;
-                                      });
-                                      const doseValue = matchedRow ? matchedRow[drug.dosingTable.columns.findIndex(c => c.toLowerCase().includes('dose') || c.toLowerCase().includes('mg'))] : '—';
-                                      return <td key={idx} className="px-2 py-2 font-bold text-emerald-700 dark:text-emerald-300 whitespace-nowrap">{doseValue}</td>;
-                                    } else {
-                                      return <td key={idx} className="px-2 py-2 font-bold text-emerald-700 dark:text-emerald-300 whitespace-nowrap">—</td>;
+                                      }
                                     }
-                                  })}
-                                </tr>
-                              )}
+                                  }
+                                  // Also check weight column for weight-based tables
+                                  const weightColIdx = drug.dosingTable.columns.findIndex(col => 
+                                    col.toLowerCase().includes('weight')
+                                  );
+                                  if (weightColIdx >= 0) {
+                                    const weightCell = row[weightColIdx];
+                                    if (weightCell) {
+                                      const weightStr = weightCell.toString();
+                                      const rangeMatch = weightStr.match(/(\d+(?:\.\d+)?)\s*-\s*(\d+(?:\.\d+)?)/);
+                                      const gtMatch = weightStr.match(/[>≥]\s*(\d+(?:\.\d+)?)/);
+                                      const ltMatch = weightStr.match(/[<≤]\s*(\d+(?:\.\d+)?)/);
+                                      
+                                      let isMatch = false;
+                                      if (rangeMatch) {
+                                        isMatch = w >= parseFloat(rangeMatch[1]) && w <= parseFloat(rangeMatch[2]);
+                                      } else if (gtMatch) {
+                                        isMatch = w >= parseFloat(gtMatch[1]);
+                                      } else if (ltMatch) {
+                                        isMatch = w < parseFloat(ltMatch[1]);
+                                      }
+                                      
+                                      // If this row matches patient weight, highlight the dose
+                                      if (isMatch && doseColIdx >= 0) {
+                                        calculatedDose = '✓ ' + row[doseColIdx];
+                                      }
+                                    }
+                                  }
+                                }
+                                
+                                return (
+                                  <tr key={rowIdx} className={rowIdx % 2 === 0 ? 'bg-white dark:bg-slate-800' : 'bg-indigo-50/50 dark:bg-indigo-900/10'}>
+                                    {row.map((cell, cellIdx) => (
+                                      <td key={cellIdx} className="px-3 py-1.5 font-mono text-slate-700 dark:text-slate-300 whitespace-nowrap border-r border-indigo-100 dark:border-indigo-800 last:border-r-0">
+                                        {cell}
+                                      </td>
+                                    ))}
+                                    {/* Add calculated dose cell */}
+                                    {w > 0 && drug.dosingTable.columns.some(col => 
+                                      col.toLowerCase().includes('dose') || 
+                                      col.toLowerCase().includes('mg') ||
+                                      col.toLowerCase().includes('weight')
+                                    ) && (
+                                      <td className="px-3 py-1.5 font-mono font-bold text-emerald-700 dark:text-emerald-300 whitespace-nowrap bg-emerald-50 dark:bg-emerald-900/20">
+                                        {calculatedDose || '—'}
+                                      </td>
+                                    )}
+                                  </tr>
+                                );
+                              })}
                             </tbody>
                           </table>
                         </div>
+                        {w > 0 && (
+                          <p className="text-[9px] text-muted-foreground mt-2 pt-2 border-t border-indigo-200 dark:border-indigo-700">
+                            💡 Scroll table horizontally for full content. Calculated doses shown for {w} kg patient.
+                          </p>
+                        )}
                       </div>
                     )}
 
