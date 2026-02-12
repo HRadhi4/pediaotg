@@ -5301,7 +5301,7 @@ export const childrenFormulary = [
   },
   {
     id: "allopurinol",
-    name: "Allopurinol (Zyloprim)",
+    name: "Allopurinol (Zyloric)",
     category: "Xanthine Oxidase Inhibitor",
     indication: "Gout, hyperuricemia, tumor lysis syndrome prophylaxis, prevention of calcium oxalate stones",
     route: "PO/IV",
@@ -5393,7 +5393,7 @@ export const childrenFormulary = [
   },
   {
     id: "alteplase",
-    name: "Alteplase / tPA (Activase, Cathflo)",
+    name: "Alteplase / tPA (Actilyse)",
     category: "Thrombolytic",
     indication: "Acute ischemic stroke, PE, occluded central venous catheters, arterial/venous thrombosis",
     route: "IV/Intracatheter",
@@ -5589,7 +5589,7 @@ export const childrenFormulary = [
   },
   {
     id: "amphotericinb",
-    name: "Amphotericin B (Fungizone, AmBisome, Abelcet)",
+    name: "Amphotericin B (Fungizone, AmBisome)",
     category: "Antifungal",
     indication: "Serious systemic fungal infections, empiric antifungal in febrile neutropenia",
     route: "IV",
@@ -5809,7 +5809,7 @@ export const childrenFormulary = [
   },
   {
     id: "baclofen",
-    name: "Baclofen (Lioresal, Gablofen)",
+    name: "Baclofen (Lioresal)",
     category: "Skeletal Muscle Relaxant (GABA agonist)",
     indication: "Spasticity (cerebral palsy, spinal cord injury, MS), intractable hiccups",
     route: "PO/Intrathecal",
@@ -5934,7 +5934,7 @@ export const childrenFormulary = [
   },
   {
     id: "bumetanide",
-    name: "Bumetanide (Bumex)",
+    name: "Bumetanide (Burinex)",
     category: "Loop Diuretic",
     indication: "Edema (CHF, hepatic, renal disease), acute pulmonary edema, hypertension (adjunct)",
     route: "PO/IV/IM",
