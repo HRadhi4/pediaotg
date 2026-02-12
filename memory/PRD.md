@@ -51,6 +51,11 @@ A pediatric medical calculator app featuring:
   - Original DrugsPage UI preserved (no nested containers)
   - Data imported from external childrenFormulary.js file
   - 111 medications with comprehensive dosing information
+  - **Single-line drug header layout** - Name and category on one line without wrapping (Dec 2025 fix)
+  - **Horizontal table scrolling** - Tables scroll horizontally with helper text for full content visibility (Dec 2025 fix)
+  - **Calculated dose column in tables** (Dec 2025 fix):
+    - For weight-range tables (e.g., Paracetamol): Shows "✓" with fixed dose for matching weight row
+    - For mg/kg tables (e.g., Amikacin): Shows calculated dose in mg (dose_per_kg × patient_weight)
   - **Dosing tables** displayed in user-friendly format (like PDF)
   - Searchable by drug name, category, or indication
   - Weight-based dose calculations with GFR calculator
@@ -65,7 +70,7 @@ A pediatric medical calculator app featuring:
     - Contraindications (red styling)
     - Warnings & Precautions (orange styling)
     - Side effects (pink styling)
-    - Drug interactions (violet table)
+    - Drug interactions (violet table with horizontal scrolling)
     - Renal and hepatic adjustments
     - Clinical notes
 - **Navigation:** Integrated into Children Dashboard via DrugsPage component
