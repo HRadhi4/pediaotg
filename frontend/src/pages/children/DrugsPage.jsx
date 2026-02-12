@@ -695,6 +695,39 @@ const DrugsPage = ({ onBack }) => {
                       </span>
                     </div>
 
+                    {/* Dosing Table (from formulary PDF) */}
+                    {drug.dosingTable && (
+                      <div className="p-3 rounded-lg bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-200 dark:border-indigo-800">
+                        <p className="text-[11px] font-semibold text-indigo-700 dark:text-indigo-300 mb-2 flex items-center gap-1">
+                          <span>📊</span> {drug.dosingTable.title}
+                        </p>
+                        <div className="overflow-x-auto">
+                          <table className="w-full text-xs">
+                            <thead>
+                              <tr className="bg-indigo-100 dark:bg-indigo-900/40">
+                                {drug.dosingTable.columns.map((col, idx) => (
+                                  <th key={idx} className="px-2 py-1.5 text-left font-semibold text-indigo-800 dark:text-indigo-200 whitespace-nowrap">
+                                    {col}
+                                  </th>
+                                ))}
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {drug.dosingTable.rows.map((row, rowIdx) => (
+                                <tr key={rowIdx} className={rowIdx % 2 === 0 ? 'bg-white dark:bg-slate-800' : 'bg-indigo-50/50 dark:bg-indigo-900/10'}>
+                                  {row.map((cell, cellIdx) => (
+                                    <td key={cellIdx} className="px-2 py-1.5 font-mono text-slate-700 dark:text-slate-300 whitespace-nowrap">
+                                      {cell}
+                                    </td>
+                                  ))}
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    )}
+
                     {/* Age-Based Dosing Table */}
                     {drug.ageDosing && (
                       <div className="p-3 rounded-lg bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800">
