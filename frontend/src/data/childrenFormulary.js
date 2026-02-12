@@ -2589,7 +2589,7 @@ export const childrenFormulary = [
       ettDose: { label: "ETT Dose", value: "2-3", unit: "mg/kg (2-3x IV dose)" },
       localMax: { label: "Local Anesthesia (max)", value: "4.5", unit: "mg/kg without epi; 7 mg/kg with epi" },
       topicalChild: { label: "Topical (Child)", value: "3", unit: "mg/kg/dose (max 4.5 mg/kg)" }
-    ],
+    },
     dosingTable: {
       title: "Lidocaine Maximum Doses for Local Anesthesia",
       columns: ["Solution", "Without Epinephrine", "With Epinephrine"],
