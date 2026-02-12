@@ -44,6 +44,7 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
   const [harrietDeficitPercent, setHarrietDeficitPercent] = useState("10"); // "5", "10", "15" for infant; "3", "6", "9" for child
   const [hypoDeficitType, setHypoDeficitType] = useState("infant"); // For hyponatremia mild
   const [hypoDeficitPercent, setHypoDeficitPercent] = useState("10"); // For hyponatremia mild
+  const [hypoFluidType, setHypoFluidType] = useState("NS"); // Fluid type for hyponatremia mild standard correction
   const [phosphateSeverity, setPhosphateSeverity] = useState("moderate");
   const [potassiumRoute, setPotassiumRoute] = useState("IV"); // "IV" or "PO"
   const [potassiumLineType, setPotassiumLineType] = useState("peripheral"); // "peripheral", "central", "central_restricted"
@@ -55,6 +56,14 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
   const [desiredHco3, setDesiredHco3] = useState("24");
   const [baseExcess, setBaseExcess] = useState("");
   const [infusionRate, setInfusionRate] = useState("1"); // mEq/kg/hr
+
+  // Fluid types for hyponatremia correction
+  const hypoFluidOptions = {
+    NS: { name: "NS (Normal Saline)", na: 154 },
+    RL: { name: "RL (Ringer's Lactate)", na: 130 },
+    halfNS: { name: "1/2 NS (Half Normal Saline)", na: 77 },
+    threePercent: { name: "3% NaCl (Hypertonic)", na: 513 }
+  };
 
   // Electrolyte definitions with dose ranges
   const electrolytes = {
