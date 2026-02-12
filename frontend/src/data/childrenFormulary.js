@@ -19,7 +19,7 @@ export const childrenFormulary = [
   // ============================================================================
   {
     id: "acetaminophen",
-    name: "Acetaminophen (Tylenol, Paracetamol)",
+    name: "Paracetamol (Calpol, Panadol)",
     category: "Analgesic/Antipyretic",
     route: "PO/PR/IV",
     formulations: [
@@ -89,7 +89,7 @@ export const childrenFormulary = [
   // ============================================================================
   {
     id: "nacetylcysteine",
-    name: "Acetylcysteine (NAC, Mucomyst)",
+    name: "Acetylcysteine (Parvolex, Fluimucil)",
     category: "Antidote/Mucolytic",
     route: "PO/IV/Inhaled",
     formulations: [
@@ -263,7 +263,7 @@ export const childrenFormulary = [
   // ============================================================================
   {
     id: "salbutamol",
-    name: "Albuterol (Salbutamol, Ventolin)",
+    name: "Salbutamol (Ventolin, Salamol)",
     category: "Bronchodilator (β2-agonist)",
     route: "Inhaled/Nebulizer/PO",
     formulations: [
@@ -383,7 +383,7 @@ export const childrenFormulary = [
   // ============================================================================
   {
     id: "amiodarone",
-    name: "Amiodarone (Cordarone, Pacerone)",
+    name: "Amiodarone (Cordarone X)",
     category: "Antiarrhythmic (Class III)",
     route: "IV/PO",
     formulations: [
@@ -445,7 +445,7 @@ export const childrenFormulary = [
   // ============================================================================
   {
     id: "amoxicillin",
-    name: "Amoxicillin (Amoxil)",
+    name: "Amoxicillin (Amoxil, Amoram)",
     category: "Antibiotic (Aminopenicillin)",
     route: "PO",
     formulations: [
@@ -508,7 +508,7 @@ export const childrenFormulary = [
   // ============================================================================
   {
     id: "augmentin",
-    name: "Amoxicillin-Clavulanate (Augmentin)",
+    name: "Co-Amoxiclav (Augmentin)",
     category: "Antibiotic (Aminopenicillin + β-lactamase inhibitor)",
     route: "PO/IV",
     formulations: [
@@ -643,7 +643,7 @@ export const childrenFormulary = [
   // ============================================================================
   {
     id: "ampicillinsulbactam",
-    name: "Ampicillin-Sulbactam (Unasyn)",
+    name: "Ampicillin-Sulbactam (Unasyn, Sultamicillin)",
     category: "Antibiotic (Aminopenicillin + β-lactamase inhibitor)",
     route: "IV/IM",
     formulations: [
@@ -807,7 +807,7 @@ export const childrenFormulary = [
   // ============================================================================
   {
     id: "azithromycin",
-    name: "Azithromycin (Zithromax)",
+    name: "Azithromycin (Zithromax, Azithrocin)",
     category: "Antibiotic (Macrolide)",
     route: "PO/IV",
     formulations: [
