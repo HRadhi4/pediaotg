@@ -613,27 +613,11 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
         // Total Na needed = Na Deficit + Maintenance
         const totalNa = naDeficit + naMaintenance;
         
-        // Step 3: Determine Na Concentration needed
-        // Na concentration = Total Na / Volume (in L)
-        const naConcentration = (totalNa / (totalVolume / 1000));
-        
-        // Choose fluid type based on concentration
-        // NS = 154 mEq/L, 1/2 NS = 77 mEq/L, 3% NaCl = 513 mEq/L, RL = 130 mEq/L
-        let fluidType;
-        let fluidNa;
-        if (naConcentration >= 140) {
-          fluidType = "NS (Normal Saline)";
-          fluidNa = 154;
-        } else if (naConcentration >= 100) {
-          fluidType = "RL (Ringer's Lactate)";
-          fluidNa = 130;
-        } else if (naConcentration >= 60) {
-          fluidType = "1/2 NS (Half Normal Saline)";
-          fluidNa = 77;
-        } else {
-          fluidType = "1/4 NS or D5 0.2% NaCl";
-          fluidNa = 34;
-        }
+        // Step 3: Use selected fluid type
+        // Available fluids: NS=154, RL=130, 1/2NS=77, 3%NaCl=513
+        const selectedFluid = hypoFluidOptions[hypoFluidType];
+        const fluidType = selectedFluid.name;
+        const fluidNa = selectedFluid.na;
         
         // Step 4: Dextrose - Usually D5% added
         // Mixture made from NS + D50%: 450ml NS + 50ml D50%
