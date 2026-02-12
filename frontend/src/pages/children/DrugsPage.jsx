@@ -689,12 +689,12 @@ const DrugsPage = ({ onBack }) => {
                           <span>📊</span> {drug.dosingTable.title}
                           {w > 0 && <span className="ml-auto text-emerald-600 dark:text-emerald-400 text-[10px]">⚖️ {w} kg</span>}
                         </p>
-                        <div className="overflow-x-auto">
-                          <table className="text-xs border-collapse" style={{ minWidth: 'max-content' }}>
+                        <div className="overflow-x-auto -mx-3 px-3 pb-2" style={{ WebkitOverflowScrolling: 'touch' }}>
+                          <table className="text-xs border-collapse w-max">
                             <thead>
                               <tr className="bg-indigo-100 dark:bg-indigo-900/40">
                                 {drug.dosingTable.columns.map((col, idx) => (
-                                  <th key={idx} className="px-3 py-1.5 text-left font-semibold text-indigo-800 dark:text-indigo-200 whitespace-nowrap border-r border-indigo-200 dark:border-indigo-700 last:border-r-0">
+                                  <th key={idx} className="px-4 py-2 text-left font-semibold text-indigo-800 dark:text-indigo-200 border-r border-indigo-200 dark:border-indigo-700 last:border-r-0" style={{ minWidth: '80px' }}>
                                     {col}
                                   </th>
                                 ))}
@@ -704,8 +704,8 @@ const DrugsPage = ({ onBack }) => {
                                   col.toLowerCase().includes('mg') ||
                                   col.toLowerCase().includes('weight')
                                 ) && (
-                                  <th className="px-3 py-1.5 text-left font-semibold text-emerald-700 dark:text-emerald-300 whitespace-nowrap bg-emerald-100 dark:bg-emerald-900/40">
-                                    📊 Calc ({w}kg)
+                                  <th className="px-4 py-2 text-left font-semibold text-emerald-700 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-900/40" style={{ minWidth: '100px' }}>
+                                    Calc ({w}kg)
                                   </th>
                                 )}
                               </tr>
@@ -776,7 +776,7 @@ const DrugsPage = ({ onBack }) => {
                                 return (
                                   <tr key={rowIdx} className={`${rowIdx % 2 === 0 ? 'bg-white dark:bg-slate-800' : 'bg-indigo-50/50 dark:bg-indigo-900/10'} ${isMatchingRow ? 'ring-2 ring-emerald-400 bg-emerald-50 dark:bg-emerald-900/30' : ''}`}>
                                     {row.map((cell, cellIdx) => (
-                                      <td key={cellIdx} className={`px-3 py-1.5 font-mono text-slate-700 dark:text-slate-300 whitespace-nowrap border-r border-indigo-100 dark:border-indigo-800 last:border-r-0 ${isMatchingRow ? 'font-bold' : ''}`}>
+                                      <td key={cellIdx} className={`px-4 py-2 font-mono text-slate-700 dark:text-slate-300 border-r border-indigo-100 dark:border-indigo-800 last:border-r-0 ${isMatchingRow ? 'font-bold' : ''}`} style={{ minWidth: '80px' }}>
                                         {cell}
                                       </td>
                                     ))}
@@ -786,7 +786,7 @@ const DrugsPage = ({ onBack }) => {
                                       col.toLowerCase().includes('mg') ||
                                       col.toLowerCase().includes('weight')
                                     ) && (
-                                      <td className={`px-3 py-1.5 font-mono font-bold whitespace-nowrap ${isMatchingRow ? 'text-emerald-800 dark:text-emerald-200 bg-emerald-100 dark:bg-emerald-800/40' : 'text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-900/20'}`}>
+                                      <td className={`px-4 py-2 font-mono font-bold ${isMatchingRow ? 'text-emerald-800 dark:text-emerald-200 bg-emerald-100 dark:bg-emerald-800/40' : 'text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-900/20'}`} style={{ minWidth: '100px' }}>
                                         {calculatedDose || '—'}
                                       </td>
                                     )}
@@ -796,9 +796,8 @@ const DrugsPage = ({ onBack }) => {
                             </tbody>
                           </table>
                         </div>
-                        {w > 0 && (
-                          <p className="text-[9px] text-muted-foreground mt-2 pt-2 border-t border-indigo-200 dark:border-indigo-700">
-                            💡 Scroll table horizontally for full content. Calculated doses shown for {w} kg patient.
+                        <p className="text-[9px] text-muted-foreground mt-1">
+                          👆 Swipe table to see all columns
                           </p>
                         )}
                       </div>
