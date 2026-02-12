@@ -26,13 +26,14 @@
  * =============================================================================
  */
 
-import { useState, useEffect } from "react";
-import { AlertTriangle, ChevronDown, Scale } from "lucide-react";
+import { useState, useEffect, useMemo } from "react";
+import { AlertTriangle, ChevronDown, ChevronUp, Scale, Info, AlertCircle } from "lucide-react";
 import { ArrowLeftIcon } from "@/components/HealthIcons";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { childrenFormulary, drugCategories } from "@/data/childrenFormulary";
 
 const DrugsPage = ({ onBack }) => {
   // ==========================================================================
