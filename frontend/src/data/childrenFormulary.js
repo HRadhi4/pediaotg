@@ -6077,6 +6077,181 @@ export const childrenFormulary = [
       gfr10: "25% of dose",
       hd: "Give after HD"
     }
+  },
+
+  // ============================================================================
+  // METHYLPREDNISOLONE (Solu-Medrol, Medrol)
+  // ============================================================================
+  {
+    id: "methylprednisolone",
+    name: "Methylprednisolone (Solu-Medrol)",
+    category: "Corticosteroid",
+    route: "IV/PO",
+    formulations: [
+      { type: "Tablets", strengths: "2 mg, 4 mg, 8 mg, 16 mg, 32 mg" },
+      { type: "IV (Solu-Medrol)", strengths: "40 mg, 125 mg, 500 mg, 1 g, 2 g vials" }
+    ],
+    doses: {
+      antiInflammatory: { label: "Anti-inflammatory (IV/PO)", value: "0.5-1.7", unit: "mg/kg/day divided Q6-12h" },
+      asthmaAcute: { label: "Acute Asthma (IV/PO)", value: "1-2", unit: "mg/kg/day divided Q6-12h", maxDose: 60 },
+      statusAsthmaticus: { label: "Status Asthmaticus (IV)", value: "2", unit: "mg/kg loading then 0.5-1 mg/kg Q6h", maxDose: 120 },
+      pulseTherapy: { label: "Pulse Therapy (IV)", value: "15-30", unit: "mg/kg/dose once daily x 1-3 days", maxDose: 1000 },
+      spinalCordInjury: { label: "Spinal Cord Injury (IV)", value: "30", unit: "mg/kg over 15 min, then 5.4 mg/kg/hr x 23h" },
+      croup: { label: "Croup (IV/IM)", value: "1-2", unit: "mg/kg x 1 dose", maxDose: 60 }
+    },
+    max: "60 mg/day (anti-inflammatory); 1 g/day (pulse therapy)",
+    indication: "Acute asthma, status asthmaticus, croup, anti-inflammatory, autoimmune conditions, pulse therapy for severe inflammation, spinal cord injury",
+    contraindications: [
+      "Systemic fungal infections",
+      "Live vaccines during high-dose therapy",
+      "Known hypersensitivity"
+    ],
+    warnings: [
+      "May cause hyperglycemia - monitor glucose",
+      "May mask signs of infection",
+      "Adrenal suppression with prolonged use",
+      "GI bleeding risk - consider PPI prophylaxis",
+      "May cause hypertension, fluid retention",
+      "Behavioral changes, insomnia common"
+    ],
+    sideEffects: [
+      "Short-term: Hyperglycemia, hypertension, mood changes, insomnia, increased appetite",
+      "Long-term: Adrenal suppression, osteoporosis, growth suppression, cataracts, immunosuppression",
+      "IV: Flushing, metallic taste during infusion"
+    ],
+    interactions: [
+      { drug: "NSAIDs", effect: "Increased GI bleeding risk" },
+      { drug: "CYP3A4 inducers (phenytoin, rifampin)", effect: "Decreased steroid effect" },
+      { drug: "Live vaccines", effect: "Contraindicated during immunosuppression" },
+      { drug: "Warfarin", effect: "May alter anticoagulant effect" }
+    ],
+    notes: "IV methylpred is approximately 5x more potent than hydrocortisone. 4 mg methylprednisolone = 5 mg prednisolone = 20 mg hydrocortisone. Give IV doses over 15-30 min (pulse doses over 30-60 min). Taper if used >7-14 days.",
+    renalAdjust: null,
+    hepaticAdjust: "Use with caution in severe hepatic impairment"
+  },
+
+  // ============================================================================
+  // CEFOTAXIME (Claforan)
+  // ============================================================================
+  {
+    id: "cefotaxime",
+    name: "Cefotaxime (Claforan)",
+    category: "Antibiotic (3rd Gen Cephalosporin)",
+    route: "IV/IM",
+    formulations: [
+      { type: "IV/IM", strengths: "500 mg, 1 g, 2 g vials" }
+    ],
+    doses: {
+      neonate0to7d: { label: "Neonate 0-7d", value: "50", unit: "mg/kg/dose Q12h" },
+      neonate7to28d: { label: "Neonate 7-28d", value: "50", unit: "mg/kg/dose Q8h" },
+      infantChild: { label: "Infant/Child", value: "100-200", unit: "mg/kg/day divided Q6-8h" },
+      meningitis: { label: "Meningitis", value: "200-300", unit: "mg/kg/day divided Q6h", maxDose: 12000 },
+      sepsisSerious: { label: "Sepsis/Serious Infection", value: "150-200", unit: "mg/kg/day divided Q6-8h" },
+      adult: { label: "Adult", value: "1-2", unit: "g Q6-8h", isFixed: true }
+    },
+    dosingTable: {
+      title: "Cefotaxime Neonatal Dosing",
+      columns: ["Age", "Dose", "Interval"],
+      rows: [
+        ["0-7 days", "50 mg/kg", "Q12h"],
+        ["8-28 days", "50 mg/kg", "Q8h"],
+        [">28 days", "50 mg/kg", "Q6-8h"]
+      ]
+    },
+    max: "12 g/day",
+    indication: "Meningitis, sepsis, pneumonia, UTI, intra-abdominal infections, gonorrhea. Good CSF penetration. Covers gram-positive (not MRSA), gram-negative including some Pseudomonas",
+    contraindications: [
+      "Known hypersensitivity to cephalosporins",
+      "Severe penicillin allergy (caution - 1-2% cross-reactivity)"
+    ],
+    warnings: [
+      "Adjust dose in renal impairment",
+      "May cause C. difficile-associated diarrhea",
+      "Superinfection risk with prolonged use"
+    ],
+    sideEffects: [
+      "Common: Diarrhea, rash, injection site reactions",
+      "Less common: Eosinophilia, elevated LFTs",
+      "Rare: Seizures (high doses in renal impairment), hemolytic anemia"
+    ],
+    interactions: [
+      { drug: "Aminoglycosides", effect: "Synergistic activity; don't mix in same IV line" },
+      { drug: "Probenecid", effect: "Increased cefotaxime levels" },
+      { drug: "Loop diuretics", effect: "Increased nephrotoxicity risk" }
+    ],
+    notes: "Preferred over ceftriaxone in neonates (ceftriaxone can displace bilirubin). Good CSF penetration - first-line for neonatal meningitis. Has active metabolite (desacetyl-cefotaxime) with antibacterial activity.",
+    renalAdjust: {
+      gfr50: "No adjustment",
+      gfr30: "Q8-12h interval",
+      gfr10: "Q12-24h interval",
+      hd: "Give after HD"
+    },
+    hepaticAdjust: "No adjustment needed"
+  },
+
+  // ============================================================================
+  // CEFUROXIME (Zinnat, Zinacef)
+  // ============================================================================
+  {
+    id: "cefuroxime",
+    name: "Cefuroxime (Zinnat/Zinacef)",
+    category: "Antibiotic (2nd Gen Cephalosporin)",
+    route: "IV/IM/PO",
+    formulations: [
+      { type: "Tablets (Zinnat)", strengths: "125 mg, 250 mg, 500 mg" },
+      { type: "Suspension (Zinnat)", strengths: "125 mg/5 mL, 250 mg/5 mL" },
+      { type: "IV/IM (Zinacef)", strengths: "750 mg, 1.5 g vials" }
+    ],
+    doses: {
+      oralMild: { label: "Oral - Mild Infection", value: "10-15", unit: "mg/kg/dose Q12h", maxDose: 500 },
+      oralOtitis: { label: "Oral - Otitis Media", value: "15", unit: "mg/kg/dose Q12h", maxDose: 500 },
+      oralPharyngitis: { label: "Oral - Pharyngitis", value: "10", unit: "mg/kg/dose Q12h x 10 days", maxDose: 250 },
+      ivMild: { label: "IV/IM - Mild-Moderate", value: "75-100", unit: "mg/kg/day divided Q8h" },
+      ivSevere: { label: "IV - Severe Infection", value: "100-150", unit: "mg/kg/day divided Q6-8h", maxDose: 6000 },
+      ivMeningitis: { label: "IV - Meningitis", value: "200-240", unit: "mg/kg/day divided Q6-8h", maxDose: 9000 },
+      adult: { label: "Adult Oral", value: "250-500", unit: "mg Q12h", isFixed: true },
+      adultIV: { label: "Adult IV", value: "750-1500", unit: "mg Q8h", isFixed: true }
+    },
+    dosingTable: {
+      title: "Cefuroxime Pediatric Dosing",
+      columns: ["Route", "Indication", "Dose", "Max"],
+      rows: [
+        ["PO", "Mild infection", "10-15 mg/kg/dose Q12h", "500 mg/dose"],
+        ["PO", "Otitis media", "15 mg/kg/dose Q12h", "500 mg/dose"],
+        ["IV/IM", "Mild-moderate", "75-100 mg/kg/day ÷ Q8h", "4.5 g/day"],
+        ["IV", "Severe", "100-150 mg/kg/day ÷ Q6-8h", "6 g/day"],
+        ["IV", "Meningitis", "200-240 mg/kg/day ÷ Q6-8h", "9 g/day"]
+      ]
+    },
+    max: "500 mg/dose PO; 6 g/day IV (9 g/day meningitis)",
+    indication: "Respiratory tract infections, otitis media, sinusitis, UTI, skin infections, bone/joint infections, Lyme disease. Good gram-positive and improved gram-negative coverage vs 1st gen cephalosporins",
+    contraindications: [
+      "Known hypersensitivity to cephalosporins",
+      "Severe penicillin allergy (caution)"
+    ],
+    warnings: [
+      "Oral suspension has different bioavailability than tablets - not interchangeable mg-for-mg",
+      "Take with food to increase absorption",
+      "May cause C. difficile-associated diarrhea"
+    ],
+    sideEffects: [
+      "Common: Diarrhea, nausea, vomiting",
+      "Less common: Rash, headache, elevated LFTs",
+      "Rare: Seizures (renal impairment), hemolytic anemia, pseudomembranous colitis"
+    ],
+    interactions: [
+      { drug: "Antacids/H2-blockers", effect: "May decrease oral absorption" },
+      { drug: "Probenecid", effect: "Increased cefuroxime levels" },
+      { drug: "Aminoglycosides", effect: "Synergistic; increased nephrotoxicity risk" }
+    ],
+    notes: "Oral cefuroxime axetil is a prodrug - hydrolyzed to cefuroxime in intestinal mucosa. MUST take oral form with food for adequate absorption. Suspension and tablets are NOT equivalent - suspension has 91% bioavailability of tablets. Good option for step-down therapy from IV to oral.",
+    renalAdjust: {
+      gfr50: "No adjustment",
+      gfr30: "Q12h interval",
+      gfr10: "Q24h interval",
+      hd: "Give after HD"
+    },
+    hepaticAdjust: "No adjustment needed"
   }
 ];
 
