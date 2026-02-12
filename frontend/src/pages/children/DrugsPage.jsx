@@ -798,8 +798,7 @@ const DrugsPage = ({ onBack }) => {
                         </div>
                         <p className="text-[9px] text-muted-foreground mt-1">
                           👆 Swipe table to see all columns
-                          </p>
-                        )}
+                        </p>
                       </div>
                     )}
 
