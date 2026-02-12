@@ -3510,6 +3510,970 @@ export const childrenFormulary = [
     notes: "IV form useful when PO not feasible. For GI bleed: continuous infusion maintains gastric pH >6. Give 30-60 min before meals. Granules can be mixed with applesauce or apple juice. IV infusion stable for 24 hours at room temperature.",
     renalAdjust: null,
     hepaticAdjust: "Max 20 mg/day in severe hepatic impairment"
+  },
+
+  // ============================================================================
+  // PENICILLIN G (Aqueous)
+  // ============================================================================
+  {
+    id: "penicilling",
+    name: "Penicillin G (Aqueous)",
+    category: "Antibiotic (Penicillin)",
+    route: "IV/IM",
+    formulations: [
+      { type: "Injection (K+)", strengths: "1 million, 5 million, 20 million units" },
+      { type: "Injection (Na+)", strengths: "5 million units" }
+    ],
+    doses: {
+      neoUnder7d: { label: "Neonate ≤7 days", value: "50,000", unit: "units/kg/dose Q12h" },
+      neoOver7d: { label: "Neonate >7 days", value: "50,000", unit: "units/kg/dose Q8h" },
+      mildModChild: { label: "Mild/Mod (Child)", value: "100,000-250,000", unit: "units/kg/day ÷ Q4-6h" },
+      severeChild: { label: "Severe (Child)", value: "250,000-400,000", unit: "units/kg/day ÷ Q4-6h" },
+      meningitis: { label: "Meningitis", value: "300,000-400,000", unit: "units/kg/day ÷ Q4h (max 24 million/day)" },
+      adultStandard: { label: "Adult", value: "2-4 million", unit: "units Q4-6h", isFixed: true }
+    },
+    max: "24 million units/day",
+    indication: "Group B Strep, Strep pneumoniae (susceptible), syphilis, meningitis, endocarditis",
+    contraindications: [
+      "History of penicillin anaphylaxis"
+    ],
+    warnings: [
+      "High sodium/potassium content (check formulation)",
+      "Jarisch-Herxheimer reaction with syphilis treatment",
+      "Neurotoxicity (seizures) with very high doses/renal impairment"
+    ],
+    sideEffects: [
+      "Common: Diarrhea, nausea, rash",
+      "Serious: Anaphylaxis, seizures (high dose)",
+      "Hematologic: Hemolytic anemia, thrombocytopenia"
+    ],
+    interactions: [
+      { drug: "Probenecid", effect: "Increased penicillin levels" },
+      { drug: "Methotrexate", effect: "Decreased methotrexate clearance" },
+      { drug: "Warfarin", effect: "Variable INR effects" }
+    ],
+    notes: "1 million units = 0.6 g. K+ formulation: 1.7 mEq K/million units. Na+ formulation: 2 mEq Na/million units. Preferred for GBS and susceptible streptococci. Not stable orally (use Pen V for oral).",
+    renalAdjust: {
+      gfr50: "No change",
+      gfr30: "75% dose or extend interval",
+      gfr10: "50% dose or extend to Q8-12h",
+      hd: "Dose after HD; supplement 500,000-1 million units"
+    },
+    hepaticAdjust: null
+  },
+
+  // ============================================================================
+  // PHENOBARBITAL
+  // ============================================================================
+  {
+    id: "phenobarbital",
+    name: "Phenobarbital (Luminal)",
+    category: "Anticonvulsant (Barbiturate)",
+    route: "IV/IM/PO",
+    formulations: [
+      { type: "Injection", strengths: "65 mg/mL, 130 mg/mL" },
+      { type: "Tablets", strengths: "15 mg, 30 mg, 60 mg, 100 mg" },
+      { type: "Elixir", strengths: "20 mg/5 mL" }
+    ],
+    doses: {
+      statusLoading: { label: "Status Epilepticus (Loading)", value: "20", unit: "mg/kg IV (max rate 60 mg/min)" },
+      statusAdditional: { label: "Additional doses", value: "5-10", unit: "mg/kg IV Q15-30min (max 40 mg/kg total)" },
+      neonatalLoading: { label: "Neonatal Seizures (Load)", value: "20", unit: "mg/kg IV" },
+      maintenanceNeo: { label: "Maintenance (Neonate)", value: "3-5", unit: "mg/kg/day ÷ QD-BID" },
+      maintenanceChild: { label: "Maintenance (Child)", value: "3-6", unit: "mg/kg/day ÷ QD-BID" },
+      maintenanceAdult: { label: "Maintenance (Adult)", value: "60-200", unit: "mg/day ÷ QD-BID", isFixed: true }
+    },
+    dosingTable: {
+      title: "Phenobarbital Maintenance by Age",
+      columns: ["Age", "Dose (mg/kg/day)"],
+      rows: [
+        ["Neonate", "3-5"],
+        ["Infant", "5-6"],
+        ["1-5 years", "6-8"],
+        ["6-12 years", "4-6"],
+        [">12 years", "1-3"]
+      ]
+    },
+    max: "40 mg/kg total loading; 300 mg/day maintenance",
+    indication: "Status epilepticus, neonatal seizures, febrile seizures (prevention), generalized tonic-clonic seizures",
+    contraindications: [
+      "Severe respiratory disease",
+      "Porphyria",
+      "Severe hepatic impairment"
+    ],
+    warnings: [
+      "Respiratory depression (especially with loading doses)",
+      "Drug-drug interactions (potent CYP450 inducer)",
+      "Paradoxical excitation in children",
+      "Physical dependence with chronic use"
+    ],
+    sideEffects: [
+      "Common: Sedation, ataxia, cognitive impairment",
+      "Less common: Behavioral changes, hyperactivity (children)",
+      "Serious: Respiratory depression, Stevens-Johnson syndrome"
+    ],
+    interactions: [
+      { drug: "CYP450 substrates", effect: "Decreased levels of many drugs (warfarin, oral contraceptives, etc.)" },
+      { drug: "Valproate", effect: "Increased phenobarbital levels" },
+      { drug: "CNS depressants", effect: "Additive sedation" }
+    ],
+    notes: "First-line for neonatal seizures. Therapeutic level: 15-40 mcg/mL. Half-life: neonates 40-200 hr; children 40-70 hr. Loading dose may take 15-30 min to reach brain. Potent CYP inducer - check interactions.",
+    renalAdjust: {
+      gfr50: "No change",
+      gfr30: "Extend interval (Q12-24h)",
+      gfr10: "Extend interval (Q24-48h)",
+      hd: "Supplement 50% post-HD"
+    },
+    hepaticAdjust: "Reduce dose by 25-50% in hepatic impairment"
+  },
+
+  // ============================================================================
+  // PHENYTOIN (Dilantin)
+  // ============================================================================
+  {
+    id: "phenytoin",
+    name: "Phenytoin (Dilantin)",
+    category: "Anticonvulsant",
+    route: "IV/PO",
+    formulations: [
+      { type: "Injection", strengths: "50 mg/mL" },
+      { type: "Capsules (extended)", strengths: "30 mg, 100 mg, 200 mg, 300 mg" },
+      { type: "Chewable tablets", strengths: "50 mg" },
+      { type: "Suspension", strengths: "125 mg/5 mL" }
+    ],
+    doses: {
+      statusLoading: { label: "Status Epilepticus (Load)", value: "20", unit: "mg/kg IV (max rate 1 mg/kg/min)" },
+      additionalLoading: { label: "Additional loading", value: "5-10", unit: "mg/kg (max 30 mg/kg total)" },
+      maintenanceNeo: { label: "Maintenance (Neonate)", value: "5-8", unit: "mg/kg/day ÷ Q8-12h" },
+      maintenanceChild: { label: "Maintenance (Child)", value: "5-10", unit: "mg/kg/day ÷ Q8-12h" },
+      maintenanceAdult: { label: "Maintenance (Adult)", value: "300-400", unit: "mg/day ÷ QD-TID", isFixed: true }
+    },
+    dosingTable: {
+      title: "Phenytoin Therapeutic Levels & Correction",
+      columns: ["Parameter", "Value"],
+      rows: [
+        ["Therapeutic total level", "10-20 mcg/mL"],
+        ["Therapeutic free level", "1-2 mcg/mL"],
+        ["Corrected (if albumin <4)", "Measured / (0.2 × Alb + 0.1)"]
+      ]
+    },
+    max: "30 mg/kg loading; 400 mg/day maintenance (600 mg in select cases)",
+    indication: "Status epilepticus, generalized tonic-clonic seizures, partial seizures",
+    contraindications: [
+      "Sinus bradycardia, SA or AV block, Adams-Stokes syndrome",
+      "History of phenytoin hypersensitivity"
+    ],
+    warnings: [
+      "⚠️ IV rate max 1 mg/kg/min (50 mg/min adult) - arrhythmias, hypotension",
+      "Purple glove syndrome with IV extravasation",
+      "Teratogenic (fetal hydantoin syndrome)",
+      "Nonlinear kinetics - small dose changes = large level changes"
+    ],
+    sideEffects: [
+      "Common: Gingival hyperplasia, hirsutism, coarsening of facies, nystagmus",
+      "Neurologic: Ataxia, slurred speech, confusion (toxicity)",
+      "Serious: SJS/TEN, DRESS, hepatotoxicity"
+    ],
+    interactions: [
+      { drug: "CYP2C9/2C19 inhibitors", effect: "Increased phenytoin levels" },
+      { drug: "CYP3A4 substrates", effect: "Decreased levels of many drugs" },
+      { drug: "Enteral feeding", effect: "Reduced absorption - hold feeds 1-2h before/after" },
+      { drug: "Antacids", effect: "Reduced absorption" }
+    ],
+    notes: "Only give IV formulation (NOT fosphenytoin) via peripheral line with saline flush. Use filter for IV. Nonlinear kinetics: at therapeutic levels, small dose changes cause large level changes. Check free level if low albumin or renal failure.",
+    renalAdjust: "Use free phenytoin levels; total levels unreliable",
+    hepaticAdjust: "Reduce dose; use free levels"
+  },
+
+  // ============================================================================
+  // PIPERACILLIN-TAZOBACTAM (Zosyn)
+  // ============================================================================
+  {
+    id: "piperacillintazobactam",
+    name: "Piperacillin-Tazobactam (Zosyn)",
+    category: "Antibiotic (Extended-spectrum Penicillin)",
+    route: "IV",
+    formulations: [
+      { type: "Injection", strengths: "2.25 g, 3.375 g, 4.5 g (8:1 pip:tazo ratio)" }
+    ],
+    doses: {
+      neoUnder30wk: { label: "Neonate <30wk", value: "100", unit: "mg/kg/dose Q8h" },
+      neo30to36wk: { label: "Neonate 30-36wk", value: "100", unit: "mg/kg/dose Q6h" },
+      neoTerm: { label: "Neonate Term", value: "100", unit: "mg/kg/dose Q6h" },
+      standard29d8mo: { label: "Standard (2-9mo)", value: "80", unit: "mg/kg/dose Q8h" },
+      standardChild: { label: "Standard (>9mo)", value: "100", unit: "mg/kg/dose Q8h", maxDose: 4000 },
+      cfPseudomonas: { label: "CF/Pseudomonas", value: "100", unit: "mg/kg/dose Q6h", maxDose: 4000 },
+      adultStandard: { label: "Adult Standard", value: "3.375", unit: "g Q6h", isFixed: true },
+      adultSevere: { label: "Adult Severe", value: "4.5", unit: "g Q6h", isFixed: true }
+    },
+    dosingTable: {
+      title: "Neonatal Pip-Tazo Dosing",
+      columns: ["Gestational Age", "Postnatal Age", "Dose", "Interval"],
+      rows: [
+        ["<30 wk", "All", "100 mg/kg", "Q8h"],
+        ["30-36 wk", "0-14 days", "100 mg/kg", "Q8h"],
+        ["30-36 wk", ">14 days", "100 mg/kg", "Q6h"],
+        ["≥37 wk", "All", "100 mg/kg", "Q6h"]
+      ]
+    },
+    max: "16 g/day (piperacillin component)",
+    indication: "Intra-abdominal infections, nosocomial pneumonia, febrile neutropenia, polymicrobial infections",
+    contraindications: [
+      "History of serious hypersensitivity to penicillins or beta-lactams"
+    ],
+    warnings: [
+      "Cross-reactivity with cephalosporins",
+      "C. difficile colitis",
+      "Bleeding (platelet dysfunction)",
+      "Hypokalemia (high sodium content)"
+    ],
+    sideEffects: [
+      "Common: Diarrhea, nausea, headache, insomnia",
+      "Less common: Rash, fever, phlebitis",
+      "Serious: Anaphylaxis, seizures, neutropenia"
+    ],
+    interactions: [
+      { drug: "Methotrexate", effect: "Decreased methotrexate clearance" },
+      { drug: "Aminoglycosides", effect: "Physical incompatibility; synergistic activity" },
+      { drug: "Probenecid", effect: "Increased piperacillin levels" }
+    ],
+    notes: "Contains 2.35 mEq Na per gram piperacillin. Extended infusion (4 hours) may improve outcomes in severe infections. Covers most gram-negatives (including Pseudomonas), gram-positives (not MRSA), and anaerobes. Doses expressed as piperacillin component.",
+    renalAdjust: {
+      gfr50: "No change",
+      gfr30: "2.25 g Q6h or 3.375 g Q8h",
+      gfr10: "2.25 g Q8h",
+      hd: "2.25 g Q8h; supplement after HD"
+    },
+    hepaticAdjust: "No adjustment needed"
+  },
+
+  // ============================================================================
+  // POTASSIUM CHLORIDE
+  // ============================================================================
+  {
+    id: "potassiumchloride",
+    name: "Potassium Chloride (KCl)",
+    category: "Electrolyte",
+    route: "IV/PO",
+    formulations: [
+      { type: "Injection concentrate", strengths: "2 mEq/mL" },
+      { type: "Premixed IV", strengths: "10-40 mEq/L bags" },
+      { type: "Oral liquid", strengths: "20 mEq/15 mL, 40 mEq/15 mL" },
+      { type: "Oral tablets/capsules", strengths: "8 mEq, 10 mEq, 20 mEq" },
+      { type: "Powder packets", strengths: "20 mEq, 25 mEq" }
+    ],
+    doses: {
+      maintenanceIV: { label: "Maintenance (IV)", value: "2-3", unit: "mEq/kg/day" },
+      mildHypoK: { label: "Mild Hypokalemia (PO)", value: "1-2", unit: "mEq/kg/day ÷ BID-QID" },
+      modHypoKPO: { label: "Mod Hypokalemia (PO)", value: "2-4", unit: "mEq/kg/day ÷ TID-QID" },
+      severeHypoKIV: { label: "Severe (<2.5) IV", value: "0.5-1", unit: "mEq/kg IV over 1 hr (max 40 mEq)" },
+      ivRatePeripheral: { label: "IV Rate (Peripheral)", value: "0.5", unit: "mEq/kg/hr (max 10 mEq/hr)" },
+      ivRateCentral: { label: "IV Rate (Central)", value: "1", unit: "mEq/kg/hr (max 40 mEq/hr with monitoring)" }
+    },
+    dosingTable: {
+      title: "Potassium Replacement Guidelines",
+      columns: ["K+ Level", "Deficit (mEq/kg)", "Route"],
+      rows: [
+        ["3.0-3.5", "~0.5", "PO preferred"],
+        ["2.5-3.0", "~1", "PO or IV"],
+        ["<2.5", ">1", "IV required"]
+      ]
+    },
+    max: "40 mEq/hour IV (with cardiac monitoring); 200 mEq/day",
+    indication: "Hypokalemia treatment and prevention",
+    contraindications: [
+      "Hyperkalemia",
+      "Severe renal impairment (without monitoring)",
+      "Untreated Addison's disease"
+    ],
+    warnings: [
+      "⚠️ NEVER give IV push - cardiac arrest",
+      "⚠️ Central line preferred for concentrations >40 mEq/L",
+      "Monitor K+ levels and ECG during replacement",
+      "GI ulceration with oral forms"
+    ],
+    sideEffects: [
+      "IV: Phlebitis, pain at injection site",
+      "Oral: GI upset, nausea, vomiting, diarrhea, ulceration",
+      "Overdose: Hyperkalemia, cardiac arrhythmias, cardiac arrest"
+    ],
+    interactions: [
+      { drug: "ACE inhibitors/ARBs", effect: "Hyperkalemia risk" },
+      { drug: "K-sparing diuretics", effect: "Hyperkalemia risk" },
+      { drug: "Digoxin", effect: "Hypokalemia increases digoxin toxicity" }
+    ],
+    notes: "Peripheral IV max concentration: 40 mEq/L (higher causes phlebitis). Central line allows up to 200 mEq/L. Each 10 mEq replaces ~0.1 mEq/L (very rough estimate). Always correct hypomagnesemia - K+ won't correct if Mg low.",
+    renalAdjust: "Use with extreme caution; monitor K+ closely",
+    hepaticAdjust: null
+  },
+
+  // ============================================================================
+  // PREDNISOLONE / PREDNISONE
+  // ============================================================================
+  {
+    id: "prednisolone",
+    name: "Prednisolone / Prednisone",
+    category: "Corticosteroid",
+    route: "PO",
+    formulations: [
+      { type: "Prednisolone solution", strengths: "5 mg/5 mL, 15 mg/5 mL (Orapred)" },
+      { type: "Prednisolone ODT", strengths: "10 mg, 15 mg, 30 mg" },
+      { type: "Prednisone tablets", strengths: "1 mg, 2.5 mg, 5 mg, 10 mg, 20 mg, 50 mg" },
+      { type: "Prednisone solution", strengths: "5 mg/5 mL" }
+    ],
+    doses: {
+      acuteAsthma: { label: "Acute Asthma", value: "1-2", unit: "mg/kg/day QD or ÷ BID x 3-5 days (max 60 mg)" },
+      croup: { label: "Croup", value: "1-2", unit: "mg/kg x 1 dose (max 60 mg)" },
+      antiInflamLow: { label: "Anti-inflammatory (low)", value: "0.1-0.5", unit: "mg/kg/day" },
+      antiInflamMod: { label: "Anti-inflammatory (mod)", value: "0.5-1", unit: "mg/kg/day" },
+      antiInflamHigh: { label: "Anti-inflammatory (high)", value: "1-2", unit: "mg/kg/day" },
+      nephroticInduction: { label: "Nephrotic Syndrome", value: "2", unit: "mg/kg/day (max 60 mg) QD x 4-6 wk" },
+      ibdFlare: { label: "IBD Flare", value: "1-2", unit: "mg/kg/day (max 40-60 mg)" }
+    },
+    dosingTable: {
+      title: "Steroid Equivalency Table",
+      columns: ["Steroid", "Equivalent Dose", "Anti-inflammatory", "Mineralocorticoid"],
+      rows: [
+        ["Cortisol/Hydrocortisone", "20 mg", "1", "1"],
+        ["Prednisone/Prednisolone", "5 mg", "4", "0.8"],
+        ["Methylprednisolone", "4 mg", "5", "0.5"],
+        ["Dexamethasone", "0.75 mg", "25-30", "0"]
+      ]
+    },
+    max: "60-80 mg/day (varies by indication)",
+    indication: "Asthma exacerbation, croup, allergic reactions, autoimmune diseases, nephrotic syndrome, IBD",
+    contraindications: [
+      "Systemic fungal infections",
+      "Live vaccines during high-dose therapy"
+    ],
+    warnings: [
+      "Adrenal suppression with prolonged use (>2 weeks)",
+      "May mask signs of infection",
+      "Hyperglycemia",
+      "Growth suppression in children",
+      "Behavioral changes (\"steroid psychosis\")"
+    ],
+    sideEffects: [
+      "Short-term: Hyperglycemia, hypertension, mood changes, increased appetite",
+      "Long-term: Cushing syndrome, osteoporosis, growth suppression, cataracts",
+      "GI: Peptic ulcer (especially with NSAIDs)"
+    ],
+    interactions: [
+      { drug: "NSAIDs", effect: "Increased GI bleeding risk" },
+      { drug: "CYP3A4 inducers", effect: "Decreased steroid effect" },
+      { drug: "Live vaccines", effect: "Avoid during high-dose therapy" },
+      { drug: "Insulin/oral hypoglycemics", effect: "May need dose increase" }
+    ],
+    notes: "Prednisone is converted to prednisolone in liver (use prednisolone in liver disease). No taper needed if <2 weeks. Morning dosing mimics physiologic cortisol. For asthma: burst therapy equally effective as longer tapers.",
+    renalAdjust: null,
+    hepaticAdjust: "Use prednisolone (not prednisone) in liver disease"
+  },
+
+  // ============================================================================
+  // PROPOFOL (Diprivan)
+  // ============================================================================
+  {
+    id: "propofol",
+    name: "Propofol (Diprivan)",
+    category: "Sedative-Hypnotic",
+    route: "IV",
+    formulations: [
+      { type: "Injection (emulsion)", strengths: "10 mg/mL" }
+    ],
+    doses: {
+      inductionChild: { label: "Induction (Child 3-16 yr)", value: "2.5-3.5", unit: "mg/kg IV" },
+      inductionAdult: { label: "Induction (Adult)", value: "1.5-2.5", unit: "mg/kg IV" },
+      proceduralSedation: { label: "Procedural Sedation", value: "0.5-1", unit: "mg/kg IV, then 50-100 mcg/kg/min" },
+      icuSedation: { label: "ICU Sedation (Adult)", value: "5-50", unit: "mcg/kg/min" },
+      maintenanceAnesthesia: { label: "Maintenance", value: "100-200", unit: "mcg/kg/min" }
+    },
+    max: "4 mg/kg/hr (ICU sedation) - avoid prolonged high-dose infusions",
+    indication: "Anesthesia induction/maintenance, procedural sedation, ICU sedation (adults)",
+    contraindications: [
+      "Allergy to eggs, soy, or propofol",
+      "Pediatric ICU sedation (FDA warning)",
+      "Disorders of fat metabolism"
+    ],
+    warnings: [
+      "⚠️ PROPOFOL INFUSION SYNDROME (PRIS) - metabolic acidosis, rhabdomyolysis, cardiac failure",
+      "⚠️ NOT for pediatric ICU sedation (FDA black box)",
+      "Hypotension (especially in hypovolemic patients)",
+      "Respiratory depression",
+      "Pain on injection"
+    ],
+    sideEffects: [
+      "Common: Hypotension, apnea, pain on injection",
+      "Less common: Bradycardia, hypertriglyceridemia",
+      "Serious: PRIS, anaphylaxis"
+    ],
+    interactions: [
+      { drug: "Opioids", effect: "Additive respiratory/cardiovascular depression" },
+      { drug: "Other sedatives", effect: "Additive CNS depression" },
+      { drug: "Fentanyl", effect: "May increase propofol blood levels" }
+    ],
+    notes: "Lipid emulsion - count toward daily lipid intake. Onset: 30-45 sec. Duration: 5-10 min (single dose). Use within 12 hours of opening (no preservative). Lidocaine 10-20 mg or fentanyl can reduce injection pain. Contains 0.1 g fat/mL.",
+    renalAdjust: null,
+    hepaticAdjust: "Use with caution; may have prolonged effect"
+  },
+
+  // ============================================================================
+  // RACEMIC EPINEPHRINE
+  // ============================================================================
+  {
+    id: "racemicepinephrine",
+    name: "Racemic Epinephrine (Vaponefrin)",
+    category: "Alpha/Beta Agonist",
+    route: "Inhaled",
+    formulations: [
+      { type: "Nebulizer solution", strengths: "2.25% racemic epinephrine" },
+      { type: "Alternative", strengths: "L-epinephrine 1:1000 (1 mg/mL)" }
+    ],
+    doses: {
+      croupRacemic: { label: "Croup (Racemic 2.25%)", value: "0.25-0.5", unit: "mL diluted in 3 mL NS" },
+      croupLEpi: { label: "Croup (L-epinephrine)", value: "0.5", unit: "mL/kg (max 5 mL) of 1:1000" },
+      postExtubation: { label: "Post-extubation Stridor", value: "0.25-0.5", unit: "mL racemic + 3 mL NS" },
+      bronchiolitisNeb: { label: "Bronchiolitis (L-epi)", value: "3", unit: "mL of 1:1000 nebulized" }
+    },
+    dosingTable: {
+      title: "Epinephrine for Croup - Dose by Age/Weight",
+      columns: ["Age/Weight", "Racemic 2.25%", "L-Epi 1:1000"],
+      rows: [
+        ["<10 kg", "0.25 mL", "2.5 mL"],
+        ["10-20 kg", "0.5 mL", "3 mL"],
+        [">20 kg", "0.5 mL", "5 mL (max)"]
+      ]
+    },
+    max: "0.5 mL racemic; 5 mL L-epinephrine",
+    indication: "Croup (moderate-severe), post-extubation stridor, bronchiolitis (selected cases)",
+    contraindications: [
+      "Relative: Underlying cardiac disease",
+      "Use with caution in severe hypertension"
+    ],
+    warnings: [
+      "Observe for at least 2-3 hours after dose (rebound stridor)",
+      "Tachycardia and pallor are expected",
+      "May repeat Q20min if severe",
+      "Often combined with dexamethasone"
+    ],
+    sideEffects: [
+      "Common: Tachycardia, pallor, tremor",
+      "Less common: Hypertension, nausea, headache",
+      "Serious: Arrhythmias (rare with nebulized route)"
+    ],
+    interactions: [
+      { drug: "MAO inhibitors", effect: "Severe hypertension" },
+      { drug: "Beta-blockers", effect: "Unopposed alpha stimulation" }
+    ],
+    notes: "Racemic = equal mix of D and L isomers; L-epinephrine 1:1000 equally effective. Effect onset: 10-30 min. Duration: 2 hours. Rebound possible at 2-3 hours. Always give steroids concurrently for sustained benefit. Observe 2-3 hours post-treatment.",
+    renalAdjust: null,
+    hepaticAdjust: null
+  },
+
+  // ============================================================================
+  // RANITIDINE (Zantac) - Note: Withdrawn in many countries due to NDMA
+  // ============================================================================
+  {
+    id: "ranitidine",
+    name: "Ranitidine (Zantac)",
+    category: "H2-Receptor Antagonist",
+    route: "IV/PO",
+    formulations: [
+      { type: "Tablets", strengths: "75 mg, 150 mg, 300 mg" },
+      { type: "Syrup", strengths: "15 mg/mL" },
+      { type: "Injection", strengths: "25 mg/mL" }
+    ],
+    doses: {
+      gerdNeo: { label: "GERD (Neonate)", value: "2", unit: "mg/kg/day ÷ Q8-12h PO" },
+      gerdChild: { label: "GERD (Child)", value: "4-10", unit: "mg/kg/day ÷ BID (max 300 mg/day)" },
+      stressUlcer: { label: "Stress Ulcer (IV)", value: "1", unit: "mg/kg/dose Q6-8h (max 50 mg)" },
+      ivInfusion: { label: "Continuous Infusion", value: "0.1-0.25", unit: "mg/kg/hr" },
+      adultPO: { label: "Adult PO", value: "150", unit: "mg BID or 300 mg QHS", isFixed: true }
+    },
+    max: "300 mg/day PO; 200 mg/day IV",
+    indication: "GERD, peptic ulcer disease, stress ulcer prophylaxis (NOTE: withdrawn in many countries)",
+    contraindications: [
+      "Hypersensitivity to ranitidine or H2 blockers"
+    ],
+    warnings: [
+      "⚠️ WITHDRAWN from market in 2020 (US/Canada) due to NDMA contamination concerns",
+      "Use famotidine as alternative",
+      "Thrombocytopenia (rare)",
+      "Altered drug metabolism"
+    ],
+    sideEffects: [
+      "Common: Headache, dizziness, constipation, diarrhea",
+      "Less common: Confusion (elderly), bradycardia (IV)",
+      "Rare: Thrombocytopenia, hepatitis"
+    ],
+    interactions: [
+      { drug: "Warfarin", effect: "Increased warfarin levels" },
+      { drug: "Triazolam", effect: "Increased sedation" },
+      { drug: "Drugs requiring gastric acid", effect: "Reduced absorption" }
+    ],
+    notes: "⚠️ MARKET WITHDRAWAL: Ranitidine was withdrawn in 2020 due to NDMA (carcinogen) contamination concerns. Use famotidine as preferred H2 blocker alternative. Information retained for reference only.",
+    renalAdjust: {
+      gfr50: "50-75% dose or Q12-24h",
+      gfr30: "50% dose or Q12-24h",
+      gfr10: "25-50% dose or Q24h",
+      hd: "Dose after HD"
+    },
+    hepaticAdjust: "Use with caution"
+  },
+
+  // ============================================================================
+  // ROCURONIUM (Zemuron)
+  // ============================================================================
+  {
+    id: "rocuronium",
+    name: "Rocuronium (Zemuron)",
+    category: "Neuromuscular Blocker",
+    route: "IV",
+    formulations: [
+      { type: "Injection", strengths: "10 mg/mL" }
+    ],
+    doses: {
+      rsiIntubation: { label: "RSI Intubation", value: "1-1.2", unit: "mg/kg IV" },
+      routineIntubation: { label: "Routine Intubation", value: "0.6", unit: "mg/kg IV" },
+      maintenanceChild: { label: "Maintenance (Child)", value: "0.15", unit: "mg/kg/dose Q20-30min" },
+      infusionChild: { label: "Infusion (Child)", value: "5-12", unit: "mcg/kg/min" },
+      infusionAdult: { label: "Infusion (Adult)", value: "4-16", unit: "mcg/kg/min" }
+    },
+    dosingTable: {
+      title: "Rocuronium Intubating Conditions",
+      columns: ["Dose", "Onset", "Duration"],
+      rows: [
+        ["0.6 mg/kg", "60-90 sec", "30-40 min"],
+        ["0.9 mg/kg", "45-60 sec", "40-60 min"],
+        ["1.2 mg/kg", "30-45 sec", "60-90 min"]
+      ]
+    },
+    max: "1.2 mg/kg intubation dose",
+    indication: "Rapid sequence intubation, surgical relaxation, facilitation of mechanical ventilation",
+    contraindications: [
+      "Known hypersensitivity to rocuronium"
+    ],
+    warnings: [
+      "No effect on consciousness/pain - always use with sedation/analgesia",
+      "Sugammadex can reverse even deep blockade",
+      "Residual paralysis post-procedure",
+      "Anaphylaxis possible"
+    ],
+    sideEffects: [
+      "Common: Transient hypotension, tachycardia",
+      "Less common: Bronchospasm, rash",
+      "Serious: Anaphylaxis, malignant hyperthermia (rare)"
+    ],
+    interactions: [
+      { drug: "Aminoglycosides", effect: "Prolonged blockade" },
+      { drug: "Inhaled anesthetics", effect: "Prolonged blockade" },
+      { drug: "Magnesium", effect: "Prolonged blockade" },
+      { drug: "Sugammadex", effect: "Rapid reversal" }
+    ],
+    notes: "Aminosteroid NMBA. Faster onset than vecuronium but longer duration. Can be reversed with sugammadex (any depth) or neostigmine (only shallow blockade). Store refrigerated. Onset fastest at higher doses (RSI dose 1-1.2 mg/kg).",
+    renalAdjust: "Prolonged duration; use with caution",
+    hepaticAdjust: "Prolonged duration; use with caution"
+  },
+
+  // ============================================================================
+  // SODIUM BICARBONATE
+  // ============================================================================
+  {
+    id: "sodiumbicarbonate",
+    name: "Sodium Bicarbonate (NaHCO3)",
+    category: "Alkalinizing Agent",
+    route: "IV/PO",
+    formulations: [
+      { type: "Injection 4.2%", strengths: "0.5 mEq/mL (neonatal)" },
+      { type: "Injection 8.4%", strengths: "1 mEq/mL" },
+      { type: "Tablets", strengths: "325 mg (3.9 mEq), 650 mg (7.7 mEq)" }
+    ],
+    doses: {
+      cardiacArrestChild: { label: "Cardiac Arrest (Child)", value: "1", unit: "mEq/kg IV" },
+      cardiacArrestNeo: { label: "Cardiac Arrest (Neo)", value: "1-2", unit: "mEq/kg IV (0.5 mEq/mL)" },
+      metabolicAcidosis: { label: "Metabolic Acidosis", value: "0.5-1", unit: "mEq/kg IV slowly" },
+      acidosisFormula: { label: "Acidosis Replacement", value: "[0.3 × wt(kg) × base deficit]", unit: "= mEq needed; give 1/2 dose first" },
+      rtaChild: { label: "RTA (Child PO)", value: "2-3", unit: "mEq/kg/day ÷ TID-QID" },
+      urineAlkalinization: { label: "Urine Alkalinization", value: "84-840", unit: "mg/kg/day PO ÷ Q6-8h" }
+    },
+    dosingTable: {
+      title: "Bicarbonate Calculation for Metabolic Acidosis",
+      columns: ["Parameter", "Formula/Value"],
+      rows: [
+        ["HCO3 deficit (mEq)", "0.3 × wt(kg) × (24 - serum HCO3)"],
+        ["Initial replacement", "Give 1/2 calculated deficit"],
+        ["Reassess ABG", "After 30-60 minutes"],
+        ["Target pH", "7.20-7.25 (not full correction)"]
+      ]
+    },
+    max: "1-2 mEq/kg per dose; titrate to response",
+    indication: "Metabolic acidosis (severe), cardiac arrest (prolonged), hyperkalemia, TCA overdose, urine alkalinization",
+    contraindications: [
+      "Metabolic/respiratory alkalosis",
+      "Hypocalcemia (worsens symptoms)",
+      "Hypernatremia"
+    ],
+    warnings: [
+      "⚠️ Use 4.2% (0.5 mEq/mL) in neonates - 8.4% causes IVH",
+      "Rapid correction may cause paradoxical CNS acidosis",
+      "Extravasation causes tissue necrosis",
+      "Hypokalemia with rapid correction"
+    ],
+    sideEffects: [
+      "Common: Hypernatremia, hypokalemia, metabolic alkalosis",
+      "Less common: Hypocalcemia (ionized)",
+      "IV-specific: Tissue necrosis with extravasation"
+    ],
+    interactions: [
+      { drug: "Acidic drugs (aspirin, phenobarbital)", effect: "Increased renal excretion" },
+      { drug: "Basic drugs (amphetamines)", effect: "Decreased renal excretion" },
+      { drug: "Lithium", effect: "Increased lithium excretion" }
+    ],
+    notes: "In cardiac arrest: give only after adequate ventilation and compressions. Don't give via same line as calcium (precipitates). For neonates: ALWAYS dilute 8.4% to 4.2% or use commercial 4.2%. Target pH 7.20-7.25 (not normal) in DKA.",
+    renalAdjust: "Use with caution; monitor bicarbonate levels",
+    hepaticAdjust: null
+  },
+
+  // ============================================================================
+  // SUCCINYLCHOLINE (Anectine)
+  // ============================================================================
+  {
+    id: "succinylcholine",
+    name: "Succinylcholine (Anectine)",
+    category: "Neuromuscular Blocker (Depolarizing)",
+    route: "IV/IM",
+    formulations: [
+      { type: "Injection", strengths: "20 mg/mL" }
+    ],
+    doses: {
+      rsiInfant: { label: "RSI (Infant <2yr)", value: "2-3", unit: "mg/kg IV" },
+      rsiChild: { label: "RSI (Child >2yr)", value: "1-2", unit: "mg/kg IV" },
+      rsiAdult: { label: "RSI (Adult)", value: "1-1.5", unit: "mg/kg IV" },
+      imDose: { label: "IM (if no IV)", value: "3-4", unit: "mg/kg IM (max 150 mg)" },
+      laryngospasmChild: { label: "Laryngospasm (Child)", value: "0.1-1", unit: "mg/kg IV" }
+    },
+    max: "150 mg IM; 200 mg IV total",
+    indication: "Rapid sequence intubation (when rocuronium unavailable), laryngospasm",
+    contraindications: [
+      "⚠️ Personal/family history of malignant hyperthermia",
+      "Hyperkalemia or risk factors for hyperkalemia",
+      "Burns/crush injury >24 hours old",
+      "Denervation injuries, prolonged immobility",
+      "Myopathies (Duchenne, etc.)",
+      "Penetrating eye injury (relative)"
+    ],
+    warnings: [
+      "⚠️ BLACK BOX: Risk of cardiac arrest from hyperkalemia in children with undiagnosed myopathy",
+      "⚠️ Malignant hyperthermia trigger",
+      "Masseter muscle rigidity may herald MH",
+      "Not recommended as routine RSI drug in children"
+    ],
+    sideEffects: [
+      "Common: Fasciculations, muscle pain (postop), transient hyperkalemia",
+      "Serious: Malignant hyperthermia, severe hyperkalemia, cardiac arrest",
+      "Other: Increased intragastric/intracranial/intraocular pressure"
+    ],
+    interactions: [
+      { drug: "Anticholinesterases", effect: "Prolonged blockade" },
+      { drug: "Inhaled anesthetics", effect: "May trigger MH" },
+      { drug: "Aminoglycosides", effect: "Prolonged blockade" }
+    ],
+    notes: "Fastest onset (30-60 sec) of any NMBA but significant risks. Duration: 5-10 min. NOT reversible with sugammadex. Rocuronium preferred for RSI in most pediatric situations. If hyperkalemic arrest: calcium, glucose/insulin, bicarbonate, consider dialysis.",
+    renalAdjust: "Contraindicated in hyperkalemia",
+    hepaticAdjust: "Prolonged duration (pseudocholinesterase)"
+  },
+
+  // ============================================================================
+  // TRANEXAMIC ACID (TXA)
+  // ============================================================================
+  {
+    id: "tranexamicacid",
+    name: "Tranexamic Acid (TXA, Cyklokapron)",
+    category: "Antifibrinolytic",
+    route: "IV/PO",
+    formulations: [
+      { type: "Injection", strengths: "100 mg/mL" },
+      { type: "Tablets", strengths: "650 mg" },
+      { type: "Oral solution", strengths: "Compounded" }
+    ],
+    doses: {
+      traumaLoading: { label: "Trauma (Loading)", value: "15-20", unit: "mg/kg IV over 10 min (max 1g)" },
+      traumaMaint: { label: "Trauma (Maintenance)", value: "2", unit: "mg/kg/hr infusion x 8 hr" },
+      cardiacSurgery: { label: "Cardiac Surgery", value: "10-100", unit: "mg/kg bolus + 1-10 mg/kg/hr" },
+      epistaxis: { label: "Epistaxis (PO)", value: "25", unit: "mg/kg/dose TID (max 1.5g/dose)" },
+      menorrhagia: { label: "Menorrhagia", value: "1300", unit: "mg TID x 5 days", isFixed: true },
+      dental: { label: "Dental Procedures", value: "25", unit: "mg/kg/dose Q8h x 2-8 days" }
+    },
+    max: "4 g/day (varies by indication)",
+    indication: "Trauma-associated hemorrhage, cardiac surgery, menorrhagia, hereditary angioedema, dental procedures in hemophilia",
+    contraindications: [
+      "Active thromboembolic disease",
+      "Subarachnoid hemorrhage",
+      "History of seizures (relative - dose-dependent)"
+    ],
+    warnings: [
+      "Dose-related seizure risk (especially at high doses)",
+      "Thromboembolic events possible",
+      "Visual disturbances - ophthalmologic exam for long-term use",
+      "Reduce dose in renal impairment"
+    ],
+    sideEffects: [
+      "Common: Nausea, diarrhea, abdominal pain",
+      "Less common: Hypotension (if given too fast IV)",
+      "Serious: Seizures (high dose), thrombosis"
+    ],
+    interactions: [
+      { drug: "Hormonal contraceptives", effect: "Increased thromboembolic risk" },
+      { drug: "Factor IX complex", effect: "Increased thromboembolic risk" },
+      { drug: "Retinoids", effect: "Increased thromboembolic risk" }
+    ],
+    notes: "For trauma: give within 3 hours of injury (no benefit after 3 hours). Infuse slowly (max 100 mg/min) to avoid hypotension. Seizure risk increases at doses >2g or with renal impairment. 10x more potent than aminocaproic acid.",
+    renalAdjust: {
+      gfr50: "50% dose or Q12h",
+      gfr30: "25% dose or Q24h",
+      gfr10: "10% dose or Q48h",
+      hd: "Dose after HD"
+    },
+    hepaticAdjust: null
+  },
+
+  // ============================================================================
+  // TRIMETHOPRIM-SULFAMETHOXAZOLE (Bactrim, Septra)
+  // ============================================================================
+  {
+    id: "tmpsmx",
+    name: "Trimethoprim-Sulfamethoxazole (Bactrim)",
+    category: "Antibiotic (Sulfonamide)",
+    route: "IV/PO",
+    formulations: [
+      { type: "Tablets SS", strengths: "TMP 80 mg / SMX 400 mg" },
+      { type: "Tablets DS", strengths: "TMP 160 mg / SMX 800 mg" },
+      { type: "Suspension", strengths: "TMP 40 mg / SMX 200 mg per 5 mL" },
+      { type: "Injection", strengths: "TMP 16 mg / SMX 80 mg per mL (5 mL vials)" }
+    ],
+    doses: {
+      utiChild: { label: "UTI (Child)", value: "6-12", unit: "mg TMP/kg/day ÷ BID" },
+      utiProphylaxis: { label: "UTI Prophylaxis", value: "2", unit: "mg TMP/kg/dose QHS (max 80 mg)" },
+      omChild: { label: "Otitis Media", value: "8-10", unit: "mg TMP/kg/day ÷ BID x 10 days" },
+      pcpTreatment: { label: "PCP Treatment", value: "15-20", unit: "mg TMP/kg/day ÷ Q6-8h x 21 days" },
+      pcpProphylaxis: { label: "PCP Prophylaxis", value: "5", unit: "mg TMP/kg/day ÷ QD or 3x/week" },
+      mrsaSkinChild: { label: "MRSA Skin (Child)", value: "8-12", unit: "mg TMP/kg/day ÷ BID" },
+      adultDS: { label: "Adult Standard", value: "1 DS tab", unit: "BID", isFixed: true }
+    },
+    dosingTable: {
+      title: "TMP-SMX Dosing (doses as TMP component)",
+      columns: ["Indication", "Dose (TMP)", "Duration"],
+      rows: [
+        ["UTI", "6-12 mg/kg/day ÷ BID", "7-14 days"],
+        ["UTI Prophylaxis", "2 mg/kg QHS", "Per urologist"],
+        ["PCP Treatment", "15-20 mg/kg/day ÷ Q6-8h", "21 days"],
+        ["PCP Prophylaxis", "5 mg/kg QD or 3x/week", "Ongoing"],
+        ["MRSA Skin", "8-12 mg/kg/day ÷ BID", "7-10 days"]
+      ]
+    },
+    max: "320 mg TMP/day (routine); 20 mg TMP/kg/day (PCP)",
+    indication: "UTI, otitis media, PCP treatment/prophylaxis, MRSA skin infections, Nocardia, Stenotrophomonas",
+    contraindications: [
+      "Hypersensitivity to sulfonamides or trimethoprim",
+      "Severe hepatic impairment",
+      "Megaloblastic anemia due to folate deficiency",
+      "Infants <2 months (except PCP treatment)"
+    ],
+    warnings: [
+      "⚠️ Severe skin reactions (SJS/TEN) - discontinue immediately if rash develops",
+      "Hyperkalemia (especially elderly, renal impairment, ACE-I/ARB use)",
+      "Bone marrow suppression (monitor CBC for prolonged use)",
+      "Crystalluria - ensure adequate hydration"
+    ],
+    sideEffects: [
+      "Common: Nausea, vomiting, rash, photosensitivity",
+      "Hematologic: Leukopenia, thrombocytopenia, megaloblastic anemia",
+      "Serious: SJS/TEN, agranulocytosis, hepatitis, hyperkalemia"
+    ],
+    interactions: [
+      { drug: "Warfarin", effect: "Increased INR (inhibits CYP2C9)" },
+      { drug: "Methotrexate", effect: "Increased methotrexate toxicity" },
+      { drug: "ACE-I/ARBs/K-sparing diuretics", effect: "Hyperkalemia risk" },
+      { drug: "Phenytoin", effect: "Increased phenytoin levels" }
+    ],
+    notes: "All doses expressed as TMP component. 5:1 ratio (SMX:TMP). Excellent oral bioavailability (IV rarely needed). Good MRSA coverage. Avoid in G6PD deficiency (hemolysis risk). Take with full glass of water. Photosensitivity - use sunscreen.",
+    renalAdjust: {
+      gfr50: "50-75% dose",
+      gfr30: "50% dose or avoid",
+      gfr10: "Avoid",
+      hd: "Give dose after HD"
+    },
+    hepaticAdjust: "Avoid in severe hepatic impairment"
+  },
+
+  // ============================================================================
+  // VANCOMYCIN
+  // ============================================================================
+  {
+    id: "vancomycin",
+    name: "Vancomycin (Vancocin)",
+    category: "Antibiotic (Glycopeptide)",
+    route: "IV/PO",
+    formulations: [
+      { type: "Injection", strengths: "500 mg, 750 mg, 1 g, 1.5 g vials" },
+      { type: "Oral capsules", strengths: "125 mg, 250 mg" },
+      { type: "Oral solution", strengths: "25 mg/mL, 50 mg/mL (compounded)" }
+    ],
+    doses: {
+      neoUnder29wk: { label: "Neonate <29wk PMA", value: "15", unit: "mg/kg/dose Q24h" },
+      neo29to35wk: { label: "Neonate 29-35wk PMA", value: "15", unit: "mg/kg/dose Q12h" },
+      neoTerm: { label: "Neonate Term", value: "15", unit: "mg/kg/dose Q8h" },
+      standardChild: { label: "Standard (Child)", value: "15", unit: "mg/kg/dose Q6h (60 mg/kg/day)", maxDose: 750 },
+      mrsaSevere: { label: "MRSA Severe/Meningitis", value: "15-20", unit: "mg/kg/dose Q6h (60-80 mg/kg/day)", maxDose: 1000 },
+      adultStandard: { label: "Adult Standard", value: "15-20", unit: "mg/kg/dose Q8-12h (adjust by levels)" },
+      cdiffChild: { label: "C. diff (PO Child)", value: "10", unit: "mg/kg/dose QID (max 125 mg/dose) x 10 days" },
+      cdiffAdult: { label: "C. diff (PO Adult)", value: "125", unit: "mg QID x 10 days", isFixed: true }
+    },
+    dosingTable: {
+      title: "Vancomycin Neonatal Dosing by PMA",
+      columns: ["PMA", "Dose", "Interval"],
+      rows: [
+        ["<29 weeks", "15 mg/kg", "Q24h"],
+        ["29-35 weeks", "15 mg/kg", "Q12h"],
+        ["36-44 weeks", "15 mg/kg", "Q8h"],
+        [">44 weeks", "15 mg/kg", "Q6h"]
+      ]
+    },
+    max: "4 g/day (adult); adjust based on levels",
+    indication: "MRSA, MSSA (PCN-allergic), coagulase-negative staph, C. difficile (PO only)",
+    contraindications: [
+      "History of vancomycin anaphylaxis"
+    ],
+    warnings: [
+      "⚠️ Red man syndrome (infuse over ≥60 min)",
+      "Nephrotoxicity (especially with aminoglycosides)",
+      "Ototoxicity (rare)",
+      "AUC-based dosing now preferred over trough-only"
+    ],
+    sideEffects: [
+      "Common: Red man syndrome (histamine release), phlebitis",
+      "Less common: Nephrotoxicity, ototoxicity",
+      "Rare: DRESS, neutropenia, linear IgA dermatosis"
+    ],
+    interactions: [
+      { drug: "Aminoglycosides", effect: "Increased nephrotoxicity/ototoxicity" },
+      { drug: "Amphotericin B", effect: "Increased nephrotoxicity" },
+      { drug: "Loop diuretics", effect: "Increased ototoxicity" },
+      { drug: "Piperacillin-tazobactam", effect: "Increased AKI risk" }
+    ],
+    notes: "IV only for systemic infections (oral not absorbed). Oral ONLY for C. diff. Target AUC/MIC 400-600 (or trough 10-20 mcg/mL). Infuse over ≥60 min (longer for higher doses). Red man syndrome from rapid infusion - slow rate or pretreat with antihistamine.",
+    renalAdjust: {
+      gfr50: "15 mg/kg Q12h",
+      gfr30: "15 mg/kg Q24h",
+      gfr10: "15 mg/kg Q48-72h",
+      hd: "15-25 mg/kg; redose based on levels"
+    },
+    hepaticAdjust: null
+  },
+
+  // ============================================================================
+  // VASOPRESSIN (ADH)
+  // ============================================================================
+  {
+    id: "vasopressin",
+    name: "Vasopressin (ADH, Pitressin)",
+    category: "Vasopressor/Antidiuretic",
+    route: "IV",
+    formulations: [
+      { type: "Injection", strengths: "20 units/mL" }
+    ],
+    doses: {
+      vasodilShockChild: { label: "Vasodilatory Shock (Child)", value: "0.0003-0.002", unit: "units/kg/min (0.3-2 mU/kg/min)" },
+      septicShockFixed: { label: "Septic Shock (Fixed Dose)", value: "0.03-0.04", unit: "units/min (adult)", isFixed: true },
+      cardiacArrest: { label: "Cardiac Arrest (Adult)", value: "40", unit: "units IV x1", isFixed: true },
+      giBleedInfusion: { label: "GI Bleed (Adult)", value: "0.2-0.4", unit: "units/min (max 0.9 units/min)", isFixed: true },
+      diabetesInsipidus: { label: "Diabetes Insipidus", value: "2.5-10", unit: "units IM/SC Q6-12h" }
+    },
+    dosingTable: {
+      title: "Vasopressin Dosing in Shock",
+      columns: ["Indication", "Pediatric Dose", "Adult Dose"],
+      rows: [
+        ["Septic shock (low dose)", "0.0003-0.0008 U/kg/min", "0.01-0.04 U/min"],
+        ["Septic shock (high dose)", "0.0008-0.002 U/kg/min", "0.04-0.07 U/min"],
+        ["Cardiac arrest", "0.4-1 U/kg (max 40 U)", "40 U x1"]
+      ]
+    },
+    max: "0.002 units/kg/min (children); 0.07 units/min (adults); 40 units (cardiac arrest)",
+    indication: "Vasodilatory shock (catecholamine-resistant), cardiac arrest, GI bleeding, diabetes insipidus",
+    contraindications: [
+      "Hypersensitivity to vasopressin"
+    ],
+    warnings: [
+      "⚠️ Causes severe vasoconstriction - may cause digital/splanchnic ischemia",
+      "Water retention and hyponatremia",
+      "May precipitate angina/MI in patients with CAD",
+      "Usually used as adjunct, not first-line vasopressor"
+    ],
+    sideEffects: [
+      "Cardiovascular: Hypertension, cardiac ischemia, arrhythmias",
+      "GI: Abdominal cramps, nausea, mesenteric ischemia",
+      "Dermal: Skin necrosis (high doses), pallor"
+    ],
+    interactions: [
+      { drug: "Catecholamines", effect: "Additive vasoconstriction" },
+      { drug: "Carbamazepine/chlorpropamide", effect: "Enhanced antidiuretic effect" },
+      { drug: "Lithium/demeclocycline", effect: "Decreased antidiuretic effect" }
+    ],
+    notes: "Acts on V1 (vasoconstriction) and V2 (water reabsorption) receptors. In shock: add to norepinephrine (not replace). Does not require dose titration in shock (fixed low dose). In cardiac arrest: may replace first or second dose of epinephrine. Half-life: 10-20 minutes.",
+    renalAdjust: null,
+    hepaticAdjust: null
+  },
+
+  // ============================================================================
+  // VECURONIUM (Norcuron)
+  // ============================================================================
+  {
+    id: "vecuronium",
+    name: "Vecuronium (Norcuron)",
+    category: "Neuromuscular Blocker",
+    route: "IV",
+    formulations: [
+      { type: "Injection", strengths: "10 mg, 20 mg vials (powder)" }
+    ],
+    doses: {
+      intubationChild: { label: "Intubation (Child >1yr)", value: "0.1", unit: "mg/kg IV" },
+      intubationInfant: { label: "Intubation (Infant)", value: "0.1", unit: "mg/kg IV (longer duration)" },
+      maintenanceChild: { label: "Maintenance (Child)", value: "0.01-0.015", unit: "mg/kg/dose Q15-30min PRN" },
+      infusion: { label: "Continuous Infusion", value: "1-2", unit: "mcg/kg/min" },
+      rsiDose: { label: "RSI (higher dose)", value: "0.15-0.2", unit: "mg/kg IV (faster onset)" }
+    },
+    dosingTable: {
+      title: "Vecuronium Dosing & Duration",
+      columns: ["Dose", "Onset", "Duration"],
+      rows: [
+        ["0.08-0.1 mg/kg", "2-3 min", "25-40 min"],
+        ["0.15-0.2 mg/kg", "1-2 min", "45-60 min"]
+      ]
+    },
+    max: "0.2 mg/kg initial dose",
+    indication: "Facilitation of intubation, surgical relaxation, mechanical ventilation",
+    contraindications: [
+      "Known hypersensitivity to vecuronium"
+    ],
+    warnings: [
+      "No effect on consciousness - always use with sedation",
+      "Prolonged recovery in liver/kidney disease",
+      "Residual paralysis post-procedure",
+      "May cause prolonged weakness in ICU (critical illness myopathy)"
+    ],
+    sideEffects: [
+      "Common: None specific (effects of paralysis)",
+      "Less common: Histamine release (minimal vs atracurium)",
+      "ICU: Critical illness myopathy with prolonged use"
+    ],
+    interactions: [
+      { drug: "Aminoglycosides", effect: "Prolonged blockade" },
+      { drug: "Inhaled anesthetics", effect: "Prolonged blockade" },
+      { drug: "Magnesium", effect: "Prolonged blockade" },
+      { drug: "Sugammadex", effect: "Rapid reversal" }
+    ],
+    notes: "Aminosteroid NMBA. Slower onset than rocuronium but fewer CV effects. Can reverse with sugammadex or neostigmine. Infants may have longer duration. Refrigerate reconstituted solution; use within 24 hours.",
+    renalAdjust: "Prolonged duration; reduce dose or extend interval",
+    hepaticAdjust: "Prolonged duration; reduce dose or extend interval"
   }
 ];
 
