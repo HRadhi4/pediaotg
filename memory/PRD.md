@@ -45,26 +45,25 @@ A pediatric medical calculator app featuring:
   - Added N.B. note: "If the patient is already on maintenance fluids, the above deficit correction should be added to the maintenance amount"
 
 ### Drug Formulary Implementation (Dec 2025)
-- **Location:** `/app/frontend/src/pages/children/FormularyPage.jsx`
+- **Location:** `/app/frontend/src/pages/children/DrugsPage.jsx`
 - **Data File:** `/app/frontend/src/data/childrenFormulary.js` (92 medications)
 - **Features:**
-  - Comprehensive drug list with 92 medications
+  - Original DrugsPage UI preserved (no nested containers)
+  - Data imported from external childrenFormulary.js file
+  - 92 medications with comprehensive dosing information
   - Searchable by drug name, category, or indication
-  - Category filter pills for quick filtering
-  - Expandable/collapsible accordion for each drug entry
-  - Detailed information per drug including:
+  - Weight-based dose calculations with GFR calculator
+  - Expandable drug cards with detailed information:
     - Drug name with brand names
     - Category and route of administration
     - Indication
     - Multiple dosing regimens (neonate, pediatric, adult)
     - Maximum dose
-    - Contraindications
-    - Warnings
-    - Side effects
-    - Drug interactions
+    - Contraindications & warnings
+    - Side effects & drug interactions
     - Renal and hepatic adjustments
     - Clinical notes
-- **Navigation:** Integrated into Children Dashboard, replaces the old DrugsPage.jsx
+- **Navigation:** Integrated into Children Dashboard via DrugsPage component
 
 ### Children's Section - Mechanical Ventilation Approach (Feb 2026)
 - **New Approach Added:** Mechanical Ventilation in PICU
