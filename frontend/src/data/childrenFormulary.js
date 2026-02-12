@@ -2360,6 +2360,1156 @@ export const childrenFormulary = [
     notes: "Regular insulin is the only insulin for IV use. Onset SC: 30-60 min; IV: immediate. Duration SC: 6-8 hours. For new IV tubing: flush with insulin-containing solution. In hyperkalemia: always give with dextrose to prevent hypoglycemia.",
     renalAdjust: "May need reduced dose (decreased insulin clearance)",
     hepaticAdjust: "May need reduced dose"
+  },
+
+  // ============================================================================
+  // IPRATROPIUM BROMIDE (Atrovent)
+  // ============================================================================
+  {
+    id: "ipratropium",
+    name: "Ipratropium Bromide (Atrovent)",
+    category: "Anticholinergic Bronchodilator",
+    route: "Inhaled",
+    formulations: [
+      { type: "Nebulizer solution", strengths: "0.02% (500 mcg/2.5 mL)" },
+      { type: "MDI", strengths: "17 mcg/actuation" },
+      { type: "Nasal spray", strengths: "0.03%, 0.06%" }
+    ],
+    doses: {
+      acuteAsthma: { label: "Acute Asthma (Neb)", value: "250-500", unit: "mcg Q20min x 3 doses with albuterol" },
+      acuteAsthmaMDI: { label: "Acute Asthma (MDI)", value: "4-8", unit: "puffs Q20min x 3 doses", isFixed: true },
+      maintenanceNeb: { label: "Maintenance (Neb)", value: "250-500", unit: "mcg Q6-8h" },
+      maintenanceMDI: { label: "Maintenance (MDI)", value: "2-3", unit: "puffs Q6h", isFixed: true },
+      rhinorrhea: { label: "Rhinorrhea (Nasal)", value: "2 sprays", unit: "per nostril BID-TID", isFixed: true }
+    },
+    max: "2 mg/day nebulized; 12 puffs/day MDI",
+    indication: "Acute asthma (with albuterol), COPD, rhinorrhea",
+    contraindications: [
+      "Hypersensitivity to ipratropium or atropine derivatives",
+      "Hypersensitivity to soy lecithin or peanuts (MDI)"
+    ],
+    warnings: [
+      "Not for acute bronchospasm as monotherapy",
+      "May cause paradoxical bronchospasm",
+      "Use with caution in narrow-angle glaucoma",
+      "Avoid spraying in eyes"
+    ],
+    sideEffects: [
+      "Common: Dry mouth, cough, headache",
+      "Less common: Dizziness, nausea",
+      "Rare: Paradoxical bronchospasm, urinary retention, glaucoma"
+    ],
+    interactions: [
+      { drug: "Other anticholinergics", effect: "Additive anticholinergic effects" },
+      { drug: "Potassium chloride (oral)", effect: "Increased GI ulceration risk" }
+    ],
+    notes: "Most effective when combined with albuterol in acute asthma. First 3 doses in ED show benefit; continued use shows minimal additional benefit. Onset: 15-30 min; Peak: 1-2 hours; Duration: 4-6 hours.",
+    renalAdjust: null,
+    hepaticAdjust: null
+  },
+
+  // ============================================================================
+  // KETAMINE
+  // ============================================================================
+  {
+    id: "ketamine",
+    name: "Ketamine (Ketalar)",
+    category: "Dissociative Anesthetic",
+    route: "IV/IM/IN/PO",
+    formulations: [
+      { type: "Injection", strengths: "10 mg/mL, 50 mg/mL, 100 mg/mL" }
+    ],
+    doses: {
+      sedationIV: { label: "Procedural Sedation (IV)", value: "1-2", unit: "mg/kg IV over 1-2 min", maxDose: 150 },
+      sedationIM: { label: "Procedural Sedation (IM)", value: "4-5", unit: "mg/kg IM", maxDose: 150 },
+      analgesiaIV: { label: "Analgesia (IV)", value: "0.1-0.5", unit: "mg/kg IV" },
+      intranasal: { label: "Intranasal", value: "3-6", unit: "mg/kg IN (divide between nostrils)" },
+      rsi: { label: "RSI Induction", value: "1-2", unit: "mg/kg IV" },
+      infusion: { label: "Sedation Infusion", value: "0.5-2", unit: "mg/kg/hr" }
+    },
+    max: "150 mg/dose (most indications)",
+    indication: "Procedural sedation, analgesia, RSI (especially in bronchospasm/hypotension)",
+    contraindications: [
+      "Age <3 months (relative)",
+      "Conditions where increased ICP is hazardous",
+      "Severe hypertension",
+      "Psychosis",
+      "Porphyria"
+    ],
+    warnings: [
+      "Emergence reactions more common in adults",
+      "Increased salivation - consider glycopyrrolate or atropine",
+      "Laryngospasm (rare but serious)",
+      "May increase ICP and IOP",
+      "Maintain NPO status as for general anesthesia"
+    ],
+    sideEffects: [
+      "Common: Nystagmus, hypertension, tachycardia, increased salivation",
+      "Less common: Emergence reactions, nausea/vomiting",
+      "Rare: Laryngospasm, respiratory depression, apnea"
+    ],
+    interactions: [
+      { drug: "Benzodiazepines", effect: "May reduce emergence reactions" },
+      { drug: "Theophylline", effect: "May lower seizure threshold" },
+      { drug: "Thyroid hormones", effect: "May increase BP and HR" }
+    ],
+    notes: "Dissociative state provides analgesia, sedation, and amnesia. Maintains airway reflexes and spontaneous respiration. Bronchodilator properties. Onset IV: 30-60 sec; IM: 3-4 min. Duration IV: 10-15 min; IM: 20-30 min. Consider midazolam 0.05 mg/kg to reduce emergence reactions.",
+    renalAdjust: null,
+    hepaticAdjust: "Use with caution in hepatic impairment"
+  },
+
+  // ============================================================================
+  // LABETALOL
+  // ============================================================================
+  {
+    id: "labetalol",
+    name: "Labetalol (Trandate)",
+    category: "Alpha/Beta-blocker",
+    route: "IV/PO",
+    formulations: [
+      { type: "Tablets", strengths: "100 mg, 200 mg, 300 mg" },
+      { type: "Injection", strengths: "5 mg/mL" }
+    ],
+    doses: {
+      hypertensiveIVBolus: { label: "HTN Emergency (IV Bolus)", value: "0.2-1", unit: "mg/kg/dose Q10min", maxDose: 40 },
+      hypertensiveInfusion: { label: "HTN Emergency (Infusion)", value: "0.25-3", unit: "mg/kg/hr" },
+      hypertensionPO: { label: "Hypertension (PO)", value: "1-3", unit: "mg/kg/dose Q8-12h", maxDose: 10, maxUnit: "mg/kg/day" },
+      adultIVBolus: { label: "Adult IV Bolus", value: "20", unit: "mg IV, then 40-80 mg Q10min (max 300 mg)", isFixed: true },
+      adultPO: { label: "Adult PO", value: "100-400", unit: "mg BID-TID", isFixed: true }
+    },
+    max: "40 mg/dose (child IV); 300 mg total (adult IV); 2400 mg/day PO",
+    indication: "Hypertensive emergency/urgency, chronic hypertension",
+    contraindications: [
+      "Cardiogenic shock",
+      "Severe bradycardia, heart block (2nd/3rd degree)",
+      "Decompensated heart failure",
+      "Bronchial asthma, severe COPD"
+    ],
+    warnings: [
+      "Do not stop abruptly",
+      "May mask hypoglycemia symptoms in diabetics",
+      "Worsening heart failure",
+      "Hepatic injury (rare but severe)"
+    ],
+    sideEffects: [
+      "Common: Dizziness, fatigue, nausea, orthostatic hypotension",
+      "Less common: Bradycardia, bronchospasm, scalp tingling",
+      "Rare: Hepatotoxicity, lupus-like syndrome"
+    ],
+    interactions: [
+      { drug: "Calcium channel blockers", effect: "Increased risk of bradycardia/hypotension" },
+      { drug: "Clonidine", effect: "Rebound hypertension if clonidine stopped" },
+      { drug: "Insulin", effect: "May mask hypoglycemia symptoms" },
+      { drug: "Inhalational anesthetics", effect: "Increased hypotension" }
+    ],
+    notes: "Combined α1 and β-blocker (α:β ratio 1:7 PO, 1:3 IV). Preferred in pregnancy-induced hypertension. Onset IV: 2-5 min; PO: 1-2 hr. Peak: 5-15 min IV. Keep patient supine during IV infusion.",
+    renalAdjust: null,
+    hepaticAdjust: "Use with caution; monitor LFTs"
+  },
+
+  // ============================================================================
+  // LEVETIRACETAM (Keppra)
+  // ============================================================================
+  {
+    id: "levetiracetam",
+    name: "Levetiracetam (Keppra)",
+    category: "Anticonvulsant",
+    route: "IV/PO",
+    formulations: [
+      { type: "Tablets", strengths: "250 mg, 500 mg, 750 mg, 1000 mg" },
+      { type: "XR tablets", strengths: "500 mg, 750 mg" },
+      { type: "Solution", strengths: "100 mg/mL" },
+      { type: "Injection", strengths: "100 mg/mL" }
+    ],
+    doses: {
+      statusLoading: { label: "Status Epilepticus Loading", value: "20-60", unit: "mg/kg IV (max 4500 mg)" },
+      seizuresMaintChild: { label: "Seizures (Child 1mo-6mo)", value: "14", unit: "mg/kg/day ÷ BID, increase Q2wk to 42 mg/kg/day" },
+      seizuresMaint4to16: { label: "Seizures (4-16 yr)", value: "20", unit: "mg/kg/day ÷ BID, increase Q2wk to 60 mg/kg/day" },
+      seizuresAdult: { label: "Seizures (Adult)", value: "500", unit: "mg BID, increase Q2wk to 1500 mg BID", isFixed: true },
+      neonatal: { label: "Neonatal Seizures", value: "20-40", unit: "mg/kg/day ÷ Q12h" }
+    },
+    dosingTable: {
+      title: "Levetiracetam Pediatric Dosing by Age",
+      columns: ["Age", "Initial Dose", "Target Dose", "Max Dose"],
+      rows: [
+        ["1-6 mo", "14 mg/kg/day", "42 mg/kg/day", "42 mg/kg/day"],
+        ["6 mo-4 yr", "20 mg/kg/day", "50 mg/kg/day", "50 mg/kg/day"],
+        ["4-16 yr", "20 mg/kg/day", "60 mg/kg/day", "3000 mg/day"],
+        [">16 yr", "500 mg BID", "1500 mg BID", "3000 mg/day"]
+      ]
+    },
+    max: "3000 mg/day; 4500 mg loading dose",
+    indication: "Partial onset seizures, generalized tonic-clonic seizures, myoclonic seizures, status epilepticus",
+    contraindications: [
+      "Hypersensitivity to levetiracetam"
+    ],
+    warnings: [
+      "Behavioral/psychiatric symptoms (irritability, aggression, depression)",
+      "Suicidal ideation",
+      "Somnolence and fatigue",
+      "Do not discontinue abruptly"
+    ],
+    sideEffects: [
+      "Common: Somnolence, asthenia, dizziness, behavioral changes",
+      "Psychiatric: Irritability, aggression, depression, anxiety",
+      "Less common: Headache, anorexia, infection"
+    ],
+    interactions: [
+      { drug: "CNS depressants", effect: "Additive sedation" },
+      { drug: "Carbamazepine", effect: "May decrease levetiracetam levels" }
+    ],
+    notes: "Minimal drug interactions (not CYP450 metabolized). Renally excreted. No therapeutic drug monitoring needed. Pyridoxine (Vitamin B6) may help with behavioral side effects. IV and PO bioequivalent.",
+    renalAdjust: {
+      gfr50: "250-750 mg Q12h",
+      gfr30: "250-500 mg Q12h",
+      gfr10: "250-500 mg Q24h",
+      hd: "500-1000 mg Q24h + 250-500 mg supplement after HD"
+    },
+    hepaticAdjust: "No adjustment needed"
+  },
+
+  // ============================================================================
+  // LIDOCAINE
+  // ============================================================================
+  {
+    id: "lidocaine",
+    name: "Lidocaine (Xylocaine)",
+    category: "Antiarrhythmic/Local Anesthetic",
+    route: "IV/IO/ETT/Topical",
+    formulations: [
+      { type: "Injection", strengths: "0.5%, 1%, 2% (with/without epinephrine)" },
+      { type: "IV (cardiac)", strengths: "10 mg/mL, 20 mg/mL" },
+      { type: "Topical gel", strengths: "2%, 4%" },
+      { type: "Topical ointment", strengths: "5%" },
+      { type: "Viscous solution", strengths: "2%" }
+    ],
+    doses: {
+      vfPvtBolus: { label: "VF/pVT (IV/IO)", value: "1", unit: "mg/kg IV/IO bolus (max 100 mg)", maxDose: 100 },
+      infusion: { label: "Antiarrhythmic Infusion", value: "20-50", unit: "mcg/kg/min" },
+      ettDose: { label: "ETT Dose", value: "2-3", unit: "mg/kg (2-3x IV dose)" },
+      localMax: { label: "Local Anesthesia (max)", value: "4.5", unit: "mg/kg without epi; 7 mg/kg with epi" },
+      topicalChild: { label: "Topical (Child)", value: "3", unit: "mg/kg/dose (max 4.5 mg/kg)" }
+    ],
+    dosingTable: {
+      title: "Lidocaine Maximum Doses for Local Anesthesia",
+      columns: ["Solution", "Without Epinephrine", "With Epinephrine"],
+      rows: [
+        ["Plain lidocaine", "4.5 mg/kg", "7 mg/kg"],
+        ["Max single dose (adult)", "300 mg", "500 mg"]
+      ]
+    },
+    max: "100 mg/bolus; 3-5 mg/kg total in first hour; 4.5 mg/kg local (7 mg/kg with epi)",
+    indication: "VF/pVT, ventricular arrhythmias, local anesthesia, topical analgesia",
+    contraindications: [
+      "Stokes-Adams syndrome",
+      "Wolff-Parkinson-White syndrome",
+      "Severe degrees of SA, AV, or intraventricular block"
+    ],
+    warnings: [
+      "Toxicity: CNS excitation then depression, seizures, cardiovascular collapse",
+      "Toxicity threshold lower in neonates",
+      "Methemoglobinemia with topical overuse",
+      "Do not use topical on mucous membranes in infants"
+    ],
+    sideEffects: [
+      "CNS: Drowsiness, dizziness, confusion, seizures (toxicity)",
+      "Cardiovascular: Bradycardia, hypotension, arrhythmias (toxicity)",
+      "Local: Burning, swelling at injection site"
+    ],
+    interactions: [
+      { drug: "Beta-blockers", effect: "Increased lidocaine levels" },
+      { drug: "Cimetidine", effect: "Increased lidocaine levels" },
+      { drug: "Class I antiarrhythmics", effect: "Additive cardiac effects" }
+    ],
+    notes: "For cardiac arrest: may repeat Q5-10 min x2 (max 3 mg/kg total). Therapeutic level: 1.5-5 mcg/mL. Toxic level: >6 mcg/mL. Half-life: neonates 3.2 hr, adults 1.5-2 hr. Lipid emulsion (Intralipid 20%) is treatment for severe local anesthetic toxicity.",
+    renalAdjust: null,
+    hepaticAdjust: "Reduce dose in severe hepatic impairment"
+  },
+
+  // ============================================================================
+  // LORAZEPAM (Ativan)
+  // ============================================================================
+  {
+    id: "lorazepam",
+    name: "Lorazepam (Ativan)",
+    category: "Benzodiazepine",
+    route: "IV/IM/PO/SL",
+    formulations: [
+      { type: "Tablets", strengths: "0.5 mg, 1 mg, 2 mg" },
+      { type: "Oral solution", strengths: "2 mg/mL" },
+      { type: "Injection", strengths: "2 mg/mL, 4 mg/mL (contains propylene glycol/polyethylene glycol)" }
+    ],
+    doses: {
+      statusNeonate: { label: "Status (Neonate)", value: "0.05-0.1", unit: "mg/kg IV over 2-5 min", maxDose: 2 },
+      statusChild: { label: "Status Epilepticus (Child)", value: "0.05-0.1", unit: "mg/kg IV over 2-5 min", maxDose: 4 },
+      statusAdult: { label: "Status (Adult)", value: "4", unit: "mg IV, may repeat in 10-15 min", isFixed: true, maxDose: 8 },
+      sedation: { label: "Sedation", value: "0.02-0.05", unit: "mg/kg/dose Q4-8h" },
+      anxiolysis: { label: "Anxiolysis/Premedication", value: "0.02-0.05", unit: "mg/kg (max 2 mg)" },
+      antiemeticChild: { label: "Antiemetic (chemo)", value: "0.04-0.08", unit: "mg/kg/dose Q6h (max 4 mg/dose)" }
+    },
+    max: "2 mg/dose (neonate); 4 mg/dose (child); 8 mg total (adult status)",
+    indication: "Status epilepticus, seizure rescue, sedation, anxiety, chemotherapy-induced nausea",
+    contraindications: [
+      "Acute narrow-angle glaucoma",
+      "Sleep apnea (relative)",
+      "Severe respiratory insufficiency"
+    ],
+    warnings: [
+      "Respiratory depression - have resuscitation equipment ready",
+      "Paradoxical reactions (especially in children)",
+      "Propylene glycol toxicity with high doses/prolonged infusion",
+      "Physical dependence with prolonged use"
+    ],
+    sideEffects: [
+      "Common: Sedation, dizziness, weakness, ataxia",
+      "Less common: Respiratory depression, hypotension",
+      "IV-specific: Propylene glycol toxicity (metabolic acidosis, hyperosmolality)"
+    ],
+    interactions: [
+      { drug: "CNS depressants/opioids", effect: "Additive respiratory depression" },
+      { drug: "Probenecid/valproate", effect: "Increased lorazepam levels" },
+      { drug: "Scopolamine", effect: "Increased sedation, hallucinations" }
+    ],
+    notes: "First-line for status epilepticus due to rapid onset and longer duration than diazepam. Give IV slowly over 2-5 minutes. May repeat in 10-15 min if seizure persists. Onset IV: 1-5 min; IM: 15-30 min. Duration: 6-8 hours. Refrigerate injection (stable at room temp for 60 days).",
+    renalAdjust: "Use with caution; active metabolite may accumulate",
+    hepaticAdjust: "Use with caution in severe impairment"
+  },
+
+  // ============================================================================
+  // MAGNESIUM SULFATE
+  // ============================================================================
+  {
+    id: "magnesiumsulfate",
+    name: "Magnesium Sulfate",
+    category: "Electrolyte/Antiarrhythmic",
+    route: "IV/IM/PO",
+    formulations: [
+      { type: "Injection", strengths: "50% (500 mg/mL = 4 mEq/mL)" },
+      { type: "Injection (diluted)", strengths: "4%, 8% in D5W" },
+      { type: "Oral", strengths: "Various (see magnesium oxide, citrate, etc.)" }
+    ],
+    doses: {
+      hypoMgMild: { label: "Mild Hypomagnesemia (IV)", value: "25-50", unit: "mg/kg/dose Q4-6h x 3-4 doses" },
+      hypoMgSevere: { label: "Severe Hypomagnesemia (IV)", value: "25-50", unit: "mg/kg over 2-4h (max 2g)" },
+      asthma: { label: "Severe Asthma (IV)", value: "25-75", unit: "mg/kg over 20 min (max 2g)" },
+      torsades: { label: "Torsades de Pointes (IV)", value: "25-50", unit: "mg/kg IV push (max 2g)" },
+      eclampsia: { label: "Eclampsia (Adult)", value: "4-6", unit: "g IV over 15-20 min, then 1-2 g/hr", isFixed: true },
+      constipation: { label: "Constipation (PO)", value: "0.25-0.5", unit: "g/kg (max 30g)" }
+    },
+    dosingTable: {
+      title: "Magnesium Correction - IV Dosing",
+      columns: ["Mg Level", "Dose", "Rate"],
+      rows: [
+        ["1.5-1.9 mg/dL", "25-50 mg/kg", "Over 4-6 hours"],
+        ["1.0-1.4 mg/dL", "50-75 mg/kg", "Over 4-6 hours"],
+        ["<1.0 mg/dL", "75-100 mg/kg", "Over 4-6 hours + repeat PRN"]
+      ]
+    },
+    max: "2 g/dose IV; 30 g/day PO",
+    indication: "Hypomagnesemia, severe asthma, torsades de pointes, eclampsia/preeclampsia, constipation",
+    contraindications: [
+      "Heart block",
+      "Myocardial damage",
+      "Renal failure (relative - use with caution)"
+    ],
+    warnings: [
+      "Monitor for hypermagnesemia (loss of reflexes, respiratory depression, cardiac arrest)",
+      "Rapid IV may cause hypotension, flushing, sweating",
+      "Have calcium gluconate available as antidote",
+      "Monitor renal function"
+    ],
+    sideEffects: [
+      "IV: Flushing, hypotension, bradycardia, respiratory depression",
+      "PO: Diarrhea, abdominal cramping",
+      "Toxicity: Loss of deep tendon reflexes (5-7 mEq/L), respiratory paralysis (10-15 mEq/L)"
+    ],
+    interactions: [
+      { drug: "Calcium channel blockers", effect: "Additive hypotension" },
+      { drug: "Neuromuscular blockers", effect: "Prolonged paralysis" },
+      { drug: "Aminoglycosides", effect: "Additive neuromuscular blockade" }
+    ],
+    notes: "For torsades: give IV push. For asthma: give over 20 min. Monitor Mg levels, deep tendon reflexes. Therapeutic level: 4-6 mEq/L (seizure prophylaxis). Antidote: Calcium gluconate 100-200 mg/kg IV slowly.",
+    renalAdjust: {
+      gfr50: "75% dose",
+      gfr30: "50% dose",
+      gfr10: "25-50% dose",
+      hd: "Avoid unless essential; monitor levels closely"
+    },
+    hepaticAdjust: null
+  },
+
+  // ============================================================================
+  // MANNITOL
+  // ============================================================================
+  {
+    id: "mannitol",
+    name: "Mannitol (Osmitrol)",
+    category: "Osmotic Diuretic",
+    route: "IV",
+    formulations: [
+      { type: "Injection", strengths: "5%, 10%, 15%, 20%, 25%" }
+    ],
+    doses: {
+      cerebralEdema: { label: "Cerebral Edema/ICP", value: "0.25-1", unit: "g/kg IV over 20-30 min" },
+      acuteICP: { label: "Acute ICP Crisis", value: "1", unit: "g/kg IV over 10-20 min" },
+      oliguria: { label: "Oliguria (test dose)", value: "0.2", unit: "g/kg IV over 3-5 min" },
+      glaucoma: { label: "Acute Glaucoma", value: "0.25-0.5", unit: "g/kg IV over 30-60 min" }
+    },
+    max: "1 g/kg/dose; may repeat Q4-6h; max 6 g/kg/day",
+    indication: "Cerebral edema, raised ICP, acute glaucoma, oliguria/acute renal failure (to promote diuresis)",
+    contraindications: [
+      "Anuria (established renal failure)",
+      "Severe dehydration",
+      "Active intracranial bleeding (except during craniotomy)",
+      "Pulmonary edema or severe pulmonary congestion"
+    ],
+    warnings: [
+      "Monitor serum osmolality (keep <320 mOsm/kg)",
+      "Osmolar gap >10 suggests accumulation",
+      "Rebound ICP elevation possible",
+      "May cause acute renal failure with high doses"
+    ],
+    sideEffects: [
+      "Common: Thirst, nausea, headache, urinary frequency",
+      "Fluid/electrolyte: Hyponatremia, hypernatremia (late), hypokalemia",
+      "Serious: Pulmonary edema, acute renal failure, rebound ICP"
+    ],
+    interactions: [
+      { drug: "Lithium", effect: "Increased lithium excretion" },
+      { drug: "Other diuretics", effect: "Additive effect" },
+      { drug: "Nephrotoxic drugs", effect: "Increased renal injury risk" }
+    ],
+    notes: "Use filter (5 micron) for 20% and 25% concentrations. Onset: 30-60 min for diuresis; 15-30 min for ICP reduction. Duration ICP effect: 3-8 hours. Insert urinary catheter before use. May crystallize at low temperatures - warm and shake before use.",
+    renalAdjust: {
+      gfr50: "Use with caution",
+      gfr30: "Avoid if possible",
+      gfr10: "Contraindicated",
+      hd: "Contraindicated"
+    },
+    hepaticAdjust: null
+  },
+
+  // ============================================================================
+  // MEROPENEM
+  // ============================================================================
+  {
+    id: "meropenem",
+    name: "Meropenem (Merrem)",
+    category: "Antibiotic (Carbapenem)",
+    route: "IV",
+    formulations: [
+      { type: "Injection", strengths: "500 mg, 1 g vials" }
+    ],
+    doses: {
+      neoUnder32wk: { label: "Neonate ≤32wk PMA", value: "20", unit: "mg/kg/dose Q12h IV" },
+      neo32to40wk: { label: "Neonate 32-40wk PMA", value: "20", unit: "mg/kg/dose Q8h IV" },
+      standard: { label: "Standard (Child)", value: "20", unit: "mg/kg/dose Q8h", maxDose: 1000 },
+      meningitis: { label: "Meningitis", value: "40", unit: "mg/kg/dose Q8h", maxDose: 2000 },
+      febrileNeutropenia: { label: "Febrile Neutropenia", value: "20", unit: "mg/kg/dose Q8h", maxDose: 1000 },
+      cfPseudomonas: { label: "CF/Pseudomonas", value: "40", unit: "mg/kg/dose Q8h", maxDose: 2000 },
+      adultStandard: { label: "Adult Standard", value: "1", unit: "g Q8h", isFixed: true },
+      adultSevere: { label: "Adult Severe", value: "2", unit: "g Q8h", isFixed: true }
+    },
+    dosingTable: {
+      title: "Neonatal Meropenem Dosing",
+      columns: ["PMA (weeks)", "Postnatal Age", "Dose", "Interval"],
+      rows: [
+        ["≤32", "All", "20 mg/kg", "Q12h"],
+        ["32-40", "0-7 days", "20 mg/kg", "Q12h"],
+        ["32-40", ">7 days", "20 mg/kg", "Q8h"],
+        [">40", "All", "20 mg/kg", "Q8h"]
+      ]
+    },
+    max: "2 g/dose; 6 g/day",
+    indication: "Complicated intra-abdominal infections, meningitis, febrile neutropenia, Pseudomonas, ESBL-producing organisms",
+    contraindications: [
+      "History of anaphylaxis to carbapenems or beta-lactams"
+    ],
+    warnings: [
+      "Seizure risk (lower than imipenem)",
+      "Cross-reactivity with penicillins",
+      "C. difficile colitis",
+      "May reduce valproic acid levels significantly"
+    ],
+    sideEffects: [
+      "Common: Diarrhea, nausea, rash, headache",
+      "Less common: Seizures, thrombocytopenia, elevated LFTs",
+      "Rare: Anaphylaxis, Stevens-Johnson syndrome"
+    ],
+    interactions: [
+      { drug: "Valproic acid", effect: "Dramatically reduces valproate levels - avoid combination" },
+      { drug: "Probenecid", effect: "Increases meropenem levels" }
+    ],
+    notes: "Broad spectrum including most gram-negatives, gram-positives, and anaerobes. Does NOT cover MRSA or Enterococcus faecium. Extended infusion (3 hours) may improve outcomes in serious infections. Lower seizure risk than imipenem.",
+    renalAdjust: {
+      gfr50: "100% dose Q8-12h",
+      gfr30: "50% dose Q12h",
+      gfr10: "50% dose Q24h",
+      hd: "Dose after HD; supplement 500 mg"
+    },
+    hepaticAdjust: "No adjustment needed"
+  },
+
+  // ============================================================================
+  // METHADONE
+  // ============================================================================
+  {
+    id: "methadone",
+    name: "Methadone (Dolophine)",
+    category: "Opioid Analgesic",
+    route: "PO/IV/IM/SC",
+    formulations: [
+      { type: "Tablets", strengths: "5 mg, 10 mg" },
+      { type: "Oral solution", strengths: "5 mg/5 mL, 10 mg/5 mL" },
+      { type: "Oral concentrate", strengths: "10 mg/mL" },
+      { type: "Injection", strengths: "10 mg/mL" }
+    ],
+    doses: {
+      analgesiaChild: { label: "Analgesia (Child)", value: "0.7", unit: "mg/kg/day ÷ Q4-6h", maxDose: 10, maxUnit: "mg/dose" },
+      analgesiaAdult: { label: "Analgesia (Adult)", value: "2.5-10", unit: "mg Q8-12h", isFixed: true },
+      nasNeonatal: { label: "NAS (Neonatal)", value: "0.05-0.1", unit: "mg/kg/dose Q6h, titrate per NAS score" },
+      iatrogenicWithdrawal: { label: "Iatrogenic Withdrawal", value: "0.05-0.1", unit: "mg/kg/dose Q6h, wean 10-20%/day" }
+    },
+    max: "10 mg/dose (child); titrate in adults",
+    indication: "Severe pain, neonatal abstinence syndrome (NAS), opioid withdrawal, iatrogenic withdrawal",
+    contraindications: [
+      "Significant respiratory depression",
+      "Acute or severe bronchial asthma",
+      "Paralytic ileus"
+    ],
+    warnings: [
+      "⚠️ QT prolongation - obtain baseline ECG",
+      "⚠️ Highly variable half-life (15-60 hours) - accumulation risk",
+      "Respiratory depression may be delayed",
+      "Incomplete cross-tolerance with other opioids"
+    ],
+    sideEffects: [
+      "Common: Sedation, nausea, constipation, sweating",
+      "Cardiovascular: QT prolongation, torsades de pointes",
+      "Serious: Respiratory depression, hypotension"
+    ],
+    interactions: [
+      { drug: "QT-prolonging drugs", effect: "Additive QT prolongation" },
+      { drug: "CYP3A4 inhibitors", effect: "Increased methadone levels" },
+      { drug: "CYP3A4 inducers", effect: "Decreased methadone levels (rifampin, phenytoin)" },
+      { drug: "Benzodiazepines", effect: "Increased respiratory depression" }
+    ],
+    notes: "Long and variable half-life requires careful titration. Start low, go slow. Peak effect may not occur for 3-5 days. For NAS: titrate based on Finnegan or other NAS scoring. ECG monitoring recommended (QTc >500 ms is concerning).",
+    renalAdjust: {
+      gfr50: "No change",
+      gfr30: "50-75% dose",
+      gfr10: "50% dose",
+      hd: "No supplement"
+    },
+    hepaticAdjust: "Use with caution; reduce dose in severe impairment"
+  },
+
+  // ============================================================================
+  // METOCLOPRAMIDE (Reglan)
+  // ============================================================================
+  {
+    id: "metoclopramide",
+    name: "Metoclopramide (Reglan)",
+    category: "Prokinetic/Antiemetic",
+    route: "IV/IM/PO",
+    formulations: [
+      { type: "Tablets", strengths: "5 mg, 10 mg" },
+      { type: "ODT", strengths: "5 mg, 10 mg" },
+      { type: "Solution", strengths: "5 mg/5 mL" },
+      { type: "Injection", strengths: "5 mg/mL" }
+    ],
+    doses: {
+      gerdChild: { label: "GERD (Child)", value: "0.1-0.2", unit: "mg/kg/dose Q6-8h", maxDose: 0.5, maxUnit: "mg/kg/day" },
+      gastroparesis: { label: "Gastroparesis (Adult)", value: "10", unit: "mg QID (30 min AC + HS)", isFixed: true },
+      antiemeticChild: { label: "Antiemetic (Child)", value: "0.1-0.2", unit: "mg/kg/dose Q6-8h (max 0.5 mg/kg/day)" },
+      antiemeticChemo: { label: "Chemo-induced (High dose)", value: "1-2", unit: "mg/kg/dose IV" },
+      facilitateIntubation: { label: "Facilitate NG/Intubation", value: "0.1", unit: "mg/kg IV x1 (max 10 mg)" }
+    },
+    max: "0.5 mg/kg/day or 10 mg/dose (standard); 2 mg/kg/dose (high-dose antiemetic)",
+    indication: "GERD, gastroparesis, nausea/vomiting, facilitate intubation",
+    contraindications: [
+      "GI obstruction, perforation, or hemorrhage",
+      "Pheochromocytoma",
+      "Seizure disorder",
+      "Concurrent use of drugs causing extrapyramidal reactions"
+    ],
+    warnings: [
+      "⚠️ BLACK BOX: Tardive dyskinesia with prolonged use (>12 weeks)",
+      "Extrapyramidal symptoms (especially in children)",
+      "Neuroleptic malignant syndrome (rare)",
+      "Depression"
+    ],
+    sideEffects: [
+      "Common: Restlessness, drowsiness, fatigue, diarrhea",
+      "Extrapyramidal: Dystonia, akathisia, parkinsonism",
+      "Serious: Tardive dyskinesia (may be irreversible), NMS"
+    ],
+    interactions: [
+      { drug: "Antipsychotics", effect: "Increased extrapyramidal effects" },
+      { drug: "MAO inhibitors", effect: "Hypertensive crisis risk" },
+      { drug: "Levodopa", effect: "Decreased levodopa effect" },
+      { drug: "CNS depressants", effect: "Additive sedation" }
+    ],
+    notes: "Limit use to <12 weeks to reduce tardive dyskinesia risk. Diphenhydramine can treat acute dystonic reactions. Give 30 min before meals. High-dose antiemetic use requires pretreatment with diphenhydramine.",
+    renalAdjust: {
+      gfr50: "No change",
+      gfr30: "50% dose",
+      gfr10: "50% dose",
+      hd: "No supplement"
+    },
+    hepaticAdjust: "Reduce dose in severe impairment"
+  },
+
+  // ============================================================================
+  // METRONIDAZOLE (Flagyl)
+  // ============================================================================
+  {
+    id: "metronidazole",
+    name: "Metronidazole (Flagyl)",
+    category: "Antibiotic/Antiprotozoal",
+    route: "IV/PO",
+    formulations: [
+      { type: "Tablets", strengths: "250 mg, 500 mg" },
+      { type: "Capsules", strengths: "375 mg" },
+      { type: "Suspension", strengths: "Compounded" },
+      { type: "Injection", strengths: "5 mg/mL (500 mg/100 mL)" },
+      { type: "Topical", strengths: "0.75%, 1% gel/cream" }
+    ],
+    doses: {
+      neoUnder27wk: { label: "Neonate <27wk PMA", value: "7.5", unit: "mg/kg/dose Q48h" },
+      neo27to33wk: { label: "Neonate 27-33wk PMA", value: "7.5", unit: "mg/kg/dose Q24h" },
+      neoOver33wk: { label: "Neonate >33wk PMA", value: "7.5", unit: "mg/kg/dose Q12h" },
+      anaerobicChild: { label: "Anaerobic (Child)", value: "22.5-40", unit: "mg/kg/day ÷ Q8h", maxDose: 4000 },
+      cdiffChild: { label: "C. diff (Child)", value: "30", unit: "mg/kg/day ÷ Q6h PO (max 2g/day)" },
+      amebiasis: { label: "Amebiasis", value: "35-50", unit: "mg/kg/day ÷ Q8h x 10 days" },
+      giardia: { label: "Giardiasis", value: "15-30", unit: "mg/kg/day ÷ TID x 5-7 days" },
+      hPylori: { label: "H. pylori", value: "20", unit: "mg/kg/day ÷ BID (with PPI + amoxicillin)" },
+      bacterialVaginosis: { label: "Bacterial Vaginosis", value: "500", unit: "mg BID x 7 days OR 2g x 1", isFixed: true }
+    ],
+    max: "4 g/day",
+    indication: "Anaerobic infections, C. difficile colitis, amebiasis, giardiasis, trichomoniasis, bacterial vaginosis, H. pylori",
+    contraindications: [
+      "First trimester pregnancy (relative)",
+      "Hypersensitivity to nitroimidazoles"
+    ],
+    warnings: [
+      "Disulfiram-like reaction with alcohol",
+      "Peripheral neuropathy with prolonged use",
+      "Seizures (rare)",
+      "Carcinogenic in rodents (clinical significance unknown)"
+    ],
+    sideEffects: [
+      "Common: Nausea, metallic taste, headache, dark urine",
+      "GI: Abdominal pain, diarrhea, glossitis",
+      "Neurologic: Peripheral neuropathy, dizziness, seizures (rare)"
+    ],
+    interactions: [
+      { drug: "Alcohol", effect: "Disulfiram-like reaction (nausea, vomiting, flushing)" },
+      { drug: "Warfarin", effect: "Increased anticoagulant effect" },
+      { drug: "Lithium", effect: "Increased lithium toxicity" },
+      { drug: "Phenytoin", effect: "Increased phenytoin levels" }
+    ],
+    notes: "Excellent anaerobic coverage. First-line for C. diff (mild-moderate). Avoid alcohol during treatment and for 3 days after. Can be given with or without food. IV and PO bioequivalent.",
+    renalAdjust: {
+      gfr50: "No change",
+      gfr30: "No change",
+      gfr10: "50% dose or extend interval",
+      hd: "Dose after HD; supplement 500 mg"
+    },
+    hepaticAdjust: "Reduce dose by 50% in severe impairment"
+  },
+
+  // ============================================================================
+  // MIDAZOLAM (Versed)
+  // ============================================================================
+  {
+    id: "midazolam",
+    name: "Midazolam (Versed)",
+    category: "Benzodiazepine",
+    route: "IV/IM/IN/PO/Buccal",
+    formulations: [
+      { type: "Injection", strengths: "1 mg/mL, 5 mg/mL" },
+      { type: "Syrup", strengths: "2 mg/mL" },
+      { type: "Nasal spray (Nayzilam)", strengths: "5 mg/0.1 mL" },
+      { type: "Buccal (Buccolam)", strengths: "2.5 mg, 5 mg, 7.5 mg, 10 mg" }
+    ],
+    doses: {
+      sedationIV: { label: "Sedation (IV)", value: "0.05-0.1", unit: "mg/kg IV", maxDose: 10 },
+      sedationIM: { label: "Sedation (IM)", value: "0.1-0.15", unit: "mg/kg IM", maxDose: 10 },
+      sedationPO: { label: "Sedation (PO)", value: "0.25-0.5", unit: "mg/kg PO", maxDose: 20 },
+      sedationIN: { label: "Sedation/Seizure (IN)", value: "0.2-0.3", unit: "mg/kg IN", maxDose: 10 },
+      statusIN: { label: "Status (Nayzilam)", value: "5", unit: "mg IN (one spray per nostril)", isFixed: true },
+      statusBuccal: { label: "Status (Buccal)", value: "See table", unit: "by age" },
+      infusion: { label: "Sedation Infusion", value: "0.05-0.4", unit: "mg/kg/hr" }
+    },
+    dosingTable: {
+      title: "Midazolam Buccal Dosing by Age (Status Epilepticus)",
+      columns: ["Age", "Dose"],
+      rows: [
+        ["3 mo - <1 yr", "2.5 mg"],
+        ["1 yr - <5 yr", "5 mg"],
+        ["5 yr - <10 yr", "7.5 mg"],
+        ["10 yr - <18 yr", "10 mg"]
+      ]
+    },
+    max: "10 mg/dose (most routes); 20 mg PO",
+    indication: "Procedural sedation, anxiolysis, status epilepticus (rescue), ICU sedation",
+    contraindications: [
+      "Acute narrow-angle glaucoma",
+      "Shock or coma",
+      "Acute alcohol intoxication"
+    ],
+    warnings: [
+      "Respiratory depression - monitor closely",
+      "Paradoxical reactions (more common in children)",
+      "Avoid in severe respiratory insufficiency",
+      "Prolonged sedation in hepatic/renal impairment"
+    ],
+    sideEffects: [
+      "Common: Sedation, hiccups, nausea, vomiting",
+      "Respiratory: Respiratory depression, apnea",
+      "Paradoxical: Agitation, combativeness"
+    ],
+    interactions: [
+      { drug: "Opioids", effect: "Increased respiratory depression" },
+      { drug: "CYP3A4 inhibitors", effect: "Increased midazolam effect" },
+      { drug: "CYP3A4 inducers", effect: "Decreased midazolam effect" }
+    ],
+    notes: "Shortest-acting benzodiazepine. Onset IV: 1-3 min; IN: 5-10 min; PO: 15-30 min. Duration: 30-60 min (single dose). Intranasal may cause burning/stinging. Flumazenil is reversal agent but may precipitate seizures.",
+    renalAdjust: "Use with caution; may have prolonged effect",
+    hepaticAdjust: "Reduce dose in severe impairment"
+  },
+
+  // ============================================================================
+  // MILRINONE (Primacor)
+  // ============================================================================
+  {
+    id: "milrinone",
+    name: "Milrinone (Primacor)",
+    category: "Inotrope/Vasodilator",
+    route: "IV",
+    formulations: [
+      { type: "Injection", strengths: "1 mg/mL" },
+      { type: "Premixed", strengths: "200 mcg/mL in D5W" }
+    ],
+    doses: {
+      loading: { label: "Loading (optional)", value: "50", unit: "mcg/kg IV over 15 min" },
+      infusion: { label: "Infusion", value: "0.25-0.75", unit: "mcg/kg/min" },
+      neonatal: { label: "Neonatal", value: "0.25-0.75", unit: "mcg/kg/min (no loading in neonates)" }
+    },
+    max: "0.75 mcg/kg/min; 1.13 mg/kg/day",
+    indication: "Low cardiac output syndrome, post-cardiac surgery, acute decompensated heart failure",
+    contraindications: [
+      "Hypersensitivity to milrinone"
+    ],
+    warnings: [
+      "Hypotension (especially with loading dose)",
+      "Arrhythmias (especially with electrolyte abnormalities)",
+      "Thrombocytopenia",
+      "Long half-life in renal impairment"
+    ],
+    sideEffects: [
+      "Cardiovascular: Hypotension, ventricular arrhythmias",
+      "Hematologic: Thrombocytopenia",
+      "Other: Headache, tremor"
+    ],
+    interactions: [
+      { drug: "Diuretics", effect: "May cause hypokalemia (arrhythmia risk)" },
+      { drug: "Other inotropes", effect: "Additive hemodynamic effects" }
+    ],
+    notes: "Phosphodiesterase-3 inhibitor (\"inodilator\"). Increases inotropy while decreasing afterload. Does NOT increase myocardial oxygen demand like catecholamines. Half-life: 2-3 hours (prolonged in renal failure). Loading dose often omitted to avoid hypotension.",
+    renalAdjust: {
+      gfr50: "No change",
+      gfr30: "0.33-0.43 mcg/kg/min max",
+      gfr10: "0.23 mcg/kg/min max",
+      hd: "Use with caution"
+    },
+    hepaticAdjust: null
+  },
+
+  // ============================================================================
+  // MORPHINE
+  // ============================================================================
+  {
+    id: "morphine",
+    name: "Morphine Sulfate",
+    category: "Opioid Analgesic",
+    route: "IV/IM/SC/PO/PR",
+    formulations: [
+      { type: "Injection", strengths: "0.5, 1, 2, 4, 5, 8, 10, 15 mg/mL" },
+      { type: "Oral solution", strengths: "10 mg/5 mL, 20 mg/5 mL, 100 mg/5 mL (concentrate)" },
+      { type: "IR tablets", strengths: "15 mg, 30 mg" },
+      { type: "ER tablets", strengths: "15 mg, 30 mg, 60 mg, 100 mg, 200 mg" },
+      { type: "Suppository", strengths: "5 mg, 10 mg, 20 mg, 30 mg" }
+    ],
+    doses: {
+      analgesiaIVNeo: { label: "IV (Neonate)", value: "0.05-0.1", unit: "mg/kg Q4-6h", maxDose: 0.2 },
+      analgesiaIVChild: { label: "IV (Child)", value: "0.05-0.1", unit: "mg/kg Q2-4h PRN", maxDose: 15 },
+      analgesiaIVAdult: { label: "IV (Adult)", value: "2-10", unit: "mg Q2-4h PRN", isFixed: true },
+      infusionNeo: { label: "Infusion (Neonate)", value: "0.01-0.02", unit: "mg/kg/hr" },
+      infusionChild: { label: "Infusion (Child)", value: "0.01-0.04", unit: "mg/kg/hr" },
+      poPediatric: { label: "PO (Pediatric)", value: "0.2-0.5", unit: "mg/kg/dose Q4-6h" },
+      poAdult: { label: "PO IR (Adult)", value: "15-30", unit: "mg Q4h PRN", isFixed: true }
+    },
+    dosingTable: {
+      title: "Morphine Equianalgesic Dosing",
+      columns: ["Route", "Dose Ratio", "Example"],
+      rows: [
+        ["IV", "1x", "10 mg IV"],
+        ["PO", "3x", "30 mg PO"],
+        ["PR", "3x", "30 mg PR"]
+      ]
+    },
+    max: "See indication; titrate to effect",
+    indication: "Moderate to severe pain, cyanotic (Tet) spells, dyspnea in palliative care",
+    contraindications: [
+      "Significant respiratory depression",
+      "Acute or severe bronchial asthma (without monitoring)",
+      "GI obstruction (known or suspected)",
+      "Concurrent MAO inhibitor use (within 14 days)"
+    ],
+    warnings: [
+      "⚠️ Respiratory depression (especially neonates/infants)",
+      "Hypotension (especially with hypovolemia)",
+      "Physical dependence with prolonged use",
+      "Histamine release (flushing, pruritus)"
+    ],
+    sideEffects: [
+      "Common: Sedation, nausea, vomiting, constipation, pruritus",
+      "Respiratory: Respiratory depression",
+      "Cardiovascular: Hypotension, bradycardia",
+      "GI: Constipation (universal with chronic use)"
+    ],
+    interactions: [
+      { drug: "CNS depressants", effect: "Additive respiratory depression" },
+      { drug: "MAO inhibitors", effect: "⚠️ Severe/fatal reactions - avoid" },
+      { drug: "Mixed agonist-antagonists", effect: "May precipitate withdrawal" }
+    ],
+    notes: "Gold standard opioid for comparison. Active metabolite (M6G) accumulates in renal failure. Onset IV: 5-10 min; PO: 30-60 min. Duration: 4-6 hours. Naloxone is reversal agent. Start bowel regimen with chronic use.",
+    renalAdjust: {
+      gfr50: "75% dose",
+      gfr30: "50% dose",
+      gfr10: "25-50% dose",
+      hd: "50% dose; no supplement"
+    },
+    hepaticAdjust: "Reduce dose and extend interval"
+  },
+
+  // ============================================================================
+  // NALOXONE (Narcan)
+  // ============================================================================
+  {
+    id: "naloxone",
+    name: "Naloxone (Narcan)",
+    category: "Opioid Antagonist",
+    route: "IV/IM/SC/IN/ETT",
+    formulations: [
+      { type: "Injection", strengths: "0.4 mg/mL, 1 mg/mL" },
+      { type: "Nasal spray (Narcan)", strengths: "4 mg/0.1 mL per spray" },
+      { type: "Nasal spray (Kloxxado)", strengths: "8 mg/0.1 mL" }
+    ],
+    doses: {
+      opioidReversalNeo: { label: "Full Reversal (Neonate)", value: "0.1", unit: "mg/kg IV/IM/SC/ETT" },
+      opioidReversalChild: { label: "Full Reversal (Child ≤20kg)", value: "0.1", unit: "mg/kg IV/IM/SC (max 2 mg)" },
+      opioidReversalAdult: { label: "Full Reversal (Adult/>20kg)", value: "0.4-2", unit: "mg IV/IM/SC" },
+      partialReversal: { label: "Partial Reversal (titrate)", value: "0.001-0.005", unit: "mg/kg IV, repeat Q2-3min" },
+      intranasal: { label: "Intranasal (≥4 yr)", value: "4", unit: "mg (1 spray) IN, may repeat Q2-3min", isFixed: true },
+      infusion: { label: "Continuous Infusion", value: "0.002-0.16", unit: "mg/kg/hr" },
+      ettDose: { label: "ETT Dose", value: "0.1", unit: "mg/kg (2-3x IV dose)" }
+    },
+    max: "10 mg total (if no response, question opioid diagnosis)",
+    indication: "Opioid overdose, reversal of opioid effects (respiratory depression)",
+    contraindications: [
+      "Hypersensitivity to naloxone"
+    ],
+    warnings: [
+      "⚠️ May precipitate acute withdrawal in opioid-dependent patients",
+      "⚠️ Pulmonary edema (rare but serious)",
+      "Duration shorter than most opioids - watch for re-sedation",
+      "May reverse analgesia"
+    ],
+    sideEffects: [
+      "Opioid withdrawal: Nausea, vomiting, diaphoresis, tachycardia, hypertension",
+      "Cardiovascular: Hypotension, hypertension, arrhythmias",
+      "Pulmonary: Pulmonary edema (rare)"
+    ],
+    interactions: [
+      { drug: "Opioids", effect: "Antagonizes opioid effects" },
+      { drug: "Buprenorphine", effect: "High doses needed to reverse" }
+    ],
+    notes: "Duration: 30-90 min (shorter than most opioids - observe for re-sedation). For partial reversal (maintain analgesia): titrate with small doses. Neonatal resuscitation: NOT recommended per NRP 2020 (support ventilation instead). ETT dose is 2-3x IV dose diluted in NS.",
+    renalAdjust: null,
+    hepaticAdjust: null
+  },
+
+  // ============================================================================
+  // NOREPINEPHRINE (Levophed)
+  // ============================================================================
+  {
+    id: "norepinephrine",
+    name: "Norepinephrine (Levophed)",
+    category: "Vasopressor",
+    route: "IV",
+    formulations: [
+      { type: "Injection", strengths: "1 mg/mL (4 mL)" },
+      { type: "Premixed", strengths: "4 mg/250 mL, 8 mg/250 mL in D5W" }
+    ],
+    doses: {
+      pediatricInfusion: { label: "Pediatric Infusion", value: "0.05-2", unit: "mcg/kg/min" },
+      adultInfusion: { label: "Adult Infusion", value: "0.1-0.5", unit: "mcg/kg/min (or 8-30 mcg/min)" },
+      sepsisInitial: { label: "Septic Shock (initial)", value: "0.05-0.1", unit: "mcg/kg/min, titrate" }
+    },
+    max: "2 mcg/kg/min (higher doses used in refractory shock)",
+    indication: "Septic shock (first-line vasopressor), hypotension refractory to fluid resuscitation",
+    contraindications: [
+      "Hypotension from hypovolemia (except as emergency measure)",
+      "Mesenteric or peripheral vascular thrombosis"
+    ],
+    warnings: [
+      "⚠️ Extravasation causes severe tissue necrosis",
+      "Central line strongly preferred",
+      "May decrease renal and mesenteric blood flow",
+      "Cardiac arrhythmias"
+    ],
+    sideEffects: [
+      "Cardiovascular: Hypertension, bradycardia (reflex), arrhythmias",
+      "Local: Tissue necrosis with extravasation",
+      "Other: Headache, anxiety"
+    ],
+    interactions: [
+      { drug: "MAO inhibitors", effect: "Severe hypertension" },
+      { drug: "TCAs", effect: "Increased pressor effect" },
+      { drug: "Beta-blockers", effect: "May increase hypertension (unopposed alpha)" }
+    ],
+    notes: "Potent α-agonist (vasoconstriction) with moderate β1 activity (inotropy). First-line vasopressor in septic shock per Surviving Sepsis Campaign. If extravasation: infiltrate area with phentolamine 5-10 mg in 10-15 mL NS within 12 hours. Always use via central line when possible.",
+    renalAdjust: null,
+    hepaticAdjust: null
+  },
+
+  // ============================================================================
+  // OMEPRAZOLE (Prilosec)
+  // ============================================================================
+  {
+    id: "omeprazole",
+    name: "Omeprazole (Prilosec)",
+    category: "Proton Pump Inhibitor",
+    route: "PO",
+    formulations: [
+      { type: "Capsules (DR)", strengths: "10 mg, 20 mg, 40 mg" },
+      { type: "Oral suspension", strengths: "2 mg/mL (compounded)" },
+      { type: "Powder for suspension", strengths: "2.5 mg, 10 mg packets" }
+    ],
+    doses: {
+      gerdChild1to16: { label: "GERD (1-16 yr)", value: "1", unit: "mg/kg/day QD (max 20 mg)" },
+      gerdAdult: { label: "GERD (Adult)", value: "20-40", unit: "mg QD x 4-8 weeks", isFixed: true },
+      erosiveEsoph: { label: "Erosive Esophagitis", value: "1-2", unit: "mg/kg/day ÷ QD-BID (max 40 mg)" },
+      hPylori: { label: "H. pylori (adult)", value: "20", unit: "mg BID (with antibiotics) x 10-14 days", isFixed: true },
+      stressUlcer: { label: "Stress Ulcer Prophylaxis", value: "1", unit: "mg/kg/dose QD-BID" }
+    },
+    dosingTable: {
+      title: "Omeprazole Pediatric Dosing by Weight",
+      columns: ["Weight", "Dose"],
+      rows: [
+        ["5-<10 kg", "5 mg QD"],
+        ["10-<20 kg", "10 mg QD"],
+        ["≥20 kg", "20 mg QD"]
+      ]
+    },
+    max: "40 mg/day (80 mg/day for Zollinger-Ellison)",
+    indication: "GERD, erosive esophagitis, peptic ulcer disease, H. pylori (with antibiotics), stress ulcer prophylaxis",
+    contraindications: [
+      "Hypersensitivity to PPIs",
+      "Concurrent rilpivirine"
+    ],
+    warnings: [
+      "Long-term use: increased risk of C. diff, hypomagnesemia, bone fractures",
+      "May mask symptoms of gastric cancer",
+      "Vitamin B12 deficiency with prolonged use",
+      "Drug interactions via CYP2C19"
+    ],
+    sideEffects: [
+      "Common: Headache, diarrhea, abdominal pain, nausea",
+      "Long-term: Hypomagnesemia, B12 deficiency, bone fractures",
+      "Rare: Interstitial nephritis, cutaneous lupus"
+    ],
+    interactions: [
+      { drug: "Clopidogrel", effect: "Reduced antiplatelet effect" },
+      { drug: "Methotrexate", effect: "Increased methotrexate levels" },
+      { drug: "Atazanavir/Rilpivirine", effect: "Reduced absorption (avoid)" },
+      { drug: "Diazepam/Phenytoin", effect: "Increased levels" }
+    ],
+    notes: "Give 30-60 min before meals. Capsules may be opened and sprinkled on applesauce (do not crush granules). For NG: can use oral suspension or dissolve in sodium bicarbonate solution. Effect may take 1-4 days for full acid suppression.",
+    renalAdjust: null,
+    hepaticAdjust: "Max 20 mg/day in severe hepatic impairment"
+  },
+
+  // ============================================================================
+  // ONDANSETRON (Zofran)
+  // ============================================================================
+  {
+    id: "ondansetron",
+    name: "Ondansetron (Zofran)",
+    category: "Antiemetic (5-HT3 Antagonist)",
+    route: "IV/PO/ODT",
+    formulations: [
+      { type: "Tablets", strengths: "4 mg, 8 mg" },
+      { type: "ODT", strengths: "4 mg, 8 mg" },
+      { type: "Oral solution", strengths: "4 mg/5 mL" },
+      { type: "Injection", strengths: "2 mg/mL" }
+    ],
+    doses: {
+      ponvChild: { label: "PONV (Child ≥1 mo-12 yr)", value: "0.1", unit: "mg/kg IV (max 4 mg)" },
+      ponvAdult: { label: "PONV (Adult)", value: "4", unit: "mg IV/IM or 8 mg PO", isFixed: true },
+      chemoChild: { label: "Chemo-induced (Child)", value: "0.15", unit: "mg/kg IV Q4h x 3 doses (max 16 mg/dose)" },
+      chemoAdult: { label: "Chemo-induced (Adult)", value: "8", unit: "mg IV x 2 doses or 8 mg PO BID", isFixed: true },
+      gastroenteritis: { label: "Gastroenteritis (ED)", value: "0.15", unit: "mg/kg PO/IV (max 8 mg)" },
+      gastroByWeight: { label: "Gastro by Weight", value: "See table", unit: "" }
+    },
+    dosingTable: {
+      title: "Ondansetron Dosing for Gastroenteritis by Weight",
+      columns: ["Weight", "Dose"],
+      rows: [
+        ["8-15 kg", "2 mg"],
+        ["15-30 kg", "4 mg"],
+        [">30 kg", "6-8 mg"]
+      ]
+    },
+    max: "16 mg/dose IV; 24 mg/day (chemo)",
+    indication: "Chemotherapy-induced nausea/vomiting, PONV, radiation-induced N/V, gastroenteritis",
+    contraindications: [
+      "Hypersensitivity to ondansetron",
+      "Concurrent apomorphine"
+    ],
+    warnings: [
+      "⚠️ QT prolongation (dose-dependent)",
+      "Serotonin syndrome (with other serotonergic drugs)",
+      "May mask progressive ileus in post-op patients"
+    ],
+    sideEffects: [
+      "Common: Headache, constipation, dizziness",
+      "Cardiovascular: QT prolongation, arrhythmias",
+      "Rare: Serotonin syndrome, anaphylaxis"
+    ],
+    interactions: [
+      { drug: "QT-prolonging drugs", effect: "Additive QT prolongation" },
+      { drug: "Serotonergic drugs", effect: "Risk of serotonin syndrome" },
+      { drug: "Apomorphine", effect: "Profound hypotension - contraindicated" },
+      { drug: "Tramadol", effect: "Reduced analgesic effect" }
+    ],
+    notes: "Give IV over 2-5 min (over 15 min if >16 mg). ODT dissolves on tongue without water. Max single IV dose 16 mg (32 mg no longer recommended due to QT risk). FDA recommends ECG in patients with electrolyte abnormalities, CHF, or bradyarrhythmias.",
+    renalAdjust: null,
+    hepaticAdjust: "Max 8 mg/day in severe hepatic impairment"
+  },
+
+  // ============================================================================
+  // OSELTAMIVIR (Tamiflu)
+  // ============================================================================
+  {
+    id: "oseltamivir",
+    name: "Oseltamivir (Tamiflu)",
+    category: "Antiviral (Neuraminidase Inhibitor)",
+    route: "PO",
+    formulations: [
+      { type: "Capsules", strengths: "30 mg, 45 mg, 75 mg" },
+      { type: "Oral suspension", strengths: "6 mg/mL" }
+    ],
+    doses: {
+      treatment2wkTo1yr: { label: "Treatment (2wk-1yr)", value: "3", unit: "mg/kg/dose BID x 5 days" },
+      treatment1to12yr: { label: "Treatment (1-12yr)", value: "See table", unit: "BID x 5 days" },
+      treatmentAdult: { label: "Treatment (Adult)", value: "75", unit: "mg BID x 5 days", isFixed: true },
+      prophylaxis: { label: "Prophylaxis", value: "See treatment", unit: "dose QD x 10 days" }
+    },
+    dosingTable: {
+      title: "Oseltamivir Dosing by Weight (Treatment)",
+      columns: ["Weight", "Treatment Dose", "Prophylaxis Dose"],
+      rows: [
+        ["≤15 kg", "30 mg BID", "30 mg QD"],
+        [">15-23 kg", "45 mg BID", "45 mg QD"],
+        [">23-40 kg", "60 mg BID", "60 mg QD"],
+        [">40 kg", "75 mg BID", "75 mg QD"]
+      ]
+    },
+    max: "75 mg BID (treatment); 75 mg QD (prophylaxis)",
+    indication: "Influenza A and B (treatment and prophylaxis)",
+    contraindications: [
+      "Hypersensitivity to oseltamivir"
+    ],
+    warnings: [
+      "Most effective if started within 48 hours of symptom onset",
+      "Neuropsychiatric events (rare, mainly in children)",
+      "Not a substitute for annual flu vaccination"
+    ],
+    sideEffects: [
+      "Common: Nausea, vomiting (take with food to reduce)",
+      "Less common: Headache, abdominal pain",
+      "Rare: Neuropsychiatric events (delirium, self-injury)"
+    ],
+    interactions: [
+      { drug: "Live attenuated influenza vaccine", effect: "Avoid within 2 weeks before to 48 hours after oseltamivir" }
+    ],
+    notes: "Most effective when started within 48 hours of symptoms, but can still provide benefit if started later in hospitalized patients. Treatment duration: 5 days (may extend in severe illness). Prophylaxis: start within 48 hours of exposure. Can open capsule and mix with sweetened liquid.",
+    renalAdjust: {
+      gfr50: "No change",
+      gfr30: "30 mg BID (treatment); 30 mg QD (prophylaxis)",
+      gfr10: "30 mg QD (treatment); 30 mg every other day (prophylaxis)",
+      hd: "30 mg after each HD session"
+    },
+    hepaticAdjust: "No adjustment needed"
+  },
+
+  // ============================================================================
+  // PANTOPRAZOLE (Protonix)
+  // ============================================================================
+  {
+    id: "pantoprazole",
+    name: "Pantoprazole (Protonix)",
+    category: "Proton Pump Inhibitor",
+    route: "IV/PO",
+    formulations: [
+      { type: "Tablets (DR)", strengths: "20 mg, 40 mg" },
+      { type: "Granules for suspension", strengths: "40 mg packets" },
+      { type: "Injection", strengths: "40 mg vial" }
+    ],
+    doses: {
+      gerdChild: { label: "GERD (≥5 yr, ≥15kg)", value: "See table", unit: "PO QD" },
+      gerdAdult: { label: "GERD (Adult)", value: "40", unit: "mg PO QD x 8 weeks", isFixed: true },
+      erosive: { label: "Erosive Esophagitis (Adult)", value: "40", unit: "mg IV QD x 7-10 days", isFixed: true },
+      stressUlcer: { label: "Stress Ulcer Prophylaxis", value: "1", unit: "mg/kg/dose IV Q12-24h (max 40 mg)" },
+      giBleed: { label: "GI Bleed (Adult)", value: "80", unit: "mg IV bolus, then 8 mg/hr infusion", isFixed: true }
+    },
+    dosingTable: {
+      title: "Pantoprazole Pediatric Dosing",
+      columns: ["Weight", "PO Dose"],
+      rows: [
+        ["15-<40 kg", "20 mg QD"],
+        ["≥40 kg", "40 mg QD"]
+      ]
+    },
+    max: "40 mg/day (standard); 80 mg bolus + 8 mg/hr (GI bleed)",
+    indication: "GERD, erosive esophagitis, stress ulcer prophylaxis, GI bleeding",
+    contraindications: [
+      "Hypersensitivity to PPIs",
+      "Concurrent rilpivirine"
+    ],
+    warnings: [
+      "Long-term: C. diff risk, hypomagnesemia, bone fractures",
+      "Acute interstitial nephritis",
+      "Cutaneous/systemic lupus erythematosus",
+      "Vitamin B12 deficiency"
+    ],
+    sideEffects: [
+      "Common: Headache, diarrhea, flatulence, abdominal pain",
+      "Less common: Rash, dizziness",
+      "Long-term: Hypomagnesemia, B12 deficiency"
+    ],
+    interactions: [
+      { drug: "Clopidogrel", effect: "May reduce antiplatelet effect (less than omeprazole)" },
+      { drug: "Methotrexate", effect: "Increased methotrexate levels" },
+      { drug: "Atazanavir", effect: "Reduced absorption" }
+    ],
+    notes: "IV form useful when PO not feasible. For GI bleed: continuous infusion maintains gastric pH >6. Give 30-60 min before meals. Granules can be mixed with applesauce or apple juice. IV infusion stable for 24 hours at room temperature.",
+    renalAdjust: null,
+    hepaticAdjust: "Max 20 mg/day in severe hepatic impairment"
   }
 ];
 
