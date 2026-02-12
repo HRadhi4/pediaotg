@@ -619,6 +619,9 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
         const fluidType = selectedFluid.name;
         const fluidNa = selectedFluid.na;
         
+        // Calculate Na concentration (for reference)
+        const naConcentration = (totalNa / (totalVolume / 1000));
+        
         // Step 4: Dextrose - Usually D5% added
         // Mixture made from NS + D50%: 450ml NS + 50ml D50%
         const nsVolume = Math.round((totalVolume / 500) * 450);
