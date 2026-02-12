@@ -591,29 +591,13 @@ const DrugsPage = ({ onBack }) => {
               onClick={() => setExpandedDrug(isExpanded ? null : drug.id)}
             >
               <CardContent className="p-3">
-                {/* Drug Header */}
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2">
-                      <h3 className="font-semibold text-sm">{drug.name}</h3>
-                      <span className="text-[10px] px-1.5 py-0.5 rounded bg-gray-100 dark:bg-gray-800 text-muted-foreground">
-                        {drug.category}
-                      </span>
-                    </div>
-                    {/* Show first dose type */}
-                    {firstDose && (
-                      <div className="flex flex-wrap gap-1 mt-1">
-                        <span className="text-[9px] px-1 py-0.5 rounded bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400">
-                          {firstDose.label}: {firstDose.value} {firstDose.unit}
-                        </span>
-                      </div>
-                    )}
-                    {/* Age-based dosing indicator */}
-                    {(drug.ageDosing || drug.isFixedDose) && (
-                      <span className="text-[9px] px-1 py-0.5 rounded bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400 mt-1 inline-block">
-                        {drug.isFixedDose ? "Fixed dose (not weight-based)" : "Age-based dosing"}
-                      </span>
-                    )}
+                {/* Drug Header - Single line layout */}
+                <div className="flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-2 min-w-0 flex-1">
+                    <h3 className="font-semibold text-sm whitespace-nowrap flex-shrink-0">{drug.name}</h3>
+                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-gray-100 dark:bg-gray-800 text-muted-foreground whitespace-nowrap flex-shrink-0">
+                      {drug.category}
+                    </span>
                   </div>
                   {w > 0 && firstDose && (
                     <div className="text-right ml-2 flex-shrink-0">
