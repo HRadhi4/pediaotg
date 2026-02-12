@@ -2985,7 +2985,7 @@ export const childrenFormulary = [
       giardia: { label: "Giardiasis", value: "15-30", unit: "mg/kg/day ÷ TID x 5-7 days" },
       hPylori: { label: "H. pylori", value: "20", unit: "mg/kg/day ÷ BID (with PPI + amoxicillin)" },
       bacterialVaginosis: { label: "Bacterial Vaginosis", value: "500", unit: "mg BID x 7 days OR 2g x 1", isFixed: true }
-    ],
+    },
     max: "4 g/day",
     indication: "Anaerobic infections, C. difficile colitis, amebiasis, giardiasis, trichomoniasis, bacterial vaginosis, H. pylori",
     contraindications: [
