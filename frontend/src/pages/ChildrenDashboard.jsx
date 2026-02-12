@@ -58,7 +58,7 @@ import { arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, r
 import { CSS } from '@dnd-kit/utilities';
 
 // Import extracted page components
-import DrugsPage from './children/DrugsPage';
+import FormularyPage from './children/FormularyPage';
 import FluidReplacementPage from './children/FluidReplacementPage';
 import BPPage from './children/BPPage';
 import InfusionsPage from './children/InfusionsPage';
