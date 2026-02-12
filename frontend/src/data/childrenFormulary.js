@@ -3024,7 +3024,7 @@ export const childrenFormulary = [
   // ============================================================================
   {
     id: "midazolam",
-    name: "Midazolam (Versed)",
+    name: "Midazolam (Hypnovel, Buccolam)",
     category: "Benzodiazepine",
     route: "IV/IM/IN/PO/Buccal",
     formulations: [
@@ -3291,7 +3291,7 @@ export const childrenFormulary = [
   // ============================================================================
   {
     id: "omeprazole",
-    name: "Omeprazole (Prilosec)",
+    name: "Omeprazole (Losec)",
     category: "Proton Pump Inhibitor",
     route: "PO",
     formulations: [
@@ -3567,7 +3567,7 @@ export const childrenFormulary = [
   // ============================================================================
   {
     id: "phenobarbital",
-    name: "Phenobarbital (Luminal)",
+    name: "Phenobarbital (Phenobarbitone)",
     category: "Anticonvulsant (Barbiturate)",
     route: "IV/IM/PO",
     formulations: [
@@ -3632,7 +3632,7 @@ export const childrenFormulary = [
   // ============================================================================
   {
     id: "phenytoin",
-    name: "Phenytoin (Dilantin)",
+    name: "Phenytoin (Epanutin)",
     category: "Anticonvulsant",
     route: "IV/PO",
     formulations: [
@@ -3690,7 +3690,7 @@ export const childrenFormulary = [
   // ============================================================================
   {
     id: "piperacillintazobactam",
-    name: "Piperacillin-Tazobactam (Zosyn)",
+    name: "Piperacillin-Tazobactam (Tazocin)",
     category: "Antibiotic (Extended-spectrum Penicillin)",
     route: "IV",
     formulations: [
