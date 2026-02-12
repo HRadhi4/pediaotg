@@ -711,36 +711,19 @@ const DrugsPage = ({ onBack }) => {
                               {drug.dosingTable.rows.map((row, rowIdx) => {
                                 // Calculate dose for this row if applicable
                                 let calculatedDose = null;
+                                let isMatchingRow = false;
+                                
                                 if (w > 0) {
                                   // Find dose column
                                   const doseColIdx = drug.dosingTable.columns.findIndex(col => 
                                     col.toLowerCase().includes('dose') || col.toLowerCase().includes('mg')
                                   );
-                                  if (doseColIdx >= 0) {
-                                    const doseCell = row[doseColIdx];
-                                    if (doseCell) {
-                                      // Parse dose value (e.g., "18 mg/kg", "15 mg/kg", "40")
-                                      const doseStr = doseCell.toString();
-                                      const numMatch = doseStr.match(/(\d+(?:\.\d+)?)/);
-                                      if (numMatch) {
-                                        const dosePerKg = parseFloat(numMatch[1]);
-                                        // Check if it's mg/kg type
-                                        if (doseStr.toLowerCase().includes('mg/kg') || doseStr.toLowerCase().includes('/kg')) {
-                                          calculatedDose = (dosePerKg * w).toFixed(1) + ' mg';
-                                        } else if (!doseStr.toLowerCase().includes('mg')) {
-                                          // Assume it's mg/kg if just a number
-                                          calculatedDose = (dosePerKg * w).toFixed(1) + ' mg';
-                                        } else {
-                                          // Fixed dose
-                                          calculatedDose = doseStr;
-                                        }
-                                      }
-                                    }
-                                  }
-                                  // Also check weight column for weight-based tables
+                                  // Check if table has a weight column (weight-range based table)
                                   const weightColIdx = drug.dosingTable.columns.findIndex(col => 
                                     col.toLowerCase().includes('weight')
                                   );
+                                  
+                                  // For tables WITH weight ranges (like Paracetamol)
                                   if (weightColIdx >= 0) {
                                     const weightCell = row[weightColIdx];
                                     if (weightCell) {
@@ -749,27 +732,48 @@ const DrugsPage = ({ onBack }) => {
                                       const gtMatch = weightStr.match(/[>≥]\s*(\d+(?:\.\d+)?)/);
                                       const ltMatch = weightStr.match(/[<≤]\s*(\d+(?:\.\d+)?)/);
                                       
-                                      let isMatch = false;
                                       if (rangeMatch) {
-                                        isMatch = w >= parseFloat(rangeMatch[1]) && w <= parseFloat(rangeMatch[2]);
+                                        isMatchingRow = w >= parseFloat(rangeMatch[1]) && w <= parseFloat(rangeMatch[2]);
                                       } else if (gtMatch) {
-                                        isMatch = w >= parseFloat(gtMatch[1]);
+                                        isMatchingRow = w >= parseFloat(gtMatch[1]);
                                       } else if (ltMatch) {
-                                        isMatch = w < parseFloat(ltMatch[1]);
+                                        isMatchingRow = w < parseFloat(ltMatch[1]);
                                       }
                                       
-                                      // If this row matches patient weight, highlight the dose
-                                      if (isMatch && doseColIdx >= 0) {
+                                      // Show the fixed dose from table if matches
+                                      if (isMatchingRow && doseColIdx >= 0) {
                                         calculatedDose = '✓ ' + row[doseColIdx];
+                                      }
+                                    }
+                                  } 
+                                  // For tables WITHOUT weight column but with mg/kg doses (like Amikacin)
+                                  else if (doseColIdx >= 0) {
+                                    const doseCell = row[doseColIdx];
+                                    if (doseCell) {
+                                      const doseStr = doseCell.toString();
+                                      // Check if it's mg/kg or similar per-kg dosing
+                                      if (doseStr.toLowerCase().includes('mg/kg') || doseStr.toLowerCase().includes('/kg')) {
+                                        const numMatch = doseStr.match(/(\d+(?:\.\d+)?)/);
+                                        if (numMatch) {
+                                          const dosePerKg = parseFloat(numMatch[1]);
+                                          calculatedDose = (dosePerKg * w).toFixed(1) + ' mg';
+                                        }
+                                      } else {
+                                        // Check if it's just a number (assumed to be mg/kg for some tables)
+                                        const numMatch = doseStr.match(/^(\d+(?:\.\d+)?)\s*(?:mg\/kg)?$/i);
+                                        if (numMatch && doseStr.toLowerCase().includes('mg')) {
+                                          const dosePerKg = parseFloat(numMatch[1]);
+                                          calculatedDose = (dosePerKg * w).toFixed(1) + ' mg';
+                                        }
                                       }
                                     }
                                   }
                                 }
                                 
                                 return (
-                                  <tr key={rowIdx} className={rowIdx % 2 === 0 ? 'bg-white dark:bg-slate-800' : 'bg-indigo-50/50 dark:bg-indigo-900/10'}>
+                                  <tr key={rowIdx} className={`${rowIdx % 2 === 0 ? 'bg-white dark:bg-slate-800' : 'bg-indigo-50/50 dark:bg-indigo-900/10'} ${isMatchingRow ? 'ring-2 ring-emerald-400 bg-emerald-50 dark:bg-emerald-900/30' : ''}`}>
                                     {row.map((cell, cellIdx) => (
-                                      <td key={cellIdx} className="px-3 py-1.5 font-mono text-slate-700 dark:text-slate-300 whitespace-nowrap border-r border-indigo-100 dark:border-indigo-800 last:border-r-0">
+                                      <td key={cellIdx} className={`px-3 py-1.5 font-mono text-slate-700 dark:text-slate-300 whitespace-nowrap border-r border-indigo-100 dark:border-indigo-800 last:border-r-0 ${isMatchingRow ? 'font-bold' : ''}`}>
                                         {cell}
                                       </td>
                                     ))}
@@ -779,7 +783,7 @@ const DrugsPage = ({ onBack }) => {
                                       col.toLowerCase().includes('mg') ||
                                       col.toLowerCase().includes('weight')
                                     ) && (
-                                      <td className="px-3 py-1.5 font-mono font-bold text-emerald-700 dark:text-emerald-300 whitespace-nowrap bg-emerald-50 dark:bg-emerald-900/20">
+                                      <td className={`px-3 py-1.5 font-mono font-bold whitespace-nowrap ${isMatchingRow ? 'text-emerald-800 dark:text-emerald-200 bg-emerald-100 dark:bg-emerald-800/40' : 'text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-900/20'}`}>
                                         {calculatedDose || '—'}
                                       </td>
                                     )}
