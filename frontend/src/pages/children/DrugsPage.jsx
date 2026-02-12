@@ -1061,24 +1061,27 @@ const DrugsPage = ({ onBack }) => {
                         <p className="text-[11px] font-semibold text-violet-700 dark:text-violet-300 mb-2 flex items-center gap-1">
                           <span>🔄</span> Drug Interactions
                         </p>
-                        <div className="overflow-x-auto">
-                          <table className="text-xs border-collapse" style={{ minWidth: 'max-content' }}>
+                        <div className="overflow-x-auto -mx-3 px-3 pb-2" style={{ WebkitOverflowScrolling: 'touch' }}>
+                          <table className="text-xs border-collapse w-max">
                             <thead>
                               <tr className="bg-violet-100 dark:bg-violet-900/40">
-                                <th className="px-3 py-1.5 text-left font-semibold text-violet-800 dark:text-violet-200 whitespace-nowrap border-r border-violet-200 dark:border-violet-700">Drug</th>
-                                <th className="px-3 py-1.5 text-left font-semibold text-violet-800 dark:text-violet-200 whitespace-nowrap">Effect</th>
+                                <th className="px-4 py-2 text-left font-semibold text-violet-800 dark:text-violet-200 border-r border-violet-200 dark:border-violet-700" style={{ minWidth: '120px' }}>Drug</th>
+                                <th className="px-4 py-2 text-left font-semibold text-violet-800 dark:text-violet-200" style={{ minWidth: '200px' }}>Effect</th>
                               </tr>
                             </thead>
                             <tbody>
                               {drug.interactions.map((int, idx) => (
                                 <tr key={idx} className={idx % 2 === 0 ? 'bg-white dark:bg-slate-800' : 'bg-violet-50/50 dark:bg-violet-900/10'}>
-                                  <td className="px-3 py-1.5 font-medium text-violet-700 dark:text-violet-300 whitespace-nowrap border-r border-violet-100 dark:border-violet-800">{int.drug}</td>
-                                  <td className="px-3 py-1.5 text-slate-600 dark:text-slate-400 whitespace-nowrap">{int.effect}</td>
+                                  <td className="px-4 py-2 font-medium text-violet-700 dark:text-violet-300 border-r border-violet-100 dark:border-violet-800" style={{ minWidth: '120px' }}>{int.drug}</td>
+                                  <td className="px-4 py-2 text-slate-600 dark:text-slate-400" style={{ minWidth: '200px' }}>{int.effect}</td>
                                 </tr>
                               ))}
                             </tbody>
                           </table>
                         </div>
+                        <p className="text-[9px] text-muted-foreground mt-1">
+                          👆 Swipe to see full interaction details
+                        </p>
                       </div>
                     )}
 
