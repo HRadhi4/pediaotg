@@ -594,8 +594,8 @@ const DrugsPage = ({ onBack }) => {
                 {/* Drug Header - Two-row layout with unified container size */}
                 <div className="space-y-3">
                   {/* Row 1: Drug Name and Category */}
-                  <div className="flex items-start gap-2">
-                    <h3 className="font-semibold text-base leading-tight">{drug.name}</h3>
+                  <div className="flex items-center justify-between gap-2">
+                    <h3 className="font-semibold text-base leading-tight whitespace-nowrap overflow-hidden text-ellipsis">{drug.name}</h3>
                     <span className="text-[10px] px-2 py-1 rounded bg-gray-100 dark:bg-gray-800 text-muted-foreground whitespace-nowrap flex-shrink-0">
                       {drug.category}
                     </span>
