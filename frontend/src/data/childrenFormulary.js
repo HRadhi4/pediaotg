@@ -2054,7 +2054,7 @@ export const childrenFormulary = [
   // ============================================================================
   {
     id: "furosemide",
-    name: "Furosemide (Lasix)",
+    name: "Furosemide (Frusemide, Lasix)",
     category: "Loop Diuretic",
     route: "PO/IV/IM",
     formulations: [
@@ -2237,7 +2237,7 @@ export const childrenFormulary = [
   // ============================================================================
   {
     id: "ibuprofen",
-    name: "Ibuprofen (Advil, Motrin)",
+    name: "Ibuprofen (Nurofen, Brufen)",
     category: "NSAID",
     route: "PO/IV",
     formulations: [
@@ -2367,7 +2367,7 @@ export const childrenFormulary = [
   // ============================================================================
   {
     id: "ipratropium",
-    name: "Ipratropium Bromide (Atrovent)",
+    name: "Ipratropium Bromide (Atrovent, Respontin)",
     category: "Anticholinergic Bronchodilator",
     route: "Inhaled",
     formulations: [
@@ -2631,7 +2631,7 @@ export const childrenFormulary = [
   // ============================================================================
   {
     id: "lorazepam",
-    name: "Lorazepam (Ativan)",
+    name: "Lorazepam (Ativan, Temesta)",
     category: "Benzodiazepine",
     route: "IV/IM/PO/SL",
     formulations: [
@@ -2855,7 +2855,7 @@ export const childrenFormulary = [
   // ============================================================================
   {
     id: "methadone",
-    name: "Methadone (Dolophine)",
+    name: "Methadone (Physeptone)",
     category: "Opioid Analgesic",
     route: "PO/IV/IM/SC",
     formulations: [
