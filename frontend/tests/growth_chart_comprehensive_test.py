@@ -214,7 +214,7 @@ class GrowthChartTester:
             "failed": 0,
             "test_details": []
         }
-        self.base_url = "https://dosing-calculator-1.preview.emergentagent.com"
+        self.base_url = "https://formulary-preview.preview.emergentagent.com"
     
     async def login(self, page):
         """Login to the application"""
