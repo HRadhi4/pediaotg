@@ -5765,6 +5765,318 @@ export const childrenFormulary = [
       { drug: "Phenytoin/Carbamazepine", effect: "Resistance to neuromuscular blockade" }
     ],
     notes: "Degraded by Hofmann elimination (organ-independent); preferred in hepatic/renal failure. Onset: 2-3 min. Duration: 20-35 min. Refrigerate; stable 14 days at room temp. Always ensure adequate sedation."
+  },
+  {
+    id: "aztreonam",
+    name: "Aztreonam (Azactam, Cayston)",
+    category: "Antibiotic (Monobactam)",
+    indication: "Gram-negative infections, pseudomonal infections, CF pulmonary exacerbations",
+    route: "IV/IM/Inhaled",
+    maxDose: "8 g/day IV; 225 mg TID inhaled",
+    formulations: [
+      { type: "Injection", strengths: "1 g, 2 g vials" },
+      { type: "Inhalation (Cayston)", strengths: "75 mg vial + diluent" }
+    ],
+    doses: {
+      mildModerateChild: { label: "Mild-Moderate (Child)", value: "90-120", unit: "mg/kg/day IV ÷ q6-8h" },
+      severeChild: { label: "Severe/Pseudomonal (Child)", value: "120-150", unit: "mg/kg/day IV ÷ q6-8h; max 8 g/day" },
+      cfInhaled: { label: "CF Inhalation (≥7 yr)", value: "75", unit: "mg inhaled TID x 28 days (via Altera nebulizer)" },
+      neonate: { label: "Neonate", value: "30", unit: "mg/kg/dose IV q8-12h (adjust by PMA)" }
+    },
+    contraindications: [
+      "Hypersensitivity to aztreonam"
+    ],
+    warnings: [
+      "Minimal cross-reactivity with penicillins/cephalosporins",
+      "Superinfection with resistant organisms",
+      "Clostridium difficile-associated diarrhea"
+    ],
+    sideEffects: [
+      "Common: Rash, diarrhea, nausea",
+      "Local: Phlebitis at injection site, pain at IM site",
+      "Less common: Elevated LFTs, eosinophilia"
+    ],
+    interactions: [
+      { drug: "Probenecid", effect: "Increased aztreonam levels" }
+    ],
+    notes: "Only covers gram-negative organisms (no gram-positive or anaerobic activity). Often used in combination therapy. Safe in penicillin-allergic patients (different structure).",
+    renalAdjust: {
+      gfr50: "75% of dose",
+      gfr30: "50% of dose",
+      gfr10: "25% of dose",
+      hd: "500 mg after HD"
+    }
+  },
+  {
+    id: "baclofen",
+    name: "Baclofen (Lioresal, Gablofen)",
+    category: "Skeletal Muscle Relaxant (GABA agonist)",
+    indication: "Spasticity (cerebral palsy, spinal cord injury, MS), intractable hiccups",
+    route: "PO/Intrathecal",
+    maxDose: "80 mg/day PO (child); 2000 mcg/day intrathecal",
+    formulations: [
+      { type: "Tablets", strengths: "5 mg, 10 mg, 20 mg" },
+      { type: "Oral suspension (compounded)", strengths: "5 mg/mL, 10 mg/mL" },
+      { type: "Intrathecal (Gablofen)", strengths: "50 mcg/mL, 500 mcg/mL, 2000 mcg/mL" }
+    ],
+    doses: {
+      spasticityChild: { label: "Spasticity (Child 2-7 yr)", value: "10-15", unit: "mg/day PO ÷ TID; increase q3d; max 40 mg/day" },
+      spasticityOlderChild: { label: "Spasticity (≥8 yr)", value: "15-40", unit: "mg/day PO ÷ TID; increase q3d; max 60-80 mg/day" },
+      intrathecalTest: { label: "IT Test Dose", value: "25-50", unit: "mcg IT bolus; observe 4-8 hr" },
+      intrathecalMaint: { label: "IT Maintenance", value: "100-800", unit: "mcg/day IT continuous; titrate" }
+    },
+    contraindications: [
+      "Hypersensitivity to baclofen"
+    ],
+    warnings: [
+      "Abrupt withdrawal can cause hallucinations, seizures, hyperthermia, death",
+      "CNS depression (especially with other sedatives)",
+      "Intrathecal pump malfunction can cause withdrawal or overdose",
+      "Lower seizure threshold"
+    ],
+    sideEffects: [
+      "Common: Drowsiness, dizziness, weakness, nausea",
+      "CNS: Confusion, headache, insomnia, ataxia",
+      "Serious (IT): Respiratory depression, coma"
+    ],
+    interactions: [
+      { drug: "CNS depressants", effect: "Additive sedation" },
+      { drug: "MAOIs", effect: "Increased CNS depression" },
+      { drug: "Antihypertensives", effect: "Additive hypotension" }
+    ],
+    notes: "Start low and titrate slowly. Taper over 1-2 weeks when discontinuing (never stop abruptly). Intrathecal requires specialized pump/training. For intrathecal, test dose before implantation.",
+    renalAdjust: {
+      gfr50: "Reduce dose",
+      gfr30: "5 mg PO q8h",
+      gfr10: "5 mg PO daily",
+      hd: "Not well dialyzed"
+    }
+  },
+  {
+    id: "bivalirudin",
+    name: "Bivalirudin (Angiomax)",
+    category: "Direct Thrombin Inhibitor",
+    indication: "HIT (heparin-induced thrombocytopenia), anticoagulation during PCI, cardiac surgery",
+    route: "IV",
+    maxDose: "Titrate to aPTT/ACT",
+    formulations: [
+      { type: "Injection", strengths: "250 mg vial" }
+    ],
+    doses: {
+      hitChild: { label: "HIT (Child)", value: "0.1-0.2", unit: "mg/kg/hr IV continuous; titrate to aPTT 1.5-2.5× baseline" },
+      pciAdult: { label: "PCI (Adult)", value: "0.75", unit: "mg/kg IV bolus, then 1.75 mg/kg/hr during procedure" },
+      cardiacSurgeryChild: { label: "Cardiac Surgery", value: "1", unit: "mg/kg IV bolus, then 2.5 mg/kg/hr; target ACT 300-400s" }
+    },
+    contraindications: [
+      "Active major bleeding",
+      "Hypersensitivity to bivalirudin"
+    ],
+    warnings: [
+      "Bleeding risk",
+      "No reversal agent available",
+      "Acute stent thrombosis possible after PCI"
+    ],
+    sideEffects: [
+      "Common: Bleeding, back pain, nausea, headache",
+      "Serious: Major hemorrhage, thrombocytopenia (rare)"
+    ],
+    interactions: [
+      { drug: "Anticoagulants/Antiplatelets", effect: "Increased bleeding risk" },
+      { drug: "Thrombolytics", effect: "Increased bleeding risk" }
+    ],
+    notes: "Short half-life (25 min) - clears quickly if stopped. No HIT cross-reactivity. Preferred in HIT when anticoagulation needed. Monitor aPTT or ACT.",
+    renalAdjust: {
+      gfr50: "No adjustment",
+      gfr30: "Reduce infusion 20%",
+      gfr10: "Reduce infusion 60%",
+      hd: "Reduce infusion 90%; dialyzable"
+    }
+  },
+  {
+    id: "bosentan",
+    name: "Bosentan (Tracleer)",
+    category: "Endothelin Receptor Antagonist",
+    indication: "Pulmonary arterial hypertension (PAH)",
+    route: "PO",
+    maxDose: "125 mg BID (adult)",
+    formulations: [
+      { type: "Tablets", strengths: "62.5 mg, 125 mg" },
+      { type: "Dispersible tablets (peds)", strengths: "32 mg" }
+    ],
+    doses: {
+      pahChild: { label: "PAH (Child 3-18 yr)", value: "2", unit: "mg/kg/dose PO BID; may increase to 4 mg/kg/dose BID" },
+      pahAdultInitial: { label: "PAH (Adult) - Initial", value: "62.5", unit: "mg PO BID x 4 weeks" },
+      pahAdultMaint: { label: "PAH (Adult) - Maintenance", value: "125", unit: "mg PO BID" }
+    },
+    contraindications: [
+      "Pregnancy (Category X - teratogenic)",
+      "Use with cyclosporine or glyburide",
+      "Moderate-severe hepatic impairment"
+    ],
+    warnings: [
+      "Hepatotoxicity (monitor LFTs monthly)",
+      "Fluid retention, edema",
+      "Decreased sperm count",
+      "Decreased hemoglobin"
+    ],
+    sideEffects: [
+      "Common: Headache, nasopharyngitis, flushing, edema",
+      "Hepatic: Elevated aminotransferases (dose-related)",
+      "Hematologic: Anemia, decreased hemoglobin"
+    ],
+    interactions: [
+      { drug: "Cyclosporine", effect: "Contraindicated; increased bosentan levels" },
+      { drug: "Glyburide", effect: "Contraindicated; increased hepatotoxicity" },
+      { drug: "Hormonal contraceptives", effect: "Decreased efficacy; use additional method" },
+      { drug: "Sildenafil", effect: "Decreased sildenafil levels" }
+    ],
+    notes: "REMS program - monthly LFT monitoring required. Obtain pregnancy test before starting. Must use two forms of contraception. Available only through specialty pharmacies."
+  },
+  {
+    id: "bumetanide",
+    name: "Bumetanide (Bumex)",
+    category: "Loop Diuretic",
+    indication: "Edema (CHF, hepatic, renal disease), acute pulmonary edema, hypertension (adjunct)",
+    route: "PO/IV/IM",
+    maxDose: "10 mg/day",
+    formulations: [
+      { type: "Tablets", strengths: "0.5 mg, 1 mg, 2 mg" },
+      { type: "Injection", strengths: "0.25 mg/mL (2 mL, 4 mL, 10 mL)" }
+    ],
+    doses: {
+      edemaNeonateInfant: { label: "Edema (Neonate/Infant)", value: "0.01-0.05", unit: "mg/kg/dose PO/IV q24-48h" },
+      edemaChildPO: { label: "Edema (Child) - PO", value: "0.015-0.1", unit: "mg/kg/dose PO daily-BID; max 10 mg/day" },
+      edemaChildIV: { label: "Edema (Child) - IV", value: "0.015-0.1", unit: "mg/kg/dose IV q6-24h; max 10 mg/day" },
+      continuousInfusion: { label: "Continuous Infusion", value: "0.05-0.1", unit: "mg/kg IV bolus, then 0.01-0.05 mg/kg/hr" }
+    },
+    dosingTable: {
+      title: "Loop Diuretic Equivalence",
+      columns: ["Drug", "IV Dose", "PO Dose", "Bioavailability"],
+      rows: [
+        ["Furosemide", "40 mg", "80 mg", "~50%"],
+        ["Bumetanide", "1 mg", "1 mg", "~80%"],
+        ["Torsemide", "20 mg", "20 mg", "~80%"]
+      ]
+    },
+    contraindications: [
+      "Anuria",
+      "Severe electrolyte depletion",
+      "Hepatic coma"
+    ],
+    warnings: [
+      "Ototoxicity (especially with aminoglycosides)",
+      "Severe electrolyte depletion",
+      "Hypotension, dehydration",
+      "Cross-sensitivity with sulfonamides"
+    ],
+    sideEffects: [
+      "Common: Electrolyte imbalances (hypoK, hypoNa, hypoCl), polyuria",
+      "Metabolic: Hyperuricemia, hyperglycemia",
+      "Otic: Ototoxicity (high doses/rapid IV)"
+    ],
+    interactions: [
+      { drug: "Aminoglycosides", effect: "Increased ototoxicity" },
+      { drug: "Digoxin", effect: "Hypokalemia increases toxicity" },
+      { drug: "NSAIDs", effect: "Decreased diuretic effect" },
+      { drug: "Lithium", effect: "Increased lithium levels" }
+    ],
+    notes: "40x more potent than furosemide. Better oral bioavailability than furosemide. IV push over 1-2 min. 1 mg bumetanide ≈ 40 mg furosemide.",
+    renalAdjust: {
+      gfr50: "No adjustment; may need higher doses",
+      gfr30: "May need higher doses for effect",
+      gfr10: "May need higher doses; monitor closely",
+      hd: "Not dialyzed; give normal dose"
+    }
+  },
+  {
+    id: "calcitriol",
+    name: "Calcitriol (Rocaltrol)",
+    category: "Vitamin D Analog (Active form)",
+    indication: "Hypocalcemia in CKD/dialysis, hypoparathyroidism, rickets, osteoporosis",
+    route: "PO/IV",
+    maxDose: "Titrate to calcium/PTH levels",
+    formulations: [
+      { type: "Capsules", strengths: "0.25 mcg, 0.5 mcg" },
+      { type: "Oral solution", strengths: "1 mcg/mL" },
+      { type: "Injection", strengths: "1 mcg/mL, 2 mcg/mL" }
+    ],
+    doses: {
+      hypoparathyroidChild: { label: "Hypoparathyroidism (Child)", value: "0.25-0.75", unit: "mcg PO daily" },
+      ckdChild: { label: "CKD (Child)", value: "0.01-0.015", unit: "mcg/kg/day PO; max 0.5 mcg/day" },
+      dialysisAdult: { label: "Dialysis (Adult)", value: "0.25-1", unit: "mcg PO daily or 0.5-4 mcg IV 3×/wk" },
+      ricketsChild: { label: "Vit D-dependent Rickets", value: "1-2", unit: "mcg PO daily" }
+    },
+    contraindications: [
+      "Hypercalcemia",
+      "Vitamin D toxicity"
+    ],
+    warnings: [
+      "Hypercalcemia, hypercalciuria",
+      "Over-suppression of PTH in CKD",
+      "Adynamic bone disease",
+      "Soft tissue calcification"
+    ],
+    sideEffects: [
+      "Hypercalcemia symptoms: Nausea, vomiting, weakness, polyuria",
+      "Chronic: Nephrocalcinosis, soft tissue calcification",
+      "Other: Headache, metallic taste"
+    ],
+    interactions: [
+      { drug: "Thiazide diuretics", effect: "Increased hypercalcemia risk" },
+      { drug: "Digoxin", effect: "Hypercalcemia increases toxicity" },
+      { drug: "Cholestyramine", effect: "Decreased calcitriol absorption" },
+      { drug: "Corticosteroids", effect: "Antagonize calcitriol effect" }
+    ],
+    notes: "Active form of vitamin D (1,25-dihydroxyvitamin D). Does not require renal hydroxylation. Monitor serum calcium weekly initially, then monthly. Maintain Ca × PO4 product <55."
+  },
+  {
+    id: "captopril",
+    name: "Captopril (Capoten)",
+    category: "ACE Inhibitor",
+    indication: "Hypertension, heart failure, post-MI, diabetic nephropathy",
+    route: "PO",
+    maxDose: "6 mg/kg/day divided",
+    formulations: [
+      { type: "Tablets", strengths: "12.5 mg, 25 mg, 50 mg, 100 mg" },
+      { type: "Oral suspension (compounded)", strengths: "1 mg/mL" }
+    ],
+    doses: {
+      htnNeonate: { label: "HTN (Neonate)", value: "0.01-0.1", unit: "mg/kg/dose PO q8-12h; max 0.5 mg/kg/dose" },
+      htnInfant: { label: "HTN (Infant)", value: "0.15-0.3", unit: "mg/kg/dose PO TID; max 6 mg/kg/day" },
+      htnChild: { label: "HTN (Child)", value: "0.3-0.5", unit: "mg/kg/dose PO TID; max 6 mg/kg/day" },
+      hfChild: { label: "Heart Failure (Child)", value: "0.1-0.5", unit: "mg/kg/dose PO TID; titrate up" },
+      htnAdult: { label: "HTN (Adult)", value: "25-50", unit: "mg PO BID-TID; max 450 mg/day" }
+    },
+    contraindications: [
+      "Bilateral renal artery stenosis",
+      "History of angioedema with ACE-I",
+      "Pregnancy"
+    ],
+    warnings: [
+      "First-dose hypotension (start low in volume-depleted patients)",
+      "Hyperkalemia",
+      "Acute renal failure (bilateral RAS, volume depletion)",
+      "Angioedema (higher risk in Black patients)",
+      "Neutropenia (especially in renal impairment)"
+    ],
+    sideEffects: [
+      "Common: Cough (dry, nonproductive), hypotension, dizziness",
+      "Metabolic: Hyperkalemia",
+      "Rare: Angioedema, rash, taste disturbance, neutropenia"
+    ],
+    interactions: [
+      { drug: "Potassium supplements/K-sparing diuretics", effect: "Hyperkalemia" },
+      { drug: "NSAIDs", effect: "Decreased antihypertensive effect, renal impairment" },
+      { drug: "Lithium", effect: "Increased lithium levels" },
+      { drug: "Aliskiren", effect: "Contraindicated in diabetes" }
+    ],
+    notes: "Short-acting ACE-I (TID dosing). Take on empty stomach (food decreases absorption by 30-40%). Onset: 15-30 min. Commonly used for urgent BP lowering. Monitor creatinine and K+ after initiation.",
+    renalAdjust: {
+      gfr50: "75% of dose",
+      gfr30: "50% of dose",
+      gfr10: "25% of dose",
+      hd: "Give after HD"
+    }
   }
 ];
 
