@@ -5190,6 +5190,581 @@ export const childrenFormulary = [
       hd: "Not dialyzable"
     },
     hepaticAdjust: "Use with caution; monitor for encephalopathy"
+  },
+  // ==================== ADDITIONAL DRUGS FROM FORMULARY PDF ====================
+  {
+    id: "acetazolamide",
+    name: "Acetazolamide (Diamox)",
+    category: "Carbonic Anhydrase Inhibitor",
+    indication: "Metabolic alkalosis, glaucoma, altitude sickness, epilepsy (adjunct), pseudotumor cerebri, hydrocephalus",
+    route: "PO/IV",
+    maxDose: "1 g/day",
+    formulations: [
+      { type: "Tablets", strengths: "125 mg, 250 mg" },
+      { type: "ER Capsules", strengths: "500 mg" },
+      { type: "Injection", strengths: "500 mg vial" }
+    ],
+    doses: {
+      diureticChild: { label: "Diuretic (Child)", value: "5", unit: "mg/kg/dose PO/IV daily" },
+      glaucomaChild: { label: "Glaucoma (Child)", value: "8-30", unit: "mg/kg/day PO ÷ TID; max 1g/day" },
+      epilepsyChild: { label: "Epilepsy (Child)", value: "8-30", unit: "mg/kg/day PO ÷ q6-8h; max 1g/day" },
+      altitudeAdult: { label: "Altitude (Adult)", value: "250", unit: "mg PO q8-12h starting 24-48h before ascent" },
+      pseudotumorChild: { label: "Pseudotumor cerebri", value: "25", unit: "mg/kg/day PO ÷ q8-12h; max 2g/day" },
+      hydrocephalusInfant: { label: "Hydrocephalus (Infant)", value: "5", unit: "mg/kg/dose PO q6h; may increase to 25 mg/kg/dose" }
+    },
+    contraindications: [
+      "Severe hepatic disease",
+      "Severe renal impairment",
+      "Hyponatremia, hypokalemia",
+      "Sulfonamide hypersensitivity",
+      "Hyperchloremic acidosis"
+    ],
+    warnings: [
+      "Cross-sensitivity with sulfonamides",
+      "May cause metabolic acidosis",
+      "Monitor electrolytes (especially K+)",
+      "May precipitate hepatic encephalopathy in cirrhosis"
+    ],
+    sideEffects: [
+      "Common: Paresthesias (tingling), GI upset, polyuria",
+      "Metabolic: Hypokalemia, metabolic acidosis",
+      "CNS: Drowsiness, confusion",
+      "Rare: Stevens-Johnson syndrome, blood dyscrasias"
+    ],
+    interactions: [
+      { drug: "Aspirin", effect: "Increased CNS penetration, toxicity" },
+      { drug: "Lithium", effect: "Increased lithium excretion" },
+      { drug: "Primidone", effect: "Decreased primidone levels" },
+      { drug: "Cyclosporine", effect: "Increased cyclosporine levels" }
+    ],
+    notes: "Give with food to decrease GI upset. IR tablets may be crushed. ER capsules should not be crushed. IV infusion over 1 min. Avoid in hepatic encephalopathy.",
+    renalAdjust: {
+      gfr50: "q12h",
+      gfr30: "Avoid",
+      gfr10: "Avoid",
+      hd: "Moderately dialyzable; dose after HD"
+    }
+  },
+  {
+    id: "acth",
+    name: "ACTH / Corticotropin (Acthar Gel)",
+    category: "Hormone",
+    indication: "Infantile spasms (West syndrome), acute exacerbations of MS, nephrotic syndrome",
+    route: "IM/SC",
+    maxDose: "Varies by indication",
+    formulations: [
+      { type: "Repository injection", strengths: "80 units/mL (5 mL vial)" }
+    ],
+    doses: {
+      infantileSpasms: { label: "Infantile Spasms", value: "150", unit: "units/m²/day IM ÷ BID x 3 wks, then taper" },
+      infantileSpasmsAlt: { label: "Infantile Spasms (Low dose)", value: "20-40", unit: "units/day IM x 1-6 wks" },
+      nephroticSyndrome: { label: "Nephrotic Syndrome", value: "80", unit: "units IM q48-72h" }
+    },
+    dosingTable: {
+      title: "Infantile Spasms ACTH Protocol",
+      columns: ["Week", "Dose", "Frequency"],
+      rows: [
+        ["1-3", "150 units/m²/day", "BID"],
+        ["4", "90 units/m²", "Every morning"],
+        ["5", "60 units/m²", "Every morning"],
+        ["6", "30 units/m²", "Every other morning"],
+        ["7+", "Discontinue or individualize", ""]
+      ]
+    },
+    contraindications: [
+      "Systemic fungal infections",
+      "CHF",
+      "Uncontrolled hypertension",
+      "Recent surgery",
+      "Ocular herpes simplex"
+    ],
+    warnings: [
+      "Adrenal suppression",
+      "Immunosuppression",
+      "Hypertension, hypokalemia",
+      "Growth suppression in children",
+      "May mask signs of infection"
+    ],
+    sideEffects: [
+      "Cushing syndrome with prolonged use",
+      "Hypertension, hyperglycemia",
+      "Irritability, sleep disturbances",
+      "Infection susceptibility",
+      "Electrolyte imbalances"
+    ],
+    interactions: [
+      { drug: "NSAIDs", effect: "Increased GI ulcer risk" },
+      { drug: "Diuretics", effect: "Increased hypokalemia" },
+      { drug: "Live vaccines", effect: "Avoid; increased infection risk" }
+    ],
+    notes: "Warm vial before injection. Administer deep IM. Monitor BP, glucose, electrolytes, growth. More effective than vigabatrin in cryptogenic infantile spasms."
+  },
+  {
+    id: "allopurinol",
+    name: "Allopurinol (Zyloprim)",
+    category: "Xanthine Oxidase Inhibitor",
+    indication: "Gout, hyperuricemia, tumor lysis syndrome prophylaxis, prevention of calcium oxalate stones",
+    route: "PO/IV",
+    maxDose: "800 mg/day PO; 600 mg/day IV",
+    formulations: [
+      { type: "Tablets", strengths: "100 mg, 300 mg" },
+      { type: "Injection", strengths: "500 mg vial" }
+    ],
+    doses: {
+      tumorLysisChild: { label: "TLS Prophylaxis (Child)", value: "10", unit: "mg/kg/day PO ÷ q8h; max 800 mg/day" },
+      tumorLysisIV: { label: "TLS (IV)", value: "200-400", unit: "mg/m²/day IV ÷ q8-24h; max 600 mg/day" },
+      hyperuricemiaAdult: { label: "Hyperuricemia (Adult)", value: "100-300", unit: "mg PO daily; max 800 mg/day" },
+      recurrentStonesChild: { label: "Recurrent Stones (Child)", value: "4-10", unit: "mg/kg/day PO ÷ q6-8h" }
+    },
+    contraindications: [
+      "Prior severe hypersensitivity reaction to allopurinol"
+    ],
+    warnings: [
+      "HLA-B*5801 testing recommended in high-risk populations (Asian, African descent)",
+      "Severe cutaneous reactions (SJS, TEN, DRESS)",
+      "Hepatotoxicity",
+      "Bone marrow suppression"
+    ],
+    sideEffects: [
+      "Common: Rash, GI upset",
+      "Serious: Stevens-Johnson syndrome, hepatitis, hypersensitivity syndrome",
+      "Hematologic: Leukopenia, thrombocytopenia"
+    ],
+    interactions: [
+      { drug: "Azathioprine/6-MP", effect: "Increased toxicity; reduce azathioprine/6-MP dose by 75%" },
+      { drug: "Warfarin", effect: "Increased anticoagulation effect" },
+      { drug: "ACE inhibitors", effect: "Increased hypersensitivity risk" },
+      { drug: "Ampicillin/Amoxicillin", effect: "Increased rash incidence" }
+    ],
+    notes: "Start at low dose and titrate gradually. Maintain hydration (≥2 L/day fluid intake). Takes 2-4 weeks for full effect on uric acid. Give after meals to reduce GI upset.",
+    renalAdjust: {
+      gfr50: "200 mg/day",
+      gfr30: "100 mg/day",
+      gfr10: "100 mg q48h",
+      hd: "50% supplemental dose after HD"
+    }
+  },
+  {
+    id: "alprostadil",
+    name: "Alprostadil / Prostaglandin E1 (Prostin VR)",
+    category: "Prostaglandin",
+    indication: "Maintain patent ductus arteriosus in ductal-dependent congenital heart disease",
+    route: "IV continuous infusion",
+    maxDose: "0.4 mcg/kg/min (rarely needed above 0.1)",
+    formulations: [
+      { type: "Injection", strengths: "500 mcg/mL (1 mL ampule)" }
+    ],
+    doses: {
+      initialNeonatal: { label: "Initial (Neonatal)", value: "0.05-0.1", unit: "mcg/kg/min IV continuous" },
+      maintenance: { label: "Maintenance", value: "0.01-0.05", unit: "mcg/kg/min (titrate to lowest effective dose)" }
+    },
+    dosingTable: {
+      title: "Alprostadil Dilution & Infusion",
+      columns: ["Concentration", "Dilution", "Rate for 0.1 mcg/kg/min"],
+      rows: [
+        ["2 mcg/mL", "500 mcg in 250 mL", "0.05 mL/kg/min = 3 mL/kg/hr"],
+        ["5 mcg/mL", "500 mcg in 100 mL", "0.02 mL/kg/min = 1.2 mL/kg/hr"],
+        ["10 mcg/mL", "500 mcg in 50 mL", "0.01 mL/kg/min = 0.6 mL/kg/hr"]
+      ]
+    },
+    contraindications: [
+      "Respiratory distress syndrome (relative)",
+      "Persistent pulmonary hypertension of newborn (relative)"
+    ],
+    warnings: [
+      "Apnea (10-12% of neonates; have ventilation available)",
+      "Hypotension",
+      "Seizures",
+      "Fever, flushing",
+      "Cortical hyperostosis with prolonged use (>120 hours)"
+    ],
+    sideEffects: [
+      "Very common: Apnea, fever, flushing",
+      "Cardiovascular: Hypotension, bradycardia, tachycardia",
+      "CNS: Seizures, jitteriness",
+      "GI: Diarrhea",
+      "Long-term: Cortical hyperostosis, gastric outlet obstruction"
+    ],
+    interactions: [
+      { drug: "Vasodilators", effect: "Additive hypotension" },
+      { drug: "Anticoagulants", effect: "Increased bleeding risk" }
+    ],
+    notes: "Have resuscitation equipment ready. Monitor respiratory status continuously. Apnea more common in neonates <2 kg. Response usually within 30 min. Wean gradually when discontinuing."
+  },
+  {
+    id: "alteplase",
+    name: "Alteplase / tPA (Activase, Cathflo)",
+    category: "Thrombolytic",
+    indication: "Acute ischemic stroke, PE, occluded central venous catheters, arterial/venous thrombosis",
+    route: "IV/Intracatheter",
+    maxDose: "100 mg (stroke: 90 mg)",
+    formulations: [
+      { type: "Activase (IV)", strengths: "50 mg, 100 mg vials" },
+      { type: "Cathflo (catheter)", strengths: "2 mg vial" }
+    ],
+    doses: {
+      catheterClearance: { label: "Catheter Clearance", value: "110%", unit: "of catheter volume (max 2 mg); dwell 30-120 min" },
+      systemicPeds: { label: "Systemic (Peds)", value: "0.1-0.6", unit: "mg/kg/hr IV x 6 hr; max 0.6 mg/kg" },
+      strokeAdult: { label: "Stroke (Adult)", value: "0.9", unit: "mg/kg (max 90 mg); 10% bolus, rest over 60 min" },
+      peAdult: { label: "PE (Adult)", value: "100", unit: "mg IV over 2 hours" }
+    },
+    dosingTable: {
+      title: "Cathflo Activase Dosing by Catheter Volume",
+      columns: ["Patient Weight", "Dose (intracatheter)"],
+      rows: [
+        ["<10 kg", "110% of internal lumen volume (max 2 mg)"],
+        ["10-30 kg", "110% of internal lumen volume (max 2 mg)"],
+        [">30 kg", "2 mg per lumen"]
+      ]
+    },
+    contraindications: [
+      "Active internal bleeding",
+      "Recent intracranial surgery/stroke/head trauma (3 mo)",
+      "Intracranial neoplasm, AVM, aneurysm",
+      "Severe uncontrolled hypertension",
+      "Known bleeding diathesis"
+    ],
+    warnings: [
+      "Bleeding risk (intracranial, GI, retroperitoneal)",
+      "Angioedema (especially with ACE-I use)",
+      "Cholesterol embolization"
+    ],
+    sideEffects: [
+      "Common: Bleeding at puncture sites, superficial bleeding",
+      "Serious: Intracranial hemorrhage, GI bleeding, retroperitoneal bleeding",
+      "Other: Fever, nausea, hypotension"
+    ],
+    interactions: [
+      { drug: "Anticoagulants/Antiplatelets", effect: "Increased bleeding risk" },
+      { drug: "ACE inhibitors", effect: "Increased angioedema risk" }
+    ],
+    notes: "For catheter clearance, instill dose and wait 30-120 min, then aspirate. May repeat x1 if needed. For systemic use, monitor for bleeding. Avoid IM injections and arterial punctures."
+  },
+  {
+    id: "aluminumhydroxide",
+    name: "Aluminum Hydroxide (AlternaGEL)",
+    category: "Antacid / Phosphate Binder",
+    indication: "Dyspepsia, GERD, hyperphosphatemia (dialysis patients)",
+    route: "PO",
+    maxDose: "Varies by indication",
+    formulations: [
+      { type: "Suspension", strengths: "320 mg/5 mL, 600 mg/5 mL" },
+      { type: "Tablets/Capsules", strengths: "300 mg, 400 mg, 500 mg, 600 mg" }
+    ],
+    doses: {
+      antacidChild: { label: "Antacid (Child)", value: "5-15", unit: "mL PO q3-6h or 1-3h after meals and hs" },
+      phosphateBinderChild: { label: "Phosphate Binder", value: "50-150", unit: "mg/kg/day PO ÷ q4-6h; titrate to phosphorus" },
+      pepticUlcerAdult: { label: "Peptic Ulcer (Adult)", value: "15-45", unit: "mL PO 1-3h after meals and hs" }
+    },
+    contraindications: [
+      "Severe renal impairment (aluminum accumulation)"
+    ],
+    warnings: [
+      "Aluminum toxicity with chronic use in renal failure",
+      "Constipation",
+      "Hypophosphatemia with prolonged use",
+      "Osteomalacia with chronic use"
+    ],
+    sideEffects: [
+      "Common: Constipation, nausea",
+      "Metabolic: Hypophosphatemia, aluminum toxicity (encephalopathy, osteomalacia)",
+      "GI: Chalky taste, intestinal obstruction (rare)"
+    ],
+    interactions: [
+      { drug: "Fluoroquinolones", effect: "Decreased absorption; separate by 2h" },
+      { drug: "Tetracyclines", effect: "Decreased absorption; separate by 2h" },
+      { drug: "Iron", effect: "Decreased iron absorption" },
+      { drug: "Digoxin", effect: "Decreased digoxin absorption" }
+    ],
+    notes: "Separate from other medications by 1-2 hours. Shake suspension well. Avoid prolonged use in renal impairment. May cause constipation; often combined with magnesium hydroxide."
+  },
+  {
+    id: "aminocaproicacid",
+    name: "Aminocaproic Acid (Amicar)",
+    category: "Antifibrinolytic",
+    indication: "Treatment/prevention of excessive bleeding from hyperfibrinolysis, post-surgical bleeding, dental extraction in hemophilia",
+    route: "PO/IV",
+    maxDose: "30 g/day",
+    formulations: [
+      { type: "Tablets", strengths: "500 mg, 1000 mg" },
+      { type: "Oral Solution", strengths: "250 mg/mL" },
+      { type: "Injection", strengths: "250 mg/mL (20 mL vial)" }
+    ],
+    doses: {
+      acuteBleedingLoad: { label: "Acute Bleeding (Load)", value: "100-200", unit: "mg/kg IV/PO (max 4-5 g)" },
+      acuteBleedingMaint: { label: "Acute Bleeding (Maint)", value: "100", unit: "mg/kg/dose PO/IV q6h; max 30 g/day" },
+      dentalHemophilia: { label: "Dental (Hemophilia)", value: "50-100", unit: "mg/kg PO q6h starting before procedure" },
+      topical: { label: "Topical", value: "Apply", unit: "1.25 g in 20 mL NS as bladder irrigation or mouthwash" }
+    },
+    contraindications: [
+      "Active intravascular clotting (DIC)",
+      "Hematuria from upper urinary tract (risk of clots/obstruction)"
+    ],
+    warnings: [
+      "Upper urinary tract bleeding (ureteral obstruction from clots)",
+      "Muscle necrosis/rhabdomyolysis with prolonged use",
+      "Thrombotic risk",
+      "Renal impairment"
+    ],
+    sideEffects: [
+      "Common: Nausea, diarrhea, dizziness",
+      "Serious: Thrombosis, rhabdomyolysis, renal failure",
+      "Other: Hypotension (rapid IV), nasal stuffiness"
+    ],
+    interactions: [
+      { drug: "Estrogens", effect: "Increased thrombotic risk" },
+      { drug: "Factor IX concentrates", effect: "Increased thrombotic risk" },
+      { drug: "Tretinoin", effect: "Fatal thrombosis reported" }
+    ],
+    notes: "IV: Infuse slowly (max 1 g/min or dilute in NS/D5W). Do not use in DIC. Monitor CK if prolonged use. May be used topically as mouthwash or bladder irrigation.",
+    renalAdjust: {
+      gfr50: "Reduce dose 25%",
+      gfr30: "Reduce dose 50%",
+      gfr10: "Reduce dose 75%",
+      hd: "Supplement dose after HD"
+    }
+  },
+  {
+    id: "aminophylline",
+    name: "Aminophylline (Theophylline ethylenediamine)",
+    category: "Methylxanthine / Bronchodilator",
+    indication: "Asthma (adjunct), apnea of prematurity, neonatal apnea, bradycardia reversal",
+    route: "PO/IV",
+    maxDose: "Serum level 10-20 mcg/mL; toxic >20 mcg/mL",
+    formulations: [
+      { type: "Injection", strengths: "25 mg/mL (10 mL, 20 mL)" },
+      { type: "Oral solution", strengths: "105 mg/5 mL (equivalent to 84 mg theophylline)" }
+    ],
+    doses: {
+      loadingDose: { label: "Loading Dose", value: "5-6", unit: "mg/kg IV over 20-30 min (if not on theophylline)" },
+      maintenanceNeonate: { label: "Maintenance (Neonate <24d)", value: "1", unit: "mg/kg/dose PO/IV q12h" },
+      maintenanceInfant: { label: "Maintenance (Infant 6wk-1yr)", value: "0.5", unit: "mg/kg/hr IV OR 12-18 mg/kg/day PO ÷ q6h" },
+      maintenanceChild: { label: "Maintenance (1-9 yr)", value: "0.8", unit: "mg/kg/hr IV OR 20-24 mg/kg/day PO ÷ q6h" },
+      maintenanceAdol: { label: "Maintenance (>9 yr)", value: "0.7", unit: "mg/kg/hr IV (max 900 mg/day)" }
+    },
+    dosingTable: {
+      title: "Aminophylline IV Infusion Rates by Age",
+      columns: ["Age Group", "IV Infusion Rate", "Target Level"],
+      rows: [
+        ["Premature neonate", "0.13 mg/kg/hr", "6-13 mcg/mL"],
+        ["Term neonate <24 days", "0.15 mg/kg/hr", "6-13 mcg/mL"],
+        ["Infant 24 days - 6 weeks", "0.2 mg/kg/hr", "10-15 mcg/mL"],
+        ["Infant 6 weeks - 1 year", "0.5 mg/kg/hr", "10-15 mcg/mL"],
+        ["Child 1-9 years", "0.8 mg/kg/hr", "10-20 mcg/mL"],
+        ["Child 9-12 years", "0.7 mg/kg/hr", "10-20 mcg/mL"],
+        ["Adolescent (smoker)", "0.7 mg/kg/hr", "10-20 mcg/mL"],
+        ["Adolescent (non-smoker)", "0.5 mg/kg/hr", "10-20 mcg/mL"]
+      ]
+    },
+    contraindications: [
+      "Uncontrolled seizure disorder",
+      "Active peptic ulcer",
+      "Hypersensitivity to xanthines"
+    ],
+    warnings: [
+      "Narrow therapeutic index",
+      "Seizures at toxic levels",
+      "Cardiac arrhythmias",
+      "Many drug interactions affecting metabolism"
+    ],
+    sideEffects: [
+      "Common: Nausea, vomiting, headache, insomnia, irritability",
+      "Serious: Seizures, arrhythmias, hypotension",
+      "GI: Gastroesophageal reflux, epigastric pain"
+    ],
+    interactions: [
+      { drug: "Cimetidine", effect: "Increased theophylline levels" },
+      { drug: "Erythromycin/Clarithromycin", effect: "Increased theophylline levels" },
+      { drug: "Ciprofloxacin", effect: "Increased theophylline levels" },
+      { drug: "Phenytoin/Carbamazepine", effect: "Decreased theophylline levels" },
+      { drug: "Rifampin", effect: "Decreased theophylline levels" }
+    ],
+    notes: "Aminophylline = 80% theophylline. Monitor levels (draw trough before dose). Loading dose: Each 1 mg/kg raises level by ~2 mcg/mL. Many factors affect clearance (CHF, liver disease, febrile illness decrease; smoking increases).",
+    renalAdjust: {
+      gfr50: "No adjustment",
+      gfr30: "No adjustment",
+      gfr10: "No adjustment",
+      hd: "Moderately dialyzable; supplement after HD"
+    }
+  },
+  {
+    id: "amphotericinb",
+    name: "Amphotericin B (Fungizone, AmBisome, Abelcet)",
+    category: "Antifungal",
+    indication: "Serious systemic fungal infections, empiric antifungal in febrile neutropenia",
+    route: "IV",
+    maxDose: "1.5 mg/kg/day (conventional); 5 mg/kg/day (liposomal)",
+    formulations: [
+      { type: "Conventional (Fungizone)", strengths: "50 mg vial" },
+      { type: "Liposomal (AmBisome)", strengths: "50 mg vial" },
+      { type: "Lipid Complex (Abelcet)", strengths: "100 mg/20 mL" }
+    ],
+    doses: {
+      conventionalTest: { label: "Conventional (Test dose)", value: "0.1", unit: "mg/kg IV over 30-60 min" },
+      conventional: { label: "Conventional", value: "0.5-1.5", unit: "mg/kg/day IV over 2-6 hr" },
+      liposomal: { label: "Liposomal (AmBisome)", value: "3-5", unit: "mg/kg/day IV over 1-2 hr" },
+      lipidComplex: { label: "Lipid Complex (Abelcet)", value: "5", unit: "mg/kg/day IV over 2 hr" }
+    },
+    dosingTable: {
+      title: "Amphotericin B Formulations Comparison",
+      columns: ["Formulation", "Usual Dose", "Infusion Time", "Nephrotoxicity"],
+      rows: [
+        ["Conventional", "0.5-1.5 mg/kg/day", "2-6 hours", "High"],
+        ["AmBisome (liposomal)", "3-5 mg/kg/day", "1-2 hours", "Low"],
+        ["Abelcet (lipid complex)", "5 mg/kg/day", "2 hours", "Moderate"]
+      ]
+    },
+    contraindications: [
+      "Hypersensitivity to amphotericin B"
+    ],
+    warnings: [
+      "Nephrotoxicity (conventional > lipid formulations)",
+      "Infusion-related reactions (fever, chills, rigors)",
+      "Hypokalemia, hypomagnesemia",
+      "Anemia"
+    ],
+    sideEffects: [
+      "Infusion: Fever, chills, rigors, hypotension",
+      "Renal: Nephrotoxicity, electrolyte wasting (K, Mg)",
+      "Hematologic: Normochromic anemia",
+      "GI: Nausea, vomiting"
+    ],
+    interactions: [
+      { drug: "Nephrotoxic drugs", effect: "Additive nephrotoxicity" },
+      { drug: "Diuretics", effect: "Increased hypokalemia" },
+      { drug: "Digoxin", effect: "Hypokalemia increases digoxin toxicity" },
+      { drug: "Corticosteroids", effect: "Increased hypokalemia" }
+    ],
+    notes: "Premedicate with acetaminophen, diphenhydramine, ± meperidine for infusion reactions. NS bolus before infusion may reduce nephrotoxicity. Monitor renal function, K, Mg twice weekly. Lipid formulations preferred in renal impairment.",
+    renalAdjust: {
+      gfr50: "Consider lipid formulation",
+      gfr30: "Use lipid formulation",
+      gfr10: "Use lipid formulation",
+      hd: "Not dialyzable; no supplemental dose"
+    }
+  },
+  {
+    id: "arginine",
+    name: "Arginine Hydrochloride (R-Gene 10)",
+    category: "Amino Acid / Diagnostic Agent",
+    indication: "Metabolic alkalosis with hypokalemia (refractory), pituitary function testing, urea cycle disorders",
+    route: "IV",
+    maxDose: "Varies by indication",
+    formulations: [
+      { type: "Injection", strengths: "10% solution (300 mL)" }
+    ],
+    doses: {
+      metabolicAlkalosisChild: { label: "Metabolic Alkalosis", value: "0.5-1", unit: "mEq/kg/hr IV x 1-3 hrs; calculate chloride deficit" },
+      pituitaryTest: { label: "Pituitary Test", value: "0.5", unit: "g/kg IV over 30 min; max 30 g" },
+      ureaCycleDisorder: { label: "Urea Cycle Disorder", value: "2-6", unit: "g/m²/day IV continuous or ÷ doses" }
+    },
+    contraindications: [
+      "Severe renal impairment",
+      "Severe hepatic impairment",
+      "Hyperkalemia"
+    ],
+    warnings: [
+      "Hyperkalemia (contains no chloride, shifts K+ out of cells)",
+      "Acidosis",
+      "Hyperchloremic acidosis with excess administration",
+      "Tissue necrosis with extravasation"
+    ],
+    sideEffects: [
+      "Common: Nausea, vomiting, flushing",
+      "Metabolic: Hyperkalemia, acidosis",
+      "Local: Phlebitis, extravasation injury"
+    ],
+    interactions: [
+      { drug: "Potassium-sparing diuretics", effect: "Increased hyperkalemia risk" },
+      { drug: "ACE inhibitors", effect: "Increased hyperkalemia risk" }
+    ],
+    notes: "For metabolic alkalosis: Calculate chloride deficit = 0.2 × weight (kg) × (103 – serum Cl). Arginine HCl contains 47.5 mEq Cl/100 mL. Infuse via central line when possible. Monitor electrolytes frequently."
+  },
+  {
+    id: "atenolol",
+    name: "Atenolol (Tenormin)",
+    category: "Beta-Blocker (β1-selective)",
+    indication: "Hypertension, arrhythmias, migraine prophylaxis, hyperthyroidism",
+    route: "PO",
+    maxDose: "2 mg/kg/day (max 100 mg/day)",
+    formulations: [
+      { type: "Tablets", strengths: "25 mg, 50 mg, 100 mg" },
+      { type: "Oral suspension (compounded)", strengths: "2 mg/mL" }
+    ],
+    doses: {
+      hypertensionChild: { label: "HTN (Child)", value: "0.5-1", unit: "mg/kg/dose PO daily; max 2 mg/kg/day (100 mg)" },
+      arrhythmiaChild: { label: "Arrhythmia (Child)", value: "0.5-1", unit: "mg/kg/dose PO daily" },
+      hypertensionAdult: { label: "HTN (Adult)", value: "25-50", unit: "mg PO daily; max 100 mg/day" }
+    },
+    contraindications: [
+      "Sinus bradycardia, heart block (>1st degree)",
+      "Decompensated heart failure",
+      "Cardiogenic shock",
+      "Pheochromocytoma (without alpha-blockade)"
+    ],
+    warnings: [
+      "Do not abruptly discontinue (rebound tachycardia, hypertension)",
+      "May mask hypoglycemia symptoms",
+      "Bronchospasm (less than non-selective beta-blockers)",
+      "May worsen peripheral vascular disease"
+    ],
+    sideEffects: [
+      "Common: Fatigue, dizziness, cold extremities",
+      "CV: Bradycardia, hypotension, heart failure worsening",
+      "CNS: Depression, sleep disturbances",
+      "Respiratory: Bronchospasm (rare with β1-selective)"
+    ],
+    interactions: [
+      { drug: "Calcium channel blockers", effect: "Additive bradycardia, hypotension" },
+      { drug: "Digoxin", effect: "Additive bradycardia" },
+      { drug: "Clonidine", effect: "Rebound hypertension if clonidine stopped" },
+      { drug: "Insulin/Sulfonylureas", effect: "Masked hypoglycemia" }
+    ],
+    notes: "Less lipophilic than other beta-blockers (fewer CNS effects). Once-daily dosing due to long half-life. Taper over 1-2 weeks when discontinuing.",
+    renalAdjust: {
+      gfr50: "Max 50 mg/day",
+      gfr30: "Max 50 mg q48h",
+      gfr10: "Max 25 mg q48h",
+      hd: "Give after HD; 25-50 mg supplemental"
+    }
+  },
+  {
+    id: "atracurium",
+    name: "Atracurium (Tracrium)",
+    category: "Neuromuscular Blocker (Non-depolarizing)",
+    indication: "Facilitation of endotracheal intubation, muscle relaxation during surgery/mechanical ventilation",
+    route: "IV",
+    maxDose: "Titrate to effect (train-of-four monitoring)",
+    formulations: [
+      { type: "Injection", strengths: "10 mg/mL (5 mL, 10 mL vials)" }
+    ],
+    doses: {
+      intubationChild: { label: "Intubation (Child)", value: "0.4-0.5", unit: "mg/kg IV" },
+      intubationInfant: { label: "Intubation (Infant)", value: "0.3-0.4", unit: "mg/kg IV" },
+      maintenanceChild: { label: "Maintenance (Child)", value: "0.08-0.1", unit: "mg/kg IV q15-25 min prn" },
+      infusion: { label: "Continuous Infusion", value: "5-15", unit: "mcg/kg/min IV; titrate to effect" }
+    },
+    contraindications: [
+      "Hypersensitivity to atracurium or benzyl alcohol (multi-dose vials)"
+    ],
+    warnings: [
+      "Does NOT provide sedation or analgesia",
+      "Histamine release (may cause bronchospasm, hypotension)",
+      "Laudanosine metabolite (CNS stimulant in high doses/prolonged use)",
+      "Use with caution in asthma"
+    ],
+    sideEffects: [
+      "Common: Flushing, transient hypotension",
+      "Histamine-related: Bronchospasm, tachycardia, hypotension",
+      "Rare: Prolonged paralysis, anaphylaxis"
+    ],
+    interactions: [
+      { drug: "Aminoglycosides", effect: "Enhanced neuromuscular blockade" },
+      { drug: "Inhaled anesthetics", effect: "Enhanced neuromuscular blockade" },
+      { drug: "Magnesium", effect: "Enhanced neuromuscular blockade" },
+      { drug: "Phenytoin/Carbamazepine", effect: "Resistance to neuromuscular blockade" }
+    ],
+    notes: "Degraded by Hofmann elimination (organ-independent); preferred in hepatic/renal failure. Onset: 2-3 min. Duration: 20-35 min. Refrigerate; stable 14 days at room temp. Always ensure adequate sedation."
   }
 ];
 
