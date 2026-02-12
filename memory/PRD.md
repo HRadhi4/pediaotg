@@ -138,11 +138,13 @@ A pediatric medical calculator app featuring:
 - Deploy and test PayPal integration in production
 
 ### P2 - Medium Priority
+- Refactor childrenFormulary.js to a static JSON file for better performance
 - Refactor ElectrolytesDialog.jsx (large component)
 - UI standardization of NICU approach components
 - Audit numerical inputs for missing min="0" attributes
 - Delete redundant file: `/app/frontend/src/pages/children/ElectrolytesInfusionsPage.jsx`
 - Add PayPal webhook signature verification
+- Add data-testid attributes across interactive elements
 
 ### P3 - Low Priority
 - Dark mode theme toggle
