@@ -1,0 +1,92 @@
+{
+  "summary": "Children > Drugs page UI fixes verified successfully. All 6 features working correctly: single-line drug header, horizontal table scrolling, calculated dose column with weight, weight-range tables with checkmark highlighting, mg/kg tables showing calculated doses.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "passed_tests": {
+    "drug_list_single_line_layout": {
+      "status": "PASS",
+      "tests": [
+        "Drug name and category appear on single line without wrapping",
+        "Layout verified on desktop (1920x1080)",
+        "Layout verified on mobile (390x844)"
+      ]
+    },
+    "horizontal_table_scrolling": {
+      "status": "PASS",
+      "tests": [
+        "Amikacin dosing table scrolls horizontally",
+        "Paracetamol weight-range table scrolls horizontally",
+        "Mobile viewport confirms canScroll: true (tableWidth=427 > containerWidth=306)",
+        "Helper text shows: Scroll table horizontally for full content"
+      ]
+    },
+    "calculated_dose_column": {
+      "status": "PASS",
+      "tests": [
+        "Calc (15kg) column appears when weight entered",
+        "Amikacin: 18 mg/kg * 15 kg = 270.0 mg displayed correctly",
+        "Amikacin: 15 mg/kg * 15 kg = 225.0 mg displayed correctly",
+        "Column header shows patient weight: Calc (15kg)"
+      ]
+    },
+    "weight_range_tables_checkmark": {
+      "status": "PASS",
+      "tests": [
+        "Paracetamol row 10.6-15.9 kg highlighted with green background for 15 kg patient",
+        "Checkmark symbol shown: ✓ 160 in calculated dose column",
+        "Non-matching rows show — (dash) in calculated column"
+      ]
+    },
+    "mg_per_kg_tables_calculated_doses": {
+      "status": "PASS",
+      "tests": [
+        "Amikacin table shows calculated mg values per row",
+        "270.0 mg shown for 18 mg/kg doses",
+        "225.0 mg shown for 15 mg/kg doses",
+        "Values correctly calculated: dose_per_kg * patient_weight"
+      ]
+    },
+    "amikacin_expanded_view": {
+      "status": "PASS",
+      "tests": [
+        "Full table visible with all columns: PMA, Postnatal Age, Dose, Interval, Calc",
+        "Once Daily dose: 225.0 - 337.5 mg/dose q24h",
+        "Traditional dose: 75.0 - 112.5 mg/dose q8h",
+        "Cystic Fibrosis dose: 450.0 mg/dose q24h"
+      ]
+    }
+  },
+  "test_report_links": [
+    "/app/frontend/src/pages/children/DrugsPage.jsx",
+    "/app/frontend/src/data/childrenFormulary.js"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Header layout uses flex-nowrap and whitespace-nowrap for single-line display - CORRECT",
+    "Table uses overflow-x-auto for horizontal scrolling - CORRECT",
+    "Calculated dose column logic correctly handles both weight-range (fixed dose with checkmark) and mg/kg (multiplied) tables",
+    "minWidth: 'max-content' on table ensures content doesn't wrap"
+  ],
+  "updated_files": [],
+  "success_rate": {
+    "frontend": "100% - All UI fixes verified"
+  },
+  "test_credentials": {
+    "email": "test@test.com",
+    "password": "12341234"
+  },
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Children > Drugs page UI fixes verified. Key changes: 1) Drug header uses flex-nowrap/whitespace-nowrap, 2) Tables use overflow-x-auto with minWidth: 'max-content', 3) Calculated dose column logic differentiates weight-range tables (shows fixed dose with ✓) from mg/kg tables (shows calculated mg values).",
+  "test_weight_used": "15 kg",
+  "drugs_tested": ["Amikacin", "Paracetamol"],
+  "viewports_tested": ["Desktop 1920x1080", "Mobile 390x844"]
+}
