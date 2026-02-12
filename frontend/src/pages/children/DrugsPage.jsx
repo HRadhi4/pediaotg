@@ -921,6 +921,102 @@ const DrugsPage = ({ onBack }) => {
                         )}
                       </div>
                     )}
+
+                    {/* Available Formulations */}
+                    {drug.formulations && drug.formulations.length > 0 && (
+                      <div className="p-3 rounded-lg bg-cyan-50 dark:bg-cyan-900/20 border border-cyan-200 dark:border-cyan-800">
+                        <p className="text-[11px] font-semibold text-cyan-700 dark:text-cyan-300 mb-2 flex items-center gap-1">
+                          <span>💊</span> Available Formulations
+                        </p>
+                        <div className="space-y-1">
+                          {drug.formulations.map((form, idx) => (
+                            <div key={idx} className="text-xs flex justify-between bg-white dark:bg-slate-800 p-1.5 rounded">
+                              <span className="font-medium text-cyan-700 dark:text-cyan-300">{form.type}</span>
+                              <span className="font-mono text-slate-600 dark:text-slate-400">{form.strengths}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Contraindications */}
+                    {drug.contraindications && drug.contraindications.length > 0 && (
+                      <div className="p-3 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800">
+                        <p className="text-[11px] font-semibold text-red-700 dark:text-red-300 mb-2 flex items-center gap-1">
+                          <span>🚫</span> Contraindications
+                        </p>
+                        <ul className="list-disc list-inside text-xs text-slate-700 dark:text-slate-300 space-y-0.5">
+                          {drug.contraindications.map((ci, idx) => (
+                            <li key={idx}>{ci}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
+                    {/* Warnings */}
+                    {drug.warnings && drug.warnings.length > 0 && (
+                      <div className="p-3 rounded-lg bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800">
+                        <p className="text-[11px] font-semibold text-orange-700 dark:text-orange-300 mb-2 flex items-center gap-1">
+                          <span>⚠️</span> Warnings & Precautions
+                        </p>
+                        <ul className="list-disc list-inside text-xs text-slate-700 dark:text-slate-300 space-y-0.5">
+                          {drug.warnings.map((w, idx) => (
+                            <li key={idx}>{w}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
+                    {/* Side Effects */}
+                    {drug.sideEffects && drug.sideEffects.length > 0 && (
+                      <div className="p-3 rounded-lg bg-pink-50 dark:bg-pink-900/20 border border-pink-200 dark:border-pink-800">
+                        <p className="text-[11px] font-semibold text-pink-700 dark:text-pink-300 mb-2 flex items-center gap-1">
+                          <span>⚡</span> Side Effects
+                        </p>
+                        <ul className="list-disc list-inside text-xs text-slate-700 dark:text-slate-300 space-y-0.5">
+                          {drug.sideEffects.map((se, idx) => (
+                            <li key={idx}>{se}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
+                    {/* Drug Interactions */}
+                    {drug.interactions && drug.interactions.length > 0 && (
+                      <div className="p-3 rounded-lg bg-violet-50 dark:bg-violet-900/20 border border-violet-200 dark:border-violet-800">
+                        <p className="text-[11px] font-semibold text-violet-700 dark:text-violet-300 mb-2 flex items-center gap-1">
+                          <span>🔄</span> Drug Interactions
+                        </p>
+                        <div className="overflow-x-auto">
+                          <table className="w-full text-xs">
+                            <thead>
+                              <tr className="bg-violet-100 dark:bg-violet-900/40">
+                                <th className="px-2 py-1 text-left font-semibold text-violet-800 dark:text-violet-200">Drug</th>
+                                <th className="px-2 py-1 text-left font-semibold text-violet-800 dark:text-violet-200">Effect</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {drug.interactions.map((int, idx) => (
+                                <tr key={idx} className={idx % 2 === 0 ? 'bg-white dark:bg-slate-800' : 'bg-violet-50/50 dark:bg-violet-900/10'}>
+                                  <td className="px-2 py-1 font-medium text-violet-700 dark:text-violet-300 whitespace-nowrap">{int.drug}</td>
+                                  <td className="px-2 py-1 text-slate-600 dark:text-slate-400">{int.effect}</td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Hepatic Adjustment */}
+                    {drug.hepaticAdjust && (
+                      <div className="p-3 rounded-lg bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800">
+                        <p className="text-[11px] font-semibold text-yellow-700 dark:text-yellow-300 mb-1 flex items-center gap-1">
+                          <span>🫁</span> Hepatic Adjustment
+                        </p>
+                        <p className="text-xs text-slate-700 dark:text-slate-300">{drug.hepaticAdjust}</p>
+                      </div>
+                    )}
                   </div>
                 )}
               </CardContent>
