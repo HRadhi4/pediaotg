@@ -1029,7 +1029,7 @@ export const childrenFormulary = [
   // ============================================================================
   {
     id: "carvedilol",
-    name: "Carvedilol (Coreg)",
+    name: "Carvedilol (Eucardic)",
     category: "Beta-blocker (α1/β1/β2)",
     route: "PO",
     formulations: [
@@ -1078,7 +1078,7 @@ export const childrenFormulary = [
   // ============================================================================
   {
     id: "cefazolin",
-    name: "Cefazolin (Ancef, Kefzol)",
+    name: "Cefazolin (Kefzol)",
     category: "Antibiotic (1st gen Cephalosporin)",
     route: "IV/IM",
     formulations: [
@@ -1229,7 +1229,7 @@ export const childrenFormulary = [
   // ============================================================================
   {
     id: "cephalexin",
-    name: "Cephalexin (Keflex)",
+    name: "Cephalexin (Cefalexin, Keflex)",
     category: "Antibiotic (1st gen Cephalosporin)",
     route: "PO",
     formulations: [
@@ -1327,7 +1327,7 @@ export const childrenFormulary = [
   // ============================================================================
   {
     id: "ciprofloxacin",
-    name: "Ciprofloxacin (Cipro)",
+    name: "Ciprofloxacin (Ciproxin)",
     category: "Antibiotic (Fluoroquinolone)",
     route: "PO/IV",
     formulations: [
@@ -1389,7 +1389,7 @@ export const childrenFormulary = [
   // ============================================================================
   {
     id: "clindamycin",
-    name: "Clindamycin (Cleocin)",
+    name: "Clindamycin (Dalacin C)",
     category: "Antibiotic (Lincosamide)",
     route: "PO/IV/Topical",
     formulations: [
@@ -1568,7 +1568,7 @@ export const childrenFormulary = [
   // ============================================================================
   {
     id: "diazepam",
-    name: "Diazepam (Valium)",
+    name: "Diazepam (Diazemuls, Stesolid)",
     category: "Benzodiazepine",
     route: "PO/IV/IM/PR",
     formulations: [
@@ -1633,7 +1633,7 @@ export const childrenFormulary = [
   // ============================================================================
   {
     id: "diphenhydramine",
-    name: "Diphenhydramine (Benadryl)",
+    name: "Diphenhydramine (Nytol, Histergan)",
     category: "Antihistamine (1st generation)",
     route: "PO/IV/IM/Topical",
     formulations: [
@@ -1802,7 +1802,7 @@ export const childrenFormulary = [
   // ============================================================================
   {
     id: "enoxaparin",
-    name: "Enoxaparin (Lovenox)",
+    name: "Enoxaparin (Clexane)",
     category: "Anticoagulant (LMWH)",
     route: "SC/IV",
     formulations: [
@@ -1862,7 +1862,7 @@ export const childrenFormulary = [
   // ============================================================================
   {
     id: "epinephrine",
-    name: "Epinephrine (Adrenaline)",
+    name: "Adrenaline (Epinephrine, EpiPen)",
     category: "Vasopressor/Bronchodilator",
     route: "IV/IO/SC/IM/ETT/Nebulizer",
     formulations: [
@@ -1927,7 +1927,7 @@ export const childrenFormulary = [
   // ============================================================================
   {
     id: "fentanyl",
-    name: "Fentanyl (Sublimaze)",
+    name: "Fentanyl (Sublimaze, Durogesic)",
     category: "Opioid Analgesic",
     route: "IV/IM/Transdermal/Intranasal/Transmucosal",
     formulations: [
