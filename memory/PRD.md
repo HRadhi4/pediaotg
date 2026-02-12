@@ -46,24 +46,30 @@ A pediatric medical calculator app featuring:
 
 ### Drug Formulary Implementation (Dec 2025)
 - **Location:** `/app/frontend/src/pages/children/DrugsPage.jsx`
-- **Data File:** `/app/frontend/src/data/childrenFormulary.js` (92 medications)
+- **Data File:** `/app/frontend/src/data/childrenFormulary.js` (111 medications)
 - **Features:**
   - Original DrugsPage UI preserved (no nested containers)
   - Data imported from external childrenFormulary.js file
-  - 92 medications with comprehensive dosing information
+  - 111 medications with comprehensive dosing information
+  - **Dosing tables** displayed in user-friendly format (like PDF)
   - Searchable by drug name, category, or indication
   - Weight-based dose calculations with GFR calculator
   - Expandable drug cards with detailed information:
     - Drug name with brand names
     - Category and route of administration
     - Indication
+    - **Dosing tables** (Weight/Age/Dose columns)
     - Multiple dosing regimens (neonate, pediatric, adult)
     - Maximum dose
-    - Contraindications & warnings
-    - Side effects & drug interactions
+    - Available formulations
+    - Contraindications (red styling)
+    - Warnings & Precautions (orange styling)
+    - Side effects (pink styling)
+    - Drug interactions (violet table)
     - Renal and hepatic adjustments
     - Clinical notes
 - **Navigation:** Integrated into Children Dashboard via DrugsPage component
+- **Added medications include:** Acetazolamide, ACTH/Corticotropin, Allopurinol, Alprostadil, Alteplase, Aluminum Hydroxide, Aminocaproic Acid, Aminophylline, Amphotericin B, Arginine, Atenolol, Atracurium, Aztreonam, Baclofen, Bivalirudin, Bosentan, Bumetanide, Calcitriol, Captopril
 
 ### Children's Section - Mechanical Ventilation Approach (Feb 2026)
 - **New Approach Added:** Mechanical Ventilation in PICU
