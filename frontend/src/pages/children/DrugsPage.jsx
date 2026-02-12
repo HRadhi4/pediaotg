@@ -1019,11 +1019,11 @@ const DrugsPage = ({ onBack }) => {
                         <p className="text-[11px] font-semibold text-violet-700 dark:text-violet-300 mb-2 flex items-center gap-1">
                           <span>🔄</span> Drug Interactions
                         </p>
-                        <div className="overflow-x-auto">
-                          <table className="w-full text-xs">
+                        <div className="overflow-x-auto -mx-3 px-3">
+                          <table className="w-full text-xs min-w-max">
                             <thead>
                               <tr className="bg-violet-100 dark:bg-violet-900/40">
-                                <th className="px-2 py-1 text-left font-semibold text-violet-800 dark:text-violet-200">Drug</th>
+                                <th className="px-2 py-1 text-left font-semibold text-violet-800 dark:text-violet-200 whitespace-nowrap">Drug</th>
                                 <th className="px-2 py-1 text-left font-semibold text-violet-800 dark:text-violet-200">Effect</th>
                               </tr>
                             </thead>
