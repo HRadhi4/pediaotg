@@ -300,15 +300,15 @@ const SidePanel = ({ isOpen, onClose, theme, toggleTheme }) => {
                 <p className="text-muted-foreground leading-relaxed">
                   An app crafted by those who know pediatrics best — <strong>pediatricians themselves</strong>.
                 </p>
-                <p className="text-muted-foreground text-xs">
-                  For feedback or suggestions contact us through{" "}
+                <div className="text-muted-foreground text-xs">
+                  <p>For feedback or suggestions contact us through</p>
                   <a 
                     href="mailto:feedback@pedotg.com" 
                     className="text-[#00d9c5] hover:underline font-medium"
                   >
                     feedback@pedotg.com
                   </a>
-                </p>
+                </div>
               </div>
             </TabsContent>
             
