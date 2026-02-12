@@ -143,17 +143,17 @@ A pediatric medical calculator app featuring:
 - None currently
 
 ### P1 - High Priority
-- Continue adding remaining drugs from the PDF formulary (currently 111/105+ target met)
-- Refactor ElectrolytesDialog.jsx (large component with many states)
-- Deploy and test PayPal integration in production
+- Fix "3% NaCl" calculation in Electrolytes calculator
+- Change label "Round dose to 5s (easier dilution)" to "Round dose"
+- Refactor "NICU > Approaches > Mechanical Ventilation" page layout (move Frequency by Age table, single scrollable list)
+- Verify drug order in childrenFormulary.js matches source PDF order
 
 ### P2 - Medium Priority
+- Create tabbed "About" section (Disclaimer, About Us, References) and consolidate medical references
+- Add "Mechanical Ventilation" approach to Children > Approaches section
 - Refactor childrenFormulary.js to a static JSON file for better performance
-- Refactor ElectrolytesDialog.jsx (large component)
+- Refactor ElectrolytesDialog.jsx (large component with many states)
 - UI standardization of NICU approach components
-- Audit numerical inputs for missing min="0" attributes
-- Delete redundant file: `/app/frontend/src/pages/children/ElectrolytesInfusionsPage.jsx`
-- Add PayPal webhook signature verification
 - Add data-testid attributes across interactive elements
 
 ### P3 - Low Priority
