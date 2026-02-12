@@ -4474,6 +4474,722 @@ export const childrenFormulary = [
     notes: "Aminosteroid NMBA. Slower onset than rocuronium but fewer CV effects. Can reverse with sugammadex or neostigmine. Infants may have longer duration. Refrigerate reconstituted solution; use within 24 hours.",
     renalAdjust: "Prolonged duration; reduce dose or extend interval",
     hepaticAdjust: "Prolonged duration; reduce dose or extend interval"
+  },
+
+  // ============================================================================
+  // FAMOTIDINE (Pepcid)
+  // ============================================================================
+  {
+    id: "famotidine",
+    name: "Famotidine (Pepcid)",
+    category: "H2-Receptor Antagonist",
+    route: "IV/PO",
+    formulations: [
+      { type: "Tablets", strengths: "10 mg, 20 mg, 40 mg" },
+      { type: "Oral suspension", strengths: "40 mg/5 mL" },
+      { type: "Injection", strengths: "10 mg/mL" }
+    ],
+    doses: {
+      gerdNeo: { label: "GERD (Neonate)", value: "0.5", unit: "mg/kg/dose QD PO/IV" },
+      gerdChild: { label: "GERD (Child)", value: "0.5-1", unit: "mg/kg/dose BID (max 40 mg/dose)" },
+      pepticUlcer: { label: "Peptic Ulcer (Child)", value: "0.5", unit: "mg/kg/dose BID (max 40 mg)" },
+      stressUlcer: { label: "Stress Ulcer Prophylaxis", value: "0.25", unit: "mg/kg/dose Q12h IV" },
+      adultPO: { label: "Adult PO", value: "20-40", unit: "mg BID", isFixed: true },
+      adultIV: { label: "Adult IV", value: "20", unit: "mg Q12h", isFixed: true }
+    },
+    max: "40 mg/dose; 80 mg/day",
+    indication: "GERD, peptic ulcer disease, stress ulcer prophylaxis, Zollinger-Ellison syndrome",
+    contraindications: [
+      "Hypersensitivity to famotidine or other H2 blockers"
+    ],
+    warnings: [
+      "Thrombocytopenia (rare)",
+      "CNS effects in elderly/renal impairment",
+      "May mask symptoms of gastric malignancy"
+    ],
+    sideEffects: [
+      "Common: Headache, dizziness, constipation, diarrhea",
+      "Less common: Confusion (elderly), thrombocytopenia",
+      "Rare: Arrhythmias (with rapid IV), agranulocytosis"
+    ],
+    interactions: [
+      { drug: "Drugs requiring gastric acid", effect: "Reduced absorption (ketoconazole, iron)" },
+      { drug: "Atazanavir", effect: "Reduced absorption" }
+    ],
+    notes: "Preferred H2 blocker (ranitidine withdrawn due to NDMA). More potent than ranitidine. No significant CYP450 interactions. Give IV over at least 2 min (or 15-30 min for infusion). Less effective than PPIs for erosive esophagitis.",
+    renalAdjust: {
+      gfr50: "50% dose or Q24h",
+      gfr30: "50% dose or Q24-48h",
+      gfr10: "25% dose or Q48h",
+      hd: "Give after HD"
+    },
+    hepaticAdjust: "Use with caution in severe impairment"
+  },
+
+  // ============================================================================
+  // FOSPHENYTOIN (Cerebyx)
+  // ============================================================================
+  {
+    id: "fosphenytoin",
+    name: "Fosphenytoin (Cerebyx)",
+    category: "Anticonvulsant",
+    route: "IV/IM",
+    formulations: [
+      { type: "Injection", strengths: "75 mg/mL PE (phenytoin equivalents)" }
+    ],
+    doses: {
+      statusLoading: { label: "Status Epilepticus Loading", value: "20", unit: "mg PE/kg IV (max 150 mg PE/min)" },
+      additionalLoading: { label: "Additional Loading", value: "5-10", unit: "mg PE/kg (max 30 mg PE/kg total)" },
+      maintenance: { label: "Maintenance", value: "4-6", unit: "mg PE/kg/day ÷ Q12h" },
+      imLoading: { label: "IM Loading (if no IV)", value: "15-20", unit: "mg PE/kg IM" }
+    },
+    max: "30 mg PE/kg total loading; rate 150 mg PE/min (3 mg PE/kg/min in peds)",
+    indication: "Status epilepticus, seizure prophylaxis (post-neurosurgery/trauma), when oral phenytoin not possible",
+    contraindications: [
+      "Sinus bradycardia, SA/AV block, Adams-Stokes syndrome",
+      "History of hypersensitivity to hydantoins"
+    ],
+    warnings: [
+      "Cardiovascular monitoring during and 30 min post-infusion",
+      "Hypotension and arrhythmias (though less than phenytoin)",
+      "Paresthesias during infusion (phosphate load)",
+      "Teratogenic"
+    ],
+    sideEffects: [
+      "Common: Pruritus, paresthesias (groin, face - phosphate related)",
+      "Cardiovascular: Hypotension, bradycardia (less than phenytoin)",
+      "CNS: Nystagmus, dizziness, ataxia, somnolence"
+    ],
+    interactions: [
+      { drug: "CYP2C9/2C19 inhibitors", effect: "Increased phenytoin levels" },
+      { drug: "CYP3A4 substrates", effect: "Decreased levels of many drugs" },
+      { drug: "Enteral feeds", effect: "May reduce absorption once converted" }
+    ],
+    notes: "Prodrug converted to phenytoin (half-life 8-15 min). Can infuse 3x faster than phenytoin (150 vs 50 mg/min). Can give IM (phenytoin cannot). Dosed in phenytoin equivalents (PE). Wait 2+ hours after dose before checking phenytoin level.",
+    renalAdjust: "Use free phenytoin levels; increase free fraction",
+    hepaticAdjust: "Reduce dose; use free phenytoin levels"
+  },
+
+  // ============================================================================
+  // GLYCOPYRROLATE (Robinul)
+  // ============================================================================
+  {
+    id: "glycopyrrolate",
+    name: "Glycopyrrolate (Robinul)",
+    category: "Anticholinergic",
+    route: "IV/IM/PO",
+    formulations: [
+      { type: "Injection", strengths: "0.2 mg/mL" },
+      { type: "Tablets", strengths: "1 mg, 2 mg" },
+      { type: "Oral solution", strengths: "1 mg/5 mL" }
+    ],
+    doses: {
+      preoperative: { label: "Preoperative", value: "4-10", unit: "mcg/kg IV/IM (max 0.2 mg)" },
+      secretions: { label: "Reduce Secretions", value: "4-10", unit: "mcg/kg/dose Q4-8h" },
+      reversalNMBA: { label: "Reversal of NMBA", value: "0.2", unit: "mg per 1 mg neostigmine" },
+      bradycardiaChild: { label: "Bradycardia (Child)", value: "4-10", unit: "mcg/kg IV (max 0.1 mg)" },
+      sialorrheaChild: { label: "Sialorrhea (Child PO)", value: "40-100", unit: "mcg/kg/day ÷ TID" }
+    },
+    max: "0.2 mg/dose IV; 8 mg/day PO",
+    indication: "Preoperative antisialagogue, reversal of NMBA (with neostigmine), bradycardia, sialorrhea",
+    contraindications: [
+      "Angle-closure glaucoma",
+      "Obstructive uropathy",
+      "Paralytic ileus",
+      "Myasthenia gravis"
+    ],
+    warnings: [
+      "Does not cross blood-brain barrier (less CNS effects vs atropine)",
+      "Tachycardia",
+      "Heat intolerance (decreased sweating)",
+      "Urinary retention"
+    ],
+    sideEffects: [
+      "Common: Dry mouth, constipation, urinary retention",
+      "Cardiovascular: Tachycardia, palpitations",
+      "Less common: Blurred vision, flushing, fever"
+    ],
+    interactions: [
+      { drug: "Other anticholinergics", effect: "Additive effects" },
+      { drug: "Potassium chloride (oral)", effect: "GI ulceration risk" },
+      { drug: "Antacids", effect: "Reduced glycopyrrolate absorption" }
+    ],
+    notes: "Quaternary ammonium - does not cross BBB (minimal CNS effects vs atropine). Onset IV: 1 min; IM: 15-30 min. Duration: 2-6 hours. Less likely to cause tachycardia than atropine at antisialagogue doses.",
+    renalAdjust: "Use with caution; may accumulate",
+    hepaticAdjust: null
+  },
+
+  // ============================================================================
+  // HEPARIN (Unfractionated)
+  // ============================================================================
+  {
+    id: "heparin",
+    name: "Heparin (Unfractionated)",
+    category: "Anticoagulant",
+    route: "IV/SC",
+    formulations: [
+      { type: "Injection", strengths: "1000, 5000, 10,000, 20,000 units/mL" },
+      { type: "Flush solutions", strengths: "10, 100 units/mL" }
+    ],
+    doses: {
+      dvtTreatmentBolus: { label: "DVT/PE Bolus", value: "75-100", unit: "units/kg IV (max 10,000)" },
+      dvtInfusionInfant: { label: "DVT Infusion (Infant <1yr)", value: "28", unit: "units/kg/hr" },
+      dvtInfusionChild: { label: "DVT Infusion (Child >1yr)", value: "20", unit: "units/kg/hr" },
+      dvtAdult: { label: "DVT (Adult)", value: "80", unit: "units/kg bolus, then 18 units/kg/hr", isFixed: true },
+      prophylaxisSC: { label: "DVT Prophylaxis (SC)", value: "5000", unit: "units SC Q8-12h", isFixed: true },
+      lineLock: { label: "Line Lock", value: "10-100", unit: "units/mL to fill catheter" }
+    },
+    dosingTable: {
+      title: "Heparin Adjustment by aPTT",
+      columns: ["aPTT", "Bolus", "Rate Change"],
+      rows: [
+        ["<50 sec", "50 U/kg", "Increase 10%"],
+        ["50-59 sec", "None", "Increase 10%"],
+        ["60-85 sec", "None", "No change (therapeutic)"],
+        ["86-95 sec", "None", "Decrease 10%"],
+        ["96-120 sec", "None", "Hold 30 min, decrease 10%"],
+        [">120 sec", "None", "Hold 60 min, decrease 15%"]
+      ]
+    },
+    max: "Titrate to aPTT or anti-Xa level",
+    indication: "VTE treatment/prophylaxis, cardiac surgery, dialysis anticoagulation, DIC (selected cases)",
+    contraindications: [
+      "Active major bleeding",
+      "Severe thrombocytopenia",
+      "History of HIT"
+    ],
+    warnings: [
+      "⚠️ HIT (heparin-induced thrombocytopenia) - check platelets",
+      "Bleeding complications",
+      "Osteoporosis with long-term use",
+      "Contains preservative (benzyl alcohol) in multidose vials"
+    ],
+    sideEffects: [
+      "Common: Bleeding, injection site reactions",
+      "HIT: Thrombocytopenia + thrombosis (typically day 5-14)",
+      "Long-term: Osteoporosis, alopecia"
+    ],
+    interactions: [
+      { drug: "NSAIDs/antiplatelet agents", effect: "Increased bleeding risk" },
+      { drug: "Thrombolytics", effect: "Increased bleeding risk" },
+      { drug: "Nitroglycerin IV", effect: "Decreased heparin effect" }
+    ],
+    notes: "Monitor aPTT (target 60-85 sec or 1.5-2.5x control) or anti-Xa (0.3-0.7 U/mL). Infants need higher doses (increased clearance). Protamine reverses: 1 mg per 100 units heparin (max 50 mg). HIT antibody testing if platelets fall >50%.",
+    renalAdjust: "No dose adjustment; monitor closely",
+    hepaticAdjust: "Use with caution; may have increased sensitivity"
+  },
+
+  // ============================================================================
+  // HYDROCHLOROTHIAZIDE (HCTZ)
+  // ============================================================================
+  {
+    id: "hydrochlorothiazide",
+    name: "Hydrochlorothiazide (HCTZ)",
+    category: "Thiazide Diuretic",
+    route: "PO",
+    formulations: [
+      { type: "Tablets", strengths: "12.5 mg, 25 mg, 50 mg" },
+      { type: "Capsules", strengths: "12.5 mg" },
+      { type: "Oral suspension", strengths: "Compounded" }
+    ],
+    doses: {
+      hypertensionChild: { label: "Hypertension (Child)", value: "1-2", unit: "mg/kg/day ÷ QD-BID (max 37.5 mg/day)" },
+      edemaChild: { label: "Edema (Child)", value: "1-2", unit: "mg/kg/day ÷ QD-BID" },
+      hypertensionAdult: { label: "Hypertension (Adult)", value: "12.5-50", unit: "mg QD", isFixed: true },
+      nephroLithiasis: { label: "Nephrolithiasis", value: "1-2", unit: "mg/kg/day QD-BID" }
+    },
+    max: "50 mg/day (adults); 37.5 mg/day (children)",
+    indication: "Hypertension, edema, hypercalciuria/nephrolithiasis, nephrogenic diabetes insipidus",
+    contraindications: [
+      "Anuria",
+      "Hypersensitivity to sulfonamides"
+    ],
+    warnings: [
+      "Electrolyte abnormalities (hypokalemia, hyponatremia, hypochloremia)",
+      "Hyperuricemia",
+      "Hyperglycemia",
+      "Photosensitivity"
+    ],
+    sideEffects: [
+      "Common: Hypokalemia, hyperuricemia, dizziness",
+      "Metabolic: Hyponatremia, hypercalcemia, hyperglycemia, dyslipidemia",
+      "Rare: Pancreatitis, blood dyscrasias"
+    ],
+    interactions: [
+      { drug: "Lithium", effect: "Increased lithium levels" },
+      { drug: "Digoxin", effect: "Hypokalemia increases toxicity risk" },
+      { drug: "NSAIDs", effect: "Reduced diuretic effect" },
+      { drug: "Corticosteroids", effect: "Additive hypokalemia" }
+    ],
+    notes: "Less effective in renal impairment (GFR <30). Paradoxically reduces urine output in nephrogenic DI. Takes 3-4 weeks for full antihypertensive effect. Monitor electrolytes. Often combined with K-sparing diuretic.",
+    renalAdjust: {
+      gfr50: "No change",
+      gfr30: "May be less effective",
+      gfr10: "Usually ineffective; avoid",
+      hd: "Not dialyzable"
+    },
+    hepaticAdjust: "Use with caution in hepatic encephalopathy"
+  },
+
+  // ============================================================================
+  // HYDROXYZINE (Atarax, Vistaril)
+  // ============================================================================
+  {
+    id: "hydroxyzine",
+    name: "Hydroxyzine (Atarax, Vistaril)",
+    category: "Antihistamine",
+    route: "PO/IM",
+    formulations: [
+      { type: "Tablets (HCl - Atarax)", strengths: "10 mg, 25 mg, 50 mg" },
+      { type: "Capsules (Pamoate - Vistaril)", strengths: "25 mg, 50 mg, 100 mg" },
+      { type: "Syrup (HCl)", strengths: "10 mg/5 mL" },
+      { type: "Suspension (Pamoate)", strengths: "25 mg/5 mL" },
+      { type: "Injection (HCl)", strengths: "25 mg/mL, 50 mg/mL" }
+    ],
+    doses: {
+      anxietyChild: { label: "Anxiety (Child)", value: "0.5-1", unit: "mg/kg/dose Q6h (max 50 mg/dose)" },
+      pruritusChild: { label: "Pruritus (Child)", value: "0.5", unit: "mg/kg/dose Q6h" },
+      sedationPreop: { label: "Preoperative Sedation", value: "0.5-1", unit: "mg/kg (max 100 mg)" },
+      nauseaChild: { label: "Nausea/Vomiting (Child)", value: "0.5-1", unit: "mg/kg/dose Q6h IM" },
+      adultAnxiety: { label: "Adult Anxiety", value: "50-100", unit: "mg QID", isFixed: true },
+      adultPruritus: { label: "Adult Pruritus", value: "25", unit: "mg TID-QID", isFixed: true }
+    },
+    max: "100 mg/dose; 400-600 mg/day (adult)",
+    indication: "Anxiety, pruritus, sedation, nausea/vomiting, allergic reactions",
+    contraindications: [
+      "Prolonged QT interval",
+      "Early pregnancy",
+      "IV administration (causes thrombosis/tissue necrosis)"
+    ],
+    warnings: [
+      "⚠️ QT prolongation - avoid with other QT-prolonging drugs",
+      "⚠️ NEVER give IV - causes tissue necrosis",
+      "Anticholinergic effects",
+      "Sedation"
+    ],
+    sideEffects: [
+      "Common: Sedation, dry mouth, dizziness",
+      "Anticholinergic: Urinary retention, blurred vision, constipation",
+      "Serious: QT prolongation, seizures (overdose)"
+    ],
+    interactions: [
+      { drug: "CNS depressants", effect: "Additive sedation" },
+      { drug: "QT-prolonging drugs", effect: "Additive QT prolongation" },
+      { drug: "Anticholinergics", effect: "Additive anticholinergic effects" }
+    ],
+    notes: "Active metabolite is cetirizine. HCl and pamoate salts are NOT interchangeable mg for mg (pamoate has less active drug). IM injection is painful - give deep IM only. Onset: PO 15-30 min; IM 15-30 min. Duration: 4-6 hours.",
+    renalAdjust: "Reduce dose by 50% in severe renal impairment",
+    hepaticAdjust: "Reduce dose by 50% in hepatic impairment"
+  },
+
+  // ============================================================================
+  // MONTELUKAST (Singulair)
+  // ============================================================================
+  {
+    id: "montelukast",
+    name: "Montelukast (Singulair)",
+    category: "Leukotriene Receptor Antagonist",
+    route: "PO",
+    formulations: [
+      { type: "Tablets", strengths: "10 mg" },
+      { type: "Chewable tablets", strengths: "4 mg, 5 mg" },
+      { type: "Oral granules", strengths: "4 mg packets" }
+    ],
+    doses: {
+      asthma6moTo5yr: { label: "Asthma/Allergic Rhinitis (6mo-5yr)", value: "4", unit: "mg QHS", isFixed: true },
+      asthma6to14yr: { label: "Asthma/Allergic Rhinitis (6-14yr)", value: "5", unit: "mg QHS", isFixed: true },
+      asthmaOver15yr: { label: "Asthma/Allergic Rhinitis (≥15yr)", value: "10", unit: "mg QHS", isFixed: true },
+      exerciseInduced: { label: "Exercise-induced Bronchoconstriction", value: "10", unit: "mg 2 hr before exercise", isFixed: true }
+    },
+    dosingTable: {
+      title: "Montelukast Dosing by Age",
+      columns: ["Age", "Dose", "Formulation"],
+      rows: [
+        ["6-23 months", "4 mg QHS", "Granules"],
+        ["2-5 years", "4 mg QHS", "Chewable or granules"],
+        ["6-14 years", "5 mg QHS", "Chewable"],
+        ["≥15 years", "10 mg QHS", "Tablet"]
+      ]
+    },
+    max: "10 mg/day",
+    indication: "Chronic asthma (add-on therapy), allergic rhinitis, exercise-induced bronchoconstriction",
+    contraindications: [
+      "Hypersensitivity to montelukast"
+    ],
+    warnings: [
+      "⚠️ BLACK BOX: Neuropsychiatric events (agitation, depression, suicidal thoughts)",
+      "Not for acute asthma attacks",
+      "Eosinophilic conditions reported",
+      "Churg-Strauss syndrome (rare)"
+    ],
+    sideEffects: [
+      "Common: Headache, abdominal pain, upper respiratory infection",
+      "Neuropsychiatric: Agitation, aggression, anxiety, depression, sleep disturbances",
+      "Rare: Eosinophilic conditions, Churg-Strauss syndrome"
+    ],
+    interactions: [
+      { drug: "Phenobarbital", effect: "Decreased montelukast levels" },
+      { drug: "Rifampin", effect: "Decreased montelukast levels" },
+      { drug: "Gemfibrozil", effect: "Increased montelukast levels" }
+    ],
+    notes: "FDA black box warning (2020) for neuropsychiatric events - discuss risks vs benefits. Give in evening for asthma (peak symptoms overnight). Granules can be mixed with soft food. Not a rescue medication.",
+    renalAdjust: null,
+    hepaticAdjust: "No adjustment for mild-moderate; avoid in severe"
+  },
+
+  // ============================================================================
+  // NEOSTIGMINE (Prostigmin)
+  // ============================================================================
+  {
+    id: "neostigmine",
+    name: "Neostigmine (Prostigmin)",
+    category: "Cholinesterase Inhibitor",
+    route: "IV/IM/SC",
+    formulations: [
+      { type: "Injection", strengths: "0.5 mg/mL, 1 mg/mL" }
+    ],
+    doses: {
+      reversalNMBA: { label: "NMBA Reversal", value: "0.03-0.07", unit: "mg/kg IV (max 5 mg)" },
+      reversalWithGlyco: { label: "With Glycopyrrolate", value: "0.2 mg glyco per 1 mg neostigmine", unit: "" },
+      myastheniaTest: { label: "Myasthenia Gravis Test", value: "0.04", unit: "mg/kg IM" },
+      myastheniaTreatment: { label: "MG Treatment", value: "0.01-0.04", unit: "mg/kg/dose Q2-4h" },
+      bladderAtony: { label: "Postop Bladder Atony", value: "0.5-1", unit: "mg SC/IM Q3h x 5 doses", isFixed: true }
+    },
+    max: "5 mg per dose",
+    indication: "Reversal of non-depolarizing NMBAs, myasthenia gravis, postoperative urinary retention",
+    contraindications: [
+      "GI or urinary obstruction",
+      "Peritonitis",
+      "Hypersensitivity to neostigmine or bromides"
+    ],
+    warnings: [
+      "Always give with anticholinergic (glycopyrrolate or atropine)",
+      "May worsen asthma",
+      "Cholinergic crisis with overdose",
+      "Only reverses shallow NMBA blockade (use sugammadex for deep)"
+    ],
+    sideEffects: [
+      "Muscarinic (blocked by glyco/atropine): Bradycardia, salivation, bronchospasm",
+      "Nicotinic: Muscle fasciculations, weakness",
+      "GI: Nausea, vomiting, diarrhea, abdominal cramps"
+    ],
+    interactions: [
+      { drug: "Aminoglycosides", effect: "May antagonize neostigmine" },
+      { drug: "Corticosteroids", effect: "May decrease effect in myasthenia" },
+      { drug: "Beta-blockers", effect: "Increased bradycardia risk" }
+    ],
+    notes: "Give with glycopyrrolate (0.2 mg per 1 mg neostigmine) or atropine to block muscarinic effects. Only effective when some spontaneous recovery present (TOF >1-2 twitches). Sugammadex preferred for deep blockade. Onset: 1-3 min IV; Duration: 45-60 min.",
+    renalAdjust: {
+      gfr50: "No change",
+      gfr30: "50-75% dose",
+      gfr10: "Use with caution",
+      hd: "N/A"
+    },
+    hepaticAdjust: null
+  },
+
+  // ============================================================================
+  // NIFEDIPINE (Procardia)
+  // ============================================================================
+  {
+    id: "nifedipine",
+    name: "Nifedipine (Procardia, Adalat)",
+    category: "Calcium Channel Blocker",
+    route: "PO",
+    formulations: [
+      { type: "Capsules (IR)", strengths: "10 mg, 20 mg" },
+      { type: "Tablets (ER)", strengths: "30 mg, 60 mg, 90 mg" }
+    ],
+    doses: {
+      hypertensiveUrgency: { label: "Hypertensive Urgency", value: "0.25-0.5", unit: "mg/kg/dose SL/PO (max 10 mg)" },
+      hypertensionChild: { label: "Hypertension (Child ER)", value: "0.25-0.5", unit: "mg/kg/day QD-BID (max 3 mg/kg/day)" },
+      hypertensionAdult: { label: "Hypertension (Adult ER)", value: "30-90", unit: "mg QD", isFixed: true },
+      raynauds: { label: "Raynaud's Phenomenon", value: "10-20", unit: "mg TID", isFixed: true }
+    },
+    max: "120 mg/day (adult); 3 mg/kg/day (child)",
+    indication: "Hypertension (ER only), hypertensive urgency, Raynaud's phenomenon, preterm labor tocolysis",
+    contraindications: [
+      "Cardiogenic shock",
+      "Advanced aortic stenosis",
+      "Concomitant strong CYP3A4 inhibitors"
+    ],
+    warnings: [
+      "⚠️ IR formulation: Avoid in hypertensive emergencies (unpredictable BP drop)",
+      "Reflex tachycardia",
+      "Peripheral edema",
+      "Grapefruit juice interaction"
+    ],
+    sideEffects: [
+      "Common: Headache, flushing, dizziness, peripheral edema",
+      "Cardiovascular: Reflex tachycardia, hypotension",
+      "GI: Nausea, constipation, gingival hyperplasia"
+    ],
+    interactions: [
+      { drug: "CYP3A4 inhibitors (azoles, macrolides)", effect: "Increased nifedipine effect" },
+      { drug: "CYP3A4 inducers (rifampin, phenytoin)", effect: "Decreased nifedipine effect" },
+      { drug: "Grapefruit juice", effect: "Increased levels - avoid" },
+      { drug: "Beta-blockers", effect: "Enhanced hypotension" }
+    ],
+    notes: "Use extended-release for chronic hypertension. IR capsules for hypertensive urgency: bite and swallow or give SL (effect in 5-15 min). IR NOT recommended for routine use due to precipitous BP drops. ER tablets should not be crushed.",
+    renalAdjust: null,
+    hepaticAdjust: "Reduce dose in hepatic impairment"
+  },
+
+  // ============================================================================
+  // NITROPRUSSIDE (Nipride)
+  // ============================================================================
+  {
+    id: "nitroprusside",
+    name: "Nitroprusside (Nipride)",
+    category: "Vasodilator",
+    route: "IV",
+    formulations: [
+      { type: "Injection", strengths: "25 mg/mL (2 mL vial = 50 mg)" }
+    ],
+    doses: {
+      hypertensiveEmergency: { label: "Hypertensive Emergency", value: "0.3-0.5", unit: "mcg/kg/min initial, titrate" },
+      maxInfusion: { label: "Maximum Infusion", value: "8-10", unit: "mcg/kg/min (short term)" },
+      afterloadReduction: { label: "Afterload Reduction", value: "0.5-3", unit: "mcg/kg/min, titrate to effect" }
+    },
+    max: "10 mcg/kg/min (brief); maintain <2 mcg/kg/min if possible",
+    indication: "Hypertensive emergency, controlled hypotension (surgery), acute heart failure with high SVR",
+    contraindications: [
+      "Compensatory hypertension (aortic coarctation, AV shunt)",
+      "Inadequate cerebral circulation",
+      "Acute heart failure with reduced SVR"
+    ],
+    warnings: [
+      "⚠️ Cyanide toxicity (especially renal impairment, prolonged use, high doses)",
+      "⚠️ Protect from light - solution turns blue/brown if degraded",
+      "Thiocyanate toxicity with prolonged use (>48-72 hr)",
+      "Precipitous hypotension"
+    ],
+    sideEffects: [
+      "Common: Hypotension, nausea, diaphoresis",
+      "Cyanide toxicity: Metabolic acidosis, tachyphylaxis, confusion, coma",
+      "Thiocyanate toxicity: Weakness, confusion, seizures (prolonged use)"
+    ],
+    interactions: [
+      { drug: "Other antihypertensives", effect: "Additive hypotension" },
+      { drug: "PDE5 inhibitors (sildenafil)", effect: "Severe hypotension" }
+    ],
+    notes: "Metabolized to cyanide → thiocyanate (renally cleared). Give thiosulfate (co-infusion) if prolonged use to prevent cyanide toxicity. Monitor thiocyanate levels if used >48-72 hr (toxic >100 mcmol/L). Onset: immediate; Duration: 1-10 min after stopping. Must use with arterial line.",
+    renalAdjust: "Thiocyanate accumulates - avoid prolonged use; monitor levels",
+    hepaticAdjust: "Cyanide metabolism reduced - use with caution"
+  },
+
+  // ============================================================================
+  // OCTREOTIDE (Sandostatin)
+  // ============================================================================
+  {
+    id: "octreotide",
+    name: "Octreotide (Sandostatin)",
+    category: "Somatostatin Analog",
+    route: "IV/SC",
+    formulations: [
+      { type: "Injection", strengths: "50 mcg/mL, 100 mcg/mL, 500 mcg/mL" },
+      { type: "LAR depot", strengths: "10 mg, 20 mg, 30 mg (monthly)" }
+    ],
+    doses: {
+      giBleedBolus: { label: "GI Bleed (Bolus)", value: "1-2", unit: "mcg/kg IV (max 50 mcg)" },
+      giBleedInfusion: { label: "GI Bleed (Infusion)", value: "1-2", unit: "mcg/kg/hr (max 50 mcg/hr)" },
+      hyperinsulinism: { label: "Hyperinsulinemic Hypoglycemia", value: "2-10", unit: "mcg/kg/day ÷ Q6-12h SC" },
+      chylothorax: { label: "Chylothorax", value: "1-4", unit: "mcg/kg/hr IV" },
+      carcinoid: { label: "Carcinoid (Adult)", value: "100-600", unit: "mcg/day SC ÷ BID-TID", isFixed: true }
+    },
+    max: "1500 mcg/day (varies by indication)",
+    indication: "GI/variceal bleeding, hyperinsulinemic hypoglycemia, chylothorax, carcinoid, acromegaly",
+    contraindications: [
+      "Hypersensitivity to octreotide"
+    ],
+    warnings: [
+      "Bradycardia and conduction abnormalities",
+      "Gallbladder sludge/stones with chronic use",
+      "Hypo/hyperglycemia",
+      "Hypothyroidism with long-term use"
+    ],
+    sideEffects: [
+      "Common: Nausea, abdominal pain, diarrhea, flatulence",
+      "Cardiovascular: Bradycardia, arrhythmias",
+      "Metabolic: Hypo/hyperglycemia, cholelithiasis",
+      "Injection site: Pain, redness"
+    ],
+    interactions: [
+      { drug: "Cyclosporine", effect: "Decreased cyclosporine levels" },
+      { drug: "Insulin/oral hypoglycemics", effect: "May need dose adjustment" },
+      { drug: "Beta-blockers/CCBs", effect: "Additive bradycardia" }
+    ],
+    notes: "For GI bleeding: bolus then infusion for 3-5 days. Decreases splanchnic blood flow and gastric acid secretion. SC injections should be rotated. Monitor glucose closely when starting. Half-life: 1.5 hours.",
+    renalAdjust: {
+      gfr50: "No change",
+      gfr30: "Consider 50% dose",
+      gfr10: "Consider 50% dose",
+      hd: "Dialyzable - give after HD"
+    },
+    hepaticAdjust: "Consider dose reduction in cirrhosis"
+  },
+
+  // ============================================================================
+  // OXYCODONE
+  // ============================================================================
+  {
+    id: "oxycodone",
+    name: "Oxycodone (OxyContin, Roxicodone)",
+    category: "Opioid Analgesic",
+    route: "PO",
+    formulations: [
+      { type: "IR tablets", strengths: "5 mg, 10 mg, 15 mg, 20 mg, 30 mg" },
+      { type: "IR capsules", strengths: "5 mg" },
+      { type: "Solution", strengths: "5 mg/5 mL, 20 mg/mL (concentrate)" },
+      { type: "ER tablets", strengths: "10 mg, 15 mg, 20 mg, 30 mg, 40 mg, 60 mg, 80 mg" }
+    ],
+    doses: {
+      opioidNaiveChild: { label: "Opioid-Naive (Child)", value: "0.1-0.2", unit: "mg/kg/dose Q4-6h (max 5-10 mg)" },
+      moderatePainAdult: { label: "Moderate Pain (Adult IR)", value: "5-15", unit: "mg Q4-6h", isFixed: true },
+      severePainAdult: { label: "Severe Pain (Adult IR)", value: "10-30", unit: "mg Q4h", isFixed: true }
+    },
+    dosingTable: {
+      title: "Oxycodone Equianalgesic Conversions",
+      columns: ["Opioid", "PO Dose", "Conversion"],
+      rows: [
+        ["Morphine PO", "30 mg", "1x"],
+        ["Oxycodone PO", "20 mg", "1.5x more potent"],
+        ["Hydrocodone PO", "30 mg", "Equal to morphine"]
+      ]
+    },
+    max: "Titrate to effect; no fixed ceiling for pain",
+    indication: "Moderate to severe pain",
+    contraindications: [
+      "Significant respiratory depression",
+      "Severe bronchial asthma (unmonitored)",
+      "GI obstruction",
+      "MAO inhibitor use within 14 days"
+    ],
+    warnings: [
+      "⚠️ High abuse potential (Schedule II)",
+      "Respiratory depression",
+      "Avoid in head injury (may obscure neuro status)",
+      "Physical dependence with chronic use"
+    ],
+    sideEffects: [
+      "Common: Constipation, nausea, sedation, pruritus",
+      "Less common: Dizziness, vomiting, dry mouth",
+      "Serious: Respiratory depression, hypotension"
+    ],
+    interactions: [
+      { drug: "CNS depressants", effect: "Additive respiratory depression" },
+      { drug: "CYP3A4 inhibitors", effect: "Increased oxycodone levels" },
+      { drug: "MAO inhibitors", effect: "⚠️ Serious/fatal reactions" }
+    ],
+    notes: "About 1.5x more potent than morphine PO. ER formulations for chronic pain only (not opioid-naive). IR for acute pain. Start bowel regimen prophylactically. Naloxone reverses effects. CYP2D6 converts to oxymorphone.",
+    renalAdjust: {
+      gfr50: "75% dose",
+      gfr30: "50% dose",
+      gfr10: "50% dose with caution",
+      hd: "Use with caution"
+    },
+    hepaticAdjust: "Start with 1/3 to 1/2 dose in moderate impairment; avoid in severe"
+  },
+
+  // ============================================================================
+  // PHENYLEPHRINE
+  // ============================================================================
+  {
+    id: "phenylephrine",
+    name: "Phenylephrine (Neo-Synephrine)",
+    category: "Alpha-1 Agonist (Vasopressor)",
+    route: "IV/Nasal",
+    formulations: [
+      { type: "Injection", strengths: "10 mg/mL" },
+      { type: "Nasal spray", strengths: "0.25%, 0.5%, 1%" }
+    ],
+    doses: {
+      hypotensionBolus: { label: "Hypotension (IV Bolus)", value: "5-20", unit: "mcg/kg/dose IV Q10-15min" },
+      hypotensionInfusion: { label: "Hypotension (Infusion)", value: "0.1-0.5", unit: "mcg/kg/min" },
+      svtVagal: { label: "SVT (Vagal Maneuver)", value: "5-10", unit: "mcg/kg/dose rapid IV" },
+      adultBolus: { label: "Adult Hypotension (Bolus)", value: "100-500", unit: "mcg IV Q10-15min", isFixed: true },
+      adultInfusion: { label: "Adult (Infusion)", value: "40-180", unit: "mcg/min", isFixed: true },
+      nasalDecongest: { label: "Nasal Decongestant", value: "1-2 sprays", unit: "Q4h PRN (max 3 days)", isFixed: true }
+    },
+    max: "0.5 mcg/kg/min infusion; 500 mcg/dose bolus",
+    indication: "Hypotension (anesthesia, sepsis - adjunct), SVT (vagal maneuver), nasal congestion",
+    contraindications: [
+      "Severe hypertension",
+      "Ventricular tachycardia"
+    ],
+    warnings: [
+      "Reflex bradycardia (especially with bolus dosing)",
+      "Tissue necrosis with extravasation",
+      "Decreased renal and splanchnic blood flow",
+      "Nasal: rhinitis medicamentosa with prolonged use"
+    ],
+    sideEffects: [
+      "Common: Reflex bradycardia, hypertension",
+      "Less common: Headache, anxiety, arrhythmias",
+      "Nasal: Rebound congestion, rhinitis medicamentosa"
+    ],
+    interactions: [
+      { drug: "MAO inhibitors", effect: "Severe hypertensive crisis" },
+      { drug: "Tricyclic antidepressants", effect: "Increased pressor effect" },
+      { drug: "Beta-blockers", effect: "Reflex bradycardia may be exaggerated" }
+    ],
+    notes: "Pure alpha-1 agonist - vasoconstriction without inotropy. Useful in septic shock as adjunct. SVT: rapid IV bolus causes reflex bradycardia (vagal). Nasal spray: limit to 3 days to avoid rebound. Less tachycardia than ephedrine.",
+    renalAdjust: null,
+    hepaticAdjust: null
+  },
+
+  // ============================================================================
+  // SPIRONOLACTONE (Aldactone)
+  // ============================================================================
+  {
+    id: "spironolactone",
+    name: "Spironolactone (Aldactone)",
+    category: "Potassium-Sparing Diuretic",
+    route: "PO",
+    formulations: [
+      { type: "Tablets", strengths: "25 mg, 50 mg, 100 mg" },
+      { type: "Oral suspension", strengths: "1 mg/mL, 2.5 mg/mL, 5 mg/mL (compounded)" }
+    ],
+    doses: {
+      diureticChild: { label: "Diuretic (Child)", value: "1-3.3", unit: "mg/kg/day ÷ QD-BID" },
+      heartFailure: { label: "Heart Failure (Child)", value: "1-2", unit: "mg/kg/day ÷ QD-BID" },
+      ascitesChild: { label: "Ascites (Child)", value: "1-6", unit: "mg/kg/day ÷ QD-BID" },
+      primaryAldosteronism: { label: "Hyperaldosteronism", value: "100-400", unit: "mg/day ÷ QD-BID", isFixed: true },
+      heartFailureAdult: { label: "Heart Failure (Adult)", value: "12.5-50", unit: "mg QD", isFixed: true }
+    },
+    max: "200 mg/day (children); 400 mg/day (adults)",
+    indication: "Edema (CHF, cirrhosis, nephrotic), hypertension, hypokalemia, hyperaldosteronism",
+    contraindications: [
+      "Hyperkalemia",
+      "Addison's disease",
+      "Anuria",
+      "Significant renal impairment"
+    ],
+    warnings: [
+      "⚠️ Hyperkalemia - monitor K+ closely",
+      "Anti-androgenic effects (gynecomastia, menstrual irregularities)",
+      "Tumor risk (high-dose animal studies)",
+      "Metabolic acidosis"
+    ],
+    sideEffects: [
+      "Common: Hyperkalemia, GI upset, drowsiness",
+      "Endocrine: Gynecomastia, breast tenderness, impotence, menstrual irregularities",
+      "Less common: Headache, rash, electrolyte imbalances"
+    ],
+    interactions: [
+      { drug: "ACE-I/ARBs", effect: "Increased hyperkalemia risk" },
+      { drug: "NSAIDs", effect: "Decreased diuretic effect, hyperkalemia" },
+      { drug: "Potassium supplements", effect: "Hyperkalemia" },
+      { drug: "Digoxin", effect: "Increased digoxin levels" }
+    ],
+    notes: "Aldosterone antagonist with diuretic and anti-androgenic effects. Onset: 2-3 days; Peak: 48-72 hours. Takes 2 weeks for maximal effect. Preferred in CHF and cirrhosis (counteracts secondary hyperaldosteronism). Take with food to improve absorption.",
+    renalAdjust: {
+      gfr50: "Use with caution",
+      gfr30: "Avoid or use with close monitoring",
+      gfr10: "Contraindicated",
+      hd: "Not dialyzable"
+    },
+    hepaticAdjust: "Use with caution; monitor for encephalopathy"
   }
 ];
 
