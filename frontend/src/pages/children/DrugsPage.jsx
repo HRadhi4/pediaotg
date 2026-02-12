@@ -1056,19 +1056,19 @@ const DrugsPage = ({ onBack }) => {
                         <p className="text-[11px] font-semibold text-violet-700 dark:text-violet-300 mb-2 flex items-center gap-1">
                           <span>🔄</span> Drug Interactions
                         </p>
-                        <div className="overflow-x-auto -mx-3 px-3">
-                          <table className="w-full text-xs min-w-max">
+                        <div className="overflow-x-auto">
+                          <table className="text-xs border-collapse" style={{ minWidth: 'max-content' }}>
                             <thead>
                               <tr className="bg-violet-100 dark:bg-violet-900/40">
-                                <th className="px-2 py-1 text-left font-semibold text-violet-800 dark:text-violet-200 whitespace-nowrap">Drug</th>
-                                <th className="px-2 py-1 text-left font-semibold text-violet-800 dark:text-violet-200">Effect</th>
+                                <th className="px-3 py-1.5 text-left font-semibold text-violet-800 dark:text-violet-200 whitespace-nowrap border-r border-violet-200 dark:border-violet-700">Drug</th>
+                                <th className="px-3 py-1.5 text-left font-semibold text-violet-800 dark:text-violet-200 whitespace-nowrap">Effect</th>
                               </tr>
                             </thead>
                             <tbody>
                               {drug.interactions.map((int, idx) => (
                                 <tr key={idx} className={idx % 2 === 0 ? 'bg-white dark:bg-slate-800' : 'bg-violet-50/50 dark:bg-violet-900/10'}>
-                                  <td className="px-2 py-1 font-medium text-violet-700 dark:text-violet-300 whitespace-nowrap">{int.drug}</td>
-                                  <td className="px-2 py-1 text-slate-600 dark:text-slate-400">{int.effect}</td>
+                                  <td className="px-3 py-1.5 font-medium text-violet-700 dark:text-violet-300 whitespace-nowrap border-r border-violet-100 dark:border-violet-800">{int.drug}</td>
+                                  <td className="px-3 py-1.5 text-slate-600 dark:text-slate-400 whitespace-nowrap">{int.effect}</td>
                                 </tr>
                               ))}
                             </tbody>
