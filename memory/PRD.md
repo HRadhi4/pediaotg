@@ -44,6 +44,28 @@ A pediatric medical calculator app featuring:
   - **Option B: Without Bolus** - Full deficit over 24hrs (shows hourly rate)
   - Added N.B. note: "If the patient is already on maintenance fluids, the above deficit correction should be added to the maintenance amount"
 
+### Drug Formulary Implementation (Dec 2025)
+- **Location:** `/app/frontend/src/pages/children/FormularyPage.jsx`
+- **Data File:** `/app/frontend/src/data/childrenFormulary.js` (92 medications)
+- **Features:**
+  - Comprehensive drug list with 92 medications
+  - Searchable by drug name, category, or indication
+  - Category filter pills for quick filtering
+  - Expandable/collapsible accordion for each drug entry
+  - Detailed information per drug including:
+    - Drug name with brand names
+    - Category and route of administration
+    - Indication
+    - Multiple dosing regimens (neonate, pediatric, adult)
+    - Maximum dose
+    - Contraindications
+    - Warnings
+    - Side effects
+    - Drug interactions
+    - Renal and hepatic adjustments
+    - Clinical notes
+- **Navigation:** Integrated into Children Dashboard, replaces the old DrugsPage.jsx
+
 ### Children's Section - Mechanical Ventilation Approach (Feb 2026)
 - **New Approach Added:** Mechanical Ventilation in PICU
 - **Location:** `/app/frontend/src/pages/children/approaches/MechanicalVentilationApproach.jsx`
@@ -111,6 +133,7 @@ A pediatric medical calculator app featuring:
 - None currently
 
 ### P1 - High Priority
+- Verify if 94 drugs are sufficient or add more drugs to reach ~150 (original request mentioned ~150 drugs from source PDF)
 - Refactor ElectrolytesDialog.jsx (large component with many states)
 - Deploy and test PayPal integration in production
 
