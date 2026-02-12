@@ -284,7 +284,7 @@ const ChildrenDashboard = ({ theme, toggleTheme }) => {
       case "approaches":
         return <ApproachesPage onBack={() => goToPage("main")} />;
       case "drugs":
-        return <FormularyPage onBack={() => goToPage("main")} />;
+        return <DrugsPage onBack={() => goToPage("main")} />;
       case "fluidReplacement":
         return <FluidReplacementPage onBack={() => goToPage("main")} />;
       default:
