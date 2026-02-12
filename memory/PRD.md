@@ -138,7 +138,7 @@ A pediatric medical calculator app featuring:
 - None currently
 
 ### P1 - High Priority
-- Verify if 94 drugs are sufficient or add more drugs to reach ~150 (original request mentioned ~150 drugs from source PDF)
+- Continue adding remaining drugs from the PDF formulary (currently 111/105+ target met)
 - Refactor ElectrolytesDialog.jsx (large component with many states)
 - Deploy and test PayPal integration in production
 
