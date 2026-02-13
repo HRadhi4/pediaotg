@@ -592,7 +592,7 @@ if cors_origins_env == '*':
     cors_origins = [
         "http://localhost:3000",
         "http://127.0.0.1:3000",
-        "https://drug-formulary-fix.preview.emergentagent.com",
+        "https://subscription-alerts-1.preview.emergentagent.com",
         "https://app.pedotg.com",
         "https://pedotg.com",
         "https://www.pedotg.com",
