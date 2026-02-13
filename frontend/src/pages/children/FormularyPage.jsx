@@ -37,7 +37,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { childrenFormulary, drugCategories, getDrugById } from "@/data/childrenFormulary";
+import { childrenFormulary, drugCategories, getDrugById } from "@/data/childrenFormularyData";
 
 const FormularyPage = ({ onBack }) => {
   // ==========================================================================
