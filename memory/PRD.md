@@ -94,7 +94,31 @@ A pediatric medical calculator app featuring:
 ### Authentication
 - JWT-based authentication
 - Admin and user roles
-- PayPal subscription integration
+- PayPal subscription integration (LIVE MODE - verified)
+
+### Email Notification System (Feb 2026)
+- **Location:** `/app/backend/services/email_service.py`
+- **SMTP Configuration:** Microsoft Exchange via GoDaddy (smtp.office365.com:587)
+- **Sender:** noreply@pedotg.com (authenticated via admin@pedotg.com)
+- **Features Implemented:**
+  - **Welcome emails** to new users on registration
+  - **Admin notification on new registration** - sends to admin@pedotg.com
+  - **Subscription confirmation emails** to users
+  - **Admin notification on subscription/renewal** - sends to admin@pedotg.com with payment details
+  - **Subscription renewal reminders** - sent 7 days before expiration (daily scheduler at 9 AM UTC)
+  - **Trial expiration reminders** - for users on free trial
+  - **Subscription cancellation confirmation**
+  - **Password reset emails** with secure tokens
+
+### Scheduled Tasks (Feb 2026)
+- **Location:** `/app/backend/services/scheduler_service.py`
+- **APScheduler** for cron-based job execution
+- **Renewal Reminders Job:** Runs daily at 9:00 AM UTC, checks subscriptions expiring within 7 days
+- **Admin Controls:** 
+  - `/api/admin/scheduler/jobs` - View scheduled jobs
+  - `/api/admin/scheduler/run-job/{job_id}` - Manually trigger jobs
+  - `/api/admin/send-renewal-reminders` - Manual reminder trigger
+  - `/api/admin/expiring-subscriptions` - View expiring subscriptions
 
 ## Architecture
 
