@@ -407,9 +407,12 @@ class EmailService:
         elif days_remaining <= 3:
             urgency = f"EXPIRES IN {days_remaining} DAYS"
             urgency_color = "#ffc107"
-        else:
+        elif days_remaining <= 7:
             urgency = f"EXPIRES IN {days_remaining} DAYS"
             urgency_color = "#17a2b8"
+        else:
+            urgency = f"EXPIRES IN {days_remaining} DAYS"
+            urgency_color = "#6c757d"
         
         subject = f"⏰ Subscription {urgency} - {self.app_name}"
         
