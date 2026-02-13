@@ -550,6 +550,20 @@ async def capture_paypal_order_with_state(request_data: CaptureWithStateRequest)
                 renews_at=renews_at_str
             )
             logger.info(f"Subscription confirmation email sent to {user_doc.get('email')}")
+            
+            # Send admin notification email
+            monthly_price = float(os.environ.get('MONTHLY_PRICE_BHD', 1.0))
+            annual_price = float(os.environ.get('ANNUAL_PRICE_BHD', 10.0))
+            amount = f"{monthly_price} BHD" if plan_name == 'monthly' else f"{annual_price} BHD"
+            
+            email_service.send_admin_subscription_renewal_email(
+                user_email=user_doc.get('email'),
+                user_name=user_doc.get('name', 'User'),
+                plan_name=plan_display,
+                amount=amount,
+                is_new=True
+            )
+            logger.info(f"Admin notification email sent for subscription by {user_doc.get('email')}")
         except Exception as e:
             logger.error(f"Failed to send subscription email: {e}")
         
