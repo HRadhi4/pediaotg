@@ -167,4 +167,5 @@ A pediatric medical calculator app featuring:
 ## 3rd Party Integrations
 - `react-zoom-pan-pinch`: v3.7.0
 - `html-to-image`: v1.11.13
-- PayPal SDK for subscriptions
+- PayPal SDK for subscriptions (LIVE MODE)
+- SMTP Email via Microsoft Exchange (GoDaddy)
