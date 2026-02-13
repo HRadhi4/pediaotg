@@ -106,13 +106,15 @@ async def signup(user_data: UserCreate, response: Response):
     if error:
         raise HTTPException(status_code=400, detail=error)
     
-    # Send welcome email (non-blocking)
+    # Send welcome email and admin notification (non-blocking)
     try:
         from services.email_service import email_service
         email_service.send_welcome_email(user.email, user.name)
+        # Notify admin of new registration
+        email_service.send_admin_new_registration_email(user.email, user.name)
     except Exception as e:
         # Log error but don't fail registration
-        print(f"Failed to send welcome email: {e}")
+        print(f"Failed to send welcome/admin notification email: {e}")
     
     # Generate tokens
     access_token = auth_service.create_access_token(user.id, user.is_admin)
