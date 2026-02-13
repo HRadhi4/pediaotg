@@ -604,14 +604,32 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
         // Total Na needed = Na Deficit + Maintenance
         const totalNa = naDeficit + naMaintenance;
         
-        // Step 3: Use selected fluid type
-        // Available fluids: NS=154, RL=130, 1/2NS=77, 3%NaCl=513
-        const selectedFluid = hypoFluidOptions[hypoFluidType];
+        // Step 3: Determine Na Concentration needed
+        // Na concentration = Total Na / Volume (in L)
+        const naConcentration = (totalNa / (totalVolume / 1000));
+        
+        // Auto-select fluid type based on nearest Na concentration
+        // Available fluids: NS=154, RL=130, 1/2NS=77
+        const fluidOptions = [
+          { name: "NS (Normal Saline)", na: 154 },
+          { name: "RL (Ringer's Lactate)", na: 130 },
+          { name: "1/2 NS (Half Normal Saline)", na: 77 }
+        ];
+        
+        // Find the fluid with nearest Na concentration
+        let selectedFluid = fluidOptions[0];
+        let minDiff = Math.abs(naConcentration - fluidOptions[0].na);
+        
+        for (const fluid of fluidOptions) {
+          const diff = Math.abs(naConcentration - fluid.na);
+          if (diff < minDiff) {
+            minDiff = diff;
+            selectedFluid = fluid;
+          }
+        }
+        
         const fluidType = selectedFluid.name;
         const fluidNa = selectedFluid.na;
-        
-        // Calculate Na concentration (for reference)
-        const naConcentration = (totalNa / (totalVolume / 1000));
         
         // Step 4: Dextrose - Usually D5% added
         // Mixture made from NS + D50%: 450ml NS + 50ml D50%
