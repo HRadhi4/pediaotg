@@ -1439,64 +1439,6 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
                               )}
                             </div>
                           </div>
-                          
-                          {/* Fluid Type Selector */}
-                          <div className="space-y-2 mt-3">
-                            <Label className="text-xs">Type of Fluid</Label>
-                            <p className="text-[10px] text-muted-foreground">
-                              Available: NS=154, RL=130, 1/2NS=77, 3%NaCl=513 mEq/L
-                            </p>
-                            <div className="grid grid-cols-2 gap-2">
-                              <button
-                                type="button"
-                                onClick={() => setHypoFluidType("NS")}
-                                className={`p-2 text-xs font-medium rounded-md border transition-colors ${
-                                  hypoFluidType === "NS"
-                                    ? "bg-indigo-600 text-white border-indigo-600"
-                                    : "bg-white dark:bg-gray-800 border-gray-300 hover:bg-indigo-50"
-                                }`}
-                              >
-                                <div>NS</div>
-                                <div className="text-[10px] opacity-75">154 mEq/L</div>
-                              </button>
-                              <button
-                                type="button"
-                                onClick={() => setHypoFluidType("RL")}
-                                className={`p-2 text-xs font-medium rounded-md border transition-colors ${
-                                  hypoFluidType === "RL"
-                                    ? "bg-indigo-600 text-white border-indigo-600"
-                                    : "bg-white dark:bg-gray-800 border-gray-300 hover:bg-indigo-50"
-                                }`}
-                              >
-                                <div>RL</div>
-                                <div className="text-[10px] opacity-75">130 mEq/L</div>
-                              </button>
-                              <button
-                                type="button"
-                                onClick={() => setHypoFluidType("halfNS")}
-                                className={`p-2 text-xs font-medium rounded-md border transition-colors ${
-                                  hypoFluidType === "halfNS"
-                                    ? "bg-indigo-600 text-white border-indigo-600"
-                                    : "bg-white dark:bg-gray-800 border-gray-300 hover:bg-indigo-50"
-                                }`}
-                              >
-                                <div>1/2 NS</div>
-                                <div className="text-[10px] opacity-75">77 mEq/L</div>
-                              </button>
-                              <button
-                                type="button"
-                                onClick={() => setHypoFluidType("threePercent")}
-                                className={`p-2 text-xs font-medium rounded-md border transition-colors ${
-                                  hypoFluidType === "threePercent"
-                                    ? "bg-indigo-600 text-white border-indigo-600"
-                                    : "bg-white dark:bg-gray-800 border-gray-300 hover:bg-indigo-50"
-                                }`}
-                              >
-                                <div>3% NaCl</div>
-                                <div className="text-[10px] opacity-75">513 mEq/L</div>
-                              </button>
-                            </div>
-                          </div>
                         </>
                       )}
                     </>
