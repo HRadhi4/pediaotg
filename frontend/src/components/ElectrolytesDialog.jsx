@@ -56,14 +56,6 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
   const [baseExcess, setBaseExcess] = useState("");
   const [infusionRate, setInfusionRate] = useState("1"); // mEq/kg/hr
 
-  // Fluid types for hyponatremia correction
-  const hypoFluidOptions = {
-    NS: { name: "NS (Normal Saline)", na: 154 },
-    RL: { name: "RL (Ringer's Lactate)", na: 130 },
-    halfNS: { name: "1/2 NS (Half Normal Saline)", na: 77 },
-    threePercent: { name: "3% NaCl (Hypertonic)", na: 513 }
-  };
-
   // Electrolyte definitions with dose ranges
   const electrolytes = {
     calcium: {
