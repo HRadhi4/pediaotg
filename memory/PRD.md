@@ -145,12 +145,20 @@ A pediatric medical calculator app featuring:
 
 ### ElectrolytesDialog.jsx
 - Location: `/app/frontend/src/components/ElectrolytesDialog.jsx`
+- Sub-components: `/app/frontend/src/components/electrolytes/` (result display components)
 - Features:
   - Calcium, Magnesium, Potassium, NaHCO3, Sodium, Phosphate calculations
-  - "Round dose to 5s" toggle for easier dilution
+  - "Round dose" toggle for easier dilution
   - IV/PO routes for Potassium
   - Peripheral/Central line options
   - Hyponatremia (Mild/Severe) and Hypernatremia (Nelson/Harriet Lane) methods
+
+### Drug Formulary Data
+- Location: `/app/frontend/src/data/formulary.json` (114 drugs)
+- Wrapper: `/app/frontend/src/data/childrenFormularyData.js`
+- Features:
+  - JSON format for better performance and easier editing
+  - Helper functions: getDrugById, drugCategories, drugCount
 
 ### GrowthChartPage.jsx
 - Location: `/app/frontend/src/pages/nicu/GrowthChartPage.jsx`
@@ -167,16 +175,11 @@ A pediatric medical calculator app featuring:
 - None currently
 
 ### P1 - High Priority
-- Fix "3% NaCl" calculation in Electrolytes calculator
-- Change label "Round dose to 5s (easier dilution)" to "Round dose"
-- Refactor "NICU > Approaches > Mechanical Ventilation" page layout (move Frequency by Age table, single scrollable list)
 - Verify drug order in childrenFormulary.js matches source PDF order
 
 ### P2 - Medium Priority
 - Create tabbed "About" section (Disclaimer, About Us, References) and consolidate medical references
 - Add "Mechanical Ventilation" approach to Children > Approaches section
-- Refactor childrenFormulary.js to a static JSON file for better performance
-- Refactor ElectrolytesDialog.jsx (large component with many states)
 - UI standardization of NICU approach components
 - Add data-testid attributes across interactive elements
 
