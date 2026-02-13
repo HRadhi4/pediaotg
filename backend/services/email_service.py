@@ -23,6 +23,7 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from typing import Optional
+from datetime import datetime
 import logging
 
 logger = logging.getLogger(__name__)
@@ -601,6 +602,203 @@ class EmailService:
         """
         
         return self._send_email(to_email, subject, html_body, text_body)
+
+
+    def send_admin_new_registration_email(self, user_email: str, user_name: str) -> bool:
+        """
+        Send notification to admin when a new user registers.
+        
+        Args:
+            user_email: New user's email address
+            user_name: New user's display name
+        """
+        admin_email = os.environ.get('ADMIN_EMAIL', 'admin@pedotg.com')
+        subject = f"🆕 New User Registration - {self.app_name}"
+        
+        registered_at = datetime.now().strftime("%B %d, %Y at %H:%M UTC")
+        
+        html_body = f"""
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <style>
+                body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; }}
+                .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
+                .header {{ background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }}
+                .header img {{ width: 60px; height: 60px; margin-bottom: 10px; }}
+                .header h1 {{ color: white; margin: 0; font-size: 22px; }}
+                .content {{ background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }}
+                .info-box {{ background: white; border: 1px solid #e0e0e0; border-radius: 10px; padding: 20px; margin: 20px 0; }}
+                .info-row {{ display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f0f0f0; }}
+                .info-row:last-child {{ border-bottom: none; }}
+                .label {{ color: #666; font-weight: normal; }}
+                .value {{ color: #333; font-weight: bold; }}
+                .footer {{ text-align: center; padding: 20px; color: #666; font-size: 12px; }}
+                .badge {{ background: #4CAF50; color: white; padding: 5px 15px; border-radius: 20px; font-size: 12px; display: inline-block; margin-bottom: 15px; }}
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="header">
+                    <img src="{self.logo_url}" alt="Logo" />
+                    <h1>New User Registration</h1>
+                </div>
+                <div class="content">
+                    <p style="text-align: center;"><span class="badge">NEW USER</span></p>
+                    <p>A new user has registered on {self.app_name}.</p>
+                    
+                    <div class="info-box">
+                        <div class="info-row">
+                            <span class="label">Name:</span>
+                            <span class="value">{user_name}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Email:</span>
+                            <span class="value">{user_email}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Registered:</span>
+                            <span class="value">{registered_at}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Trial Status:</span>
+                            <span class="value">3-day trial started</span>
+                        </div>
+                    </div>
+                    
+                    <p style="color: #666; font-size: 14px;">This user has been granted a 3-day free trial. They will need to subscribe to continue using the app after the trial period ends.</p>
+                </div>
+                <div class="footer">
+                    <p>© 2026 {self.app_name}. Admin Notification.</p>
+                </div>
+            </div>
+        </body>
+        </html>
+        """
+        
+        text_body = f"""
+        New User Registration - {self.app_name}
+        
+        A new user has registered:
+        
+        Name: {user_name}
+        Email: {user_email}
+        Registered: {registered_at}
+        Trial Status: 3-day trial started
+        
+        © 2026 {self.app_name}. Admin Notification.
+        """
+        
+        return self._send_email(admin_email, subject, html_body, text_body)
+
+    def send_admin_subscription_renewal_email(
+        self, 
+        user_email: str, 
+        user_name: str, 
+        plan_name: str,
+        amount: str,
+        is_new: bool = False
+    ) -> bool:
+        """
+        Send notification to admin when a user subscribes or renews.
+        
+        Args:
+            user_email: User's email address
+            user_name: User's display name
+            plan_name: Subscription plan type (Monthly/Annual)
+            amount: Payment amount (e.g., "1.0 BHD")
+            is_new: True if this is a new subscription, False if renewal
+        """
+        admin_email = os.environ.get('ADMIN_EMAIL', 'admin@pedotg.com')
+        action = "New Subscription" if is_new else "Subscription Renewal"
+        emoji = "🎉" if is_new else "🔄"
+        subject = f"{emoji} {action} - {self.app_name}"
+        
+        transaction_time = datetime.now().strftime("%B %d, %Y at %H:%M UTC")
+        badge_color = "#00d9c5" if is_new else "#17a2b8"
+        badge_text = "NEW SUBSCRIPTION" if is_new else "RENEWAL"
+        
+        html_body = f"""
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <style>
+                body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; }}
+                .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
+                .header {{ background: linear-gradient(135deg, #00d9c5 0%, #00b4a0 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }}
+                .header img {{ width: 60px; height: 60px; margin-bottom: 10px; }}
+                .header h1 {{ color: white; margin: 0; font-size: 22px; }}
+                .content {{ background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }}
+                .info-box {{ background: white; border: 1px solid #e0e0e0; border-radius: 10px; padding: 20px; margin: 20px 0; }}
+                .info-row {{ display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f0f0f0; }}
+                .info-row:last-child {{ border-bottom: none; }}
+                .label {{ color: #666; font-weight: normal; }}
+                .value {{ color: #333; font-weight: bold; }}
+                .footer {{ text-align: center; padding: 20px; color: #666; font-size: 12px; }}
+                .badge {{ background: {badge_color}; color: white; padding: 5px 15px; border-radius: 20px; font-size: 12px; display: inline-block; margin-bottom: 15px; }}
+                .amount {{ font-size: 24px; font-weight: bold; color: #00d9c5; text-align: center; margin: 15px 0; }}
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="header">
+                    <img src="{self.logo_url}" alt="Logo" />
+                    <h1>{action}</h1>
+                </div>
+                <div class="content">
+                    <p style="text-align: center;"><span class="badge">{badge_text}</span></p>
+                    <p>A user has {'subscribed to' if is_new else 'renewed their subscription on'} {self.app_name}.</p>
+                    
+                    <div class="info-box">
+                        <div class="info-row">
+                            <span class="label">User:</span>
+                            <span class="value">{user_name}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Email:</span>
+                            <span class="value">{user_email}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Plan:</span>
+                            <span class="value">{plan_name}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Transaction Time:</span>
+                            <span class="value">{transaction_time}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="amount">
+                        💰 {amount}
+                    </div>
+                    
+                    <p style="color: #666; font-size: 14px; text-align: center;">Payment processed via PayPal</p>
+                </div>
+                <div class="footer">
+                    <p>© 2026 {self.app_name}. Admin Notification.</p>
+                </div>
+            </div>
+        </body>
+        </html>
+        """
+        
+        text_body = f"""
+        {action} - {self.app_name}
+        
+        A user has {'subscribed to' if is_new else 'renewed their subscription on'} {self.app_name}.
+        
+        User: {user_name}
+        Email: {user_email}
+        Plan: {plan_name}
+        Amount: {amount}
+        Transaction Time: {transaction_time}
+        
+        Payment processed via PayPal.
+        
+        © 2026 {self.app_name}. Admin Notification.
+        """
+        
+        return self._send_email(admin_email, subject, html_body, text_body)
 
 
 # Singleton instance
