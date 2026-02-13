@@ -40,7 +40,7 @@ class SchedulerService:
     async def send_renewal_reminders_job(self):
         """
         Scheduled job to send subscription renewal reminders.
-        Runs daily and sends reminders to users whose subscriptions expire in 3 days.
+        Runs daily and sends reminders to users whose subscriptions expire in 7 days.
         """
         logger.info(f"[SCHEDULER] Running renewal reminders job at {datetime.now(timezone.utc)}")
         
@@ -50,8 +50,8 @@ class SchedulerService:
             
             subscription_service = SubscriptionService(self.db)
             
-            # Send reminders for subscriptions expiring in 3 days
-            results = await subscription_service.send_renewal_reminders(days_before=3)
+            # Send reminders for subscriptions expiring in 7 days (one week)
+            results = await subscription_service.send_renewal_reminders(days_before=7)
             
             # Log results
             logger.info(f"[SCHEDULER] Renewal reminders job completed: "
