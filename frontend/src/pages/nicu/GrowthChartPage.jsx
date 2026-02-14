@@ -104,54 +104,58 @@ const WHO_CHARTS = {
 };
 
 // ============== CDC CHARTS (2-20 years) ==============
-// ViewBox: 0 0 816 1056
-// 
-// This implementation uses OFFICIAL CDC LMS DATA for accurate z-score calculation.
-// The z-score determines where a value falls relative to the population percentiles.
-// 
-// Key insight: The SVG chart displays percentile curves at fixed z-score positions:
-// P3=-1.881, P5=-1.645, P10=-1.282, P25=-0.674, P50=0, P75=0.674, P90=1.282, P95=1.645, P97=1.881
+// Using official CDC PDF converted to PNG at 300 DPI (2550x3300 pixels)
+// Source: https://www.cdc.gov/growthcharts/data/set2clinical/cj41c071.pdf (Boys)
+// Source: https://www.cdc.gov/growthcharts/data/set2clinical/cj41c072.pdf (Girls)
 //
-// Chart layout: Combined Stature (upper) + Weight (lower) on same page
-// X-axis: Age 2-20 years
-// Y-axis is mapped based on z-score position between percentile curves
+// COORDINATE CALIBRATION (VALUE-BASED LINEAR INTERPOLATION):
+// The chart uses direct value-to-pixel mapping (cm for stature, kg for weight)
+// NOT z-score based mapping - each axis has fixed value ranges.
 //
-// COORDINATE CALIBRATION (Z-SCORE BASED):
-// - X range: 111px (age 2) to 695px (age 20)
-// - Stature chart: Y from 117 (P97 at top) to 396 (P3 at bottom)
-// - Weight chart: Y from 501 (P97 at top) to 940 (P3 at bottom)
-// - Z-score range visible: approximately -2.5 to +2.5
+// Chart layout (2550x3300 at 300 DPI = 8.5x11 inch page):
+// - STATURE section (upper ~42% of chart): Plots height in cm
+// - WEIGHT section (lower ~38% of chart): Plots weight in kg
+// - Age X-axis: 2 to 20 years
+//
+// PRECISE PIXEL CALIBRATION (measured from official CDC PDF):
+// X-axis: Age 2 at ~17% width, Age 20 at ~89% width
+// Stature Y: ~77cm at bottom (~49% height), ~200cm at top (~8% height)
+// Weight Y: ~10kg at bottom (~93% height), ~105kg at top (~55% height)
 
 const CDC_CHARTS = {
   boys: {
     statureWeight: {
-      file: "/charts/cdc/boys_stature_weight_2_20.svg",
+      file: "/charts/cdc/cdc_boys_stature_weight_2_20.png",
       label: "Stature & Weight",
-      viewBox: "0 0 816 1056",
+      viewBox: "0 0 2550 3300",
       measurements: {
         stature: {
           yLabel: "Stature (cm)",
-          lmsData: 'BOYS_STATURE',
-          // Z-score based Y mapping for upper chart (stature)
-          // Calibrated for CDC 2-20 years Boys Stature-for-age chart
-          // P97 curve is at top, P3 curve is at bottom of the stature section
+          // LINEAR VALUE-BASED grid mapping (cm values to Y pixels)
+          // Y increases downward in SVG, so higher cm = lower Y value
           grid: { 
-            xMin: 100, xMax: 710,    // X: Age 2 to 20 years
-            yAt97: 90, yAt3: 415,    // Stature chart Y boundaries
-            zMin: -2.5, zMax: 2.5,   // Z-score range for plotting
-            ageMin: 2, ageMax: 20 
+            xMin: 434,   // Age 2 (17% of 2550)
+            xMax: 2270,  // Age 20 (89% of 2550)
+            yMin: 1617,  // Bottom of stature grid (~77cm, 49% of 3300)
+            yMax: 264,   // Top of stature grid (~200cm, 8% of 3300)
+            valueMin: 77,   // cm at bottom
+            valueMax: 200,  // cm at top
+            ageMin: 2, 
+            ageMax: 20 
           }
         },
         weight: {
           yLabel: "Weight (kg)",
-          lmsData: 'BOYS_WEIGHT',
-          // Z-score based Y mapping for lower chart (weight)
-          // P97 curve is at top of weight section, P3 curve is at bottom
+          // LINEAR VALUE-BASED grid mapping (kg values to Y pixels)
           grid: { 
-            xMin: 100, xMax: 710,    // X: Age 2 to 20 years
-            yAt97: 490, yAt3: 970,   // Weight chart Y boundaries
-            zMin: -2.5, zMax: 2.5,   // Z-score range for plotting
-            ageMin: 2, ageMax: 20 
+            xMin: 434,   // Age 2
+            xMax: 2270,  // Age 20
+            yMin: 3069,  // Bottom of weight grid (~10kg, 93% of 3300)
+            yMax: 1815,  // Top of weight grid (~105kg, 55% of 3300)
+            valueMin: 10,   // kg at bottom
+            valueMax: 105,  // kg at top
+            ageMin: 2, 
+            ageMax: 20 
           }
         }
       }
@@ -163,7 +167,6 @@ const CDC_CHARTS = {
       measurements: {
         bmi: {
           yLabel: "BMI (kg/m²)",
-          // BMI chart uses linear interpolation (simpler approach for now)
           grid: { xMin: 111, xMax: 695, yMin: 900, yMax: 150, ageMin: 2, ageMax: 20, valueMin: 12, valueMax: 35 }
         }
       }
@@ -171,27 +174,25 @@ const CDC_CHARTS = {
   },
   girls: {
     statureWeight: {
-      file: "/charts/cdc/girls_stature_weight_2_20.svg",
+      file: "/charts/cdc/cdc_girls_stature_weight_2_20.png",
       label: "Stature & Weight",
-      viewBox: "0 0 816 1056",
+      viewBox: "0 0 2550 3300",
       measurements: {
         stature: {
           yLabel: "Stature (cm)",
-          lmsData: 'GIRLS_STATURE',
           grid: { 
-            xMin: 100, xMax: 710, 
-            yAt97: 90, yAt3: 415,
-            zMin: -2.5, zMax: 2.5,
+            xMin: 434, xMax: 2270, 
+            yMin: 1617, yMax: 264,
+            valueMin: 77, valueMax: 200,
             ageMin: 2, ageMax: 20 
           }
         },
         weight: {
           yLabel: "Weight (kg)",
-          lmsData: 'GIRLS_WEIGHT',
           grid: { 
-            xMin: 100, xMax: 710, 
-            yAt97: 490, yAt3: 970,
-            zMin: -2.5, zMax: 2.5,
+            xMin: 434, xMax: 2270, 
+            yMin: 3069, yMax: 1815,
+            valueMin: 10, valueMax: 105,
             ageMin: 2, ageMax: 20 
           }
         }
@@ -208,15 +209,6 @@ const CDC_CHARTS = {
         }
       }
     }
-  }
-};
-
-// Helper to get the correct LMS data based on measurement type and gender
-const getLMSData = (gender, measurementType) => {
-  if (gender === 'boys') {
-    return measurementType === 'stature' ? BOYS_STATURE : BOYS_WEIGHT;
-  } else {
-    return measurementType === 'stature' ? GIRLS_STATURE : GIRLS_WEIGHT;
   }
 };
 
