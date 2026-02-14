@@ -103,37 +103,25 @@ const WHO_CHARTS = {
   }
 };
 
-// ============== CDC CHARTS ==============
-// ViewBox: 816 x 1056
-// Coordinates extracted from SVG path analysis (Jan 2026):
-// - Stature-Weight chart: X=83-546 (age 2-20), Y varies by measurement
-// - BMI chart: X=42-562 (age 2-20), Y=122-714 (BMI 12-35)
 // ============== CDC CHARTS (2-20 years) ==============
-// ViewBox: 816 x 1056
-// 
-// CDC 2-20 years uses TWO chart types:
-// 1. Weight-for-age: Weight (kg) vs Age (years) - tracks weight gain over time
-// 2. BMI-for-age: BMI (kg/m²) vs Age (years) - primary screening for body fatness
-//
-// The stature_weight SVG file contains TWO charts on one page:
-// - Upper portion: Stature-for-age (cm vs age)
-// - Lower portion: Weight-for-age (kg vs age)
-//
-// Percentile curves: 3rd, 5th, 10th, 25th, 50th, 75th, 85th, 90th, 95th, 97th
-// BMI interpretation: <5th=underweight, 85th-95th=overweight, ≥95th=obesity
-// CDC 2-20 Years Growth Charts Coordinate Calibration (Feb 2026)
 // ViewBox: 0 0 816 1056
-// Chart layout: Combined Stature (upper) + Weight (lower) on same page
-// X-axis: Age 2-20 years (shared between both charts)
-// Y-axis Upper (Stature): 77-200 cm (only using cm, not inches)
-// Y-axis Lower (Weight): 10-105 kg (only using kg, not lb)
+// 
+// This implementation uses OFFICIAL CDC LMS DATA for accurate z-score calculation.
+// The z-score determines where a value falls relative to the population percentiles.
+// 
+// Key insight: The SVG chart displays percentile curves at fixed z-score positions:
+// P3=-1.881, P5=-1.645, P10=-1.282, P25=-0.674, P50=0, P75=0.674, P90=1.282, P95=1.645, P97=1.881
 //
-// CALIBRATION NOTES (pixel-accurate based on SVG analysis):
-// - X range: 86px (age 2) to 707px (age 20) = 621px for 18 years = 34.5px/year
-// - Stature chart: Y from 83 (top, 200cm) to 499 (bottom, 77cm) = 416px
-// - Weight chart: Y from 575 (top, 105kg) to 950 (bottom, 10kg) = 375px
-// - Chart divider at approximately Y=575 separates stature from weight
-// - Both Y-axes: higher measurement values = lower Y pixel (inverted coordinate system)
+// Chart layout: Combined Stature (upper) + Weight (lower) on same page
+// X-axis: Age 2-20 years
+// Y-axis is mapped based on z-score position between percentile curves
+//
+// COORDINATE CALIBRATION (Z-SCORE BASED):
+// - X range: 111px (age 2) to 695px (age 20)
+// - Stature chart: Y from 117 (P97 at top) to 396 (P3 at bottom)
+// - Weight chart: Y from 501 (P97 at top) to 940 (P3 at bottom)
+// - Z-score range visible: approximately -2.5 to +2.5
+
 const CDC_CHARTS = {
   boys: {
     statureWeight: {
@@ -143,17 +131,27 @@ const CDC_CHARTS = {
       measurements: {
         stature: {
           yLabel: "Stature (cm)",
-          // UPPER CHART: Stature-for-age (cm only)
-          // Grid derived from SVG analysis: horizontal lines span x=83.498 to x=521.08 (internal)
-          // Transform: x_svg = 1.333 * x_internal, y_svg = -1.333 * y_internal + 1056
-          // Stature: 200cm at top (yMax=120), 77cm at bottom/divider (yMin=401)
-          grid: { xMin: 111, xMax: 695, yMin: 401, yMax: 120, ageMin: 2, ageMax: 20, valueMin: 77, valueMax: 200 }
+          lmsData: 'BOYS_STATURE',
+          // Z-score based Y mapping for upper chart (stature)
+          // yAt97 = Y pixel where P97 (z=1.881) is drawn
+          // yAt3 = Y pixel where P3 (z=-1.881) is drawn
+          grid: { 
+            xMin: 111, xMax: 695, 
+            yAt97: 117, yAt3: 396,   // Stature chart Y boundaries (P97 top, P3 bottom)
+            zMin: -2.5, zMax: 2.5,   // Z-score range for plotting
+            ageMin: 2, ageMax: 20 
+          }
         },
         weight: {
           yLabel: "Weight (kg)",
-          // LOWER CHART: Weight-for-age (kg only)
-          // Weight: 105kg at divider/top (yMax=401), 10kg at bottom (yMin=960)
-          grid: { xMin: 111, xMax: 695, yMin: 960, yMax: 401, ageMin: 2, ageMax: 20, valueMin: 10, valueMax: 105 }
+          lmsData: 'BOYS_WEIGHT',
+          // Z-score based Y mapping for lower chart (weight)
+          grid: { 
+            xMin: 111, xMax: 695, 
+            yAt97: 501, yAt3: 940,   // Weight chart Y boundaries (P97 top, P3 bottom)
+            zMin: -2.5, zMax: 2.5,   // Z-score range for plotting
+            ageMin: 2, ageMax: 20 
+          }
         }
       }
     },
@@ -164,7 +162,7 @@ const CDC_CHARTS = {
       measurements: {
         bmi: {
           yLabel: "BMI (kg/m²)",
-          // BMI-for-age chart
+          // BMI chart uses linear interpolation (simpler approach for now)
           grid: { xMin: 111, xMax: 695, yMin: 900, yMax: 150, ageMin: 2, ageMax: 20, valueMin: 12, valueMax: 35 }
         }
       }
@@ -178,15 +176,23 @@ const CDC_CHARTS = {
       measurements: {
         stature: {
           yLabel: "Stature (cm)",
-          // UPPER CHART: Stature-for-age (cm only)
-          // Same grid as boys chart
-          grid: { xMin: 111, xMax: 695, yMin: 401, yMax: 120, ageMin: 2, ageMax: 20, valueMin: 77, valueMax: 200 }
+          lmsData: 'GIRLS_STATURE',
+          grid: { 
+            xMin: 111, xMax: 695, 
+            yAt97: 117, yAt3: 396,
+            zMin: -2.5, zMax: 2.5,
+            ageMin: 2, ageMax: 20 
+          }
         },
         weight: {
           yLabel: "Weight (kg)",
-          // LOWER CHART: Weight-for-age (kg only)
-          // Same grid as boys chart
-          grid: { xMin: 111, xMax: 695, yMin: 960, yMax: 401, ageMin: 2, ageMax: 20, valueMin: 10, valueMax: 105 }
+          lmsData: 'GIRLS_WEIGHT',
+          grid: { 
+            xMin: 111, xMax: 695, 
+            yAt97: 501, yAt3: 940,
+            zMin: -2.5, zMax: 2.5,
+            ageMin: 2, ageMax: 20 
+          }
         }
       }
     },
@@ -201,6 +207,15 @@ const CDC_CHARTS = {
         }
       }
     }
+  }
+};
+
+// Helper to get the correct LMS data based on measurement type and gender
+const getLMSData = (gender, measurementType) => {
+  if (gender === 'boys') {
+    return measurementType === 'stature' ? BOYS_STATURE : BOYS_WEIGHT;
+  } else {
+    return measurementType === 'stature' ? GIRLS_STATURE : GIRLS_WEIGHT;
   }
 };
 
