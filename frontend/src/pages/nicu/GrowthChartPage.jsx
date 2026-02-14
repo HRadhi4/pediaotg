@@ -128,12 +128,13 @@ const CDC_CHARTS = {
         stature: {
           yLabel: "Stature (cm)",
           // LINEAR VALUE-BASED grid mapping (cm values to Y pixels)
+          // Calibrated against official CDC chart at 300 DPI (2550x3300)
           // Y increases downward in SVG, so higher cm = lower Y value
           grid: { 
-            xMin: 434,   // Age 2 (17% of 2550)
-            xMax: 2270,  // Age 20 (89% of 2550)
-            yMin: 1617,  // Bottom of stature grid (~77cm, 49% of 3300)
-            yMax: 264,   // Top of stature grid (~200cm, 8% of 3300)
+            xMin: 434,   // Age 2
+            xMax: 2270,  // Age 20
+            yMin: 1500,  // Bottom of stature grid (77cm) - CALIBRATED
+            yMax: 300,   // Top of stature grid (200cm) - CALIBRATED
             valueMin: 77,   // cm at bottom
             valueMax: 200,  // cm at top
             ageMin: 2, 
@@ -143,11 +144,12 @@ const CDC_CHARTS = {
         weight: {
           yLabel: "Weight (kg)",
           // LINEAR VALUE-BASED grid mapping (kg values to Y pixels)
+          // Calibrated against official CDC chart at 300 DPI (2550x3300)
           grid: { 
             xMin: 434,   // Age 2
             xMax: 2270,  // Age 20
-            yMin: 3069,  // Bottom of weight grid (~10kg, 93% of 3300)
-            yMax: 1815,  // Top of weight grid (~105kg, 55% of 3300)
+            yMin: 2980,  // Bottom of weight grid (10kg) - CALIBRATED
+            yMax: 1800,  // Top of weight grid (105kg) - CALIBRATED
             valueMin: 10,   // kg at bottom
             valueMax: 105,  // kg at top
             ageMin: 2, 
@@ -176,9 +178,10 @@ const CDC_CHARTS = {
       measurements: {
         stature: {
           yLabel: "Stature (cm)",
+          // Same calibrated coordinates as boys chart (same layout)
           grid: { 
             xMin: 434, xMax: 2270, 
-            yMin: 1617, yMax: 264,
+            yMin: 1500, yMax: 300,
             valueMin: 77, valueMax: 200,
             ageMin: 2, ageMax: 20 
           }
@@ -187,7 +190,7 @@ const CDC_CHARTS = {
           yLabel: "Weight (kg)",
           grid: { 
             xMin: 434, xMax: 2270, 
-            yMin: 3069, yMax: 1815,
+            yMin: 2980, yMax: 1800,
             valueMin: 10, valueMax: 105,
             ageMin: 2, ageMax: 20 
           }
