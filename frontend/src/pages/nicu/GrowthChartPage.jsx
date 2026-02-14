@@ -117,6 +117,17 @@ const WHO_CHARTS = {
 //
 // Percentile curves: 3rd, 5th, 10th, 25th, 50th, 75th, 85th, 90th, 95th, 97th
 // BMI interpretation: <5th=underweight, 85th-95th=overweight, ≥95th=obesity
+// CDC 2-20 Years Growth Charts Coordinate Calibration (Feb 2026)
+// ViewBox: 0 0 816 1056
+// Chart layout: Combined Stature (upper) + Weight (lower) on same page
+// X-axis: Age 2-20 years (shared between both charts)
+// Y-axis Upper (Stature): 77-200 cm (only using cm, not inches)
+// Y-axis Lower (Weight): 10-105 kg (only using kg, not lb)
+//
+// CALIBRATION NOTES:
+// - X range: 86px (age 2) to 707px (age 20) = 621px for 18 years = 34.5px/year
+// - Stature chart occupies upper portion, Weight chart occupies lower portion
+// - Both Y-axes: higher values = lower Y pixel (inverted coordinate system)
 const CDC_CHARTS = {
   boys: {
     statureWeight: {
@@ -126,15 +137,17 @@ const CDC_CHARTS = {
       measurements: {
         stature: {
           yLabel: "Stature (cm)",
-          // UPPER CHART: Stature-for-age
-          // Scale: 3.66 px/cm | 80cm@y=695, 100cm@y=622, 120cm@y=548
-          grid: { xMin: 143, xMax: 760, yMin: 695, yMax: 548, ageMin: 2, ageMax: 20, valueMin: 80, valueMax: 120 }
+          // UPPER CHART: Stature-for-age (cm only)
+          // Y-axis: 77cm at bottom (y≈500), 200cm at top (y≈85)
+          // Pixel scale: ~3.37px per cm
+          grid: { xMin: 86, xMax: 707, yMin: 500, yMax: 85, ageMin: 2, ageMax: 20, valueMin: 77, valueMax: 200 }
         },
         weight: {
           yLabel: "Weight (kg)",
-          // LOWER CHART: Weight-for-age
-          // Scale: 6.1 px/kg | 10kg@y=1015, 50kg@y=771, 100kg@y=466
-          grid: { xMin: 143, xMax: 760, yMin: 1015, yMax: 466, ageMin: 2, ageMax: 20, valueMin: 10, valueMax: 100 }
+          // LOWER CHART: Weight-for-age (kg only)
+          // Y-axis: 10kg at bottom (y≈950), 105kg at top (y≈530)
+          // Pixel scale: ~4.42px per kg
+          grid: { xMin: 86, xMax: 707, yMin: 950, yMax: 530, ageMin: 2, ageMax: 20, valueMin: 10, valueMax: 105 }
         }
       }
     },
@@ -146,7 +159,7 @@ const CDC_CHARTS = {
         bmi: {
           yLabel: "BMI (kg/m²)",
           // BMI-for-age chart
-          grid: { xMin: 143, xMax: 760, yMin: 900, yMax: 300, ageMin: 2, ageMax: 20, valueMin: 12, valueMax: 35 }
+          grid: { xMin: 86, xMax: 707, yMin: 900, yMax: 150, ageMin: 2, ageMax: 20, valueMin: 12, valueMax: 35 }
         }
       }
     }
@@ -159,11 +172,13 @@ const CDC_CHARTS = {
       measurements: {
         stature: {
           yLabel: "Stature (cm)",
-          grid: { xMin: 143, xMax: 760, yMin: 695, yMax: 548, ageMin: 2, ageMax: 20, valueMin: 80, valueMax: 120 }
+          // UPPER CHART: Stature-for-age (cm only)
+          grid: { xMin: 86, xMax: 707, yMin: 500, yMax: 85, ageMin: 2, ageMax: 20, valueMin: 77, valueMax: 200 }
         },
         weight: {
           yLabel: "Weight (kg)",
-          grid: { xMin: 143, xMax: 760, yMin: 1015, yMax: 466, ageMin: 2, ageMax: 20, valueMin: 10, valueMax: 100 }
+          // LOWER CHART: Weight-for-age (kg only)
+          grid: { xMin: 86, xMax: 707, yMin: 950, yMax: 530, ageMin: 2, ageMax: 20, valueMin: 10, valueMax: 105 }
         }
       }
     },
