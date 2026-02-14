@@ -9,6 +9,10 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toPng } from 'html-to-image';
+import { 
+  BOYS_STATURE, BOYS_WEIGHT, GIRLS_STATURE, GIRLS_WEIGHT,
+  calculateZScore, interpolateAgeData, PERCENTILE_Z_SCORES
+} from "@/data/cdcPercentileData";
 
 /**
  * Growth Charts - WHO (Birth-2yr) & CDC (2-20yr)
