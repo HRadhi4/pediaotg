@@ -22,11 +22,20 @@ A pediatric medical calculator app featuring:
 
 ## What's Been Implemented
 
-### Growth Charts (Jan 2026)
+### Growth Charts (Jan-Feb 2026)
 - **WHO Charts (0-2 years):** Weight, Length, BMI, Head Circumference for both Boys and Girls
-- **CDC Charts (2-20 years):** Stature-for-age, Weight-for-age - CALIBRATED
+- **CDC Charts (2-20 years):** Stature-for-age, Weight-for-age - FULLY CALIBRATED (Feb 2026)
 - **SVG Rendering Fix:** Changed from `<img>` + `<svg>` overlay to single `<svg>` with embedded `<image>` to fix alignment issues
-- **Coordinate Calibration:** All charts calibrated via iterative image analysis method
+- **CDC Chart Asset Replacement (Feb 2026):** 
+  - Downloaded official CDC PDF charts from cdc.gov/growthcharts
+  - Converted to high-resolution PNG at 300 DPI (2550x3300 pixels)
+  - Boys: `/charts/cdc/cdc_boys_stature_weight_2_20.png`
+  - Girls: `/charts/cdc/cdc_girls_stature_weight_2_20.png`
+- **Coordinate Calibration (Feb 2026):**
+  - Stature grid: xMin=434, xMax=2270, yMin=1500 (77cm), yMax=300 (200cm)
+  - Weight grid: xMin=434, xMax=2270, yMin=2980 (10kg), yMax=1800 (105kg)
+  - Linear interpolation formula: `y = yMin - ((value - valueMin) / (valueMax - valueMin)) * (yMin - yMax)`
+  - Validated with P50 test data at ages 2, 5, 10, 15, 20 - all points plot correctly on P50 curves
 
 ### Electrolyte Calculator Enhancements (Feb 2026)
 - **Round dose to 5s Toggle:** When enabled, slider snaps to multiples of 5 for easier clinical dilution
