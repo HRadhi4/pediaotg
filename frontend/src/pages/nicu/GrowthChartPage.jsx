@@ -175,12 +175,14 @@ const CDC_CHARTS = {
         stature: {
           yLabel: "Stature (cm)",
           // UPPER CHART: Stature-for-age (cm only)
-          grid: { xMin: 86, xMax: 707, yMin: 500, yMax: 85, ageMin: 2, ageMax: 20, valueMin: 77, valueMax: 200 }
+          // Same grid as boys chart
+          grid: { xMin: 86, xMax: 707, yMin: 499, yMax: 83, ageMin: 2, ageMax: 20, valueMin: 77, valueMax: 200 }
         },
         weight: {
           yLabel: "Weight (kg)",
           // LOWER CHART: Weight-for-age (kg only)
-          grid: { xMin: 86, xMax: 707, yMin: 950, yMax: 530, ageMin: 2, ageMax: 20, valueMin: 10, valueMax: 105 }
+          // Same grid as boys chart
+          grid: { xMin: 86, xMax: 707, yMin: 950, yMax: 575, ageMin: 2, ageMax: 20, valueMin: 10, valueMax: 105 }
         }
       }
     },
