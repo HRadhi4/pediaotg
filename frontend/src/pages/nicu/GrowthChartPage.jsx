@@ -128,15 +128,15 @@ const CDC_CHARTS = {
         stature: {
           yLabel: "Stature (cm)",
           // LINEAR VALUE-BASED grid mapping (cm values to Y pixels)
-          // Calibrated from user's annotated image (Feb 2026):
-          // Green box boundaries define the stature plotting area
+          // Calibrated from user's annotated image with red lines (Feb 2026):
+          // Red lines define the exact plotting area boundaries
           // Y increases downward in SVG, so higher cm = lower Y value
-          // Based on CDC chart at 2550x3300 pixels (300 DPI)
+          // Scaled from user image (971x1227) to PNG (2550x3300)
           grid: { 
-            xMin: 387,   // Age 2 (left boundary - ~15% of width)
-            xMax: 2422,  // Age 20 (right boundary - ~95% of width)
-            yMin: 1584,  // Bottom of stature grid (77cm) - ~48% of height
-            yMax: 264,   // Top of stature grid (190cm) - ~8% of height
+            xMin: 460,   // Age 2 (left red line)
+            xMax: 2468,  // Age 20 (right red line)
+            yMin: 1619,  // Bottom of stature grid (77cm)
+            yMax: 371,   // Top of stature grid (190cm)
             valueMin: 77,   // cm at bottom
             valueMax: 190,  // cm at top
             ageMin: 2, 
@@ -146,13 +146,12 @@ const CDC_CHARTS = {
         weight: {
           yLabel: "Weight (kg)",
           // LINEAR VALUE-BASED grid mapping (kg values to Y pixels)
-          // Calibrated from user's annotated image (Feb 2026):
-          // Orange box boundaries define the weight plotting area
+          // Scaled from user image (971x1227) to PNG (2550x3300)
           grid: { 
-            xMin: 387,   // Age 2 (left boundary)
-            xMax: 2422,  // Age 20 (right boundary)
-            yMin: 2970,  // Bottom of weight grid (10kg) - ~90% of height
-            yMax: 1584,  // Top of weight grid (105kg) - ~48% of height
+            xMin: 460,   // Age 2 (left red line)
+            xMax: 2468,  // Age 20 (right red line)
+            yMin: 2636,  // Bottom of weight grid (10kg)
+            yMax: 1619,  // Top of weight grid (105kg)
             valueMin: 10,   // kg at bottom
             valueMax: 105,  // kg at top
             ageMin: 2, 
