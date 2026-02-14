@@ -1917,18 +1917,21 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
                       </div>
                     </div>
                     
-                    {/* Step 4: Dextrose */}
+                    {/* Step 4: Dextrose - Only show for NS or RL (not 1/2 NS) */}
+                    {(results.mildData.fluidType.includes('NS') || results.mildData.fluidType.includes('RL')) && 
+                     !results.mildData.fluidType.includes('1/2') && (
                     <div className="p-3 rounded-lg bg-purple-50 dark:bg-purple-950/30 border border-purple-200">
                       <p className="text-xs font-bold text-purple-700 dark:text-purple-300 mb-2">Step 4: Add Dextrose</p>
-                      <p className="text-xs">Usually D5% added (mix NS + D50%)</p>
-                      <p className="text-xs text-muted-foreground">Ratio: 450ml NS + 50ml D50% per 500ml</p>
+                      <p className="text-xs">Usually D5% added (mix {results.mildData.fluidType} + D50%)</p>
+                      <p className="text-xs text-muted-foreground">Ratio: 450ml {results.mildData.fluidType} + 50ml D50% per 500ml</p>
                     </div>
+                    )}
                     
                     {/* Final Order */}
                     <div className="p-3 rounded-lg bg-teal-50 dark:bg-teal-950/30 border-2 border-teal-400">
                       <p className="text-xs font-semibold text-teal-700 dark:text-teal-300 mb-1">📋 Order</p>
                       <p className="font-mono text-sm font-bold text-teal-800 dark:text-teal-200">
-                        IVF {results.mildData.fluidType.split(" ")[0]} {results.mildData.totalVolume} ml ({results.mildData.nsVolume}ml + {results.mildData.d50Volume}ml D50%) / 24 hrs
+                        IVF {results.mildData.fluidType} {results.mildData.totalVolume} ml {(results.mildData.fluidType.includes('NS') || results.mildData.fluidType.includes('RL')) && !results.mildData.fluidType.includes('1/2') ? `(${results.mildData.nsVolume}ml + ${results.mildData.d50Volume}ml D50%)` : ''} / 24 hrs
                       </p>
                       <p className="font-mono text-xs text-teal-700 dark:text-teal-300 mt-1">
                         Rate: {results.mildData.hourlyRate} ml/hr
