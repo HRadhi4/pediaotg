@@ -127,14 +127,14 @@ const CDC_CHARTS = {
       measurements: {
         stature: {
           yLabel: "Stature (cm)",
-          // LINEAR VALUE-BASED grid mapping (cm values to Y pixels)
-          // Calibrated from user's reference image with correct plotting (Feb 2026)
-          // Reference points used: Age 2 & 20, Stature 80cm & 150cm
-          // Scaled from reference image (1200x1060) to PNG (2550x3300)
+          // LINEAR VALUE-BASED grid mapping
+          // Calibrated from user's annotated image with RED LINES (Feb 2026)
+          // LEFT RED LINE = Age 2, RIGHT RED LINE = Age 20
+          // Scaled from annotated image (1072x1425) to PNG (2550x3300)
           grid: { 
-            xMin: 746,   // Age 2 
-            xMax: 2046,  // Age 20
-            yMin: 2376,  // Bottom of stature grid (77cm)
+            xMin: 338,   // Age 2 (LEFT RED LINE)
+            xMax: 1967,  // Age 20 (RIGHT RED LINE)
+            yMin: 2375,  // Bottom of stature grid (77cm)
             yMax: 722,   // Top of stature grid (190cm)
             valueMin: 77,   // cm at bottom
             valueMax: 190,  // cm at top
@@ -144,14 +144,12 @@ const CDC_CHARTS = {
         },
         weight: {
           yLabel: "Weight (kg)",
-          // LINEAR VALUE-BASED grid mapping (kg values to Y pixels)
-          // Reference points used: Weight 35kg & 60kg
-          // Scaled from reference image (1200x1060) to PNG (2550x3300)
+          // Scaled from annotated image (1072x1425) to PNG (2550x3300)
           grid: { 
-            xMin: 746,   // Age 2
-            xMax: 2046,  // Age 20
+            xMin: 338,   // Age 2 (LEFT RED LINE)
+            xMax: 1967,  // Age 20 (RIGHT RED LINE)
             yMin: 2783,  // Bottom of weight grid (10kg)
-            yMax: 843,   // Top of weight grid (105kg)
+            yMax: 844,   // Top of weight grid (105kg)
             valueMin: 10,   // kg at bottom
             valueMax: 105,  // kg at top
             ageMin: 2, 
