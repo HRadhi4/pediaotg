@@ -183,8 +183,8 @@ const CDC_CHARTS = {
           yLabel: "Stature (cm)",
           // Same calibrated coordinates as boys chart (same layout)
           grid: { 
-            xMin: 467, xMax: 2357, 
-            yMin: 1514, yMax: 747,
+            xMin: 387, xMax: 2422, 
+            yMin: 1584, yMax: 264,
             valueMin: 77, valueMax: 190,
             ageMin: 2, ageMax: 20 
           }
@@ -192,8 +192,8 @@ const CDC_CHARTS = {
         weight: {
           yLabel: "Weight (kg)",
           grid: { 
-            xMin: 467, xMax: 2357, 
-            yMin: 2298, yMax: 1514,
+            xMin: 387, xMax: 2422, 
+            yMin: 2970, yMax: 1584,
             valueMin: 10, valueMax: 105,
             ageMin: 2, ageMax: 20 
           }
