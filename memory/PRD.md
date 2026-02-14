@@ -176,7 +176,7 @@ A pediatric medical calculator app featuring:
 - None currently
 
 ### P1 - High Priority
-- Verify drug order in childrenFormulary.js matches source PDF order
+- Verify drug order in formulary.json matches source PDF order
 
 ### P2 - Medium Priority
 - Create tabbed "About" section (Disclaimer, About Us, References) and consolidate medical references
