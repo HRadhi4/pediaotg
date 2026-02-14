@@ -128,15 +128,14 @@ const CDC_CHARTS = {
         stature: {
           yLabel: "Stature (cm)",
           // LINEAR VALUE-BASED grid mapping (cm values to Y pixels)
-          // Calibrated from user's annotated image with red lines (Feb 2026):
-          // Red lines define the exact plotting area boundaries
-          // Y increases downward in SVG, so higher cm = lower Y value
-          // Scaled from user image (971x1227) to PNG (2550x3300)
+          // Calibrated from user's reference image with correct plotting (Feb 2026)
+          // Reference points used: Age 2 & 20, Stature 80cm & 150cm
+          // Scaled from reference image (1200x1060) to PNG (2550x3300)
           grid: { 
-            xMin: 460,   // Age 2 (left red line)
-            xMax: 2468,  // Age 20 (right red line)
-            yMin: 1619,  // Bottom of stature grid (77cm)
-            yMax: 371,   // Top of stature grid (190cm)
+            xMin: 746,   // Age 2 
+            xMax: 2046,  // Age 20
+            yMin: 2376,  // Bottom of stature grid (77cm)
+            yMax: 722,   // Top of stature grid (190cm)
             valueMin: 77,   // cm at bottom
             valueMax: 190,  // cm at top
             ageMin: 2, 
@@ -146,12 +145,13 @@ const CDC_CHARTS = {
         weight: {
           yLabel: "Weight (kg)",
           // LINEAR VALUE-BASED grid mapping (kg values to Y pixels)
-          // Scaled from user image (971x1227) to PNG (2550x3300)
+          // Reference points used: Weight 35kg & 60kg
+          // Scaled from reference image (1200x1060) to PNG (2550x3300)
           grid: { 
-            xMin: 460,   // Age 2 (left red line)
-            xMax: 2468,  // Age 20 (right red line)
-            yMin: 2636,  // Bottom of weight grid (10kg)
-            yMax: 1619,  // Top of weight grid (105kg)
+            xMin: 746,   // Age 2
+            xMax: 2046,  // Age 20
+            yMin: 2783,  // Bottom of weight grid (10kg)
+            yMax: 843,   // Top of weight grid (105kg)
             valueMin: 10,   // kg at bottom
             valueMax: 105,  // kg at top
             ageMin: 2, 
