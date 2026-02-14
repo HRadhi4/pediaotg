@@ -16,7 +16,7 @@ import json
 from datetime import datetime
 
 # Use the public URL for testing
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://nicu-chart-data.preview.emergentagent.com').rstrip('/')
+BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://pediatric-calc-dev.preview.emergentagent.com').rstrip('/')
 
 # Test credentials
 TESTER_EMAIL = "test@pedotg.com"
