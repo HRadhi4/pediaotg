@@ -124,10 +124,12 @@ const WHO_CHARTS = {
 // Y-axis Upper (Stature): 77-200 cm (only using cm, not inches)
 // Y-axis Lower (Weight): 10-105 kg (only using kg, not lb)
 //
-// CALIBRATION NOTES:
+// CALIBRATION NOTES (pixel-accurate based on SVG analysis):
 // - X range: 86px (age 2) to 707px (age 20) = 621px for 18 years = 34.5px/year
-// - Stature chart occupies upper portion, Weight chart occupies lower portion
-// - Both Y-axes: higher values = lower Y pixel (inverted coordinate system)
+// - Stature chart: Y from 83 (top, 200cm) to 499 (bottom, 77cm) = 416px
+// - Weight chart: Y from 575 (top, 105kg) to 950 (bottom, 10kg) = 375px
+// - Chart divider at approximately Y=575 separates stature from weight
+// - Both Y-axes: higher measurement values = lower Y pixel (inverted coordinate system)
 const CDC_CHARTS = {
   boys: {
     statureWeight: {
@@ -138,16 +140,16 @@ const CDC_CHARTS = {
         stature: {
           yLabel: "Stature (cm)",
           // UPPER CHART: Stature-for-age (cm only)
-          // Y-axis: 77cm at bottom (y≈500), 200cm at top (y≈85)
-          // Pixel scale: ~3.37px per cm
-          grid: { xMin: 86, xMax: 707, yMin: 500, yMax: 85, ageMin: 2, ageMax: 20, valueMin: 77, valueMax: 200 }
+          // Y-axis: 77cm at bottom (y=499), 200cm at top (y=83)
+          // 416 px height for 123 cm range = 3.38 px/cm
+          grid: { xMin: 86, xMax: 707, yMin: 499, yMax: 83, ageMin: 2, ageMax: 20, valueMin: 77, valueMax: 200 }
         },
         weight: {
           yLabel: "Weight (kg)",
           // LOWER CHART: Weight-for-age (kg only)
-          // Y-axis: 10kg at bottom (y≈950), 105kg at top (y≈530)
-          // Pixel scale: ~4.42px per kg
-          grid: { xMin: 86, xMax: 707, yMin: 950, yMax: 530, ageMin: 2, ageMax: 20, valueMin: 10, valueMax: 105 }
+          // Y-axis: 10kg at bottom (y=950), 105kg at top (y=575)
+          // 375 px height for 95 kg range = 3.95 px/kg
+          grid: { xMin: 86, xMax: 707, yMin: 950, yMax: 575, ageMin: 2, ageMax: 20, valueMin: 10, valueMax: 105 }
         }
       }
     },
