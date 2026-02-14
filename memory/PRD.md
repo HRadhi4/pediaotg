@@ -159,6 +159,7 @@ A pediatric medical calculator app featuring:
 - Features:
   - JSON format for better performance and easier editing
   - Helper functions: getDrugById, drugCategories, drugCount
+  - **Marquee Animation (Feb 2026):** Drug names >15 characters animate horizontally when card is expanded to reveal truncated text
 
 ### GrowthChartPage.jsx
 - Location: `/app/frontend/src/pages/nicu/GrowthChartPage.jsx`
