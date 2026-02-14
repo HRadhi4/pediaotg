@@ -602,8 +602,8 @@ const DrugsPage = ({ onBack }) => {
                         }`}
                         style={isExpanded ? {
                           display: 'inline-block',
-                          animation: drug.name.length > 25 ? 'marquee 6s linear infinite' : 'none',
-                          paddingRight: drug.name.length > 25 ? '2rem' : '0'
+                          animation: drug.name.length > 15 ? 'marquee 6s linear infinite' : 'none',
+                          paddingRight: drug.name.length > 15 ? '2rem' : '0'
                         } : {}}
                       >
                         {drug.name}
