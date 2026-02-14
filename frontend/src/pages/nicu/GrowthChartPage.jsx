@@ -129,10 +129,10 @@ const CDC_CHARTS = {
           yLabel: "Stature (cm)",
           // LINEAR VALUE-BASED grid mapping
           // Calibrated from user's annotated image with RED LINES (Feb 2026)
-          // Adjusted: shifted left by 1 year to align with grid squares
+          // Adjusted: shifted right by 2 squares to align with grid
           grid: { 
-            xMin: 248,   // Age 2 (LEFT RED LINE - adjusted)
-            xMax: 1876,  // Age 20 (RIGHT RED LINE - adjusted)
+            xMin: 429,   // Age 2 
+            xMax: 2057,  // Age 20
             yMin: 2375,  // Bottom of stature grid (77cm)
             yMax: 722,   // Top of stature grid (190cm)
             valueMin: 77,   // cm at bottom
@@ -144,8 +144,8 @@ const CDC_CHARTS = {
         weight: {
           yLabel: "Weight (kg)",
           grid: { 
-            xMin: 248,   // Age 2 (LEFT RED LINE - adjusted)
-            xMax: 1876,  // Age 20 (RIGHT RED LINE - adjusted)
+            xMin: 429,   // Age 2
+            xMax: 2057,  // Age 20
             yMin: 2783,  // Bottom of weight grid (10kg)
             yMax: 844,   // Top of weight grid (105kg)
             valueMin: 10,   // kg at bottom
