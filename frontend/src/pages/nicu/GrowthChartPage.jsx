@@ -128,15 +128,16 @@ const CDC_CHARTS = {
         stature: {
           yLabel: "Stature (cm)",
           // LINEAR VALUE-BASED grid mapping (cm values to Y pixels)
-          // Calibrated against official CDC chart at 300 DPI (2550x3300)
+          // Calibrated from user's annotated image (Feb 2026):
+          // Green box boundaries define the stature plotting area
           // Y increases downward in SVG, so higher cm = lower Y value
           grid: { 
-            xMin: 434,   // Age 2
-            xMax: 2270,  // Age 20
-            yMin: 1500,  // Bottom of stature grid (77cm) - CALIBRATED
-            yMax: 300,   // Top of stature grid (200cm) - CALIBRATED
+            xMin: 467,   // Age 2 (left red line)
+            xMax: 2357,  // Age 20 (right red line)
+            yMin: 1514,  // Bottom of stature grid (~77cm) - green box bottom
+            yMax: 747,   // Top of stature grid (~190cm) - green box top
             valueMin: 77,   // cm at bottom
-            valueMax: 200,  // cm at top
+            valueMax: 190,  // cm at top (adjusted to visible range)
             ageMin: 2, 
             ageMax: 20 
           }
@@ -144,12 +145,13 @@ const CDC_CHARTS = {
         weight: {
           yLabel: "Weight (kg)",
           // LINEAR VALUE-BASED grid mapping (kg values to Y pixels)
-          // Calibrated against official CDC chart at 300 DPI (2550x3300)
+          // Calibrated from user's annotated image (Feb 2026):
+          // Orange box boundaries define the weight plotting area
           grid: { 
-            xMin: 434,   // Age 2
-            xMax: 2270,  // Age 20
-            yMin: 2980,  // Bottom of weight grid (10kg) - CALIBRATED
-            yMax: 1800,  // Top of weight grid (105kg) - CALIBRATED
+            xMin: 467,   // Age 2 (left red line)
+            xMax: 2357,  // Age 20 (right red line)
+            yMin: 2298,  // Bottom of weight grid (10kg) - orange box bottom
+            yMax: 1514,  // Top of weight grid (105kg) - orange box top
             valueMin: 10,   // kg at bottom
             valueMax: 105,  // kg at top
             ageMin: 2, 
