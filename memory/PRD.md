@@ -185,6 +185,7 @@ A pediatric medical calculator app featuring:
 - None currently
 
 ### P1 - High Priority
+- Test Electrolytes Calculator fix (Step 4 hiding logic & summary text)
 - Verify drug order in formulary.json matches source PDF order
 
 ### P2 - Medium Priority
