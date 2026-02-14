@@ -131,13 +131,14 @@ const CDC_CHARTS = {
           // Calibrated from user's annotated image (Feb 2026):
           // Green box boundaries define the stature plotting area
           // Y increases downward in SVG, so higher cm = lower Y value
+          // Based on CDC chart at 2550x3300 pixels (300 DPI)
           grid: { 
-            xMin: 467,   // Age 2 (left red line)
-            xMax: 2357,  // Age 20 (right red line)
-            yMin: 1514,  // Bottom of stature grid (~77cm) - green box bottom
-            yMax: 747,   // Top of stature grid (~190cm) - green box top
+            xMin: 387,   // Age 2 (left boundary - ~15% of width)
+            xMax: 2422,  // Age 20 (right boundary - ~95% of width)
+            yMin: 1584,  // Bottom of stature grid (77cm) - ~48% of height
+            yMax: 264,   // Top of stature grid (190cm) - ~8% of height
             valueMin: 77,   // cm at bottom
-            valueMax: 190,  // cm at top (adjusted to visible range)
+            valueMax: 190,  // cm at top
             ageMin: 2, 
             ageMax: 20 
           }
@@ -148,10 +149,10 @@ const CDC_CHARTS = {
           // Calibrated from user's annotated image (Feb 2026):
           // Orange box boundaries define the weight plotting area
           grid: { 
-            xMin: 467,   // Age 2 (left red line)
-            xMax: 2357,  // Age 20 (right red line)
-            yMin: 2298,  // Bottom of weight grid (10kg) - orange box bottom
-            yMax: 1514,  // Top of weight grid (105kg) - orange box top
+            xMin: 387,   // Age 2 (left boundary)
+            xMax: 2422,  // Age 20 (right boundary)
+            yMin: 2970,  // Bottom of weight grid (10kg) - ~90% of height
+            yMax: 1584,  // Top of weight grid (105kg) - ~48% of height
             valueMin: 10,   // kg at bottom
             valueMax: 105,  // kg at top
             ageMin: 2, 
