@@ -179,8 +179,8 @@ const CDC_CHARTS = {
           yLabel: "Stature (cm)",
           lmsData: 'GIRLS_STATURE',
           grid: { 
-            xMin: 111, xMax: 695, 
-            yAt97: 117, yAt3: 396,
+            xMin: 100, xMax: 710, 
+            yAt97: 90, yAt3: 415,
             zMin: -2.5, zMax: 2.5,
             ageMin: 2, ageMax: 20 
           }
@@ -189,8 +189,8 @@ const CDC_CHARTS = {
           yLabel: "Weight (kg)",
           lmsData: 'GIRLS_WEIGHT',
           grid: { 
-            xMin: 111, xMax: 695, 
-            yAt97: 501, yAt3: 940,
+            xMin: 100, xMax: 710, 
+            yAt97: 490, yAt3: 970,
             zMin: -2.5, zMax: 2.5,
             ageMin: 2, ageMax: 20 
           }
