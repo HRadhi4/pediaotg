@@ -595,7 +595,20 @@ const DrugsPage = ({ onBack }) => {
                 <div className="space-y-3">
                   {/* Row 1: Drug Name and Category */}
                   <div className="flex items-center justify-between gap-2">
-                    <h3 className="font-semibold text-base leading-tight whitespace-nowrap overflow-hidden text-ellipsis">{drug.name}</h3>
+                    <div className="overflow-hidden flex-1 min-w-0">
+                      <h3 
+                        className={`font-semibold text-base leading-tight whitespace-nowrap ${
+                          isExpanded ? 'animate-marquee hover:animate-none' : 'overflow-hidden text-ellipsis'
+                        }`}
+                        style={isExpanded ? {
+                          display: 'inline-block',
+                          animation: drug.name.length > 25 ? 'marquee 6s linear infinite' : 'none',
+                          paddingRight: drug.name.length > 25 ? '2rem' : '0'
+                        } : {}}
+                      >
+                        {drug.name}
+                      </h3>
+                    </div>
                     <span className="text-[10px] px-2 py-1 rounded bg-gray-100 dark:bg-gray-800 text-muted-foreground whitespace-nowrap flex-shrink-0">
                       {drug.category}
                     </span>
