@@ -478,7 +478,7 @@ const CDCChartsSection = ({ gender }) => {
           </div>
         </CardHeader>
         <CardContent className="p-2">
-          <div ref={chartContainerRef} className={`relative border rounded-lg overflow-hidden ${cdcGender === 'boys' ? 'bg-blue-50' : 'bg-pink-50'} h-[400px]`}>
+          <div ref={chartContainerRef} className={`relative border rounded-lg overflow-hidden ${cdcGender === 'boys' ? 'bg-blue-50' : 'bg-pink-50'} h-[500px]`}>
             <TransformWrapper initialScale={1} minScale={1} maxScale={5} centerOnInit doubleClick={{ mode: "reset" }} panning={{ velocityDisabled: true }} wheel={{ step: 0.1 }}>
               <TransformComponent wrapperClass="!w-full !h-full" contentClass="!w-full !h-full flex items-center justify-center">
                 <svg 
@@ -499,14 +499,14 @@ const CDCChartsSection = ({ gender }) => {
                       <g key={entry.id}>
                         {entry.statureCoords && (
                           <g>
-                            <circle cx={entry.statureCoords.x} cy={entry.statureCoords.y} r="8" fill="#2563eb" stroke="white" strokeWidth="2" />
-                            <text x={entry.statureCoords.x} y={entry.statureCoords.y + 3} textAnchor="middle" fill="white" fontSize="8" fontWeight="bold">S{index + 1}</text>
+                            <circle cx={entry.statureCoords.x} cy={entry.statureCoords.y} r="25" fill="#2563eb" stroke="white" strokeWidth="6" />
+                            <text x={entry.statureCoords.x} y={entry.statureCoords.y + 8} textAnchor="middle" fill="white" fontSize="22" fontWeight="bold">S{index + 1}</text>
                           </g>
                         )}
                         {entry.weightCoords && (
                           <g>
-                            <circle cx={entry.weightCoords.x} cy={entry.weightCoords.y} r="8" fill="#dc2626" stroke="white" strokeWidth="2" />
-                            <text x={entry.weightCoords.x} y={entry.weightCoords.y + 3} textAnchor="middle" fill="white" fontSize="8" fontWeight="bold">W{index + 1}</text>
+                            <circle cx={entry.weightCoords.x} cy={entry.weightCoords.y} r="25" fill="#dc2626" stroke="white" strokeWidth="6" />
+                            <text x={entry.weightCoords.x} y={entry.weightCoords.y + 8} textAnchor="middle" fill="white" fontSize="22" fontWeight="bold">W{index + 1}</text>
                           </g>
                         )}
                       </g>
