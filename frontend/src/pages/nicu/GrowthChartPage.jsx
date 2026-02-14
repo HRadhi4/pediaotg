@@ -386,7 +386,8 @@ const CDCChartsSection = ({ gender }) => {
   const availableCharts = Object.keys(CDC_CHARTS[cdcGender] || {});
   const isStatureWeightChart = chartType === "statureWeight";
 
-  // Z-score based coordinate calculation for accurate percentile-aligned plotting
+  // LINEAR VALUE-BASED coordinate calculation for accurate chart plotting
+  // Uses direct cm/kg to pixel mapping based on chart grid values
   const calculateSvgCoords = useCallback((ageYears, value, measurementType) => {
     const measurement = currentChart.measurements[measurementType];
     if (!measurement) return null;
@@ -398,48 +399,21 @@ const CDCChartsSection = ({ gender }) => {
     if (isNaN(age) || isNaN(val)) return null;
     if (age < grid.ageMin || age > grid.ageMax) return null;
     
-    // Calculate X position (same for all - linear age mapping)
+    // Calculate X position (linear age mapping)
     const xRatio = (age - grid.ageMin) / (grid.ageMax - grid.ageMin);
     const x = grid.xMin + xRatio * (grid.xMax - grid.xMin);
     
-    // For stature and weight, use z-score based Y calculation
-    if (measurementType === 'stature' || measurementType === 'weight') {
-      // Get LMS data for this gender and measurement type
-      const lmsData = getLMSData(cdcGender, measurementType);
-      
-      // Convert age in years to months for LMS lookup
-      const ageMonths = age * 12;
-      
-      // Get interpolated LMS parameters for this exact age
-      const lmsParams = interpolateAgeData(ageMonths, lmsData);
-      if (!lmsParams) return null;
-      
-      // Calculate z-score for the value using LMS method
-      const zScore = calculateZScore(val, lmsParams.L, lmsParams.M, lmsParams.S);
-      
-      // Clamp z-score to visible range
-      const clampedZ = Math.max(grid.zMin || -2.5, Math.min(grid.zMax || 2.5, zScore));
-      
-      // Map z-score to Y position
-      // P97 (z=1.881) is at yAt97 (top), P3 (z=-1.881) is at yAt3 (bottom)
-      // Linear interpolation: higher z-score = higher on chart = lower Y value
-      const z97 = PERCENTILE_Z_SCORES.P97;  // 1.881
-      const z3 = PERCENTILE_Z_SCORES.P3;    // -1.881
-      
-      // Map z-score to Y: z97 -> yAt97, z3 -> yAt3
-      const zRatio = (clampedZ - z3) / (z97 - z3);
-      const y = grid.yAt3 - zRatio * (grid.yAt3 - grid.yAt97);
-      
-      return { x, y, zScore: zScore.toFixed(2) };
-    }
-    
-    // For BMI, use simple linear interpolation (fallback)
+    // For all measurements, use linear value-to-pixel interpolation
+    // The grid defines valueMin/valueMax and corresponding yMin/yMax pixel positions
     if (val < grid.valueMin || val > grid.valueMax) return null;
-    const yRatio = (val - grid.valueMin) / (grid.valueMax - grid.valueMin);
-    const y = grid.yMin - yRatio * (grid.yMin - grid.yMax);
+    
+    // Linear interpolation: map value to Y pixel position
+    // Higher values (cm/kg) = lower Y pixel value (higher on screen)
+    const valueRatio = (val - grid.valueMin) / (grid.valueMax - grid.valueMin);
+    const y = grid.yMin - valueRatio * (grid.yMin - grid.yMax);
     
     return { x, y };
-  }, [currentChart, cdcGender]);
+  }, [currentChart]);
 
   const addEntry = () => {
     if (!newEntry.date || !newEntry.ageYears) return;
