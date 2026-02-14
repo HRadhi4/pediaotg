@@ -133,11 +133,11 @@ const CDC_CHARTS = {
           yLabel: "Stature (cm)",
           lmsData: 'BOYS_STATURE',
           // Z-score based Y mapping for upper chart (stature)
-          // yAt97 = Y pixel where P97 (z=1.881) is drawn
-          // yAt3 = Y pixel where P3 (z=-1.881) is drawn
+          // Calibrated for CDC 2-20 years Boys Stature-for-age chart
+          // P97 curve is at top, P3 curve is at bottom of the stature section
           grid: { 
-            xMin: 111, xMax: 695, 
-            yAt97: 117, yAt3: 396,   // Stature chart Y boundaries (P97 top, P3 bottom)
+            xMin: 100, xMax: 710,    // X: Age 2 to 20 years
+            yAt97: 90, yAt3: 415,    // Stature chart Y boundaries
             zMin: -2.5, zMax: 2.5,   // Z-score range for plotting
             ageMin: 2, ageMax: 20 
           }
@@ -146,9 +146,10 @@ const CDC_CHARTS = {
           yLabel: "Weight (kg)",
           lmsData: 'BOYS_WEIGHT',
           // Z-score based Y mapping for lower chart (weight)
+          // P97 curve is at top of weight section, P3 curve is at bottom
           grid: { 
-            xMin: 111, xMax: 695, 
-            yAt97: 501, yAt3: 940,   // Weight chart Y boundaries (P97 top, P3 bottom)
+            xMin: 100, xMax: 710,    // X: Age 2 to 20 years
+            yAt97: 490, yAt3: 970,   // Weight chart Y boundaries
             zMin: -2.5, zMax: 2.5,   // Z-score range for plotting
             ageMin: 2, ageMax: 20 
           }
