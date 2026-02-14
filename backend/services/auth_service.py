@@ -348,8 +348,14 @@ class AuthService:
             
             if sub_doc.get('trial_ends_at'):
                 trial_ends = datetime.fromisoformat(sub_doc['trial_ends_at']) if isinstance(sub_doc['trial_ends_at'], str) else sub_doc['trial_ends_at']
+                # Make timezone-aware if naive
+                if trial_ends and trial_ends.tzinfo is None:
+                    trial_ends = trial_ends.replace(tzinfo=timezone.utc)
             if sub_doc.get('renews_at'):
                 renews_at = datetime.fromisoformat(sub_doc['renews_at']) if isinstance(sub_doc['renews_at'], str) else sub_doc['renews_at']
+                # Make timezone-aware if naive
+                if renews_at and renews_at.tzinfo is None:
+                    renews_at = renews_at.replace(tzinfo=timezone.utc)
             
             now = datetime.now(timezone.utc)
             
