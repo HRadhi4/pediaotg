@@ -200,13 +200,16 @@ const CDC_CHARTS = {
       }
     },
     bmi: {
-      file: "/charts/cdc/girls_bmi_2_20.svg",
+      file: "/charts/cdc/cdc_girls_bmi_2_20.png",
       label: "BMI-for-age",
-      viewBox: "0 0 816 1056",
+      viewBox: "0 0 2550 3300",
       measurements: {
         bmi: {
           yLabel: "BMI (kg/m²)",
-          grid: { xMin: 111, xMax: 695, yMin: 842, yMax: 153, ageMin: 2, ageMax: 20, valueMin: 11, valueMax: 35 }
+          // Scaled from SVG (816x1056) to PNG (2550x3300) - scale factor 3.125
+          // Original: xMin: 111, xMax: 695, yMin: 842, yMax: 153
+          // Y pixel top = 153 = BMI 35, Y pixel bottom = 842 = BMI 11 (user-provided)
+          grid: { xMin: 347, xMax: 2172, yMin: 2631, yMax: 478, ageMin: 2, ageMax: 20, valueMin: 11, valueMax: 35 }
         }
       }
     }
