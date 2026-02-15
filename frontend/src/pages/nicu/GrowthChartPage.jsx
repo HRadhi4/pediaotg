@@ -288,23 +288,81 @@ const WHOChartsSection = ({ gender }) => {
   const removeEntry = (id) => setEntries(entries.filter(e => e.id !== id));
   const currentEntries = entries.filter(e => e.gender === whoGender && e.chartType === chartType);
 
-  // Save chart as high-resolution PDF using html2canvas
+  // Save chart as high-resolution PDF
   const saveAsPdf = async () => {
     if (!chartContainerRef.current) return;
     setSaving(true);
     try {
-      // Use html2canvas to capture the chart container with all its contents
-      const canvas = await html2canvas(chartContainerRef.current, {
-        scale: 3, // High resolution for print quality
-        useCORS: true,
-        allowTaint: true,
-        backgroundColor: '#ffffff',
-        logging: false,
+      // Get viewBox dimensions from current chart
+      const viewBox = currentChart.viewBox.split(' ').map(Number);
+      const svgWidth = viewBox[2];
+      const svgHeight = viewBox[3];
+      
+      // Create high-resolution canvas
+      const scale = 2; // 2x scale for good print quality
+      const canvas = document.createElement('canvas');
+      canvas.width = svgWidth * scale;
+      canvas.height = svgHeight * scale;
+      const ctx = canvas.getContext('2d');
+      
+      // Scale context for high resolution
+      ctx.scale(scale, scale);
+      
+      // Fill white background
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, svgWidth, svgHeight);
+      
+      // Load and draw the chart background image
+      const chartImage = new Image();
+      chartImage.crossOrigin = 'anonymous';
+      
+      await new Promise((resolve, reject) => {
+        chartImage.onload = resolve;
+        chartImage.onerror = reject;
+        chartImage.src = currentChart.file;
       });
-
-      // Get canvas dimensions
-      const canvasWidth = canvas.width;
-      const canvasHeight = canvas.height;
+      
+      // Draw the chart image
+      ctx.drawImage(chartImage, 0, 0, svgWidth, svgHeight);
+      
+      // Draw connecting lines between dots
+      const lineColor = whoGender === 'boys' ? '#dc2626' : '#2563eb';
+      ctx.strokeStyle = lineColor;
+      ctx.lineWidth = 3;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      let first = true;
+      currentEntries.forEach(entry => {
+        if (entry.coords) {
+          if (first) {
+            ctx.moveTo(entry.coords.x, entry.coords.y);
+            first = false;
+          } else {
+            ctx.lineTo(entry.coords.x, entry.coords.y);
+          }
+        }
+      });
+      ctx.stroke();
+      
+      // Draw dots
+      const dotColor = whoGender === 'boys' ? '#2563eb' : '#db2777';
+      currentEntries.forEach((entry, index) => {
+        if (entry.coords) {
+          ctx.fillStyle = dotColor;
+          ctx.beginPath();
+          ctx.arc(entry.coords.x, entry.coords.y, 8, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.strokeStyle = '#ffffff';
+          ctx.lineWidth = 2;
+          ctx.stroke();
+          // Label
+          ctx.fillStyle = '#ffffff';
+          ctx.font = 'bold 10px Arial';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(`${index + 1}`, entry.coords.x, entry.coords.y);
+        }
+      });
 
       // Create PDF (A4 landscape for better chart display)
       const pdf = new jsPDF({
@@ -322,7 +380,7 @@ const WHOChartsSection = ({ gender }) => {
       const availableWidth = pdfWidth - (margin * 2);
       const availableHeight = pdfHeight - (margin * 2);
 
-      const aspectRatio = canvasWidth / canvasHeight;
+      const aspectRatio = svgWidth / svgHeight;
       let imgWidth, imgHeight;
 
       if (availableWidth / availableHeight > aspectRatio) {
