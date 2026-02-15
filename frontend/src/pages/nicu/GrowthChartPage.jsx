@@ -572,24 +572,6 @@ const CDCChartsSection = ({ gender }) => {
   const removeEntry = (id) => setEntries(entries.filter(e => e.id !== id));
   const currentEntries = entries.filter(e => e.gender === cdcGender && e.chartType === chartType);
 
-  // Convert image URL to base64 data URL
-  const imageToBase64 = (url) => {
-    return new Promise((resolve, reject) => {
-      const img = new Image();
-      img.crossOrigin = 'anonymous';
-      img.onload = () => {
-        const canvas = document.createElement('canvas');
-        canvas.width = img.naturalWidth;
-        canvas.height = img.naturalHeight;
-        const ctx = canvas.getContext('2d');
-        ctx.drawImage(img, 0, 0);
-        resolve(canvas.toDataURL('image/png'));
-      };
-      img.onerror = reject;
-      img.src = url;
-    });
-  };
-
   // Save chart as high-resolution PDF using html2canvas
   const saveAsPdf = async () => {
     if (!chartContainerRef.current) return;
