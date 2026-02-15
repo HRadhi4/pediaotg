@@ -189,8 +189,8 @@ const CDC_CHARTS = {
           yLabel: "Weight (kg)",
           grid: { 
             xMin: 450, xMax: 2060, 
-            yMin: 2920, yMax: 909,
-            valueMin: 10, valueMax: 105,
+            yMin: 2930, yMax: 1224,
+            valueMin: 10, valueMax: 110,
             ageMin: 2, ageMax: 20 
           }
         }
