@@ -649,6 +649,24 @@ const CDCChartsSection = ({ gender }) => {
   const removeEntry = (id) => setEntries(entries.filter(e => e.id !== id));
   const currentEntries = entries.filter(e => e.gender === cdcGender && e.chartType === chartType);
 
+  // Convert image URL to base64 data URL
+  const imageToBase64 = (url) => {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = img.naturalWidth;
+        canvas.height = img.naturalHeight;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0);
+        resolve(canvas.toDataURL('image/png'));
+      };
+      img.onerror = reject;
+      img.src = url;
+    });
+  };
+
   // Save chart as high-resolution PDF
   const saveAsPdf = async () => {
     if (!chartContainerRef.current) return;
@@ -665,10 +683,29 @@ const CDCChartsSection = ({ gender }) => {
       // Clone the SVG to avoid modifying the original
       const svgClone = svgElement.cloneNode(true);
       
+      // Get the image element and convert external URL to base64
+      const imageElement = svgClone.querySelector('image');
+      if (imageElement) {
+        const imageUrl = imageElement.getAttribute('href') || imageElement.getAttributeNS('http://www.w3.org/1999/xlink', 'href');
+        if (imageUrl && !imageUrl.startsWith('data:')) {
+          try {
+            const base64Data = await imageToBase64(imageUrl);
+            imageElement.setAttribute('href', base64Data);
+            imageElement.removeAttributeNS('http://www.w3.org/1999/xlink', 'href');
+          } catch (e) {
+            console.error('Failed to convert image to base64:', e);
+          }
+        }
+      }
+      
       // Get viewBox dimensions
       const viewBox = currentChart.viewBox.split(' ').map(Number);
       const svgWidth = viewBox[2];
       const svgHeight = viewBox[3];
+      
+      // Set explicit width/height on SVG for proper rendering
+      svgClone.setAttribute('width', svgWidth);
+      svgClone.setAttribute('height', svgHeight);
       
       // Create a canvas for high-resolution rendering
       const scale = 3; // 3x scale for high resolution (print quality)
@@ -680,6 +717,7 @@ const CDCChartsSection = ({ gender }) => {
       // Fill with white background
       ctx.fillStyle = '#ffffff';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.scale(scale, scale);
       
       // Convert SVG to data URL
       const svgData = new XMLSerializer().serializeToString(svgClone);
@@ -689,7 +727,7 @@ const CDCChartsSection = ({ gender }) => {
       // Load SVG as image
       const img = new Image();
       img.onload = () => {
-        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, 0, 0, svgWidth, svgHeight);
         URL.revokeObjectURL(svgUrl);
         
         // Create PDF (A4 portrait for taller CDC charts)
