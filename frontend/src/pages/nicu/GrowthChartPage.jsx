@@ -597,18 +597,98 @@ const CDCChartsSection = ({ gender }) => {
   const removeEntry = (id) => setEntries(entries.filter(e => e.id !== id));
   const currentEntries = entries.filter(e => e.gender === cdcGender && e.chartType === chartType);
 
-  const saveAsPng = async () => {
+  // Save chart as high-resolution PDF
+  const saveAsPdf = async () => {
     if (!chartContainerRef.current) return;
     setSaving(true);
     try {
-      const dataUrl = await toPng(chartContainerRef.current, { quality: 1.0, backgroundColor: '#ffffff', pixelRatio: 2 });
-      const link = document.createElement('a');
-      link.download = `cdc-${currentChart.label.toLowerCase().replace(/\s+/g, '-')}-${cdcGender}-${new Date().toISOString().split('T')[0]}.png`;
-      link.href = dataUrl;
-      link.click();
+      // Find the SVG element inside the chart container
+      const svgElement = chartContainerRef.current.querySelector('svg');
+      if (!svgElement) {
+        console.error('SVG element not found');
+        setSaving(false);
+        return;
+      }
+
+      // Clone the SVG to avoid modifying the original
+      const svgClone = svgElement.cloneNode(true);
+      
+      // Get viewBox dimensions
+      const viewBox = currentChart.viewBox.split(' ').map(Number);
+      const svgWidth = viewBox[2];
+      const svgHeight = viewBox[3];
+      
+      // Create a canvas for high-resolution rendering
+      const scale = 3; // 3x scale for high resolution (print quality)
+      const canvas = document.createElement('canvas');
+      canvas.width = svgWidth * scale;
+      canvas.height = svgHeight * scale;
+      const ctx = canvas.getContext('2d');
+      
+      // Fill with white background
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      // Convert SVG to data URL
+      const svgData = new XMLSerializer().serializeToString(svgClone);
+      const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+      const svgUrl = URL.createObjectURL(svgBlob);
+      
+      // Load SVG as image
+      const img = new Image();
+      img.onload = () => {
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        URL.revokeObjectURL(svgUrl);
+        
+        // Create PDF (A4 portrait for taller CDC charts)
+        const pdf = new jsPDF({
+          orientation: svgHeight > svgWidth ? 'portrait' : 'landscape',
+          unit: 'mm',
+          format: 'a4'
+        });
+        
+        // Get PDF dimensions based on orientation
+        const pdfWidth = svgHeight > svgWidth ? 210 : 297;
+        const pdfHeight = svgHeight > svgWidth ? 297 : 210;
+        const margin = 10;
+        
+        // Calculate dimensions to fit chart in PDF with margins
+        const availableWidth = pdfWidth - (margin * 2);
+        const availableHeight = pdfHeight - (margin * 2);
+        
+        const aspectRatio = svgWidth / svgHeight;
+        let imgWidth, imgHeight;
+        
+        if (availableWidth / availableHeight > aspectRatio) {
+          imgHeight = availableHeight;
+          imgWidth = imgHeight * aspectRatio;
+        } else {
+          imgWidth = availableWidth;
+          imgHeight = imgWidth / aspectRatio;
+        }
+        
+        // Center the image
+        const x = (pdfWidth - imgWidth) / 2;
+        const y = (pdfHeight - imgHeight) / 2;
+        
+        // Add high-quality image to PDF
+        const imgData = canvas.toDataURL('image/png', 1.0);
+        pdf.addImage(imgData, 'PNG', x, y, imgWidth, imgHeight, undefined, 'FAST');
+        
+        // Save PDF
+        pdf.save(`cdc-${currentChart.label.toLowerCase().replace(/\s+/g, '-')}-${cdcGender}-${new Date().toISOString().split('T')[0]}.pdf`);
+        setSaving(false);
+      };
+      
+      img.onerror = () => {
+        console.error('Error loading SVG image');
+        URL.revokeObjectURL(svgUrl);
+        setSaving(false);
+      };
+      
+      img.src = svgUrl;
     } catch (error) {
-      console.error('Error saving as PNG:', error);
-    } finally {
+      console.error('Error saving as PDF:', error);
       setSaving(false);
     }
   };
