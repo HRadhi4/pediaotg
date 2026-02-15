@@ -127,14 +127,14 @@ const CDC_CHARTS = {
       measurements: {
         stature: {
           yLabel: "Stature (cm)",
-          // Pixel-perfect coordinates from user (Feb 2026)
-          // Age 2: X=450, Age 20: X=2060
-          // Stature: Y top (195cm)=400, Y bottom (75cm)=2420
+          // Pixel-perfect coordinates (Feb 2026) - adjusted: X+4px, Y+4px
+          // Age 2: X=454, Age 20: X=2064
+          // Stature: Y top (195cm)=404, Y bottom (75cm)=2424
           grid: { 
-            xMin: 450,   // Age 2
-            xMax: 2060,  // Age 20
-            yMin: 2420,  // Bottom (75cm)
-            yMax: 400,   // Top (195cm)
+            xMin: 454,   // Age 2 (shifted +4px right)
+            xMax: 2064,  // Age 20 (shifted +4px right)
+            yMin: 2424,  // Bottom (75cm) (shifted +4px down)
+            yMax: 404,   // Top (195cm) (shifted +4px down)
             valueMin: 75,
             valueMax: 195,
             ageMin: 2, 
@@ -143,12 +143,12 @@ const CDC_CHARTS = {
         },
         weight: {
           yLabel: "Weight (kg)",
-          // Weight: Y top (110kg)=1224, Y bottom (10kg)=2930
+          // Weight: Y top (110kg)=1232, Y bottom (10kg)=2938 (shifted +8px down)
           grid: { 
-            xMin: 450,   // Age 2
-            xMax: 2060,  // Age 20
-            yMin: 2930,  // Bottom (10kg)
-            yMax: 1224,  // Top (110kg)
+            xMin: 454,   // Age 2 (shifted +4px right)
+            xMax: 2064,  // Age 20 (shifted +4px right)
+            yMin: 2938,  // Bottom (10kg) (shifted +8px down)
+            yMax: 1232,  // Top (110kg) (shifted +8px down)
             valueMin: 10,
             valueMax: 110,
             ageMin: 2, 
