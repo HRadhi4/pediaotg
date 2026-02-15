@@ -522,8 +522,8 @@ const CDCChartsSection = ({ gender }) => {
                   ) : (
                     currentEntries.map((entry, index) => entry.bmiCoords && (
                       <g key={entry.id}>
-                        <circle cx={entry.bmiCoords.x} cy={entry.bmiCoords.y} r="8" fill={cdcGender === 'boys' ? '#2563eb' : '#db2777'} stroke="white" strokeWidth="2" />
-                        <text x={entry.bmiCoords.x} y={entry.bmiCoords.y + 3} textAnchor="middle" fill="white" fontSize="9" fontWeight="bold">{index + 1}</text>
+                        <circle cx={entry.bmiCoords.x} cy={entry.bmiCoords.y} r="25" fill={cdcGender === 'boys' ? '#2563eb' : '#db2777'} stroke="white" strokeWidth="6" />
+                        <text x={entry.bmiCoords.x} y={entry.bmiCoords.y + 8} textAnchor="middle" fill="white" fontSize="22" fontWeight="bold">{index + 1}</text>
                       </g>
                     ))
                   )}
