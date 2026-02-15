@@ -598,13 +598,8 @@ const DrugsPage = ({ onBack }) => {
                     <div className="overflow-hidden flex-1 min-w-0">
                       <h3 
                         className={`font-semibold text-base leading-tight whitespace-nowrap ${
-                          isExpanded ? 'animate-marquee hover:animate-none' : 'overflow-hidden text-ellipsis'
+                          isExpanded && drug.name.length > 15 ? 'animate-marquee-left' : 'overflow-hidden text-ellipsis'
                         }`}
-                        style={isExpanded ? {
-                          display: 'inline-block',
-                          animation: drug.name.length > 15 ? 'marquee 6s linear infinite' : 'none',
-                          paddingRight: drug.name.length > 15 ? '2rem' : '0'
-                        } : {}}
                       >
                         {drug.name}
                       </h3>
