@@ -223,12 +223,35 @@ const WHOChartsSection = ({ gender }) => {
   const [chartType, setChartType] = useState("weight");
   const [entries, setEntries] = useState([]);
   const [newEntry, setNewEntry] = useState({ date: new Date().toISOString().split('T')[0], ageMonths: "", value: "" });
+  const [bmiCalc, setBmiCalc] = useState({ height: "", weight: "" });
   const [saving, setSaving] = useState(false);
   const chartContainerRef = useRef(null);
 
   const whoGender = gender === "male" ? "boys" : "girls";
   const currentChart = WHO_CHARTS[whoGender]?.[chartType] || WHO_CHARTS.boys.weight;
   const availableCharts = Object.keys(WHO_CHARTS[whoGender] || {});
+  const isBmiChart = chartType === "bmi";
+
+  // Calculate BMI from height (cm) and weight (kg)
+  const calculateBMI = (heightCm, weightKg) => {
+    const h = parseFloat(heightCm);
+    const w = parseFloat(weightKg);
+    if (isNaN(h) || isNaN(w) || h <= 0) return "";
+    const bmi = (w / ((h / 100) ** 2)).toFixed(1);
+    return bmi;
+  };
+
+  // Update BMI when height/weight changes in calculator
+  const handleBmiCalcChange = (field, value) => {
+    const updated = { ...bmiCalc, [field]: value };
+    setBmiCalc(updated);
+    if (isBmiChart) {
+      const calculatedBmi = calculateBMI(updated.height, updated.weight);
+      if (calculatedBmi) {
+        setNewEntry(prev => ({ ...prev, value: calculatedBmi }));
+      }
+    }
+  };
 
   const calculateSvgCoords = useCallback((ageMonths, value) => {
     const { grid } = currentChart;
