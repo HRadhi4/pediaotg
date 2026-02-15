@@ -201,52 +201,5 @@ a, code, pre {
   background: linear-gradient(145deg, hsl(174, 50%, 15%) 0%, hsl(200, 30%, 10%) 50%, hsl(200, 25%, 8%) 100%);
 }
 
-/* Marquee animation for long text reveal - moves LEFT */
-@keyframes marquee-left {
-  0% {
-    transform: translateX(0);
-  }
-  10% {
-    transform: translateX(0);
-  }
-  90% {
-    transform: translateX(calc(-100% + 150px));
-  }
-  100% {
-    transform: translateX(calc(-100% + 150px));
-  }
-}
-
-.animate-marquee-left {
-  display: inline-block;
-  padding-right: 2rem;
-  animation: marquee-left 5s ease-in-out infinite;
-}
-
-.animate-marquee-left:hover {
-  animation-play-state: paused;
-}
-
-/* Legacy marquee animation (keeping for backward compatibility) */
-@keyframes marquee {
-  0% {
-    transform: translateX(0);
-  }
-  20% {
-    transform: translateX(0);
-  }
-  80% {
-    transform: translateX(calc(-100% + 200px));
-  }
-  100% {
-    transform: translateX(calc(-100% + 200px));
-  }
-}
-
-.animate-marquee {
-  animation: marquee 6s ease-in-out infinite;
-}
-
-.animate-marquee:hover {
-  animation-play-state: paused;
-}
+/* Drug name scroll animation - now defined in tailwind.config.js */
+/* Using Tailwind's animate-scroll-left class for unified animation */
