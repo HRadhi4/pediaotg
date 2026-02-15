@@ -164,7 +164,7 @@ const CDC_CHARTS = {
       measurements: {
         bmi: {
           yLabel: "BMI (kg/m²)",
-          grid: { xMin: 111, xMax: 695, yMin: 900, yMax: 150, ageMin: 2, ageMax: 20, valueMin: 12, valueMax: 35 }
+          grid: { xMin: 111, xMax: 695, yMin: 842, yMax: 153, ageMin: 2, ageMax: 20, valueMin: 11, valueMax: 35 }
         }
       }
     }
