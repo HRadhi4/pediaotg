@@ -293,16 +293,8 @@ const WHOChartsSection = ({ gender }) => {
     if (!chartContainerRef.current) return;
     setSaving(true);
     try {
-      // Find the chart container div (the one with the SVG and background)
-      const chartDiv = chartContainerRef.current.querySelector('.relative.border');
-      if (!chartDiv) {
-        console.error('Chart container not found');
-        setSaving(false);
-        return;
-      }
-
-      // Use html2canvas to capture the chart with all its contents
-      const canvas = await html2canvas(chartDiv, {
+      // Use html2canvas to capture the chart container with all its contents
+      const canvas = await html2canvas(chartContainerRef.current, {
         scale: 3, // High resolution for print quality
         useCORS: true,
         allowTaint: true,
