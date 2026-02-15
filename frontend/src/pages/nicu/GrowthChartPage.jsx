@@ -384,6 +384,7 @@ const CDCChartsSection = ({ gender }) => {
   const [chartType, setChartType] = useState("statureWeight");
   const [entries, setEntries] = useState([]);
   const [newEntry, setNewEntry] = useState({ date: new Date().toISOString().split('T')[0], ageYears: "", stature: "", weight: "", bmi: "" });
+  const [bmiCalc, setBmiCalc] = useState({ height: "", weight: "" });
   const [saving, setSaving] = useState(false);
   const chartContainerRef = useRef(null);
 
@@ -391,6 +392,25 @@ const CDCChartsSection = ({ gender }) => {
   const currentChart = CDC_CHARTS[cdcGender]?.[chartType] || CDC_CHARTS.boys.statureWeight;
   const availableCharts = Object.keys(CDC_CHARTS[cdcGender] || {});
   const isStatureWeightChart = chartType === "statureWeight";
+
+  // Calculate BMI from height (cm) and weight (kg)
+  const calculateBMI = (heightCm, weightKg) => {
+    const h = parseFloat(heightCm);
+    const w = parseFloat(weightKg);
+    if (isNaN(h) || isNaN(w) || h <= 0) return "";
+    const bmi = (w / ((h / 100) ** 2)).toFixed(1);
+    return bmi;
+  };
+
+  // Update BMI when height/weight changes in calculator
+  const handleBmiCalcChange = (field, value) => {
+    const updated = { ...bmiCalc, [field]: value };
+    setBmiCalc(updated);
+    const calculatedBmi = calculateBMI(updated.height, updated.weight);
+    if (calculatedBmi) {
+      setNewEntry(prev => ({ ...prev, bmi: calculatedBmi }));
+    }
+  };
 
   // LINEAR VALUE-BASED coordinate calculation for accurate chart plotting
   // Uses direct cm/kg to pixel mapping based on chart grid values
