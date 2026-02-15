@@ -129,14 +129,14 @@ const CDC_CHARTS = {
           yLabel: "Stature (cm)",
           // Pixel-perfect coordinates from user (Feb 2026)
           // Age 2: X=450, Age 20: X=2060
-          // Stature: Y top (190cm)=400, Y bottom (77cm)=909
+          // Stature: Y top (195cm)=400, Y bottom (75cm)=2420
           grid: { 
             xMin: 450,   // Age 2
             xMax: 2060,  // Age 20
-            yMin: 909,   // Bottom (77cm)
-            yMax: 400,   // Top (190cm)
-            valueMin: 77,
-            valueMax: 190,
+            yMin: 2420,  // Bottom (75cm)
+            yMax: 400,   // Top (195cm)
+            valueMin: 75,
+            valueMax: 195,
             ageMin: 2, 
             ageMax: 20 
           }
