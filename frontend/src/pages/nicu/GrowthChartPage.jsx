@@ -717,8 +717,8 @@ const CDCChartsSection = ({ gender }) => {
               <CardTitle className="text-sm">{currentChart.label} - {cdcGender === 'boys' ? 'Boys' : 'Girls'}</CardTitle>
               <CardDescription className="text-xs">Pinch to zoom • Drag to pan • Double-tap to reset</CardDescription>
             </div>
-            <Button variant="outline" size="sm" onClick={saveAsPng} disabled={saving} className="h-8" data-testid="cdc-save-png-btn">
-              <Camera className="h-4 w-4 mr-1" />{saving ? 'Saving...' : 'Save PNG'}
+            <Button variant="outline" size="sm" onClick={saveAsPdf} disabled={saving} className="h-8 px-3" data-testid="cdc-save-pdf-btn">
+              <Download className="h-4 w-4 mr-1" />{saving ? '...' : 'Save'}
             </Button>
           </div>
         </CardHeader>
