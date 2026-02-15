@@ -166,8 +166,8 @@ const CDC_CHARTS = {
           yLabel: "BMI (kg/m²)",
           // User-provided pixel coordinates (Feb 2026):
           // X: Age 2 = 147px, Age 20 = 941px
-          // Y: 40px per BMI unit, BMI 11 = 1200px, BMI 40 = 40px
-          grid: { xMin: 147, xMax: 941, yMin: 1200, yMax: 40, ageMin: 2, ageMax: 20, valueMin: 11, valueMax: 40 }
+          // Y: BMI 11 (bottom) = 1205px, BMI 40 (top) = 179px
+          grid: { xMin: 147, xMax: 941, yMin: 1205, yMax: 179, ageMin: 2, ageMax: 20, valueMin: 11, valueMax: 40 }
         }
       }
     }
@@ -208,8 +208,8 @@ const CDC_CHARTS = {
           yLabel: "BMI (kg/m²)",
           // User-provided pixel coordinates (Feb 2026):
           // X: Age 2 = 147px, Age 20 = 941px
-          // Y: 40px per BMI unit, BMI 11 = 1200px, BMI 40 = 40px
-          grid: { xMin: 147, xMax: 941, yMin: 1200, yMax: 40, ageMin: 2, ageMax: 20, valueMin: 11, valueMax: 40 }
+          // Y: BMI 11 (bottom) = 1205px, BMI 40 (top) = 179px
+          grid: { xMin: 147, xMax: 941, yMin: 1205, yMax: 179, ageMin: 2, ageMax: 20, valueMin: 11, valueMax: 40 }
         }
       }
     }
