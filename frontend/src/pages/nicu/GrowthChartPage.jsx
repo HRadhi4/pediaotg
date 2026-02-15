@@ -143,14 +143,14 @@ const CDC_CHARTS = {
         },
         weight: {
           yLabel: "Weight (kg)",
-          // Weight: Y top (105kg)=909, Y bottom (10kg)=2920
+          // Weight: Y top (110kg)=1224, Y bottom (10kg)=2930
           grid: { 
             xMin: 450,   // Age 2
             xMax: 2060,  // Age 20
-            yMin: 2920,  // Bottom (10kg)
-            yMax: 909,   // Top (105kg)
+            yMin: 2930,  // Bottom (10kg)
+            yMax: 1224,  // Top (110kg)
             valueMin: 10,
-            valueMax: 105,
+            valueMax: 110,
             ageMin: 2, 
             ageMax: 20 
           }
