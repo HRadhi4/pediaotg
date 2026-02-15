@@ -214,7 +214,7 @@ class GrowthChartTester:
             "failed": 0,
             "test_details": []
         }
-        self.base_url = "https://cdc-growth-chart-fix.preview.emergentagent.com"
+        self.base_url = "https://chart-coordinates.preview.emergentagent.com"
     
     async def login(self, page):
         """Login to the application"""
