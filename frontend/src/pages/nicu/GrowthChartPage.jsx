@@ -179,7 +179,7 @@ const CDC_CHARTS = {
           yLabel: "Stature (cm)",
           // Same pixel-perfect coordinates as boys chart
           grid: { 
-            xMin: 450, xMax: 2050, 
+            xMin: 450, xMax: 2060, 
             yMin: 909, yMax: 400,
             valueMin: 77, valueMax: 190,
             ageMin: 2, ageMax: 20 
@@ -188,7 +188,7 @@ const CDC_CHARTS = {
         weight: {
           yLabel: "Weight (kg)",
           grid: { 
-            xMin: 450, xMax: 2050, 
+            xMin: 450, xMax: 2060, 
             yMin: 2920, yMax: 909,
             valueMin: 10, valueMax: 105,
             ageMin: 2, ageMax: 20 
