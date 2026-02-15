@@ -1,83 +1,87 @@
-# Medical Calculator Application - PRD
+# Pediatrics On The Go - Product Requirements Document
 
 ## Original Problem Statement
-Build a comprehensive medical calculator application for NICU (Neonatal Intensive Care Unit) and Children's ER/Pediatric Ward with pixel-perfect growth charts and clinical decision support tools.
+Build a medical calculator application for pediatric healthcare professionals featuring:
+- Pixel-perfect growth chart plotting (CDC and WHO charts)
+- Clinical calculators and scoring systems
+- Drug dosing references
+- Medical approaches/guidelines
+
+## User Persona
+- Primary: Pediatricians, NICU staff, pediatric residents
+- Use case: Quick reference and calculations during patient care
 
 ## Core Requirements
-- **User Authentication:** Email/password login with subscription management
-- **Growth Charts:** WHO (Birth-2 years) and CDC (2-20 years) with pixel-perfect data plotting
-- **Medical Calculators:** Fluid, Blood Gas, Electrolytes, GIR, Blood Products, Jaundice, etc.
-- **Clinical Approaches:** NICU-specific condition management guides
-- **Mobile-First Design:** Responsive UI optimized for clinical use
+
+### Growth Charts (P0)
+- WHO charts (0-2 years): Weight, Length, BMI, Head Circumference
+- CDC charts (2-20 years): Stature/Weight, BMI
+- Gender-specific charts (Boys/Girls)
+- Pixel-perfect coordinate plotting
+- PDF export with chart background
+- Zoom/pan functionality
+
+### Clinical Calculators
+- BMI Calculator
+- BSA Calculator (Mosteller Formula) - Added Dec 2025
+- Electrolytes Calculator
+
+### Drug References
+- Children drug dosing page
+- Marquee animation for long drug names (mobile only)
+
+## What's Been Implemented
+
+### Dec 2025 Session
+1. **CDC Boys Chart Calibration** - Adjusted coordinates:
+   - X-axis: +4px right (xMin: 454, xMax: 2064)
+   - Stature Y-axis: +4px down (yMin: 2424, yMax: 404)
+   - Weight Y-axis: +8px down (yMin: 2938, yMax: 1232)
+
+2. **CDC Girls Chart Calibration** - Previously adjusted coordinates
+
+3. **BSA Calculator** - Added to "Children > Scoring" page using Mosteller Formula
+
+4. **PDF Export** - Save button with jspdf/html2canvas, includes chart background via base64 conversion
+
+5. **Marquee Animation** - Unified in tailwind.config.js, scrolls right, mobile only (<768px)
+
+## Pending Verification
+- CDC Boys chart coordinate accuracy
+- CDC Girls chart coordinate accuracy
+- Marquee animation (mobile only behavior)
+- PDF export (background image inclusion)
+- BMI plot-drift fix
 
 ## Architecture
-- **Frontend:** React.js with Tailwind CSS and Shadcn/UI components
-- **Backend:** FastAPI (Python)
-- **Database:** MongoDB
-- **Authentication:** JWT-based with subscription tiers
 
----
+### Frontend
+- React.js with TailwindCSS
+- Shadcn/UI components
+- react-zoom-pan-pinch for chart interaction
+- jspdf for PDF generation
 
-## Implementation Status
+### Backend
+- FastAPI
+- MongoDB
 
-### ✅ Completed Features
+### Key Files
+- `/app/frontend/src/pages/nicu/GrowthChartPage.jsx` - All chart logic and coordinates
+- `/app/frontend/src/pages/children/DrugsPage.jsx` - Marquee animation logic
+- `/app/frontend/src/pages/children/ScoringPage.jsx` - BSA calculator
+- `/app/frontend/tailwind.config.js` - Custom animations
 
-#### Growth Charts - PIXEL PERFECT
-1. **WHO Growth Charts (0-2 years)** - All calibrated
-   - Weight-for-age, Length-for-age, BMI-for-age, Head Circumference
-   - Boys and Girls variants
+## Backlog (P1-P2)
+- Refactor ElectrolytesDialog.jsx into smaller components
+- Refactor "NICU > Approaches > Mechanical Ventilation" layout
+- Add "Mechanical Ventilation" to "Children > Approaches"
+- Implement data-testid attributes across interactive elements
 
-2. **CDC Growth Charts (2-20 years)** - All calibrated
-   - **Stature & Weight (Boys & Girls)** ✅
-     - X: Age 2 = 450px, Age 20 = 2060px
-     - Stature Y: 75cm = 2420px, 195cm = 400px
-     - Weight Y: 10kg = 2930px, 110kg = 1224px
-   
-   - **BMI-for-age (Boys & Girls)** ✅ (Feb 15, 2026)
-     - High-resolution PNG from official CDC (1105x1430 pixels)
-     - X: Age 2 = 145px, Age 20 = 941px
-     - Y: BMI 40 (top) = 177px, BMI 11 (bottom) = 1203px
-
-#### Medical Calculators
-- Fluid Calculator, Blood Gas Analyzer, Electrolytes Correction
-- GIR Calculator, Blood Products Calculator, Jaundice Assessment
-- Ballard Score, NRP Checklist, Catheter Calculator
-- Intubation Guide, Blood Pressure Reference, PRBC Guidelines
-- Exchange Calculator, Drugs Reference, Postnatal Assessment
-
-#### Authentication & Subscription
-- Login/Register flows with PayPal integration
-- Subscription management with timezone-aware checks
-
----
-
-## Pending Tasks
-
-### P1 - High Priority
-- [ ] Functionally test Electrolytes Calculator fix (Step 4 hiding & summary text)
-
-### P2 - Medium Priority  
-- [ ] Refactor `ElectrolytesDialog.jsx` into smaller components
-- [ ] Refactor "NICU > Approaches > Mechanical Ventilation" page layout
-- [ ] Add "Mechanical Ventilation" approach to Children section
-- [ ] Implement `data-testid` attributes across interactive elements
-
----
-
-## Key Files
-```
-/app/frontend/src/pages/nicu/GrowthChartPage.jsx  # Growth chart coordinates
-/app/frontend/public/charts/cdc/                   # CDC chart images
-  - cdc_boys_bmi_2_20.png (1105x1430)
-  - cdc_girls_bmi_2_20.png (1105x1430)
-  - cdc_boys_stature_weight_2_20.png
-  - cdc_girls_stature_weight_2_20.png
-```
+## 3rd Party Integrations
+- PayPal (existing)
+- SMTP (existing)
+- jspdf/html2canvas (frontend PDF generation)
 
 ## Test Credentials
-- Email: `test@test.com`
-- Password: `12341234`
-
-## Third-Party Integrations
-- PayPal (Subscriptions)
-- SMTP Email Service
+- Email: test@test.com
+- Password: 12341234
