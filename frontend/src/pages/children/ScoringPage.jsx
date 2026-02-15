@@ -485,6 +485,135 @@ const IWLCalculator = () => {
   );
 };
 
+// BSA Calculator Component (Body Surface Area)
+const BSACalculator = () => {
+  const [weight, setWeight] = useState("");
+  const [height, setHeight] = useState("");
+
+  const calculateBSA = () => {
+    const w = parseFloat(weight);
+    const h = parseFloat(height);
+    if (!w || !h || w <= 0 || h <= 0) return null;
+    // Mosteller Formula: BSA (m²) = √(Height (cm) × Weight (kg) / 3600)
+    return Math.sqrt((h * w) / 3600).toFixed(3);
+  };
+
+  const bsa = calculateBSA();
+
+  const getBSACategory = (bsaVal) => {
+    const val = parseFloat(bsaVal);
+    if (val < 0.5) return { label: "Neonate/Small Infant", color: "blue" };
+    if (val < 1.0) return { label: "Infant/Toddler", color: "teal" };
+    if (val < 1.5) return { label: "Child", color: "green" };
+    if (val < 1.73) return { label: "Adolescent", color: "amber" };
+    return { label: "Adult Range", color: "purple" };
+  };
+
+  const category = bsa ? getBSACategory(bsa) : null;
+
+  const clearInputs = () => {
+    setWeight("");
+    setHeight("");
+  };
+
+  return (
+    <div className="space-y-4">
+      <Card className="nightingale-card">
+        <CardHeader className="pb-3">
+          <CardTitle className="text-base">Body Surface Area (BSA)</CardTitle>
+          <CardDescription>Mosteller Formula</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid grid-cols-2 gap-3">
+            <div className="space-y-2">
+              <Label className="text-sm">Height (cm)</Label>
+              <Input 
+                type="number" 
+                placeholder="e.g., 100" 
+                value={height} 
+                onChange={(e) => setHeight(e.target.value)} 
+                className="font-mono"
+                data-testid="bsa-height-input"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label className="text-sm">Weight (kg)</Label>
+              <Input 
+                type="number" 
+                placeholder="e.g., 15" 
+                value={weight} 
+                onChange={(e) => setWeight(e.target.value)} 
+                className="font-mono"
+                data-testid="bsa-weight-input"
+              />
+            </div>
+          </div>
+          {(height || weight) && (
+            <Button variant="outline" size="sm" onClick={clearInputs} className="w-full">
+              Clear
+            </Button>
+          )}
+        </CardContent>
+      </Card>
+
+      {bsa && category && (
+        <Card className={`border-2 border-${category.color}-300 bg-${category.color}-50 dark:bg-${category.color}-950/30`}>
+          <CardContent className="pt-6 pb-6 text-center">
+            <p className="text-sm text-muted-foreground mb-2">Body Surface Area</p>
+            <p className="text-5xl font-mono font-bold text-[#00d9c5]" data-testid="bsa-result">{bsa} m²</p>
+            <p className="text-sm mt-3 font-medium text-muted-foreground">{category.label}</p>
+          </CardContent>
+        </Card>
+      )}
+
+      <Card className="nightingale-card">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-sm">Formula</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <div className="bg-gray-900 dark:bg-gray-950 rounded-lg p-4 text-center">
+            <p className="text-white text-sm font-medium mb-2">Mosteller Formula (Metric)</p>
+            <div className="flex items-center justify-center gap-2 text-white">
+              <span className="text-lg">BSA (m²) = </span>
+              <span className="text-2xl">√</span>
+              <div className="border-t border-white pt-1">
+                <div className="text-sm px-2">Height (cm) × Weight (kg)</div>
+                <div className="border-t border-white text-sm px-2 pt-1">3600</div>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card className="nightingale-card">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-sm">Reference Values</CardTitle>
+        </CardHeader>
+        <CardContent className="text-xs text-muted-foreground space-y-1">
+          <p>• Neonate: ~0.2-0.25 m²</p>
+          <p>• 1 year: ~0.4-0.5 m²</p>
+          <p>• 5 years: ~0.7-0.8 m²</p>
+          <p>• 10 years: ~1.0-1.2 m²</p>
+          <p>• Adult average: ~1.7-1.9 m²</p>
+        </CardContent>
+      </Card>
+
+      <Card className="nightingale-card">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-sm">Clinical Uses</CardTitle>
+        </CardHeader>
+        <CardContent className="text-xs text-muted-foreground space-y-1">
+          <p>• Drug dosing (especially chemotherapy)</p>
+          <p>• Fluid calculations</p>
+          <p>• Cardiac index calculation</p>
+          <p>• Renal function assessment</p>
+          <p>• Burn area estimation</p>
+        </CardContent>
+      </Card>
+    </div>
+  );
+};
+
 // CPR Page - PALS 2025 Algorithms & Drug Dosing (Redesigned)
 
 export default ScoringPage;
