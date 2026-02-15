@@ -420,20 +420,6 @@ const WHOChartsSection = ({ gender }) => {
       setSaving(false);
     }
   };
-      };
-      
-      img.onerror = () => {
-        console.error('Error loading SVG image');
-        URL.revokeObjectURL(svgUrl);
-        setSaving(false);
-      };
-      
-      img.src = svgUrl;
-    } catch (error) {
-      console.error('Error saving as PDF:', error);
-      setSaving(false);
-    }
-  };
 
   const getUnit = () => {
     if (chartType === 'weight') return 'kg';
