@@ -599,7 +599,7 @@ const DrugsPage = ({ onBack }) => {
                       {isExpanded && drug.name.length > 15 ? (
                         <div className="overflow-hidden">
                           <h3 
-                            className="font-semibold text-base leading-tight whitespace-nowrap inline-block animate-scroll-right md:animate-none md:overflow-hidden md:text-ellipsis md:block"
+                            className="font-semibold text-base leading-tight whitespace-nowrap inline-block animate-scroll-left md:animate-none md:overflow-hidden md:text-ellipsis md:block"
                           >
                             {drug.name}
                           </h3>
