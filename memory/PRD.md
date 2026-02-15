@@ -1,7 +1,7 @@
 # Medical Calculator Application - PRD
 
 ## Original Problem Statement
-Build a comprehensive medical calculator application for NICU (Neonatal Intensive Care Unit) and Children's ER/Pediatric Ward. The application should include growth charts (WHO and CDC), various medical calculators, and clinical decision support tools.
+Build a comprehensive medical calculator application for NICU (Neonatal Intensive Care Unit) and Children's ER/Pediatric Ward with pixel-perfect growth charts and clinical decision support tools.
 
 ## Core Requirements
 - **User Authentication:** Email/password login with subscription management
@@ -16,58 +16,38 @@ Build a comprehensive medical calculator application for NICU (Neonatal Intensiv
 - **Database:** MongoDB
 - **Authentication:** JWT-based with subscription tiers
 
-## Key Technical Decisions
-- Growth chart coordinate mapping uses linear interpolation from user-calibrated pixel values
-- Charts use static PNG/SVG images with SVG overlay for data points
-- Drag-and-drop widget organization for NICU dashboard
-
 ---
 
 ## Implementation Status
 
 ### ✅ Completed Features
-1. **User Authentication System**
-   - Login/Register flows
-   - Subscription management with PayPal integration
-   - Protected routes
 
-2. **WHO Growth Charts (0-2 years)**
-   - Weight-for-age
-   - Length-for-age
-   - BMI-for-age
-   - Head Circumference
+#### Growth Charts - PIXEL PERFECT
+1. **WHO Growth Charts (0-2 years)** - All calibrated
+   - Weight-for-age, Length-for-age, BMI-for-age, Head Circumference
    - Boys and Girls variants
 
-3. **CDC Growth Charts (2-20 years)**
-   - Stature & Weight charts (Boys & Girls) - PIXEL-PERFECT ✅
-   - BMI-for-age (Boys & Girls) - PIXEL-PERFECT ✅ (Feb 2026)
+2. **CDC Growth Charts (2-20 years)** - All calibrated
+   - **Stature & Weight (Boys & Girls)** ✅
+     - X: Age 2 = 450px, Age 20 = 2060px
+     - Stature Y: 75cm = 2420px, 195cm = 400px
+     - Weight Y: 10kg = 2930px, 110kg = 1224px
    
-4. **NICU Calculators**
-   - Fluid Calculator
-   - Blood Gas Analyzer
-   - Electrolytes Correction Calculator
-   - GIR Calculator
-   - Blood Products Calculator
-   - Jaundice Assessment
-   - Ballard Score
-   - NRP Checklist
-   - Catheter Calculator
-   - Intubation Guide
-   - Blood Pressure Reference
-   - PRBC Guidelines
-   - Exchange Calculator
-   - Drugs Reference
-   - Postnatal Assessment
+   - **BMI-for-age (Boys & Girls)** ✅ (Feb 15, 2026)
+     - High-resolution PNG from official CDC (1105x1430 pixels)
+     - X: Age 2 = 145px, Age 20 = 941px
+     - Y: BMI 40 (top) = 177px, BMI 11 (bottom) = 1203px
 
-5. **Clinical Approaches**
-   - Multiple NICU condition-specific approaches implemented
+#### Medical Calculators
+- Fluid Calculator, Blood Gas Analyzer, Electrolytes Correction
+- GIR Calculator, Blood Products Calculator, Jaundice Assessment
+- Ballard Score, NRP Checklist, Catheter Calculator
+- Intubation Guide, Blood Pressure Reference, PRBC Guidelines
+- Exchange Calculator, Drugs Reference, Postnatal Assessment
 
-### 🔧 Recent Changes (Feb 2026)
-- **CDC BMI Chart Y-Axis Fix:** Applied user-provided pixel coordinates
-  - Y pixel top = 153 → BMI 35
-  - Y pixel bottom = 842 → BMI 11
-  - Updated both Boys and Girls charts
-- **Auth Subscription Fix:** Fixed timezone-aware datetime comparison in subscription check
+#### Authentication & Subscription
+- Login/Register flows with PayPal integration
+- Subscription management with timezone-aware checks
 
 ---
 
@@ -84,21 +64,14 @@ Build a comprehensive medical calculator application for NICU (Neonatal Intensiv
 
 ---
 
-## File Structure Reference
+## Key Files
 ```
-/app
-├── backend/
-│   └── src/
-│       └── services/
-│           └── auth_service.py  # Auth & subscription logic
-└── frontend/
-    └── src/
-        ├── pages/
-        │   ├── NICUCalculator.jsx  # Main NICU dashboard
-        │   └── nicu/
-        │       └── GrowthChartPage.jsx  # Growth chart with coordinates
-        └── components/
-            └── ElectrolytesDialog.jsx  # Needs refactoring
+/app/frontend/src/pages/nicu/GrowthChartPage.jsx  # Growth chart coordinates
+/app/frontend/public/charts/cdc/                   # CDC chart images
+  - cdc_boys_bmi_2_20.png (1105x1430)
+  - cdc_girls_bmi_2_20.png (1105x1430)
+  - cdc_boys_stature_weight_2_20.png
+  - cdc_girls_stature_weight_2_20.png
 ```
 
 ## Test Credentials
