@@ -349,6 +349,27 @@ const WHOChartsSection = ({ gender }) => {
                     width={currentChart.viewBox.split(' ')[2]}
                     height={currentChart.viewBox.split(' ')[3]}
                   />
+                  {/* Connecting lines between dots */}
+                  {currentEntries.length > 1 && currentEntries.slice(0, -1).map((entry, index) => {
+                    const nextEntry = currentEntries[index + 1];
+                    if (entry.coords && nextEntry?.coords) {
+                      const lineColor = whoGender === 'boys' ? '#dc2626' : '#2563eb'; // Red for boys (blue dots), Blue for girls (pink dots)
+                      return (
+                        <line 
+                          key={`line-${entry.id}`}
+                          x1={entry.coords.x} 
+                          y1={entry.coords.y} 
+                          x2={nextEntry.coords.x} 
+                          y2={nextEntry.coords.y}
+                          stroke={lineColor}
+                          strokeWidth="3"
+                          strokeLinecap="round"
+                        />
+                      );
+                    }
+                    return null;
+                  })}
+                  {/* Dots */}
                   {currentEntries.map((entry, index) => entry.coords && (
                     <g key={entry.id}>
                       <circle cx={entry.coords.x} cy={entry.coords.y} r="8" fill={whoGender === 'boys' ? '#2563eb' : '#db2777'} stroke="white" strokeWidth="2" />
