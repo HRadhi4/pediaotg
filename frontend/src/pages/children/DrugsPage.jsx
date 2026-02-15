@@ -595,25 +595,22 @@ const DrugsPage = ({ onBack }) => {
                 <div className="space-y-3">
                   {/* Row 1: Drug Name and Category */}
                   <div className="flex items-center justify-between gap-2">
-                    <div className="flex-1 min-w-0 overflow-visible">
-                      <h3 
-                        className="font-semibold text-base leading-tight whitespace-nowrap"
-                      >
-                        {isExpanded && drug.name.length > 15 ? (
-                          <span 
-                            className="inline-block animate-scroll-right md:animate-none"
-                            style={{ paddingRight: '120px' }}
+                    <div className="flex-1 min-w-0 overflow-hidden">
+                      {isExpanded && drug.name.length > 15 ? (
+                        <div className="overflow-hidden">
+                          <h3 
+                            className="font-semibold text-base leading-tight whitespace-nowrap inline-block animate-scroll-right md:animate-none md:overflow-hidden md:text-ellipsis md:block"
                           >
                             {drug.name}
-                          </span>
-                        ) : (
-                          <span className="block overflow-hidden text-ellipsis">
-                            {drug.name}
-                          </span>
-                        )}
-                      </h3>
+                          </h3>
+                        </div>
+                      ) : (
+                        <h3 className="font-semibold text-base leading-tight whitespace-nowrap overflow-hidden text-ellipsis">
+                          {drug.name}
+                        </h3>
+                      )}
                     </div>
-                    <span className={`text-[10px] px-2 py-1 rounded bg-gray-100 dark:bg-gray-800 text-muted-foreground whitespace-nowrap flex-shrink-0 ${isExpanded && drug.name.length > 15 ? 'relative z-10 bg-opacity-100' : ''}`}>
+                    <span className="text-[10px] px-2 py-1 rounded bg-gray-100 dark:bg-gray-800 text-muted-foreground whitespace-nowrap flex-shrink-0">
                       {drug.category}
                     </span>
                   </div>
