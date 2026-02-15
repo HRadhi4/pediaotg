@@ -1,6 +1,6 @@
 import React, { useState, useRef, useCallback } from "react";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
-import { Plus, Trash2, Camera } from "lucide-react";
+import { Plus, Trash2, Download } from "lucide-react";
 import { GrowthChartIcon as HealthGrowthIcon } from "@/components/HealthIcons";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { toPng } from 'html-to-image';
+import jsPDF from 'jspdf';
 
 /**
  * Growth Charts - WHO (Birth-2yr) & CDC (2-20yr)
