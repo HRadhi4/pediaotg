@@ -595,15 +595,23 @@ const DrugsPage = ({ onBack }) => {
                 <div className="space-y-3">
                   {/* Row 1: Drug Name and Category */}
                   <div className="flex items-center justify-between gap-2">
-                    <div className="overflow-hidden flex-1 min-w-0">
+                    <div className="flex-1 min-w-0 relative">
                       <h3 
                         className={`font-semibold text-base leading-tight whitespace-nowrap ${
                           isExpanded && drug.name.length > 15 
-                            ? 'inline-block pr-8 animate-scroll-right md:animate-none md:overflow-hidden md:text-ellipsis' 
+                            ? 'md:overflow-hidden md:text-ellipsis' 
                             : 'overflow-hidden text-ellipsis'
                         }`}
                       >
-                        {drug.name}
+                        <span 
+                          className={
+                            isExpanded && drug.name.length > 15 
+                              ? 'inline-block animate-scroll-right md:animate-none' 
+                              : ''
+                          }
+                        >
+                          {drug.name}
+                        </span>
                       </h3>
                     </div>
                     <span className="text-[10px] px-2 py-1 rounded bg-gray-100 dark:bg-gray-800 text-muted-foreground whitespace-nowrap flex-shrink-0">
