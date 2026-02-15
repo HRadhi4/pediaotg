@@ -206,10 +206,10 @@ const CDC_CHARTS = {
       measurements: {
         bmi: {
           yLabel: "BMI (kg/m²)",
-          // Scaled from SVG (816x1056) to PNG (2550x3300) - scale factor 3.125
-          // Original: xMin: 111, xMax: 695, yMin: 842, yMax: 153
-          // Y pixel top = 153 = BMI 35, Y pixel bottom = 842 = BMI 11 (user-provided)
-          grid: { xMin: 347, xMax: 2172, yMin: 2631, yMax: 478, ageMin: 2, ageMax: 20, valueMin: 11, valueMax: 35 }
+          // User-provided pixel coordinates (Feb 2026):
+          // X: Age 2 = 514px, Age 20 = 1069px
+          // Y: BMI 40 (top) = 126px, BMI 11 (bottom) = 842px
+          grid: { xMin: 514, xMax: 1069, yMin: 842, yMax: 126, ageMin: 2, ageMax: 20, valueMin: 11, valueMax: 40 }
         }
       }
     }
