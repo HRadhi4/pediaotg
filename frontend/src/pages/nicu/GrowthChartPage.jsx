@@ -182,10 +182,10 @@ const CDC_CHARTS = {
         stature: {
           yLabel: "Stature (cm)",
           // Girls-specific pixel coordinates (Feb 2026)
-          // Stature Y-axis adjusted -5px (moved up)
+          // Stature Y-axis adjusted -10px total (moved up)
           grid: { 
             xMin: 455, xMax: 2065, 
-            yMin: 2440, yMax: 420,
+            yMin: 2435, yMax: 415,
             valueMin: 75, valueMax: 195,
             ageMin: 2, ageMax: 20 
           }
