@@ -366,11 +366,20 @@ const WHOChartsSection = ({ gender }) => {
       <Card>
         <CardHeader className="pb-2"><CardTitle className="text-sm">Add Measurement</CardTitle></CardHeader>
         <CardContent className="space-y-3">
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-2 gap-2">
             <div><Label className="text-xs">Date</Label><Input type="date" value={newEntry.date} onChange={e => setNewEntry({...newEntry, date: e.target.value})} className="h-9 text-sm" data-testid="who-date-input" /></div>
             <div><Label className="text-xs">Age (months)</Label><Input type="number" min="0" max="24" step="0.5" value={newEntry.ageMonths} onChange={e => setNewEntry({...newEntry, ageMonths: e.target.value})} className="h-9 font-mono text-sm" placeholder="0-24" data-testid="who-age-input" /></div>
-            <div><Label className="text-xs">{currentChart.yLabel}</Label><Input type="number" step="0.1" min="0" value={newEntry.value} onChange={e => setNewEntry({...newEntry, value: e.target.value})} className="h-9 font-mono text-sm" placeholder={`${currentChart.grid.valueMin}-${currentChart.grid.valueMax}`} data-testid="who-value-input" /></div>
           </div>
+          {isBmiChart && (
+            <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded-lg">
+              <Label className="text-xs text-muted-foreground mb-1 block">BMI Calculator</Label>
+              <div className="grid grid-cols-2 gap-2">
+                <div><Input type="number" step="0.1" min="0" value={bmiCalc.height} onChange={e => handleBmiCalcChange('height', e.target.value)} className="h-8 font-mono text-sm" placeholder="Length (cm)" data-testid="who-bmi-height-input" /></div>
+                <div><Input type="number" step="0.1" min="0" value={bmiCalc.weight} onChange={e => handleBmiCalcChange('weight', e.target.value)} className="h-8 font-mono text-sm" placeholder="Weight (kg)" data-testid="who-bmi-weight-input" /></div>
+              </div>
+            </div>
+          )}
+          <div><Label className="text-xs">{currentChart.yLabel}</Label><Input type="number" step="0.1" min="0" value={newEntry.value} onChange={e => setNewEntry({...newEntry, value: e.target.value})} className="h-9 font-mono text-sm" placeholder={`${currentChart.grid.valueMin}-${currentChart.grid.valueMax}`} data-testid="who-value-input" /></div>
           <Button onClick={addEntry} className="w-full" size="sm" disabled={!newEntry.date || !newEntry.ageMonths || !newEntry.value || parseFloat(newEntry.ageMonths) < 0 || parseFloat(newEntry.ageMonths) > 24} data-testid="who-add-measurement-btn">
             <Plus className="h-4 w-4 mr-1" />Add to Chart
           </Button>
