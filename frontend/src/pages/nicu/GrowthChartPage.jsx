@@ -578,29 +578,93 @@ const CDCChartsSection = ({ gender }) => {
                     height={currentChart.viewBox.split(' ')[3]}
                   />
                   {isStatureWeightChart ? (
-                    currentEntries.map((entry, index) => (
-                      <g key={entry.id}>
-                        {entry.statureCoords && (
-                          <g>
-                            <circle cx={entry.statureCoords.x} cy={entry.statureCoords.y} r="25" fill="#2563eb" stroke="white" strokeWidth="6" />
-                            <text x={entry.statureCoords.x} y={entry.statureCoords.y + 8} textAnchor="middle" fill="white" fontSize="22" fontWeight="bold">S{index + 1}</text>
-                          </g>
-                        )}
-                        {entry.weightCoords && (
-                          <g>
-                            <circle cx={entry.weightCoords.x} cy={entry.weightCoords.y} r="25" fill="#dc2626" stroke="white" strokeWidth="6" />
-                            <text x={entry.weightCoords.x} y={entry.weightCoords.y + 8} textAnchor="middle" fill="white" fontSize="22" fontWeight="bold">W{index + 1}</text>
-                          </g>
-                        )}
-                      </g>
-                    ))
+                    <>
+                      {/* Connecting lines for Stature (blue dots -> red line) */}
+                      {currentEntries.length > 1 && currentEntries.slice(0, -1).map((entry, index) => {
+                        const nextEntry = currentEntries[index + 1];
+                        if (entry.statureCoords && nextEntry?.statureCoords) {
+                          return (
+                            <line 
+                              key={`stature-line-${entry.id}`}
+                              x1={entry.statureCoords.x} 
+                              y1={entry.statureCoords.y} 
+                              x2={nextEntry.statureCoords.x} 
+                              y2={nextEntry.statureCoords.y}
+                              stroke="#dc2626"
+                              strokeWidth="6"
+                              strokeLinecap="round"
+                            />
+                          );
+                        }
+                        return null;
+                      })}
+                      {/* Connecting lines for Weight (red dots -> blue line) */}
+                      {currentEntries.length > 1 && currentEntries.slice(0, -1).map((entry, index) => {
+                        const nextEntry = currentEntries[index + 1];
+                        if (entry.weightCoords && nextEntry?.weightCoords) {
+                          return (
+                            <line 
+                              key={`weight-line-${entry.id}`}
+                              x1={entry.weightCoords.x} 
+                              y1={entry.weightCoords.y} 
+                              x2={nextEntry.weightCoords.x} 
+                              y2={nextEntry.weightCoords.y}
+                              stroke="#2563eb"
+                              strokeWidth="6"
+                              strokeLinecap="round"
+                            />
+                          );
+                        }
+                        return null;
+                      })}
+                      {/* Dots */}
+                      {currentEntries.map((entry, index) => (
+                        <g key={entry.id}>
+                          {entry.statureCoords && (
+                            <g>
+                              <circle cx={entry.statureCoords.x} cy={entry.statureCoords.y} r="25" fill="#2563eb" stroke="white" strokeWidth="6" />
+                              <text x={entry.statureCoords.x} y={entry.statureCoords.y + 8} textAnchor="middle" fill="white" fontSize="22" fontWeight="bold">S{index + 1}</text>
+                            </g>
+                          )}
+                          {entry.weightCoords && (
+                            <g>
+                              <circle cx={entry.weightCoords.x} cy={entry.weightCoords.y} r="25" fill="#dc2626" stroke="white" strokeWidth="6" />
+                              <text x={entry.weightCoords.x} y={entry.weightCoords.y + 8} textAnchor="middle" fill="white" fontSize="22" fontWeight="bold">W{index + 1}</text>
+                            </g>
+                          )}
+                        </g>
+                      ))}
+                    </>
                   ) : (
-                    currentEntries.map((entry, index) => entry.bmiCoords && (
-                      <g key={entry.id}>
-                        <circle cx={entry.bmiCoords.x} cy={entry.bmiCoords.y} r="12" fill={cdcGender === 'boys' ? '#2563eb' : '#db2777'} stroke="white" strokeWidth="3" />
-                        <text x={entry.bmiCoords.x} y={entry.bmiCoords.y + 4} textAnchor="middle" fill="white" fontSize="12" fontWeight="bold">{index + 1}</text>
-                      </g>
-                    ))
+                    <>
+                      {/* Connecting lines for BMI */}
+                      {currentEntries.length > 1 && currentEntries.slice(0, -1).map((entry, index) => {
+                        const nextEntry = currentEntries[index + 1];
+                        if (entry.bmiCoords && nextEntry?.bmiCoords) {
+                          const lineColor = cdcGender === 'boys' ? '#dc2626' : '#2563eb'; // Red for boys (blue dots), Blue for girls (pink dots)
+                          return (
+                            <line 
+                              key={`bmi-line-${entry.id}`}
+                              x1={entry.bmiCoords.x} 
+                              y1={entry.bmiCoords.y} 
+                              x2={nextEntry.bmiCoords.x} 
+                              y2={nextEntry.bmiCoords.y}
+                              stroke={lineColor}
+                              strokeWidth="4"
+                              strokeLinecap="round"
+                            />
+                          );
+                        }
+                        return null;
+                      })}
+                      {/* Dots */}
+                      {currentEntries.map((entry, index) => entry.bmiCoords && (
+                        <g key={entry.id}>
+                          <circle cx={entry.bmiCoords.x} cy={entry.bmiCoords.y} r="12" fill={cdcGender === 'boys' ? '#2563eb' : '#db2777'} stroke="white" strokeWidth="3" />
+                          <text x={entry.bmiCoords.x} y={entry.bmiCoords.y + 4} textAnchor="middle" fill="white" fontSize="12" fontWeight="bold">{index + 1}</text>
+                        </g>
+                      ))}
+                    </>
                   )}
                 </svg>
               </TransformComponent>
