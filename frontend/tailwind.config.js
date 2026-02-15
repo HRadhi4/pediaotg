@@ -67,7 +67,7 @@ module.exports = {
           '0%, 100%': { transform: 'rotate(-1.5deg)' },
           '50%': { transform: 'rotate(1.5deg)' }
         },
-        'scroll-left': {
+        'scroll-right': {
           '0%': { transform: 'translateX(calc(-100% + 200px))' },
           '15%': { transform: 'translateX(calc(-100% + 200px))' },
           '85%': { transform: 'translateX(0)' },
@@ -78,7 +78,7 @@ module.exports = {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
         'wiggle': 'wiggle 0.3s ease-in-out infinite',
-        'scroll-left': 'scroll-left 6s ease-in-out infinite'
+        'scroll-right': 'scroll-right 6s ease-in-out infinite'
       }
     }
   },
