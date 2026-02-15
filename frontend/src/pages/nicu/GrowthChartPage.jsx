@@ -573,7 +573,16 @@ const CDCChartsSection = ({ gender }) => {
               <div><Label className="text-xs">Weight (kg) <span className="text-red-600">●</span></Label><Input type="number" step="0.1" min="0" value={newEntry.weight} onChange={e => setNewEntry({...newEntry, weight: e.target.value})} className="h-9 font-mono text-sm" placeholder="10-105" data-testid="cdc-weight-input" /></div>
             </div>
           ) : (
-            <div><Label className="text-xs">BMI (kg/m²)</Label><Input type="number" step="0.1" min="0" value={newEntry.bmi} onChange={e => setNewEntry({...newEntry, bmi: e.target.value})} className="h-9 font-mono text-sm" placeholder="12-35" data-testid="cdc-bmi-input" /></div>
+            <div className="space-y-2">
+              <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                <Label className="text-xs text-muted-foreground mb-1 block">BMI Calculator</Label>
+                <div className="grid grid-cols-2 gap-2">
+                  <div><Input type="number" step="0.1" min="0" value={bmiCalc.height} onChange={e => handleBmiCalcChange('height', e.target.value)} className="h-8 font-mono text-sm" placeholder="Height (cm)" data-testid="cdc-bmi-height-input" /></div>
+                  <div><Input type="number" step="0.1" min="0" value={bmiCalc.weight} onChange={e => handleBmiCalcChange('weight', e.target.value)} className="h-8 font-mono text-sm" placeholder="Weight (kg)" data-testid="cdc-bmi-weight-input" /></div>
+                </div>
+              </div>
+              <div><Label className="text-xs">BMI (kg/m²)</Label><Input type="number" step="0.1" min="0" value={newEntry.bmi} onChange={e => setNewEntry({...newEntry, bmi: e.target.value})} className="h-9 font-mono text-sm" placeholder="12-35" data-testid="cdc-bmi-input" /></div>
+            </div>
           )}
           <Button onClick={addEntry} className="w-full" size="sm" disabled={!newEntry.date || !newEntry.ageYears || parseFloat(newEntry.ageYears) < 2 || parseFloat(newEntry.ageYears) > 20 || (isStatureWeightChart && !newEntry.stature && !newEntry.weight) || (!isStatureWeightChart && !newEntry.bmi)} data-testid="cdc-add-measurement-btn">
             <Plus className="h-4 w-4 mr-1" />Add to Chart
