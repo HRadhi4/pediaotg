@@ -180,8 +180,8 @@ const CDC_CHARTS = {
           // Same pixel-perfect coordinates as boys chart
           grid: { 
             xMin: 450, xMax: 2060, 
-            yMin: 909, yMax: 400,
-            valueMin: 77, valueMax: 190,
+            yMin: 2420, yMax: 400,
+            valueMin: 75, valueMax: 195,
             ageMin: 2, ageMax: 20 
           }
         },
