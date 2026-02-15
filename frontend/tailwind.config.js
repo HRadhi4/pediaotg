@@ -67,11 +67,11 @@ module.exports = {
           '0%, 100%': { transform: 'rotate(-1.5deg)' },
           '50%': { transform: 'rotate(1.5deg)' }
         },
-        'scroll-right': {
+        'scroll-left': {
           '0%': { transform: 'translateX(0)' },
-          '20%': { transform: 'translateX(0)' },
-          '80%': { transform: 'translateX(calc(-100% + 200px))' },
-          '100%': { transform: 'translateX(calc(-100% + 200px))' }
+          '15%': { transform: 'translateX(0)' },
+          '85%': { transform: 'translateX(-50%)' },
+          '100%': { transform: 'translateX(-50%)' }
         }
       },
       animation: {
