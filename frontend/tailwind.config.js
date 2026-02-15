@@ -69,14 +69,16 @@ module.exports = {
         },
         'scroll-left': {
           '0%': { transform: 'translateX(0)' },
-          '100%': { transform: 'translateX(calc(-100% + 180px))' }
+          '15%': { transform: 'translateX(0)' },
+          '85%': { transform: 'translateX(calc(-100% + 200px))' },
+          '100%': { transform: 'translateX(calc(-100% + 200px))' }
         }
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
         'wiggle': 'wiggle 0.3s ease-in-out infinite',
-        'scroll-left': 'scroll-left 6s linear infinite'
+        'scroll-left': 'scroll-left 6s ease-in-out infinite'
       }
     }
   },
