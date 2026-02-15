@@ -598,7 +598,9 @@ const DrugsPage = ({ onBack }) => {
                     <div className="overflow-hidden flex-1 min-w-0">
                       <h3 
                         className={`font-semibold text-base leading-tight whitespace-nowrap ${
-                          isExpanded && drug.name.length > 15 ? 'inline-block pr-8 animate-scroll-right' : 'overflow-hidden text-ellipsis'
+                          isExpanded && drug.name.length > 15 
+                            ? 'inline-block pr-8 animate-scroll-right md:animate-none md:overflow-hidden md:text-ellipsis' 
+                            : 'overflow-hidden text-ellipsis'
                         }`}
                       >
                         {drug.name}
