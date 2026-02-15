@@ -287,6 +287,24 @@ const WHOChartsSection = ({ gender }) => {
   const removeEntry = (id) => setEntries(entries.filter(e => e.id !== id));
   const currentEntries = entries.filter(e => e.gender === whoGender && e.chartType === chartType);
 
+  // Convert image URL to base64 data URL
+  const imageToBase64 = (url) => {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = img.naturalWidth;
+        canvas.height = img.naturalHeight;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0);
+        resolve(canvas.toDataURL('image/png'));
+      };
+      img.onerror = reject;
+      img.src = url;
+    });
+  };
+
   // Save chart as high-resolution PDF
   const saveAsPdf = async () => {
     if (!chartContainerRef.current) return;
@@ -303,10 +321,29 @@ const WHOChartsSection = ({ gender }) => {
       // Clone the SVG to avoid modifying the original
       const svgClone = svgElement.cloneNode(true);
       
+      // Get the image element and convert external URL to base64
+      const imageElement = svgClone.querySelector('image');
+      if (imageElement) {
+        const imageUrl = imageElement.getAttribute('href') || imageElement.getAttributeNS('http://www.w3.org/1999/xlink', 'href');
+        if (imageUrl && !imageUrl.startsWith('data:')) {
+          try {
+            const base64Data = await imageToBase64(imageUrl);
+            imageElement.setAttribute('href', base64Data);
+            imageElement.removeAttributeNS('http://www.w3.org/1999/xlink', 'href');
+          } catch (e) {
+            console.error('Failed to convert image to base64:', e);
+          }
+        }
+      }
+      
       // Get viewBox dimensions
       const viewBox = currentChart.viewBox.split(' ').map(Number);
       const svgWidth = viewBox[2];
       const svgHeight = viewBox[3];
+      
+      // Set explicit width/height on SVG for proper rendering
+      svgClone.setAttribute('width', svgWidth);
+      svgClone.setAttribute('height', svgHeight);
       
       // Create a canvas for high-resolution rendering
       const scale = 3; // 3x scale for high resolution (print quality)
@@ -318,6 +355,7 @@ const WHOChartsSection = ({ gender }) => {
       // Fill with white background
       ctx.fillStyle = '#ffffff';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.scale(scale, scale);
       
       // Convert SVG to data URL
       const svgData = new XMLSerializer().serializeToString(svgClone);
@@ -327,7 +365,7 @@ const WHOChartsSection = ({ gender }) => {
       // Load SVG as image
       const img = new Image();
       img.onload = () => {
-        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, 0, 0, svgWidth, svgHeight);
         URL.revokeObjectURL(svgUrl);
         
         // Create PDF (A4 landscape for better chart display)
@@ -368,6 +406,20 @@ const WHOChartsSection = ({ gender }) => {
         // Save PDF
         pdf.save(`who-${currentChart.label.toLowerCase().replace(/\s+/g, '-')}-${whoGender}-${new Date().toISOString().split('T')[0]}.pdf`);
         setSaving(false);
+      };
+      
+      img.onerror = () => {
+        console.error('Error loading SVG image');
+        URL.revokeObjectURL(svgUrl);
+        setSaving(false);
+      };
+      
+      img.src = svgUrl;
+    } catch (error) {
+      console.error('Error saving as PDF:', error);
+      setSaving(false);
+    }
+  };
       };
       
       img.onerror = () => {
