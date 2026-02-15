@@ -654,116 +654,70 @@ const CDCChartsSection = ({ gender }) => {
     });
   };
 
-  // Save chart as high-resolution PDF
+  // Save chart as high-resolution PDF using html2canvas
   const saveAsPdf = async () => {
     if (!chartContainerRef.current) return;
     setSaving(true);
     try {
-      // Find the SVG element inside the chart container
-      const svgElement = chartContainerRef.current.querySelector('svg');
-      if (!svgElement) {
-        console.error('SVG element not found');
+      // Find the chart container div (the one with the SVG and background)
+      const chartDiv = chartContainerRef.current.querySelector('.relative.border');
+      if (!chartDiv) {
+        console.error('Chart container not found');
         setSaving(false);
         return;
       }
 
-      // Clone the SVG to avoid modifying the original
-      const svgClone = svgElement.cloneNode(true);
-      
-      // Get the image element and convert external URL to base64
-      const imageElement = svgClone.querySelector('image');
-      if (imageElement) {
-        const imageUrl = imageElement.getAttribute('href') || imageElement.getAttributeNS('http://www.w3.org/1999/xlink', 'href');
-        if (imageUrl && !imageUrl.startsWith('data:')) {
-          try {
-            const base64Data = await imageToBase64(imageUrl);
-            imageElement.setAttribute('href', base64Data);
-            imageElement.removeAttributeNS('http://www.w3.org/1999/xlink', 'href');
-          } catch (e) {
-            console.error('Failed to convert image to base64:', e);
-          }
-        }
+      // Use html2canvas to capture the chart with all its contents
+      const canvas = await html2canvas(chartDiv, {
+        scale: 3, // High resolution for print quality
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: '#ffffff',
+        logging: false,
+      });
+
+      // Get canvas dimensions
+      const canvasWidth = canvas.width;
+      const canvasHeight = canvas.height;
+
+      // Create PDF (A4 portrait for taller CDC charts)
+      const pdf = new jsPDF({
+        orientation: canvasHeight > canvasWidth ? 'portrait' : 'landscape',
+        unit: 'mm',
+        format: 'a4'
+      });
+
+      // Get PDF dimensions based on orientation
+      const pdfWidth = canvasHeight > canvasWidth ? 210 : 297;
+      const pdfHeight = canvasHeight > canvasWidth ? 297 : 210;
+      const margin = 10;
+
+      // Calculate dimensions to fit chart in PDF with margins
+      const availableWidth = pdfWidth - (margin * 2);
+      const availableHeight = pdfHeight - (margin * 2);
+
+      const aspectRatio = canvasWidth / canvasHeight;
+      let imgWidth, imgHeight;
+
+      if (availableWidth / availableHeight > aspectRatio) {
+        imgHeight = availableHeight;
+        imgWidth = imgHeight * aspectRatio;
+      } else {
+        imgWidth = availableWidth;
+        imgHeight = imgWidth / aspectRatio;
       }
-      
-      // Get viewBox dimensions
-      const viewBox = currentChart.viewBox.split(' ').map(Number);
-      const svgWidth = viewBox[2];
-      const svgHeight = viewBox[3];
-      
-      // Set explicit width/height on SVG for proper rendering
-      svgClone.setAttribute('width', svgWidth);
-      svgClone.setAttribute('height', svgHeight);
-      
-      // Create a canvas for high-resolution rendering
-      const scale = 3; // 3x scale for high resolution (print quality)
-      const canvas = document.createElement('canvas');
-      canvas.width = svgWidth * scale;
-      canvas.height = svgHeight * scale;
-      const ctx = canvas.getContext('2d');
-      
-      // Fill with white background
-      ctx.fillStyle = '#ffffff';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.scale(scale, scale);
-      
-      // Convert SVG to data URL
-      const svgData = new XMLSerializer().serializeToString(svgClone);
-      const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
-      const svgUrl = URL.createObjectURL(svgBlob);
-      
-      // Load SVG as image
-      const img = new Image();
-      img.onload = () => {
-        ctx.drawImage(img, 0, 0, svgWidth, svgHeight);
-        URL.revokeObjectURL(svgUrl);
-        
-        // Create PDF (A4 portrait for taller CDC charts)
-        const pdf = new jsPDF({
-          orientation: svgHeight > svgWidth ? 'portrait' : 'landscape',
-          unit: 'mm',
-          format: 'a4'
-        });
-        
-        // Get PDF dimensions based on orientation
-        const pdfWidth = svgHeight > svgWidth ? 210 : 297;
-        const pdfHeight = svgHeight > svgWidth ? 297 : 210;
-        const margin = 10;
-        
-        // Calculate dimensions to fit chart in PDF with margins
-        const availableWidth = pdfWidth - (margin * 2);
-        const availableHeight = pdfHeight - (margin * 2);
-        
-        const aspectRatio = svgWidth / svgHeight;
-        let imgWidth, imgHeight;
-        
-        if (availableWidth / availableHeight > aspectRatio) {
-          imgHeight = availableHeight;
-          imgWidth = imgHeight * aspectRatio;
-        } else {
-          imgWidth = availableWidth;
-          imgHeight = imgWidth / aspectRatio;
-        }
-        
-        // Center the image
-        const x = (pdfWidth - imgWidth) / 2;
-        const y = (pdfHeight - imgHeight) / 2;
-        
-        // Add high-quality image to PDF
-        const imgData = canvas.toDataURL('image/png', 1.0);
-        pdf.addImage(imgData, 'PNG', x, y, imgWidth, imgHeight, undefined, 'FAST');
-        
-        // Save PDF
-        pdf.save(`cdc-${currentChart.label.toLowerCase().replace(/\s+/g, '-')}-${cdcGender}-${new Date().toISOString().split('T')[0]}.pdf`);
-        setSaving(false);
-      };
-      
-      img.onerror = () => {
-        console.error('Error loading SVG image');
-        URL.revokeObjectURL(svgUrl);
-        setSaving(false);
-      };
-      
-      img.src = svgUrl;
+
+      // Center the image
+      const x = (pdfWidth - imgWidth) / 2;
+      const y = (pdfHeight - imgHeight) / 2;
+
+      // Add high-quality image to PDF
+      const imgData = canvas.toDataURL('image/png', 1.0);
+      pdf.addImage(imgData, 'PNG', x, y, imgWidth, imgHeight, undefined, 'FAST');
+
+      // Save PDF
+      pdf.save(`cdc-${currentChart.label.toLowerCase().replace(/\s+/g, '-')}-${cdcGender}-${new Date().toISOString().split('T')[0]}.pdf`);
+      setSaving(false);
     } catch (error) {
       console.error('Error saving as PDF:', error);
       setSaving(false);
