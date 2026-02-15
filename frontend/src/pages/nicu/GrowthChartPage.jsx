@@ -160,14 +160,14 @@ const CDC_CHARTS = {
     bmi: {
       file: "/charts/cdc/cdc_boys_bmi_2_20.png",
       label: "BMI-for-age",
-      viewBox: "0 0 2550 3300",
+      viewBox: "0 0 1105 1430",
       measurements: {
         bmi: {
           yLabel: "BMI (kg/m²)",
           // User-provided pixel coordinates (Feb 2026):
           // X: Age 2 = 514px, Age 20 = 1069px
-          // Y: BMI 40 (top) = 126px, BMI 11 (bottom) = 842px
-          grid: { xMin: 514, xMax: 1069, yMin: 842, yMax: 126, ageMin: 2, ageMax: 20, valueMin: 11, valueMax: 40 }
+          // Y: BMI 40 (top) = 127px, BMI 11 (bottom) = 842px
+          grid: { xMin: 514, xMax: 1069, yMin: 842, yMax: 127, ageMin: 2, ageMax: 20, valueMin: 11, valueMax: 40 }
         }
       }
     }
