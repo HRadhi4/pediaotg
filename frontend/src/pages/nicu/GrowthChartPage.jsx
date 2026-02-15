@@ -127,29 +127,30 @@ const CDC_CHARTS = {
       measurements: {
         stature: {
           yLabel: "Stature (cm)",
-          // LINEAR VALUE-BASED grid mapping
-          // Calibrated from user's annotated image (Feb 2026)
-          // Fine-tuned: Age 2 +4px, Age 20 +1px
+          // Pixel-perfect coordinates from user (Feb 2026)
+          // Age 2: X=450, Age 20: X=2050
+          // Stature: Y top (190cm)=400, Y bottom (77cm)=909
           grid: { 
-            xMin: 433,   // Age 2 (fine-tuned)
-            xMax: 2058,  // Age 20 (fine-tuned)
-            yMin: 2375,  // Bottom of stature grid (77cm)
-            yMax: 722,   // Top of stature grid (190cm)
-            valueMin: 77,   // cm at bottom
-            valueMax: 190,  // cm at top
+            xMin: 450,   // Age 2
+            xMax: 2050,  // Age 20
+            yMin: 909,   // Bottom (77cm)
+            yMax: 400,   // Top (190cm)
+            valueMin: 77,
+            valueMax: 190,
             ageMin: 2, 
             ageMax: 20 
           }
         },
         weight: {
           yLabel: "Weight (kg)",
+          // Weight: Y top (105kg)=909, Y bottom (10kg)=2920
           grid: { 
-            xMin: 433,   // Age 2 (fine-tuned)
-            xMax: 2058,  // Age 20 (fine-tuned)
-            yMin: 2783,  // Bottom of weight grid (10kg)
-            yMax: 844,   // Top of weight grid (105kg)
-            valueMin: 10,   // kg at bottom
-            valueMax: 105,  // kg at top
+            xMin: 450,   // Age 2
+            xMax: 2050,  // Age 20
+            yMin: 2920,  // Bottom (10kg)
+            yMax: 909,   // Top (105kg)
+            valueMin: 10,
+            valueMax: 105,
             ageMin: 2, 
             ageMax: 20 
           }
