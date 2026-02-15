@@ -181,21 +181,21 @@ const CDC_CHARTS = {
       measurements: {
         stature: {
           yLabel: "Stature (cm)",
-          // Girls-specific pixel coordinates (adjusted from boys, Feb 2026)
-          // Shifted X left by ~15px, adjusted Y for better grid alignment
+          // Girls-specific pixel coordinates (Feb 2026)
+          // X shifted right, Stature shifted down more than weight
           grid: { 
-            xMin: 435, xMax: 2045, 
-            yMin: 2405, yMax: 385,
+            xMin: 455, xMax: 2065, 
+            yMin: 2445, yMax: 425,
             valueMin: 75, valueMax: 195,
             ageMin: 2, ageMax: 20 
           }
         },
         weight: {
           yLabel: "Weight (kg)",
-          // Girls-specific weight coordinates (adjusted from boys)
+          // Girls-specific weight coordinates (shifted down slightly)
           grid: { 
-            xMin: 435, xMax: 2045, 
-            yMin: 2915, yMax: 1209,
+            xMin: 455, xMax: 2065, 
+            yMin: 2940, yMax: 1234,
             valueMin: 10, valueMax: 110,
             ageMin: 2, ageMax: 20 
           }
