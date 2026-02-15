@@ -564,41 +564,174 @@ const CDCChartsSection = ({ gender }) => {
   const removeEntry = (id) => setEntries(entries.filter(e => e.id !== id));
   const currentEntries = entries.filter(e => e.gender === cdcGender && e.chartType === chartType);
 
-  // Save chart as high-resolution PDF using html2canvas
+  // Save chart as high-resolution PDF
   const saveAsPdf = async () => {
     if (!chartContainerRef.current) return;
     setSaving(true);
     try {
-      // Use html2canvas to capture the chart container with all its contents
-      const canvas = await html2canvas(chartContainerRef.current, {
-        scale: 3, // High resolution for print quality
-        useCORS: true,
-        allowTaint: true,
-        backgroundColor: '#ffffff',
-        logging: false,
+      // Get viewBox dimensions from current chart
+      const viewBox = currentChart.viewBox.split(' ').map(Number);
+      const svgWidth = viewBox[2];
+      const svgHeight = viewBox[3];
+      
+      // Create high-resolution canvas
+      const scale = 2; // 2x scale for good print quality
+      const canvas = document.createElement('canvas');
+      canvas.width = svgWidth * scale;
+      canvas.height = svgHeight * scale;
+      const ctx = canvas.getContext('2d');
+      
+      // Scale context for high resolution
+      ctx.scale(scale, scale);
+      
+      // Fill white background
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, svgWidth, svgHeight);
+      
+      // Load and draw the chart background image
+      const chartImage = new Image();
+      chartImage.crossOrigin = 'anonymous';
+      
+      await new Promise((resolve, reject) => {
+        chartImage.onload = resolve;
+        chartImage.onerror = reject;
+        chartImage.src = currentChart.file;
       });
-
-      // Get canvas dimensions
-      const canvasWidth = canvas.width;
-      const canvasHeight = canvas.height;
+      
+      // Draw the chart image
+      ctx.drawImage(chartImage, 0, 0, svgWidth, svgHeight);
+      
+      // Draw the plotted points and lines
+      if (isStatureWeightChart) {
+        // Draw stature connecting lines (red)
+        ctx.strokeStyle = '#dc2626';
+        ctx.lineWidth = 6;
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        let firstStature = true;
+        currentEntries.forEach(entry => {
+          if (entry.statureCoords) {
+            if (firstStature) {
+              ctx.moveTo(entry.statureCoords.x, entry.statureCoords.y);
+              firstStature = false;
+            } else {
+              ctx.lineTo(entry.statureCoords.x, entry.statureCoords.y);
+            }
+          }
+        });
+        ctx.stroke();
+        
+        // Draw weight connecting lines (blue)
+        ctx.strokeStyle = '#2563eb';
+        ctx.beginPath();
+        let firstWeight = true;
+        currentEntries.forEach(entry => {
+          if (entry.weightCoords) {
+            if (firstWeight) {
+              ctx.moveTo(entry.weightCoords.x, entry.weightCoords.y);
+              firstWeight = false;
+            } else {
+              ctx.lineTo(entry.weightCoords.x, entry.weightCoords.y);
+            }
+          }
+        });
+        ctx.stroke();
+        
+        // Draw stature dots (blue)
+        currentEntries.forEach((entry, index) => {
+          if (entry.statureCoords) {
+            ctx.fillStyle = '#2563eb';
+            ctx.beginPath();
+            ctx.arc(entry.statureCoords.x, entry.statureCoords.y, 25, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 6;
+            ctx.stroke();
+            // Label
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 22px Arial';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(`S${index + 1}`, entry.statureCoords.x, entry.statureCoords.y);
+          }
+        });
+        
+        // Draw weight dots (red)
+        currentEntries.forEach((entry, index) => {
+          if (entry.weightCoords) {
+            ctx.fillStyle = '#dc2626';
+            ctx.beginPath();
+            ctx.arc(entry.weightCoords.x, entry.weightCoords.y, 25, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 6;
+            ctx.stroke();
+            // Label
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 22px Arial';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(`W${index + 1}`, entry.weightCoords.x, entry.weightCoords.y);
+          }
+        });
+      } else {
+        // BMI chart - draw connecting lines
+        const lineColor = cdcGender === 'boys' ? '#dc2626' : '#2563eb';
+        ctx.strokeStyle = lineColor;
+        ctx.lineWidth = 4;
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        let first = true;
+        currentEntries.forEach(entry => {
+          if (entry.bmiCoords) {
+            if (first) {
+              ctx.moveTo(entry.bmiCoords.x, entry.bmiCoords.y);
+              first = false;
+            } else {
+              ctx.lineTo(entry.bmiCoords.x, entry.bmiCoords.y);
+            }
+          }
+        });
+        ctx.stroke();
+        
+        // Draw BMI dots
+        const dotColor = cdcGender === 'boys' ? '#2563eb' : '#db2777';
+        currentEntries.forEach((entry, index) => {
+          if (entry.bmiCoords) {
+            ctx.fillStyle = dotColor;
+            ctx.beginPath();
+            ctx.arc(entry.bmiCoords.x, entry.bmiCoords.y, 12, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 3;
+            ctx.stroke();
+            // Label
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 12px Arial';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(`${index + 1}`, entry.bmiCoords.x, entry.bmiCoords.y);
+          }
+        });
+      }
 
       // Create PDF (A4 portrait for taller CDC charts)
       const pdf = new jsPDF({
-        orientation: canvasHeight > canvasWidth ? 'portrait' : 'landscape',
+        orientation: svgHeight > svgWidth ? 'portrait' : 'landscape',
         unit: 'mm',
         format: 'a4'
       });
 
       // Get PDF dimensions based on orientation
-      const pdfWidth = canvasHeight > canvasWidth ? 210 : 297;
-      const pdfHeight = canvasHeight > canvasWidth ? 297 : 210;
+      const pdfWidth = svgHeight > svgWidth ? 210 : 297;
+      const pdfHeight = svgHeight > svgWidth ? 297 : 210;
       const margin = 10;
 
       // Calculate dimensions to fit chart in PDF with margins
       const availableWidth = pdfWidth - (margin * 2);
       const availableHeight = pdfHeight - (margin * 2);
 
-      const aspectRatio = canvasWidth / canvasHeight;
+      const aspectRatio = svgWidth / svgHeight;
       let imgWidth, imgHeight;
 
       if (availableWidth / availableHeight > aspectRatio) {
