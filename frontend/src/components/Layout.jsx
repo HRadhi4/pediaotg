@@ -41,6 +41,7 @@ const APP_REFERENCES = [
   { category: "Children - IEM Emergencies", source: "SMC Guideline, UpToDate" },
   { category: "Children - NSAID Toxicity", source: "UpToDate Guidelines" },
   { category: "Children - Iron Toxicity", source: "UpToDate" },
+  { category: "Children - Empirical Antibiotics", source: "UpToDate, Red Book 2024-2027, Nelson's Antimicrobial Guidelines (King Fahad Medical City)" },
   // General
   { category: "General", source: "Salmaniya Medical Complex (SMC) Clinical Guidelines" },
 ];
