@@ -91,8 +91,8 @@ const EmpiricalAntibioticsApproach = ({ weight, expandedSections, toggleSection 
                     <td className="p-2 align-top">S. aureus (inc. MRSA)</td>
                     <td className="p-2">
                       <p><span className="font-medium text-red-600">I&D is main treatment</span></p>
-                      <p className="mt-1"><span className="font-medium text-blue-600">Clindamycin</span> 10 mg/kg/dose PO/IV q8h (if Abx indicated)</p>
-                      {w > 0 && <p className="font-mono text-green-600 mt-1">→ {calcPerDose(10)} mg q8h</p>}
+                      <p className="mt-1"><span className="font-medium text-blue-600">Clindamycin</span> 10 mg/kg/day PO/IV q8h (if Abx indicated)</p>
+                      {w > 0 && <p className="font-mono text-green-600 mt-1">→ {calcPerDay(10, 3)} mg q8h</p>}
                       <p className="text-[10px] mt-2 text-amber-600 leading-relaxed p-1.5 bg-amber-50 dark:bg-amber-900/20 rounded">Use Abx only if: cellulitis, abscess &gt;2cm (&gt;1cm in infants), inability to drain, systemic illness (fever &gt;38°C), immunodeficiency, multiple sites</p>
                     </td>
                   </tr>
