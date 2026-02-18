@@ -463,8 +463,8 @@ const EmpiricalAntibioticsApproach = ({ weight, expandedSections, toggleSection 
                     <td className="p-2 font-medium text-foreground align-top">All Age Groups</td>
                     <td className="p-2 align-top">S. aureus, S. Pneumo</td>
                     <td className="p-2">
-                      <p><span className="font-medium text-blue-600">Clindamycin</span> 10mg/kg/dose IV q8h</p>
-                      {w > 0 && <p className="font-mono text-green-600 mt-1">→ {calcPerDose(10)} mg q8h</p>}
+                      <p><span className="font-medium text-blue-600">Clindamycin</span> 10mg/kg/day IV q8h</p>
+                      {w > 0 && <p className="font-mono text-green-600 mt-1">→ {calcPerDay(10, 3)} mg q8h</p>}
                       <p className="text-[10px] mt-1">Add Ceftriaxone for non-immunized patients</p>
                     </td>
                   </tr>
