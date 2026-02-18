@@ -100,8 +100,8 @@ const EmpiricalAntibioticsApproach = ({ weight, expandedSections, toggleSection 
                     <td className="p-2 font-medium text-foreground align-top">Necrotizing Fasciitis</td>
                     <td className="p-2 align-top">GAS, S. aureus, GNR, anaerobes</td>
                     <td className="p-2">
-                      <p><span className="font-medium text-red-600">Cefepime</span> 50mg/kg/dose q8h + <span className="font-medium">Vancomycin</span> 15mg/kg/dose q6h + <span className="font-medium">Clindamycin</span> 10mg/kg/dose q8h</p>
-                      {w > 0 && <p className="font-mono text-green-600 mt-1">→ Cefepime {calcPerDose(50)} mg + Vanco {calcPerDose(15)} mg + Clinda {calcPerDose(10)} mg</p>}
+                      <p><span className="font-medium text-red-600">Cefepime</span> 50mg/kg/dose q8h + <span className="font-medium">Vancomycin</span> 15mg/kg/dose q6h + <span className="font-medium">Clindamycin</span> 10mg/kg/day q8h</p>
+                      {w > 0 && <p className="font-mono text-green-600 mt-1">→ Cefepime {calcPerDose(50)} mg + Vanco {calcPerDose(15)} mg + Clinda {calcPerDay(10, 3)} mg</p>}
                       <p className="text-[10px] mt-1 text-red-500 font-medium">Consult ID & Pediatric/Plastic Surgery for all cases</p>
                     </td>
                   </tr>
