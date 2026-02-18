@@ -38,28 +38,28 @@ const SepsisApproach = ({ weight, gestationalAge, postnatalAge }) => {
         {/* Classification */}
         <div className="p-3 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700">
           <p className="font-semibold text-slate-700 dark:text-slate-200 mb-2">Classification</p>
-          <div className="overflow-x-auto">
-            <table className="w-full text-xs border-collapse min-w-[400px]">
+          <div className="overflow-x-auto -mx-3 px-3">
+            <table className="text-xs border-collapse min-w-[500px]">
               <thead>
                 <tr className="bg-slate-100 dark:bg-slate-700">
-                  <th className="text-left py-2 px-2 border border-slate-300 dark:border-slate-600 whitespace-nowrap">Type</th>
-                  <th className="text-left py-2 px-2 border border-slate-300 dark:border-slate-600 whitespace-nowrap">Timing</th>
-                  <th className="text-left py-2 px-2 border border-slate-300 dark:border-slate-600 whitespace-nowrap">Common Organisms</th>
-                  <th className="text-left py-2 px-2 border border-slate-300 dark:border-slate-600 whitespace-nowrap">Source</th>
+                  <th className="text-left py-2 px-3 border border-slate-300 dark:border-slate-600 whitespace-nowrap">Type</th>
+                  <th className="text-left py-2 px-3 border border-slate-300 dark:border-slate-600 whitespace-nowrap">Timing</th>
+                  <th className="text-left py-2 px-3 border border-slate-300 dark:border-slate-600 whitespace-nowrap">Common Organisms</th>
+                  <th className="text-left py-2 px-3 border border-slate-300 dark:border-slate-600 whitespace-nowrap">Source</th>
                 </tr>
               </thead>
               <tbody className="text-slate-600 dark:text-slate-300">
                 <tr>
-                  <td className="py-2 px-2 border font-medium text-orange-600 dark:text-orange-400 whitespace-nowrap">Early-Onset (EOS)</td>
-                  <td className="py-2 px-2 border whitespace-nowrap"><strong>&lt;72 hours</strong></td>
-                  <td className="py-2 px-2 border whitespace-nowrap">GBS, E. coli, Listeria</td>
-                  <td className="py-2 px-2 border whitespace-nowrap">Vertical (maternal)</td>
+                  <td className="py-2 px-3 border font-medium text-orange-600 dark:text-orange-400 whitespace-nowrap">Early-Onset (EOS)</td>
+                  <td className="py-2 px-3 border whitespace-nowrap"><strong>&lt;72 hours</strong></td>
+                  <td className="py-2 px-3 border whitespace-nowrap">GBS, E. coli, Listeria</td>
+                  <td className="py-2 px-3 border whitespace-nowrap">Vertical (maternal)</td>
                 </tr>
                 <tr>
-                  <td className="py-2 px-2 border font-medium text-purple-600 dark:text-purple-400 whitespace-nowrap">Late-Onset (LOS)</td>
-                  <td className="py-2 px-2 border whitespace-nowrap"><strong>≥72 hours</strong></td>
-                  <td className="py-2 px-2 border whitespace-nowrap">CoNS, S. aureus, GNR, Candida</td>
-                  <td className="py-2 px-2 border whitespace-nowrap">Hospital/Community</td>
+                  <td className="py-2 px-3 border font-medium text-purple-600 dark:text-purple-400 whitespace-nowrap">Late-Onset (LOS)</td>
+                  <td className="py-2 px-3 border whitespace-nowrap"><strong>≥72 hours</strong></td>
+                  <td className="py-2 px-3 border whitespace-nowrap">CoNS, S. aureus, GNR, Candida</td>
+                  <td className="py-2 px-3 border whitespace-nowrap">Hospital/Community</td>
                 </tr>
               </tbody>
             </table>
