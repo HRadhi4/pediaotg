@@ -875,76 +875,145 @@ const DrugsPage = ({ onBack }) => {
                       </div>
                     )}
                     
-                    {/* Right: Calculated Dose - If renal adjustment, show that INSTEAD of standard dose */}
+                    {/* Right: Calculated Dose - Apply renal adjustment to calculated dose */}
                     {w > 0 && displayDose && (
                       <div className="text-right flex-shrink-0">
-                        {hasRenalAdjustment && renalAdjustText ? (
-                          // Show RENAL ADJUSTED dose only - replaces standard dose
-                          <div className="flex items-center gap-2">
-                            <span className="text-base font-semibold text-amber-600 dark:text-amber-400">
-                              {renalAdjustText}
-                            </span>
-                          </div>
-                        ) : (
-                          // Show standard calculated dose
-                          (() => {
-                            const doseSpecificMax = displayDose.maxDose;
-                            const maxDoseValue = doseSpecificMax || parseMaxDose(drug.max, w);
-                            const result = calculateDose(displayDose.value, w, maxDoseValue, "mg", displayDose.unit, displayDose.isFixed || drug.isFixedDose);
-                            if (!result) return null;
-                            const doseResult = typeof result === 'string' ? { dose: result, isExceedingMax: false } : result;
+                        {(() => {
+                          // First calculate the standard dose
+                          const doseSpecificMax = displayDose.maxDose;
+                          const maxDoseValue = doseSpecificMax || parseMaxDose(drug.max, w);
+                          const result = calculateDose(displayDose.value, w, maxDoseValue, "mg", displayDose.unit, displayDose.isFixed || drug.isFixedDose);
+                          if (!result) return null;
+                          const doseResult = typeof result === 'string' ? { dose: result, isExceedingMax: false } : result;
+                          
+                          const showPerDose = doseResult.isPerDay && doseResult.divisor > 1 && doseResult.perDoseMin;
+                          
+                          // Get standard frequency
+                          let standardFreq = doseResult.frequency;
+                          if (!standardFreq) {
+                            const unitLower = displayDose.unit.toLowerCase();
+                            const freqMatch = unitLower.match(/q(\d+(?:-\d+)?h)/i);
+                            if (freqMatch) standardFreq = freqMatch[0].toUpperCase();
+                            else if (unitLower.includes('once daily') || unitLower.includes('q24h')) standardFreq = 'Q24H';
+                            else if (unitLower.includes('q12h')) standardFreq = 'Q12H';
+                            else if (unitLower.includes('q8h')) standardFreq = 'Q8H';
+                            else if (unitLower.includes('q6h')) standardFreq = 'Q6H';
+                          }
+                          
+                          // Check for renal adjustment
+                          if (hasRenalAdjustment && renalAdjustText) {
+                            const adjustment = parseRenalAdjustment(renalAdjustText);
                             
-                            const showPerDose = doseResult.isPerDay && doseResult.divisor > 1 && doseResult.perDoseMin;
-                            
-                            let displayFreq = doseResult.frequency;
-                            if (!displayFreq) {
-                              const unitLower = displayDose.unit.toLowerCase();
-                              const freqMatch = unitLower.match(/q(\d+(?:-\d+)?h)/);
-                              if (freqMatch) displayFreq = freqMatch[0];
-                              else if (unitLower.includes('once daily') || unitLower.includes('q24h')) displayFreq = 'q24h';
-                              else if (unitLower.includes('q12h')) displayFreq = 'q12h';
-                              else if (unitLower.includes('q8h')) displayFreq = 'q8h';
-                              else if (unitLower.includes('q6h')) displayFreq = 'q6h';
+                            // Handle "avoid" case
+                            if (adjustment?.avoid) {
+                              return (
+                                <div className="flex items-center gap-2">
+                                  <span className="text-base font-bold text-red-600 dark:text-red-400">
+                                    Avoid
+                                  </span>
+                                  <span className="text-[9px] text-amber-600">(renal)</span>
+                                </div>
+                              );
                             }
                             
-                            return (
-                              <div className="flex items-center gap-2">
-                                {showPerDose ? (
-                                  <>
-                                    <span className={`text-base font-mono font-bold ${
-                                      doseResult.isExceedingMax ? 'text-amber-600' : 'text-green-600'
-                                    }`}>
+                            // Handle "no change" case
+                            if (adjustment?.noChange) {
+                              return (
+                                <div className="flex items-center gap-2">
+                                  {showPerDose ? (
+                                    <span className="text-base font-mono font-bold text-amber-600">
                                       {doseResult.perDoseMin === doseResult.perDoseMax 
                                         ? `${doseResult.perDoseMin} mg` 
                                         : `${doseResult.perDoseMin}-${doseResult.perDoseMax} mg`}
                                     </span>
-                                    {displayFreq && (
-                                      <span className="font-semibold px-2 py-1 rounded text-xs bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300">
-                                        {displayFreq}
-                                      </span>
-                                    )}
-                                  </>
-                                ) : (
-                                  <>
-                                    <span className={`text-base font-mono font-bold ${
-                                      doseResult.isExceedingMax ? 'text-amber-600' : 'text-blue-600'
-                                    }`}>
+                                  ) : (
+                                    <span className="text-base font-mono font-bold text-amber-600">
                                       {doseResult.dose}
                                     </span>
-                                    {displayFreq && (
-                                      <span className="font-semibold px-2 py-1 rounded text-xs bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300">
-                                        {displayFreq}
-                                      </span>
-                                    )}
-                                  </>
+                                  )}
+                                  {standardFreq && (
+                                    <span className="font-semibold px-2 py-1 rounded text-xs bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-300">
+                                      {standardFreq}
+                                    </span>
+                                  )}
+                                  <span className="text-[9px] text-amber-600">(no Δ)</span>
+                                </div>
+                              );
+                            }
+                            
+                            // Calculate adjusted dose
+                            const percentage = adjustment?.percentage || 100;
+                            const adjustedFreq = adjustment?.frequency || standardFreq;
+                            
+                            let adjustedDoseMin, adjustedDoseMax;
+                            if (showPerDose) {
+                              adjustedDoseMin = Math.round(doseResult.perDoseMin * (percentage / 100));
+                              adjustedDoseMax = Math.round(doseResult.perDoseMax * (percentage / 100));
+                            } else {
+                              // Parse from dose string
+                              const doseStr = doseResult.dose || '';
+                              const doseMatch = doseStr.match(/(\d+(?:\.\d+)?)\s*(?:-\s*(\d+(?:\.\d+)?))?\s*/);
+                              if (doseMatch) {
+                                adjustedDoseMin = Math.round(parseFloat(doseMatch[1]) * (percentage / 100));
+                                adjustedDoseMax = doseMatch[2] ? Math.round(parseFloat(doseMatch[2]) * (percentage / 100)) : adjustedDoseMin;
+                              }
+                            }
+                            
+                            return (
+                              <div className="flex items-center gap-2">
+                                <span className="text-base font-mono font-bold text-amber-600">
+                                  {adjustedDoseMin === adjustedDoseMax 
+                                    ? `${adjustedDoseMin} mg` 
+                                    : `${adjustedDoseMin}-${adjustedDoseMax} mg`}
+                                </span>
+                                {adjustedFreq && (
+                                  <span className="font-semibold px-2 py-1 rounded text-xs bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-300">
+                                    {adjustedFreq}
+                                  </span>
                                 )}
-                                {doseResult.isExceedingMax && (
-                                  <span className="text-xs text-amber-600 font-medium">⚠️</span>
-                                )}
+                                <span className="text-[9px] text-amber-600">(renal)</span>
                               </div>
                             );
-                          })()
-                        )}
+                          }
+                          
+                          // Standard dose display (no renal adjustment)
+                          return (
+                            <div className="flex items-center gap-2">
+                              {showPerDose ? (
+                                <>
+                                  <span className={`text-base font-mono font-bold ${
+                                    doseResult.isExceedingMax ? 'text-amber-600' : 'text-green-600'
+                                  }`}>
+                                    {doseResult.perDoseMin === doseResult.perDoseMax 
+                                      ? `${doseResult.perDoseMin} mg` 
+                                      : `${doseResult.perDoseMin}-${doseResult.perDoseMax} mg`}
+                                  </span>
+                                  {standardFreq && (
+                                    <span className="font-semibold px-2 py-1 rounded text-xs bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300">
+                                      {standardFreq}
+                                    </span>
+                                  )}
+                                </>
+                              ) : (
+                                <>
+                                  <span className={`text-base font-mono font-bold ${
+                                    doseResult.isExceedingMax ? 'text-amber-600' : 'text-blue-600'
+                                  }`}>
+                                    {doseResult.dose}
+                                  </span>
+                                  {standardFreq && (
+                                    <span className="font-semibold px-2 py-1 rounded text-xs bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300">
+                                      {standardFreq}
+                                    </span>
+                                  )}
+                                </>
+                              )}
+                              {doseResult.isExceedingMax && (
+                                <span className="text-xs text-amber-600 font-medium">⚠️</span>
+                              )}
+                            </div>
+                          );
+                        })()}
                       </div>
                     )}
                   </div>
