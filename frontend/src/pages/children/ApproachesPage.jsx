@@ -53,6 +53,7 @@ import {
   BloodGasApproach,
   PARDSApproach,
   MechanicalVentilationApproach,
+  EmpiricalAntibioticsApproach,
 } from "./approaches";
 
 const ApproachesPage = ({ onBack }) => {
