@@ -1272,10 +1272,10 @@
     ],
     "notes": "Poor oral bioavailability (30-55%); use amoxicillin for PO. IV preferred for serious infections. Active against Enterococcus (not VRE), Listeria, GBS, some E. coli.",
     "renalAdjust": {
-      "gfr50": "Q6-8h",
-      "gfr30": "Q8-12h",
-      "gfr10": "Q12-24h",
-      "hd": "Give after HD"
+      "gfr50": "No adjustment",
+      "gfr30": "100% Q6-8h",
+      "gfr10": "100% Q8-12h",
+      "hd": "Give after dialysis"
     },
     "hepaticAdjust": "No adjustment needed"
   },
@@ -2175,10 +2175,10 @@
     ],
     "notes": "First-line for surgical prophylaxis. Good MSSA coverage but NOT MRSA. Repeat surgical dose Q4h during prolonged procedures. Does not penetrate CNS well.",
     "renalAdjust": {
-      "gfr50": "Q8h",
-      "gfr30": "Q12h",
-      "gfr10": "Q24h",
-      "hd": "Give after HD"
+      "gfr50": "100% Q8h",
+      "gfr30": "100% Q12h",
+      "gfr10": "50% Q12-24h",
+      "hd": "Give after dialysis"
     },
     "hepaticAdjust": "No adjustment needed"
   },
@@ -2262,10 +2262,10 @@
     ],
     "notes": "Excellent Pseudomonas coverage. Better CNS penetration than 3rd gen. Extended infusion (3-4 hours) may improve outcomes. Monitor for neurotoxicity especially in renal impairment.",
     "renalAdjust": {
-      "gfr50": "Q12h (or usual dose Q12h)",
-      "gfr30": "Q24h",
-      "gfr10": "Q24h with 50% dose reduction",
-      "hd": "1 g Q24h, give after HD"
+      "gfr50": "100% Q12h",
+      "gfr30": "50-100% Q24h",
+      "gfr10": "50% Q24h",
+      "hd": "Give after dialysis"
     },
     "hepaticAdjust": "No adjustment needed"
   },
@@ -2358,9 +2358,9 @@
     ],
     "notes": "Once daily dosing due to long half-life (6-9 hours). Can give IM with lidocaine 1% to reduce pain. In neonates >28 days: separate ceftriaxone and calcium infusions by at least 48 hours. Good CSF penetration.",
     "renalAdjust": {
-      "gfr50": "No change",
-      "gfr30": "No change (max 2 g/day)",
-      "gfr10": "No change (max 2 g/day)",
+      "gfr50": "No adjustment",
+      "gfr30": "No adjustment",
+      "gfr10": "Max 2g/day",
       "hd": "No supplemental dose needed"
     },
     "hepaticAdjust": "Use with caution in combined hepatic/renal impairment"
@@ -2445,10 +2445,10 @@
     ],
     "notes": "Good oral bioavailability. Take with or without food. Good for MSSA, Streptococci. NOT for MRSA, Enterococcus, or most gram-negatives.",
     "renalAdjust": {
-      "gfr50": "No change",
-      "gfr30": "Q8-12h",
-      "gfr10": "Q12-24h",
-      "hd": "250-500 mg after HD"
+      "gfr50": "No adjustment",
+      "gfr30": "250-500mg Q8-12h",
+      "gfr10": "250mg Q12-24h",
+      "hd": "Give after dialysis"
     },
     "hepaticAdjust": "No adjustment needed"
   },
@@ -2650,10 +2650,10 @@
     ],
     "notes": "Reserve for infections without alternative antibiotics in children (FDA warning). PO bioavailability 70-80%. IV:PO ratio approximately 1:1.5. Do not crush ER tablets.",
     "renalAdjust": {
-      "gfr50": "Q12h",
-      "gfr30": "Q18h or 50-75% dose",
-      "gfr10": "Q24h or 50% dose",
-      "hd": "250-500 mg Q24h after HD"
+      "gfr50": "No adjustment",
+      "gfr30": "50-75% Q12h",
+      "gfr10": "50% Q18-24h",
+      "hd": "250-500mg Q24h after dialysis"
     },
     "hepaticAdjust": "No adjustment needed"
   },
@@ -4222,10 +4222,10 @@
     ],
     "notes": "Therapeutic levels: Trough <1 mcg/mL (traditional) or <1 mcg/mL (once daily); Peak 6-10 mcg/mL (traditional) or 15-30 mcg/mL (once daily). Draw trough before dose, peak 30 min after 30-min infusion. Once-daily dosing not for endocarditis.",
     "renalAdjust": {
-      "gfr50": "Q12h",
-      "gfr30": "Q24h",
-      "gfr10": "Q48-72h",
-      "hd": "2 mg/kg after HD, redose per levels"
+      "gfr50": "60-90% of dose or same dose Q12-18h",
+      "gfr30": "30-70% of dose or same dose Q24-48h",
+      "gfr10": "20-30% of dose or same dose Q48-72h",
+      "hd": "Give after dialysis, monitor levels"
     },
     "hepaticAdjust": "No adjustment needed"
   },
@@ -5516,10 +5516,10 @@
     ],
     "notes": "Broad spectrum including most gram-negatives, gram-positives, and anaerobes. Does NOT cover MRSA or Enterococcus faecium. Extended infusion (3 hours) may improve outcomes in serious infections. Lower seizure risk than imipenem.",
     "renalAdjust": {
-      "gfr50": "100% dose Q8-12h",
-      "gfr30": "50% dose Q12h",
-      "gfr10": "50% dose Q24h",
-      "hd": "Dose after HD; supplement 500 mg"
+      "gfr50": "100% Q12h",
+      "gfr30": "50% Q12h",
+      "gfr10": "50% Q24h",
+      "hd": "50% after dialysis"
     },
     "hepaticAdjust": "No adjustment needed"
   },
@@ -5828,10 +5828,10 @@
     ],
     "notes": "Excellent anaerobic coverage. First-line for C. diff (mild-moderate). Avoid alcohol during treatment and for 3 days after. Can be given with or without food. IV and PO bioequivalent.",
     "renalAdjust": {
-      "gfr50": "No change",
-      "gfr30": "No change",
-      "gfr10": "50% dose or extend interval",
-      "hd": "Dose after HD; supplement 500 mg"
+      "gfr50": "No adjustment",
+      "gfr30": "No adjustment",
+      "gfr10": "50% dose or same dose Q12h",
+      "hd": "Give after dialysis"
     },
     "hepaticAdjust": "Reduce dose by 50% in severe impairment"
   },
@@ -11600,9 +11600,9 @@
     "notes": "Preferred over ceftriaxone in neonates (ceftriaxone can displace bilirubin). Good CSF penetration - first-line for neonatal meningitis. Has active metabolite (desacetyl-cefotaxime) with antibacterial activity.",
     "renalAdjust": {
       "gfr50": "No adjustment",
-      "gfr30": "Q8-12h interval",
-      "gfr10": "Q12-24h interval",
-      "hd": "Give after HD"
+      "gfr30": "50-100% Q8-12h",
+      "gfr10": "50% Q12-24h",
+      "hd": "Give after dialysis"
     },
     "hepaticAdjust": "No adjustment needed"
   },
@@ -11748,9 +11748,9 @@
     "notes": "Oral cefuroxime axetil is a prodrug - hydrolyzed to cefuroxime in intestinal mucosa. MUST take oral form with food for adequate absorption. Suspension and tablets are NOT equivalent - suspension has 91% bioavailability of tablets. Good option for step-down therapy from IV to oral.",
     "renalAdjust": {
       "gfr50": "No adjustment",
-      "gfr30": "Q12h interval",
-      "gfr10": "Q24h interval",
-      "hd": "Give after HD"
+      "gfr30": "100% Q12h",
+      "gfr10": "100% Q24h",
+      "hd": "Give after dialysis"
     },
     "hepaticAdjust": "No adjustment needed"
   }
