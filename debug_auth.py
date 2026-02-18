@@ -2,7 +2,7 @@ import requests
 import json
 
 # Test the user token authentication
-base_url = "https://pixel-perfect-plots-1.preview.emergentagent.com"
+base_url = "https://ui-standardization-5.preview.emergentagent.com"
 
 # First, create a user and get token
 signup_data = {

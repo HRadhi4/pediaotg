@@ -3,7 +3,7 @@ import json
 
 class TokenDebugger:
     def __init__(self):
-        self.base_url = "https://pixel-perfect-plots-1.preview.emergentagent.com"
+        self.base_url = "https://ui-standardization-5.preview.emergentagent.com"
         self.user_token = None
         
     def test_signup_and_token(self):
