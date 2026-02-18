@@ -1,87 +1,80 @@
 # Pediatrics On The Go - Product Requirements Document
 
 ## Original Problem Statement
-Build a medical calculator application for pediatric healthcare professionals featuring:
-- Pixel-perfect growth chart plotting (CDC and WHO charts)
-- Clinical calculators and scoring systems
-- Drug dosing references
-- Medical approaches/guidelines
+Build a comprehensive pediatric medical calculator application with:
+- Drug dosing calculations based on weight and age
+- Age-specific dosing (neonate ≤28 days, infant 28d-1yr, child >1yr)
+- Renal-adjusted dosing based on GFR calculations
+- Growth chart plotting with PDF export
+- Clinical guidelines and approaches
 
-## User Persona
-- Primary: Pediatricians, NICU staff, pediatric residents
-- Use case: Quick reference and calculations during patient care
+## Core Features Implemented
 
-## Core Requirements
+### 1. Drug Calculator (Children > Drugs) - COMPLETED ✅
+- **Age Input Selector**: Days/months/years dropdown
+- **Age-Specific Dosing**: 
+  - Neonate (≤28 days) → Shows neonatal doses
+  - Infant (28 days - 1 year) → Shows infant doses
+  - Child (>1 year) → Shows pediatric doses
+  - No age → Shows all doses
+- **Renal Adjustment**: 
+  - GFR Calculator (Schwartz equation)
+  - Calculates ADJUSTED dose (not just text)
+  - Example: 100mg Q8H → 100mg Q12H (renal adjusted)
+  - Handles "Avoid" cases
+- **Drug Database**: 114 drugs with complete renal adjustment data
+- **Display**: Doses visible on collapsed card before expanding
 
-### Growth Charts (P0)
-- WHO charts (0-2 years): Weight, Length, BMI, Head Circumference
-- CDC charts (2-20 years): Stature/Weight, BMI
-- Gender-specific charts (Boys/Girls)
-- Pixel-perfect coordinate plotting
-- PDF export with chart background
-- Zoom/pan functionality
+### 2. Empirical Antibiotics Page - COMPLETED ✅
+- Created under Children > Approaches
+- Complex dose calculations
+- References added
 
-### Clinical Calculators
-- BMI Calculator
-- BSA Calculator (Mosteller Formula) - Added Dec 2025
-- Electrolytes Calculator
+### 3. Growth Charts - PDF FIX PENDING ⏳
+- Background image missing in PDF export
+- Fix implemented but UNTESTED
 
-### Drug References
-- Children drug dosing page
-- Marquee animation for long drug names (mobile only)
+## Technical Architecture
 
-## What's Been Implemented
+```
+/app/frontend/src/
+├── pages/children/
+│   ├── DrugsPage.jsx          # Main drugs page with age/renal logic
+│   └── Approaches/
+│       └── EmpiricalAntibiotics.jsx
+├── data/
+│   └── formulary.json         # 114 drugs with renalAdjust data
+└── components/ui/             # Shadcn components
+```
 
-### Dec 2025 Session
-1. **CDC Boys Chart Calibration** - Adjusted coordinates:
-   - X-axis: +4px right (xMin: 454, xMax: 2064)
-   - Stature Y-axis: +4px down (yMin: 2424, yMax: 404)
-   - Weight Y-axis: +8px down (yMin: 2938, yMax: 1232)
+## Key Technical Details
 
-2. **CDC Girls Chart Calibration** - Previously adjusted coordinates
+### Age Category Logic
+```javascript
+if (totalAgeDays <= 28) return "neonate";
+if (totalAgeDays < 365) return "infant";
+if (totalAgeDays < 365 * 12) return "child";
+return "adolescent";
+```
 
-3. **BSA Calculator** - Added to "Children > Scoring" page using Mosteller Formula
+### Renal Adjustment Calculation
+- Parses adjustment text: "100% dose Q12h", "50% dose", "Avoid"
+- Applies percentage to calculated dose
+- Updates frequency based on renal text
+- Shows "(renal)" indicator
 
-4. **PDF Export** - Save button with jspdf/html2canvas, includes chart background via base64 conversion
+## Pending Issues (P0)
+1. Growth chart PDF export - fix implemented, needs testing
 
-5. **Marquee Animation** - Unified in tailwind.config.js, scrolls right, mobile only (<768px)
-
-## Pending Verification
-- CDC Boys chart coordinate accuracy
-- CDC Girls chart coordinate accuracy
-- Marquee animation (mobile only behavior)
-- PDF export (background image inclusion)
-- BMI plot-drift fix
-
-## Architecture
-
-### Frontend
-- React.js with TailwindCSS
-- Shadcn/UI components
-- react-zoom-pan-pinch for chart interaction
-- jspdf for PDF generation
-
-### Backend
-- FastAPI
-- MongoDB
-
-### Key Files
-- `/app/frontend/src/pages/nicu/GrowthChartPage.jsx` - All chart logic and coordinates
-- `/app/frontend/src/pages/children/DrugsPage.jsx` - Marquee animation logic
-- `/app/frontend/src/pages/children/ScoringPage.jsx` - BSA calculator
-- `/app/frontend/tailwind.config.js` - Custom animations
-
-## Backlog (P1-P2)
-- Refactor ElectrolytesDialog.jsx into smaller components
-- Refactor "NICU > Approaches > Mechanical Ventilation" layout
-- Add "Mechanical Ventilation" to "Children > Approaches"
-- Implement data-testid attributes across interactive elements
-
-## 3rd Party Integrations
-- PayPal (existing)
-- SMTP (existing)
-- jspdf/html2canvas (frontend PDF generation)
+## Backlog
+- Add Linezolid, Levofloxacin to formulary
+- Refactor DrugsPage.jsx into components
+- Add data-testid attributes
+- Mechanical Ventilation approach
 
 ## Test Credentials
 - Email: test@test.com
 - Password: 12341234
+
+## Last Updated
+February 2026 - Age selector, renal dose calculation, formulary review
