@@ -745,6 +745,75 @@ const DrugsPage = ({ onBack }) => {
                       </span>
                     </div>
 
+                    {/* Age-Based Dosing Highlight */}
+                    {totalAgeMonths > 0 && (
+                      <div className="p-2 rounded-lg bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800">
+                        <p className="text-[10px] font-semibold text-purple-700 dark:text-purple-300 mb-1">
+                          👶 Age: {ageYears > 0 ? `${ageYears}y ` : ''}{ageMonths > 0 ? `${ageMonths}mo` : ''} ({patientAgeCategory})
+                        </p>
+                        {(() => {
+                          // Find matching age-based doses
+                          const ageDoses = [];
+                          if (drug.doses) {
+                            Object.entries(drug.doses).forEach(([key, dose]) => {
+                              const label = dose.label?.toLowerCase() || '';
+                              const keyLower = key.toLowerCase();
+                              
+                              // Check if this dose applies to the patient's age
+                              let applies = false;
+                              
+                              // Neonate (< 1 month)
+                              if (totalAgeMonths < 1 && (label.includes('neonate') || label.includes('neo') || keyLower.includes('neo'))) {
+                                applies = true;
+                              }
+                              // Infant (1-12 months)
+                              else if (totalAgeMonths >= 1 && totalAgeMonths < 12 && (label.includes('infant') || keyLower.includes('infant'))) {
+                                applies = true;
+                              }
+                              // Child (1-12 years)
+                              else if (totalAgeMonths >= 12 && totalAgeMonths < 144 && (label.includes('child') || label.includes('pediatric') || keyLower.includes('child') || keyLower.includes('standard'))) {
+                                applies = true;
+                              }
+                              // Adolescent/Adult (>12 years)
+                              else if (totalAgeMonths >= 144 && (label.includes('adult') || label.includes('adolescent') || keyLower.includes('adult'))) {
+                                applies = true;
+                              }
+                              
+                              if (applies) {
+                                ageDoses.push({ key, ...dose });
+                              }
+                            });
+                          }
+                          
+                          if (ageDoses.length === 0) return (
+                            <p className="text-[9px] text-muted-foreground">No specific age-based dose found. Use standard dosing.</p>
+                          );
+                          
+                          return (
+                            <div className="space-y-1">
+                              {ageDoses.map((dose, idx) => (
+                                <div key={idx} className="text-[10px] flex items-center gap-2">
+                                  <span className="text-purple-600 dark:text-purple-400 font-medium">{dose.label}:</span>
+                                  <span className="font-mono text-foreground">{dose.value} {dose.unit}</span>
+                                  {w > 0 && dose.value && !dose.isFixed && (
+                                    <span className="font-mono text-green-600 dark:text-green-400 bg-green-100 dark:bg-green-900/30 px-1.5 rounded">
+                                      → {(() => {
+                                        const vals = dose.value.toString().split('-');
+                                        if (vals.length === 2) {
+                                          return `${(parseFloat(vals[0]) * w).toFixed(0)}-${(parseFloat(vals[1]) * w).toFixed(0)} mg`;
+                                        }
+                                        return `${(parseFloat(vals[0]) * w).toFixed(0)} mg`;
+                                      })()}
+                                    </span>
+                                  )}
+                                </div>
+                              ))}
+                            </div>
+                          );
+                        })()}
+                      </div>
+                    )}
+
                     {/* Dosing Table (from formulary PDF) */}
                     {drug.dosingTable && (
                       <div className="p-3 rounded-lg bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-200 dark:border-indigo-800">
