@@ -67,10 +67,8 @@ module.exports = {
           '0%, 100%': { transform: 'rotate(-1.5deg)' },
           '50%': { transform: 'rotate(1.5deg)' }
         },
-        'scroll-left': {
-          '0%': { transform: 'translateX(0)' },
-          '15%': { transform: 'translateX(0)' },
-          '85%': { transform: 'translateX(-50%)' },
+        'marquee': {
+          '0%': { transform: 'translateX(0%)' },
           '100%': { transform: 'translateX(-50%)' }
         }
       },
@@ -78,7 +76,7 @@ module.exports = {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
         'wiggle': 'wiggle 0.3s ease-in-out infinite',
-        'scroll-left': 'scroll-left 4s ease-in-out infinite'
+        'marquee': 'marquee 5s linear infinite'
       }
     }
   },
