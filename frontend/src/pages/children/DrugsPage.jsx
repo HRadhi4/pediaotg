@@ -194,9 +194,9 @@ const DrugsPage = ({ onBack }) => {
     // Standard GFR thresholds: ≥50, 30-49, 10-29, <10
     let renalText = null;
     if (gfrNum >= 50) renalText = drug.renalAdjust.gfr50;
-    else if (gfrNum >= 30) renalText = drug.renalAdjust.gfr50; // GFR 30-49 uses same as 50
-    else if (gfrNum >= 10) renalText = drug.renalAdjust.gfr30;
-    else renalText = drug.renalAdjust.gfr10;
+    else if (gfrNum >= 30) renalText = drug.renalAdjust.gfr30; // GFR 30-49
+    else if (gfrNum >= 10) renalText = drug.renalAdjust.gfr10; // GFR 10-29
+    else renalText = drug.renalAdjust.gfr10; // GFR <10
     
     if (!renalText) return null;
     
