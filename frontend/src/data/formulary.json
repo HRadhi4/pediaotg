@@ -6820,10 +6820,10 @@
     ],
     "notes": "1 million units = 0.6 g. K+ formulation: 1.7 mEq K/million units. Na+ formulation: 2 mEq Na/million units. Preferred for GBS and susceptible streptococci. Not stable orally (use Pen V for oral).",
     "renalAdjust": {
-      "gfr50": "No change",
-      "gfr30": "75% dose or extend interval",
-      "gfr10": "50% dose or extend to Q8-12h",
-      "hd": "Dose after HD; supplement 500,000-1 million units"
+      "gfr50": "75% of dose",
+      "gfr30": "50% of dose",
+      "gfr10": "25-50% of dose",
+      "hd": "Give after dialysis"
     },
     "hepaticAdjust": null
   },
@@ -7184,10 +7184,10 @@
     ],
     "notes": "Contains 2.35 mEq Na per gram piperacillin. Extended infusion (4 hours) may improve outcomes in severe infections. Covers most gram-negatives (including Pseudomonas), gram-positives (not MRSA), and anaerobes. Doses expressed as piperacillin component.",
     "renalAdjust": {
-      "gfr50": "No change",
-      "gfr30": "2.25 g Q6h or 3.375 g Q8h",
-      "gfr10": "2.25 g Q8h",
-      "hd": "2.25 g Q8h; supplement after HD"
+      "gfr50": "No adjustment",
+      "gfr30": "70% of usual dose",
+      "gfr10": "70% Q8h (max 2.25g Q6h)",
+      "hd": "2.25g Q8h + 0.75g after dialysis"
     },
     "hepaticAdjust": "No adjustment needed"
   },
