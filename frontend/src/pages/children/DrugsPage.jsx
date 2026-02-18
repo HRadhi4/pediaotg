@@ -65,7 +65,14 @@ const DrugsPage = ({ onBack }) => {
   // - 28 days to 1 year = infant
   // - >1 year = child/pediatric
   const getPatientAgeCategory = () => {
-    if (totalAgeMonths === 0 && (parseFloat(ageYears) === 0 && parseFloat(ageMonths) === 0)) return null;
+    // Return null if no age entered (empty strings or both zeros)
+    const yearsNum = parseFloat(ageYears);
+    const monthsNum = parseFloat(ageMonths);
+    const hasValidAge = !isNaN(yearsNum) || !isNaN(monthsNum);
+    
+    if (!hasValidAge) return null; // No age entered
+    if (totalAgeMonths === 0 && totalAgeDays === 0) return null; // Age is exactly 0
+    
     if (totalAgeDays <= 28) return "neonate";
     if (totalAgeMonths < 12) return "infant";
     if (totalAgeMonths < 144) return "child"; // < 12 years
