@@ -109,8 +109,8 @@ const EmpiricalAntibioticsApproach = ({ weight, expandedSections, toggleSection 
                     <td className="p-2 font-medium text-foreground align-top">Periorbital Cellulitis</td>
                     <td className="p-2 align-top">S. Pneumo, S. aureus, GAS</td>
                     <td className="p-2">
-                      <p><span className="font-medium text-blue-600">Clindamycin</span> 10 mg/kg/dose PO/IV q8h</p>
-                      {w > 0 && <p className="font-mono text-green-600 mt-1">→ {calcPerDose(10)} mg q8h</p>}
+                      <p><span className="font-medium text-blue-600">Clindamycin</span> 10 mg/kg/day PO/IV q8h</p>
+                      {w > 0 && <p className="font-mono text-green-600 mt-1">→ {calcPerDay(10, 3)} mg q8h</p>}
                     </td>
                   </tr>
                   <tr className="border-b dark:border-gray-700">
