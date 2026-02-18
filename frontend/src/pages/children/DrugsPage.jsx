@@ -417,6 +417,42 @@ const DrugsPage = ({ onBack }) => {
             />
           </div>
 
+          {/* Age Input */}
+          <div>
+            <Label className="text-[10px] text-muted-foreground">Age (for age-specific dosing)</Label>
+            <div className="flex gap-2">
+              <div className="flex-1">
+                <Input
+                  type="number"
+                  placeholder="yrs"
+                  value={ageYears}
+                  onChange={(e) => setAgeYears(e.target.value)}
+                  min="0"
+                  max="18"
+                  className="font-mono text-sm h-9"
+                />
+                <span className="text-[9px] text-muted-foreground">years</span>
+              </div>
+              <div className="flex-1">
+                <Input
+                  type="number"
+                  placeholder="mo"
+                  value={ageMonths}
+                  onChange={(e) => setAgeMonths(e.target.value)}
+                  min="0"
+                  max="11"
+                  className="font-mono text-sm h-9"
+                />
+                <span className="text-[9px] text-muted-foreground">months</span>
+              </div>
+            </div>
+            {totalAgeMonths > 0 && (
+              <p className="text-[9px] text-muted-foreground mt-1">
+                Total: {totalAgeMonths} months ({patientAgeCategory})
+              </p>
+            )}
+          </div>
+
           {/* GFR Calculator Toggle */}
           <button 
             onClick={() => setShowGFRCalc(!showGFRCalc)}
