@@ -85,10 +85,10 @@ const FindingItem = ({ title, management, urgent = false, aapGuideline = null })
             {urgent && <AlertCircle className="h-4 w-4 inline mr-1 text-red-500" />}
             {title}
           </h4>
-          <ul className="space-y-1">
+          <ul className="space-y-1.5 ml-1">
             {management.map((item, idx) => (
-              <li key={idx} className="text-xs text-muted-foreground flex items-start gap-2">
-                <span className="text-teal-500 mt-0.5 flex-shrink-0">•</span>
+              <li key={idx} className="text-xs text-muted-foreground flex items-start">
+                <span className="text-teal-500 mr-2 flex-shrink-0">•</span>
                 <span>{item}</span>
               </li>
             ))}
