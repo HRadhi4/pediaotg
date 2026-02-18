@@ -762,43 +762,50 @@ const DrugsPage = ({ onBack }) => {
                     {/* Left: Age-filtered dose info */}
                     {displayDose && (
                       <div className="text-xs text-muted-foreground flex-1 min-w-0">
-                        <span className={`font-medium ${displayDose.ageMatch ? 'text-purple-600 dark:text-purple-400' : 'text-blue-600 dark:text-blue-400'}`}>
+                        <span className={`font-medium ${hasRenalAdjustment ? 'text-amber-600 dark:text-amber-400' : displayDose.ageMatch ? 'text-purple-600 dark:text-purple-400' : 'text-blue-600 dark:text-blue-400'}`}>
                           {displayDose.label}:
                         </span>{' '}
                         <span className="font-mono">{displayDose.value} {displayDose.unit}</span>
                       </div>
                     )}
                     
-                    {/* Right: Calculated Dose (with renal adjustment if applicable) */}
+                    {/* Right: Calculated Dose - If renal adjustment, show that INSTEAD of standard dose */}
                     {w > 0 && displayDose && (
                       <div className="text-right flex-shrink-0">
-                        {(() => {
-                          const doseSpecificMax = displayDose.maxDose;
-                          const maxDoseValue = doseSpecificMax || parseMaxDose(drug.max, w);
-                          const result = calculateDose(displayDose.value, w, maxDoseValue, "mg", displayDose.unit, displayDose.isFixed || drug.isFixedDose);
-                          if (!result) return null;
-                          const doseResult = typeof result === 'string' ? { dose: result, isExceedingMax: false } : result;
-                          
-                          const showPerDose = doseResult.isPerDay && doseResult.divisor > 1 && doseResult.perDoseMin;
-                          
-                          let displayFreq = doseResult.frequency;
-                          if (!displayFreq) {
-                            const unitLower = displayDose.unit.toLowerCase();
-                            const freqMatch = unitLower.match(/q(\d+(?:-\d+)?h)/);
-                            if (freqMatch) displayFreq = freqMatch[0];
-                            else if (unitLower.includes('once daily') || unitLower.includes('q24h')) displayFreq = 'q24h';
-                            else if (unitLower.includes('q12h')) displayFreq = 'q12h';
-                            else if (unitLower.includes('q8h')) displayFreq = 'q8h';
-                            else if (unitLower.includes('q6h')) displayFreq = 'q6h';
-                          }
-                          
-                          return (
-                            <div className="flex flex-col items-end gap-1">
+                        {hasRenalAdjustment && renalAdjustText ? (
+                          // Show RENAL ADJUSTED dose only - replaces standard dose
+                          <div className="flex items-center gap-2">
+                            <span className="text-base font-semibold text-amber-600 dark:text-amber-400">
+                              {renalAdjustText}
+                            </span>
+                          </div>
+                        ) : (
+                          // Show standard calculated dose
+                          (() => {
+                            const doseSpecificMax = displayDose.maxDose;
+                            const maxDoseValue = doseSpecificMax || parseMaxDose(drug.max, w);
+                            const result = calculateDose(displayDose.value, w, maxDoseValue, "mg", displayDose.unit, displayDose.isFixed || drug.isFixedDose);
+                            if (!result) return null;
+                            const doseResult = typeof result === 'string' ? { dose: result, isExceedingMax: false } : result;
+                            
+                            const showPerDose = doseResult.isPerDay && doseResult.divisor > 1 && doseResult.perDoseMin;
+                            
+                            let displayFreq = doseResult.frequency;
+                            if (!displayFreq) {
+                              const unitLower = displayDose.unit.toLowerCase();
+                              const freqMatch = unitLower.match(/q(\d+(?:-\d+)?h)/);
+                              if (freqMatch) displayFreq = freqMatch[0];
+                              else if (unitLower.includes('once daily') || unitLower.includes('q24h')) displayFreq = 'q24h';
+                              else if (unitLower.includes('q12h')) displayFreq = 'q12h';
+                              else if (unitLower.includes('q8h')) displayFreq = 'q8h';
+                              else if (unitLower.includes('q6h')) displayFreq = 'q6h';
+                            }
+                            
+                            return (
                               <div className="flex items-center gap-2">
                                 {showPerDose ? (
                                   <>
                                     <span className={`text-base font-mono font-bold ${
-                                      hasRenalAdjustment ? 'text-amber-600' : 
                                       doseResult.isExceedingMax ? 'text-amber-600' : 'text-green-600'
                                     }`}>
                                       {doseResult.perDoseMin === doseResult.perDoseMax 
@@ -806,27 +813,22 @@ const DrugsPage = ({ onBack }) => {
                                         : `${doseResult.perDoseMin}-${doseResult.perDoseMax} mg`}
                                     </span>
                                     {displayFreq && (
-                                      <span className={`font-semibold px-2 py-1 rounded text-xs ${
-                                        hasRenalAdjustment 
-                                          ? 'bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-300'
-                                          : 'bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300'
-                                      }`}>{displayFreq}</span>
+                                      <span className="font-semibold px-2 py-1 rounded text-xs bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300">
+                                        {displayFreq}
+                                      </span>
                                     )}
                                   </>
                                 ) : (
                                   <>
                                     <span className={`text-base font-mono font-bold ${
-                                      hasRenalAdjustment ? 'text-amber-600' :
                                       doseResult.isExceedingMax ? 'text-amber-600' : 'text-blue-600'
                                     }`}>
                                       {doseResult.dose}
                                     </span>
                                     {displayFreq && (
-                                      <span className={`font-semibold px-2 py-1 rounded text-xs ${
-                                        hasRenalAdjustment 
-                                          ? 'bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-300'
-                                          : 'bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300'
-                                      }`}>{displayFreq}</span>
+                                      <span className="font-semibold px-2 py-1 rounded text-xs bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300">
+                                        {displayFreq}
+                                      </span>
                                     )}
                                   </>
                                 )}
@@ -834,15 +836,9 @@ const DrugsPage = ({ onBack }) => {
                                   <span className="text-xs text-amber-600 font-medium">⚠️</span>
                                 )}
                               </div>
-                              {/* Show renal adjustment text on collapsed card */}
-                              {hasRenalAdjustment && renalAdjustText && (
-                                <div className="text-[10px] text-amber-600 dark:text-amber-400 font-medium">
-                                  Renal: {renalAdjustText}
-                                </div>
-                              )}
-                            </div>
-                          );
-                        })()}
+                            );
+                          })()
+                        )}
                       </div>
                     )}
                   </div>
