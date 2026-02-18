@@ -704,21 +704,28 @@ const DrugsPage = ({ onBack }) => {
         {filteredDrugs.map((drug) => {
           const isExpanded = expandedDrug === drug.id;
           const doseKeys = drug.doses ? Object.keys(drug.doses) : [];
-          const firstDoseKey = doseKeys[0];
-          const firstDose = drug.doses?.[firstDoseKey];
+          
+          // Get age-filtered dose for collapsed card display
+          const displayDose = getAgeFilteredDose(drug);
+          const renalAdjustText = getRenalAdjustedDoseText(drug);
+          const hasRenalAdjustment = drug.renalAdjust && gfr && parseFloat(gfr) < 50;
           
           return (
             <Card 
               key={drug.id} 
-              className="nightingale-card cursor-pointer hover:border-blue-300 dark:hover:border-blue-700 transition-colors"
+              className={`nightingale-card cursor-pointer transition-colors ${
+                hasRenalAdjustment 
+                  ? 'border-amber-300 dark:border-amber-700 hover:border-amber-400 dark:hover:border-amber-600' 
+                  : 'hover:border-blue-300 dark:hover:border-blue-700'
+              }`}
               onClick={() => setExpandedDrug(isExpanded ? null : drug.id)}
             >
               <CardContent className="p-4 min-h-[88px]">
                 {/* Drug Header - Two-row layout with unified container size */}
                 <div className="space-y-3">
-                  {/* Row 1: Drug Name and Category */}
+                  {/* Row 1: Drug Name, Category, and Age Badge */}
                   <div className="flex items-center justify-between gap-2">
-                    <div className="flex-1 min-w-0 overflow-hidden">
+                    <div className="flex-1 min-w-0 overflow-hidden flex items-center gap-2">
                       {isExpanded ? (
                         <h3 className="font-semibold text-base leading-tight break-words">
                           {drug.name}
@@ -728,29 +735,45 @@ const DrugsPage = ({ onBack }) => {
                           {drug.name}
                         </h3>
                       )}
+                      {/* Age match indicator */}
+                      {patientAgeCategory && displayDose?.ageMatch && (
+                        <span className="text-[9px] px-1.5 py-0.5 rounded bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 whitespace-nowrap flex-shrink-0">
+                          {patientAgeCategory}
+                        </span>
+                      )}
                     </div>
-                    <span className="text-[10px] px-2 py-1 rounded bg-gray-100 dark:bg-gray-800 text-muted-foreground whitespace-nowrap flex-shrink-0">
-                      {drug.category}
-                    </span>
+                    <div className="flex items-center gap-1.5 flex-shrink-0">
+                      {/* Renal adjustment indicator */}
+                      {hasRenalAdjustment && (
+                        <span className="text-[9px] px-1.5 py-0.5 rounded bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 whitespace-nowrap font-medium">
+                          🩺 Adjusted
+                        </span>
+                      )}
+                      <span className="text-[10px] px-2 py-1 rounded bg-gray-100 dark:bg-gray-800 text-muted-foreground whitespace-nowrap">
+                        {drug.category}
+                      </span>
+                    </div>
                   </div>
                   
                   {/* Row 2: Dosing Info and Calculated Dose */}
                   <div className="flex items-center justify-between gap-4 pt-1">
-                    {/* Left: First dose info */}
-                    {firstDose && (
+                    {/* Left: Age-filtered dose info */}
+                    {displayDose && (
                       <div className="text-xs text-muted-foreground flex-1 min-w-0">
-                        <span className="text-blue-600 dark:text-blue-400 font-medium">{firstDose.label}:</span>{' '}
-                        <span className="font-mono">{firstDose.value} {firstDose.unit}</span>
+                        <span className={`font-medium ${displayDose.ageMatch ? 'text-purple-600 dark:text-purple-400' : 'text-blue-600 dark:text-blue-400'}`}>
+                          {displayDose.label}:
+                        </span>{' '}
+                        <span className="font-mono">{displayDose.value} {displayDose.unit}</span>
                       </div>
                     )}
                     
-                    {/* Right: Calculated Dose */}
-                    {w > 0 && firstDose && (
+                    {/* Right: Calculated Dose (with renal adjustment if applicable) */}
+                    {w > 0 && displayDose && (
                       <div className="text-right flex-shrink-0">
                         {(() => {
-                          const doseSpecificMax = firstDose.maxDose;
+                          const doseSpecificMax = displayDose.maxDose;
                           const maxDoseValue = doseSpecificMax || parseMaxDose(drug.max, w);
-                          const result = calculateDose(firstDose.value, w, maxDoseValue, "mg", firstDose.unit, firstDose.isFixed || drug.isFixedDose);
+                          const result = calculateDose(displayDose.value, w, maxDoseValue, "mg", displayDose.unit, displayDose.isFixed || drug.isFixedDose);
                           if (!result) return null;
                           const doseResult = typeof result === 'string' ? { dose: result, isExceedingMax: false } : result;
                           
@@ -758,7 +781,7 @@ const DrugsPage = ({ onBack }) => {
                           
                           let displayFreq = doseResult.frequency;
                           if (!displayFreq) {
-                            const unitLower = firstDose.unit.toLowerCase();
+                            const unitLower = displayDose.unit.toLowerCase();
                             const freqMatch = unitLower.match(/q(\d+(?:-\d+)?h)/);
                             if (freqMatch) displayFreq = freqMatch[0];
                             else if (unitLower.includes('once daily') || unitLower.includes('q24h')) displayFreq = 'q24h';
@@ -768,30 +791,52 @@ const DrugsPage = ({ onBack }) => {
                           }
                           
                           return (
-                            <div className="flex items-center gap-2">
-                              {showPerDose ? (
-                                <>
-                                  <span className={`text-base font-mono font-bold ${doseResult.isExceedingMax ? 'text-amber-600' : 'text-green-600'}`}>
-                                    {doseResult.perDoseMin === doseResult.perDoseMax 
-                                      ? `${doseResult.perDoseMin} mg` 
-                                      : `${doseResult.perDoseMin}-${doseResult.perDoseMax} mg`}
-                                  </span>
-                                  {displayFreq && (
-                                    <span className="font-semibold bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 px-2 py-1 rounded text-xs">{displayFreq}</span>
-                                  )}
-                                </>
-                              ) : (
-                                <>
-                                  <span className={`text-base font-mono font-bold ${doseResult.isExceedingMax ? 'text-amber-600' : 'text-blue-600'}`}>
-                                    {doseResult.dose}
-                                  </span>
-                                  {displayFreq && (
-                                    <span className="font-semibold bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 px-2 py-1 rounded text-xs">{displayFreq}</span>
-                                  )}
-                                </>
-                              )}
-                              {doseResult.isExceedingMax && (
-                                <span className="text-xs text-amber-600 font-medium">⚠️</span>
+                            <div className="flex flex-col items-end gap-1">
+                              <div className="flex items-center gap-2">
+                                {showPerDose ? (
+                                  <>
+                                    <span className={`text-base font-mono font-bold ${
+                                      hasRenalAdjustment ? 'text-amber-600' : 
+                                      doseResult.isExceedingMax ? 'text-amber-600' : 'text-green-600'
+                                    }`}>
+                                      {doseResult.perDoseMin === doseResult.perDoseMax 
+                                        ? `${doseResult.perDoseMin} mg` 
+                                        : `${doseResult.perDoseMin}-${doseResult.perDoseMax} mg`}
+                                    </span>
+                                    {displayFreq && (
+                                      <span className={`font-semibold px-2 py-1 rounded text-xs ${
+                                        hasRenalAdjustment 
+                                          ? 'bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-300'
+                                          : 'bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300'
+                                      }`}>{displayFreq}</span>
+                                    )}
+                                  </>
+                                ) : (
+                                  <>
+                                    <span className={`text-base font-mono font-bold ${
+                                      hasRenalAdjustment ? 'text-amber-600' :
+                                      doseResult.isExceedingMax ? 'text-amber-600' : 'text-blue-600'
+                                    }`}>
+                                      {doseResult.dose}
+                                    </span>
+                                    {displayFreq && (
+                                      <span className={`font-semibold px-2 py-1 rounded text-xs ${
+                                        hasRenalAdjustment 
+                                          ? 'bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-300'
+                                          : 'bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300'
+                                      }`}>{displayFreq}</span>
+                                    )}
+                                  </>
+                                )}
+                                {doseResult.isExceedingMax && (
+                                  <span className="text-xs text-amber-600 font-medium">⚠️</span>
+                                )}
+                              </div>
+                              {/* Show renal adjustment text on collapsed card */}
+                              {hasRenalAdjustment && renalAdjustText && (
+                                <div className="text-[10px] text-amber-600 dark:text-amber-400 font-medium">
+                                  Renal: {renalAdjustText}
+                                </div>
                               )}
                             </div>
                           );
