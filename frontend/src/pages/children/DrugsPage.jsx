@@ -41,6 +41,8 @@ const DrugsPage = ({ onBack }) => {
   // ==========================================================================
   const [searchTerm, setSearchTerm] = useState("");      // Drug search filter
   const [weight, setWeight] = useState("");              // Patient weight in kg
+  const [ageMonths, setAgeMonths] = useState("");        // Patient age in months
+  const [ageYears, setAgeYears] = useState("");          // Patient age in years
   const [height, setHeight] = useState("");              // Patient height in cm (for GFR)
   const [creatinine, setCreatinine] = useState("");      // Serum creatinine µmol/L (for GFR)
   const [ageCategory, setAgeCategory] = useState("child"); // Age category for original Schwartz
@@ -52,6 +54,21 @@ const DrugsPage = ({ onBack }) => {
   const w = parseFloat(weight) || 0;
   const h = parseFloat(height) || 0;
   const scr = parseFloat(creatinine) || 0;
+  
+  // Calculate total age in months for age-based dosing
+  const totalAgeMonths = (parseFloat(ageYears) || 0) * 12 + (parseFloat(ageMonths) || 0);
+  const totalAgeDays = totalAgeMonths * 30; // Approximate days for neonate calculations
+  
+  // Get age category string for drug lookups
+  const getPatientAgeCategory = () => {
+    if (totalAgeMonths === 0) return null;
+    if (totalAgeMonths < 1) return "neonate";
+    if (totalAgeMonths < 12) return "infant";
+    if (totalAgeMonths < 144) return "child"; // < 12 years
+    return "adolescent";
+  };
+  
+  const patientAgeCategory = getPatientAgeCategory();
 
   // Original Schwartz k values by age
   // k values: Preterm=0.33, Term infant=0.45, Child(1-13y)=0.55, Adolescent Male=0.70, Adolescent Female=0.55
