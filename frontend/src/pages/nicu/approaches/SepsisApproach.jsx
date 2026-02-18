@@ -39,27 +39,27 @@ const SepsisApproach = ({ weight, gestationalAge, postnatalAge }) => {
         <div className="p-3 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700">
           <p className="font-semibold text-slate-700 dark:text-slate-200 mb-2">Classification</p>
           <div className="overflow-x-auto pb-2" style={{ margin: '0 -12px', padding: '0 12px' }}>
-            <table className="text-xs border-collapse" style={{ minWidth: '550px' }}>
+            <table className="text-xs border-collapse" style={{ minWidth: '650px', width: '650px' }}>
               <thead>
                 <tr className="bg-slate-100 dark:bg-slate-700">
-                  <th className="text-left py-2 px-3 border border-slate-300 dark:border-slate-600" style={{ whiteSpace: 'nowrap' }}>Type</th>
-                  <th className="text-left py-2 px-3 border border-slate-300 dark:border-slate-600" style={{ whiteSpace: 'nowrap' }}>Timing</th>
-                  <th className="text-left py-2 px-3 border border-slate-300 dark:border-slate-600" style={{ whiteSpace: 'nowrap' }}>Common Organisms</th>
-                  <th className="text-left py-2 px-3 border border-slate-300 dark:border-slate-600" style={{ whiteSpace: 'nowrap' }}>Source</th>
+                  <th className="text-left py-2 px-3 border border-slate-300 dark:border-slate-600" style={{ whiteSpace: 'nowrap', width: '120px' }}>Type</th>
+                  <th className="text-left py-2 px-3 border border-slate-300 dark:border-slate-600" style={{ whiteSpace: 'nowrap', width: '80px' }}>Timing</th>
+                  <th className="text-left py-2 px-3 border border-slate-300 dark:border-slate-600" style={{ whiteSpace: 'nowrap', width: '250px' }}>Common Organisms</th>
+                  <th className="text-left py-2 px-3 border border-slate-300 dark:border-slate-600" style={{ whiteSpace: 'nowrap', width: '200px' }}>Source</th>
                 </tr>
               </thead>
               <tbody className="text-slate-600 dark:text-slate-300">
                 <tr>
-                  <td className="py-2 px-3 border font-medium text-orange-600 dark:text-orange-400" style={{ whiteSpace: 'nowrap' }}>Early-Onset (EOS)</td>
-                  <td className="py-2 px-3 border" style={{ whiteSpace: 'nowrap' }}><strong>&lt;72 hours</strong></td>
-                  <td className="py-2 px-3 border" style={{ whiteSpace: 'nowrap' }}>GBS, E. coli, Listeria</td>
-                  <td className="py-2 px-3 border" style={{ whiteSpace: 'nowrap' }}>Vertical (maternal)</td>
+                  <td className="py-2 px-3 border font-medium text-orange-600 dark:text-orange-400">Early-Onset (EOS)</td>
+                  <td className="py-2 px-3 border"><strong>&lt;72 hours</strong></td>
+                  <td className="py-2 px-3 border">GBS, E. coli, Listeria</td>
+                  <td className="py-2 px-3 border">Vertical (maternal)</td>
                 </tr>
                 <tr>
-                  <td className="py-2 px-3 border font-medium text-purple-600 dark:text-purple-400" style={{ whiteSpace: 'nowrap' }}>Late-Onset (LOS)</td>
-                  <td className="py-2 px-3 border" style={{ whiteSpace: 'nowrap' }}><strong>≥72 hours</strong></td>
-                  <td className="py-2 px-3 border" style={{ whiteSpace: 'nowrap' }}>CoNS, S. aureus, GNR, Candida</td>
-                  <td className="py-2 px-3 border" style={{ whiteSpace: 'nowrap' }}>Hospital/Community</td>
+                  <td className="py-2 px-3 border font-medium text-purple-600 dark:text-purple-400">Late-Onset (LOS)</td>
+                  <td className="py-2 px-3 border"><strong>≥72 hours</strong></td>
+                  <td className="py-2 px-3 border">CoNS, S. aureus, GNR, Candida</td>
+                  <td className="py-2 px-3 border">Hospital/Community</td>
                 </tr>
               </tbody>
             </table>
