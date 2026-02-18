@@ -859,10 +859,10 @@ const DrugsPage = ({ onBack }) => {
                     </div>
 
                     {/* Age-Based Dosing Highlight */}
-                    {totalAgeMonths > 0 && (
+                    {ageNum > 0 && (
                       <div className="p-2 rounded-lg bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800">
                         <p className="text-[10px] font-semibold text-purple-700 dark:text-purple-300 mb-1">
-                          👶 Age: {ageYears > 0 ? `${ageYears}y ` : ''}{ageMonths > 0 ? `${ageMonths}mo` : ''} ({patientAgeCategory})
+                          👶 Age: {getAgeDisplay()} ({patientAgeCategory})
                         </p>
                         {(() => {
                           // Find matching age-based doses
