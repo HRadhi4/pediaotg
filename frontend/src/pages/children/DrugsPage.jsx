@@ -254,10 +254,11 @@ const DrugsPage = ({ onBack }) => {
     if (!drug.renalAdjust || !gfr) return null;
     const gfrNum = parseFloat(gfr);
     
+    // Standard GFR thresholds: ≥50, 30-49, 10-29, <10
     if (gfrNum >= 50) return drug.renalAdjust.gfr50;
-    if (gfrNum >= 30) return drug.renalAdjust.gfr30;
-    if (gfrNum >= 10) return drug.renalAdjust.gfr30;
-    return drug.renalAdjust.gfr10;
+    if (gfrNum >= 30) return drug.renalAdjust.gfr30; // GFR 30-49
+    if (gfrNum >= 10) return drug.renalAdjust.gfr10; // GFR 10-29
+    return drug.renalAdjust.gfr10; // GFR <10
   };
 
   // Original Schwartz k values by age
