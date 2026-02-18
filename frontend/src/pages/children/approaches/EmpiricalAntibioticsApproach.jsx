@@ -137,7 +137,7 @@ const EmpiricalAntibioticsApproach = ({ weight, expandedSections, toggleSection 
                     <td className="p-2">
                       <p><span className="font-medium text-blue-600">Augmentin</span> 25mg/kg/dose PO BID</p>
                       {w > 0 && <p className="font-mono text-green-600 mt-1">→ {calcPerDose(25)} mg BID</p>}
-                      <p className="text-[10px] mt-1"><span className="font-medium">Alt:</span> Clindamycin 10mg/kg/dose PO/IV q8h</p>
+                      <p className="text-[10px] mt-1"><span className="font-medium">Alt:</span> Clindamycin 10mg/kg/day PO/IV q8h</p>
                     </td>
                   </tr>
                   <tr>
