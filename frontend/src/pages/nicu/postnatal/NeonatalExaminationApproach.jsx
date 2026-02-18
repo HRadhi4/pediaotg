@@ -781,8 +781,8 @@ const NeonatalExaminationApproach = () => {
             "Renal Ultrasound as inpatient",
             "U/Cr/E, Urine R/M, C/S as inpatient",
             "After US report:",
-            "• If APD <1 cm: Nephro follow up",
-            "• If APD >1 cm: Prophylactic antibiotics + Nephro review + Surgical appointment"
+            "If APD <1 cm: Nephro follow up",
+            "If APD >1 cm: Prophylactic antibiotics + Nephro review + Surgical appointment"
           ]}
           aapGuideline={
             <div className="space-y-2">
