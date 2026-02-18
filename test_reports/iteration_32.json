@@ -1,0 +1,90 @@
+{
+  "summary": "Frontend testing completed for 3 user-requested fixes: 1) Age selector with days/months/years dropdown - PASS, 2) Renal adjusted dose REPLACES standard dose on collapsed card - PASS, 3) Drug name displays correctly when expanded - PASS. All features verified working as expected.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "passed_tests": {
+    "age_selector_dropdown": {
+      "status": "PASS",
+      "tests": [
+        "Age input field accepts numeric value",
+        "Dropdown shows days/months/years options",
+        "14 days shows 'Total: 14 days (neonate)'",
+        "6 months shows 'Total: 6 months (infant)'",
+        "5 years shows 'Total: 5 years (child)'"
+      ],
+      "implementation_details": "Single input + select dropdown replaces previous dual years/months inputs"
+    },
+    "renal_adjustment_replaces_dose": {
+      "status": "PASS",
+      "tests": [
+        "GFR Calculator expands correctly",
+        "GFR calculates to 40.1 mL/min/1.73m² with height=110cm, creatinine=100",
+        "Gentamicin shows '🩺 Adjusted' badge when GFR < 50",
+        "Right side dose area shows '60-90% of dose or same dose Q12-18h' (renal text)",
+        "Calculated mg dose NOT shown when renal adjustment active - REPLACES standard dose"
+      ],
+      "implementation_details": "Modified dose display logic: when hasRenalAdjustment && renalAdjustText, shows ONLY renal text instead of calculated dose"
+    },
+    "drug_name_display_expanded": {
+      "status": "PASS",
+      "tests": [
+        "Acetazolamide (Diamox) displays on one line when expanded",
+        "CSS word-break is 'break-word' (NOT 'break-all')",
+        "Drug name does NOT break character-by-character",
+        "Full generic + brand name displays correctly"
+      ],
+      "implementation_details": "h3 element styling changed to not use break-words when expanded"
+    }
+  },
+  "test_report_links": [
+    "/app/frontend/src/pages/children/DrugsPage.jsx"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Age selector implementation at lines 504-532 correctly uses single input + select dropdown",
+    "Renal dose replacement logic at lines 773-780 correctly shows renalAdjustText INSTEAD of calculated dose when hasRenalAdjustment",
+    "Drug name h3 element at line 737 correctly uses conditional class for text-ellipsis only when NOT expanded"
+  ],
+  "updated_files": [],
+  "success_rate": {
+    "frontend": "100% - All 3 requested fixes verified working"
+  },
+  "test_credentials": {
+    "email": "test@test.com",
+    "password": "12341234"
+  },
+  "seed_data_creation": "None - used existing data",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "All 3 fixes from user request verified: 1) Age selector now has days/months/years dropdown instead of dual inputs, 2) Renal adjusted dose REPLACES standard dose on collapsed card (not showing both), 3) Drug name displays on one line when expanded (fixed word-break CSS). Test path: Home > Children > Drugs.",
+  "feature_verification_details": {
+    "age_selector": {
+      "component": "DrugsPage.jsx",
+      "input_field": "input[placeholder='Enter age']",
+      "dropdown_selector": "select with options: days, months, years",
+      "display_format": "Total: {value} {unit} ({ageCategory})",
+      "age_categories": {
+        "neonate": "≤28 days",
+        "infant": "28 days to 1 year",
+        "child": ">1 year"
+      }
+    },
+    "renal_dose_replacement": {
+      "trigger": "GFR < 50 mL/min/1.73m²",
+      "dose_display_behavior": "Shows renal adjustment text (e.g., '60-90% of dose or same dose Q12-18h') INSTEAD of calculated mg dose",
+      "badge": "'🩺 Adjusted' shown on cards with renal adjustment"
+    },
+    "drug_name_fix": {
+      "css_when_collapsed": "whitespace-nowrap overflow-hidden text-ellipsis",
+      "css_when_expanded": "normal word-break (not break-all)",
+      "result": "Drug names display on one line, not breaking character by character"
+    }
+  }
+}
