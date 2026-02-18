@@ -41,8 +41,8 @@ const DrugsPage = ({ onBack }) => {
   // ==========================================================================
   const [searchTerm, setSearchTerm] = useState("");      // Drug search filter
   const [weight, setWeight] = useState("");              // Patient weight in kg
-  const [ageMonths, setAgeMonths] = useState("");        // Patient age in months
-  const [ageYears, setAgeYears] = useState("");          // Patient age in years
+  const [ageValue, setAgeValue] = useState("");          // Patient age value
+  const [ageUnit, setAgeUnit] = useState("months");      // Age unit: days, months, years
   const [height, setHeight] = useState("");              // Patient height in cm (for GFR)
   const [creatinine, setCreatinine] = useState("");      // Serum creatinine µmol/L (for GFR)
   const [ageCategory, setAgeCategory] = useState("child"); // Age category for original Schwartz
@@ -55,9 +55,20 @@ const DrugsPage = ({ onBack }) => {
   const h = parseFloat(height) || 0;
   const scr = parseFloat(creatinine) || 0;
   
-  // Calculate total age in months for age-based dosing
-  const totalAgeMonths = (parseFloat(ageYears) || 0) * 12 + (parseFloat(ageMonths) || 0);
-  const totalAgeDays = totalAgeMonths * 30; // Approximate days for neonate calculations
+  // Calculate total age in days for age-based dosing
+  const ageNum = parseFloat(ageValue) || 0;
+  const totalAgeDays = ageUnit === 'days' ? ageNum : 
+                       ageUnit === 'months' ? ageNum * 30 : 
+                       ageNum * 365; // years
+  const totalAgeMonths = totalAgeDays / 30;
+  
+  // For display purposes
+  const getAgeDisplay = () => {
+    if (!ageNum) return null;
+    if (ageUnit === 'days') return `${ageNum} days`;
+    if (ageUnit === 'months') return `${ageNum} months`;
+    return `${ageNum} years`;
+  };
   
   // Get age category string for drug lookups
   // Using user's exact criteria:
@@ -65,17 +76,12 @@ const DrugsPage = ({ onBack }) => {
   // - 28 days to 1 year = infant
   // - >1 year = child/pediatric
   const getPatientAgeCategory = () => {
-    // Return null if no age entered (empty strings or both zeros)
-    const yearsNum = parseFloat(ageYears);
-    const monthsNum = parseFloat(ageMonths);
-    const hasValidAge = !isNaN(yearsNum) || !isNaN(monthsNum);
-    
-    if (!hasValidAge) return null; // No age entered
-    if (totalAgeMonths === 0 && totalAgeDays === 0) return null; // Age is exactly 0
+    // Return null if no age entered
+    if (!ageNum || ageNum <= 0) return null;
     
     if (totalAgeDays <= 28) return "neonate";
-    if (totalAgeMonths < 12) return "infant";
-    if (totalAgeMonths < 144) return "child"; // < 12 years
+    if (totalAgeDays < 365) return "infant"; // < 1 year
+    if (totalAgeDays < 365 * 12) return "child"; // < 12 years
     return "adolescent";
   };
   
