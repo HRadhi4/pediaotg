@@ -60,15 +60,85 @@ const DrugsPage = ({ onBack }) => {
   const totalAgeDays = totalAgeMonths * 30; // Approximate days for neonate calculations
   
   // Get age category string for drug lookups
+  // Using user's exact criteria:
+  // - ≤28 days = neonate
+  // - 28 days to 1 year = infant
+  // - >1 year = child/pediatric
   const getPatientAgeCategory = () => {
-    if (totalAgeMonths === 0) return null;
-    if (totalAgeMonths < 1) return "neonate";
+    if (totalAgeMonths === 0 && (parseFloat(ageYears) === 0 && parseFloat(ageMonths) === 0)) return null;
+    if (totalAgeDays <= 28) return "neonate";
     if (totalAgeMonths < 12) return "infant";
     if (totalAgeMonths < 144) return "child"; // < 12 years
     return "adolescent";
   };
   
   const patientAgeCategory = getPatientAgeCategory();
+  
+  // Helper function to get age-appropriate dose for collapsed card display
+  const getAgeFilteredDose = (drug) => {
+    if (!drug.doses) return null;
+    const doseKeys = Object.keys(drug.doses);
+    
+    // If no age entered, return first dose (show everything)
+    if (!patientAgeCategory) {
+      return drug.doses[doseKeys[0]];
+    }
+    
+    // Find the best matching dose for patient's age category
+    let bestMatch = null;
+    let fallbackDose = null;
+    
+    for (const key of doseKeys) {
+      const dose = drug.doses[key];
+      const label = (dose.label || '').toLowerCase();
+      const keyLower = key.toLowerCase();
+      
+      // Neonate (≤28 days)
+      if (patientAgeCategory === 'neonate') {
+        if (label.includes('neonate') || label.includes('neo') || keyLower.includes('neo') ||
+            label.includes('newborn') || keyLower.includes('newborn')) {
+          bestMatch = { ...dose, key, ageMatch: true };
+          break;
+        }
+      }
+      // Infant (28 days to 1 year)
+      else if (patientAgeCategory === 'infant') {
+        if (label.includes('infant') || keyLower.includes('infant') ||
+            label.includes('<1') || label.includes('< 1') ||
+            label.includes('under 1')) {
+          bestMatch = { ...dose, key, ageMatch: true };
+          break;
+        }
+      }
+      // Child/Pediatric (>1 year)
+      else if (patientAgeCategory === 'child' || patientAgeCategory === 'adolescent') {
+        if (label.includes('child') || label.includes('pediatric') || label.includes('standard') ||
+            keyLower.includes('child') || keyLower.includes('pediatric') || keyLower.includes('standard') ||
+            (patientAgeCategory === 'adolescent' && (label.includes('adult') || label.includes('adolescent')))) {
+          bestMatch = { ...dose, key, ageMatch: true };
+          break;
+        }
+      }
+      
+      // Keep a fallback (first non-adult dose for children, or just first dose)
+      if (!fallbackDose && !label.includes('adult')) {
+        fallbackDose = { ...dose, key, ageMatch: false };
+      }
+    }
+    
+    return bestMatch || fallbackDose || { ...drug.doses[doseKeys[0]], key: doseKeys[0], ageMatch: false };
+  };
+  
+  // Helper function to get renal-adjusted dose text for the drug card
+  const getRenalAdjustedDoseText = (drug) => {
+    if (!drug.renalAdjust || !gfr) return null;
+    const gfrNum = parseFloat(gfr);
+    
+    if (gfrNum >= 50) return drug.renalAdjust.gfr50;
+    if (gfrNum >= 30) return drug.renalAdjust.gfr50; // GFR 30-50 uses gfr50 adjustment
+    if (gfrNum >= 10) return drug.renalAdjust.gfr30;
+    return drug.renalAdjust.gfr10;
+  };
 
   // Original Schwartz k values by age
   // k values: Preterm=0.33, Term infant=0.45, Child(1-13y)=0.55, Adolescent Male=0.70, Adolescent Female=0.55
