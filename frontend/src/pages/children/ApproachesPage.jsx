@@ -82,6 +82,7 @@ const ApproachesPage = ({ onBack }) => {
     { id: "bloodgas", label: "Blood Gas Reading", keywords: ["abg", "blood gas", "arterial", "ph", "pco2", "hco3", "bicarbonate", "acidosis", "alkalosis", "anion gap", "metabolic", "respiratory", "compensation", "winters", "mudpiles", "used carp"] },
     { id: "dloc", label: "Decreased LOC", keywords: ["consciousness", "dloc", "coma", "gcs", "lethargy", "stupor", "obtundation", "unresponsive", "altered mental"] },
     { id: "dka", label: "DKA", keywords: ["diabetic", "ketoacidosis", "diabetes", "insulin", "glucose", "acidosis"] },
+    { id: "antibiotics", label: "Empirical Antibiotics", keywords: ["antibiotics", "empirical", "abx", "antimicrobial", "sepsis", "meningitis", "pneumonia", "uti", "cellulitis", "skin infection", "soft tissue", "osteomyelitis", "bone infection"] },
     { id: "headache", label: "Headache", keywords: ["headache", "migraine", "tension", "iih", "papilledema", "intracranial hypertension", "photophobia"] },
     { id: "hyperkalemia", label: "Hyperkalemia", keywords: ["potassium", "hyperkalemia", "ecg", "calcium gluconate", "insulin", "kayexalate", "dialysis", "arrhythmia"] },
     { id: "hypocalcemia", label: "Hypocalcemia", keywords: ["calcium", "hypocalcemia", "rickets", "vitamin d", "pth", "parathyroid", "phosphate", "calcitriol", "tetany", "chvostek", "trousseau"] },
