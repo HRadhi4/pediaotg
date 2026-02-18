@@ -2048,21 +2048,23 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
                   </div>
                 )}
 
-                {/* Compatibility */}
-                <div className="grid grid-cols-2 gap-1 text-[10px]">
-                  <div className="p-1.5 rounded bg-green-100 dark:bg-green-900/30">
-                    <p className="font-semibold text-green-700 flex items-center gap-1">
-                      <CheckCircle className="h-3 w-3" /> Compatible
-                    </p>
-                    <p>{currentElectrolyte.compatible}</p>
+                {/* Compatibility - Hide for PO medications */}
+                {!results.isPO && (
+                  <div className="grid grid-cols-2 gap-1 text-[10px]">
+                    <div className="p-1.5 rounded bg-green-100 dark:bg-green-900/30">
+                      <p className="font-semibold text-green-700 flex items-center gap-1">
+                        <CheckCircle className="h-3 w-3" /> Compatible
+                      </p>
+                      <p>{currentElectrolyte.compatible}</p>
+                    </div>
+                    <div className="p-1.5 rounded bg-red-100 dark:bg-red-900/30">
+                      <p className="font-semibold text-red-700 flex items-center gap-1">
+                        <AlertTriangle className="h-3 w-3" /> Incompatible
+                      </p>
+                      <p>{currentElectrolyte.incompatible}</p>
+                    </div>
                   </div>
-                  <div className="p-1.5 rounded bg-red-100 dark:bg-red-900/30">
-                    <p className="font-semibold text-red-700 flex items-center gap-1">
-                      <AlertTriangle className="h-3 w-3" /> Incompatible
-                    </p>
-                    <p>{currentElectrolyte.incompatible}</p>
-                  </div>
-                </div>
+                )}
               </CardContent>
             </Card>
           )}
