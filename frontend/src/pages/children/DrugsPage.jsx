@@ -142,13 +142,119 @@ const DrugsPage = ({ onBack }) => {
     return bestMatch || fallbackDose || { ...drug.doses[doseKeys[0]], key: doseKeys[0], ageMatch: false };
   };
   
-  // Helper function to get renal-adjusted dose text for the drug card
+  // Helper function to parse renal adjustment text and return adjustment parameters
+  const parseRenalAdjustment = (renalText) => {
+    if (!renalText) return null;
+    
+    const text = renalText.toLowerCase();
+    
+    // Check for "no change" or "no adjustment"
+    if (text.includes('no change') || text.includes('no adjustment')) {
+      return { percentage: 100, frequency: null, noChange: true };
+    }
+    
+    // Check for "avoid" or contraindicated
+    if (text.includes('avoid') || text.includes('contraindicated')) {
+      return { avoid: true };
+    }
+    
+    // Parse percentage (e.g., "100% dose", "50% dose", "60-90%")
+    let percentage = 100;
+    const percentMatch = renalText.match(/(\d+)(?:-(\d+))?%/);
+    if (percentMatch) {
+      if (percentMatch[2]) {
+        // Range like "60-90%" - use the midpoint or lower value
+        percentage = parseInt(percentMatch[1]);
+      } else {
+        percentage = parseInt(percentMatch[1]);
+      }
+    }
+    
+    // Parse frequency (e.g., "Q12h", "Q24h", "q8h", "Q12-18h")
+    let frequency = null;
+    const freqMatch = renalText.match(/[Qq](\d+)(?:-(\d+))?[Hh]/);
+    if (freqMatch) {
+      frequency = freqMatch[0].toUpperCase();
+    }
+    
+    // Check for interval-only adjustment (e.g., "Q6h interval")
+    if (text.includes('interval') && frequency) {
+      return { percentage: 100, frequency, intervalOnly: true };
+    }
+    
+    return { percentage, frequency };
+  };
+  
+  // Helper function to calculate renal-adjusted dose
+  const getAdjustedDose = (drug, standardDose, calculatedDoseResult) => {
+    if (!drug.renalAdjust || !gfr) return null;
+    const gfrNum = parseFloat(gfr);
+    
+    // Get the appropriate renal adjustment text based on GFR
+    let renalText = null;
+    if (gfrNum >= 50) renalText = drug.renalAdjust.gfr50;
+    else if (gfrNum >= 30) renalText = drug.renalAdjust.gfr30;
+    else if (gfrNum >= 10) renalText = drug.renalAdjust.gfr30;
+    else renalText = drug.renalAdjust.gfr10;
+    
+    if (!renalText) return null;
+    
+    const adjustment = parseRenalAdjustment(renalText);
+    if (!adjustment) return null;
+    
+    // Handle "avoid" case
+    if (adjustment.avoid) {
+      return { type: 'avoid', text: 'Avoid', renalText };
+    }
+    
+    // Handle "no change" case
+    if (adjustment.noChange) {
+      return { type: 'noChange', renalText };
+    }
+    
+    // Calculate the adjusted dose
+    if (calculatedDoseResult && w > 0) {
+      const { percentage, frequency } = adjustment;
+      
+      // Get the standard dose values
+      let adjustedDoseMin, adjustedDoseMax;
+      if (calculatedDoseResult.perDoseMin !== undefined) {
+        adjustedDoseMin = Math.round(calculatedDoseResult.perDoseMin * (percentage / 100));
+        adjustedDoseMax = Math.round(calculatedDoseResult.perDoseMax * (percentage / 100));
+      } else {
+        // Parse from dose string (e.g., "100.0 - 150.0 mg")
+        const doseStr = calculatedDoseResult.dose || '';
+        const doseMatch = doseStr.match(/(\d+(?:\.\d+)?)\s*(?:-\s*(\d+(?:\.\d+)?))?\s*(mg|g|mcg|units)?/i);
+        if (doseMatch) {
+          adjustedDoseMin = Math.round(parseFloat(doseMatch[1]) * (percentage / 100));
+          adjustedDoseMax = doseMatch[2] ? Math.round(parseFloat(doseMatch[2]) * (percentage / 100)) : adjustedDoseMin;
+        }
+      }
+      
+      // Use the renal frequency if provided, otherwise keep original
+      const adjustedFreq = frequency || calculatedDoseResult.frequency;
+      
+      return {
+        type: 'adjusted',
+        doseMin: adjustedDoseMin,
+        doseMax: adjustedDoseMax,
+        frequency: adjustedFreq,
+        percentage,
+        renalText,
+        originalFreq: calculatedDoseResult.frequency
+      };
+    }
+    
+    return { type: 'textOnly', renalText };
+  };
+  
+  // Helper function to get renal-adjusted dose text (for compatibility)
   const getRenalAdjustedDoseText = (drug) => {
     if (!drug.renalAdjust || !gfr) return null;
     const gfrNum = parseFloat(gfr);
     
     if (gfrNum >= 50) return drug.renalAdjust.gfr50;
-    if (gfrNum >= 30) return drug.renalAdjust.gfr50; // GFR 30-50 uses gfr50 adjustment
+    if (gfrNum >= 30) return drug.renalAdjust.gfr30;
     if (gfrNum >= 10) return drug.renalAdjust.gfr30;
     return drug.renalAdjust.gfr10;
   };
