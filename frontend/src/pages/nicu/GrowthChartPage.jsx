@@ -311,14 +311,25 @@ const WHOChartsSection = ({ gender }) => {
       ctx.fillStyle = '#ffffff';
       ctx.fillRect(0, 0, svgWidth, svgHeight);
       
-      // Load and draw the chart background image
+      // For SVG files, we need to fetch and convert to a Blob URL
       const chartImage = new Image();
-      chartImage.crossOrigin = 'anonymous';
+      
+      // Fetch the SVG file and convert to a data URL
+      const svgResponse = await fetch(currentChart.file);
+      const svgText = await svgResponse.text();
+      const svgBlob = new Blob([svgText], { type: 'image/svg+xml;charset=utf-8' });
+      const svgUrl = URL.createObjectURL(svgBlob);
       
       await new Promise((resolve, reject) => {
-        chartImage.onload = resolve;
-        chartImage.onerror = reject;
-        chartImage.src = currentChart.file;
+        chartImage.onload = () => {
+          URL.revokeObjectURL(svgUrl); // Clean up the blob URL
+          resolve();
+        };
+        chartImage.onerror = () => {
+          URL.revokeObjectURL(svgUrl);
+          reject(new Error('Failed to load chart image'));
+        };
+        chartImage.src = svgUrl;
       });
       
       // Draw the chart image
