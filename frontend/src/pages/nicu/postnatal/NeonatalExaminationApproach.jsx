@@ -87,8 +87,8 @@ const FindingItem = ({ title, management, urgent = false, aapGuideline = null })
           </h4>
           <ul className="space-y-1">
             {management.map((item, idx) => (
-              <li key={idx} className="text-xs text-muted-foreground flex items-start gap-1">
-                <span className="text-teal-500 mt-0.5">•</span>
+              <li key={idx} className="text-xs text-muted-foreground flex items-start gap-2">
+                <span className="text-teal-500 mt-0.5 flex-shrink-0">•</span>
                 <span>{item}</span>
               </li>
             ))}
