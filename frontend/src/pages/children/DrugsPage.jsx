@@ -596,13 +596,16 @@ const DrugsPage = ({ onBack }) => {
                   {/* Row 1: Drug Name and Category */}
                   <div className="flex items-center justify-between gap-2">
                     <div className="flex-1 min-w-0 overflow-hidden">
-                      {isExpanded && drug.name.length > 15 ? (
-                        <div className="overflow-hidden">
-                          <h3 
-                            className="font-semibold text-base leading-tight whitespace-nowrap inline-block animate-scroll-left md:animate-none md:overflow-hidden md:text-ellipsis md:block"
-                          >
-                            {drug.name}
-                          </h3>
+                      {isExpanded && drug.name.length > 20 ? (
+                        <div className="overflow-hidden relative">
+                          <div className="flex whitespace-nowrap animate-marquee md:animate-none">
+                            <h3 className="font-semibold text-base leading-tight pr-8">
+                              {drug.name}
+                            </h3>
+                            <h3 className="font-semibold text-base leading-tight pr-8 md:hidden" aria-hidden="true">
+                              {drug.name}
+                            </h3>
+                          </div>
                         </div>
                       ) : (
                         <h3 className="font-semibold text-base leading-tight whitespace-nowrap overflow-hidden text-ellipsis">
