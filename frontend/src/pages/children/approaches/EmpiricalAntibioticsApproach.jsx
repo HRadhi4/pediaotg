@@ -181,8 +181,8 @@ const EmpiricalAntibioticsApproach = ({ weight, expandedSections, toggleSection 
                     <td className="p-2 font-medium text-foreground align-top">Acute Mastoiditis</td>
                     <td className="p-2 align-top">Pneumococcus, S. aureus, GAS, Pseudomonas</td>
                     <td className="p-2">
-                      <p><span className="font-medium text-blue-600">Clindamycin</span> 10mg/kg/dose IV/PO q8h + <span className="font-medium">Ceftriaxone</span> 50mg/kg/dose q12h</p>
-                      {w > 0 && <p className="font-mono text-green-600 mt-1">→ Clinda {calcPerDose(10)} mg q8h + Ceftriaxone {calcPerDose(50)} mg q12h</p>}
+                      <p><span className="font-medium text-blue-600">Clindamycin</span> 10mg/kg/day IV/PO q8h + <span className="font-medium">Ceftriaxone</span> 50mg/kg/dose q12h</p>
+                      {w > 0 && <p className="font-mono text-green-600 mt-1">→ Clinda {calcPerDay(10, 3)} mg q8h + Ceftriaxone {calcPerDose(50)} mg q12h</p>}
                       <p className="text-[10px] mt-1 text-red-500 font-medium">Rule out meningitis. Surgical intervention as needed</p>
                     </td>
                   </tr>
@@ -227,16 +227,16 @@ const EmpiricalAntibioticsApproach = ({ weight, expandedSections, toggleSection 
                     <td className="p-2 font-medium text-foreground align-top">Peritonsillar Abscess</td>
                     <td className="p-2 align-top">Aerobic/Anaerobic flora, CA-MRSA</td>
                     <td className="p-2">
-                      <p><span className="font-medium text-blue-600">Clindamycin</span> 10mg/kg/dose IV/PO q8h + <span className="font-medium">Ceftriaxone</span> 50mg/kg/dose q12h</p>
-                      {w > 0 && <p className="font-mono text-green-600 mt-1">→ Clinda {calcPerDose(10)} mg q8h + Ceftriaxone {calcPerDose(50)} mg q12h</p>}
+                      <p><span className="font-medium text-blue-600">Clindamycin</span> 10mg/kg/day IV/PO q8h + <span className="font-medium">Ceftriaxone</span> 50mg/kg/dose q12h</p>
+                      {w > 0 && <p className="font-mono text-green-600 mt-1">→ Clinda {calcPerDay(10, 3)} mg q8h + Ceftriaxone {calcPerDose(50)} mg q12h</p>}
                     </td>
                   </tr>
                   <tr className="border-b dark:border-gray-700">
                     <td className="p-2 font-medium text-foreground align-top">Retropharyngeal Abscess</td>
                     <td className="p-2 align-top">Aerobic/Anaerobic flora, CA-MRSA</td>
                     <td className="p-2">
-                      <p><span className="font-medium text-blue-600">Clindamycin</span> 10mg/kg/dose IV/PO q8h + <span className="font-medium">Ceftriaxone</span> 50mg/kg/dose q12h</p>
-                      {w > 0 && <p className="font-mono text-green-600 mt-1">→ Clinda {calcPerDose(10)} mg q8h + Ceftriaxone {calcPerDose(50)} mg q12h</p>}
+                      <p><span className="font-medium text-blue-600">Clindamycin</span> 10mg/kg/day IV/PO q8h + <span className="font-medium">Ceftriaxone</span> 50mg/kg/dose q12h</p>
+                      {w > 0 && <p className="font-mono text-green-600 mt-1">→ Clinda {calcPerDay(10, 3)} mg q8h + Ceftriaxone {calcPerDose(50)} mg q12h</p>}
                     </td>
                   </tr>
                   <tr>
