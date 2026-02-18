@@ -48,7 +48,7 @@
         "isFixed": true
       },
       "ivNeonateUnder28d": {
-        "label": "IV Neonate ≤28d",
+        "label": "IV Neonate \u226428d",
         "value": "12.5",
         "unit": "mg/kg/dose Q6h",
         "maxDose": 50,
@@ -69,7 +69,7 @@
         "maxUnit": "mg/kg/24hr up to 3750mg"
       },
       "ivChildOver50kg": {
-        "label": "IV Child/Adult ≥50kg",
+        "label": "IV Child/Adult \u226550kg",
         "value": "1000",
         "unit": "mg Q6h or 650mg Q4h",
         "isFixed": true,
@@ -127,7 +127,7 @@
         ],
         [
           ">43",
-          "≥12 yr",
+          "\u226512 yr",
           "650"
         ]
       ]
@@ -517,7 +517,7 @@
   {
     "id": "salbutamol",
     "name": "Salbutamol (Ventolin, Salamol)",
-    "category": "Bronchodilator (β2-agonist)",
+    "category": "Bronchodilator (\u03b22-agonist)",
     "route": "Inhaled/Nebulizer/PO",
     "formulations": [
       {
@@ -563,7 +563,7 @@
         "unit": "mg/dose Q4-6h PRN"
       },
       "mdiChild": {
-        "label": "MDI (≥4 yr)",
+        "label": "MDI (\u22654 yr)",
         "value": "2",
         "unit": "puffs (180 mcg) Q4-6h PRN",
         "isFixed": true
@@ -591,7 +591,7 @@
         "isFixed": true
       }
     },
-    "max": "2.5 mg/dose (<5 yr); 5 mg/dose (≥5 yr); 20 mg/hr continuous",
+    "max": "2.5 mg/dose (<5 yr); 5 mg/dose (\u22655 yr); 20 mg/hr continuous",
     "indication": "Asthma, bronchospasm, acute exacerbations, exercise-induced bronchospasm",
     "contraindications": [
       "Hypersensitivity to albuterol or any component"
@@ -667,19 +667,19 @@
       ],
       "rows": [
         [
-          "≤29",
+          "\u226429",
           "0-7 days",
           "18 mg/kg",
           "Q48h"
         ],
         [
-          "≤29",
+          "\u226429",
           "8-28 days",
           "15 mg/kg",
           "Q36h"
         ],
         [
-          "≤29",
+          "\u226429",
           ">28 days",
           "15 mg/kg",
           "Q24h"
@@ -692,12 +692,12 @@
         ],
         [
           "30-34",
-          "≥8 days",
+          "\u22658 days",
           "15 mg/kg",
           "Q24h"
         ],
         [
-          "≥35",
+          "\u226535",
           "All",
           "15 mg/kg",
           "Q24h"
@@ -801,7 +801,7 @@
       "oralChild": {
         "label": "Oral (Child)",
         "value": "10-15",
-        "unit": "mg/kg/day ÷ QD-BID x 7-10 days, then 5 mg/kg/day"
+        "unit": "mg/kg/day \u00f7 QD-BID x 7-10 days, then 5 mg/kg/day"
       },
       "oralAdult": {
         "label": "Oral (Adult)",
@@ -891,22 +891,22 @@
       "neonatal": {
         "label": "Neonate",
         "value": "20-30",
-        "unit": "mg/kg/day ÷ Q12h"
+        "unit": "mg/kg/day \u00f7 Q12h"
       },
       "standard": {
         "label": "Standard (Mild/Moderate)",
         "value": "25-50",
-        "unit": "mg/kg/day ÷ Q8h or Q12h"
+        "unit": "mg/kg/day \u00f7 Q8h or Q12h"
       },
       "highDose": {
         "label": "High Dose (AOM, CAP, resistant S. pneumo)",
         "value": "80-90",
-        "unit": "mg/kg/day ÷ Q12h"
+        "unit": "mg/kg/day \u00f7 Q12h"
       },
       "strepPharyng": {
         "label": "Strep Pharyngitis",
         "value": "50",
-        "unit": "mg/kg/day QD or ÷ BID x 10 days",
+        "unit": "mg/kg/day QD or \u00f7 BID x 10 days",
         "maxDose": 1000
       },
       "adultMild": {
@@ -924,7 +924,7 @@
       "hPylori": {
         "label": "H. pylori",
         "value": "50",
-        "unit": "mg/kg/day ÷ BID (with PPI + clarithromycin)"
+        "unit": "mg/kg/day \u00f7 BID (with PPI + clarithromycin)"
       },
       "sbeProphylaxis": {
         "label": "SBE Prophylaxis",
@@ -979,7 +979,7 @@
   {
     "id": "augmentin",
     "name": "Co-Amoxiclav (Augmentin)",
-    "category": "Antibiotic (Aminopenicillin + β-lactamase inhibitor)",
+    "category": "Antibiotic (Aminopenicillin + \u03b2-lactamase inhibitor)",
     "route": "PO/IV",
     "formulations": [
       {
@@ -1015,17 +1015,17 @@
       "infantUnder3mo": {
         "label": "Infant <3 mo",
         "value": "30",
-        "unit": "mg/kg/day ÷ Q12h (use 125/31.25 suspension)"
+        "unit": "mg/kg/day \u00f7 Q12h (use 125/31.25 suspension)"
       },
       "childLowDose": {
         "label": "Child Low Dose (mild)",
         "value": "25-45",
-        "unit": "mg/kg/day ÷ Q12h"
+        "unit": "mg/kg/day \u00f7 Q12h"
       },
       "childHighDose": {
         "label": "Child High Dose (ES-600)",
         "value": "90",
-        "unit": "mg/kg/day ÷ Q12h",
+        "unit": "mg/kg/day \u00f7 Q12h",
         "maxDose": 3000
       },
       "adultMild": {
@@ -1043,7 +1043,7 @@
       "ivChild": {
         "label": "IV (Child)",
         "value": "100",
-        "unit": "mg/kg/day (amox component) ÷ Q6-8h"
+        "unit": "mg/kg/day (amox component) \u00f7 Q6-8h"
       },
       "ivAdult": {
         "label": "IV (Adult)",
@@ -1083,7 +1083,7 @@
       ]
     },
     "max": "3 g amoxicillin/day; ES: max 3 g/day",
-    "indication": "AOM, sinusitis, bite wounds (human/animal), skin infections, respiratory infections with β-lactamase producers",
+    "indication": "AOM, sinusitis, bite wounds (human/animal), skin infections, respiratory infections with \u03b2-lactamase producers",
     "contraindications": [
       "Penicillin hypersensitivity (anaphylaxis)",
       "History of cholestatic jaundice/hepatic dysfunction with amox-clav"
@@ -1117,7 +1117,7 @@
         "effect": "Increased methotrexate toxicity"
       }
     ],
-    "notes": "BID dosing (200/28.5, 400/57, ES-600) associated with less diarrhea than TID (125/31.25). ES-600 (90 mg/kg/day) for resistant S. pneumoniae. Take with food to reduce GI upset. Clavulanate extends spectrum to β-lactamase producers (H. flu, Moraxella, S. aureus).",
+    "notes": "BID dosing (200/28.5, 400/57, ES-600) associated with less diarrhea than TID (125/31.25). ES-600 (90 mg/kg/day) for resistant S. pneumoniae. Take with food to reduce GI upset. Clavulanate extends spectrum to \u03b2-lactamase producers (H. flu, Moraxella, S. aureus).",
     "renalAdjust": {
       "gfr50": "No change",
       "gfr30": "500/125 Q12h (avoid 875)",
@@ -1149,33 +1149,33 @@
       "neoMild": {
         "label": "Neonate (mild/moderate)",
         "value": "50-100",
-        "unit": "mg/kg/day ÷ Q6-12h"
+        "unit": "mg/kg/day \u00f7 Q6-12h"
       },
       "neoSevere": {
         "label": "Neonate (severe/meningitis)",
         "value": "200-300",
-        "unit": "mg/kg/day ÷ Q6-8h"
+        "unit": "mg/kg/day \u00f7 Q6-8h"
       },
       "childMild": {
         "label": "Child (mild/moderate)",
         "value": "100-200",
-        "unit": "mg/kg/day ÷ Q6h"
+        "unit": "mg/kg/day \u00f7 Q6h"
       },
       "childSevere": {
         "label": "Child (severe)",
         "value": "200-400",
-        "unit": "mg/kg/day ÷ Q4-6h"
+        "unit": "mg/kg/day \u00f7 Q4-6h"
       },
       "meningitis": {
         "label": "Meningitis",
         "value": "300-400",
-        "unit": "mg/kg/day ÷ Q4-6h",
+        "unit": "mg/kg/day \u00f7 Q4-6h",
         "maxDose": 12000
       },
       "endocarditis": {
         "label": "Endocarditis",
         "value": "200-300",
-        "unit": "mg/kg/day ÷ Q4-6h"
+        "unit": "mg/kg/day \u00f7 Q4-6h"
       },
       "sbeProphylaxis": {
         "label": "SBE Prophylaxis (IV)",
@@ -1194,13 +1194,13 @@
       ],
       "rows": [
         [
-          "≤29",
+          "\u226429",
           "0-28 days",
           "50 mg/kg",
           "Q12h"
         ],
         [
-          "≤29",
+          "\u226429",
           ">28 days",
           "75 mg/kg",
           "Q8h"
@@ -1230,7 +1230,7 @@
           "Q6h"
         ],
         [
-          "≥45",
+          "\u226545",
           "All",
           "50 mg/kg",
           "Q6h"
@@ -1282,7 +1282,7 @@
   {
     "id": "ampicillinsulbactam",
     "name": "Ampicillin-Sulbactam (Unasyn, Sultamicillin)",
-    "category": "Antibiotic (Aminopenicillin + β-lactamase inhibitor)",
+    "category": "Antibiotic (Aminopenicillin + \u03b2-lactamase inhibitor)",
     "route": "IV/IM",
     "formulations": [
       {
@@ -1294,17 +1294,17 @@
       "infantChild": {
         "label": "Infant/Child",
         "value": "100-200",
-        "unit": "mg ampicillin/kg/day ÷ Q6h"
+        "unit": "mg ampicillin/kg/day \u00f7 Q6h"
       },
       "severe": {
         "label": "Severe Infection",
         "value": "200-400",
-        "unit": "mg ampicillin/kg/day ÷ Q6h"
+        "unit": "mg ampicillin/kg/day \u00f7 Q6h"
       },
       "epiglottitis": {
         "label": "Epiglottitis",
         "value": "200-400",
-        "unit": "mg ampicillin/kg/day ÷ Q6h"
+        "unit": "mg ampicillin/kg/day \u00f7 Q6h"
       },
       "adultMild": {
         "label": "Adult (mild/moderate)",
@@ -1348,7 +1348,7 @@
         "effect": "Increased toxicity"
       }
     ],
-    "notes": "2:1 ratio of ampicillin:sulbactam. Sulbactam extends spectrum to β-lactamase producers. Active against Acinetobacter (sulbactam component). Not for MRSA or Pseudomonas.",
+    "notes": "2:1 ratio of ampicillin:sulbactam. Sulbactam extends spectrum to \u03b2-lactamase producers. Active against Acinetobacter (sulbactam component). Not for MRSA or Pseudomonas.",
     "renalAdjust": {
       "gfr50": "Q6-8h",
       "gfr30": "Q8-12h",
@@ -1390,7 +1390,7 @@
       "kawasaki": {
         "label": "Kawasaki (acute)",
         "value": "80-100",
-        "unit": "mg/kg/day ÷ Q6h until afebrile 48-72h"
+        "unit": "mg/kg/day \u00f7 Q6h until afebrile 48-72h"
       },
       "kawasakiMaint": {
         "label": "Kawasaki (maintenance)",
@@ -1400,12 +1400,12 @@
       "antiinflammatory": {
         "label": "Anti-inflammatory",
         "value": "60-100",
-        "unit": "mg/kg/day ÷ Q6-8h"
+        "unit": "mg/kg/day \u00f7 Q6-8h"
       },
       "rheumaticFever": {
         "label": "Rheumatic Fever",
         "value": "100",
-        "unit": "mg/kg/day ÷ Q6h x 2 wks, then 75 mg/kg/day x 4-6 wks"
+        "unit": "mg/kg/day \u00f7 Q6h x 2 wks, then 75 mg/kg/day x 4-6 wks"
       }
     },
     "max": "4 g/day (anti-inflammatory); 325 mg/day (antiplatelet)",
@@ -1418,7 +1418,7 @@
       "Third trimester pregnancy"
     ],
     "warnings": [
-      "⚠️ REYE SYNDROME RISK in children with viral illness (flu, chickenpox)",
+      "\u26a0\ufe0f REYE SYNDROME RISK in children with viral illness (flu, chickenpox)",
       "GI bleeding risk",
       "Platelet dysfunction - hold 7-10 days before surgery",
       "Tinnitus may indicate toxicity"
@@ -1653,7 +1653,7 @@
         "maxDose": 1200
       },
       "chlamydia": {
-        "label": "Chlamydia (≥45kg)",
+        "label": "Chlamydia (\u226545kg)",
         "value": "1",
         "unit": "g x 1 dose",
         "isFixed": true
@@ -1707,7 +1707,12 @@
       }
     ],
     "notes": "Long tissue half-life (68 hours) allows short courses. Less drug interactions than erythromycin/clarithromycin. Can be taken with or without food. IV over 1-3 hours (not bolus).",
-    "renalAdjust": null,
+    "renalAdjust": {
+      "gfr50": "No adjustment",
+      "gfr30": "No adjustment",
+      "gfr10": "No adjustment",
+      "hd": "No adjustment"
+    },
     "hepaticAdjust": "Use with caution in severe hepatic impairment"
   },
   {
@@ -1761,7 +1766,7 @@
         "isFixed": true
       },
       "asthmaDPI12plus": {
-        "label": "DPI (≥12 yr)",
+        "label": "DPI (\u226512 yr)",
         "value": "360-720",
         "unit": "mcg BID",
         "isFixed": true
@@ -1801,7 +1806,7 @@
           ">720 mcg/day"
         ],
         [
-          "≥12 yr (DPI)",
+          "\u226512 yr (DPI)",
           "180-360 mcg/day",
           "360-720 mcg/day",
           ">720 mcg/day"
@@ -1941,7 +1946,7 @@
       "hypocalcemiaPO": {
         "label": "PO Supplementation",
         "value": "45-65",
-        "unit": "mg elemental Ca/kg/day ÷ Q6h"
+        "unit": "mg elemental Ca/kg/day \u00f7 Q6h"
       },
       "hypermagnesemia": {
         "label": "Hypermagnesemia",
@@ -2015,7 +2020,7 @@
   {
     "id": "carvedilol",
     "name": "Carvedilol (Eucardic)",
-    "category": "Beta-blocker (α1/β1/β2)",
+    "category": "Beta-blocker (\u03b11/\u03b21/\u03b22)",
     "route": "PO",
     "formulations": [
       {
@@ -2088,7 +2093,7 @@
         "effect": "Increased carvedilol levels"
       }
     ],
-    "notes": "Start low and titrate slowly (double dose Q2 weeks). Take with food. Has α-blocking (vasodilation) and β-blocking properties. Better tolerated than metoprolol in some HF patients.",
+    "notes": "Start low and titrate slowly (double dose Q2 weeks). Take with food. Has \u03b1-blocking (vasodilation) and \u03b2-blocking properties. Better tolerated than metoprolol in some HF patients.",
     "renalAdjust": null,
     "hepaticAdjust": "Contraindicated in severe hepatic impairment"
   },
@@ -2112,12 +2117,12 @@
       "mildModerate": {
         "label": "Mild/Moderate Infection",
         "value": "25-50",
-        "unit": "mg/kg/day ÷ Q8h"
+        "unit": "mg/kg/day \u00f7 Q8h"
       },
       "severe": {
         "label": "Severe Infection",
         "value": "100",
-        "unit": "mg/kg/day ÷ Q6-8h",
+        "unit": "mg/kg/day \u00f7 Q6-8h",
         "maxDose": 6000
       },
       "surgicalProphylaxis": {
@@ -2135,7 +2140,7 @@
       "endocarditis": {
         "label": "Endocarditis (MSSA)",
         "value": "100",
-        "unit": "mg/kg/day ÷ Q8h",
+        "unit": "mg/kg/day \u00f7 Q8h",
         "maxDose": 12000
       }
     },
@@ -2279,13 +2284,13 @@
       "standard": {
         "label": "Standard",
         "value": "50-75",
-        "unit": "mg/kg/day QD or ÷ Q12h",
+        "unit": "mg/kg/day QD or \u00f7 Q12h",
         "maxDose": 2000
       },
       "meningitis": {
         "label": "Meningitis",
         "value": "100",
-        "unit": "mg/kg/day ÷ Q12h",
+        "unit": "mg/kg/day \u00f7 Q12h",
         "maxDose": 4000
       },
       "aom": {
@@ -2315,14 +2320,14 @@
       "endocarditis": {
         "label": "Endocarditis",
         "value": "100",
-        "unit": "mg/kg/day ÷ Q12h",
+        "unit": "mg/kg/day \u00f7 Q12h",
         "maxDose": 4000
       }
     },
     "max": "4 g/day",
     "indication": "Meningitis, pneumonia, UTI, gonorrhea, Lyme disease, empiric serious infections",
     "contraindications": [
-      "⚠️ Neonates <28 days receiving IV calcium",
+      "\u26a0\ufe0f Neonates <28 days receiving IV calcium",
       "Hyperbilirubinemic neonates (displaces bilirubin)",
       "Severe cephalosporin hypersensitivity"
     ],
@@ -2340,7 +2345,7 @@
     "interactions": [
       {
         "drug": "Calcium-containing solutions",
-        "effect": "⚠️ FATAL precipitates - do not co-administer"
+        "effect": "\u26a0\ufe0f FATAL precipitates - do not co-administer"
       },
       {
         "drug": "Warfarin",
@@ -2383,18 +2388,18 @@
       "standard": {
         "label": "Standard",
         "value": "25-50",
-        "unit": "mg/kg/day ÷ Q6-12h"
+        "unit": "mg/kg/day \u00f7 Q6-12h"
       },
       "severe": {
         "label": "Severe/Strep",
         "value": "50-100",
-        "unit": "mg/kg/day ÷ Q6-8h",
+        "unit": "mg/kg/day \u00f7 Q6-8h",
         "maxDose": 4000
       },
       "strepPharyngitis": {
         "label": "Strep Pharyngitis",
         "value": "40",
-        "unit": "mg/kg/day ÷ BID x 10 days",
+        "unit": "mg/kg/day \u00f7 BID x 10 days",
         "maxDose": 1000
       },
       "uti": {
@@ -2497,7 +2502,7 @@
       "Gastritis or esophagitis"
     ],
     "warnings": [
-      "⚠️ Respiratory depression risk",
+      "\u26a0\ufe0f Respiratory depression risk",
       "May be carcinogenic (limited human data)",
       "Tolerance develops with repeated use",
       "GI irritation - give with liquid"
@@ -2557,7 +2562,7 @@
       "utiPO": {
         "label": "UTI (PO)",
         "value": "10-20",
-        "unit": "mg/kg/day ÷ Q12h",
+        "unit": "mg/kg/day \u00f7 Q12h",
         "maxDose": 1500
       },
       "utiIV": {
@@ -2569,7 +2574,7 @@
       "cysticFibrosis": {
         "label": "Cystic Fibrosis",
         "value": "20-40",
-        "unit": "mg/kg/day ÷ Q12h PO",
+        "unit": "mg/kg/day \u00f7 Q12h PO",
         "maxDose": 2000
       },
       "anthrax": {
@@ -2581,7 +2586,7 @@
       "pseudomonas": {
         "label": "Pseudomonas",
         "value": "20-30",
-        "unit": "mg/kg/day ÷ Q8-12h IV",
+        "unit": "mg/kg/day \u00f7 Q8-12h IV",
         "maxDose": 1200
       },
       "ophthalmic": {
@@ -2604,10 +2609,10 @@
       "Concurrent tizanidine use"
     ],
     "warnings": [
-      "⚠️ Tendinitis/tendon rupture (black box)",
-      "⚠️ Peripheral neuropathy (may be irreversible)",
-      "⚠️ CNS effects (seizures, psychosis)",
-      "⚠️ Aortic aneurysm/dissection risk",
+      "\u26a0\ufe0f Tendinitis/tendon rupture (black box)",
+      "\u26a0\ufe0f Peripheral neuropathy (may be irreversible)",
+      "\u26a0\ufe0f CNS effects (seizures, psychosis)",
+      "\u26a0\ufe0f Aortic aneurysm/dissection risk",
       "QT prolongation",
       "Musculoskeletal effects in children (use when no alternative)"
     ],
@@ -2624,7 +2629,7 @@
       },
       {
         "drug": "Tizanidine",
-        "effect": "⚠️ Contraindicated - increased tizanidine toxicity"
+        "effect": "\u26a0\ufe0f Contraindicated - increased tizanidine toxicity"
       },
       {
         "drug": "Theophylline",
@@ -2683,33 +2688,33 @@
       "standard": {
         "label": "Standard",
         "value": "20-40",
-        "unit": "mg/kg/day ÷ Q6-8h"
+        "unit": "mg/kg/day \u00f7 Q6-8h"
       },
       "severe": {
         "label": "Severe/Bone",
         "value": "25-40",
-        "unit": "mg/kg/day ÷ Q6-8h",
+        "unit": "mg/kg/day \u00f7 Q6-8h",
         "maxDose": 2700
       },
       "mrsaSkin": {
         "label": "MRSA Skin/Soft Tissue",
         "value": "30-40",
-        "unit": "mg/kg/day ÷ Q8h"
+        "unit": "mg/kg/day \u00f7 Q8h"
       },
       "necrotizingFasciitis": {
         "label": "Necrotizing Fasciitis",
         "value": "40",
-        "unit": "mg/kg/day ÷ Q8h (with penicillin)"
+        "unit": "mg/kg/day \u00f7 Q8h (with penicillin)"
       },
       "toxicShock": {
         "label": "Toxic Shock (toxin suppression)",
         "value": "40",
-        "unit": "mg/kg/day ÷ Q8h"
+        "unit": "mg/kg/day \u00f7 Q8h"
       },
       "malaria": {
         "label": "Malaria (with quinine)",
         "value": "20",
-        "unit": "mg/kg/day ÷ Q8h x 7 days"
+        "unit": "mg/kg/day \u00f7 Q8h x 7 days"
       },
       "adultPO": {
         "label": "Adult PO",
@@ -2730,7 +2735,7 @@
       "Hypersensitivity to clindamycin or lincomycin"
     ],
     "warnings": [
-      "⚠️ High risk of C. difficile colitis",
+      "\u26a0\ufe0f High risk of C. difficile colitis",
       "Discontinue if diarrhea develops",
       "Contains benzyl alcohol (IV) - avoid in neonates"
     ],
@@ -2754,7 +2759,12 @@
       }
     ],
     "notes": "Excellent bone penetration. Good for MRSA (check local susceptibility). Suppresses toxin production (useful in toxic shock, necrotizing fasciitis). IV over 10-60 min (max 30 mg/min).",
-    "renalAdjust": null,
+    "renalAdjust": {
+      "gfr50": "No adjustment",
+      "gfr30": "No adjustment",
+      "gfr10": "No adjustment",
+      "hd": "No adjustment (not dialyzable)"
+    },
     "hepaticAdjust": "Reduce dose in severe hepatic impairment"
   },
   {
@@ -2791,17 +2801,17 @@
       "airwayEdema": {
         "label": "Airway Edema/Extubation",
         "value": "0.5-1",
-        "unit": "mg/kg/day ÷ Q6h x 24h before extubation"
+        "unit": "mg/kg/day \u00f7 Q6h x 24h before extubation"
       },
       "antiinflam": {
         "label": "Anti-inflammatory",
         "value": "0.08-0.3",
-        "unit": "mg/kg/day ÷ Q6-12h"
+        "unit": "mg/kg/day \u00f7 Q6-12h"
       },
       "cerebralEdema": {
         "label": "Cerebral Edema",
         "value": "1-2",
-        "unit": "mg/kg loading, then 1-1.5 mg/kg/day ÷ Q4-6h",
+        "unit": "mg/kg loading, then 1-1.5 mg/kg/day \u00f7 Q4-6h",
         "maxDose": 16
       },
       "meningitis": {
@@ -2812,7 +2822,7 @@
       "cinv": {
         "label": "CINV",
         "value": "5-10",
-        "unit": "mg/m²/dose Q6-12h",
+        "unit": "mg/m\u00b2/dose Q6-12h",
         "isFixed": false
       },
       "bpdPreterm": {
@@ -3019,7 +3029,7 @@
         "effect": "May increase hyperglycemia"
       }
     ],
-    "notes": "For hypoglycemia: D10W preferred in neonates (less osmotic). GIR (glucose infusion rate) = (dextrose % × rate mL/hr) / (6 × weight kg). Check glucose 15-30 min after bolus. In neonates, target GIR 4-8 mg/kg/min.",
+    "notes": "For hypoglycemia: D10W preferred in neonates (less osmotic). GIR (glucose infusion rate) = (dextrose % \u00d7 rate mL/hr) / (6 \u00d7 weight kg). Check glucose 15-30 min after bolus. In neonates, target GIR 4-8 mg/kg/min.",
     "renalAdjust": null,
     "hepaticAdjust": null
   },
@@ -3114,22 +3124,22 @@
           "12.5-15 mg"
         ],
         [
-          "≥12 yr",
+          "\u226512 yr",
           "14-27 kg",
           "10 mg"
         ],
         [
-          "≥12 yr",
+          "\u226512 yr",
           "28-50 kg",
           "15 mg"
         ],
         [
-          "≥12 yr",
+          "\u226512 yr",
           "51-75 kg",
           "17.5 mg"
         ],
         [
-          "≥12 yr",
+          "\u226512 yr",
           ">75 kg",
           "20 mg"
         ]
@@ -3157,7 +3167,7 @@
     "interactions": [
       {
         "drug": "CNS depressants/opioids",
-        "effect": "⚠️ Additive respiratory depression"
+        "effect": "\u26a0\ufe0f Additive respiratory depression"
       },
       {
         "drug": "CYP3A4 inhibitors",
@@ -3249,7 +3259,7 @@
           "12.5-25 mg Q4-6h (max 150 mg/day)"
         ],
         [
-          "≥12 yr",
+          "\u226512 yr",
           "25-50 mg Q4-6h (max 300 mg/day)"
         ]
       ]
@@ -3294,7 +3304,7 @@
   {
     "id": "dobutamine",
     "name": "Dobutamine (Dobutrex)",
-    "category": "Inotrope (β1-agonist)",
+    "category": "Inotrope (\u03b21-agonist)",
     "route": "IV infusion",
     "formulations": [
       {
@@ -3335,15 +3345,15 @@
       "rows": [
         [
           "2-5 mcg/kg/min",
-          "↑ Inotropy (mild)"
+          "\u2191 Inotropy (mild)"
         ],
         [
           "5-10 mcg/kg/min",
-          "↑ Inotropy, ↑ HR"
+          "\u2191 Inotropy, \u2191 HR"
         ],
         [
           "10-20 mcg/kg/min",
-          "↑↑ Inotropy, ↑↑ HR, ↓ SVR"
+          "\u2191\u2191 Inotropy, \u2191\u2191 HR, \u2193 SVR"
         ]
       ]
     },
@@ -3354,7 +3364,7 @@
       "Uncorrected hypovolemia"
     ],
     "warnings": [
-      "May worsen hypotension (β2 vasodilation)",
+      "May worsen hypotension (\u03b22 vasodilation)",
       "Tachyarrhythmias at high doses",
       "Hypokalemia",
       "Tolerance may develop with prolonged use"
@@ -3432,17 +3442,17 @@
         ],
         [
           "3-10 mcg/kg/min",
-          "β1 > α1",
-          "↑ Inotropy, ↑ HR, ↑ CO"
+          "\u03b21 > \u03b11",
+          "\u2191 Inotropy, \u2191 HR, \u2191 CO"
         ],
         [
           "10-20 mcg/kg/min",
-          "α1 > β1",
-          "Vasoconstriction, ↑↑ SVR, ↑ BP"
+          "\u03b11 > \u03b21",
+          "Vasoconstriction, \u2191\u2191 SVR, \u2191 BP"
         ],
         [
           ">20 mcg/kg/min",
-          "α1",
+          "\u03b11",
           "Marked vasoconstriction (may worsen perfusion)"
         ]
       ]
@@ -3468,7 +3478,7 @@
     "interactions": [
       {
         "drug": "MAO inhibitors",
-        "effect": "⚠️ Severe hypertensive crisis - use 1/10th dose"
+        "effect": "\u26a0\ufe0f Severe hypertensive crisis - use 1/10th dose"
       },
       {
         "drug": "Alpha-blockers",
@@ -3505,7 +3515,7 @@
         "unit": "mg/kg/dose Q12h SC"
       },
       "treatmentChild": {
-        "label": "Treatment (≥2 mo)",
+        "label": "Treatment (\u22652 mo)",
         "value": "1",
         "unit": "mg/kg/dose Q12h SC",
         "maxDose": 100
@@ -3557,7 +3567,7 @@
       "Hypersensitivity to enoxaparin, heparin, or pork products"
     ],
     "warnings": [
-      "⚠️ Epidural hematoma risk with neuraxial anesthesia",
+      "\u26a0\ufe0f Epidural hematoma risk with neuraxial anesthesia",
       "Not for IM injection",
       "Monitor anti-Xa in renal impairment, obesity, children",
       "Contains benzyl alcohol - use preservative-free in neonates"
@@ -3633,7 +3643,7 @@
       },
       "epipen": {
         "label": "EpiPen",
-        "value": "0.15 mg (<30kg) or 0.3 mg (≥30kg)",
+        "value": "0.15 mg (<30kg) or 0.3 mg (\u226530kg)",
         "unit": "IM into lateral thigh",
         "isFixed": true
       },
@@ -3675,7 +3685,7 @@
           "0.15 mg"
         ],
         [
-          "≥25 kg",
+          "\u226525 kg",
           "EpiPen / Auvi-Q 0.3",
           "0.3 mg"
         ]
@@ -3688,7 +3698,7 @@
       "Relative: Angle-closure glaucoma, certain arrhythmias"
     ],
     "warnings": [
-      "⚠️ Use 1:10,000 for IV; 1:1,000 for IM/SC",
+      "\u26a0\ufe0f Use 1:10,000 for IV; 1:1,000 for IM/SC",
       "Tissue necrosis with extravasation",
       "Arrhythmias, severe hypertension",
       "Sulfite allergy (some formulations)"
@@ -3806,8 +3816,8 @@
       "Paralytic ileus"
     ],
     "warnings": [
-      "⚠️ Respiratory depression - have naloxone available",
-      "⚠️ Chest wall rigidity with rapid IV push (>5 mcg/kg)",
+      "\u26a0\ufe0f Respiratory depression - have naloxone available",
+      "\u26a0\ufe0f Chest wall rigidity with rapid IV push (>5 mcg/kg)",
       "Accumulates in fat with prolonged use",
       "Withdrawal with abrupt discontinuation after prolonged use"
     ],
@@ -3819,7 +3829,7 @@
     "interactions": [
       {
         "drug": "CNS depressants/benzos",
-        "effect": "⚠️ Additive respiratory depression"
+        "effect": "\u26a0\ufe0f Additive respiratory depression"
       },
       {
         "drug": "CYP3A4 inhibitors",
@@ -3932,7 +3942,7 @@
           "Q24h"
         ],
         [
-          "≥45 weeks",
+          "\u226545 weeks",
           "All",
           "Q24h"
         ]
@@ -4060,7 +4070,7 @@
     "interactions": [
       {
         "drug": "Aminoglycosides",
-        "effect": "⚠️ Increased ototoxicity and nephrotoxicity"
+        "effect": "\u26a0\ufe0f Increased ototoxicity and nephrotoxicity"
       },
       {
         "drug": "Digoxin",
@@ -4109,7 +4119,7 @@
     ],
     "doses": {
       "onceDaily": {
-        "label": "Once Daily (≥1 mo)",
+        "label": "Once Daily (\u22651 mo)",
         "value": "5-7.5",
         "unit": "mg/kg/dose Q24h"
       },
@@ -4126,7 +4136,7 @@
       "synergy": {
         "label": "Synergy (Endocarditis)",
         "value": "3",
-        "unit": "mg/kg/day ÷ Q8h (or 1 mg/kg Q8h)"
+        "unit": "mg/kg/day \u00f7 Q8h (or 1 mg/kg Q8h)"
       }
     },
     "dosingTable": {
@@ -4139,20 +4149,20 @@
       ],
       "rows": [
         [
-          "≤29",
+          "\u226429",
           "0-7 days",
           "5 mg/kg",
           "Q48h"
         ],
         [
-          "≤29",
+          "\u226429",
           "8-28 days",
           "4 mg/kg",
           "Q36h"
         ],
         [
-          "≤29",
-          "≥29 days",
+          "\u226429",
+          "\u226529 days",
           "4 mg/kg",
           "Q24h"
         ],
@@ -4164,12 +4174,12 @@
         ],
         [
           "30-34",
-          "≥8 days",
+          "\u22658 days",
           "4 mg/kg",
           "Q24h"
         ],
         [
-          "≥35",
+          "\u226535",
           "All",
           "4 mg/kg",
           "Q24h"
@@ -4242,22 +4252,22 @@
       "aiMaintenancePO": {
         "label": "Adrenal Insufficiency (Maintenance)",
         "value": "10-15",
-        "unit": "mg/m²/day ÷ Q8h"
+        "unit": "mg/m\u00b2/day \u00f7 Q8h"
       },
       "aiStressDose": {
         "label": "Stress Dose (Minor illness)",
         "value": "30-50",
-        "unit": "mg/m²/day ÷ Q6-8h"
+        "unit": "mg/m\u00b2/day \u00f7 Q6-8h"
       },
       "adrenalCrisis": {
         "label": "Adrenal Crisis",
         "value": "50-100",
-        "unit": "mg/m² IV bolus, then 50-100 mg/m²/day ÷ Q6h"
+        "unit": "mg/m\u00b2 IV bolus, then 50-100 mg/m\u00b2/day \u00f7 Q6h"
       },
       "antiinflam": {
         "label": "Anti-inflammatory",
         "value": "2.5-10",
-        "unit": "mg/kg/day ÷ Q6-8h"
+        "unit": "mg/kg/day \u00f7 Q6-8h"
       },
       "statusAsthmaticus": {
         "label": "Status Asthmaticus",
@@ -4272,7 +4282,7 @@
       "physiologic": {
         "label": "Physiologic Replacement",
         "value": "8-10",
-        "unit": "mg/m²/day ÷ TID"
+        "unit": "mg/m\u00b2/day \u00f7 TID"
       }
     },
     "dosingTable": {
@@ -4284,15 +4294,15 @@
       "rows": [
         [
           "Minor (cold, minor procedure)",
-          "2-3x maintenance or 30-50 mg/m²/day"
+          "2-3x maintenance or 30-50 mg/m\u00b2/day"
         ],
         [
-          "Moderate (fever >38.5°C, flu)",
-          "50 mg/m²/day ÷ Q6-8h"
+          "Moderate (fever >38.5\u00b0C, flu)",
+          "50 mg/m\u00b2/day \u00f7 Q6-8h"
         ],
         [
           "Major (surgery, trauma, sepsis)",
-          "100 mg/m² bolus + 100 mg/m²/day ÷ Q6h"
+          "100 mg/m\u00b2 bolus + 100 mg/m\u00b2/day \u00f7 Q6h"
         ]
       ]
     },
@@ -4331,7 +4341,7 @@
         "effect": "Decreased immune response"
       }
     ],
-    "notes": "Has mineralocorticoid activity (salt retention) unlike dexamethasone. Preferred for adrenal insufficiency. Physiologic cortisol production: 6-8 mg/m²/day. Stress dosing critical for adrenal patients during illness/surgery.",
+    "notes": "Has mineralocorticoid activity (salt retention) unlike dexamethasone. Preferred for adrenal insufficiency. Physiologic cortisol production: 6-8 mg/m\u00b2/day. Stress dosing critical for adrenal patients during illness/surgery.",
     "renalAdjust": null,
     "hepaticAdjust": null
   },
@@ -4372,7 +4382,7 @@
       "antiinflamChild": {
         "label": "Anti-inflammatory (Child)",
         "value": "30-40",
-        "unit": "mg/kg/day ÷ Q6h",
+        "unit": "mg/kg/day \u00f7 Q6h",
         "maxDose": 2400
       },
       "adultPain": {
@@ -4465,8 +4475,8 @@
       "Third trimester pregnancy"
     ],
     "warnings": [
-      "⚠️ GI bleeding risk (especially elderly, concurrent anticoagulants)",
-      "⚠️ Cardiovascular risk (MI, stroke) with prolonged use",
+      "\u26a0\ufe0f GI bleeding risk (especially elderly, concurrent anticoagulants)",
+      "\u26a0\ufe0f Cardiovascular risk (MI, stroke) with prolonged use",
       "Renal impairment",
       "May mask fever in infection",
       "Not recommended <6 months without physician guidance"
@@ -4588,8 +4598,8 @@
       "Hypoglycemia"
     ],
     "warnings": [
-      "⚠️ Hypoglycemia - monitor glucose frequently",
-      "⚠️ Hypokalemia with treatment - monitor K+ closely",
+      "\u26a0\ufe0f Hypoglycemia - monitor glucose frequently",
+      "\u26a0\ufe0f Hypokalemia with treatment - monitor K+ closely",
       "In DKA: do not stop insulin until gap closed (even if glucose normal)",
       "Adsorbs to IV tubing - flush new tubing"
     ],
@@ -4864,7 +4874,7 @@
         "effect": "Increased hypotension"
       }
     ],
-    "notes": "Combined α1 and β-blocker (α:β ratio 1:7 PO, 1:3 IV). Preferred in pregnancy-induced hypertension. Onset IV: 2-5 min; PO: 1-2 hr. Peak: 5-15 min IV. Keep patient supine during IV infusion.",
+    "notes": "Combined \u03b11 and \u03b2-blocker (\u03b1:\u03b2 ratio 1:7 PO, 1:3 IV). Preferred in pregnancy-induced hypertension. Onset IV: 2-5 min; PO: 1-2 hr. Peak: 5-15 min IV. Keep patient supine during IV infusion.",
     "renalAdjust": null,
     "hepaticAdjust": "Use with caution; monitor LFTs"
   },
@@ -4900,12 +4910,12 @@
       "seizuresMaintChild": {
         "label": "Seizures (Child 1mo-6mo)",
         "value": "14",
-        "unit": "mg/kg/day ÷ BID, increase Q2wk to 42 mg/kg/day"
+        "unit": "mg/kg/day \u00f7 BID, increase Q2wk to 42 mg/kg/day"
       },
       "seizuresMaint4to16": {
         "label": "Seizures (4-16 yr)",
         "value": "20",
-        "unit": "mg/kg/day ÷ BID, increase Q2wk to 60 mg/kg/day"
+        "unit": "mg/kg/day \u00f7 BID, increase Q2wk to 60 mg/kg/day"
       },
       "seizuresAdult": {
         "label": "Seizures (Adult)",
@@ -4916,7 +4926,7 @@
       "neonatal": {
         "label": "Neonatal Seizures",
         "value": "20-40",
-        "unit": "mg/kg/day ÷ Q12h"
+        "unit": "mg/kg/day \u00f7 Q12h"
       }
     },
     "dosingTable": {
@@ -5397,7 +5407,7 @@
     ],
     "doses": {
       "neoUnder32wk": {
-        "label": "Neonate ≤32wk PMA",
+        "label": "Neonate \u226432wk PMA",
         "value": "20",
         "unit": "mg/kg/dose Q12h IV"
       },
@@ -5453,7 +5463,7 @@
       ],
       "rows": [
         [
-          "≤32",
+          "\u226432",
           "All",
           "20 mg/kg",
           "Q12h"
@@ -5540,7 +5550,7 @@
       "analgesiaChild": {
         "label": "Analgesia (Child)",
         "value": "0.7",
-        "unit": "mg/kg/day ÷ Q4-6h",
+        "unit": "mg/kg/day \u00f7 Q4-6h",
         "maxDose": 10,
         "maxUnit": "mg/dose"
       },
@@ -5569,8 +5579,8 @@
       "Paralytic ileus"
     ],
     "warnings": [
-      "⚠️ QT prolongation - obtain baseline ECG",
-      "⚠️ Highly variable half-life (15-60 hours) - accumulation risk",
+      "\u26a0\ufe0f QT prolongation - obtain baseline ECG",
+      "\u26a0\ufe0f Highly variable half-life (15-60 hours) - accumulation risk",
       "Respiratory depression may be delayed",
       "Incomplete cross-tolerance with other opioids"
     ],
@@ -5668,7 +5678,7 @@
       "Concurrent use of drugs causing extrapyramidal reactions"
     ],
     "warnings": [
-      "⚠️ BLACK BOX: Tardive dyskinesia with prolonged use (>12 weeks)",
+      "\u26a0\ufe0f BLACK BOX: Tardive dyskinesia with prolonged use (>12 weeks)",
       "Extrapyramidal symptoms (especially in children)",
       "Neuroleptic malignant syndrome (rare)",
       "Depression"
@@ -5751,28 +5761,28 @@
       "anaerobicChild": {
         "label": "Anaerobic (Child)",
         "value": "22.5-40",
-        "unit": "mg/kg/day ÷ Q8h",
+        "unit": "mg/kg/day \u00f7 Q8h",
         "maxDose": 4000
       },
       "cdiffChild": {
         "label": "C. diff (Child)",
         "value": "30",
-        "unit": "mg/kg/day ÷ Q6h PO (max 2g/day)"
+        "unit": "mg/kg/day \u00f7 Q6h PO (max 2g/day)"
       },
       "amebiasis": {
         "label": "Amebiasis",
         "value": "35-50",
-        "unit": "mg/kg/day ÷ Q8h x 10 days"
+        "unit": "mg/kg/day \u00f7 Q8h x 10 days"
       },
       "giardia": {
         "label": "Giardiasis",
         "value": "15-30",
-        "unit": "mg/kg/day ÷ TID x 5-7 days"
+        "unit": "mg/kg/day \u00f7 TID x 5-7 days"
       },
       "hPylori": {
         "label": "H. pylori",
         "value": "20",
-        "unit": "mg/kg/day ÷ BID (with PPI + amoxicillin)"
+        "unit": "mg/kg/day \u00f7 BID (with PPI + amoxicillin)"
       },
       "bacterialVaginosis": {
         "label": "Bacterial Vaginosis",
@@ -6120,7 +6130,7 @@
       "Concurrent MAO inhibitor use (within 14 days)"
     ],
     "warnings": [
-      "⚠️ Respiratory depression (especially neonates/infants)",
+      "\u26a0\ufe0f Respiratory depression (especially neonates/infants)",
       "Hypotension (especially with hypovolemia)",
       "Physical dependence with prolonged use",
       "Histamine release (flushing, pruritus)"
@@ -6138,7 +6148,7 @@
       },
       {
         "drug": "MAO inhibitors",
-        "effect": "⚠️ Severe/fatal reactions - avoid"
+        "effect": "\u26a0\ufe0f Severe/fatal reactions - avoid"
       },
       {
         "drug": "Mixed agonist-antagonists",
@@ -6180,7 +6190,7 @@
         "unit": "mg/kg IV/IM/SC/ETT"
       },
       "opioidReversalChild": {
-        "label": "Full Reversal (Child ≤20kg)",
+        "label": "Full Reversal (Child \u226420kg)",
         "value": "0.1",
         "unit": "mg/kg IV/IM/SC (max 2 mg)"
       },
@@ -6195,7 +6205,7 @@
         "unit": "mg/kg IV, repeat Q2-3min"
       },
       "intranasal": {
-        "label": "Intranasal (≥4 yr)",
+        "label": "Intranasal (\u22654 yr)",
         "value": "4",
         "unit": "mg (1 spray) IN, may repeat Q2-3min",
         "isFixed": true
@@ -6217,8 +6227,8 @@
       "Hypersensitivity to naloxone"
     ],
     "warnings": [
-      "⚠️ May precipitate acute withdrawal in opioid-dependent patients",
-      "⚠️ Pulmonary edema (rare but serious)",
+      "\u26a0\ufe0f May precipitate acute withdrawal in opioid-dependent patients",
+      "\u26a0\ufe0f Pulmonary edema (rare but serious)",
       "Duration shorter than most opioids - watch for re-sedation",
       "May reverse analgesia"
     ],
@@ -6280,7 +6290,7 @@
       "Mesenteric or peripheral vascular thrombosis"
     ],
     "warnings": [
-      "⚠️ Extravasation causes severe tissue necrosis",
+      "\u26a0\ufe0f Extravasation causes severe tissue necrosis",
       "Central line strongly preferred",
       "May decrease renal and mesenteric blood flow",
       "Cardiac arrhythmias"
@@ -6304,7 +6314,7 @@
         "effect": "May increase hypertension (unopposed alpha)"
       }
     ],
-    "notes": "Potent α-agonist (vasoconstriction) with moderate β1 activity (inotropy). First-line vasopressor in septic shock per Surviving Sepsis Campaign. If extravasation: infiltrate area with phentolamine 5-10 mg in 10-15 mL NS within 12 hours. Always use via central line when possible.",
+    "notes": "Potent \u03b1-agonist (vasoconstriction) with moderate \u03b21 activity (inotropy). First-line vasopressor in septic shock per Surviving Sepsis Campaign. If extravasation: infiltrate area with phentolamine 5-10 mg in 10-15 mL NS within 12 hours. Always use via central line when possible.",
     "renalAdjust": null,
     "hepaticAdjust": null
   },
@@ -6342,7 +6352,7 @@
       "erosiveEsoph": {
         "label": "Erosive Esophagitis",
         "value": "1-2",
-        "unit": "mg/kg/day ÷ QD-BID (max 40 mg)"
+        "unit": "mg/kg/day \u00f7 QD-BID (max 40 mg)"
       },
       "hPylori": {
         "label": "H. pylori (adult)",
@@ -6372,7 +6382,7 @@
           "10 mg QD"
         ],
         [
-          "≥20 kg",
+          "\u226520 kg",
           "20 mg QD"
         ]
       ]
@@ -6441,7 +6451,7 @@
     ],
     "doses": {
       "ponvChild": {
-        "label": "PONV (Child ≥1 mo-12 yr)",
+        "label": "PONV (Child \u22651 mo-12 yr)",
         "value": "0.1",
         "unit": "mg/kg IV (max 4 mg)"
       },
@@ -6501,7 +6511,7 @@
       "Concurrent apomorphine"
     ],
     "warnings": [
-      "⚠️ QT prolongation (dose-dependent)",
+      "\u26a0\ufe0f QT prolongation (dose-dependent)",
       "Serotonin syndrome (with other serotonergic drugs)",
       "May mask progressive ileus in post-op patients"
     ],
@@ -6579,7 +6589,7 @@
       ],
       "rows": [
         [
-          "≤15 kg",
+          "\u226415 kg",
           "30 mg BID",
           "30 mg QD"
         ],
@@ -6651,7 +6661,7 @@
     ],
     "doses": {
       "gerdChild": {
-        "label": "GERD (≥5 yr, ≥15kg)",
+        "label": "GERD (\u22655 yr, \u226515kg)",
         "value": "See table",
         "unit": "PO QD"
       },
@@ -6691,7 +6701,7 @@
           "20 mg QD"
         ],
         [
-          "≥40 kg",
+          "\u226540 kg",
           "40 mg QD"
         ]
       ]
@@ -6748,7 +6758,7 @@
     ],
     "doses": {
       "neoUnder7d": {
-        "label": "Neonate ≤7 days",
+        "label": "Neonate \u22647 days",
         "value": "50,000",
         "unit": "units/kg/dose Q12h"
       },
@@ -6760,17 +6770,17 @@
       "mildModChild": {
         "label": "Mild/Mod (Child)",
         "value": "100,000-250,000",
-        "unit": "units/kg/day ÷ Q4-6h"
+        "unit": "units/kg/day \u00f7 Q4-6h"
       },
       "severeChild": {
         "label": "Severe (Child)",
         "value": "250,000-400,000",
-        "unit": "units/kg/day ÷ Q4-6h"
+        "unit": "units/kg/day \u00f7 Q4-6h"
       },
       "meningitis": {
         "label": "Meningitis",
         "value": "300,000-400,000",
-        "unit": "units/kg/day ÷ Q4h (max 24 million/day)"
+        "unit": "units/kg/day \u00f7 Q4h (max 24 million/day)"
       },
       "adultStandard": {
         "label": "Adult",
@@ -6855,17 +6865,17 @@
       "maintenanceNeo": {
         "label": "Maintenance (Neonate)",
         "value": "3-5",
-        "unit": "mg/kg/day ÷ QD-BID"
+        "unit": "mg/kg/day \u00f7 QD-BID"
       },
       "maintenanceChild": {
         "label": "Maintenance (Child)",
         "value": "3-6",
-        "unit": "mg/kg/day ÷ QD-BID"
+        "unit": "mg/kg/day \u00f7 QD-BID"
       },
       "maintenanceAdult": {
         "label": "Maintenance (Adult)",
         "value": "60-200",
-        "unit": "mg/day ÷ QD-BID",
+        "unit": "mg/day \u00f7 QD-BID",
         "isFixed": true
       }
     },
@@ -6976,17 +6986,17 @@
       "maintenanceNeo": {
         "label": "Maintenance (Neonate)",
         "value": "5-8",
-        "unit": "mg/kg/day ÷ Q8-12h"
+        "unit": "mg/kg/day \u00f7 Q8-12h"
       },
       "maintenanceChild": {
         "label": "Maintenance (Child)",
         "value": "5-10",
-        "unit": "mg/kg/day ÷ Q8-12h"
+        "unit": "mg/kg/day \u00f7 Q8-12h"
       },
       "maintenanceAdult": {
         "label": "Maintenance (Adult)",
         "value": "300-400",
-        "unit": "mg/day ÷ QD-TID",
+        "unit": "mg/day \u00f7 QD-TID",
         "isFixed": true
       }
     },
@@ -7007,7 +7017,7 @@
         ],
         [
           "Corrected (if albumin <4)",
-          "Measured / (0.2 × Alb + 0.1)"
+          "Measured / (0.2 \u00d7 Alb + 0.1)"
         ]
       ]
     },
@@ -7018,7 +7028,7 @@
       "History of phenytoin hypersensitivity"
     ],
     "warnings": [
-      "⚠️ IV rate max 1 mg/kg/min (50 mg/min adult) - arrhythmias, hypotension",
+      "\u26a0\ufe0f IV rate max 1 mg/kg/min (50 mg/min adult) - arrhythmias, hypotension",
       "Purple glove syndrome with IV extravasation",
       "Teratogenic (fetal hydantoin syndrome)",
       "Nonlinear kinetics - small dose changes = large level changes"
@@ -7135,7 +7145,7 @@
           "Q6h"
         ],
         [
-          "≥37 wk",
+          "\u226537 wk",
           "All",
           "100 mg/kg",
           "Q6h"
@@ -7217,12 +7227,12 @@
       "mildHypoK": {
         "label": "Mild Hypokalemia (PO)",
         "value": "1-2",
-        "unit": "mEq/kg/day ÷ BID-QID"
+        "unit": "mEq/kg/day \u00f7 BID-QID"
       },
       "modHypoKPO": {
         "label": "Mod Hypokalemia (PO)",
         "value": "2-4",
-        "unit": "mEq/kg/day ÷ TID-QID"
+        "unit": "mEq/kg/day \u00f7 TID-QID"
       },
       "severeHypoKIV": {
         "label": "Severe (<2.5) IV",
@@ -7273,8 +7283,8 @@
       "Untreated Addison's disease"
     ],
     "warnings": [
-      "⚠️ NEVER give IV push - cardiac arrest",
-      "⚠️ Central line preferred for concentrations >40 mEq/L",
+      "\u26a0\ufe0f NEVER give IV push - cardiac arrest",
+      "\u26a0\ufe0f Central line preferred for concentrations >40 mEq/L",
       "Monitor K+ levels and ECG during replacement",
       "GI ulceration with oral forms"
     ],
@@ -7328,7 +7338,7 @@
       "acuteAsthma": {
         "label": "Acute Asthma",
         "value": "1-2",
-        "unit": "mg/kg/day QD or ÷ BID x 3-5 days (max 60 mg)"
+        "unit": "mg/kg/day QD or \u00f7 BID x 3-5 days (max 60 mg)"
       },
       "croup": {
         "label": "Croup",
@@ -7482,8 +7492,8 @@
       "Disorders of fat metabolism"
     ],
     "warnings": [
-      "⚠️ PROPOFOL INFUSION SYNDROME (PRIS) - metabolic acidosis, rhabdomyolysis, cardiac failure",
-      "⚠️ NOT for pediatric ICU sedation (FDA black box)",
+      "\u26a0\ufe0f PROPOFOL INFUSION SYNDROME (PRIS) - metabolic acidosis, rhabdomyolysis, cardiac failure",
+      "\u26a0\ufe0f NOT for pediatric ICU sedation (FDA black box)",
       "Hypotension (especially in hypovolemic patients)",
       "Respiratory depression",
       "Pain on injection"
@@ -7627,12 +7637,12 @@
       "gerdNeo": {
         "label": "GERD (Neonate)",
         "value": "2",
-        "unit": "mg/kg/day ÷ Q8-12h PO"
+        "unit": "mg/kg/day \u00f7 Q8-12h PO"
       },
       "gerdChild": {
         "label": "GERD (Child)",
         "value": "4-10",
-        "unit": "mg/kg/day ÷ BID (max 300 mg/day)"
+        "unit": "mg/kg/day \u00f7 BID (max 300 mg/day)"
       },
       "stressUlcer": {
         "label": "Stress Ulcer (IV)",
@@ -7657,7 +7667,7 @@
       "Hypersensitivity to ranitidine or H2 blockers"
     ],
     "warnings": [
-      "⚠️ WITHDRAWN from market in 2020 (US/Canada) due to NDMA contamination concerns",
+      "\u26a0\ufe0f WITHDRAWN from market in 2020 (US/Canada) due to NDMA contamination concerns",
       "Use famotidine as alternative",
       "Thrombocytopenia (rare)",
       "Altered drug metabolism"
@@ -7681,7 +7691,7 @@
         "effect": "Reduced absorption"
       }
     ],
-    "notes": "⚠️ MARKET WITHDRAWAL: Ranitidine was withdrawn in 2020 due to NDMA (carcinogen) contamination concerns. Use famotidine as preferred H2 blocker alternative. Information retained for reference only.",
+    "notes": "\u26a0\ufe0f MARKET WITHDRAWAL: Ranitidine was withdrawn in 2020 due to NDMA (carcinogen) contamination concerns. Use famotidine as preferred H2 blocker alternative. Information retained for reference only.",
     "renalAdjust": {
       "gfr50": "50-75% dose or Q12-24h",
       "gfr30": "50% dose or Q12-24h",
@@ -7828,18 +7838,18 @@
       },
       "acidosisFormula": {
         "label": "Acidosis Replacement",
-        "value": "[0.3 × wt(kg) × base deficit]",
+        "value": "[0.3 \u00d7 wt(kg) \u00d7 base deficit]",
         "unit": "= mEq needed; give 1/2 dose first"
       },
       "rtaChild": {
         "label": "RTA (Child PO)",
         "value": "2-3",
-        "unit": "mEq/kg/day ÷ TID-QID"
+        "unit": "mEq/kg/day \u00f7 TID-QID"
       },
       "urineAlkalinization": {
         "label": "Urine Alkalinization",
         "value": "84-840",
-        "unit": "mg/kg/day PO ÷ Q6-8h"
+        "unit": "mg/kg/day PO \u00f7 Q6-8h"
       }
     },
     "dosingTable": {
@@ -7851,7 +7861,7 @@
       "rows": [
         [
           "HCO3 deficit (mEq)",
-          "0.3 × wt(kg) × (24 - serum HCO3)"
+          "0.3 \u00d7 wt(kg) \u00d7 (24 - serum HCO3)"
         ],
         [
           "Initial replacement",
@@ -7875,7 +7885,7 @@
       "Hypernatremia"
     ],
     "warnings": [
-      "⚠️ Use 4.2% (0.5 mEq/mL) in neonates - 8.4% causes IVH",
+      "\u26a0\ufe0f Use 4.2% (0.5 mEq/mL) in neonates - 8.4% causes IVH",
       "Rapid correction may cause paradoxical CNS acidosis",
       "Extravasation causes tissue necrosis",
       "Hypokalemia with rapid correction"
@@ -7944,7 +7954,7 @@
     "max": "150 mg IM; 200 mg IV total",
     "indication": "Rapid sequence intubation (when rocuronium unavailable), laryngospasm",
     "contraindications": [
-      "⚠️ Personal/family history of malignant hyperthermia",
+      "\u26a0\ufe0f Personal/family history of malignant hyperthermia",
       "Hyperkalemia or risk factors for hyperkalemia",
       "Burns/crush injury >24 hours old",
       "Denervation injuries, prolonged immobility",
@@ -7952,8 +7962,8 @@
       "Penetrating eye injury (relative)"
     ],
     "warnings": [
-      "⚠️ BLACK BOX: Risk of cardiac arrest from hyperkalemia in children with undiagnosed myopathy",
-      "⚠️ Malignant hyperthermia trigger",
+      "\u26a0\ufe0f BLACK BOX: Risk of cardiac arrest from hyperkalemia in children with undiagnosed myopathy",
+      "\u26a0\ufe0f Malignant hyperthermia trigger",
       "Masseter muscle rigidity may herald MH",
       "Not recommended as routine RSI drug in children"
     ],
@@ -8100,7 +8110,7 @@
       "utiChild": {
         "label": "UTI (Child)",
         "value": "6-12",
-        "unit": "mg TMP/kg/day ÷ BID"
+        "unit": "mg TMP/kg/day \u00f7 BID"
       },
       "utiProphylaxis": {
         "label": "UTI Prophylaxis",
@@ -8110,22 +8120,22 @@
       "omChild": {
         "label": "Otitis Media",
         "value": "8-10",
-        "unit": "mg TMP/kg/day ÷ BID x 10 days"
+        "unit": "mg TMP/kg/day \u00f7 BID x 10 days"
       },
       "pcpTreatment": {
         "label": "PCP Treatment",
         "value": "15-20",
-        "unit": "mg TMP/kg/day ÷ Q6-8h x 21 days"
+        "unit": "mg TMP/kg/day \u00f7 Q6-8h x 21 days"
       },
       "pcpProphylaxis": {
         "label": "PCP Prophylaxis",
         "value": "5",
-        "unit": "mg TMP/kg/day ÷ QD or 3x/week"
+        "unit": "mg TMP/kg/day \u00f7 QD or 3x/week"
       },
       "mrsaSkinChild": {
         "label": "MRSA Skin (Child)",
         "value": "8-12",
-        "unit": "mg TMP/kg/day ÷ BID"
+        "unit": "mg TMP/kg/day \u00f7 BID"
       },
       "adultDS": {
         "label": "Adult Standard",
@@ -8144,7 +8154,7 @@
       "rows": [
         [
           "UTI",
-          "6-12 mg/kg/day ÷ BID",
+          "6-12 mg/kg/day \u00f7 BID",
           "7-14 days"
         ],
         [
@@ -8154,7 +8164,7 @@
         ],
         [
           "PCP Treatment",
-          "15-20 mg/kg/day ÷ Q6-8h",
+          "15-20 mg/kg/day \u00f7 Q6-8h",
           "21 days"
         ],
         [
@@ -8164,7 +8174,7 @@
         ],
         [
           "MRSA Skin",
-          "8-12 mg/kg/day ÷ BID",
+          "8-12 mg/kg/day \u00f7 BID",
           "7-10 days"
         ]
       ]
@@ -8178,7 +8188,7 @@
       "Infants <2 months (except PCP treatment)"
     ],
     "warnings": [
-      "⚠️ Severe skin reactions (SJS/TEN) - discontinue immediately if rash develops",
+      "\u26a0\ufe0f Severe skin reactions (SJS/TEN) - discontinue immediately if rash develops",
       "Hyperkalemia (especially elderly, renal impairment, ACE-I/ARB use)",
       "Bone marrow suppression (monitor CBC for prolonged use)",
       "Crystalluria - ensure adequate hydration"
@@ -8315,7 +8325,7 @@
       "History of vancomycin anaphylaxis"
     ],
     "warnings": [
-      "⚠️ Red man syndrome (infuse over ≥60 min)",
+      "\u26a0\ufe0f Red man syndrome (infuse over \u226560 min)",
       "Nephrotoxicity (especially with aminoglycosides)",
       "Ototoxicity (rare)",
       "AUC-based dosing now preferred over trough-only"
@@ -8343,7 +8353,7 @@
         "effect": "Increased AKI risk"
       }
     ],
-    "notes": "IV only for systemic infections (oral not absorbed). Oral ONLY for C. diff. Target AUC/MIC 400-600 (or trough 10-20 mcg/mL). Infuse over ≥60 min (longer for higher doses). Red man syndrome from rapid infusion - slow rate or pretreat with antihistamine.",
+    "notes": "IV only for systemic infections (oral not absorbed). Oral ONLY for C. diff. Target AUC/MIC 400-600 (or trough 10-20 mcg/mL). Infuse over \u226560 min (longer for higher doses). Red man syndrome from rapid infusion - slow rate or pretreat with antihistamine.",
     "renalAdjust": {
       "gfr50": "15 mg/kg Q12h",
       "gfr30": "15 mg/kg Q24h",
@@ -8424,7 +8434,7 @@
       "Hypersensitivity to vasopressin"
     ],
     "warnings": [
-      "⚠️ Causes severe vasoconstriction - may cause digital/splanchnic ischemia",
+      "\u26a0\ufe0f Causes severe vasoconstriction - may cause digital/splanchnic ischemia",
       "Water retention and hyponatremia",
       "May precipitate angina/MI in patients with CAD",
       "Usually used as adjunct, not first-line vasopressor"
@@ -8660,7 +8670,7 @@
       "maintenance": {
         "label": "Maintenance",
         "value": "4-6",
-        "unit": "mg PE/kg/day ÷ Q12h"
+        "unit": "mg PE/kg/day \u00f7 Q12h"
       },
       "imLoading": {
         "label": "IM Loading (if no IV)",
@@ -8746,7 +8756,7 @@
       "sialorrheaChild": {
         "label": "Sialorrhea (Child PO)",
         "value": "40-100",
-        "unit": "mcg/kg/day ÷ TID"
+        "unit": "mcg/kg/day \u00f7 TID"
       }
     },
     "max": "0.2 mg/dose IV; 8 mg/day PO",
@@ -8883,7 +8893,7 @@
       "History of HIT"
     ],
     "warnings": [
-      "⚠️ HIT (heparin-induced thrombocytopenia) - check platelets",
+      "\u26a0\ufe0f HIT (heparin-induced thrombocytopenia) - check platelets",
       "Bleeding complications",
       "Osteoporosis with long-term use",
       "Contains preservative (benzyl alcohol) in multidose vials"
@@ -8934,12 +8944,12 @@
       "hypertensionChild": {
         "label": "Hypertension (Child)",
         "value": "1-2",
-        "unit": "mg/kg/day ÷ QD-BID (max 37.5 mg/day)"
+        "unit": "mg/kg/day \u00f7 QD-BID (max 37.5 mg/day)"
       },
       "edemaChild": {
         "label": "Edema (Child)",
         "value": "1-2",
-        "unit": "mg/kg/day ÷ QD-BID"
+        "unit": "mg/kg/day \u00f7 QD-BID"
       },
       "hypertensionAdult": {
         "label": "Hypertension (Adult)",
@@ -9066,8 +9076,8 @@
       "IV administration (causes thrombosis/tissue necrosis)"
     ],
     "warnings": [
-      "⚠️ QT prolongation - avoid with other QT-prolonging drugs",
-      "⚠️ NEVER give IV - causes tissue necrosis",
+      "\u26a0\ufe0f QT prolongation - avoid with other QT-prolonging drugs",
+      "\u26a0\ufe0f NEVER give IV - causes tissue necrosis",
       "Anticholinergic effects",
       "Sedation"
     ],
@@ -9127,7 +9137,7 @@
         "isFixed": true
       },
       "asthmaOver15yr": {
-        "label": "Asthma/Allergic Rhinitis (≥15yr)",
+        "label": "Asthma/Allergic Rhinitis (\u226515yr)",
         "value": "10",
         "unit": "mg QHS",
         "isFixed": true
@@ -9163,7 +9173,7 @@
           "Chewable"
         ],
         [
-          "≥15 years",
+          "\u226515 years",
           "10 mg QHS",
           "Tablet"
         ]
@@ -9175,7 +9185,7 @@
       "Hypersensitivity to montelukast"
     ],
     "warnings": [
-      "⚠️ BLACK BOX: Neuropsychiatric events (agitation, depression, suicidal thoughts)",
+      "\u26a0\ufe0f BLACK BOX: Neuropsychiatric events (agitation, depression, suicidal thoughts)",
       "Not for acute asthma attacks",
       "Eosinophilic conditions reported",
       "Churg-Strauss syndrome (rare)"
@@ -9330,7 +9340,7 @@
       "Concomitant strong CYP3A4 inhibitors"
     ],
     "warnings": [
-      "⚠️ IR formulation: Avoid in hypertensive emergencies (unpredictable BP drop)",
+      "\u26a0\ufe0f IR formulation: Avoid in hypertensive emergencies (unpredictable BP drop)",
       "Reflex tachycardia",
       "Peripheral edema",
       "Grapefruit juice interaction"
@@ -9398,8 +9408,8 @@
       "Acute heart failure with reduced SVR"
     ],
     "warnings": [
-      "⚠️ Cyanide toxicity (especially renal impairment, prolonged use, high doses)",
-      "⚠️ Protect from light - solution turns blue/brown if degraded",
+      "\u26a0\ufe0f Cyanide toxicity (especially renal impairment, prolonged use, high doses)",
+      "\u26a0\ufe0f Protect from light - solution turns blue/brown if degraded",
       "Thiocyanate toxicity with prolonged use (>48-72 hr)",
       "Precipitous hypotension"
     ],
@@ -9418,7 +9428,7 @@
         "effect": "Severe hypotension"
       }
     ],
-    "notes": "Metabolized to cyanide → thiocyanate (renally cleared). Give thiosulfate (co-infusion) if prolonged use to prevent cyanide toxicity. Monitor thiocyanate levels if used >48-72 hr (toxic >100 mcmol/L). Onset: immediate; Duration: 1-10 min after stopping. Must use with arterial line.",
+    "notes": "Metabolized to cyanide \u2192 thiocyanate (renally cleared). Give thiosulfate (co-infusion) if prolonged use to prevent cyanide toxicity. Monitor thiocyanate levels if used >48-72 hr (toxic >100 mcmol/L). Onset: immediate; Duration: 1-10 min after stopping. Must use with arterial line.",
     "renalAdjust": "Thiocyanate accumulates - avoid prolonged use; monitor levels",
     "hepaticAdjust": "Cyanide metabolism reduced - use with caution"
   },
@@ -9451,7 +9461,7 @@
       "hyperinsulinism": {
         "label": "Hyperinsulinemic Hypoglycemia",
         "value": "2-10",
-        "unit": "mcg/kg/day ÷ Q6-12h SC"
+        "unit": "mcg/kg/day \u00f7 Q6-12h SC"
       },
       "chylothorax": {
         "label": "Chylothorax",
@@ -9461,7 +9471,7 @@
       "carcinoid": {
         "label": "Carcinoid (Adult)",
         "value": "100-600",
-        "unit": "mcg/day SC ÷ BID-TID",
+        "unit": "mcg/day SC \u00f7 BID-TID",
         "isFixed": true
       }
     },
@@ -9581,7 +9591,7 @@
       "MAO inhibitor use within 14 days"
     ],
     "warnings": [
-      "⚠️ High abuse potential (Schedule II)",
+      "\u26a0\ufe0f High abuse potential (Schedule II)",
       "Respiratory depression",
       "Avoid in head injury (may obscure neuro status)",
       "Physical dependence with chronic use"
@@ -9602,7 +9612,7 @@
       },
       {
         "drug": "MAO inhibitors",
-        "effect": "⚠️ Serious/fatal reactions"
+        "effect": "\u26a0\ufe0f Serious/fatal reactions"
       }
     ],
     "notes": "About 1.5x more potent than morphine PO. ER formulations for chronic pain only (not opioid-naive). IR for acute pain. Start bowel regimen prophylactically. Naloxone reverses effects. CYP2D6 converts to oxymorphone.",
@@ -9718,22 +9728,22 @@
       "diureticChild": {
         "label": "Diuretic (Child)",
         "value": "1-3.3",
-        "unit": "mg/kg/day ÷ QD-BID"
+        "unit": "mg/kg/day \u00f7 QD-BID"
       },
       "heartFailure": {
         "label": "Heart Failure (Child)",
         "value": "1-2",
-        "unit": "mg/kg/day ÷ QD-BID"
+        "unit": "mg/kg/day \u00f7 QD-BID"
       },
       "ascitesChild": {
         "label": "Ascites (Child)",
         "value": "1-6",
-        "unit": "mg/kg/day ÷ QD-BID"
+        "unit": "mg/kg/day \u00f7 QD-BID"
       },
       "primaryAldosteronism": {
         "label": "Hyperaldosteronism",
         "value": "100-400",
-        "unit": "mg/day ÷ QD-BID",
+        "unit": "mg/day \u00f7 QD-BID",
         "isFixed": true
       },
       "heartFailureAdult": {
@@ -9752,7 +9762,7 @@
       "Significant renal impairment"
     ],
     "warnings": [
-      "⚠️ Hyperkalemia - monitor K+ closely",
+      "\u26a0\ufe0f Hyperkalemia - monitor K+ closely",
       "Anti-androgenic effects (gynecomastia, menstrual irregularities)",
       "Tumor risk (high-dose animal studies)",
       "Metabolic acidosis"
@@ -9819,12 +9829,12 @@
       "glaucomaChild": {
         "label": "Glaucoma (Child)",
         "value": "8-30",
-        "unit": "mg/kg/day PO ÷ TID; max 1g/day"
+        "unit": "mg/kg/day PO \u00f7 TID; max 1g/day"
       },
       "epilepsyChild": {
         "label": "Epilepsy (Child)",
         "value": "8-30",
-        "unit": "mg/kg/day PO ÷ q6-8h; max 1g/day"
+        "unit": "mg/kg/day PO \u00f7 q6-8h; max 1g/day"
       },
       "altitudeAdult": {
         "label": "Altitude (Adult)",
@@ -9834,7 +9844,7 @@
       "pseudotumorChild": {
         "label": "Pseudotumor cerebri",
         "value": "25",
-        "unit": "mg/kg/day PO ÷ q8-12h; max 2g/day"
+        "unit": "mg/kg/day PO \u00f7 q8-12h; max 2g/day"
       },
       "hydrocephalusInfant": {
         "label": "Hydrocephalus (Infant)",
@@ -9904,7 +9914,7 @@
       "infantileSpasms": {
         "label": "Infantile Spasms",
         "value": "150",
-        "unit": "units/m²/day IM ÷ BID x 3 wks, then taper"
+        "unit": "units/m\u00b2/day IM \u00f7 BID x 3 wks, then taper"
       },
       "infantileSpasmsAlt": {
         "label": "Infantile Spasms (Low dose)",
@@ -9927,22 +9937,22 @@
       "rows": [
         [
           "1-3",
-          "150 units/m²/day",
+          "150 units/m\u00b2/day",
           "BID"
         ],
         [
           "4",
-          "90 units/m²",
+          "90 units/m\u00b2",
           "Every morning"
         ],
         [
           "5",
-          "60 units/m²",
+          "60 units/m\u00b2",
           "Every morning"
         ],
         [
           "6",
-          "30 units/m²",
+          "30 units/m\u00b2",
           "Every other morning"
         ],
         [
@@ -10010,12 +10020,12 @@
       "tumorLysisChild": {
         "label": "TLS Prophylaxis (Child)",
         "value": "10",
-        "unit": "mg/kg/day PO ÷ q8h; max 800 mg/day"
+        "unit": "mg/kg/day PO \u00f7 q8h; max 800 mg/day"
       },
       "tumorLysisIV": {
         "label": "TLS (IV)",
         "value": "200-400",
-        "unit": "mg/m²/day IV ÷ q8-24h; max 600 mg/day"
+        "unit": "mg/m\u00b2/day IV \u00f7 q8-24h; max 600 mg/day"
       },
       "hyperuricemiaAdult": {
         "label": "Hyperuricemia (Adult)",
@@ -10025,7 +10035,7 @@
       "recurrentStonesChild": {
         "label": "Recurrent Stones (Child)",
         "value": "4-10",
-        "unit": "mg/kg/day PO ÷ q6-8h"
+        "unit": "mg/kg/day PO \u00f7 q6-8h"
       }
     },
     "contraindications": [
@@ -10060,7 +10070,7 @@
         "effect": "Increased rash incidence"
       }
     ],
-    "notes": "Start at low dose and titrate gradually. Maintain hydration (≥2 L/day fluid intake). Takes 2-4 weeks for full effect on uric acid. Give after meals to reduce GI upset.",
+    "notes": "Start at low dose and titrate gradually. Maintain hydration (\u22652 L/day fluid intake). Takes 2-4 weeks for full effect on uric acid. Give after meals to reduce GI upset.",
     "renalAdjust": {
       "gfr50": "200 mg/day",
       "gfr30": "100 mg/day",
@@ -10263,7 +10273,7 @@
       "phosphateBinderChild": {
         "label": "Phosphate Binder",
         "value": "50-150",
-        "unit": "mg/kg/day PO ÷ q4-6h; titrate to phosphorus"
+        "unit": "mg/kg/day PO \u00f7 q4-6h; titrate to phosphorus"
       },
       "pepticUlcerAdult": {
         "label": "Peptic Ulcer (Adult)",
@@ -10416,12 +10426,12 @@
       "maintenanceInfant": {
         "label": "Maintenance (Infant 6wk-1yr)",
         "value": "0.5",
-        "unit": "mg/kg/hr IV OR 12-18 mg/kg/day PO ÷ q6h"
+        "unit": "mg/kg/hr IV OR 12-18 mg/kg/day PO \u00f7 q6h"
       },
       "maintenanceChild": {
         "label": "Maintenance (1-9 yr)",
         "value": "0.8",
-        "unit": "mg/kg/hr IV OR 20-24 mg/kg/day PO ÷ q6h"
+        "unit": "mg/kg/hr IV OR 20-24 mg/kg/day PO \u00f7 q6h"
       },
       "maintenanceAdol": {
         "label": "Maintenance (>9 yr)",
@@ -10630,7 +10640,7 @@
         "effect": "Increased hypokalemia"
       }
     ],
-    "notes": "Premedicate with acetaminophen, diphenhydramine, ± meperidine for infusion reactions. NS bolus before infusion may reduce nephrotoxicity. Monitor renal function, K, Mg twice weekly. Lipid formulations preferred in renal impairment.",
+    "notes": "Premedicate with acetaminophen, diphenhydramine, \u00b1 meperidine for infusion reactions. NS bolus before infusion may reduce nephrotoxicity. Monitor renal function, K, Mg twice weekly. Lipid formulations preferred in renal impairment.",
     "renalAdjust": {
       "gfr50": "Consider lipid formulation",
       "gfr30": "Use lipid formulation",
@@ -10665,7 +10675,7 @@
       "ureaCycleDisorder": {
         "label": "Urea Cycle Disorder",
         "value": "2-6",
-        "unit": "g/m²/day IV continuous or ÷ doses"
+        "unit": "g/m\u00b2/day IV continuous or \u00f7 doses"
       }
     },
     "contraindications": [
@@ -10694,12 +10704,12 @@
         "effect": "Increased hyperkalemia risk"
       }
     ],
-    "notes": "For metabolic alkalosis: Calculate chloride deficit = 0.2 × weight (kg) × (103 – serum Cl). Arginine HCl contains 47.5 mEq Cl/100 mL. Infuse via central line when possible. Monitor electrolytes frequently."
+    "notes": "For metabolic alkalosis: Calculate chloride deficit = 0.2 \u00d7 weight (kg) \u00d7 (103 \u2013 serum Cl). Arginine HCl contains 47.5 mEq Cl/100 mL. Infuse via central line when possible. Monitor electrolytes frequently."
   },
   {
     "id": "atenolol",
     "name": "Atenolol (Tenormin)",
-    "category": "Beta-Blocker (β1-selective)",
+    "category": "Beta-Blocker (\u03b21-selective)",
     "indication": "Hypertension, arrhythmias, migraine prophylaxis, hyperthyroidism",
     "route": "PO",
     "maxDose": "2 mg/kg/day (max 100 mg/day)",
@@ -10746,7 +10756,7 @@
       "Common: Fatigue, dizziness, cold extremities",
       "CV: Bradycardia, hypotension, heart failure worsening",
       "CNS: Depression, sleep disturbances",
-      "Respiratory: Bronchospasm (rare with β1-selective)"
+      "Respiratory: Bronchospasm (rare with \u03b21-selective)"
     ],
     "interactions": [
       {
@@ -10864,15 +10874,15 @@
       "mildModerateChild": {
         "label": "Mild-Moderate (Child)",
         "value": "90-120",
-        "unit": "mg/kg/day IV ÷ q6-8h"
+        "unit": "mg/kg/day IV \u00f7 q6-8h"
       },
       "severeChild": {
         "label": "Severe/Pseudomonal (Child)",
         "value": "120-150",
-        "unit": "mg/kg/day IV ÷ q6-8h; max 8 g/day"
+        "unit": "mg/kg/day IV \u00f7 q6-8h; max 8 g/day"
       },
       "cfInhaled": {
-        "label": "CF Inhalation (≥7 yr)",
+        "label": "CF Inhalation (\u22657 yr)",
         "value": "75",
         "unit": "mg inhaled TID x 28 days (via Altera nebulizer)"
       },
@@ -10934,12 +10944,12 @@
       "spasticityChild": {
         "label": "Spasticity (Child 2-7 yr)",
         "value": "10-15",
-        "unit": "mg/day PO ÷ TID; increase q3d; max 40 mg/day"
+        "unit": "mg/day PO \u00f7 TID; increase q3d; max 40 mg/day"
       },
       "spasticityOlderChild": {
-        "label": "Spasticity (≥8 yr)",
+        "label": "Spasticity (\u22658 yr)",
         "value": "15-40",
-        "unit": "mg/day PO ÷ TID; increase q3d; max 60-80 mg/day"
+        "unit": "mg/day PO \u00f7 TID; increase q3d; max 60-80 mg/day"
       },
       "intrathecalTest": {
         "label": "IT Test Dose",
@@ -11005,7 +11015,7 @@
       "hitChild": {
         "label": "HIT (Child)",
         "value": "0.1-0.2",
-        "unit": "mg/kg/hr IV continuous; titrate to aPTT 1.5-2.5× baseline"
+        "unit": "mg/kg/hr IV continuous; titrate to aPTT 1.5-2.5\u00d7 baseline"
       },
       "pciAdult": {
         "label": "PCI (Adult)",
@@ -11221,7 +11231,7 @@
         "effect": "Increased lithium levels"
       }
     ],
-    "notes": "40x more potent than furosemide. Better oral bioavailability than furosemide. IV push over 1-2 min. 1 mg bumetanide ≈ 40 mg furosemide.",
+    "notes": "40x more potent than furosemide. Better oral bioavailability than furosemide. IV push over 1-2 min. 1 mg bumetanide \u2248 40 mg furosemide.",
     "renalAdjust": {
       "gfr50": "No adjustment; may need higher doses",
       "gfr30": "May need higher doses for effect",
@@ -11264,7 +11274,7 @@
       "dialysisAdult": {
         "label": "Dialysis (Adult)",
         "value": "0.25-1",
-        "unit": "mcg PO daily or 0.5-4 mcg IV 3×/wk"
+        "unit": "mcg PO daily or 0.5-4 mcg IV 3\u00d7/wk"
       },
       "ricketsChild": {
         "label": "Vit D-dependent Rickets",
@@ -11305,7 +11315,7 @@
         "effect": "Antagonize calcitriol effect"
       }
     ],
-    "notes": "Active form of vitamin D (1,25-dihydroxyvitamin D). Does not require renal hydroxylation. Monitor serum calcium weekly initially, then monthly. Maintain Ca × PO4 product <55."
+    "notes": "Active form of vitamin D (1,25-dihydroxyvitamin D). Does not require renal hydroxylation. Monitor serum calcium weekly initially, then monthly. Maintain Ca \u00d7 PO4 product <55."
   },
   {
     "id": "captopril",
@@ -11688,19 +11698,19 @@
         [
           "IV/IM",
           "Mild-moderate",
-          "75-100 mg/kg/day ÷ Q8h",
+          "75-100 mg/kg/day \u00f7 Q8h",
           "4.5 g/day"
         ],
         [
           "IV",
           "Severe",
-          "100-150 mg/kg/day ÷ Q6-8h",
+          "100-150 mg/kg/day \u00f7 Q6-8h",
           "6 g/day"
         ],
         [
           "IV",
           "Meningitis",
-          "200-240 mg/kg/day ÷ Q6-8h",
+          "200-240 mg/kg/day \u00f7 Q6-8h",
           "9 g/day"
         ]
       ]
