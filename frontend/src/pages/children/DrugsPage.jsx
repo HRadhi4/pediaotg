@@ -500,38 +500,33 @@ const DrugsPage = ({ onBack }) => {
             />
           </div>
 
-          {/* Age Input */}
+          {/* Age Input with Unit Selector */}
           <div>
             <Label className="text-[10px] text-muted-foreground">Age (for age-specific dosing)</Label>
             <div className="flex gap-2">
               <div className="flex-1">
                 <Input
                   type="number"
-                  placeholder="yrs"
-                  value={ageYears}
-                  onChange={(e) => setAgeYears(e.target.value)}
+                  placeholder="Enter age"
+                  value={ageValue}
+                  onChange={(e) => setAgeValue(e.target.value)}
                   min="0"
-                  max="18"
                   className="font-mono text-sm h-9"
                 />
-                <span className="text-[9px] text-muted-foreground">years</span>
               </div>
-              <div className="flex-1">
-                <Input
-                  type="number"
-                  placeholder="mo"
-                  value={ageMonths}
-                  onChange={(e) => setAgeMonths(e.target.value)}
-                  min="0"
-                  max="11"
-                  className="font-mono text-sm h-9"
-                />
-                <span className="text-[9px] text-muted-foreground">months</span>
-              </div>
+              <select
+                value={ageUnit}
+                onChange={(e) => setAgeUnit(e.target.value)}
+                className="h-9 px-3 rounded-md border border-input bg-background text-sm font-medium"
+              >
+                <option value="days">days</option>
+                <option value="months">months</option>
+                <option value="years">years</option>
+              </select>
             </div>
-            {totalAgeMonths > 0 && (
+            {ageNum > 0 && (
               <p className="text-[9px] text-muted-foreground mt-1">
-                Total: {totalAgeMonths} months ({patientAgeCategory})
+                Total: {getAgeDisplay()} ({patientAgeCategory})
               </p>
             )}
           </div>
