@@ -732,25 +732,19 @@ const DrugsPage = ({ onBack }) => {
                 {/* Drug Header - Two-row layout with unified container size */}
                 <div className="space-y-3">
                   {/* Row 1: Drug Name, Category, and Age Badge */}
-                  <div className="flex items-center justify-between gap-2">
-                    <div className="flex-1 min-w-0 overflow-hidden flex items-center gap-2">
-                      {isExpanded ? (
-                        <h3 className="font-semibold text-base leading-tight break-words">
-                          {drug.name}
-                        </h3>
-                      ) : (
-                        <h3 className="font-semibold text-base leading-tight whitespace-nowrap overflow-hidden text-ellipsis">
-                          {drug.name}
-                        </h3>
-                      )}
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="flex-1 min-w-0">
+                      <h3 className={`font-semibold text-base leading-tight ${isExpanded ? '' : 'whitespace-nowrap overflow-hidden text-ellipsis'}`}>
+                        {drug.name}
+                      </h3>
+                    </div>
+                    <div className="flex items-center gap-1.5 flex-shrink-0 flex-wrap justify-end">
                       {/* Age match indicator */}
                       {patientAgeCategory && displayDose?.ageMatch && (
-                        <span className="text-[9px] px-1.5 py-0.5 rounded bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 whitespace-nowrap flex-shrink-0">
+                        <span className="text-[9px] px-1.5 py-0.5 rounded bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 whitespace-nowrap">
                           {patientAgeCategory}
                         </span>
                       )}
-                    </div>
-                    <div className="flex items-center gap-1.5 flex-shrink-0">
                       {/* Renal adjustment indicator */}
                       {hasRenalAdjustment && (
                         <span className="text-[9px] px-1.5 py-0.5 rounded bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 whitespace-nowrap font-medium">
