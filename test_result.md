@@ -13,7 +13,7 @@
 
 #### 1. Basic API Endpoints - ✅ VERIFIED
 **Root API Endpoint:**
-- ✅ Successfully connected to https://drug-calculator.preview.emergentagent.com/api/
+- ✅ Successfully connected to https://children-meds-tool.preview.emergentagent.com/api/
 - ✅ Returns proper API message: "PediaOTG API"
 
 **Status Check Endpoints:**
