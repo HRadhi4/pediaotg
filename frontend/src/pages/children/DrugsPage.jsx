@@ -1273,7 +1273,15 @@ const DrugsPage = ({ onBack }) => {
                                 // Try to calculate dose from the row data
                                 let calcDose = null;
                                 if (w > 0) {
-                                  // Find a cell with mg/kg dosing
+                                  // Check if any column header implies per-kg dosing
+                                  const doseColIdx = table.columns.findIndex(col => 
+                                    col.toLowerCase().includes('dose') || col.toLowerCase().includes('dosage')
+                                  );
+                                  const colHeaderImpliesPerKg = doseColIdx >= 0 && 
+                                    (table.columns[doseColIdx].toLowerCase().includes('mg/kg') ||
+                                     table.columns[doseColIdx].toLowerCase().includes('/kg'));
+                                  
+                                  // First, look for explicit mg/kg in any cell
                                   for (const cell of row) {
                                     const cellStr = String(cell);
                                     const mgkgMatch = cellStr.match(/(\d+(?:\.\d+)?)\s*mg\/kg/i);
@@ -1281,6 +1289,18 @@ const DrugsPage = ({ onBack }) => {
                                       const dosePerKg = parseFloat(mgkgMatch[1]);
                                       calcDose = Math.round(dosePerKg * w * 10) / 10;
                                       break;
+                                    }
+                                  }
+                                  
+                                  // If no explicit mg/kg found and column header implies per-kg, use the dose column value
+                                  if (!calcDose && colHeaderImpliesPerKg && doseColIdx >= 0) {
+                                    const doseCell = row[doseColIdx];
+                                    if (doseCell) {
+                                      const numMatch = String(doseCell).match(/^(\d+(?:\.\d+)?)/);
+                                      if (numMatch) {
+                                        const dosePerKg = parseFloat(numMatch[1]);
+                                        calcDose = Math.round(dosePerKg * w * 10) / 10;
+                                      }
                                     }
                                   }
                                 }
