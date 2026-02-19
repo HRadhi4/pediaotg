@@ -8227,13 +8227,17 @@
   },
   {
     "id": "vancomycin",
-    "name": "Vancomycin (Vancocin)",
+    "name": "Vancomycin (Vancocin, Firvanq)",
     "category": "Antibiotic (Glycopeptide)",
     "route": "IV/PO",
     "formulations": [
       {
         "type": "Injection",
-        "strengths": "500 mg, 750 mg, 1 g, 1.5 g vials"
+        "strengths": "0.5, 0.75, 1, 1.5, 5, 10 g vials"
+      },
+      {
+        "type": "Premixed injection",
+        "strengths": "500 mg/100 mL, 750 mg/150 mL, 1000 mg/200 mL (in D5W or NS)"
       },
       {
         "type": "Oral capsules",
@@ -8241,104 +8245,232 @@
       },
       {
         "type": "Oral solution",
-        "strengths": "25 mg/mL, 50 mg/mL (compounded)"
+        "strengths": "25 mg/mL, 50 mg/mL"
       }
     ],
     "doses": {
-      "neoUnder29wk": {
-        "label": "Neonate <29wk PMA",
-        "value": "15",
+      "neoUnder29wk_0to7d": {
+        "label": "Neonate \u226429wk PCA, 0-7 days",
+        "value": "5",
+        "unit": "mg/kg/dose Q48h"
+      },
+      "neoUnder29wk_8to28d": {
+        "label": "Neonate \u226429wk PCA, 8-28 days",
+        "value": "4",
+        "unit": "mg/kg/dose Q36h"
+      },
+      "neoUnder29wk_over28d": {
+        "label": "Neonate \u226429wk PCA, >28 days",
+        "value": "4",
         "unit": "mg/kg/dose Q24h"
       },
-      "neo29to35wk": {
-        "label": "Neonate 29-35wk PMA",
-        "value": "15",
-        "unit": "mg/kg/dose Q12h"
+      "neo30to34wk_0to7d": {
+        "label": "Neonate 30-34wk PCA, 0-7 days",
+        "value": "4.5",
+        "unit": "mg/kg/dose Q36h"
+      },
+      "neo30to34wk_over7d": {
+        "label": "Neonate 30-34wk PCA, >7 days",
+        "value": "4",
+        "unit": "mg/kg/dose Q24h"
       },
       "neoTerm": {
-        "label": "Neonate Term",
-        "value": "15",
-        "unit": "mg/kg/dose Q8h"
+        "label": "Neonate \u226535wk PCA (all ages)",
+        "value": "4",
+        "unit": "mg/kg/dose Q24h"
       },
-      "standardChild": {
-        "label": "Standard (Child)",
+      "childGeneral": {
+        "label": "Child 1mo-12yr (General)",
         "value": "15",
         "unit": "mg/kg/dose Q6h (60 mg/kg/day)",
         "maxDose": 750
       },
-      "mrsaSevere": {
-        "label": "MRSA Severe/Meningitis",
-        "value": "15-20",
-        "unit": "mg/kg/dose Q6h (60-80 mg/kg/day)",
+      "childSevere": {
+        "label": "Child Severe (CNS, Endocarditis, Osteo, Pneumonia)",
+        "value": "20",
+        "unit": "mg/kg/dose Q6h (80 mg/kg/day)",
         "maxDose": 1000
       },
-      "adultStandard": {
-        "label": "Adult Standard",
-        "value": "15-20",
-        "unit": "mg/kg/dose Q8-12h (adjust by levels)"
+      "adolescentGeneral": {
+        "label": "Adolescent 12-18yr (General)",
+        "value": "15",
+        "unit": "mg/kg/dose Q6-8h"
+      },
+      "adolescentSevere": {
+        "label": "Adolescent Severe",
+        "value": "20",
+        "unit": "mg/kg/dose Q6-8h"
+      },
+      "adultGeneral": {
+        "label": "Adult (General)",
+        "value": "15",
+        "unit": "mg/kg/dose Q8-12h"
+      },
+      "adultSevere": {
+        "label": "Adult Severe",
+        "value": "20",
+        "unit": "mg/kg/dose Q8-12h",
+        "maxDose": 2000
       },
       "cdiffChild": {
         "label": "C. diff (PO Child)",
-        "value": "10",
-        "unit": "mg/kg/dose QID (max 125 mg/dose) x 10 days"
+        "value": "40-50",
+        "unit": "mg/kg/day \u00f7 Q6h x 7-10 days",
+        "maxDose": 500
+      },
+      "cdiffChildSevere": {
+        "label": "C. diff Severe (PO Child)",
+        "value": "40-50",
+        "unit": "mg/kg/day \u00f7 Q6h x 7-10 days",
+        "maxDose": 2000
       },
       "cdiffAdult": {
         "label": "C. diff (PO Adult)",
         "value": "125",
-        "unit": "mg QID x 10 days",
+        "unit": "mg Q6h x 7-10 days",
+        "isFixed": true
+      },
+      "cdiffAdultSevere": {
+        "label": "C. diff Severe (PO Adult)",
+        "value": "500",
+        "unit": "mg Q6-8h (max 2g/day)",
+        "isFixed": true
+      },
+      "prophylaxisChild": {
+        "label": "Endocarditis Prophylaxis (Child)",
+        "value": "20",
+        "unit": "mg/kg IV over 1-2h x 1 dose",
+        "maxDose": 1000
+      },
+      "prophylaxisAdult": {
+        "label": "Endocarditis Prophylaxis (Adult)",
+        "value": "1000",
+        "unit": "mg IV over 1-2h x 1 dose",
         "isFixed": true
       }
     },
     "dosingTable": {
-      "title": "Vancomycin Neonatal Dosing by PMA",
+      "title": "Vancomycin Neonatal Dosing by Postconceptional Age (PCA)",
       "columns": [
-        "PMA",
-        "Dose",
+        "PCA (weeks)",
+        "Postnatal Age",
+        "Dose (mg/kg)",
         "Interval"
       ],
       "rows": [
         [
-          "<29 weeks",
-          "15 mg/kg",
+          "\u226429",
+          "0-7 days",
+          "5",
+          "Q48h"
+        ],
+        [
+          "\u226429",
+          "8-28 days",
+          "4",
+          "Q36h"
+        ],
+        [
+          "\u226429",
+          ">28 days",
+          "4",
           "Q24h"
         ],
         [
-          "29-35 weeks",
-          "15 mg/kg",
-          "Q12h"
+          "30-34",
+          "0-7 days",
+          "4.5",
+          "Q36h"
         ],
         [
-          "36-44 weeks",
-          "15 mg/kg",
-          "Q8h"
+          "30-34",
+          ">7 days",
+          "4",
+          "Q24h"
         ],
         [
-          ">44 weeks",
-          "15 mg/kg",
-          "Q6h"
+          "\u226535",
+          "All",
+          "4",
+          "Q24h"
         ]
       ]
     },
+    "additionalTables": [
+      {
+        "title": "Child/Adolescent/Adult IV Dosing",
+        "columns": [
+          "Age",
+          "General Infection",
+          "Severe (CNS, Endocarditis, Osteo, Pneumonia)"
+        ],
+        "rows": [
+          [
+            "1 mo - 12 yr",
+            "15 mg/kg/dose Q6h",
+            "20 mg/kg/dose Q6h"
+          ],
+          [
+            "12-18 yr",
+            "15 mg/kg/dose Q6-8h",
+            "20 mg/kg/dose Q6-8h"
+          ],
+          [
+            "\u226518 yr",
+            "15 mg/kg/dose Q8-12h",
+            "20 mg/kg/dose Q8-12h (max 2g)"
+          ]
+        ]
+      },
+      {
+        "title": "Therapeutic Drug Monitoring Targets",
+        "columns": [
+          "Indication",
+          "Peak (mg/L)",
+          "Trough (mg/L)"
+        ],
+        "rows": [
+          [
+            "Uncomplicated SSTI, Bacteremia, Febrile Neutropenia, Sepsis",
+            "10-14",
+            "<2"
+          ],
+          [
+            "CNS Infections, Endocarditis, Pneumonia, Osteomyelitis, Septic Arthritis",
+            "14-17",
+            "<2"
+          ]
+        ]
+      }
+    ],
+    "tdmNotes": "Sample at steady state: Trough within 30 min prior to 3rd consecutive dose. Peak 30-60 min after 3rd consecutive dose. AUC/MIC target 400-600 (when MIC \u22641 mg/L).",
     "max": "4 g/day (adult); adjust based on levels",
-    "indication": "MRSA, MSSA (PCN-allergic), coagulase-negative staph, C. difficile (PO only)",
+    "indication": "MRSA, coagulase-negative staph, C. difficile (PO only), enterococcal infections, endocarditis prophylaxis",
     "contraindications": [
       "History of vancomycin anaphylaxis"
     ],
     "warnings": [
-      "\u26a0\ufe0f Red man syndrome (infuse over \u226560 min)",
-      "Nephrotoxicity (especially with aminoglycosides)",
-      "Ototoxicity (rare)",
-      "AUC-based dosing now preferred over trough-only"
+      "\u26a0\ufe0f Ototoxicity and nephrotoxicity - exacerbated with aminoglycosides",
+      "\u26a0\ufe0f Higher nephrotoxicity risk with trough \u226515 mg/mL",
+      "\u26a0\ufe0f Increased AKI risk with concurrent piperacillin-tazobactam",
+      "\u26a0\ufe0f Vancomycin infusion reaction (red man syndrome) - infuse over \u226560 min",
+      "\u26a0\ufe0f Use Q36h interval for HIE patients on therapeutic cooling",
+      "\u26a0\ufe0f DRESS syndrome, SJS/TEN reported (IV and PO)",
+      "\u26a0\ufe0f Adjust dose in renal failure"
     ],
     "sideEffects": [
-      "Common: Red man syndrome (histamine release), phlebitis",
-      "Less common: Nephrotoxicity, ototoxicity",
-      "Rare: DRESS, neutropenia, linear IgA dermatosis"
+      "Common: Red man syndrome (histamine release), phlebitis, nausea, vomiting",
+      "Less common: Nephrotoxicity, neutropenia, thrombocytopenia",
+      "Rare: DRESS, SJS/TEN, ototoxicity"
     ],
     "interactions": [
       {
         "drug": "Aminoglycosides",
-        "effect": "Increased nephrotoxicity/ototoxicity"
+        "effect": "Increased nephrotoxicity and ototoxicity"
+      },
+      {
+        "drug": "Piperacillin-tazobactam",
+        "effect": "Increased AKI risk"
       },
       {
         "drug": "Amphotericin B",
@@ -8346,19 +8478,19 @@
       },
       {
         "drug": "Loop diuretics",
-        "effect": "Increased ototoxicity"
+        "effect": "Increased ototoxicity (especially ICU patients)"
       },
       {
-        "drug": "Piperacillin-tazobactam",
-        "effect": "Increased AKI risk"
+        "drug": "NSAIDs",
+        "effect": "Increased nephrotoxicity"
       }
     ],
-    "notes": "IV only for systemic infections (oral not absorbed). Oral ONLY for C. diff. Target AUC/MIC 400-600 (or trough 10-20 mcg/mL). Infuse over \u226560 min (longer for higher doses). Red man syndrome from rapid infusion - slow rate or pretreat with antihistamine.",
+    "notes": "IV for systemic infections (oral not absorbed systemically). Oral ONLY for C. diff. Infuse IV over \u226560 min (120 min if not tolerated). Use diphenhydramine for infusion reaction. Use total body weight for obese patients. Low CSF penetration even with inflamed meninges.",
     "renalAdjust": {
-      "gfr50": "15 mg/kg Q12h",
-      "gfr30": "15 mg/kg Q24h",
-      "gfr10": "15 mg/kg Q48-72h",
-      "hd": "15-25 mg/kg; redose based on levels"
+      "gfr50": "15 mg/kg Q12h or adjust by levels",
+      "gfr30": "15 mg/kg Q24h or adjust by levels",
+      "gfr10": "15 mg/kg Q48-72h or adjust by levels",
+      "hd": "15-25 mg/kg post-HD; redose based on levels"
     },
     "hepaticAdjust": null
   },
