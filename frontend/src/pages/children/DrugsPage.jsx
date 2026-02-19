@@ -1144,10 +1144,15 @@ const DrugsPage = ({ onBack }) => {
                                 let isMatchingRow = false;
                                 
                                 if (w > 0) {
-                                  // Find dose column
+                                  // Find dose column - check header for mg/kg pattern
                                   const doseColIdx = drug.dosingTable.columns.findIndex(col => 
                                     col.toLowerCase().includes('dose') || col.toLowerCase().includes('mg')
                                   );
+                                  // Check if column header indicates per-kg dosing
+                                  const colHeaderImpliesPerKg = doseColIdx >= 0 && 
+                                    (drug.dosingTable.columns[doseColIdx].toLowerCase().includes('mg/kg') ||
+                                     drug.dosingTable.columns[doseColIdx].toLowerCase().includes('/kg'));
+                                  
                                   // Check if table has a weight column (weight-range based table)
                                   const weightColIdx = drug.dosingTable.columns.findIndex(col => 
                                     col.toLowerCase().includes('weight')
@@ -1176,22 +1181,24 @@ const DrugsPage = ({ onBack }) => {
                                       }
                                     }
                                   } 
-                                  // For tables WITHOUT weight column but with mg/kg doses (like Amikacin)
+                                  // For tables WITHOUT weight column but with mg/kg doses
                                   else if (doseColIdx >= 0) {
                                     const doseCell = row[doseColIdx];
                                     if (doseCell) {
                                       const doseStr = doseCell.toString();
-                                      // Check if it's mg/kg or similar per-kg dosing
+                                      
+                                      // Case 1: Cell contains "mg/kg" explicitly (e.g., "15 mg/kg/dose")
                                       if (doseStr.toLowerCase().includes('mg/kg') || doseStr.toLowerCase().includes('/kg')) {
                                         const numMatch = doseStr.match(/(\d+(?:\.\d+)?)/);
                                         if (numMatch) {
                                           const dosePerKg = parseFloat(numMatch[1]);
                                           calculatedDose = (dosePerKg * w).toFixed(1) + ' mg';
                                         }
-                                      } else {
-                                        // Check if it's just a number (assumed to be mg/kg for some tables)
-                                        const numMatch = doseStr.match(/^(\d+(?:\.\d+)?)\s*(?:mg\/kg)?$/i);
-                                        if (numMatch && doseStr.toLowerCase().includes('mg')) {
+                                      }
+                                      // Case 2: Column header indicates mg/kg (e.g., "Dose (mg/kg)") and cell is just a number
+                                      else if (colHeaderImpliesPerKg) {
+                                        const numMatch = doseStr.match(/^(\d+(?:\.\d+)?)/);
+                                        if (numMatch) {
                                           const dosePerKg = parseFloat(numMatch[1]);
                                           calculatedDose = (dosePerKg * w).toFixed(1) + ' mg';
                                         }
