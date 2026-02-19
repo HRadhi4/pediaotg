@@ -1672,41 +1672,175 @@ const DrugsPage = ({ onBack }) => {
                       </div>
                     )}
 
-                    {/* Renal Adjustment */}
-                    {drug.renalAdjust && (
-                      <div className="p-3 rounded-lg bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800">
-                        <p className="text-[11px] font-semibold text-amber-700 dark:text-amber-300 mb-2 flex items-center gap-1">
+                    {/* ENHANCED: Comprehensive Renal Dose Adjustment (Chapter 31) */}
+                    {(drug.renalAdjust || gfr) && (
+                      <div className={`p-3 rounded-lg border ${
+                        comprehensiveRenal?.avoid 
+                          ? 'bg-red-50 dark:bg-red-900/20 border-red-300 dark:border-red-700'
+                          : comprehensiveRenal?.levelGuidedDosing
+                            ? 'bg-purple-50 dark:bg-purple-900/20 border-purple-300 dark:border-purple-700'
+                            : 'bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800'
+                      }`}>
+                        <p className={`text-[11px] font-semibold mb-2 flex items-center gap-1 ${
+                          comprehensiveRenal?.avoid 
+                            ? 'text-red-700 dark:text-red-300'
+                            : comprehensiveRenal?.levelGuidedDosing
+                              ? 'text-purple-700 dark:text-purple-300'
+                              : 'text-amber-700 dark:text-amber-300'
+                        }`}>
                           <span>🩺</span> Renal Dose Adjustment
+                          <span className="text-[9px] ml-auto font-normal opacity-70">(Chapter 31)</span>
                         </p>
-                        <div className="grid grid-cols-2 gap-2 text-[10px]">
-                          <div className="bg-white dark:bg-slate-800 p-2 rounded">
-                            <span className="text-muted-foreground block">GFR 30-50:</span>
-                            <span className="font-mono font-medium">{drug.renalAdjust.gfr50}</span>
-                          </div>
-                          <div className="bg-white dark:bg-slate-800 p-2 rounded">
-                            <span className="text-muted-foreground block">GFR 10-30:</span>
-                            <span className="font-mono font-medium">{drug.renalAdjust.gfr30}</span>
-                          </div>
-                          <div className="bg-white dark:bg-slate-800 p-2 rounded">
-                            <span className="text-muted-foreground block">GFR &lt;10:</span>
-                            <span className="font-mono font-medium">{drug.renalAdjust.gfr10}</span>
-                          </div>
-                          <div className="bg-white dark:bg-slate-800 p-2 rounded">
-                            <span className="text-muted-foreground block">Hemodialysis:</span>
-                            <span className="font-mono font-medium">{drug.renalAdjust.hd}</span>
-                          </div>
-                        </div>
-                        {gfr && (
-                          <div className="mt-2 pt-2 border-t border-amber-200 dark:border-amber-700">
-                            <p className="text-[10px] text-amber-700 dark:text-amber-300">
-                              <span className="font-medium">Current GFR ({gfr}):</span>{" "}
-                              {parseFloat(gfr) >= 50 && drug.renalAdjust.gfr50}
-                              {parseFloat(gfr) >= 30 && parseFloat(gfr) < 50 && drug.renalAdjust.gfr50}
-                              {parseFloat(gfr) >= 10 && parseFloat(gfr) < 30 && drug.renalAdjust.gfr30}
-                              {parseFloat(gfr) < 10 && drug.renalAdjust.gfr10}
-                            </p>
+                        
+                        {/* Show comprehensive Chapter 31 info when eGFR is calculated */}
+                        {gfr && comprehensiveRenal && (
+                          <div className="space-y-2">
+                            {/* Current eGFR and category */}
+                            <div className="bg-white dark:bg-slate-800 p-2 rounded flex items-center justify-between">
+                              <div>
+                                <span className="text-[10px] text-muted-foreground block">Current eGFR (Bedside CKiD)</span>
+                                <span className={`font-mono font-bold text-lg ${
+                                  parseFloat(gfr) >= 60 ? 'text-green-600' : 
+                                  parseFloat(gfr) >= 30 ? 'text-yellow-600' : 
+                                  parseFloat(gfr) >= 15 ? 'text-orange-600' : 'text-red-600'
+                                }`}>{gfr}</span>
+                                <span className="text-[9px] text-muted-foreground ml-1">mL/min/1.73m²</span>
+                              </div>
+                              <div className="text-right">
+                                <span className={`text-[10px] px-2 py-1 rounded font-medium ${
+                                  parseFloat(gfr) >= 60 ? 'bg-green-100 text-green-700' : 
+                                  parseFloat(gfr) >= 30 ? 'bg-yellow-100 text-yellow-700' : 
+                                  parseFloat(gfr) >= 15 ? 'bg-orange-100 text-orange-700' : 'bg-red-100 text-red-700'
+                                }`}>
+                                  {comprehensiveRenal.egfrCategory || getEGFRCategory(parseFloat(gfr))?.label}
+                                </span>
+                              </div>
+                            </div>
+                            
+                            {/* AVOID Warning */}
+                            {comprehensiveRenal.avoid && (
+                              <div className="bg-red-100 dark:bg-red-900/40 p-2 rounded border border-red-300 dark:border-red-600">
+                                <p className="text-sm font-bold text-red-700 dark:text-red-300 flex items-center gap-2">
+                                  <span>🚫</span> AVOID USE
+                                </p>
+                                <p className="text-[10px] text-red-600 dark:text-red-400 mt-1">
+                                  {comprehensiveRenal.notes || 'Contraindicated at this level of renal function. Do not calculate dose.'}
+                                </p>
+                              </div>
+                            )}
+                            
+                            {/* Level-Guided Dosing (TDM) */}
+                            {comprehensiveRenal.levelGuidedDosing && (
+                              <div className="bg-purple-100 dark:bg-purple-900/40 p-2 rounded border border-purple-300 dark:border-purple-600">
+                                <p className="text-sm font-bold text-purple-700 dark:text-purple-300 flex items-center gap-2">
+                                  <span>📊</span> Therapeutic Drug Monitoring Required
+                                </p>
+                                <p className="text-[10px] text-purple-600 dark:text-purple-400 mt-1">
+                                  {comprehensiveRenal.notes || 'Use standard loading dose; adjust maintenance using serum levels per local protocol.'}
+                                </p>
+                                {comprehensiveRenal.loadingDoseRequired && (
+                                  <p className="text-[10px] text-purple-600 dark:text-purple-400 mt-1 font-medium">
+                                    Loading dose required before maintenance.
+                                  </p>
+                                )}
+                              </div>
+                            )}
+                            
+                            {/* Neonatal Exclusion */}
+                            {comprehensiveRenal.neonatalExcluded && (
+                              <div className="bg-orange-100 dark:bg-orange-900/40 p-2 rounded border border-orange-300 dark:border-orange-600">
+                                <p className="text-sm font-bold text-orange-700 dark:text-orange-300 flex items-center gap-2">
+                                  <span>👶</span> Neonatal Exclusion
+                                </p>
+                                <p className="text-[10px] text-orange-600 dark:text-orange-400 mt-1">
+                                  Chapter 31 adjustments do not apply to neonates. Use a dedicated neonatal renal dosing reference.
+                                </p>
+                              </div>
+                            )}
+                            
+                            {/* Standard Adjustment (percentage/interval) */}
+                            {!comprehensiveRenal.avoid && !comprehensiveRenal.levelGuidedDosing && !comprehensiveRenal.neonatalExcluded && comprehensiveRenal.found && (
+                              <div className="bg-white dark:bg-slate-800 p-2 rounded">
+                                <div className="grid grid-cols-2 gap-2 text-[10px]">
+                                  {comprehensiveRenal.percentage && comprehensiveRenal.percentage !== 100 && (
+                                    <div>
+                                      <span className="text-muted-foreground block">Dose Adjustment:</span>
+                                      <span className="font-mono font-bold text-amber-700">{comprehensiveRenal.percentage}%</span>
+                                      <span className="text-muted-foreground"> of usual dose</span>
+                                    </div>
+                                  )}
+                                  {comprehensiveRenal.interval && (
+                                    <div>
+                                      <span className="text-muted-foreground block">Interval:</span>
+                                      <span className="font-mono font-bold text-amber-700">{comprehensiveRenal.interval}</span>
+                                    </div>
+                                  )}
+                                  {comprehensiveRenal.noAdjustmentNeeded && (
+                                    <div className="col-span-2">
+                                      <span className="font-medium text-green-700">No renal adjustment required</span>
+                                      <span className="text-muted-foreground"> - hepatic elimination</span>
+                                    </div>
+                                  )}
+                                </div>
+                                {comprehensiveRenal.notes && (
+                                  <p className="text-[9px] text-muted-foreground mt-2 border-t border-amber-200 dark:border-amber-700 pt-1">
+                                    {comprehensiveRenal.notes}
+                                  </p>
+                                )}
+                              </div>
+                            )}
+                            
+                            {/* Drug Not in Renal Tables Warning */}
+                            {!comprehensiveRenal.found && parseFloat(gfr) < 60 && (
+                              <div className="bg-yellow-100 dark:bg-yellow-900/40 p-2 rounded border border-yellow-300 dark:border-yellow-600">
+                                <p className="text-[10px] font-medium text-yellow-700 dark:text-yellow-300 flex items-center gap-1">
+                                  <span>⚠️</span> No Specific Guidance
+                                </p>
+                                <p className="text-[9px] text-yellow-600 dark:text-yellow-400 mt-1">
+                                  No specific renal adjustment guidance in Chapter 31. Monitor closely for toxicity in reduced GFR.
+                                </p>
+                              </div>
+                            )}
+                            
+                            {/* Warnings */}
+                            {comprehensiveRenal.warnings && comprehensiveRenal.warnings.length > 0 && (
+                              <div className="text-[9px] text-amber-700 dark:text-amber-300 space-y-0.5 border-t border-amber-200 dark:border-amber-700 pt-2">
+                                {comprehensiveRenal.warnings.map((warn, idx) => (
+                                  <p key={idx} className="flex items-start gap-1">
+                                    <span className="text-amber-500">•</span> {warn}
+                                  </p>
+                                ))}
+                              </div>
+                            )}
                           </div>
                         )}
+                        
+                        {/* Legacy display when no eGFR calculated */}
+                        {!gfr && drug.renalAdjust && (
+                          <div className="grid grid-cols-2 gap-2 text-[10px]">
+                            <div className="bg-white dark:bg-slate-800 p-2 rounded">
+                              <span className="text-muted-foreground block">eGFR 30-50:</span>
+                              <span className="font-mono font-medium">{drug.renalAdjust.gfr50}</span>
+                            </div>
+                            <div className="bg-white dark:bg-slate-800 p-2 rounded">
+                              <span className="text-muted-foreground block">eGFR 10-30:</span>
+                              <span className="font-mono font-medium">{drug.renalAdjust.gfr30}</span>
+                            </div>
+                            <div className="bg-white dark:bg-slate-800 p-2 rounded">
+                              <span className="text-muted-foreground block">eGFR &lt;10:</span>
+                              <span className="font-mono font-medium">{drug.renalAdjust.gfr10}</span>
+                            </div>
+                            <div className="bg-white dark:bg-slate-800 p-2 rounded">
+                              <span className="text-muted-foreground block">Hemodialysis:</span>
+                              <span className="font-mono font-medium">{drug.renalAdjust.hd}</span>
+                            </div>
+                          </div>
+                        )}
+                        
+                        {/* Note about Chapter 31 source */}
+                        <p className="text-[8px] text-muted-foreground mt-2 pt-1 border-t border-amber-100 dark:border-amber-800">
+                          Based on Chapter 31 "Drugs in Kidney Failure" (pages 412-422). Bedside CKiD: eGFR = 0.413 × height(cm) / SCr(mg/dL)
+                        </p>
                       </div>
                     )}
 
