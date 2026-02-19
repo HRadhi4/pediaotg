@@ -1232,9 +1232,16 @@ const DrugsPage = ({ onBack }) => {
                     {/* Additional Tables (e.g., IV Dosing by Age, Trough Targets) */}
                     {drug.additionalTables && drug.additionalTables.map((table, tableIdx) => (
                       <div key={tableIdx} className="p-3 rounded-lg bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-200 dark:border-indigo-800">
-                        <p className="text-[11px] font-semibold text-indigo-700 dark:text-indigo-300 mb-2 flex items-center gap-1">
-                          <span>📋</span> {table.title}
-                        </p>
+                        <div className="flex items-center justify-between mb-2">
+                          <p className="text-[11px] font-semibold text-indigo-700 dark:text-indigo-300 flex items-center gap-1">
+                            <span>📋</span> {table.title}
+                          </p>
+                          {w > 0 && (
+                            <span className="text-[9px] bg-indigo-100 dark:bg-indigo-800 px-1.5 py-0.5 rounded text-indigo-600 dark:text-indigo-300 font-medium">
+                              ⚖️ {w} kg
+                            </span>
+                          )}
+                        </div>
                         <div className="overflow-x-auto">
                           <table className="w-full text-xs border-collapse">
                             <thead>
@@ -1244,21 +1251,57 @@ const DrugsPage = ({ onBack }) => {
                                     {col}
                                   </th>
                                 ))}
+                                {/* Add Calc column if weight is entered and table has dosing data */}
+                                {w > 0 && table.columns.some(col => 
+                                  col.toLowerCase().includes('dose') || col.toLowerCase().includes('dosage')
+                                ) && (
+                                  <th className="border border-indigo-200 dark:border-indigo-700 px-2 py-1.5 text-left font-semibold text-indigo-800 dark:text-indigo-200 whitespace-nowrap bg-green-100 dark:bg-green-800/50">
+                                    Calc ({w}kg)
+                                  </th>
+                                )}
                               </tr>
                             </thead>
                             <tbody>
-                              {table.rows.map((row, rowIdx) => (
-                                <tr key={rowIdx} className={rowIdx % 2 === 0 ? 'bg-white dark:bg-slate-800' : 'bg-indigo-50/50 dark:bg-indigo-900/30'}>
-                                  {row.map((cell, cellIdx) => (
-                                    <td key={cellIdx} className="border border-indigo-200 dark:border-indigo-700 px-2 py-1.5 font-mono text-slate-700 dark:text-slate-300 whitespace-nowrap">
-                                      {cell}
-                                    </td>
-                                  ))}
-                                </tr>
-                              ))}
+                              {table.rows.map((row, rowIdx) => {
+                                // Try to calculate dose from the row data
+                                let calcDose = null;
+                                if (w > 0) {
+                                  // Find a cell with mg/kg dosing
+                                  for (const cell of row) {
+                                    const cellStr = String(cell);
+                                    const mgkgMatch = cellStr.match(/(\d+(?:\.\d+)?)\s*mg\/kg/i);
+                                    if (mgkgMatch) {
+                                      const dosePerKg = parseFloat(mgkgMatch[1]);
+                                      calcDose = Math.round(dosePerKg * w * 10) / 10;
+                                      break;
+                                    }
+                                  }
+                                }
+                                
+                                return (
+                                  <tr key={rowIdx} className={rowIdx % 2 === 0 ? 'bg-white dark:bg-slate-800' : 'bg-indigo-50/50 dark:bg-indigo-900/30'}>
+                                    {row.map((cell, cellIdx) => (
+                                      <td key={cellIdx} className="border border-indigo-200 dark:border-indigo-700 px-2 py-1.5 font-mono text-slate-700 dark:text-slate-300 whitespace-nowrap">
+                                        {cell}
+                                      </td>
+                                    ))}
+                                    {/* Add calculated dose cell */}
+                                    {w > 0 && table.columns.some(col => 
+                                      col.toLowerCase().includes('dose') || col.toLowerCase().includes('dosage')
+                                    ) && (
+                                      <td className="border border-indigo-200 dark:border-indigo-700 px-2 py-1.5 font-mono text-green-600 dark:text-green-400 font-bold whitespace-nowrap bg-green-50 dark:bg-green-900/30">
+                                        {calcDose ? `${calcDose} mg` : '-'}
+                                      </td>
+                                    )}
+                                  </tr>
+                                );
+                              })}
                             </tbody>
                           </table>
                         </div>
+                        <p className="text-[9px] text-muted-foreground mt-1">
+                          👆 Swipe table to see all columns
+                        </p>
                         {table.footnote && (
                           <p className="text-[9px] text-muted-foreground mt-1 italic">
                             * {table.footnote}
