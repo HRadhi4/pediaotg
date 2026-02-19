@@ -607,6 +607,45 @@ export const NON_ANTIMICROBIAL_RENAL_ADJUSTMENTS = {
   }
 };
 
+// Drug name aliases for matching (common trade names, alternative names)
+const DRUG_ALIASES = {
+  'augmentin': 'amoxicillin-clavulanate',
+  'coamoxiclav': 'amoxicillin-clavulanate',
+  'clavulin': 'amoxicillin-clavulanate',
+  'unasyn': 'ampicillin-sulbactam',
+  'zosyn': 'piperacillin-tazobactam',
+  'tazocin': 'piperacillin-tazobactam',
+  'bactrim': 'trimethoprim-sulfamethoxazole',
+  'septra': 'trimethoprim-sulfamethoxazole',
+  'cotrimoxazole': 'trimethoprim-sulfamethoxazole',
+  'tmpsmx': 'trimethoprim-sulfamethoxazole',
+  'zovirax': 'acyclovir',
+  'vancocin': 'vancomycin',
+  'firvanq': 'vancomycin',
+  'garamycin': 'gentamicin',
+  'amikin': 'amikacin',
+  'rocephin': 'ceftriaxone',
+  'maxipime': 'cefepime',
+  'merrem': 'meropenem',
+  'cipro': 'ciprofloxacin',
+  'diflucan': 'fluconazole',
+  'flagyl': 'metronidazole',
+  'zyvox': 'linezolid',
+  'cleocin': 'clindamycin',
+  'lasix': 'furosemide',
+  'lanoxin': 'digoxin',
+  'lovenox': 'enoxaparin',
+  'neurontin': 'gabapentin',
+  'keppra': 'levetiracetam',
+  'glucophage': 'metformin',
+  'aldactone': 'spironolactone',
+  'zantac': 'ranitidine',
+  'tegretol': 'carbamazepine',
+  'tenormin': 'atenolol',
+  'capoten': 'captopril',
+  'zyloprim': 'allopurinol',
+};
+
 /**
  * Get renal adjustment for a drug given eGFR value
  * @param {string} drugId - Drug identifier
@@ -616,7 +655,15 @@ export const NON_ANTIMICROBIAL_RENAL_ADJUSTMENTS = {
  */
 export const getRenalAdjustment = (drugId, egfr, isNeonate = false) => {
   // Normalize drug ID
-  const normalizedId = drugId.toLowerCase().replace(/[\s-]/g, '');
+  let normalizedId = drugId.toLowerCase().replace(/[\s\-()]/g, '');
+  
+  // Check for aliases first
+  for (const [alias, canonical] of Object.entries(DRUG_ALIASES)) {
+    if (normalizedId.includes(alias) || alias.includes(normalizedId)) {
+      normalizedId = canonical.replace(/[\s\-]/g, '');
+      break;
+    }
+  }
   
   // Check both tables
   const allAdjustments = { ...ANTIMICROBIAL_RENAL_ADJUSTMENTS, ...NON_ANTIMICROBIAL_RENAL_ADJUSTMENTS };
@@ -624,9 +671,16 @@ export const getRenalAdjustment = (drugId, egfr, isNeonate = false) => {
   // Find matching drug
   let drugData = null;
   for (const [key, data] of Object.entries(allAdjustments)) {
-    const normalizedKey = key.toLowerCase().replace(/[\s-]/g, '');
+    const normalizedKey = key.toLowerCase().replace(/[\s\-]/g, '');
+    const normalizedDrugName = data.drugName.toLowerCase().replace(/[\s\-]/g, '');
+    
+    // Check multiple matching strategies
     if (normalizedKey === normalizedId || 
-        data.drugName.toLowerCase().replace(/[\s-]/g, '') === normalizedId) {
+        normalizedDrugName === normalizedId ||
+        normalizedId.includes(normalizedKey) ||
+        normalizedKey.includes(normalizedId) ||
+        normalizedId.includes(normalizedDrugName) ||
+        normalizedDrugName.includes(normalizedId)) {
       drugData = data;
       break;
     }
