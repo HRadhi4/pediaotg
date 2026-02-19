@@ -3856,114 +3856,190 @@
     "formulations": [
       {
         "type": "Tablets",
-        "strengths": "50 mg, 100 mg, 150 mg, 200 mg"
+        "strengths": "50, 100, 150, 200 mg"
       },
       {
-        "type": "Suspension",
+        "type": "Oral suspension",
         "strengths": "10 mg/mL, 40 mg/mL"
       },
       {
-        "type": "IV",
-        "strengths": "2 mg/mL"
+        "type": "Injection",
+        "strengths": "2 mg/mL (contains 9 mEq Na/2 mg drug)"
       }
     ],
     "doses": {
-      "oropharyngealChild": {
-        "label": "Oropharyngeal Candida (Child)",
-        "value": "6",
-        "unit": "mg/kg day 1, then 3 mg/kg/day"
+      "neoLoading": {
+        "label": "Neonate Loading Dose",
+        "value": "12-25",
+        "unit": "mg/kg x 1"
       },
-      "esophagealChild": {
-        "label": "Esophageal Candida",
+      "neoThrushLoading": {
+        "label": "Neonate Thrush Loading",
         "value": "6",
-        "unit": "mg/kg day 1, then 3-12 mg/kg/day",
+        "unit": "mg/kg x 1"
+      },
+      "neoMaintenance": {
+        "label": "Neonate Maintenance",
+        "value": "6-12",
+        "unit": "mg/kg/dose (see interval table)"
+      },
+      "neoThrushMaint": {
+        "label": "Neonate Thrush Maintenance",
+        "value": "3-6",
+        "unit": "mg/kg/dose x \u22652 weeks"
+      },
+      "oropharyngealChild": {
+        "label": "Oropharyngeal Candida (Child \u22651mo)",
+        "value": "6-12",
+        "unit": "mg/kg Q24h",
         "maxDose": 400
       },
-      "invasiveCandida": {
-        "label": "Invasive Candidiasis",
+      "esophagealChild": {
+        "label": "Esophageal Candida (Child)",
+        "value": "6-12",
+        "unit": "mg/kg Q24h",
+        "maxDose": 600
+      },
+      "invasiveChild": {
+        "label": "Invasive/Systemic Candida (Child)",
         "value": "12",
-        "unit": "mg/kg day 1, then 6-12 mg/kg/day",
+        "unit": "mg/kg Q24h",
         "maxDose": 800
       },
-      "cryptoMeningitis": {
-        "label": "Cryptococcal Meningitis",
+      "cryptoChild": {
+        "label": "Cryptococcal Meningitis (Child)",
         "value": "12",
-        "unit": "mg/kg day 1, then 6-12 mg/kg/day",
+        "unit": "mg/kg Q24h",
         "maxDose": 800
       },
-      "prophylaxisNeo": {
-        "label": "Prophylaxis (Neonate)",
-        "value": "3-6",
-        "unit": "mg/kg twice weekly"
+      "cryptoSuppressive": {
+        "label": "Crypto Suppressive (HIV)",
+        "value": "6",
+        "unit": "mg/kg Q24h",
+        "maxDose": 200
+      },
+      "oropharyngealAdult": {
+        "label": "Oropharyngeal Candida (Adult)",
+        "value": "200 load, then 100-200",
+        "unit": "mg Q24h x 7-14 days",
+        "isFixed": true
+      },
+      "esophagealAdult": {
+        "label": "Esophageal Candida (Adult)",
+        "value": "400 load, then 200-400",
+        "unit": "mg Q24h",
+        "isFixed": true
+      },
+      "systemicAdult": {
+        "label": "Systemic Candida (Adult)",
+        "value": "800 load, then 400-800",
+        "unit": "mg Q24h",
+        "isFixed": true
       },
       "vulvovaginal": {
         "label": "Vulvovaginal Candida",
         "value": "150",
         "unit": "mg PO x 1 dose",
         "isFixed": true
+      },
+      "boneMarrowProphylaxis": {
+        "label": "Bone Marrow Transplant Prophylaxis",
+        "value": "400",
+        "unit": "mg Q24h",
+        "isFixed": true
       }
     },
     "dosingTable": {
-      "title": "Neonatal Fluconazole Dosing",
+      "title": "Neonatal Fluconazole Dosing Intervals",
       "columns": [
-        "Gestational Age",
+        "Postconceptional Age (wk)",
         "Postnatal Age",
         "Interval"
       ],
       "rows": [
         [
-          "<29 weeks",
-          "0-14 days",
-          "Q72h"
-        ],
-        [
-          "<29 weeks",
-          ">14 days",
-          "Q48h"
-        ],
-        [
-          "30-36 weeks",
+          "\u226429",
           "0-14 days",
           "Q48h"
         ],
         [
-          "30-36 weeks",
+          "\u226429",
           ">14 days",
           "Q24h"
         ],
         [
-          "37-44 weeks",
+          "30-34",
           "0-7 days",
           "Q48h"
         ],
         [
-          "37-44 weeks",
+          "30-34",
           ">7 days",
           "Q24h"
         ],
         [
-          "\u226545 weeks",
+          "\u226535",
           "All",
           "Q24h"
         ]
       ]
     },
-    "max": "800 mg/day",
+    "additionalTables": [
+      {
+        "title": "Child (\u22651 mo) Dosing by Indication",
+        "columns": [
+          "Indication",
+          "Dose (Q24h)",
+          "Max Dose"
+        ],
+        "rows": [
+          [
+            "Oropharyngeal candidiasis",
+            "6-12 mg/kg",
+            "400 mg"
+          ],
+          [
+            "Esophageal candidiasis",
+            "6-12 mg/kg",
+            "600 mg"
+          ],
+          [
+            "Invasive/Systemic candidiasis",
+            "12 mg/kg",
+            "800 mg"
+          ],
+          [
+            "Cryptococcal meningitis",
+            "12 mg/kg",
+            "800 mg"
+          ],
+          [
+            "Crypto suppressive (HIV)",
+            "6 mg/kg",
+            "200 mg"
+          ]
+        ]
+      }
+    ],
+    "max": "800 mg/day (up to 800 mg/day for severe infections)",
     "indication": "Candidiasis (oropharyngeal, esophageal, invasive), cryptococcal meningitis, prophylaxis in immunocompromised",
     "contraindications": [
       "Hypersensitivity to azole antifungals",
-      "Concurrent cisapride, erythromycin, pimozide, quinidine (QT prolongation)"
+      "Concurrent use with QT-prolonging drugs metabolized by CYP3A4 (erythromycin, cisapride, pimozide, quinidine)"
     ],
     "warnings": [
-      "QT prolongation",
-      "Hepatotoxicity (monitor LFTs)",
-      "Drug interactions via CYP450 inhibition",
-      "Teratogenic (avoid in pregnancy if possible)"
+      "\u26a0\ufe0f QT prolongation - avoid with other QT-prolonging drugs",
+      "\u26a0\ufe0f Hepatotoxicity - monitor LFTs; cholestasis reported",
+      "\u26a0\ufe0f SJS/TEN/DRESS reported",
+      "\u26a0\ufe0f Neutropenia, agranulocytosis, thrombocytopenia",
+      "\u26a0\ufe0f Adrenal insufficiency (reversible)",
+      "\u26a0\ufe0f Pregnancy category D (high-dose) - teratogenic in 1st trimester",
+      "\u26a0\ufe0f Consider higher doses in morbidly obese"
     ],
     "sideEffects": [
-      "Common: Nausea, headache, rash, abdominal pain",
-      "Less common: Elevated LFTs, QT prolongation",
-      "Rare: Hepatic failure, Stevens-Johnson syndrome"
+      "Common: Nausea, headache, rash, vomiting, abdominal pain, diarrhea",
+      "Less common: Elevated LFTs, QT prolongation, hepatitis",
+      "Rare: Hepatic failure, SJS/TEN, DRESS, agranulocytosis"
     ],
     "interactions": [
       {
@@ -3985,16 +4061,28 @@
       {
         "drug": "Rifampin",
         "effect": "Decreased fluconazole effect"
+      },
+      {
+        "drug": "Statins (HMG-CoA reductase inhibitors)",
+        "effect": "Increased risk of myopathy/rhabdomyolysis"
+      },
+      {
+        "drug": "Midazolam",
+        "effect": "Increased midazolam effect"
+      },
+      {
+        "drug": "Oral hypoglycemics",
+        "effect": "Increased hypoglycemia risk"
       }
     ],
-    "notes": "Excellent oral bioavailability (>90%). Good CSF penetration. NOT effective against Candida krusei, C. glabrata may have reduced susceptibility. IV and PO doses are equivalent.",
+    "notes": "Excellent oral bioavailability (>90%) - IV and PO doses equivalent. Good CSF penetration. NOT effective against C. krusei; C. glabrata may have reduced susceptibility. CYP2C9/10 and CYP3A3/4 inhibitor.",
     "renalAdjust": {
       "gfr50": "50% of usual dose or usual dose Q48h",
       "gfr30": "50% of usual dose",
       "gfr10": "25-50% of usual dose",
       "hd": "100% dose after each HD session"
     },
-    "hepaticAdjust": "Use with caution; monitor LFTs"
+    "hepaticAdjust": "Use with caution; monitor LFTs closely"
   },
   {
     "id": "furosemide",
@@ -10669,45 +10757,76 @@
   },
   {
     "id": "amphotericinb",
-    "name": "Amphotericin B (Fungizone, AmBisome)",
-    "category": "Antifungal",
-    "indication": "Serious systemic fungal infections, empiric antifungal in febrile neutropenia",
+    "name": "Amphotericin B (Conventional, AmBisome, Abelcet)",
+    "category": "Antifungal (Polyene)",
     "route": "IV",
-    "maxDose": "1.5 mg/kg/day (conventional); 5 mg/kg/day (liposomal)",
     "formulations": [
       {
-        "type": "Conventional (Fungizone)",
+        "type": "Conventional (Deoxycholate)",
         "strengths": "50 mg vial"
       },
       {
         "type": "Liposomal (AmBisome)",
-        "strengths": "50 mg vial"
+        "strengths": "50 mg vial (contains soy, 900 mg sucrose)"
       },
       {
-        "type": "Lipid Complex (Abelcet)",
-        "strengths": "100 mg/20 mL"
+        "type": "Lipid Complex (Abelcet/ABLC)",
+        "strengths": "5 mg/mL (20 mL)"
       }
     ],
     "doses": {
       "conventionalTest": {
-        "label": "Conventional (Test dose)",
+        "label": "Conventional Test Dose",
         "value": "0.1",
-        "unit": "mg/kg IV over 30-60 min"
+        "unit": "mg/kg IV over 30-60 min (max 1 mg)"
       },
-      "conventional": {
-        "label": "Conventional",
-        "value": "0.5-1.5",
-        "unit": "mg/kg/day IV over 2-6 hr"
+      "conventionalInitial": {
+        "label": "Conventional Initial Dose",
+        "value": "0.5-1",
+        "unit": "mg/kg/day IV over 6h (first dose)"
       },
-      "liposomal": {
-        "label": "Liposomal (AmBisome)",
+      "conventionalMaint": {
+        "label": "Conventional Maintenance",
+        "value": "0.5-1",
+        "unit": "mg/kg/day IV over 2-6h",
+        "maxDose": 1.5
+      },
+      "conventionalAltDay": {
+        "label": "Conventional Alternate Day",
+        "value": "1.5",
+        "unit": "mg/kg/dose every other day",
+        "maxDose": 1.5
+      },
+      "liposomalSystemic": {
+        "label": "Liposomal (AmBisome) Systemic",
         "value": "3-5",
-        "unit": "mg/kg/day IV over 1-2 hr"
+        "unit": "mg/kg/day IV over 2h",
+        "maxDose": 10
+      },
+      "liposomalEmpiric": {
+        "label": "Liposomal Empiric (Febrile Neutropenia)",
+        "value": "3",
+        "unit": "mg/kg/day IV"
+      },
+      "liposomalCrypto": {
+        "label": "Liposomal Cryptococcal Meningitis (HIV)",
+        "value": "6",
+        "unit": "mg/kg/day IV"
       },
       "lipidComplex": {
         "label": "Lipid Complex (Abelcet)",
         "value": "5",
-        "unit": "mg/kg/day IV over 2 hr"
+        "unit": "mg/kg/day IV at 2.5 mg/kg/hr"
+      },
+      "lipidComplexCandida": {
+        "label": "Lipid Complex Candidiasis",
+        "value": "3-5",
+        "unit": "mg/kg/day IV"
+      },
+      "intrathecal": {
+        "label": "Intrathecal (Conventional)",
+        "value": "25-100",
+        "unit": "mcg Q48-72h, increase to 500 mcg as tolerated"
       }
     },
     "dosingTable": {
@@ -10715,49 +10834,103 @@
       "columns": [
         "Formulation",
         "Usual Dose",
+        "Max Dose",
         "Infusion Time",
         "Nephrotoxicity"
       ],
       "rows": [
         [
-          "Conventional",
-          "0.5-1.5 mg/kg/day",
+          "Conventional (Deoxycholate)",
+          "0.5-1 mg/kg/day",
+          "1.5 mg/kg/day",
           "2-6 hours",
-          "High"
+          "HIGH"
         ],
         [
-          "AmBisome (liposomal)",
+          "Liposomal (AmBisome)",
           "3-5 mg/kg/day",
-          "1-2 hours",
-          "Low"
+          "10 mg/kg/day",
+          "2 hours (1h if tolerated)",
+          "LOW"
         ],
         [
-          "Abelcet (lipid complex)",
+          "Lipid Complex (Abelcet)",
+          "5 mg/kg/day",
           "5 mg/kg/day",
           "2 hours",
-          "Moderate"
+          "MODERATE"
         ]
       ]
     },
+    "additionalTables": [
+      {
+        "title": "Concentration and Administration",
+        "columns": [
+          "Formulation",
+          "Concentration",
+          "Administration Notes"
+        ],
+        "rows": [
+          [
+            "Conventional",
+            "0.1 mg/mL (peripheral) or 0.25 mg/mL (central)",
+            "Mix with D5W only; pH >4.2"
+          ],
+          [
+            "Liposomal",
+            "1-2 mg/mL (0.2-0.5 for infants)",
+            "Mix with D5W; \u22651-micron filter may be used"
+          ],
+          [
+            "Lipid Complex",
+            "1 mg/mL",
+            "No in-line filter; shake bag every 2h"
+          ]
+        ]
+      },
+      {
+        "title": "Liposomal Leishmaniasis Dosing",
+        "columns": [
+          "Patient Type",
+          "Dosing Schedule"
+        ],
+        "rows": [
+          [
+            "Immunocompetent",
+            "3 mg/kg on days 1-5, 14, 21"
+          ],
+          [
+            "Immunocompromised",
+            "4 mg/kg on days 1-5, 10, 17, 24, 31, 38"
+          ]
+        ]
+      }
+    ],
+    "max": "Conventional: 1.5 mg/kg/day; Liposomal: 10 mg/kg/day (up to 15 mg/kg reported); Lipid Complex: 5 mg/kg/day",
+    "indication": "Serious systemic fungal infections, empiric antifungal in febrile neutropenia, cryptococcal meningitis, leishmaniasis",
     "contraindications": [
-      "Hypersensitivity to amphotericin B"
+      "Hypersensitivity to amphotericin B or components"
     ],
     "warnings": [
-      "Nephrotoxicity (conventional > lipid formulations)",
-      "Infusion-related reactions (fever, chills, rigors)",
-      "Hypokalemia, hypomagnesemia",
-      "Anemia"
+      "\u26a0\ufe0f NEPHROTOXICITY - Conventional >> Lipid Complex > Liposomal",
+      "\u26a0\ufe0f Salt loading (10-15 mL/kg NS pre-dose) may reduce nephrotoxicity",
+      "\u26a0\ufe0f Maintain Na >4 mEq/kg/day in premature neonates",
+      "\u26a0\ufe0f Infusion reactions common - premedicate",
+      "\u26a0\ufe0f Hypokalemia, hypomagnesemia, hypocalcemia",
+      "\u26a0\ufe0f Monitor renal, hepatic, electrolytes, CBC twice weekly",
+      "\u26a0\ufe0f Lipid formulations may have reduced tissue penetration in neonates",
+      "\u26a0\ufe0f Rhabdomyolysis reported with liposomal"
     ],
     "sideEffects": [
-      "Infusion: Fever, chills, rigors, hypotension",
-      "Renal: Nephrotoxicity, electrolyte wasting (K, Mg)",
-      "Hematologic: Normochromic anemia",
-      "GI: Nausea, vomiting"
+      "Infusion-related: Fever, chills, rigors, hypotension, headache, nausea, vomiting",
+      "Renal: Nephrotoxicity, electrolyte wasting (K, Mg, Ca)",
+      "Hematologic: Normochromic anemia, thrombocytopenia, leukopenia",
+      "Other: Elevated LFTs/bilirubin, respiratory failure, skin rash, low back pain"
     ],
     "interactions": [
       {
-        "drug": "Nephrotoxic drugs",
-        "effect": "Additive nephrotoxicity"
+        "drug": "Nephrotoxic drugs (aminoglycosides, cyclosporine)",
+        "effect": "Synergistic nephrotoxicity"
       },
       {
         "drug": "Diuretics",
@@ -10770,15 +10943,20 @@
       {
         "drug": "Corticosteroids",
         "effect": "Increased hypokalemia"
+      },
+      {
+        "drug": "Neuromuscular blockers",
+        "effect": "Hypokalemia enhances toxicity"
       }
     ],
-    "notes": "Premedicate with acetaminophen, diphenhydramine, \u00b1 meperidine for infusion reactions. NS bolus before infusion may reduce nephrotoxicity. Monitor renal function, K, Mg twice weekly. Lipid formulations preferred in renal impairment.",
+    "notes": "Premedicate with acetaminophen, diphenhydramine \u00b1meperidine 30 min before infusion. Hydrocortisone 1mg/mg ampho (max 25mg) may prevent immediate reactions. Use total body weight for obese patients. Lipid formulations preferred in renal impairment. Compatible with breastfeeding (highly protein bound, large MW, not absorbed orally).",
     "renalAdjust": {
-      "gfr50": "Consider lipid formulation",
+      "gfr50": "Consider lipid formulation; conventional at reduced dose",
       "gfr30": "Use lipid formulation",
       "gfr10": "Use lipid formulation",
-      "hd": "Not dialyzable; no supplemental dose"
-    }
+      "hd": "Not dialyzable; no supplemental dose needed"
+    },
+    "hepaticAdjust": "Monitor LFTs; use with caution"
   },
   {
     "id": "arginine",
