@@ -24,6 +24,10 @@ Build a comprehensive pediatric medical calculator application with:
   - Handles "Avoid" cases
 - **Drug Database**: 114 drugs with complete renal adjustment data
 - **Display**: Doses visible on collapsed card before expanding
+- **Data Tables with Calculated Dose Column**: ✅ COMPLETED (Feb 2026)
+  - Tables show "Calc (Xkg)" column with calculated mg values
+  - Logic handles both explicit "mg/kg" in cells and column headers indicating per-kg dosing
+  - "👆 Swipe table to see all columns" hint for mobile usability
 
 ### 2. Empirical Antibiotics Page - COMPLETED ✅
 - Created under Children > Approaches
