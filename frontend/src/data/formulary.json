@@ -8403,8 +8403,9 @@
       "cdiffChild": {
         "label": "C. diff (PO Child)",
         "value": "40-50",
-        "unit": "mg/kg/day \u00f7 Q6h x 7-10 days",
-        "maxDose": 500
+        "unit": "mg/kg/24hr \u00f7 Q6h PO x 7-10 days",
+        "maxDose": 500,
+        "maxNote": "Max 500 mg/24hr; up to 2 g/24hr for severe/fulminant"
       },
       "cdiffChildSevere": {
         "label": "C. diff Severe (PO Child)",
@@ -8415,8 +8416,9 @@
       "cdiffAdult": {
         "label": "C. diff (PO Adult)",
         "value": "125",
-        "unit": "mg Q6h x 7-10 days",
-        "isFixed": true
+        "unit": "mg/dose PO Q6h x 7-10 days",
+        "isFixed": true,
+        "maxNote": "Up to 2 g/24hr \u00f7 Q6-8h for severe/fulminant"
       },
       "cdiffAdultSevere": {
         "label": "C. diff Severe (PO Adult)",
@@ -8435,6 +8437,24 @@
         "value": "1000",
         "unit": "mg IV over 1-2h x 1 dose",
         "isFixed": true
+      },
+      "prophylaxisGI_Child": {
+        "label": "Endocarditis Prophylaxis GU/GI (Child, mod-risk)",
+        "value": "20",
+        "unit": "mg/kg IV over 1-2h x 1 (within 30 min of procedure)",
+        "maxDose": 1000
+      },
+      "prophylaxisGI_Adult": {
+        "label": "Endocarditis Prophylaxis GU/GI (Adult, mod-risk)",
+        "value": "1000",
+        "unit": "mg IV over 1-2h x 1 (within 30 min of procedure)",
+        "isFixed": true
+      },
+      "prophylaxisGI_HighRisk": {
+        "label": "Endocarditis Prophylaxis GU/GI (High-risk)",
+        "value": "20",
+        "unit": "mg/kg IV (max 1g) + gentamicin 1.5 mg/kg (max 120 mg) IV/IM x 1",
+        "maxDose": 1000
       }
     },
     "dosingTable": {
@@ -8486,11 +8506,11 @@
     },
     "additionalTables": [
       {
-        "title": "Child/Adolescent/Adult IV Dosing",
+        "title": "Infant, Child, Adolescent, and Adult IV Dosing",
         "columns": [
           "Age",
-          "General Infection",
-          "Severe (CNS, Endocarditis, Osteo, Pneumonia)"
+          "General Dosage",
+          "CNS/Endocarditis/Osteo/Pneumonia/Septic Arthritis"
         ],
         "rows": [
           [
@@ -8499,34 +8519,32 @@
             "20 mg/kg/dose Q6h"
           ],
           [
-            "12-18 yr",
+            "Adolescent (>12 to <18 yr)",
             "15 mg/kg/dose Q6-8h",
             "20 mg/kg/dose Q6-8h"
           ],
           [
-            "\u226518 yr",
+            "Adult (\u226518 yr)",
             "15 mg/kg/dose Q8-12h",
-            "20 mg/kg/dose Q8-12h (max 2g)"
+            "20 mg/kg/dose (max 2g) Q8-12h"
           ]
-        ]
+        ],
+        "footnote": "Use Q8h dosing interval for older adolescent"
       },
       {
-        "title": "Therapeutic Drug Monitoring Targets",
+        "title": "Therapeutic Trough Level Targets (MIC \u22641 mg/L)",
         "columns": [
           "Indication",
-          "Peak (mg/L)",
-          "Trough (mg/L)"
+          "Goal Trough Level"
         ],
         "rows": [
           [
-            "Uncomplicated SSTI, Bacteremia, Febrile Neutropenia, Sepsis",
-            "10-14",
-            "<2"
+            "Uncomplicated SSTI, bacteremia, febrile neutropenia, sepsis",
+            "10-14 mg/L"
           ],
           [
-            "CNS Infections, Endocarditis, Pneumonia, Osteomyelitis, Septic Arthritis",
-            "14-17",
-            "<2"
+            "CNS infections, endocarditis, pneumonia, osteomyelitis, septic arthritis",
+            "14-17 mg/L"
           ]
         ]
       }
@@ -8573,7 +8591,7 @@
         "effect": "Increased nephrotoxicity"
       }
     ],
-    "notes": "IV for systemic infections (oral not absorbed systemically). Oral ONLY for C. diff. Infuse IV over \u226560 min (120 min if not tolerated). Use diphenhydramine for infusion reaction. Use total body weight for obese patients. Low CSF penetration even with inflamed meninges.",
+    "notes": "IV for systemic infections (oral not absorbed). Oral/PR ONLY for C. diff (PR may be preferable for complete ileus). Infuse IV over \u226560 min (120 min if not tolerated). Use diphenhydramine for red man syndrome. Use total body weight for obese. Low CSF penetration even with inflamed meninges.",
     "renalAdjust": {
       "gfr50": "15 mg/kg Q12h or adjust by levels",
       "gfr30": "15 mg/kg Q24h or adjust by levels",
@@ -12063,5 +12081,215 @@
       "hd": "Give after dialysis"
     },
     "hepaticAdjust": "No adjustment needed"
+  },
+  {
+    "id": "linezolid",
+    "name": "Linezolid (Zyvox)",
+    "category": "Antibiotic (Oxazolidinone)",
+    "route": "IV/PO",
+    "formulations": [
+      {
+        "type": "Tablets",
+        "strengths": "600 mg"
+      },
+      {
+        "type": "Oral suspension",
+        "strengths": "100 mg/5 mL (150 mL bottle, contains phenylalanine)"
+      },
+      {
+        "type": "Injection",
+        "strengths": "2 mg/mL (100, 200, 300 mL bags)"
+      }
+    ],
+    "doses": {
+      "neoPreterm_0to7d": {
+        "label": "Neonate <35wk GA, 0-7 days",
+        "value": "10",
+        "unit": "mg/kg/dose Q12h IV/PO"
+      },
+      "neoPreterm_over7d": {
+        "label": "Neonate <35wk GA, >7 days",
+        "value": "10",
+        "unit": "mg/kg/dose Q8h IV/PO"
+      },
+      "neoTerm": {
+        "label": "Neonate \u226535wk GA (all ages)",
+        "value": "10",
+        "unit": "mg/kg/dose Q8h IV/PO"
+      },
+      "infantChild": {
+        "label": "Infant/Child (<12 yr)",
+        "value": "10",
+        "unit": "mg/kg/dose Q8h IV/PO",
+        "maxDose": 600
+      },
+      "adolescentAdult": {
+        "label": "Adolescent/Adult (\u226512 yr)",
+        "value": "600",
+        "unit": "mg Q12h IV/PO",
+        "isFixed": true
+      },
+      "skinUncomplicated_under5": {
+        "label": "Uncomplicated Skin (<5 yr)",
+        "value": "10",
+        "unit": "mg/kg/dose Q8h PO",
+        "maxDose": 600
+      },
+      "skinUncomplicated_5to11": {
+        "label": "Uncomplicated Skin (5-11 yr)",
+        "value": "10",
+        "unit": "mg/kg/dose Q12h PO",
+        "maxDose": 600
+      },
+      "skinUncomplicated_adult": {
+        "label": "Uncomplicated Skin (\u226512 yr)",
+        "value": "600",
+        "unit": "mg Q12h PO x 10-14 days",
+        "isFixed": true
+      }
+    },
+    "dosingTable": {
+      "title": "Linezolid Dosing by Age",
+      "columns": [
+        "Age Group",
+        "Dose (IV/PO)",
+        "Frequency",
+        "Max Dose"
+      ],
+      "rows": [
+        [
+          "Neonate <35wk GA, \u22647d PNA",
+          "10 mg/kg",
+          "Q12h",
+          "-"
+        ],
+        [
+          "Neonate <35wk GA, >7d PNA",
+          "10 mg/kg",
+          "Q8h",
+          "-"
+        ],
+        [
+          "Neonate \u226535wk GA",
+          "10 mg/kg",
+          "Q8h",
+          "-"
+        ],
+        [
+          "Infant/Child <12 yr",
+          "10 mg/kg",
+          "Q8h",
+          "600 mg"
+        ],
+        [
+          "Adolescent/Adult \u226512 yr",
+          "600 mg",
+          "Q12h",
+          "600 mg"
+        ]
+      ]
+    },
+    "additionalTables": [
+      {
+        "title": "Uncomplicated Skin Infections (PO)",
+        "columns": [
+          "Age",
+          "Dose",
+          "Frequency",
+          "Duration"
+        ],
+        "rows": [
+          [
+            "<5 yr",
+            "10 mg/kg",
+            "Q8h",
+            "10-14 days"
+          ],
+          [
+            "5-11 yr",
+            "10 mg/kg",
+            "Q12h",
+            "10-14 days"
+          ],
+          [
+            "\u226512 yr",
+            "600 mg",
+            "Q12h",
+            "10-14 days"
+          ]
+        ]
+      },
+      {
+        "title": "Therapeutic Drug Monitoring",
+        "columns": [
+          "Parameter",
+          "Target"
+        ],
+        "rows": [
+          [
+            "Trough concentration",
+            "2-6.5 mg/L"
+          ],
+          [
+            "Timing",
+            "At steady state (>3 days)"
+          ]
+        ]
+      }
+    ],
+    "max": "600 mg/dose; Max duration 28 days (risk of myelosuppression, neuropathy)",
+    "indication": "VRE (including bacteremia), MRSA (nosocomial pneumonia, complicated skin infections), MDR TB (off-label)",
+    "contraindications": [
+      "Concurrent use of MAOIs or within 2 weeks",
+      "Uncontrolled hypertension, pheochromocytoma, carcinoid syndrome, thyrotoxicosis"
+    ],
+    "warnings": [
+      "\u26a0\ufe0f MYELOSUPPRESSION - Monitor CBC weekly; reversible with discontinuation",
+      "\u26a0\ufe0f SEROTONIN SYNDROME - Avoid with SSRIs, SNRIs, TCAs, triptans, meperidine, buspirone",
+      "\u26a0\ufe0f PERIPHERAL/OPTIC NEUROPATHY - Risk increases with >28 days use",
+      "\u26a0\ufe0f Lactic acidosis (rare, with prolonged use)",
+      "\u26a0\ufe0f Hypoglycemia (especially diabetics on insulin/oral agents)",
+      "\u26a0\ufe0f Contains phenylalanine (oral suspension) - caution in PKU",
+      "\u26a0\ufe0f Tyramine-rich food interaction - may cause hypertensive crisis"
+    ],
+    "sideEffects": [
+      "Common: Diarrhea, nausea, headache, vomiting, anemia, thrombocytopenia",
+      "Less common: Peripheral neuropathy, optic neuropathy (blurred vision, color changes)",
+      "Rare: Serotonin syndrome, lactic acidosis, severe skin reactions"
+    ],
+    "interactions": [
+      {
+        "drug": "SSRIs/SNRIs/TCAs",
+        "effect": "Serotonin syndrome risk - avoid or monitor closely"
+      },
+      {
+        "drug": "MAOIs",
+        "effect": "Contraindicated - hypertensive crisis"
+      },
+      {
+        "drug": "Meperidine",
+        "effect": "Serotonin syndrome - avoid"
+      },
+      {
+        "drug": "Sympathomimetics (pseudoephedrine)",
+        "effect": "Hypertensive response"
+      },
+      {
+        "drug": "Tyramine-rich foods",
+        "effect": "Hypertensive crisis (cheese, wine, aged meats)"
+      },
+      {
+        "drug": "Rifampin",
+        "effect": "Decreased linezolid levels"
+      }
+    ],
+    "notes": "100% oral bioavailability - IV and PO interchangeable. Bacteriostatic (bactericidal against streptococci). Good tissue penetration including CSF, bone, lung. Use total body weight for obese patients. Monitor for vision changes if >28 days.",
+    "renalAdjust": {
+      "gfr50": "No adjustment needed",
+      "gfr30": "No adjustment; consider 8 mg/kg Q8h in severe RI",
+      "gfr10": "No adjustment; metabolites may accumulate",
+      "hd": "30% removed by HD; give after dialysis"
+    },
+    "hepaticAdjust": "No adjustment for mild-moderate; use caution in severe"
   }
 ]
