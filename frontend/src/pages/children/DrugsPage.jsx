@@ -1343,8 +1343,13 @@ const DrugsPage = ({ onBack }) => {
                                       </td>
                                     ))}
                                     {/* Add calculated dose cell with all doses */}
-                                    {w > 0 && table.columns.some(col => 
-                                      col.toLowerCase().includes('dose') || col.toLowerCase().includes('dosage')
+                                    {w > 0 && (
+                                      table.columns.some(col => 
+                                        col.toLowerCase().includes('dose') || col.toLowerCase().includes('dosage')
+                                      ) || 
+                                      table.rows[0]?.some(cell => 
+                                        String(cell).toLowerCase().includes('mg/kg')
+                                      )
                                     ) && (
                                       <td className="border border-indigo-200 dark:border-indigo-700 px-3 py-2 font-mono text-emerald-600 dark:text-emerald-400 font-bold bg-emerald-50 dark:bg-emerald-900/30" style={{ minWidth: '180px' }}>
                                         {calcDoses.length > 0 ? (
