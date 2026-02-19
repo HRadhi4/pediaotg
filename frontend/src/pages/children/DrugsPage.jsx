@@ -114,11 +114,15 @@ const DrugsPage = ({ onBack }) => {
           break;
         }
       }
-      // Infant (28 days to 1 year)
+      // Infant (28 days to 1 year) - also matches ranges like "1mo-12yr" or "1 mo - 12 yr"
       else if (patientAgeCategory === 'infant') {
         if (label.includes('infant') || keyLower.includes('infant') ||
             label.includes('<1') || label.includes('< 1') ||
-            label.includes('under 1')) {
+            label.includes('under 1') ||
+            // Match ranges that start from 1 month (covers infants through children)
+            /\b1\s*mo/i.test(label) || /\b1\s*month/i.test(label) ||
+            // Match "child" label that includes infants (e.g., "Child 1mo-12yr")
+            (label.includes('child') && (/\b1\s*mo/i.test(label) || /\b1\s*month/i.test(label)))) {
           bestMatch = { ...dose, key, ageMatch: true };
           break;
         }
@@ -133,9 +137,13 @@ const DrugsPage = ({ onBack }) => {
         }
       }
       
-      // Keep a fallback (first non-adult dose for children, or just first dose)
-      if (!fallbackDose && !label.includes('adult')) {
-        fallbackDose = { ...dose, key, ageMatch: false };
+      // Keep a fallback (first non-adult, non-neonate dose for infants/children)
+      if (!fallbackDose) {
+        const isNeonateOnly = label.includes('neonate') || label.includes('neo') || keyLower.includes('neo');
+        const isAdultOnly = label.includes('adult') && !label.includes('child') && !/\b1\s*mo/i.test(label);
+        if (!isNeonateOnly && !isAdultOnly) {
+          fallbackDose = { ...dose, key, ageMatch: false };
+        }
       }
     }
     
