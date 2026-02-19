@@ -1267,8 +1267,13 @@ const DrugsPage = ({ onBack }) => {
                                   </th>
                                 ))}
                                 {/* Add Calc column if weight is entered and table has dosing data */}
-                                {w > 0 && table.columns.some(col => 
-                                  col.toLowerCase().includes('dose') || col.toLowerCase().includes('dosage')
+                                {w > 0 && (
+                                  table.columns.some(col => 
+                                    col.toLowerCase().includes('dose') || col.toLowerCase().includes('dosage')
+                                  ) || 
+                                  table.rows[0]?.some(cell => 
+                                    String(cell).toLowerCase().includes('mg/kg')
+                                  )
                                 ) && (
                                   <th className="border border-indigo-200 dark:border-indigo-700 px-3 py-2 text-left font-semibold text-emerald-700 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-900/40" style={{ minWidth: '180px' }}>
                                     Calculated Doses ({w}kg)
