@@ -969,7 +969,7 @@ const DrugsPage = ({ onBack }) => {
                     {/* Left: Age-filtered dose info */}
                     {displayDose && (
                       <div className="text-xs text-muted-foreground flex-1 min-w-0">
-                        <span className={`font-medium ${hasRenalAdjustment ? 'text-amber-600 dark:text-amber-400' : displayDose.ageMatch ? 'text-purple-600 dark:text-purple-400' : 'text-blue-600 dark:text-blue-400'}`}>
+                        <span className={`font-medium ${showRenalWarning ? 'text-amber-600 dark:text-amber-400' : displayDose.ageMatch ? 'text-purple-600 dark:text-purple-400' : 'text-blue-600 dark:text-blue-400'}`}>
                           {displayDose.label}:
                         </span>{' '}
                         <span className="font-mono">{displayDose.value} {displayDose.unit}</span>
@@ -1001,50 +1001,73 @@ const DrugsPage = ({ onBack }) => {
                             else if (unitLower.includes('q6h')) standardFreq = 'Q6H';
                           }
                           
-                          // Check for renal adjustment
-                          if (hasRenalAdjustment && renalAdjustText) {
-                            const adjustment = parseRenalAdjustment(renalAdjustText);
-                            
+                          // NEW: Use comprehensive renal adjustment from Chapter 31
+                          if (showRenalWarning && comprehensiveRenal) {
                             // Handle "avoid" case
-                            if (adjustment?.avoid) {
+                            if (comprehensiveRenal.avoid) {
                               return (
                                 <div className="flex items-center gap-2">
                                   <span className="text-base font-bold text-red-600 dark:text-red-400">
-                                    Avoid
+                                    AVOID
                                   </span>
-                                  <span className="text-[9px] text-amber-600">(renal)</span>
+                                  <span className="text-[9px] text-red-500">(eGFR {comprehensiveRenal.egfrValue})</span>
                                 </div>
                               );
                             }
                             
-                            // Handle "no change" case
-                            if (adjustment?.noChange) {
+                            // Handle level-guided dosing (vancomycin, gentamicin, amikacin)
+                            if (comprehensiveRenal.levelGuidedDosing) {
+                              return (
+                                <div className="flex items-center gap-2">
+                                  <span className="text-base font-bold text-purple-600 dark:text-purple-400">
+                                    TDM
+                                  </span>
+                                  <span className="text-[9px] text-purple-500">Monitor levels</span>
+                                </div>
+                              );
+                            }
+                            
+                            // Handle neonatal exclusion
+                            if (comprehensiveRenal.neonatalExcluded) {
+                              return (
+                                <div className="flex items-center gap-2">
+                                  <span className="text-sm font-bold text-orange-600 dark:text-orange-400">
+                                    Use neonatal ref
+                                  </span>
+                                </div>
+                              );
+                            }
+                            
+                            // Handle no adjustment needed
+                            if (comprehensiveRenal.noAdjustmentNeeded || comprehensiveRenal.noChange) {
                               return (
                                 <div className="flex items-center gap-2">
                                   {showPerDose ? (
-                                    <span className="text-base font-mono font-bold text-amber-600">
+                                    <span className="text-base font-mono font-bold text-green-600">
                                       {doseResult.perDoseMin === doseResult.perDoseMax 
                                         ? `${doseResult.perDoseMin} mg` 
                                         : `${doseResult.perDoseMin}-${doseResult.perDoseMax} mg`}
                                     </span>
                                   ) : (
-                                    <span className="text-base font-mono font-bold text-amber-600">
+                                    <span className="text-base font-mono font-bold text-green-600">
                                       {doseResult.dose}
                                     </span>
                                   )}
                                   {standardFreq && (
-                                    <span className="font-semibold px-2 py-1 rounded text-xs bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-300">
+                                    <span className="font-semibold px-2 py-1 rounded text-xs bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-300">
                                       {standardFreq}
                                     </span>
                                   )}
-                                  <span className="text-[9px] text-amber-600">(no Δ)</span>
+                                  <span className="text-[9px] text-green-600">(no Δ)</span>
                                 </div>
                               );
                             }
                             
-                            // Calculate adjusted dose
-                            const percentage = adjustment?.percentage || 100;
-                            const adjustedFreq = adjustment?.frequency || standardFreq;
+                            // Calculate adjusted dose using percentage
+                            const percentage = typeof comprehensiveRenal.percentage === 'string' 
+                              ? parseInt(comprehensiveRenal.percentage.split('-')[0]) // Use lower bound for ranges
+                              : (comprehensiveRenal.percentage || 100);
+                            const adjustedFreq = comprehensiveRenal.interval || standardFreq;
                             
                             let adjustedDoseMin, adjustedDoseMax;
                             if (showPerDose) {
@@ -1060,6 +1083,31 @@ const DrugsPage = ({ onBack }) => {
                               }
                             }
                             
+                            // Show drug not in renal tables warning
+                            if (!comprehensiveRenal.found || comprehensiveRenal.source === 'none') {
+                              return (
+                                <div className="flex items-center gap-2">
+                                  {showPerDose ? (
+                                    <span className="text-base font-mono font-bold text-yellow-600">
+                                      {doseResult.perDoseMin === doseResult.perDoseMax 
+                                        ? `${doseResult.perDoseMin} mg` 
+                                        : `${doseResult.perDoseMin}-${doseResult.perDoseMax} mg`}
+                                    </span>
+                                  ) : (
+                                    <span className="text-base font-mono font-bold text-yellow-600">
+                                      {doseResult.dose}
+                                    </span>
+                                  )}
+                                  {standardFreq && (
+                                    <span className="font-semibold px-2 py-1 rounded text-xs bg-yellow-100 dark:bg-yellow-900/50 text-yellow-700 dark:text-yellow-300">
+                                      {standardFreq}
+                                    </span>
+                                  )}
+                                  <span className="text-[9px] text-yellow-600">⚠️</span>
+                                </div>
+                              );
+                            }
+                            
                             return (
                               <div className="flex items-center gap-2">
                                 <span className="text-base font-mono font-bold text-amber-600">
@@ -1072,12 +1120,12 @@ const DrugsPage = ({ onBack }) => {
                                     {adjustedFreq}
                                   </span>
                                 )}
-                                <span className="text-[9px] text-amber-600">(renal)</span>
+                                <span className="text-[9px] text-amber-600">({percentage}%)</span>
                               </div>
                             );
                           }
                           
-                          // Standard dose display (no renal adjustment)
+                          // Standard dose display (no renal adjustment needed - eGFR >= 60)
                           return (
                             <div className="flex items-center gap-2">
                               {showPerDose ? (
