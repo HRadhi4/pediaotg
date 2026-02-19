@@ -70,9 +70,10 @@ return "adolescent";
 ## Pending Issues (P0)
 1. Growth chart PDF export - fix implemented, needs testing
 
-## Backlog
-- Add Linezolid, Levofloxacin to formulary
-- Refactor DrugsPage.jsx into components
+## Backlog (P1-P2)
+- Verify Sepsis approach table layout fix
+- Verify bullet point spacing on Neonatal Examination page
+- Refactor DrugsPage.jsx into components (~1300 lines, needs breakdown)
 - Add data-testid attributes
 - Mechanical Ventilation approach
 
@@ -81,4 +82,5 @@ return "adolescent";
 - Password: 12341234
 
 ## Last Updated
-February 2026 - Age selector, renal dose calculation, formulary review
+February 2026 - Calculated dose column and swipe hint added to formulary tables
+
