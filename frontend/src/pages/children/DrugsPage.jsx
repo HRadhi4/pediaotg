@@ -191,11 +191,14 @@ const DrugsPage = ({ onBack }) => {
     const gfrNum = parseFloat(gfr);
     
     // Get the appropriate renal adjustment text based on GFR
-    // Standard GFR thresholds: ≥50, 30-49, 10-29, <10
+    // Standard GFR thresholds based on CKD stages:
+    // - GFR ≥50: Use gfr50 (mild impairment or no change)
+    // - GFR 30-49: Use gfr30 (moderate impairment)
+    // - GFR 10-29: Use gfr30 (severe impairment - same as moderate in most drugs)
+    // - GFR <10: Use gfr10 (end-stage renal disease)
     let renalText = null;
     if (gfrNum >= 50) renalText = drug.renalAdjust.gfr50;
-    else if (gfrNum >= 30) renalText = drug.renalAdjust.gfr30; // GFR 30-49
-    else if (gfrNum >= 10) renalText = drug.renalAdjust.gfr10; // GFR 10-29
+    else if (gfrNum >= 10) renalText = drug.renalAdjust.gfr30; // GFR 10-49
     else renalText = drug.renalAdjust.gfr10; // GFR <10
     
     if (!renalText) return null;
