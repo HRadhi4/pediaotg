@@ -34,6 +34,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { childrenFormulary, drugCategories } from "@/data/childrenFormularyData";
+import { 
+  getRenalAdjustment, 
+  getEGFRCategory, 
+  calculateBedsideCKiD,
+  ANTIMICROBIAL_RENAL_ADJUSTMENTS,
+  NON_ANTIMICROBIAL_RENAL_ADJUSTMENTS 
+} from "@/data/renalAdjustments";
 
 const DrugsPage = ({ onBack }) => {
   // ==========================================================================
