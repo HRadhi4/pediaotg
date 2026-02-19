@@ -1303,11 +1303,16 @@ const DrugsPage = ({ onBack }) => {
                                       const freqMatch = cellStr.match(/[Qq](\d+(?:-\d+)?)[Hh]/);
                                       const freq = freqMatch ? freqMatch[0].toUpperCase() : '';
                                       
-                                      // Create short label from header (e.g., "General" from "General Dosage")
+                                      // Create short label from header
+                                      const headerLower = header.toLowerCase();
                                       let shortLabel = '';
-                                      if (header.toLowerCase().includes('general')) shortLabel = 'Gen';
-                                      else if (header.toLowerCase().includes('cns') || header.toLowerCase().includes('severe')) shortLabel = 'Sev';
-                                      else if (doseColIndices.length > 1) shortLabel = `D${idx}`;
+                                      if (headerLower.includes('general')) shortLabel = 'Gen';
+                                      else if (headerLower.includes('cns') || headerLower.includes('endocarditis') || 
+                                               headerLower.includes('severe') || headerLower.includes('pneumonia') ||
+                                               headerLower.includes('meningitis') || headerLower.includes('osteo')) {
+                                        shortLabel = 'Sev';
+                                      }
+                                      else if (doseColIndices.length > 1) shortLabel = `Col${doseColIndices.indexOf({idx, header}) + 1}`;
                                       
                                       calcDoses.push({
                                         label: shortLabel,
