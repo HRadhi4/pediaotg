@@ -1042,8 +1042,8 @@
       },
       "ivChild": {
         "label": "IV (Child)",
-        "value": "100",
-        "unit": "mg/kg/day (amox component) \u00f7 Q6-8h"
+        "value": "30",
+        "unit": "mg/kg/dose Q8h"
       },
       "ivAdult": {
         "label": "IV (Adult)",
