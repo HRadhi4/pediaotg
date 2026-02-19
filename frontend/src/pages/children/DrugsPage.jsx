@@ -267,7 +267,7 @@ const DrugsPage = ({ onBack }) => {
     return { type: 'textOnly', renalText };
   };
   
-  // Helper function to get renal-adjusted dose text (for compatibility)
+  // Helper function to get renal-adjusted dose text (for compatibility with legacy renalAdjust)
   const getRenalAdjustedDoseText = (drug) => {
     if (!drug.renalAdjust || !gfr) return null;
     const gfrNum = parseFloat(gfr);
@@ -279,6 +279,69 @@ const DrugsPage = ({ onBack }) => {
     if (gfrNum >= 50) return drug.renalAdjust.gfr50;
     if (gfrNum >= 10) return drug.renalAdjust.gfr30; // GFR 10-49
     return drug.renalAdjust.gfr10; // GFR <10
+  };
+  
+  // ============================================================================
+  // COMPREHENSIVE RENAL ADJUSTMENT (Chapter 31 - Pages 412-422)
+  // ============================================================================
+  // Get comprehensive renal adjustment from Chapter 31 data
+  const getComprehensiveRenalAdjustment = (drug) => {
+    if (!gfr) return null;
+    const gfrNum = parseFloat(gfr);
+    const isNeonate = patientAgeCategory === 'neonate';
+    
+    // Try to get from comprehensive Chapter 31 data first
+    const drugId = drug.id || drug.name.toLowerCase().replace(/[^a-z0-9]/g, '');
+    const ch31Adjustment = getRenalAdjustment(drugId, gfrNum, isNeonate);
+    
+    // If found in Chapter 31 data
+    if (ch31Adjustment.found) {
+      return {
+        source: 'chapter31',
+        ...ch31Adjustment,
+        egfrValue: gfrNum,
+        egfrCategory: ch31Adjustment.categoryLabel || getEGFRCategory(gfrNum)?.label
+      };
+    }
+    
+    // Fall back to legacy renalAdjust if available
+    if (drug.renalAdjust) {
+      const legacyText = getRenalAdjustedDoseText(drug);
+      const parsed = parseRenalAdjustment(legacyText);
+      
+      return {
+        source: 'legacy',
+        found: true,
+        egfrValue: gfrNum,
+        egfrCategory: getEGFRCategory(gfrNum)?.label,
+        percentage: parsed?.percentage || 100,
+        interval: parsed?.frequency,
+        avoid: parsed?.avoid,
+        noChange: parsed?.noChange,
+        notes: legacyText
+      };
+    }
+    
+    // Drug not in any renal adjustment table - return warning
+    if (gfrNum < 60) {
+      return {
+        source: 'none',
+        found: false,
+        egfrValue: gfrNum,
+        egfrCategory: getEGFRCategory(gfrNum)?.label,
+        warning: 'No specific renal adjustment guidance in Chapter 31; monitor closely for toxicity in reduced GFR.',
+        requiresMonitoring: true
+      };
+    }
+    
+    return null; // Normal GFR, no adjustment needed
+  };
+  
+  // Check if drug requires renal adjustment based on eGFR < 60
+  const requiresRenalAdjustment = (drug) => {
+    if (!gfr) return false;
+    const gfrNum = parseFloat(gfr);
+    return gfrNum < 60; // Per Chapter 31: adjustments apply when eGFR < 60
   };
 
   // Original Schwartz k values by age
