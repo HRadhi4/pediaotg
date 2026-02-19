@@ -1170,9 +1170,9 @@ const DrugsPage = ({ onBack }) => {
 
                 {/* Expanded Content */}
                 {isExpanded && (
-                  <div className="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700 space-y-4" onClick={(e) => e.stopPropagation()}>
+                  <div className="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700 space-y-3" onClick={(e) => e.stopPropagation()}>
                     
-                    {/* Quick Info Bar */}
+                    {/* SECTION 1: Quick Info Bar - Route & Max Dose */}
                     <div className="flex flex-wrap gap-2 text-[10px]">
                       <span className="px-2 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-medium">
                         📍 {drug.route}
@@ -1182,74 +1182,98 @@ const DrugsPage = ({ onBack }) => {
                       </span>
                     </div>
 
-                    {/* Age-Based Dosing Highlight */}
-                    {ageNum > 0 && (
-                      <div className="p-2 rounded-lg bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800">
-                        <p className="text-[10px] font-semibold text-purple-700 dark:text-purple-300 mb-1">
-                          👶 Age: {getAgeDisplay()} ({patientAgeCategory})
-                        </p>
-                        {(() => {
-                          // Find matching age-based doses
-                          const ageDoses = [];
-                          if (drug.doses) {
-                            Object.entries(drug.doses).forEach(([key, dose]) => {
-                              const label = dose.label?.toLowerCase() || '';
-                              const keyLower = key.toLowerCase();
-                              
-                              // Check if this dose applies to the patient's age
-                              let applies = false;
-                              
-                              // Neonate (< 1 month)
-                              if (totalAgeMonths < 1 && (label.includes('neonate') || label.includes('neo') || keyLower.includes('neo'))) {
-                                applies = true;
-                              }
-                              // Infant (1-12 months)
-                              else if (totalAgeMonths >= 1 && totalAgeMonths < 12 && (label.includes('infant') || keyLower.includes('infant'))) {
-                                applies = true;
-                              }
-                              // Child (1-12 years)
-                              else if (totalAgeMonths >= 12 && totalAgeMonths < 144 && (label.includes('child') || label.includes('pediatric') || keyLower.includes('child') || keyLower.includes('standard'))) {
-                                applies = true;
-                              }
-                              // Adolescent/Adult (>12 years)
-                              else if (totalAgeMonths >= 144 && (label.includes('adult') || label.includes('adolescent') || keyLower.includes('adult'))) {
-                                applies = true;
-                              }
-                              
-                              if (applies) {
-                                ageDoses.push({ key, ...dose });
-                              }
-                            });
+                    {/* SECTION 2: Main Dosing Section - Consolidated */}
+                    <div className="p-3 rounded-lg bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800">
+                      <p className="text-[11px] font-semibold text-blue-700 dark:text-blue-300 mb-2 flex items-center justify-between">
+                        <span className="flex items-center gap-1">
+                          <span>💊</span> {w > 0 ? `Dosing for ${w} kg` : 'Dosing Reference'}
+                          {ageNum > 0 && <span className="ml-2 text-purple-600 dark:text-purple-400">({getAgeDisplay()})</span>}
+                        </span>
+                        {w > 0 && <span className="text-[9px] text-blue-500">Weight-based calculations</span>}
+                      </p>
+                      
+                      {/* Dose Cards Grid */}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        {doseKeys.map(key => {
+                          const doseData = drug.doses[key];
+                          const doseSpecificMax = doseData.maxDose;
+                          const maxDoseValue = doseSpecificMax || parseMaxDose(drug.max, w);
+                          
+                          // Calculate dose if weight provided
+                          let doseResult = null;
+                          if (w > 0) {
+                            const result = calculateDose(doseData.value, w, maxDoseValue, "mg", doseData.unit, doseData.isFixed || drug.isFixedDose);
+                            if (result) {
+                              doseResult = typeof result === 'string' ? { dose: result, isExceedingMax: false } : result;
+                            }
                           }
                           
-                          if (ageDoses.length === 0) return (
-                            <p className="text-[9px] text-muted-foreground">No specific age-based dose found. Use standard dosing.</p>
-                          );
+                          const showDividedDose = doseResult && doseResult.isPerDay && doseResult.divisor > 1 && doseResult.perDoseMin;
                           
                           return (
-                            <div className="space-y-1">
-                              {ageDoses.map((dose, idx) => (
-                                <div key={idx} className="text-[10px] flex items-center gap-2">
-                                  <span className="text-purple-600 dark:text-purple-400 font-medium">{dose.label}:</span>
-                                  <span className="font-mono text-foreground">{dose.value} {dose.unit}</span>
-                                  {w > 0 && dose.value && !dose.isFixed && (
-                                    <span className="font-mono text-green-600 dark:text-green-400 bg-green-100 dark:bg-green-900/30 px-1.5 rounded">
-                                      → {(() => {
-                                        const vals = dose.value.toString().split('-');
-                                        if (vals.length === 2) {
-                                          return `${(parseFloat(vals[0]) * w).toFixed(0)}-${(parseFloat(vals[1]) * w).toFixed(0)} mg`;
-                                        }
-                                        return `${(parseFloat(vals[0]) * w).toFixed(0)} mg`;
-                                      })()}
-                                    </span>
+                            <div 
+                              key={key} 
+                              className={`p-2.5 rounded-lg border ${
+                                doseResult?.isExceedingMax 
+                                  ? 'bg-amber-50 dark:bg-amber-900/30 border-amber-300 dark:border-amber-700' 
+                                  : 'bg-white dark:bg-slate-800 border-blue-100 dark:border-blue-900'
+                              }`}
+                            >
+                              <p className="text-[10px] font-medium text-slate-500 dark:text-slate-400 mb-1">
+                                {doseData.label}
+                              </p>
+                              
+                              {/* Reference dose (always show) */}
+                              <p className="text-[10px] text-slate-600 dark:text-slate-400 font-mono">
+                                {doseData.value} {doseData.unit}
+                              </p>
+                              
+                              {/* Calculated dose (when weight entered) */}
+                              {w > 0 && doseResult && (
+                                <div className="mt-2 pt-2 border-t border-slate-200 dark:border-slate-700">
+                                  {showDividedDose ? (
+                                    <div className="flex items-center gap-2 flex-wrap">
+                                      <span className="text-base font-mono font-bold text-green-600 dark:text-green-400">
+                                        {doseResult.perDoseMin === doseResult.perDoseMax 
+                                          ? `${doseResult.perDoseMin} mg` 
+                                          : `${doseResult.perDoseMin}-${doseResult.perDoseMax} mg`}
+                                      </span>
+                                      {doseResult.frequency && (
+                                        <span className="text-[9px] font-semibold bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 px-1.5 py-0.5 rounded">
+                                          {doseResult.frequency}
+                                        </span>
+                                      )}
+                                    </div>
+                                  ) : (
+                                    <div className="flex items-center gap-2 flex-wrap">
+                                      <span className={`text-base font-mono font-bold ${
+                                        doseResult.isExceedingMax ? 'text-amber-600' : 'text-green-600 dark:text-green-400'
+                                      }`}>
+                                        {doseResult.dose}
+                                      </span>
+                                      {doseResult.frequency && (
+                                        <span className="text-[9px] font-semibold bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 px-1.5 py-0.5 rounded">
+                                          {doseResult.frequency}
+                                        </span>
+                                      )}
+                                    </div>
+                                  )}
+                                  {doseResult.isExceedingMax && (
+                                    <p className="text-[9px] text-amber-600 mt-1">⚠️ Capped at max</p>
                                   )}
                                 </div>
-                              ))}
+                              )}
                             </div>
                           );
-                        })()}
+                        })}
                       </div>
-                    )}
+                      
+                      {!w && (
+                        <p className="text-[9px] text-blue-500 mt-2 flex items-center gap-1">
+                          💡 Enter weight above for calculated doses
+                        </p>
+                      )}
+                    </div>
 
                     {/* Dosing Table (from formulary PDF) */}
                     {drug.dosingTable && (
