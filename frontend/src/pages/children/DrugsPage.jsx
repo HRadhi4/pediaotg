@@ -1270,45 +1270,50 @@ const DrugsPage = ({ onBack }) => {
                                 {w > 0 && table.columns.some(col => 
                                   col.toLowerCase().includes('dose') || col.toLowerCase().includes('dosage')
                                 ) && (
-                                  <th className="border border-indigo-200 dark:border-indigo-700 px-3 py-2 text-left font-semibold text-emerald-700 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-900/40" style={{ minWidth: '100px' }}>
-                                    Calc ({w}kg)
+                                  <th className="border border-indigo-200 dark:border-indigo-700 px-3 py-2 text-left font-semibold text-emerald-700 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-900/40" style={{ minWidth: '180px' }}>
+                                    Calculated Doses ({w}kg)
                                   </th>
                                 )}
                               </tr>
                             </thead>
                             <tbody>
                               {table.rows.map((row, rowIdx) => {
-                                // Try to calculate dose from the row data
-                                let calcDose = null;
+                                // Calculate doses for ALL dose columns in this row
+                                let calcDoses = [];
                                 if (w > 0) {
-                                  // Check if any column header implies per-kg dosing
-                                  const doseColIdx = table.columns.findIndex(col => 
-                                    col.toLowerCase().includes('dose') || col.toLowerCase().includes('dosage')
-                                  );
-                                  const colHeaderImpliesPerKg = doseColIdx >= 0 && 
-                                    (table.columns[doseColIdx].toLowerCase().includes('mg/kg') ||
-                                     table.columns[doseColIdx].toLowerCase().includes('/kg'));
+                                  // Find all dose column indices
+                                  const doseColIndices = table.columns.reduce((acc, col, idx) => {
+                                    if (col.toLowerCase().includes('dose') || col.toLowerCase().includes('dosage')) {
+                                      acc.push({ idx, header: col });
+                                    }
+                                    return acc;
+                                  }, []);
                                   
-                                  // First, look for explicit mg/kg in any cell
-                                  for (const cell of row) {
-                                    const cellStr = String(cell);
+                                  // Calculate dose for each dose column
+                                  for (const { idx, header } of doseColIndices) {
+                                    const cellStr = String(row[idx] || '');
+                                    
+                                    // Extract mg/kg value
                                     const mgkgMatch = cellStr.match(/(\d+(?:\.\d+)?)\s*mg\/kg/i);
                                     if (mgkgMatch) {
                                       const dosePerKg = parseFloat(mgkgMatch[1]);
-                                      calcDose = Math.round(dosePerKg * w * 10) / 10;
-                                      break;
-                                    }
-                                  }
-                                  
-                                  // If no explicit mg/kg found and column header implies per-kg, use the dose column value
-                                  if (!calcDose && colHeaderImpliesPerKg && doseColIdx >= 0) {
-                                    const doseCell = row[doseColIdx];
-                                    if (doseCell) {
-                                      const numMatch = String(doseCell).match(/^(\d+(?:\.\d+)?)/);
-                                      if (numMatch) {
-                                        const dosePerKg = parseFloat(numMatch[1]);
-                                        calcDose = Math.round(dosePerKg * w * 10) / 10;
-                                      }
+                                      const calcMg = Math.round(dosePerKg * w * 10) / 10;
+                                      
+                                      // Extract frequency (Q6h, Q8h, etc.)
+                                      const freqMatch = cellStr.match(/[Qq](\d+(?:-\d+)?)[Hh]/);
+                                      const freq = freqMatch ? freqMatch[0].toUpperCase() : '';
+                                      
+                                      // Create short label from header (e.g., "General" from "General Dosage")
+                                      let shortLabel = '';
+                                      if (header.toLowerCase().includes('general')) shortLabel = 'Gen';
+                                      else if (header.toLowerCase().includes('cns') || header.toLowerCase().includes('severe')) shortLabel = 'Sev';
+                                      else if (doseColIndices.length > 1) shortLabel = `D${idx}`;
+                                      
+                                      calcDoses.push({
+                                        label: shortLabel,
+                                        dose: calcMg,
+                                        freq: freq
+                                      });
                                     }
                                   }
                                 }
@@ -1320,12 +1325,22 @@ const DrugsPage = ({ onBack }) => {
                                         {cell}
                                       </td>
                                     ))}
-                                    {/* Add calculated dose cell */}
+                                    {/* Add calculated dose cell with all doses */}
                                     {w > 0 && table.columns.some(col => 
                                       col.toLowerCase().includes('dose') || col.toLowerCase().includes('dosage')
                                     ) && (
-                                      <td className="border border-indigo-200 dark:border-indigo-700 px-3 py-2 font-mono text-emerald-600 dark:text-emerald-400 font-bold bg-emerald-50 dark:bg-emerald-900/30" style={{ minWidth: '100px' }}>
-                                        {calcDose ? `${calcDose} mg` : '-'}
+                                      <td className="border border-indigo-200 dark:border-indigo-700 px-3 py-2 font-mono text-emerald-600 dark:text-emerald-400 font-bold bg-emerald-50 dark:bg-emerald-900/30" style={{ minWidth: '180px' }}>
+                                        {calcDoses.length > 0 ? (
+                                          <div className="space-y-1">
+                                            {calcDoses.map((d, i) => (
+                                              <div key={i} className="flex items-center gap-1">
+                                                {d.label && <span className="text-[9px] text-emerald-500 font-normal">{d.label}:</span>}
+                                                <span>{d.dose} mg</span>
+                                                {d.freq && <span className="text-[10px] bg-emerald-200 dark:bg-emerald-800 px-1 rounded">{d.freq}</span>}
+                                              </div>
+                                            ))}
+                                          </div>
+                                        ) : '-'}
                                       </td>
                                     )}
                                   </tr>
