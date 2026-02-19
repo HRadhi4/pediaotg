@@ -1281,13 +1281,20 @@ const DrugsPage = ({ onBack }) => {
                                 // Calculate doses for ALL dose columns in this row
                                 let calcDoses = [];
                                 if (w > 0) {
-                                  // Find all dose column indices
-                                  const doseColIndices = table.columns.reduce((acc, col, idx) => {
-                                    if (col.toLowerCase().includes('dose') || col.toLowerCase().includes('dosage')) {
-                                      acc.push({ idx, header: col });
+                                  // Find all dose column indices - check both header and cell content
+                                  const doseColIndices = [];
+                                  table.columns.forEach((col, idx) => {
+                                    const headerLower = col.toLowerCase();
+                                    // Check if header indicates dosing
+                                    const headerHasDose = headerLower.includes('dose') || headerLower.includes('dosage');
+                                    // Check if first row cell contains mg/kg (indicating dosing data)
+                                    const firstRowCell = String(table.rows[0]?.[idx] || '').toLowerCase();
+                                    const cellHasDose = firstRowCell.includes('mg/kg') || firstRowCell.includes('mg/dose');
+                                    
+                                    if (headerHasDose || cellHasDose) {
+                                      doseColIndices.push({ idx, header: col });
                                     }
-                                    return acc;
-                                  }, []);
+                                  });
                                   
                                   // Calculate dose for each dose column
                                   for (const { idx, header } of doseColIndices) {
