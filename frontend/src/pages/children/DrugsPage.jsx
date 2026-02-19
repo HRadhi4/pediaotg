@@ -895,7 +895,7 @@ const DrugsPage = ({ onBack }) => {
       {/* Drug Count */}
       <p className="text-xs text-muted-foreground px-1">
         Showing {filteredDrugs.length} of {sortedDrugs.length} drugs
-        {gfr && <span className="ml-2 text-amber-600">• GFR: {gfr} mL/min/1.73m²</span>}
+        {gfr && <span className="ml-2 text-amber-600">• eGFR: {gfr} mL/min/1.73m²</span>}
       </p>
 
       {/* Drug List */}
@@ -907,14 +907,19 @@ const DrugsPage = ({ onBack }) => {
           // Get age-filtered dose for collapsed card display
           const displayDose = getAgeFilteredDose(drug);
           const renalAdjustText = getRenalAdjustedDoseText(drug);
-          const hasRenalAdjustment = drug.renalAdjust && gfr && parseFloat(gfr) < 50;
+          // NEW: Use comprehensive renal adjustment (eGFR < 60 triggers adjustment per Chapter 31)
+          const comprehensiveRenal = getComprehensiveRenalAdjustment(drug);
+          const hasRenalAdjustment = gfr && parseFloat(gfr) < 60;
+          const showRenalWarning = hasRenalAdjustment && (comprehensiveRenal || drug.renalAdjust);
           
           return (
             <Card 
               key={drug.id} 
               className={`nightingale-card cursor-pointer transition-colors ${
-                hasRenalAdjustment 
-                  ? 'border-amber-300 dark:border-amber-700 hover:border-amber-400 dark:hover:border-amber-600' 
+                showRenalWarning
+                  ? comprehensiveRenal?.avoid 
+                    ? 'border-red-400 dark:border-red-600 hover:border-red-500 dark:hover:border-red-500'
+                    : 'border-amber-300 dark:border-amber-700 hover:border-amber-400 dark:hover:border-amber-600' 
                   : 'hover:border-blue-300 dark:hover:border-blue-700'
               }`}
               onClick={() => setExpandedDrug(isExpanded ? null : drug.id)}
@@ -936,10 +941,21 @@ const DrugsPage = ({ onBack }) => {
                           {patientAgeCategory}
                         </span>
                       )}
-                      {/* Renal adjustment indicator */}
-                      {hasRenalAdjustment && (
-                        <span className="text-[9px] px-1.5 py-0.5 rounded bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 whitespace-nowrap font-medium">
-                          🩺 Adjusted
+                      {/* Renal adjustment indicator - enhanced */}
+                      {showRenalWarning && (
+                        <span className={`text-[9px] px-1.5 py-0.5 rounded whitespace-nowrap font-medium ${
+                          comprehensiveRenal?.avoid 
+                            ? 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300'
+                            : comprehensiveRenal?.levelGuidedDosing
+                              ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300'
+                              : comprehensiveRenal?.neonatalExcluded
+                                ? 'bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300'
+                                : 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300'
+                        }`}>
+                          {comprehensiveRenal?.avoid ? '🚫 Avoid' : 
+                           comprehensiveRenal?.levelGuidedDosing ? '📊 TDM' :
+                           comprehensiveRenal?.neonatalExcluded ? '⚠️ No neo' :
+                           '🩺 Renal'}
                         </span>
                       )}
                       <span className="text-[10px] px-2 py-1 rounded bg-gray-100 dark:bg-gray-800 text-muted-foreground whitespace-nowrap">
