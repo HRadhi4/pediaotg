@@ -190,7 +190,7 @@ const IronToxicityApproach = ({ weight, expandedSections, toggleSection }) => {
                   <Label className="text-xs">Amount of Iron Salt Ingested (mg)</Label>
                   <Input
                     type="text"
-                  inputMode="text"
+                  inputMode="decimal"
                     value={amountIngested}
                     onChange={(e) => setAmountIngested(e.target.value)}
                     placeholder="e.g., 650"
@@ -227,7 +227,7 @@ const IronToxicityApproach = ({ weight, expandedSections, toggleSection }) => {
                       <Label className="text-xs">Concentration (mg/ml)</Label>
                       <Input
                         type="text"
-                  inputMode="text"
+                  inputMode="decimal"
                         value={customConcentration}
                         onChange={(e) => setCustomConcentration(e.target.value)}
                         placeholder="mg/ml"
@@ -256,7 +256,7 @@ const IronToxicityApproach = ({ weight, expandedSections, toggleSection }) => {
                   <Label className="text-xs">Volume Ingested (ml)</Label>
                   <Input
                     type="text"
-                  inputMode="text"
+                  inputMode="decimal"
                     value={mlIngested}
                     onChange={(e) => setMlIngested(e.target.value)}
                     placeholder="e.g., 30"
@@ -376,7 +376,7 @@ const IronToxicityApproach = ({ weight, expandedSections, toggleSection }) => {
               <Label className="text-xs">Serum Iron Level (mcg/dL)</Label>
               <Input
                 type="text"
-                  inputMode="text"
+                  inputMode="decimal"
                 value={serumIron}
                 onChange={(e) => setSerumIron(e.target.value)}
                 placeholder="e.g., 350"

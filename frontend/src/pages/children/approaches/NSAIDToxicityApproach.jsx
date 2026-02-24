@@ -199,7 +199,7 @@ const NSAIDToxicityApproach = ({ weight, expandedSections, toggleSection }) => {
                     <Label className="text-xs">Number of Tablets</Label>
                     <Input
                       type="text"
-                  inputMode="text"
+                  inputMode="decimal"
                       value={numTablets}
                       onChange={(e) => {
                         setNumTablets(e.target.value);
@@ -230,7 +230,7 @@ const NSAIDToxicityApproach = ({ weight, expandedSections, toggleSection }) => {
                     ) : (
                       <Input
                         type="text"
-                  inputMode="text"
+                  inputMode="decimal"
                         value={tabletStrength}
                         onChange={(e) => setTabletStrength(e.target.value)}
                         placeholder="mg"
@@ -247,7 +247,7 @@ const NSAIDToxicityApproach = ({ weight, expandedSections, toggleSection }) => {
                   <Label className="text-xs">Total Amount Ingested (mg)</Label>
                   <Input
                     type="text"
-                  inputMode="text"
+                  inputMode="decimal"
                     value={amountIngested}
                     onChange={(e) => {
                       setAmountIngested(e.target.value);
@@ -287,7 +287,7 @@ const NSAIDToxicityApproach = ({ weight, expandedSections, toggleSection }) => {
                     <Label className="text-xs">Concentration (mg/ml)</Label>
                     <Input
                       type="text"
-                  inputMode="text"
+                  inputMode="decimal"
                       value={customConcentration}
                       onChange={(e) => setCustomConcentration(e.target.value)}
                       placeholder="e.g., 20"
@@ -301,7 +301,7 @@ const NSAIDToxicityApproach = ({ weight, expandedSections, toggleSection }) => {
                   <Label className="text-xs">Volume Ingested (ml)</Label>
                   <Input
                     type="text"
-                  inputMode="text"
+                  inputMode="decimal"
                     value={mlIngested}
                     onChange={(e) => setMlIngested(e.target.value)}
                     placeholder="e.g., 30"

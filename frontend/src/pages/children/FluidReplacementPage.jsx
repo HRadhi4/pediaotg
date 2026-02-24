@@ -117,7 +117,7 @@ const FluidReplacementPage = ({ onBack }) => {
             <Label className="text-[10px] text-muted-foreground">Weight (kg)</Label>
             <Input
               type="text"
-                  inputMode="text"
+                  inputMode="decimal"
               placeholder="Enter weight in kg"
               value={weight}
               onChange={(e) => setWeight(e.target.value)}

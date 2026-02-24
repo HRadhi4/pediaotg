@@ -168,7 +168,7 @@ const NICUApproachesPage = () => {
               <Label className="text-xs text-muted-foreground">GA (wks)</Label>
               <Input
                 type="text"
-                  inputMode="text"
+                  inputMode="decimal"
                 placeholder="wks"
                 value={gestationalAge}
                 onChange={(e) => setGestationalAge(e.target.value)}
@@ -182,7 +182,7 @@ const NICUApproachesPage = () => {
               <Label className="text-xs text-muted-foreground">PNA (days)</Label>
               <Input
                 type="text"
-                  inputMode="text"
+                  inputMode="decimal"
                 placeholder="days"
                 value={postnatalAge}
                 onChange={(e) => setPostnatalAge(e.target.value)}
@@ -195,7 +195,7 @@ const NICUApproachesPage = () => {
               <Label className="text-xs text-muted-foreground">Wt (kg)</Label>
               <Input
                 type="text"
-                  inputMode="text"
+                  inputMode="decimal"
                 placeholder="kg"
                 value={weight}
                 onChange={(e) => setWeight(e.target.value)}

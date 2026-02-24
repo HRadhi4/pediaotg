@@ -336,7 +336,7 @@ const FormularyPage = ({ onBack }) => {
                 <Label className="text-xs text-slate-400">Weight (kg)</Label>
                 <Input
                   type="text"
-                  inputMode="text"
+                  inputMode="decimal"
                   value={weight}
                   onChange={(e) => setWeight(e.target.value)}
                   placeholder="kg"
@@ -348,7 +348,7 @@ const FormularyPage = ({ onBack }) => {
                 <Label className="text-xs text-slate-400">Height (cm)</Label>
                 <Input
                   type="text"
-                  inputMode="text"
+                  inputMode="decimal"
                   value={height}
                   onChange={(e) => setHeight(e.target.value)}
                   placeholder="cm"
@@ -360,7 +360,7 @@ const FormularyPage = ({ onBack }) => {
                 <Label className="text-xs text-slate-400">Creatinine (µmol/L)</Label>
                 <Input
                   type="text"
-                  inputMode="text"
+                  inputMode="decimal"
                   value={creatinine}
                   onChange={(e) => setCreatinine(e.target.value)}
                   placeholder="µmol/L"
