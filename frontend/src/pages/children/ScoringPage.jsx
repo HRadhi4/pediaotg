@@ -35,7 +35,7 @@ const ScoringPage = ({ onBack }) => {
           { id: "oi", label: "OI" },
           { id: "iwl", label: "IWL" },
           { id: "bsa", label: "BSA" },
-          { id: "abg", label: "Blood Gas" }
+          { id: "abg", label: "Blood Gas Compensation" }
         ].map((score) => (
           <Button
             key={score.id}
