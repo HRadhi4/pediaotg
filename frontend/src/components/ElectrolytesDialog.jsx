@@ -530,15 +530,27 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
       const bolusVolumeLow = 100;
       const bolusVolumeHigh = 150;
       
+      // Sodium Deficit Replacement with 3% NaCl (for after symptom resolution)
+      // Na Deficit (mEq) = (Target Na - Current Na) × 0.6 × Weight
+      // 1 mEq Na = 2 ml of 3% NaCl
+      const targetNaValue = parseFloat(targetNa) || 135;
+      const naDeficitMEq = (targetNaValue - na) * 0.6 * w;
+      const deficit3PercentMl = naDeficitMEq * 2; // ml of 3% NaCl
+      const deficit3PercentHourlyRate = deficit3PercentMl / 24; // over 24 hours
+      
       setResults({
         medication: "Severe Hyponatremia (Na < 125 with symptoms)",
         isSevereHyponatremia: true,
         severeData: {
           currentNa: na,
+          targetNa: targetNaValue,
           infusionRateLow: infusionRateLow.toFixed(1),
           infusionRateHigh: infusionRateHigh.toFixed(1),
           bolusVolumeLow,
-          bolusVolumeHigh
+          bolusVolumeHigh,
+          naDeficitMEq: naDeficitMEq.toFixed(1),
+          deficit3PercentMl: deficit3PercentMl.toFixed(1),
+          deficit3PercentHourlyRate: deficit3PercentHourlyRate.toFixed(1)
         }
       });
     } else if (sodiumType === "hyponatremia") {
