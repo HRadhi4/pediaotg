@@ -376,9 +376,14 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
     const freqMap = { "BD": 2, "TID": 3, "QID": 4 };
     const divisor = freqMap[kclPoFrequency] || 2;
     let perDose = dailyDose / divisor;
-    // Round per dose to nearest 5 if enabled
+    
+    // Round appropriately based on mode
     if (roundToFives) {
+      // Round to nearest 5 when enabled
       perDose = roundToFive(perDose);
+    } else {
+      // Always round to 1 decimal place to avoid floating-point display issues
+      perDose = Math.round(perDose * 10) / 10;
     }
     
     // Simplified PO result - just dose and frequency
