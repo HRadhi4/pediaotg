@@ -623,6 +623,355 @@ const BSACalculator = () => {
   );
 };
 
+// ABG Compensation Calculator
+const ABGCompensation = () => {
+  const [pH, setpH] = useState("");
+  const [pCO2, setpCO2] = useState("");
+  const [hco3, setHco3] = useState("");
+  const [disorder, setDisorder] = useState("metabolic_acidosis");
+  const [chronicity, setChronicity] = useState("acute");
+  const [results, setResults] = useState(null);
+
+  // ABG Validation: [80 - (first 2 digits after 0.XY)] × HCO3 / pCO2 = 24 ± 1
+  const validateABG = () => {
+    const pHVal = parseFloat(pH);
+    const pCO2Val = parseFloat(pCO2);
+    const hco3Val = parseFloat(hco3);
+    
+    if (!pHVal || !pCO2Val || !hco3Val) return null;
+    
+    // Extract first 2 digits after decimal (e.g., 7.35 -> 35)
+    const pHDecimal = Math.round((pHVal % 1) * 100);
+    const calculated = ((80 - pHDecimal) * hco3Val) / pCO2Val;
+    const isValid = calculated >= 23 && calculated <= 25;
+    
+    return { calculated: calculated.toFixed(1), isValid };
+  };
+
+  const calculateCompensation = () => {
+    const pCO2Val = parseFloat(pCO2) || 40;
+    const hco3Val = parseFloat(hco3) || 24;
+    
+    let expectedValue, formula, range, interpretation;
+    
+    switch (disorder) {
+      case "metabolic_acidosis":
+        // Winter's Formula: Expected pCO2 = 1.5 × [HCO3] + 8 (±2)
+        expectedValue = 1.5 * hco3Val + 8;
+        formula = `1.5 × ${hco3Val} + 8`;
+        range = `${(expectedValue - 2).toFixed(1)} - ${(expectedValue + 2).toFixed(1)}`;
+        interpretation = pCO2Val >= (expectedValue - 2) && pCO2Val <= (expectedValue + 2) 
+          ? "Appropriate respiratory compensation" 
+          : pCO2Val < (expectedValue - 2) 
+            ? "Additional respiratory alkalosis (mixed disorder)" 
+            : "Additional respiratory acidosis (mixed disorder)";
+        break;
+        
+      case "metabolic_alkalosis":
+        // Expected pCO2 = 0.7 × [HCO3] + 20 (±5)
+        expectedValue = 0.7 * hco3Val + 20;
+        formula = `0.7 × ${hco3Val} + 20`;
+        range = `${(expectedValue - 5).toFixed(1)} - ${(expectedValue + 5).toFixed(1)}`;
+        interpretation = pCO2Val >= (expectedValue - 5) && pCO2Val <= (expectedValue + 5)
+          ? "Appropriate respiratory compensation"
+          : pCO2Val < (expectedValue - 5)
+            ? "Additional respiratory alkalosis (mixed disorder)"
+            : "Additional respiratory acidosis (mixed disorder)";
+        break;
+        
+      case "respiratory_acidosis":
+        // Acute: HCO3 = 24 + (pCO2 - 40) × 1/10
+        // Chronic: HCO3 = 24 + (pCO2 - 40) × 4/10
+        const multiplierAcidosis = chronicity === "acute" ? 1 : 4;
+        expectedValue = 24 + ((pCO2Val - 40) * multiplierAcidosis / 10);
+        formula = chronicity === "acute" 
+          ? `24 + (${pCO2Val} - 40) × 1/10`
+          : `24 + (${pCO2Val} - 40) × 4/10`;
+        range = `${(expectedValue - 2).toFixed(1)} - ${(expectedValue + 2).toFixed(1)}`;
+        interpretation = hco3Val >= (expectedValue - 2) && hco3Val <= (expectedValue + 2)
+          ? `Appropriate metabolic compensation (${chronicity})`
+          : hco3Val < (expectedValue - 2)
+            ? "Additional metabolic acidosis (mixed disorder)"
+            : "Additional metabolic alkalosis (mixed disorder)";
+        break;
+        
+      case "respiratory_alkalosis":
+        // Acute: HCO3 = 24 - (40 - pCO2) × 2/10
+        // Chronic: HCO3 = 24 - (40 - pCO2) × 5/10
+        const multiplierAlkalosis = chronicity === "acute" ? 2 : 5;
+        expectedValue = 24 - ((40 - pCO2Val) * multiplierAlkalosis / 10);
+        formula = chronicity === "acute"
+          ? `24 - (40 - ${pCO2Val}) × 2/10`
+          : `24 - (40 - ${pCO2Val}) × 5/10`;
+        range = `${(expectedValue - 2).toFixed(1)} - ${(expectedValue + 2).toFixed(1)}`;
+        interpretation = hco3Val >= (expectedValue - 2) && hco3Val <= (expectedValue + 2)
+          ? `Appropriate metabolic compensation (${chronicity})`
+          : hco3Val < (expectedValue - 2)
+            ? "Additional metabolic acidosis (mixed disorder)"
+            : "Additional metabolic alkalosis (mixed disorder)";
+        break;
+        
+      default:
+        return;
+    }
+    
+    const validation = validateABG();
+    
+    setResults({
+      disorder,
+      chronicity,
+      expectedValue: expectedValue.toFixed(1),
+      formula,
+      range,
+      interpretation,
+      validation,
+      isMetabolic: disorder.startsWith("metabolic"),
+      actualValue: disorder.startsWith("metabolic") ? pCO2Val : hco3Val
+    });
+  };
+
+  return (
+    <div className="space-y-4">
+      <Card className="nightingale-card">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-base flex items-center gap-2">
+            ABG Compensation Calculator
+          </CardTitle>
+          <CardDescription>
+            Blood gas analysis with compensation rules
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {/* ABG Values Input */}
+          <div className="grid grid-cols-3 gap-2">
+            <div>
+              <Label className="text-xs">pH</Label>
+              <Input
+                type="text"
+                inputMode="text"
+                placeholder="7.35"
+                value={pH}
+                onChange={(e) => setpH(e.target.value)}
+                className="font-mono h-9"
+              />
+            </div>
+            <div>
+              <Label className="text-xs">pCO2 (mmHg)</Label>
+              <Input
+                type="text"
+                inputMode="text"
+                placeholder="40"
+                value={pCO2}
+                onChange={(e) => setpCO2(e.target.value)}
+                className="font-mono h-9"
+              />
+            </div>
+            <div>
+              <Label className="text-xs">HCO3 (mEq/L)</Label>
+              <Input
+                type="text"
+                inputMode="text"
+                placeholder="24"
+                value={hco3}
+                onChange={(e) => setHco3(e.target.value)}
+                className="font-mono h-9"
+              />
+            </div>
+          </div>
+
+          {/* Primary Disorder Selection */}
+          <div className="space-y-2">
+            <Label className="text-xs font-semibold">Primary Disorder</Label>
+            <div className="grid grid-cols-2 gap-2">
+              <button
+                onClick={() => setDisorder("metabolic_acidosis")}
+                className={`p-2 text-xs rounded-md border transition-colors ${
+                  disorder === "metabolic_acidosis"
+                    ? "bg-red-600 text-white border-red-600"
+                    : "bg-white dark:bg-gray-800 border-gray-300 hover:bg-red-50"
+                }`}
+              >
+                Metabolic Acidosis
+              </button>
+              <button
+                onClick={() => setDisorder("metabolic_alkalosis")}
+                className={`p-2 text-xs rounded-md border transition-colors ${
+                  disorder === "metabolic_alkalosis"
+                    ? "bg-blue-600 text-white border-blue-600"
+                    : "bg-white dark:bg-gray-800 border-gray-300 hover:bg-blue-50"
+                }`}
+              >
+                Metabolic Alkalosis
+              </button>
+              <button
+                onClick={() => setDisorder("respiratory_acidosis")}
+                className={`p-2 text-xs rounded-md border transition-colors ${
+                  disorder === "respiratory_acidosis"
+                    ? "bg-orange-600 text-white border-orange-600"
+                    : "bg-white dark:bg-gray-800 border-gray-300 hover:bg-orange-50"
+                }`}
+              >
+                Respiratory Acidosis
+              </button>
+              <button
+                onClick={() => setDisorder("respiratory_alkalosis")}
+                className={`p-2 text-xs rounded-md border transition-colors ${
+                  disorder === "respiratory_alkalosis"
+                    ? "bg-teal-600 text-white border-teal-600"
+                    : "bg-white dark:bg-gray-800 border-gray-300 hover:bg-teal-50"
+                }`}
+              >
+                Respiratory Alkalosis
+              </button>
+            </div>
+          </div>
+
+          {/* Acute/Chronic for Respiratory Disorders */}
+          {disorder.startsWith("respiratory") && (
+            <div className="space-y-2">
+              <Label className="text-xs font-semibold">Chronicity</Label>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setChronicity("acute")}
+                  className={`flex-1 p-2 text-xs rounded-md border transition-colors ${
+                    chronicity === "acute"
+                      ? "bg-purple-600 text-white border-purple-600"
+                      : "bg-white dark:bg-gray-800 border-gray-300 hover:bg-purple-50"
+                  }`}
+                >
+                  Acute
+                </button>
+                <button
+                  onClick={() => setChronicity("chronic")}
+                  className={`flex-1 p-2 text-xs rounded-md border transition-colors ${
+                    chronicity === "chronic"
+                      ? "bg-purple-600 text-white border-purple-600"
+                      : "bg-white dark:bg-gray-800 border-gray-300 hover:bg-purple-50"
+                  }`}
+                >
+                  Chronic
+                </button>
+              </div>
+            </div>
+          )}
+
+          <Button onClick={calculateCompensation} className="w-full">
+            Calculate Compensation
+          </Button>
+
+          {/* Results */}
+          {results && (
+            <div className="space-y-3 pt-2">
+              {/* ABG Validation */}
+              {results.validation && (
+                <div className={`p-3 rounded-lg border ${
+                  results.validation.isValid 
+                    ? "bg-green-50 dark:bg-green-950/30 border-green-300" 
+                    : "bg-red-50 dark:bg-red-950/30 border-red-300"
+                }`}>
+                  <p className="text-xs font-bold mb-1">ABG Validation Check</p>
+                  <p className="text-xs font-mono">
+                    [80 - {Math.round((parseFloat(pH) % 1) * 100)}] × {hco3} / {pCO2} = {results.validation.calculated}
+                  </p>
+                  <p className={`text-xs font-semibold mt-1 ${
+                    results.validation.isValid ? "text-green-700" : "text-red-700"
+                  }`}>
+                    {results.validation.isValid ? "✓ ABG is internally consistent (24 ± 1)" : "✗ ABG may have errors (expected 24 ± 1)"}
+                  </p>
+                </div>
+              )}
+
+              {/* Expected Compensation */}
+              <div className="p-3 rounded-lg bg-blue-50 dark:bg-blue-950/30 border border-blue-300">
+                <p className="text-xs font-bold text-blue-700 dark:text-blue-300 mb-2">
+                  Expected {results.isMetabolic ? "pCO2" : "HCO3"} for {results.disorder.replace("_", " ").replace(/\b\w/g, l => l.toUpperCase())}
+                  {!results.isMetabolic && ` (${results.chronicity})`}
+                </p>
+                <div className="space-y-1 text-xs">
+                  <p className="font-mono bg-white dark:bg-gray-900 p-2 rounded">
+                    {results.formula} = <strong>{results.expectedValue}</strong>
+                  </p>
+                  <p>Expected Range: <strong>{results.range}</strong> {results.isMetabolic ? "mmHg" : "mEq/L"}</p>
+                  <p>Actual {results.isMetabolic ? "pCO2" : "HCO3"}: <strong>{results.actualValue}</strong> {results.isMetabolic ? "mmHg" : "mEq/L"}</p>
+                </div>
+              </div>
+
+              {/* Interpretation */}
+              <div className={`p-3 rounded-lg border ${
+                results.interpretation.includes("Appropriate") 
+                  ? "bg-green-50 dark:bg-green-950/30 border-green-300" 
+                  : "bg-amber-50 dark:bg-amber-950/30 border-amber-300"
+              }`}>
+                <p className="text-xs font-bold mb-1">Interpretation</p>
+                <p className={`text-sm font-semibold ${
+                  results.interpretation.includes("Appropriate") ? "text-green-700" : "text-amber-700"
+                }`}>
+                  {results.interpretation}
+                </p>
+              </div>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Reference Card */}
+      <Card className="nightingale-card">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-sm">Compensation Rules Reference</CardTitle>
+        </CardHeader>
+        <CardContent className="text-xs space-y-3">
+          {/* Metabolic Disorders */}
+          <div className="p-2 rounded bg-gray-50 dark:bg-gray-800">
+            <p className="font-bold text-red-600 mb-1">Metabolic Acidosis (Winter's Formula)</p>
+            <p className="font-mono">Expected pCO2 = 1.5 × [HCO3] + 8 (±2)</p>
+          </div>
+          <div className="p-2 rounded bg-gray-50 dark:bg-gray-800">
+            <p className="font-bold text-blue-600 mb-1">Metabolic Alkalosis</p>
+            <p className="font-mono">Expected pCO2 = 0.7 × [HCO3] + 20 (±5)</p>
+          </div>
+          
+          {/* Respiratory Disorders */}
+          <div className="p-2 rounded bg-gray-50 dark:bg-gray-800">
+            <p className="font-bold text-orange-600 mb-1">Respiratory Acidosis</p>
+            <div className="grid grid-cols-2 gap-2 font-mono text-[10px]">
+              <div>
+                <p className="font-semibold">Acute:</p>
+                <p>HCO3 = 24 + (pCO2-40) × 1/10</p>
+              </div>
+              <div>
+                <p className="font-semibold">Chronic:</p>
+                <p>HCO3 = 24 + (pCO2-40) × 4/10</p>
+              </div>
+            </div>
+          </div>
+          <div className="p-2 rounded bg-gray-50 dark:bg-gray-800">
+            <p className="font-bold text-teal-600 mb-1">Respiratory Alkalosis</p>
+            <div className="grid grid-cols-2 gap-2 font-mono text-[10px]">
+              <div>
+                <p className="font-semibold">Acute:</p>
+                <p>HCO3 = 24 - (40-pCO2) × 2/10</p>
+              </div>
+              <div>
+                <p className="font-semibold">Chronic:</p>
+                <p>HCO3 = 24 - (40-pCO2) × 5/10</p>
+              </div>
+            </div>
+          </div>
+          
+          {/* ABG Validation */}
+          <div className="p-2 rounded bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300">
+            <p className="font-bold text-yellow-700 mb-1">ABG Validation Formula</p>
+            <p className="font-mono">[80 - (pH decimal)] × HCO3 / pCO2 = 24 ± 1</p>
+            <p className="text-[10px] text-muted-foreground mt-1">
+              Example: pH 7.35 → [80 - 35] × HCO3 / pCO2 should equal ~24
+            </p>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+};
+
 // CPR Page - PALS 2025 Algorithms & Drug Dosing (Redesigned)
 
 export default ScoringPage;
