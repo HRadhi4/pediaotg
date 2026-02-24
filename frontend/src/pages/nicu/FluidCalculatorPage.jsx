@@ -193,18 +193,15 @@ const FluidCalculatorPage = () => {
           <div className="grid grid-cols-3 gap-2">
             <div className="space-y-1">
               <Label className="text-xs">Weight (kg)</Label>
-              <Input type="text" step="0.01" placeholder="0.8" value={weight} onChange={(e) => setWeight(e.target.value)} className="nightingale-input font-mono h-9" />
-              inputMode="text"
+              <Input type="text" inputMode="text" step="0.01" placeholder="0.8" value={weight} onChange={(e) => setWeight(e.target.value)} className="nightingale-input font-mono h-9" />
             </div>
             <div className="space-y-1">
               <Label className="text-xs">Age (days)</Label>
-              <Input type="text" placeholder="3" value={age} onChange={(e) => setAge(e.target.value)} className="nightingale-input font-mono h-9" />
-              inputMode="text"
+              <Input type="text" inputMode="text" placeholder="3" value={age} onChange={(e) => setAge(e.target.value)} className="nightingale-input font-mono h-9" />
             </div>
             <div className="space-y-1">
               <Label className="text-xs">GA (weeks)</Label>
-              <Input type="text" placeholder="32" value={gestationalAge} onChange={(e) => setGestationalAge(e.target.value)} className="nightingale-input font-mono h-9" />
-              inputMode="text"
+              <Input type="text" inputMode="text" placeholder="32" value={gestationalAge} onChange={(e) => setGestationalAge(e.target.value)} className="nightingale-input font-mono h-9" />
             </div>
           </div>
         </CardContent>
@@ -215,8 +212,7 @@ const FluidCalculatorPage = () => {
         <CardContent className="pt-4 space-y-3">
           <div className="space-y-1">
             <Label className="text-xs">TFI (ml/kg/day)</Label>
-            <Input type="text" placeholder="140" value={tfi} onChange={(e) => setTfi(e.target.value)} className="nightingale-input font-mono" />
-            inputMode="text"
+            <Input type="text" inputMode="text" placeholder="140" value={tfi} onChange={(e) => setTfi(e.target.value)} className="nightingale-input font-mono" />
             {age && <p className="text-xs text-muted-foreground">Suggested: <span className="text-[#00d9c5] font-mono">{getTfiSuggestion()}</span></p>}
           </div>
         </CardContent>
