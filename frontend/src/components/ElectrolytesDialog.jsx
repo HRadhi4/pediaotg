@@ -2005,6 +2005,29 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
                         <p>• Determine underlying cause</p>
                       </div>
                     </div>
+                    
+                    {/* Sodium Deficit Replacement with 3% NaCl */}
+                    <div className="p-3 rounded-lg bg-cyan-50 dark:bg-cyan-950/30 border border-cyan-300">
+                      <p className="text-xs font-bold text-cyan-700 dark:text-cyan-300 mb-2">Switch to Isotonic Saline + Na Deficit Replacement (3% NaCl)</p>
+                      <div className="p-2 bg-white dark:bg-gray-900 rounded text-xs space-y-1">
+                        <p className="text-muted-foreground">Na Deficit = (Target - Current) × 0.6 × Weight</p>
+                        <p className="text-muted-foreground">= ({results.severeData.targetNa} - {results.severeData.currentNa}) × 0.6 × {w} kg</p>
+                        <p className="font-semibold mt-2">Na Deficit: <strong>{results.severeData.naDeficitMEq} mEq</strong></p>
+                      </div>
+                      <div className="mt-2 p-2 bg-cyan-100 dark:bg-cyan-900/30 rounded">
+                        <p className="text-xs text-muted-foreground">1 mEq Na = 2 ml of 3% NaCl</p>
+                        <p className="text-sm font-bold text-cyan-800 dark:text-cyan-200 mt-1">
+                          3% NaCl Volume: {results.severeData.deficit3PercentMl} ml
+                        </p>
+                        <p className="text-xs mt-1">
+                          Rate over 24h: <strong>{results.severeData.deficit3PercentHourlyRate} ml/hr</strong>
+                        </p>
+                      </div>
+                      <div className="p-2 bg-amber-50 dark:bg-amber-900/20 rounded mt-2 text-[10px]">
+                        <p>⚠️ Add to isotonic saline (NS) as maintenance fluid</p>
+                        <p>⚠️ Continue monitoring Na every 2-4 hours</p>
+                      </div>
+                    </div>
                   </div>
                 ) : (
                   <>
