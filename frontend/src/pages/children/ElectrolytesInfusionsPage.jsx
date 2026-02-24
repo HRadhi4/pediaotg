@@ -581,6 +581,7 @@ const ElectrolytesInfusionsPage = ({ onBack }) => {
             <div>
               <Label>Current Calcium Level (optional)</Label>
               <Input type="number" step="0.1" min="0" placeholder="mg/dL" value={calciumLevel} onChange={(e) => setCalciumLevel(e.target.value)} className="font-mono" />
+              inputMode="decimal"
             </div>
           )}
 
@@ -588,6 +589,7 @@ const ElectrolytesInfusionsPage = ({ onBack }) => {
             <div>
               <Label>Current Magnesium Level (optional)</Label>
               <Input type="number" step="0.1" min="0" placeholder="mg/dL" value={magnesiumLevel} onChange={(e) => setMagnesiumLevel(e.target.value)} className="font-mono" />
+              inputMode="decimal"
             </div>
           )}
 
@@ -595,6 +597,7 @@ const ElectrolytesInfusionsPage = ({ onBack }) => {
             <div>
               <Label>Current Potassium Level (optional)</Label>
               <Input type="number" step="0.1" min="0" placeholder="mEq/L" value={potassiumLevel} onChange={(e) => setPotassiumLevel(e.target.value)} className="font-mono" />
+              inputMode="decimal"
             </div>
           )}
 
@@ -603,6 +606,7 @@ const ElectrolytesInfusionsPage = ({ onBack }) => {
               <div>
                 <Label>Current Potassium Level (optional)</Label>
                 <Input type="number" step="0.1" min="0" placeholder="mEq/L" value={potassiumLevel} onChange={(e) => setPotassiumLevel(e.target.value)} className="font-mono" />
+                inputMode="decimal"
               </div>
               <div>
                 <Label>Frequency</Label>
@@ -644,10 +648,12 @@ const ElectrolytesInfusionsPage = ({ onBack }) => {
                 <div>
                   <Label>HCO3 (mEq/L)</Label>
                   <Input type="number" step="0.1" min="0" value={hco3Level} onChange={(e) => setHco3Level(e.target.value)} className="font-mono" disabled={nahco3Method === "be"} />
+                  inputMode="decimal"
                 </div>
                 <div>
                   <Label>Base Excess</Label>
                   <Input type="number" step="0.1" placeholder="e.g., -10" value={baseExcess} onChange={(e) => setBaseExcess(e.target.value)} className="font-mono" disabled={nahco3Method === "hco3"} />
+                  inputMode="decimal"
                 </div>
               </div>
             </>
@@ -681,10 +687,12 @@ const ElectrolytesInfusionsPage = ({ onBack }) => {
                 <div>
                   <Label>Current Na (mEq/L)</Label>
                   <Input type="number" min="0" value={currentNa} onChange={(e) => setCurrentNa(e.target.value)} className="font-mono" />
+                  inputMode="decimal"
                 </div>
                 <div>
                   <Label>Target Na (mEq/L)</Label>
                   <Input type="number" min="0" placeholder="140" value={targetNa} onChange={(e) => setTargetNa(e.target.value)} className="font-mono" />
+                  inputMode="decimal"
                 </div>
               </div>
             </>
@@ -695,6 +703,7 @@ const ElectrolytesInfusionsPage = ({ onBack }) => {
               <div>
                 <Label>Phosphate Level (optional)</Label>
                 <Input type="number" step="0.1" min="0" placeholder="mg/dL" value={phosphateLevel} onChange={(e) => setPhosphateLevel(e.target.value)} className="font-mono" />
+                inputMode="decimal"
               </div>
               <RadioGroup value={phosphateSeverity} onValueChange={setPhosphateSeverity} className="flex gap-4">
                 <div className="flex items-center space-x-2">

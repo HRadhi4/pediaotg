@@ -381,14 +381,17 @@ const OxygenationIndex = () => {
           <div className="space-y-2">
             <Label className="text-xs">Mean Airway Pressure (MAP) cmH2O</Label>
             <Input type="number" placeholder="e.g., 15" value={map} onChange={(e) => setMap(e.target.value)} className="font-mono" />
+            inputMode="decimal"
           </div>
           <div className="space-y-2">
             <Label className="text-xs">FiO2 (as decimal, e.g., 0.6)</Label>
             <Input type="number" step="0.01" placeholder="e.g., 0.6" value={fio2} onChange={(e) => setFio2(e.target.value)} className="font-mono" />
+            inputMode="decimal"
           </div>
           <div className="space-y-2">
             <Label className="text-xs">PaO2 (mmHg)</Label>
             <Input type="number" placeholder="e.g., 60" value={pao2} onChange={(e) => setPao2(e.target.value)} className="font-mono" />
+            inputMode="decimal"
           </div>
         </CardContent>
       </Card>
@@ -446,10 +449,12 @@ const IWLCalculator = () => {
             <div className="space-y-2">
               <Label>Weight (kg)</Label>
               <Input type="number" placeholder="e.g., 15" value={weight} onChange={(e) => setWeight(e.target.value)} className="font-mono" />
+              inputMode="decimal"
             </div>
             <div className="space-y-2">
               <Label>Height (cm)</Label>
               <Input type="number" placeholder="e.g., 100" value={height} onChange={(e) => setHeight(e.target.value)} className="font-mono" />
+              inputMode="decimal"
             </div>
           </div>
         </CardContent>

@@ -194,14 +194,17 @@ const FluidCalculatorPage = () => {
             <div className="space-y-1">
               <Label className="text-xs">Weight (kg)</Label>
               <Input type="number" step="0.01" placeholder="0.8" value={weight} onChange={(e) => setWeight(e.target.value)} className="nightingale-input font-mono h-9" />
+              inputMode="decimal"
             </div>
             <div className="space-y-1">
               <Label className="text-xs">Age (days)</Label>
               <Input type="number" placeholder="3" value={age} onChange={(e) => setAge(e.target.value)} className="nightingale-input font-mono h-9" />
+              inputMode="decimal"
             </div>
             <div className="space-y-1">
               <Label className="text-xs">GA (weeks)</Label>
               <Input type="number" placeholder="32" value={gestationalAge} onChange={(e) => setGestationalAge(e.target.value)} className="nightingale-input font-mono h-9" />
+              inputMode="decimal"
             </div>
           </div>
         </CardContent>
@@ -213,6 +216,7 @@ const FluidCalculatorPage = () => {
           <div className="space-y-1">
             <Label className="text-xs">TFI (ml/kg/day)</Label>
             <Input type="number" placeholder="140" value={tfi} onChange={(e) => setTfi(e.target.value)} className="nightingale-input font-mono" />
+            inputMode="decimal"
             {age && <p className="text-xs text-muted-foreground">Suggested: <span className="text-[#00d9c5] font-mono">{getTfiSuggestion()}</span></p>}
           </div>
         </CardContent>
@@ -289,12 +293,14 @@ const FluidCalculatorPage = () => {
           <div className="space-y-1">
             <Label className="text-xs">3% NaCl (ml/kg/day)</Label>
             <Input type="number" step="0.1" placeholder="0" value={naclAmount} onChange={(e) => setNaclAmount(e.target.value)} className="nightingale-input font-mono h-9" />
+            inputMode="decimal"
           </div>
           
           <div className="grid grid-cols-2 gap-2">
             <div className="space-y-1">
               <Label className="text-xs">Feed Volume (ml/feed)</Label>
               <Input type="number" placeholder="5" value={feedVolume} onChange={(e) => setFeedVolume(e.target.value)} className="nightingale-input font-mono h-9" />
+              inputMode="decimal"
             </div>
             <div className="space-y-1">
               <Label className="text-xs">Feed Type</Label>
