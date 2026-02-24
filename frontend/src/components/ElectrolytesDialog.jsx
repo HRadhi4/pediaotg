@@ -1459,10 +1459,25 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
                   )}
                   
                   {hyponatremiaType === "severe" && (
-                    <div className="p-2 rounded bg-red-50 dark:bg-red-900/20 text-xs">
-                      <p className="font-semibold text-red-700">Severe Hyponatremia Criteria:</p>
-                      <p>Na &lt; 125 mEq/L with symptoms (seizures, mental status changes)</p>
-                    </div>
+                    <>
+                      <div className="p-2 rounded bg-red-50 dark:bg-red-900/20 text-xs">
+                        <p className="font-semibold text-red-700">Severe Hyponatremia Criteria:</p>
+                        <p>Na &lt; 125 mEq/L with symptoms (seizures, mental status changes)</p>
+                      </div>
+                      <div>
+                        <Label className="text-xs">Target Na (mEq/L) - for deficit calculation</Label>
+                        <Input
+                          type="number"
+                          step="1"
+                          min="130"
+                          max="145"
+                          placeholder="135"
+                          value={targetNa}
+                          onChange={(e) => setTargetNa(e.target.value)}
+                          className="font-mono h-9 mt-1"
+                        />
+                      </div>
+                    </>
                   )}
                 </>
               )}
