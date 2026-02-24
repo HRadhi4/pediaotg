@@ -506,18 +506,22 @@ const WHOChartsSection = ({ gender }) => {
         <CardContent className="space-y-3">
           <div className="grid grid-cols-2 gap-2">
             <div><Label className="text-xs">Date</Label><Input type="date" value={newEntry.date} onChange={e => setNewEntry({...newEntry, date: e.target.value})} className="h-9 text-sm" data-testid="who-date-input" /></div>
-            <div><Label className="text-xs">Age (months)</Label><Input type="number" min="0" max="24" step="0.5" value={newEntry.ageMonths} onChange={e => setNewEntry({...newEntry, ageMonths: e.target.value})} className="h-9 font-mono text-sm" placeholder="0-24" data-testid="who-age-input" /></div>
+            <div><Label className="text-xs">Age (months)</Label><Input type="number"
+                  inputMode="decimal" min="0" max="24" step="0.5" value={newEntry.ageMonths} onChange={e => setNewEntry({...newEntry, ageMonths: e.target.value})} className="h-9 font-mono text-sm" placeholder="0-24" data-testid="who-age-input" /></div>
           </div>
           {isBmiChart && (
             <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded-lg">
               <Label className="text-xs text-muted-foreground mb-1 block">BMI Calculator</Label>
               <div className="grid grid-cols-2 gap-2">
-                <div><Input type="number" step="0.1" min="0" value={bmiCalc.height} onChange={e => handleBmiCalcChange('height', e.target.value)} className="h-8 font-mono text-sm" placeholder="Length (cm)" data-testid="who-bmi-height-input" /></div>
-                <div><Input type="number" step="0.1" min="0" value={bmiCalc.weight} onChange={e => handleBmiCalcChange('weight', e.target.value)} className="h-8 font-mono text-sm" placeholder="Weight (kg)" data-testid="who-bmi-weight-input" /></div>
+                <div><Input type="number"
+                  inputMode="decimal" step="0.1" min="0" value={bmiCalc.height} onChange={e => handleBmiCalcChange('height', e.target.value)} className="h-8 font-mono text-sm" placeholder="Length (cm)" data-testid="who-bmi-height-input" /></div>
+                <div><Input type="number"
+                  inputMode="decimal" step="0.1" min="0" value={bmiCalc.weight} onChange={e => handleBmiCalcChange('weight', e.target.value)} className="h-8 font-mono text-sm" placeholder="Weight (kg)" data-testid="who-bmi-weight-input" /></div>
               </div>
             </div>
           )}
-          <div><Label className="text-xs">{currentChart.yLabel}</Label><Input type="number" step="0.1" min="0" value={newEntry.value} onChange={e => setNewEntry({...newEntry, value: e.target.value})} className="h-9 font-mono text-sm" placeholder={`${currentChart.grid.valueMin}-${currentChart.grid.valueMax}`} data-testid="who-value-input" /></div>
+          <div><Label className="text-xs">{currentChart.yLabel}</Label><Input type="number"
+                  inputMode="decimal" step="0.1" min="0" value={newEntry.value} onChange={e => setNewEntry({...newEntry, value: e.target.value})} className="h-9 font-mono text-sm" placeholder={`${currentChart.grid.valueMin}-${currentChart.grid.valueMax}`} data-testid="who-value-input" /></div>
           <Button onClick={addEntry} className="w-full" size="sm" disabled={!newEntry.date || !newEntry.ageMonths || !newEntry.value || parseFloat(newEntry.ageMonths) < 0 || parseFloat(newEntry.ageMonths) > 24} data-testid="who-add-measurement-btn">
             <Plus className="h-4 w-4 mr-1" />Add to Chart
           </Button>
@@ -978,23 +982,29 @@ const CDCChartsSection = ({ gender }) => {
         <CardContent className="space-y-3">
           <div className="grid grid-cols-2 gap-2">
             <div><Label className="text-xs">Date</Label><Input type="date" value={newEntry.date} onChange={e => setNewEntry({...newEntry, date: e.target.value})} className="h-9 text-sm" data-testid="cdc-date-input" /></div>
-            <div><Label className="text-xs">Age (years)</Label><Input type="number" min="2" max="20" step="0.5" value={newEntry.ageYears} onChange={e => setNewEntry({...newEntry, ageYears: e.target.value})} className="h-9 font-mono text-sm" placeholder="2-20" data-testid="cdc-age-input" /></div>
+            <div><Label className="text-xs">Age (years)</Label><Input type="number"
+                  inputMode="decimal" min="2" max="20" step="0.5" value={newEntry.ageYears} onChange={e => setNewEntry({...newEntry, ageYears: e.target.value})} className="h-9 font-mono text-sm" placeholder="2-20" data-testid="cdc-age-input" /></div>
           </div>
           {isStatureWeightChart ? (
             <div className="grid grid-cols-2 gap-2">
-              <div><Label className="text-xs">Stature (cm) <span className="text-blue-600">●</span></Label><Input type="number" step="0.1" min="0" value={newEntry.stature} onChange={e => setNewEntry({...newEntry, stature: e.target.value})} className="h-9 font-mono text-sm" placeholder="77-200" data-testid="cdc-stature-input" /></div>
-              <div><Label className="text-xs">Weight (kg) <span className="text-red-600">●</span></Label><Input type="number" step="0.1" min="0" value={newEntry.weight} onChange={e => setNewEntry({...newEntry, weight: e.target.value})} className="h-9 font-mono text-sm" placeholder="10-105" data-testid="cdc-weight-input" /></div>
+              <div><Label className="text-xs">Stature (cm) <span className="text-blue-600">●</span></Label><Input type="number"
+                  inputMode="decimal" step="0.1" min="0" value={newEntry.stature} onChange={e => setNewEntry({...newEntry, stature: e.target.value})} className="h-9 font-mono text-sm" placeholder="77-200" data-testid="cdc-stature-input" /></div>
+              <div><Label className="text-xs">Weight (kg) <span className="text-red-600">●</span></Label><Input type="number"
+                  inputMode="decimal" step="0.1" min="0" value={newEntry.weight} onChange={e => setNewEntry({...newEntry, weight: e.target.value})} className="h-9 font-mono text-sm" placeholder="10-105" data-testid="cdc-weight-input" /></div>
             </div>
           ) : (
             <div className="space-y-2">
               <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded-lg">
                 <Label className="text-xs text-muted-foreground mb-1 block">BMI Calculator</Label>
                 <div className="grid grid-cols-2 gap-2">
-                  <div><Input type="number" step="0.1" min="0" value={bmiCalc.height} onChange={e => handleBmiCalcChange('height', e.target.value)} className="h-8 font-mono text-sm" placeholder="Height (cm)" data-testid="cdc-bmi-height-input" /></div>
-                  <div><Input type="number" step="0.1" min="0" value={bmiCalc.weight} onChange={e => handleBmiCalcChange('weight', e.target.value)} className="h-8 font-mono text-sm" placeholder="Weight (kg)" data-testid="cdc-bmi-weight-input" /></div>
+                  <div><Input type="number"
+                  inputMode="decimal" step="0.1" min="0" value={bmiCalc.height} onChange={e => handleBmiCalcChange('height', e.target.value)} className="h-8 font-mono text-sm" placeholder="Height (cm)" data-testid="cdc-bmi-height-input" /></div>
+                  <div><Input type="number"
+                  inputMode="decimal" step="0.1" min="0" value={bmiCalc.weight} onChange={e => handleBmiCalcChange('weight', e.target.value)} className="h-8 font-mono text-sm" placeholder="Weight (kg)" data-testid="cdc-bmi-weight-input" /></div>
                 </div>
               </div>
-              <div><Label className="text-xs">BMI (kg/m²)</Label><Input type="number" step="0.1" min="0" value={newEntry.bmi} onChange={e => setNewEntry({...newEntry, bmi: e.target.value})} className="h-9 font-mono text-sm" placeholder="12-35" data-testid="cdc-bmi-input" /></div>
+              <div><Label className="text-xs">BMI (kg/m²)</Label><Input type="number"
+                  inputMode="decimal" step="0.1" min="0" value={newEntry.bmi} onChange={e => setNewEntry({...newEntry, bmi: e.target.value})} className="h-9 font-mono text-sm" placeholder="12-35" data-testid="cdc-bmi-input" /></div>
             </div>
           )}
           <Button onClick={addEntry} className="w-full" size="sm" disabled={!newEntry.date || !newEntry.ageYears || parseFloat(newEntry.ageYears) < 2 || parseFloat(newEntry.ageYears) > 20 || (isStatureWeightChart && !newEntry.stature && !newEntry.weight) || (!isStatureWeightChart && !newEntry.bmi)} data-testid="cdc-add-measurement-btn">

@@ -83,11 +83,13 @@ const IntubationPage = ({ onBack }) => {
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-2">
                   <Label>Age (years)</Label>
-                  <Input type="number" placeholder="e.g., 5" value={age} onChange={(e) => setAge(e.target.value)} className="font-mono" />
+                  <Input type="number"
+                  inputMode="decimal" placeholder="e.g., 5" value={age} onChange={(e) => setAge(e.target.value)} className="font-mono" />
                 </div>
                 <div className="space-y-2">
                   <Label>Weight (kg)</Label>
-                  <Input type="number" placeholder="Optional" value={weight} onChange={(e) => setWeight(e.target.value)} className="font-mono" />
+                  <Input type="number"
+                  inputMode="decimal" placeholder="Optional" value={weight} onChange={(e) => setWeight(e.target.value)} className="font-mono" />
                 </div>
               </div>
             </CardContent>

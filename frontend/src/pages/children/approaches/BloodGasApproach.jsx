@@ -250,30 +250,36 @@ const BloodGasApproach = ({ weight, expandedSections, toggleSection }) => {
             <div className="grid grid-cols-3 gap-2">
               <div>
                 <Label className="text-xs">pH</Label>
-                <Input type="number" step="0.01" value={ph} onChange={(e) => setPh(e.target.value)} placeholder="7.40" className="h-8 text-sm mt-1" min="0" data-testid="abg-ph-input" />
+                <Input type="number"
+                  inputMode="decimal" step="0.01" value={ph} onChange={(e) => setPh(e.target.value)} placeholder="7.40" className="h-8 text-sm mt-1" min="0" data-testid="abg-ph-input" />
               </div>
               <div>
                 <Label className="text-xs">pCO₂ (mmHg)</Label>
-                <Input type="number" value={pco2} onChange={(e) => setPco2(e.target.value)} placeholder="40" className="h-8 text-sm mt-1" min="0" data-testid="abg-pco2-input" />
+                <Input type="number"
+                  inputMode="decimal" value={pco2} onChange={(e) => setPco2(e.target.value)} placeholder="40" className="h-8 text-sm mt-1" min="0" data-testid="abg-pco2-input" />
               </div>
               <div>
                 <Label className="text-xs">HCO₃⁻ (mEq/L)</Label>
-                <Input type="number" value={hco3} onChange={(e) => setHco3(e.target.value)} placeholder="24" className="h-8 text-sm mt-1" min="0" data-testid="abg-hco3-input" />
+                <Input type="number"
+                  inputMode="decimal" value={hco3} onChange={(e) => setHco3(e.target.value)} placeholder="24" className="h-8 text-sm mt-1" min="0" data-testid="abg-hco3-input" />
               </div>
             </div>
             
             <div className="grid grid-cols-3 gap-2">
               <div>
                 <Label className="text-xs">Na⁺ (mEq/L)</Label>
-                <Input type="number" value={na} onChange={(e) => setNa(e.target.value)} placeholder="140" className="h-8 text-sm mt-1" min="0" data-testid="abg-na-input" />
+                <Input type="number"
+                  inputMode="decimal" value={na} onChange={(e) => setNa(e.target.value)} placeholder="140" className="h-8 text-sm mt-1" min="0" data-testid="abg-na-input" />
               </div>
               <div>
                 <Label className="text-xs">Cl⁻ (mEq/L)</Label>
-                <Input type="number" value={cl} onChange={(e) => setCl(e.target.value)} placeholder="102" className="h-8 text-sm mt-1" min="0" data-testid="abg-cl-input" />
+                <Input type="number"
+                  inputMode="decimal" value={cl} onChange={(e) => setCl(e.target.value)} placeholder="102" className="h-8 text-sm mt-1" min="0" data-testid="abg-cl-input" />
               </div>
               <div>
                 <Label className="text-xs">Albumin (g/dL)</Label>
-                <Input type="number" step="0.1" value={albumin} onChange={(e) => setAlbumin(e.target.value)} placeholder="4.0" className="h-8 text-sm mt-1" min="0" data-testid="abg-albumin-input" />
+                <Input type="number"
+                  inputMode="decimal" step="0.1" value={albumin} onChange={(e) => setAlbumin(e.target.value)} placeholder="4.0" className="h-8 text-sm mt-1" min="0" data-testid="abg-albumin-input" />
               </div>
             </div>
 

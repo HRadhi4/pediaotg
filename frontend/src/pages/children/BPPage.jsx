@@ -375,11 +375,13 @@ const BPPage = ({ onBack }) => {
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1">
               <Label className="text-xs">Patient SBP (mmHg)</Label>
-              <Input type="number" placeholder="Systolic" value={patientSBP} onChange={(e) => setPatientSBP(e.target.value)} className="h-10 nightingale-input" />
+              <Input type="number"
+                  inputMode="decimal" placeholder="Systolic" value={patientSBP} onChange={(e) => setPatientSBP(e.target.value)} className="h-10 nightingale-input" />
             </div>
             <div className="space-y-1">
               <Label className="text-xs">Patient DBP (mmHg)</Label>
-              <Input type="number" placeholder="Diastolic" value={patientDBP} onChange={(e) => setPatientDBP(e.target.value)} className="h-10 nightingale-input" />
+              <Input type="number"
+                  inputMode="decimal" placeholder="Diastolic" value={patientDBP} onChange={(e) => setPatientDBP(e.target.value)} className="h-10 nightingale-input" />
             </div>
           </div>
         </CardContent>
