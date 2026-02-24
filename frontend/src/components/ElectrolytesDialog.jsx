@@ -1560,6 +1560,7 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
                     <Label className="text-xs">Current Serum Na (mEq/L)</Label>
                     <Input
                       type="number"
+                      inputMode="decimal"
                       step="1"
                       min="145"
                       max="200"
@@ -1588,6 +1589,7 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
                         <Label className="text-xs">Desired Na (mEq/L)</Label>
                         <Input
                           type="number"
+                          inputMode="decimal"
                           step="1"
                           min="135"
                           max="145"
