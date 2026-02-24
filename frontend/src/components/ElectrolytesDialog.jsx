@@ -890,7 +890,6 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
                 <Input
                   type="number"
                   inputMode="decimal"
-                  inputMode="decimal"
                   step="0.1"
                   min="0"
                   placeholder="Enter weight..."
@@ -1065,7 +1064,6 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
                 <Input
                   type="number"
                   inputMode="decimal"
-                  inputMode="decimal"
                   step={doseLimits.step}
                   min={doseLimits.min}
                   max={doseLimits.max}
@@ -1141,7 +1139,6 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
                       <Input
                         type="number"
                   inputMode="decimal"
-                        inputMode="decimal"
                         step="0.1"
                         min="0"
                         placeholder="e.g., 12"
@@ -1155,7 +1152,6 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
                       <Input
                         type="number"
                   inputMode="decimal"
-                        inputMode="decimal"
                         step="0.1"
                         min="0"
                         placeholder="24"
@@ -1205,7 +1201,6 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
                       <Input
                         type="number"
                   inputMode="decimal"
-                        inputMode="decimal"
                         step="0.25"
                         min="0.25"
                         max="2"
@@ -1276,7 +1271,6 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
                     <Input
                       type="number"
                   inputMode="decimal"
-                      inputMode="decimal"
                       step="1"
                       min="100"
                       max="134"
@@ -1320,7 +1314,6 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
                         <Input
                           type="number"
                   inputMode="decimal"
-                          inputMode="decimal"
                           step="1"
                           min="130"
                           max="145"
@@ -1339,7 +1332,6 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
                             <Input
                               type="number"
                   inputMode="decimal"
-                              inputMode="decimal"
                               step="0.5"
                               min="2"
                               max="5"
@@ -1523,7 +1515,6 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
                         <Input
                           type="number"
                   inputMode="decimal"
-                          inputMode="decimal"
                           step="1"
                           min="130"
                           max="145"
@@ -1570,7 +1561,6 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
                     <Input
                       type="number"
                   inputMode="decimal"
-                      inputMode="decimal"
                       step="1"
                       min="145"
                       max="200"
@@ -1600,7 +1590,6 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
                         <Input
                           type="number"
                   inputMode="decimal"
-                          inputMode="decimal"
                           step="1"
                           min="135"
                           max="145"
