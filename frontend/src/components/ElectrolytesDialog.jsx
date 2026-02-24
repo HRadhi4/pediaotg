@@ -499,11 +499,17 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
     // Calculate deficit based on selector for mild hyponatremia
     let deficit;
     if (sodiumType === "hyponatremia" && hyponatremiaType === "mild") {
-      // Use the Infant/Child selector values
-      if (hypoDeficitType === "infant") {
-        deficit = w * parseInt(hypoDeficitPercent) * 10; // 5%=50, 10%=100, 15%=150 ml/kg
+      // Check if fluid deficit should be included
+      if (includeFluidDeficit) {
+        // Use the Infant/Child selector values
+        if (hypoDeficitType === "infant") {
+          deficit = w * parseInt(hypoDeficitPercent) * 10; // 5%=50, 10%=100, 15%=150 ml/kg
+        } else {
+          deficit = w * parseInt(hypoDeficitPercent) * 10; // 3%=30, 6%=60, 9%=90 ml/kg
+        }
       } else {
-        deficit = w * parseInt(hypoDeficitPercent) * 10; // 3%=30, 6%=60, 9%=90 ml/kg
+        // No fluid deficit - only maintenance
+        deficit = 0;
       }
     } else {
       deficit = parseFloat(fluidDeficit) || (w * 100); // Default 10% dehydration for other cases
