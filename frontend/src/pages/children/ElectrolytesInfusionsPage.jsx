@@ -477,6 +477,7 @@ const ElectrolytesInfusionsPage = ({ onBack }) => {
               <Label className="text-base font-semibold">Patient Weight (kg)</Label>
               <Input
                 type="number"
+                  inputMode="decimal"
                 step="0.1"
                 min="0"
                 placeholder="Enter weight..."
@@ -551,6 +552,7 @@ const ElectrolytesInfusionsPage = ({ onBack }) => {
               <div className="flex items-center gap-3">
                 <Input
                   type="number"
+                  inputMode="decimal"
                   step={doseLimits.step}
                   min={doseLimits.min}
                   max={doseLimits.max}

@@ -528,7 +528,8 @@ const BSACalculator = () => {
             <div className="space-y-2">
               <Label className="text-sm">Height (cm)</Label>
               <Input 
-                type="number" 
+                type="number"
+                  inputMode="decimal" 
                 placeholder="e.g., 100" 
                 value={height} 
                 onChange={(e) => setHeight(e.target.value)} 
@@ -539,7 +540,8 @@ const BSACalculator = () => {
             <div className="space-y-2">
               <Label className="text-sm">Weight (kg)</Label>
               <Input 
-                type="number" 
+                type="number"
+                  inputMode="decimal" 
                 placeholder="e.g., 15" 
                 value={weight} 
                 onChange={(e) => setWeight(e.target.value)} 

@@ -252,6 +252,7 @@ const FluidCalculatorPage = () => {
                     <Label className="text-xs">Volume (ml/24hr)</Label>
                     <Input
                       type="number"
+                  inputMode="decimal"
                       placeholder="e.g., 50"
                       value={item.volume}
                       onChange={(e) => updateDextroseItem(item.id, "volume", e.target.value)}
@@ -338,7 +339,8 @@ const FluidCalculatorPage = () => {
             <div className="space-y-1">
               <Label className="text-xs">Amino Acids (g/kg/day)</Label>
               <Input 
-                type="number" 
+                type="number"
+                  inputMode="decimal" 
                 step="0.1" 
                 min="0"
                 max="3"
@@ -357,7 +359,8 @@ const FluidCalculatorPage = () => {
             <div className="space-y-1">
               <Label className="text-xs">Lipids (g/kg/day)</Label>
               <Input 
-                type="number" 
+                type="number"
+                  inputMode="decimal" 
                 step="0.1" 
                 min="0"
                 max="3"

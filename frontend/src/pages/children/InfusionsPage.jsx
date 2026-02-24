@@ -308,6 +308,7 @@ const InfusionsPage = ({ onBack }) => {
             <Label>Weight (kg)</Label>
             <Input
               type="number"
+                  inputMode="decimal"
               min="0"
               step="0.1"
               placeholder="Enter weight for calculations"
@@ -392,6 +393,7 @@ const InfusionsPage = ({ onBack }) => {
               <div className="flex items-center gap-2">
                 <Input
                   type="number"
+                  inputMode="decimal"
                   min={currentDrug.minDose}
                   max={currentDrug.maxDose}
                   step={selectedDrug === "epinephrine" || selectedDrug === "norepinephrine" ? 0.05 : 1}
@@ -497,6 +499,7 @@ const InfusionsPage = ({ onBack }) => {
               <div className="flex items-center gap-2">
                 <Input
                   type="number"
+                  inputMode="decimal"
                   min={1}
                   max={7}
                   step={1}

@@ -25,6 +25,7 @@ const CatheterCalculatorPage = () => {
             <Label>Weight (kg)</Label>
             <Input
               type="number"
+                  inputMode="decimal"
               step="0.01"
               placeholder="e.g., 1.5"
               value={weight}

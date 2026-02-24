@@ -295,6 +295,7 @@ const GIRDialog = ({ open, onOpenChange }) => {
               <Label>Weight (kg)</Label>
               <Input
                 type="number"
+                  inputMode="decimal"
                 step="0.01"
                 placeholder="e.g., 2.5"
                 value={weight}
@@ -337,6 +338,7 @@ const GIRDialog = ({ open, onOpenChange }) => {
                       <Label className="text-xs">Volume (ml/day)</Label>
                       <Input
                         type="number"
+                  inputMode="decimal"
                         step="1"
                         placeholder="e.g., 150"
                         value={source.volume}
@@ -385,6 +387,7 @@ const GIRDialog = ({ open, onOpenChange }) => {
                       <Label className="text-xs">Volume (ml/day)</Label>
                       <Input
                         type="number"
+                  inputMode="decimal"
                         step="1"
                         placeholder="e.g., 75"
                         value={formulaVolume}
@@ -427,6 +430,7 @@ const GIRDialog = ({ open, onOpenChange }) => {
                     <Label>Target GIR (mg/kg/min)</Label>
                     <Input
                       type="number"
+                  inputMode="decimal"
                       step="0.1"
                       placeholder="e.g., 6"
                       value={targetGIR}
@@ -439,6 +443,7 @@ const GIRDialog = ({ open, onOpenChange }) => {
                     <Label>Working TFI (ml/day)</Label>
                     <Input
                       type="number"
+                  inputMode="decimal"
                       step="1"
                       placeholder="e.g., 200"
                       value={workingTFI}

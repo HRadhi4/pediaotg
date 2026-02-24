@@ -211,6 +211,7 @@ const JaundiceDialog = ({ open, onOpenChange }) => {
                 <Label>Weight (kg)</Label>
                 <Input
                   type="number"
+                  inputMode="decimal"
                   step="0.01"
                   placeholder="e.g., 2.5"
                   value={weight}
@@ -223,6 +224,7 @@ const JaundiceDialog = ({ open, onOpenChange }) => {
                 <Label>Gestational Age (weeks)</Label>
                 <Input
                   type="number"
+                  inputMode="decimal"
                   step="1"
                   placeholder="e.g., 36"
                   value={gestationalAge}
@@ -239,6 +241,7 @@ const JaundiceDialog = ({ open, onOpenChange }) => {
                 <Label>Postnatal Age</Label>
                 <Input
                   type="number"
+                  inputMode="decimal"
                   step="1"
                   placeholder={ageUnit === "hours" ? "e.g., 48" : "e.g., 2"}
                   value={postnatalAge}
@@ -277,6 +280,7 @@ const JaundiceDialog = ({ open, onOpenChange }) => {
               </div>
               <Input
                 type="number"
+                  inputMode="decimal"
                 step="0.1"
                 placeholder={useMmol ? "e.g., 250" : "e.g., 15"}
                 value={bilirubin}

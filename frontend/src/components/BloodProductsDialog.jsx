@@ -253,6 +253,7 @@ const BloodProductsDialog = ({ open, onOpenChange }) => {
               <Label>Weight (kg)</Label>
               <Input
                 type="number"
+                  inputMode="decimal"
                 step="0.1"
                 placeholder="e.g., 10"
                 value={weight}
@@ -346,6 +347,7 @@ const BloodProductsDialog = ({ open, onOpenChange }) => {
                   <Label>Current Fibrinogen (mg/dL) - optional</Label>
                   <Input
                     type="number"
+                  inputMode="decimal"
                     placeholder="e.g., 100"
                     value={fibrinogen}
                     onChange={(e) => setFibrinogen(e.target.value)}
@@ -370,6 +372,7 @@ const BloodProductsDialog = ({ open, onOpenChange }) => {
                   <Label>Current Platelets (/µL) - optional</Label>
                   <Input
                     type="number"
+                  inputMode="decimal"
                     placeholder="e.g., 25000"
                     value={platelets}
                     onChange={(e) => setPlatelets(e.target.value)}

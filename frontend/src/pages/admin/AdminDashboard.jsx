@@ -675,6 +675,7 @@ const AdminDashboard = () => {
                   <Input
                     id="edit-days"
                     type="number"
+                  inputMode="decimal"
                     value={editForm.subscription_days}
                     onChange={(e) => setEditForm({ ...editForm, subscription_days: e.target.value })}
                     placeholder="e.g., 30, 365"

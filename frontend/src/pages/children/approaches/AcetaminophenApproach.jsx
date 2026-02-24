@@ -413,6 +413,7 @@ const AcetaminophenApproach = ({ weight, expandedSections, toggleSection }) => {
                     <Label className="text-xs">Concentration (mg/ml)</Label>
                     <Input
                       type="number"
+                  inputMode="decimal"
                       value={customConcentration}
                       onChange={(e) => setCustomConcentration(e.target.value)}
                       placeholder="e.g., 24"
@@ -426,6 +427,7 @@ const AcetaminophenApproach = ({ weight, expandedSections, toggleSection }) => {
                   <Label className="text-xs">Volume Ingested (ml)</Label>
                   <Input
                     type="number"
+                  inputMode="decimal"
                     value={mlIngested}
                     onChange={(e) => setMlIngested(e.target.value)}
                     placeholder="e.g., 30"
@@ -450,6 +452,7 @@ const AcetaminophenApproach = ({ weight, expandedSections, toggleSection }) => {
                     <Label className="text-xs">Number of Tablets</Label>
                     <Input
                       type="number"
+                  inputMode="decimal"
                       value={numTablets}
                       onChange={(e) => {
                         setNumTablets(e.target.value);
@@ -485,6 +488,7 @@ const AcetaminophenApproach = ({ weight, expandedSections, toggleSection }) => {
                   <Label className="text-xs">Total Amount Ingested (mg)</Label>
                   <Input
                     type="number"
+                  inputMode="decimal"
                     value={ingestionDose}
                     onChange={(e) => {
                       setIngestionDose(e.target.value);
@@ -625,6 +629,7 @@ const AcetaminophenApproach = ({ weight, expandedSections, toggleSection }) => {
                 <Label className="text-xs">Hours Post-Ingestion</Label>
                 <Input
                   type="number"
+                  inputMode="decimal"
                   value={hoursPostIngestion}
                   onChange={(e) => setHoursPostIngestion(e.target.value)}
                   placeholder="4-24"
@@ -640,6 +645,7 @@ const AcetaminophenApproach = ({ weight, expandedSections, toggleSection }) => {
                 </Label>
                 <Input
                   type="number"
+                  inputMode="decimal"
                   value={serumLevel}
                   onChange={(e) => setSerumLevel(e.target.value)}
                   placeholder={nomogramUnit === "SI" ? "e.g., 1000" : "e.g., 150"}
