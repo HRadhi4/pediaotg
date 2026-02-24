@@ -34,7 +34,8 @@ const ScoringPage = ({ onBack }) => {
           { id: "westley", label: "Westley" },
           { id: "oi", label: "OI" },
           { id: "iwl", label: "IWL" },
-          { id: "bsa", label: "BSA" }
+          { id: "bsa", label: "BSA" },
+          { id: "abg", label: "ABG" }
         ].map((score) => (
           <Button
             key={score.id}
@@ -53,6 +54,7 @@ const ScoringPage = ({ onBack }) => {
       {activeScore === "oi" && <OxygenationIndex />}
       {activeScore === "iwl" && <IWLCalculator />}
       {activeScore === "bsa" && <BSACalculator />}
+      {activeScore === "abg" && <ABGCompensation />}
     </div>
   );
 };
