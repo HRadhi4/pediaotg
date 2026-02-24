@@ -256,8 +256,8 @@ const ApproachesPage = ({ onBack }) => {
             <div>
               <Label className="text-xs text-muted-foreground">Wt (kg)</Label>
               <Input
-                type="number"
-                  inputMode="decimal"
+                type="text"
+                  inputMode="text"
                 placeholder="kg"
                 value={weight}
                 onChange={(e) => setWeight(e.target.value)}
@@ -269,8 +269,8 @@ const ApproachesPage = ({ onBack }) => {
             <div>
               <Label className="text-xs text-muted-foreground">Age (yrs)</Label>
               <Input
-                type="number"
-                  inputMode="decimal"
+                type="text"
+                  inputMode="text"
                 placeholder="yrs"
                 value={age}
                 onChange={(e) => setAge(e.target.value)}

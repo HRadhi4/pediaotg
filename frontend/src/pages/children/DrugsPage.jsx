@@ -682,8 +682,8 @@ const DrugsPage = ({ onBack }) => {
           <div>
             <Label className="text-[10px] text-muted-foreground">Weight (kg)</Label>
             <Input
-              type="number"
-                  inputMode="decimal"
+              type="text"
+                  inputMode="text"
               placeholder="Enter weight for dose calculations"
               value={weight}
               onChange={(e) => setWeight(e.target.value)}
@@ -698,8 +698,8 @@ const DrugsPage = ({ onBack }) => {
             <div className="flex gap-2">
               <div className="flex-1">
                 <Input
-                  type="number"
-                  inputMode="decimal"
+                  type="text"
+                  inputMode="text"
                   placeholder="Enter age"
                   value={ageValue}
                   onChange={(e) => setAgeValue(e.target.value)}
@@ -824,8 +824,8 @@ const DrugsPage = ({ onBack }) => {
                 <div>
                   <Label className="text-[10px] text-muted-foreground">Height (cm)</Label>
                   <Input
-                    type="number"
-                  inputMode="decimal"
+                    type="text"
+                  inputMode="text"
                     placeholder="Height"
                     value={height}
                     onChange={(e) => setHeight(e.target.value)}
@@ -835,8 +835,8 @@ const DrugsPage = ({ onBack }) => {
                 <div>
                   <Label className="text-[10px] text-muted-foreground">Creatinine (µmol/L)</Label>
                   <Input
-                    type="number"
-                  inputMode="decimal"
+                    type="text"
+                  inputMode="text"
                     step="1"
                     placeholder="SCr"
                     value={creatinine}

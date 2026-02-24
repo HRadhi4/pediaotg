@@ -99,8 +99,8 @@ const CPRPage = ({ onBack }) => {
             <div className="flex-1">
               <Label className="text-xs text-muted-foreground">Patient Weight (kg)</Label>
               <Input
-                type="number"
-                  inputMode="decimal"
+                type="text"
+                  inputMode="text"
                 placeholder="Enter weight for drug calculations"
                 value={weight}
                 onChange={(e) => setWeight(e.target.value)}

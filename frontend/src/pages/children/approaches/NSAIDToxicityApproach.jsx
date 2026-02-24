@@ -198,8 +198,8 @@ const NSAIDToxicityApproach = ({ weight, expandedSections, toggleSection }) => {
                   <div>
                     <Label className="text-xs">Number of Tablets</Label>
                     <Input
-                      type="number"
-                  inputMode="decimal"
+                      type="text"
+                  inputMode="text"
                       value={numTablets}
                       onChange={(e) => {
                         setNumTablets(e.target.value);
@@ -229,8 +229,8 @@ const NSAIDToxicityApproach = ({ weight, expandedSections, toggleSection }) => {
                       </Select>
                     ) : (
                       <Input
-                        type="number"
-                  inputMode="decimal"
+                        type="text"
+                  inputMode="text"
                         value={tabletStrength}
                         onChange={(e) => setTabletStrength(e.target.value)}
                         placeholder="mg"
@@ -246,8 +246,8 @@ const NSAIDToxicityApproach = ({ weight, expandedSections, toggleSection }) => {
                 <div>
                   <Label className="text-xs">Total Amount Ingested (mg)</Label>
                   <Input
-                    type="number"
-                  inputMode="decimal"
+                    type="text"
+                  inputMode="text"
                     value={amountIngested}
                     onChange={(e) => {
                       setAmountIngested(e.target.value);
@@ -286,8 +286,8 @@ const NSAIDToxicityApproach = ({ weight, expandedSections, toggleSection }) => {
                   <div>
                     <Label className="text-xs">Concentration (mg/ml)</Label>
                     <Input
-                      type="number"
-                  inputMode="decimal"
+                      type="text"
+                  inputMode="text"
                       value={customConcentration}
                       onChange={(e) => setCustomConcentration(e.target.value)}
                       placeholder="e.g., 20"
@@ -300,8 +300,8 @@ const NSAIDToxicityApproach = ({ weight, expandedSections, toggleSection }) => {
                 <div>
                   <Label className="text-xs">Volume Ingested (ml)</Label>
                   <Input
-                    type="number"
-                  inputMode="decimal"
+                    type="text"
+                  inputMode="text"
                     value={mlIngested}
                     onChange={(e) => setMlIngested(e.target.value)}
                     placeholder="e.g., 30"

@@ -252,8 +252,8 @@ const BloodProductsDialog = ({ open, onOpenChange }) => {
             <div className="space-y-2">
               <Label>Weight (kg)</Label>
               <Input
-                type="number"
-                  inputMode="decimal"
+                type="text"
+                  inputMode="text"
                 step="0.1"
                 placeholder="e.g., 10"
                 value={weight}
@@ -346,8 +346,8 @@ const BloodProductsDialog = ({ open, onOpenChange }) => {
                 <div className="space-y-2">
                   <Label>Current Fibrinogen (mg/dL) - optional</Label>
                   <Input
-                    type="number"
-                  inputMode="decimal"
+                    type="text"
+                  inputMode="text"
                     placeholder="e.g., 100"
                     value={fibrinogen}
                     onChange={(e) => setFibrinogen(e.target.value)}
@@ -371,8 +371,8 @@ const BloodProductsDialog = ({ open, onOpenChange }) => {
                 <div className="space-y-2">
                   <Label>Current Platelets (/µL) - optional</Label>
                   <Input
-                    type="number"
-                  inputMode="decimal"
+                    type="text"
+                  inputMode="text"
                     placeholder="e.g., 25000"
                     value={platelets}
                     onChange={(e) => setPlatelets(e.target.value)}

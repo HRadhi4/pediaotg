@@ -70,8 +70,8 @@ const PARDSApproach = ({ weight, expandedSections, toggleSection }) => {
             <div>
               <Label className="text-[10px]">FiO2 (0.21-1.0)</Label>
               <Input
-                type="number"
-                  inputMode="decimal"
+                type="text"
+                  inputMode="text"
                 step="0.01"
                 min="0.21"
                 max="1.0"
@@ -84,8 +84,8 @@ const PARDSApproach = ({ weight, expandedSections, toggleSection }) => {
             <div>
               <Label className="text-[10px]">MAP (cmH2O)</Label>
               <Input
-                type="number"
-                  inputMode="decimal"
+                type="text"
+                  inputMode="text"
                 step="1"
                 min="0"
                 placeholder="15"
@@ -97,8 +97,8 @@ const PARDSApproach = ({ weight, expandedSections, toggleSection }) => {
             <div>
               <Label className="text-[10px]">PaO2 (mmHg)</Label>
               <Input
-                type="number"
-                  inputMode="decimal"
+                type="text"
+                  inputMode="text"
                 step="1"
                 min="0"
                 placeholder="60"
@@ -110,8 +110,8 @@ const PARDSApproach = ({ weight, expandedSections, toggleSection }) => {
             <div>
               <Label className="text-[10px]">SpO2 (%) - if no ABG</Label>
               <Input
-                type="number"
-                  inputMode="decimal"
+                type="text"
+                  inputMode="text"
                 step="1"
                 min="0"
                 max="100"

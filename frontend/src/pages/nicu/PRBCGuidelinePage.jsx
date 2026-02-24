@@ -140,18 +140,18 @@ const PRBCGuidelinePage = () => {
               <div className="grid grid-cols-3 gap-2">
                 <div className="space-y-1">
                   <Label className="text-xs">Weight (kg)</Label>
-                  <Input type="number"
-                  inputMode="decimal" step="0.01" placeholder="1.5" value={weight} onChange={(e) => setWeight(e.target.value)} className="nightingale-input font-mono h-9" />
+                  <Input type="text"
+                  inputMode="text" step="0.01" placeholder="1.5" value={weight} onChange={(e) => setWeight(e.target.value)} className="nightingale-input font-mono h-9" />
                 </div>
                 <div className="space-y-1">
                   <Label className="text-xs">Age (days)</Label>
-                  <Input type="number"
-                  inputMode="decimal" placeholder="5" value={age} onChange={(e) => setAge(e.target.value)} className="nightingale-input font-mono h-9" />
+                  <Input type="text"
+                  inputMode="text" placeholder="5" value={age} onChange={(e) => setAge(e.target.value)} className="nightingale-input font-mono h-9" />
                 </div>
                 <div className="space-y-1">
                   <Label className="text-xs">GA (weeks)</Label>
-                  <Input type="number"
-                  inputMode="decimal" placeholder="32" value={ga} onChange={(e) => setGa(e.target.value)} className="nightingale-input font-mono h-9" />
+                  <Input type="text"
+                  inputMode="text" placeholder="32" value={ga} onChange={(e) => setGa(e.target.value)} className="nightingale-input font-mono h-9" />
                 </div>
               </div>
             </CardContent>
@@ -165,13 +165,13 @@ const PRBCGuidelinePage = () => {
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1">
                   <Label className="text-xs">Hb (g/dL)</Label>
-                  <Input type="number"
-                  inputMode="decimal" step="0.1" placeholder="e.g., 10" value={hb} onChange={(e) => setHb(e.target.value)} className="nightingale-input font-mono h-9" />
+                  <Input type="text"
+                  inputMode="text" step="0.1" placeholder="e.g., 10" value={hb} onChange={(e) => setHb(e.target.value)} className="nightingale-input font-mono h-9" />
                 </div>
                 <div className="space-y-1">
                   <Label className="text-xs">Hct (%)</Label>
-                  <Input type="number"
-                  inputMode="decimal" step="1" placeholder="e.g., 30" value={hct} onChange={(e) => setHct(e.target.value)} className="nightingale-input font-mono h-9" />
+                  <Input type="text"
+                  inputMode="text" step="1" placeholder="e.g., 30" value={hct} onChange={(e) => setHct(e.target.value)} className="nightingale-input font-mono h-9" />
                 </div>
               </div>
 

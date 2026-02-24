@@ -92,8 +92,8 @@ const IntubationPage = () => {
             <div className="space-y-1">
               <Label className="text-xs">Weight (kg)</Label>
               <Input
-                type="number"
-                  inputMode="decimal"
+                type="text"
+                  inputMode="text"
                 step="0.01"
                 placeholder="e.g., 1.5"
                 value={weight}
@@ -104,8 +104,8 @@ const IntubationPage = () => {
             <div className="space-y-1">
               <Label className="text-xs">GA (weeks)</Label>
               <Input
-                type="number"
-                  inputMode="decimal"
+                type="text"
+                  inputMode="text"
                 placeholder="e.g., 32"
                 value={gestationalAge}
                 onChange={(e) => setGestationalAge(e.target.value)}

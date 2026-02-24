@@ -71,19 +71,19 @@ const ExchangeCalculatorPage = () => {
             <CardContent className="pt-4 space-y-3">
               <div className="space-y-2">
                 <Label>Weight (kg)</Label>
-                <Input type="number"
-                  inputMode="decimal" step="0.01" placeholder="e.g., 3.5" value={weight} onChange={(e) => setWeight(e.target.value)} className="nightingale-input font-mono" />
+                <Input type="text"
+                  inputMode="text" step="0.01" placeholder="e.g., 3.5" value={weight} onChange={(e) => setWeight(e.target.value)} className="nightingale-input font-mono" />
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-2">
                   <Label>Observed Hct (%)</Label>
-                  <Input type="number"
-                  inputMode="decimal" placeholder="e.g., 70" value={observedHct} onChange={(e) => setObservedHct(e.target.value)} className="nightingale-input font-mono" />
+                  <Input type="text"
+                  inputMode="text" placeholder="e.g., 70" value={observedHct} onChange={(e) => setObservedHct(e.target.value)} className="nightingale-input font-mono" />
                 </div>
                 <div className="space-y-2">
                   <Label>Desired Hct (%)</Label>
-                  <Input type="number"
-                  inputMode="decimal" placeholder="55" value={desiredHct} onChange={(e) => setDesiredHct(e.target.value)} className="nightingale-input font-mono" />
+                  <Input type="text"
+                  inputMode="text" placeholder="55" value={desiredHct} onChange={(e) => setDesiredHct(e.target.value)} className="nightingale-input font-mono" />
                 </div>
               </div>
             </CardContent>
@@ -137,8 +137,8 @@ const ExchangeCalculatorPage = () => {
             <CardContent className="pt-4 space-y-3">
               <div className="space-y-2">
                 <Label>Weight (kg)</Label>
-                <Input type="number"
-                  inputMode="decimal" step="0.01" placeholder="e.g., 3.5" value={weight} onChange={(e) => setWeight(e.target.value)} className="nightingale-input font-mono" />
+                <Input type="text"
+                  inputMode="text" step="0.01" placeholder="e.g., 3.5" value={weight} onChange={(e) => setWeight(e.target.value)} className="nightingale-input font-mono" />
               </div>
             </CardContent>
           </Card>

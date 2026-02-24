@@ -408,8 +408,8 @@ const NICUDrugsPage = () => {
             <div>
               <Label className="text-[10px] text-muted-foreground">Weight (kg)</Label>
               <Input
-                type="number"
-                  inputMode="decimal"
+                type="text"
+                  inputMode="text"
                 placeholder="kg"
                 value={weight}
                 onChange={(e) => setWeight(e.target.value)}
@@ -419,8 +419,8 @@ const NICUDrugsPage = () => {
             <div>
               <Label className="text-[10px] text-muted-foreground">PMA (weeks)</Label>
               <Input
-                type="number"
-                  inputMode="decimal"
+                type="text"
+                  inputMode="text"
                 placeholder="wks"
                 value={pma}
                 onChange={(e) => setPma(e.target.value)}
@@ -430,8 +430,8 @@ const NICUDrugsPage = () => {
             <div>
               <Label className="text-[10px] text-muted-foreground">PNA (days)</Label>
               <Input
-                type="number"
-                  inputMode="decimal"
+                type="text"
+                  inputMode="text"
                 placeholder="days"
                 value={pna}
                 onChange={(e) => setPna(e.target.value)}

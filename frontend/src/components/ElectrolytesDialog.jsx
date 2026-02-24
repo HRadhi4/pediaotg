@@ -888,8 +888,8 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
               <div className="flex-1">
                 <Label className="text-sm font-medium">Weight (kg)</Label>
                 <Input
-                  type="number"
-                  inputMode="decimal"
+                  type="text"
+                  inputMode="text"
                   step="0.1"
                   min="0"
                   placeholder="Enter weight..."
@@ -1062,8 +1062,8 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
               
               <div className="flex items-center gap-2">
                 <Input
-                  type="number"
-                  inputMode="decimal"
+                  type="text"
+                  inputMode="text"
                   step={doseLimits.step}
                   min={doseLimits.min}
                   max={doseLimits.max}
@@ -1137,8 +1137,8 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
                     <div>
                       <Label className="text-xs">Lab HCO3 (mEq/L)</Label>
                       <Input
-                        type="number"
-                  inputMode="decimal"
+                        type="text"
+                  inputMode="text"
                         step="0.1"
                         min="0"
                         placeholder="e.g., 12"
@@ -1150,8 +1150,8 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
                     <div>
                       <Label className="text-xs">Desired HCO3 (mEq/L)</Label>
                       <Input
-                        type="number"
-                  inputMode="decimal"
+                        type="text"
+                  inputMode="text"
                         step="0.1"
                         min="0"
                         placeholder="24"
@@ -1199,8 +1199,8 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
                     <Label className="text-xs">Infusion Rate (mEq/kg/hr)</Label>
                     <div className="flex items-center gap-2">
                       <Input
-                        type="number"
-                  inputMode="decimal"
+                        type="text"
+                  inputMode="text"
                         step="0.25"
                         min="0.25"
                         max="2"
@@ -1269,8 +1269,8 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
                   <div>
                     <Label className="text-xs">Current Serum Na (mEq/L)</Label>
                     <Input
-                      type="number"
-                  inputMode="decimal"
+                      type="text"
+                  inputMode="text"
                       step="1"
                       min="100"
                       max="134"
@@ -1312,8 +1312,8 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
                       <div>
                         <Label className="text-xs">Target Na (mEq/L)</Label>
                         <Input
-                          type="number"
-                  inputMode="decimal"
+                          type="text"
+                  inputMode="text"
                           step="1"
                           min="130"
                           max="145"
@@ -1330,8 +1330,8 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
                           <Label className="text-xs">Na Maintenance Rate (mEq/kg/day)</Label>
                           <div className="flex items-center gap-2">
                             <Input
-                              type="number"
-                  inputMode="decimal"
+                              type="text"
+                  inputMode="text"
                               step="0.5"
                               min="2"
                               max="5"
@@ -1513,8 +1513,8 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
                       <div>
                         <Label className="text-xs">Target Na (mEq/L) - for deficit calculation</Label>
                         <Input
-                          type="number"
-                  inputMode="decimal"
+                          type="text"
+                  inputMode="text"
                           step="1"
                           min="130"
                           max="145"
@@ -1559,8 +1559,8 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
                   <div>
                     <Label className="text-xs">Current Serum Na (mEq/L)</Label>
                     <Input
-                      type="number"
-                  inputMode="decimal"
+                      type="text"
+                  inputMode="text"
                       step="1"
                       min="145"
                       max="200"
@@ -1588,8 +1588,8 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
                       <div>
                         <Label className="text-xs">Desired Na (mEq/L)</Label>
                         <Input
-                          type="number"
-                  inputMode="decimal"
+                          type="text"
+                  inputMode="text"
                           step="1"
                           min="135"
                           max="145"

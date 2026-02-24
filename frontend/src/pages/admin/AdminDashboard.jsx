@@ -674,8 +674,8 @@ const AdminDashboard = () => {
                   <Label htmlFor="edit-days" className="text-sm">Subscription Days</Label>
                   <Input
                     id="edit-days"
-                    type="number"
-                  inputMode="decimal"
+                    type="text"
+                  inputMode="text"
                     value={editForm.subscription_days}
                     onChange={(e) => setEditForm({ ...editForm, subscription_days: e.target.value })}
                     placeholder="e.g., 30, 365"
