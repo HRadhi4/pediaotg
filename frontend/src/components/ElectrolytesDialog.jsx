@@ -1514,6 +1514,7 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
                         <Label className="text-xs">Target Na (mEq/L) - for deficit calculation</Label>
                         <Input
                           type="number"
+                          inputMode="decimal"
                           step="1"
                           min="130"
                           max="145"
