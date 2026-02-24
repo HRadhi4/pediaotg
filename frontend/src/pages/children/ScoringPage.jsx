@@ -872,32 +872,55 @@ const ABGCompensation = () => {
       {/* Reference Card */}
       <Card className="nightingale-card">
         <CardHeader className="pb-2">
-          <CardTitle className="text-sm">Compensation Formulas</CardTitle>
+          <CardTitle className="text-sm">Compensation Rules Reference</CardTitle>
         </CardHeader>
-        <CardContent className="text-xs space-y-2">
-          <div className="grid grid-cols-2 gap-2">
-            <div className="p-2 rounded bg-muted/50">
-              <p className="font-semibold mb-1">Metabolic Acidosis</p>
-              <p className="font-mono text-[10px]">pCO2 = 1.5×[HCO3] + 8 (±2)</p>
-            </div>
-            <div className="p-2 rounded bg-muted/50">
-              <p className="font-semibold mb-1">Metabolic Alkalosis</p>
-              <p className="font-mono text-[10px]">pCO2 = 0.7×[HCO3] + 20 (±5)</p>
+        <CardContent className="text-xs space-y-3">
+          {/* Metabolic Disorders */}
+          <div className="p-2 rounded bg-muted/50">
+            <p className="font-semibold mb-1">Metabolic Acidosis (Winter's Formula)</p>
+            <p className="font-mono">Expected pCO2 = 1.5 × [HCO3] + 8 (±2)</p>
+          </div>
+          <div className="p-2 rounded bg-muted/50">
+            <p className="font-semibold mb-1">Metabolic Alkalosis</p>
+            <p className="font-mono">Expected pCO2 = 0.7 × [HCO3] + 20 (±5)</p>
+          </div>
+          
+          {/* Respiratory Disorders */}
+          <div className="p-2 rounded bg-muted/50">
+            <p className="font-semibold mb-1">Respiratory Acidosis</p>
+            <div className="grid grid-cols-2 gap-2 font-mono text-[10px]">
+              <div>
+                <p className="font-semibold">Acute:</p>
+                <p>HCO3 = 24 + (pCO2-40) × 1/10</p>
+              </div>
+              <div>
+                <p className="font-semibold">Chronic:</p>
+                <p>HCO3 = 24 + (pCO2-40) × 4/10</p>
+              </div>
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-2">
-            <div className="p-2 rounded bg-muted/50">
-              <p className="font-semibold mb-1">Resp. Acidosis</p>
-              <p className="font-mono text-[10px]">Acute: HCO3 = 24 + Δ×1/10</p>
-              <p className="font-mono text-[10px]">Chronic: HCO3 = 24 + Δ×4/10</p>
-            </div>
-            <div className="p-2 rounded bg-muted/50">
-              <p className="font-semibold mb-1">Resp. Alkalosis</p>
-              <p className="font-mono text-[10px]">Acute: HCO3 = 24 - Δ×2/10</p>
-              <p className="font-mono text-[10px]">Chronic: HCO3 = 24 - Δ×5/10</p>
+          <div className="p-2 rounded bg-muted/50">
+            <p className="font-semibold mb-1">Respiratory Alkalosis</p>
+            <div className="grid grid-cols-2 gap-2 font-mono text-[10px]">
+              <div>
+                <p className="font-semibold">Acute:</p>
+                <p>HCO3 = 24 - (40-pCO2) × 2/10</p>
+              </div>
+              <div>
+                <p className="font-semibold">Chronic:</p>
+                <p>HCO3 = 24 - (40-pCO2) × 5/10</p>
+              </div>
             </div>
           </div>
-          <p className="text-[10px] text-muted-foreground">Δ = pCO2 - 40 (acidosis) or 40 - pCO2 (alkalosis)</p>
+          
+          {/* ABG Validation */}
+          <div className="p-2 rounded bg-amber-50 dark:bg-amber-900/20">
+            <p className="font-semibold mb-1">ABG Validation Formula</p>
+            <p className="font-mono">[80 - (pH decimal)] × HCO3 / pCO2 = 24 ± 1</p>
+            <p className="text-[10px] text-muted-foreground mt-1">
+              Example: pH 7.35 → [80 - 35] × HCO3 / pCO2 should equal ~24
+            </p>
+          </div>
         </CardContent>
       </Card>
     </div>
