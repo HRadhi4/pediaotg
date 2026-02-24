@@ -1200,6 +1200,7 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
                     <div className="flex items-center gap-2">
                       <Input
                         type="number"
+                        inputMode="decimal"
                         step="0.25"
                         min="0.25"
                         max="2"
