@@ -1063,6 +1063,7 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
               <div className="flex items-center gap-2">
                 <Input
                   type="number"
+                  inputMode="decimal"
                   step={doseLimits.step}
                   min={doseLimits.min}
                   max={doseLimits.max}
