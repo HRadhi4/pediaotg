@@ -27,7 +27,7 @@ const ScoringPage = ({ onBack }) => {
 
   return (
     <div className="space-y-4 pt-4 pb-8">
-      <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+      <div className="flex gap-2 overflow-x-auto pb-2 -mx-4 px-4 scrollbar-hide">
         {[
           { id: "gcs", label: "GCS" },
           { id: "pram", label: "PRAM" },
@@ -35,13 +35,13 @@ const ScoringPage = ({ onBack }) => {
           { id: "oi", label: "OI" },
           { id: "iwl", label: "IWL" },
           { id: "bsa", label: "BSA" },
-          { id: "abg", label: "ABG" }
+          { id: "abg", label: "Blood Gas Compensation" }
         ].map((score) => (
           <Button
             key={score.id}
             variant={activeScore === score.id ? "default" : "outline"}
             onClick={() => setActiveScore(score.id)}
-            className="whitespace-nowrap flex-shrink-0 min-w-fit px-3"
+            className="whitespace-nowrap flex-shrink-0 px-3"
             size="sm"
           >
             {score.label}
