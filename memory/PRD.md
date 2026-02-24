@@ -94,4 +94,4 @@ Based on Chapter 31 "Drugs in Kidney Failure" (pages 412-422) of the pediatric f
 - Password: 12341234
 
 ## Preview URL
-https://peds-renal.preview.emergentagent.com
+https://pediatric-dosing.preview.emergentagent.com
