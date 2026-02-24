@@ -1138,6 +1138,7 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
                       <Label className="text-xs">Lab HCO3 (mEq/L)</Label>
                       <Input
                         type="number"
+                        inputMode="decimal"
                         step="0.1"
                         min="0"
                         placeholder="e.g., 12"
@@ -1150,6 +1151,7 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
                       <Label className="text-xs">Desired HCO3 (mEq/L)</Label>
                       <Input
                         type="number"
+                        inputMode="decimal"
                         step="0.1"
                         min="0"
                         placeholder="24"
