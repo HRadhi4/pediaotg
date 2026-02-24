@@ -889,6 +889,7 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
                 <Label className="text-sm font-medium">Weight (kg)</Label>
                 <Input
                   type="number"
+                  inputMode="decimal"
                   step="0.1"
                   min="0"
                   placeholder="Enter weight..."
