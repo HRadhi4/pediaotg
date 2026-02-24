@@ -382,18 +382,15 @@ const OxygenationIndex = () => {
         <CardContent className="space-y-3">
           <div className="space-y-2">
             <Label className="text-xs">Mean Airway Pressure (MAP) cmH2O</Label>
-            <Input type="text" placeholder="e.g., 15" value={map} onChange={(e) => setMap(e.target.value)} className="font-mono" />
-            inputMode="text"
+            <Input type="text" inputMode="text" placeholder="e.g., 15" value={map} onChange={(e) => setMap(e.target.value)} className="font-mono" />
           </div>
           <div className="space-y-2">
             <Label className="text-xs">FiO2 (as decimal, e.g., 0.6)</Label>
-            <Input type="text" step="0.01" placeholder="e.g., 0.6" value={fio2} onChange={(e) => setFio2(e.target.value)} className="font-mono" />
-            inputMode="text"
+            <Input type="text" inputMode="text" step="0.01" placeholder="e.g., 0.6" value={fio2} onChange={(e) => setFio2(e.target.value)} className="font-mono" />
           </div>
           <div className="space-y-2">
             <Label className="text-xs">PaO2 (mmHg)</Label>
-            <Input type="text" placeholder="e.g., 60" value={pao2} onChange={(e) => setPao2(e.target.value)} className="font-mono" />
-            inputMode="text"
+            <Input type="text" inputMode="text" placeholder="e.g., 60" value={pao2} onChange={(e) => setPao2(e.target.value)} className="font-mono" />
           </div>
         </CardContent>
       </Card>
