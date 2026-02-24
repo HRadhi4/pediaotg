@@ -447,13 +447,11 @@ const IWLCalculator = () => {
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-2">
               <Label>Weight (kg)</Label>
-              <Input type="text" placeholder="e.g., 15" value={weight} onChange={(e) => setWeight(e.target.value)} className="font-mono" />
-              inputMode="text"
+              <Input type="text" inputMode="text" placeholder="e.g., 15" value={weight} onChange={(e) => setWeight(e.target.value)} className="font-mono" />
             </div>
             <div className="space-y-2">
               <Label>Height (cm)</Label>
-              <Input type="text" placeholder="e.g., 100" value={height} onChange={(e) => setHeight(e.target.value)} className="font-mono" />
-              inputMode="text"
+              <Input type="text" inputMode="text" placeholder="e.g., 100" value={height} onChange={(e) => setHeight(e.target.value)} className="font-mono" />
             </div>
           </div>
         </CardContent>
