@@ -1945,9 +1945,11 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
                         <span>Current Na: <strong>{results.mildData.currentNa}</strong> mEq/L</span>
                         <span>Target Na: <strong>{results.mildData.targetNa}</strong> mEq/L</span>
                       </div>
-                      <div className="text-center mt-1 text-[10px] text-muted-foreground">
-                        Deficit: {results.mildData.deficitType === "infant" ? "Infant" : "Child"} {results.mildData.deficitPercent}% = {results.mildData.deficit} ml
-                      </div>
+                      {results.mildData.includeFluidDeficit && (
+                        <div className="text-center mt-1 text-[10px] text-muted-foreground">
+                          Deficit: {results.mildData.deficitType === "infant" ? "Infant" : "Child"} {results.mildData.deficitPercent}% = {results.mildData.deficit} ml
+                        </div>
+                      )}
                     </div>
                     
                     {/* Step 1: Volume */}
