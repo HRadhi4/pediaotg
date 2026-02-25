@@ -843,13 +843,16 @@ const ABGCompensation = () => {
                   Expected {results.isMetabolic ? "pCO2" : "HCO3"}
                   {!results.isMetabolic && ` (${results.chronicity})`}
                 </p>
-                <p className="text-sm font-mono bg-background p-2 rounded mb-2">
-                  {results.formula} = <strong>{results.expectedValue}</strong>
+                <p className="text-base font-mono bg-background p-2 rounded mb-2">
+                  {results.formula} = <strong className="text-lg">{results.expectedValue}</strong> {results.isMetabolic ? "mmHg" : "mEq/L"}
                 </p>
-                <div className="text-xs space-y-1">
-                  <p>Range: <strong>{results.range}</strong> {results.isMetabolic ? "mmHg" : "mEq/L"}</p>
-                  <p>Actual: <strong>{results.actualValue}</strong> {results.isMetabolic ? "mmHg" : "mEq/L"}</p>
-                </div>
+                {/* Show Range and Actual only for Metabolic disorders */}
+                {results.isMetabolic && (
+                  <div className="text-xs space-y-1">
+                    <p>Range: <strong>{results.range}</strong> mmHg</p>
+                    <p>Actual pCO2: <strong>{results.actualValue}</strong> mmHg</p>
+                  </div>
+                )}
               </div>
 
               {/* Interpretation */}
