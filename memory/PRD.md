@@ -37,6 +37,19 @@ A comprehensive pediatric medical reference application designed for use by qual
   - All text content from the Pediatric Epilepsy Guidelines PDF preserved
   - File: `/app/frontend/src/pages/children/approaches/EpilepsyApproach.jsx`
 
+- **Mobile Layout Fix for 'still seizing > 5 min' section**:
+  - Changed from grid-cols-2 to grid-cols-1 md:grid-cols-2 for responsive stacking
+  - Increased text sizes from text-[9px] to text-sm/text-xs for readability
+  - Removed problematic ml-[50%] offset
+  - Added clear section header "↓ If still seizing > 5 min ↓"
+
+- **TABLE 4 - ANTI-SEIZURE MEDICATIONS Expansion**:
+  - Expanded from 10 to 32 medications to match the complete PDF guideline
+  - Added new Adult Max (mg/day) column
+  - Now includes: Acetazolamide, Biotin, Brivaracetam, Bromide, Carbamazepine, Cenobamate, Clobazam, Clonazepam, Eslicarbazepine, Ethosuximide, Felbamate, Folinic acid, Gabapentin, IVIG, Lacosamide, Lamotrigine, Levetiracetam, Methylprednisolone, Nitrazepam, Oxcarbazepine, Perampanel, Phenobarbital, Phenytoin, Prednisolone, Pregabalin, Primidone, Pyridoxine, Retigabine, Rufinamide, Sodium Valproate, Topiramate, Vigabatrin
+  - Red highlighting for medications not available in SMC
+  - Critical side effects (SJS, Visual field defect) highlighted in red bold
+
 ### February 26, 2026
 - **Drug Formulary Update - Phase 2**: Added comprehensive drug entries from main Formulary PDF
   - Added 17 comprehensive anticonvulsant entries from Harriet Lane Handbook
