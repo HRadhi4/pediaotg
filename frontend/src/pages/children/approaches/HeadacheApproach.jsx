@@ -441,6 +441,62 @@ const HeadacheApproach = ({ weight }) => {
           </div>
         </div>
 
+        {/* TABLE 5: Chronic Management of Migraines */}
+        <div className="space-y-1">
+          <p className="text-xs font-bold text-center text-gray-700 dark:text-gray-300">TABLE 5 - CHRONIC MANAGEMENT OF MIGRAINES</p>
+          <div className="p-2 bg-purple-50 dark:bg-purple-950/30 rounded-lg mb-1">
+            <p className="text-[8px] font-bold text-purple-700">Criteria for starting migraine prophylaxis:</p>
+            <ul className="text-[7px] text-purple-600 list-disc list-inside">
+              <li>Headache frequency at least one headache/week or more than three headaches/month</li>
+              <li>Prolonged and severe headaches, even if infrequent</li>
+              <li>Headache in which abortive treatment fails, overused or is contraindicated in the child</li>
+            </ul>
+          </div>
+          <div className="overflow-x-auto -mx-2">
+            <table className="w-full text-[7px] min-w-[450px] border-collapse">
+              <thead>
+                <tr className="bg-purple-200 dark:bg-purple-900/40">
+                  <th className="border border-purple-300 p-1 text-left font-semibold">Classification</th>
+                  <th className="border border-purple-300 p-1 text-center font-semibold">Dose</th>
+                  <th className="border border-purple-300 p-1 text-center font-semibold">Side effects</th>
+                </tr>
+              </thead>
+              <tbody className="text-gray-700 dark:text-gray-300">
+                <tr className="bg-white dark:bg-gray-900">
+                  <td className="border border-purple-200 p-1 font-medium">Antihypertensives:<br/>1) Propranolol</td>
+                  <td className="border border-purple-200 p-1 text-center">&lt;35kg: 10-20mg TDS<br/>≥35kg: 20-40mg TDS</td>
+                  <td className="border border-purple-200 p-1">Fatigue, dizziness, hypoglycemia, hypotension, nausea, vomiting, heart block, depression, impotence, bronchospasm, hyperkalemia</td>
+                </tr>
+                <tr className="bg-purple-50 dark:bg-purple-950/20">
+                  <td className="border border-purple-200 p-1 font-medium">2) Flunarizine</td>
+                  <td className="border border-purple-200 p-1 text-center">5-10mg HS</td>
+                  <td className="border border-purple-200 p-1">Fatigue, drowsiness, weight gain, GI disturbance, depression</td>
+                </tr>
+                <tr className="bg-white dark:bg-gray-900">
+                  <td className="border border-purple-200 p-1 font-medium">Antiepileptics:<br/>1) Topiramate</td>
+                  <td className="border border-purple-200 p-1 text-center">1-10mg/kg/day{w > 0 && <><br/><span className="font-mono text-green-600">{(w*1).toFixed(0)}-{(w*10).toFixed(0)} mg/d</span></>}</td>
+                  <td className="border border-purple-200 p-1">Paresthesia, somnolence, metabolic acidosis, cognitive dysfunction</td>
+                </tr>
+                <tr className="bg-purple-50 dark:bg-purple-950/20">
+                  <td className="border border-purple-200 p-1 font-medium">2) Valproate</td>
+                  <td className="border border-purple-200 p-1 text-center">15-30mg/kg/day BD<br/>(Max. 1g/day){w > 0 && <><br/><span className="font-mono text-green-600">{Math.min(w*15, 1000).toFixed(0)}-{Math.min(w*30, 1000).toFixed(0)} mg/d</span></>}</td>
+                  <td className="border border-purple-200 p-1">Somnolence, tremor, alopecia, weight gain, hyperammonemia, polycystic ovary syndrome</td>
+                </tr>
+                <tr className="bg-white dark:bg-gray-900">
+                  <td className="border border-purple-200 p-1 font-medium">Antihistamines:<br/>Cyproheptadine</td>
+                  <td className="border border-purple-200 p-1 text-center">0.25-0.4mg/kg/day BD-TDS<br/>(Max. for 2-6yrs: 12mg/day,<br/>Max. for 7-14yrs: 16mg/day)</td>
+                  <td className="border border-purple-200 p-1">Drowsiness, fatigue, increased appetite, weight gain</td>
+                </tr>
+                <tr className="bg-purple-50 dark:bg-purple-950/20">
+                  <td className="border border-purple-200 p-1 font-medium">Tricyclic Antidepressants:<br/>Amitriptyline</td>
+                  <td className="border border-purple-200 p-1 text-center">0.1-0.25mg/kg/dose HS<br/>(If dose &gt;1mg/kg/day divide to BD)<br/>Max. 2mg/kg/day</td>
+                  <td className="border border-purple-200 p-1">Sedation, urinary retention, constipation, dizziness, drowsiness, arrhythmias, LFT derangements</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
         {/* IIH Section */}
         <div className="p-2 bg-gray-100 dark:bg-gray-800 rounded-lg border-2 border-gray-300">
           <p className="text-xs font-bold text-gray-800 dark:text-gray-200 mb-1 bg-black text-white inline-block px-2 rounded">IDIOPATHIC INTRACRANIAL HYPERTENSION</p>
