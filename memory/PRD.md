@@ -28,12 +28,19 @@ A comprehensive pediatric medical reference application designed for use by qual
 ## What's Been Implemented
 
 ### February 26, 2026
-- **Drug Formulary Update**: Integrated epilepsy drugs from SMC Epilepsy Pharmacopedia document
+- **Drug Formulary Update - Phase 2**: Added comprehensive drug entries from main Formulary PDF
+  - Added 17 comprehensive anticonvulsant entries from Harriet Lane Handbook
+  - Drugs now have DUAL entries: SMC version (with SMC badge) + Main Formulary version (detailed dosing, indications, warnings)
+  - Total drugs in formulary: **164**
+  - Files modified: `/app/frontend/src/data/formulary.json`, `/app/frontend/src/pages/children/DrugsPage.jsx`
+
+- **Bug Fix**: Fixed `drug.sideEffects.map is not a function` error
+  - SMC drugs stored sideEffects as string, code expected array
+  - Updated DrugsPage.jsx to handle both string and array formats
+
+- **Drug Formulary Update - Phase 1**: Integrated epilepsy drugs from SMC Epilepsy Pharmacopedia document
   - Added 7 new antiepileptic drugs: Cenobamate, Eslicarbazepine, Felbamate, Retigabine, Stiripentol, Sulthiame, Tiagabine
-  - Total drugs in formulary: 147 (36 antiepileptic drugs)
-  - All SMC Epilepsy Guideline drugs now display "SMC" badge on drug cards
-  - File: `/app/frontend/src/data/formulary.json`
-  - UI: Added SMC source badge in `/app/frontend/src/pages/children/DrugsPage.jsx`
+  - All SMC Epilepsy Guideline drugs display "SMC" badge on drug cards
 
 ### February 24, 2026
 - **Bug Fix**: Fixed Potassium PO rounding bug in Electrolytes Correction Calculator
