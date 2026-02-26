@@ -128,13 +128,42 @@ const HeadacheApproach = ({ weight }) => {
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-1">
-                <div className="p-0.5 bg-black text-white rounded text-[7px] font-bold text-center">RED FLAGS +VE</div>
-                <div className="p-0.5 bg-black text-white rounded text-[7px] font-bold text-center">RED FLAGS -VE</div>
+                {/* RED FLAGS +VE */}
+                <div className="text-center">
+                  <div className="p-0.5 bg-black text-white rounded text-[7px] font-bold">RED FLAGS +VE</div>
+                  <div className="flex justify-center mt-0.5">
+                    <div className="w-0.5 h-2 bg-gray-400"></div>
+                  </div>
+                  <div className="p-1 bg-gray-300 dark:bg-gray-600 rounded text-[8px] font-bold">CT SCAN BRAIN</div>
+                </div>
+                {/* RED FLAGS -VE */}
+                <div className="text-center">
+                  <div className="p-0.5 bg-black text-white rounded text-[7px] font-bold">RED FLAGS -VE</div>
+                  <div className="flex justify-center mt-0.5">
+                    <div className="w-0.5 h-2 bg-gray-400"></div>
+                  </div>
+                  <div className="p-1 bg-blue-200 dark:bg-blue-800 rounded text-[7px] font-medium text-blue-800 dark:text-blue-200">
+                    Consult Ophthalmology<br/>(check for papilledema)
+                  </div>
+                  <div className="flex justify-center mt-0.5">
+                    <div className="flex items-end">
+                      <div className="w-6 h-0.5 bg-gray-400"></div>
+                      <div className="w-0.5 h-2 bg-gray-400"></div>
+                      <div className="w-6 h-0.5 bg-gray-400"></div>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-0.5 mt-0.5">
+                    <div className="p-1 bg-purple-200 dark:bg-purple-800 rounded text-[6px]">
+                      <p className="font-bold text-purple-800 dark:text-purple-200">PAPILLEDEMA</p>
+                      <p className="text-purple-700 dark:text-purple-300">Admit for IIH treatment</p>
+                    </div>
+                    <div className="p-1 bg-orange-200 dark:bg-orange-800 rounded text-[6px]">
+                      <p className="font-bold text-orange-800 dark:text-orange-200">NO PAPILLEDEMA</p>
+                      <p className="text-orange-700 dark:text-orange-300">Neurology + admit for workup</p>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div className="flex justify-center mt-0.5">
-                <div className="w-0.5 h-2 bg-gray-400"></div>
-              </div>
-              <div className="p-1 bg-gray-300 dark:bg-gray-600 rounded text-[8px] font-bold text-center">CT SCAN BRAIN</div>
             </div>
           </div>
 
