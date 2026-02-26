@@ -12629,5 +12629,169 @@
       }
     },
     "sideEffects": "Fever, headache, aseptic meningitis, hypotension"
+  },
+  {
+    "id": "cenobamate",
+    "name": "Cenobamate (Xcopri)",
+    "category": "Antiepileptic",
+    "route": "PO",
+    "source": "SMC Epilepsy Guideline",
+    "formulations": [
+      {
+        "type": "Not available in SMC",
+        "strengths": ""
+      }
+    ],
+    "doses": {
+      "adult": {
+        "label": "Adult",
+        "value": "12.5",
+        "unit": "mg/day initial",
+        "isFixed": true,
+        "maxDose": 400,
+        "maxUnit": "mg/day"
+      }
+    },
+    "sideEffects": "Headache, sedation, dysarthria, ataxia, hyperkalemia, hallucination, diplopia"
+  },
+  {
+    "id": "eslicarbazepine",
+    "name": "Eslicarbazepine (Aptiom)",
+    "category": "Antiepileptic",
+    "route": "PO",
+    "source": "SMC Epilepsy Guideline",
+    "formulations": [
+      {
+        "type": "Not available in SMC",
+        "strengths": ""
+      }
+    ],
+    "doses": {
+      "adult": {
+        "label": "Adult",
+        "value": "400",
+        "unit": "mg/day initial",
+        "isFixed": true,
+        "maxDose": 1200,
+        "maxUnit": "mg/day"
+      }
+    },
+    "sideEffects": "Sedation, GI upset, allergic reaction, dryness of mouth"
+  },
+  {
+    "id": "felbamate",
+    "name": "Felbamate (Felbatol)",
+    "category": "Antiepileptic",
+    "route": "PO",
+    "source": "SMC Epilepsy Guideline",
+    "formulations": [
+      {
+        "type": "Not available in SMC",
+        "strengths": ""
+      }
+    ],
+    "doses": {
+      "pediatric": {
+        "label": "Pediatric",
+        "value": "15",
+        "unit": "mg/kg/day",
+        "maxDose": 60,
+        "maxUnit": "mg/kg/day (max 3600mg/day)"
+      }
+    },
+    "sideEffects": "Sedation, GI upset, insomnia, weight loss, acne, allergic reaction, arrhythmia"
+  },
+  {
+    "id": "retigabine",
+    "name": "Retigabine (Ezogabine)",
+    "category": "Antiepileptic",
+    "route": "PO",
+    "source": "SMC Epilepsy Guideline",
+    "formulations": [
+      {
+        "type": "Not available in SMC",
+        "strengths": ""
+      }
+    ],
+    "doses": {
+      "adult": {
+        "label": "Adult",
+        "value": "300",
+        "unit": "mg/day initial",
+        "isFixed": true,
+        "maxDose": 1200,
+        "maxUnit": "mg/day"
+      }
+    },
+    "sideEffects": "Sedation, dysarthria, tremors, diplopia"
+  },
+  {
+    "id": "stiripentol",
+    "name": "Stiripentol (Diacomit)",
+    "category": "Antiepileptic",
+    "route": "PO",
+    "source": "SMC Epilepsy Guideline",
+    "formulations": [
+      {
+        "type": "Not available in SMC",
+        "strengths": ""
+      }
+    ],
+    "doses": {
+      "pediatric": {
+        "label": "Pediatric",
+        "value": "10",
+        "unit": "mg/kg/day",
+        "maxDose": 50,
+        "maxUnit": "mg/kg/day (max 3000mg/day)"
+      }
+    },
+    "sideEffects": "GI upset, ataxia, dysarthria, insomnia"
+  },
+  {
+    "id": "sulthiame",
+    "name": "Sulthiame (Ospolot)",
+    "category": "Antiepileptic",
+    "route": "PO",
+    "source": "SMC Epilepsy Guideline",
+    "formulations": [
+      {
+        "type": "Not available in SMC",
+        "strengths": ""
+      }
+    ],
+    "doses": {
+      "pediatric": {
+        "label": "Pediatric",
+        "value": "3",
+        "unit": "mg/kg/day",
+        "maxDose": 15,
+        "maxUnit": "mg/kg/day (max 600mg/day)"
+      }
+    },
+    "sideEffects": "GI upset, sedation, weight loss, acidosis"
+  },
+  {
+    "id": "tiagabine",
+    "name": "Tiagabine (Gabitril)",
+    "category": "Antiepileptic",
+    "route": "PO",
+    "source": "SMC Epilepsy Guideline",
+    "formulations": [
+      {
+        "type": "Not available in SMC",
+        "strengths": ""
+      }
+    ],
+    "doses": {
+      "pediatric": {
+        "label": "Pediatric",
+        "value": "10",
+        "unit": "mg/kg/day",
+        "maxDose": 30,
+        "maxUnit": "mg/kg/day (max 55mg/day)"
+      }
+    },
+    "sideEffects": "Sedation, behavioural issues"
   }
 ]
