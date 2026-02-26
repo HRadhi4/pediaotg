@@ -965,6 +965,12 @@ const DrugsPage = ({ onBack }) => {
                       <span className="text-[10px] px-2 py-1 rounded bg-gray-100 dark:bg-gray-800 text-muted-foreground whitespace-nowrap">
                         {drug.category}
                       </span>
+                      {/* SMC Source Badge */}
+                      {drug.source === 'SMC Epilepsy Guideline' && (
+                        <span className="text-[8px] px-1.5 py-0.5 rounded bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 whitespace-nowrap font-medium">
+                          SMC
+                        </span>
+                      )}
                     </div>
                   </div>
                   
