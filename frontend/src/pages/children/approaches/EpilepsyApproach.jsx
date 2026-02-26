@@ -705,90 +705,277 @@ const EpilepsyApproach = ({ weight: w = 0, age = 0 }) => {
           </div>
         </div>
 
-        {/* TABLE 4: Anti-Seizure Medications */}
-        <div className="space-y-1">
-          <p className="text-xs font-bold text-center text-gray-700 dark:text-gray-300">TABLE 4 - ANTI-SEIZURE MEDICATIONS</p>
+        {/* TABLE 4: Anti-Seizure Medications - COMPLETE */}
+        <div className="space-y-2">
+          <p className="text-sm font-bold text-center text-gray-700 dark:text-gray-300 bg-blue-100 dark:bg-blue-900/30 py-2 rounded">TABLE 4 - ANTI-SEIZURE MEDICATIONS</p>
           <div className="overflow-x-auto -mx-2">
-            <table className="w-full text-[7px] min-w-[550px] border-collapse">
+            <table className="w-full text-[8px] min-w-[700px] border-collapse">
               <thead>
-                <tr className="bg-gray-200 dark:bg-gray-700">
-                  <th className="border border-gray-300 dark:border-gray-600 p-1 text-left font-semibold">Medication</th>
-                  <th className="border border-gray-300 dark:border-gray-600 p-1 text-center font-semibold">Initial Dose</th>
-                  <th className="border border-gray-300 dark:border-gray-600 p-1 text-center font-semibold">Max Dose</th>
-                  <th className="border border-gray-300 dark:border-gray-600 p-1 text-center font-semibold">Available Forms (SMC)</th>
-                  <th className="border border-gray-300 dark:border-gray-600 p-1 text-left font-semibold">Side Effects</th>
+                <tr className="bg-blue-200 dark:bg-blue-800">
+                  <th className="border border-gray-300 dark:border-gray-600 p-1.5 text-left font-bold">Drug</th>
+                  <th className="border border-gray-300 dark:border-gray-600 p-1.5 text-center font-bold">Initial Dose</th>
+                  <th className="border border-gray-300 dark:border-gray-600 p-1.5 text-center font-bold">Max (mg/kg/day)</th>
+                  <th className="border border-gray-300 dark:border-gray-600 p-1.5 text-center font-bold">Adult Max (mg/day)</th>
+                  <th className="border border-gray-300 dark:border-gray-600 p-1.5 text-center font-bold">Available Forms (SMC)</th>
+                  <th className="border border-gray-300 dark:border-gray-600 p-1.5 text-left font-bold">Side Effects</th>
                 </tr>
               </thead>
               <tbody className="text-gray-700 dark:text-gray-300">
                 <tr className="bg-white dark:bg-gray-900">
-                  <td className="border border-gray-200 dark:border-gray-700 p-1 font-medium">Levetiracetam</td>
-                  <td className="border border-gray-200 dark:border-gray-700 p-1 text-center">10 mg/kg/day{w > 0 && <><br/><span className="text-green-600 dark:text-green-400 font-mono">{(w*10).toFixed(0)} mg/d</span></>}</td>
-                  <td className="border border-gray-200 dark:border-gray-700 p-1 text-center">60 mg/kg/day<br/>(max 3000mg)</td>
-                  <td className="border border-gray-200 dark:border-gray-700 p-1 text-center">Syrup 100mg/ml<br/>Tab 500mg, 1000mg</td>
-                  <td className="border border-gray-200 dark:border-gray-700 p-1">Behavioural issues</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 font-medium">Acetazolamide</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">1m-12y: 5mg/kg/day<br/>12y-18y: 500mg/day</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">20</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">1000</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">Tab 250mg</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5">GI upset, acidosis, numbness, anhydrosis</td>
                 </tr>
                 <tr className="bg-gray-50 dark:bg-gray-800">
-                  <td className="border border-gray-200 dark:border-gray-700 p-1 font-medium">Sodium Valproate</td>
-                  <td className="border border-gray-200 dark:border-gray-700 p-1 text-center">10 mg/kg/day{w > 0 && <><br/><span className="text-green-600 dark:text-green-400 font-mono">{(w*10).toFixed(0)} mg/d</span></>}</td>
-                  <td className="border border-gray-200 dark:border-gray-700 p-1 text-center">60 mg/kg/day<br/>(max 2500mg)</td>
-                  <td className="border border-gray-200 dark:border-gray-700 p-1 text-center">Syrup 57.64mg/ml<br/>Tab 200mg, 500mg<br/>Inj 100mg/ml</td>
-                  <td className="border border-gray-200 dark:border-gray-700 p-1">Sedation, hepatitis, GI upset, weight gain</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 font-medium">Biotin</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">5mg</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">10mg</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">10</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">Cap 5mg</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5">GI upset</td>
                 </tr>
                 <tr className="bg-white dark:bg-gray-900">
-                  <td className="border border-gray-200 dark:border-gray-700 p-1 font-medium">Phenobarbital</td>
-                  <td className="border border-gray-200 dark:border-gray-700 p-1 text-center">5 mg/kg/day{w > 0 && <><br/><span className="text-green-600 dark:text-green-400 font-mono">{(w*5).toFixed(0)} mg/d</span></>}</td>
-                  <td className="border border-gray-200 dark:border-gray-700 p-1 text-center">5 mg/kg/day<br/>(max 180mg)</td>
-                  <td className="border border-gray-200 dark:border-gray-700 p-1 text-center">Syrup 3mg/ml<br/>Tab 30mg<br/>Inj 200mg/ml</td>
-                  <td className="border border-gray-200 dark:border-gray-700 p-1">Sedation, hepatitis, behavioural issues</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 font-medium">Brivaracetam</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">Wt&lt;11kg: 1.5mg/kg/day<br/>Wt&gt;11kg: 1mg/kg/day</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">&lt;11kg: 6<br/>&gt;11kg: 5</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">200</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center text-red-500">Not available</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5">Behavioural issues, fatigue</td>
                 </tr>
                 <tr className="bg-gray-50 dark:bg-gray-800">
-                  <td className="border border-gray-200 dark:border-gray-700 p-1 font-medium">Carbamazepine</td>
-                  <td className="border border-gray-200 dark:border-gray-700 p-1 text-center">5 mg/kg/day{w > 0 && <><br/><span className="text-green-600 dark:text-green-400 font-mono">{(w*5).toFixed(0)} mg/d</span></>}</td>
-                  <td className="border border-gray-200 dark:border-gray-700 p-1 text-center">20 mg/kg/day<br/>(max 1200mg)</td>
-                  <td className="border border-gray-200 dark:border-gray-700 p-1 text-center">Syrup 20mg/ml<br/>Tab 200mg</td>
-                  <td className="border border-gray-200 dark:border-gray-700 p-1">Sedation, GI upset, allergic reaction</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 font-medium">Bromide (K+)</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">30mg/kg/day</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">60-70</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">50</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">Tab 850mg</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5">Sedation, incoordination</td>
                 </tr>
                 <tr className="bg-white dark:bg-gray-900">
-                  <td className="border border-gray-200 dark:border-gray-700 p-1 font-medium">Phenytoin</td>
-                  <td className="border border-gray-200 dark:border-gray-700 p-1 text-center">5 mg/kg/day{w > 0 && <><br/><span className="text-green-600 dark:text-green-400 font-mono">{(w*5).toFixed(0)} mg/d</span></>}</td>
-                  <td className="border border-gray-200 dark:border-gray-700 p-1 text-center">8 mg/kg/day<br/>(max 300mg)</td>
-                  <td className="border border-gray-200 dark:border-gray-700 p-1 text-center">Syrup 6mg/ml<br/>Tab 100mg<br/>Inj 50mg/ml</td>
-                  <td className="border border-gray-200 dark:border-gray-700 p-1">GI upset, gingival hyperplasia, hirsutism, ataxia</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 font-medium">Carbamazepine</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">1m-12y: 5mg/kg/day<br/>12y-18y: 200mg/day{w > 0 && <><br/><span className="text-green-600 font-mono">{(w*5).toFixed(0)}mg/d</span></>}</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">30</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">1800</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">Syrup 20mg/ml<br/>Tab 200mg, 400mg</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5">Sedation, abdominal pain, allergic reaction, hepatitis, hyponatremia</td>
                 </tr>
                 <tr className="bg-gray-50 dark:bg-gray-800">
-                  <td className="border border-gray-200 dark:border-gray-700 p-1 font-medium">Topiramate</td>
-                  <td className="border border-gray-200 dark:border-gray-700 p-1 text-center">1 mg/kg/day{w > 0 && <><br/><span className="text-green-600 dark:text-green-400 font-mono">{(w*1).toFixed(0)} mg/d</span></>}</td>
-                  <td className="border border-gray-200 dark:border-gray-700 p-1 text-center">10 mg/kg/day<br/>(max 400mg)</td>
-                  <td className="border border-gray-200 dark:border-gray-700 p-1 text-center">Tab 25mg, 50mg, 100mg</td>
-                  <td className="border border-gray-200 dark:border-gray-700 p-1">Sedation, kidney stones, weight loss, acidosis</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 font-medium">Cenobamate</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">12.5mg/day</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">400mg/day</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">400</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center text-red-500">Not available</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5">Headache, sedation, dysarthria, ataxia, hyperkalemia, hallucination</td>
                 </tr>
                 <tr className="bg-white dark:bg-gray-900">
-                  <td className="border border-gray-200 dark:border-gray-700 p-1 font-medium">Clobazam</td>
-                  <td className="border border-gray-200 dark:border-gray-700 p-1 text-center">0.25 mg/kg/day{w > 0 && <><br/><span className="text-green-600 dark:text-green-400 font-mono">{(w*0.25).toFixed(1)} mg/d</span></>}</td>
-                  <td className="border border-gray-200 dark:border-gray-700 p-1 text-center">1 mg/kg/day<br/>(max 40mg)</td>
-                  <td className="border border-gray-200 dark:border-gray-700 p-1 text-center">Tab 10mg</td>
-                  <td className="border border-gray-200 dark:border-gray-700 p-1">Sedation, behavioural issues</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 font-medium">Clobazam</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">1m-12y: 0.25mg/kg/day<br/>12y-18y: 20mg/day{w > 0 && <><br/><span className="text-green-600 font-mono">{(w*0.25).toFixed(1)}mg/d</span></>}</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">1</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">60</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">Tab 10mg</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5">Sedation, behavioural issues, aggressiveness</td>
                 </tr>
                 <tr className="bg-gray-50 dark:bg-gray-800">
-                  <td className="border border-gray-200 dark:border-gray-700 p-1 font-medium">Clonazepam</td>
-                  <td className="border border-gray-200 dark:border-gray-700 p-1 text-center">0.025 mg/kg/day{w > 0 && <><br/><span className="text-green-600 dark:text-green-400 font-mono">{(w*0.025).toFixed(2)} mg/d</span></>}</td>
-                  <td className="border border-gray-200 dark:border-gray-700 p-1 text-center">0.2 mg/kg/day<br/>(max 20mg)</td>
-                  <td className="border border-gray-200 dark:border-gray-700 p-1 text-center">Tab 0.5mg, 2mg</td>
-                  <td className="border border-gray-200 dark:border-gray-700 p-1">Sedation, behavioural issues, hypersalivation</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 font-medium">Clonazepam</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">0.05-0.2mg/kg/day{w > 0 && <><br/><span className="text-green-600 font-mono">{(w*0.1).toFixed(2)}mg/d</span></>}</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">0.25</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">8</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">Drops 2.5mg/ml<br/>Tab 0.5mg, 2mg</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5">Sedation, increased salivation</td>
                 </tr>
                 <tr className="bg-white dark:bg-gray-900">
-                  <td className="border border-gray-200 dark:border-gray-700 p-1 font-medium">Lamotrigine</td>
-                  <td className="border border-gray-200 dark:border-gray-700 p-1 text-center">0.15 mg/kg/day<br/>(with VPA)</td>
-                  <td className="border border-gray-200 dark:border-gray-700 p-1 text-center">5 mg/kg/day<br/>(max 200mg)</td>
-                  <td className="border border-gray-200 dark:border-gray-700 p-1 text-center">Tab 25mg, 50mg, 100mg</td>
-                  <td className="border border-gray-200 dark:border-gray-700 p-1">Allergic reaction (SJS), sedation, diplopia</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 font-medium">Eslicarbazepine</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">400mg/day</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">1200mg/day</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">1200</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center text-red-500">Not available</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5">Sedation, GI upset, allergic reaction, dryness of mouth</td>
                 </tr>
                 <tr className="bg-gray-50 dark:bg-gray-800">
-                  <td className="border border-gray-200 dark:border-gray-700 p-1 font-medium">Vigabatrin</td>
-                  <td className="border border-gray-200 dark:border-gray-700 p-1 text-center">50 mg/kg/day{w > 0 && <><br/><span className="text-green-600 dark:text-green-400 font-mono">{(w*50).toFixed(0)} mg/d</span></>}</td>
-                  <td className="border border-gray-200 dark:border-gray-700 p-1 text-center">150 mg/kg/day<br/>(max 3000mg)</td>
-                  <td className="border border-gray-200 dark:border-gray-700 p-1 text-center">Tab 500mg<br/>Sachet 500mg</td>
-                  <td className="border border-gray-200 dark:border-gray-700 p-1 text-red-600 dark:text-red-400 font-bold">Visual field defect (irreversible)</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 font-medium">Ethosuximide</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">1m-5y: 10mg/kg/day<br/>6y-18y: 500mg/day{w > 0 && <><br/><span className="text-green-600 font-mono">{(w*10).toFixed(0)}mg/d</span></>}</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">40</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">2000</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">Syrup 50mg/ml<br/>Tab 250mg</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5">GI upset, sedation, coagulopathy, allergic reaction</td>
+                </tr>
+                <tr className="bg-white dark:bg-gray-900">
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 font-medium">Felbamate</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">15mg/kg/day{w > 0 && <><br/><span className="text-green-600 font-mono">{(w*15).toFixed(0)}mg/d</span></>}</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">60</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">3600</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center text-red-500">Not available</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5">Sedation, GI upset, insomnia, weight loss, allergic reaction, arrhythmia</td>
+                </tr>
+                <tr className="bg-gray-50 dark:bg-gray-800">
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 font-medium">Folinic acid</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">0.5mg/kg/day</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">5mg/kg/day</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">70</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">Tab 15mg</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5">GI upset, fatigability</td>
+                </tr>
+                <tr className="bg-white dark:bg-gray-900">
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 font-medium">Gabapentin</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">10mg/kg/day{w > 0 && <><br/><span className="text-green-600 font-mono">{(w*10).toFixed(0)}mg/d</span></>}</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">-</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">4800</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">Cap 300mg</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5">Sedation, GI upset, weight gain, behavioural issues</td>
+                </tr>
+                <tr className="bg-gray-50 dark:bg-gray-800">
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 font-medium">IVIG</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">2g/kg (STAT or divided)</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">-</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">-</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">Inj 50mg/ml</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5">Fever, headache, aseptic meningitis, hypotension</td>
+                </tr>
+                <tr className="bg-white dark:bg-gray-900">
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 font-medium">Lacosamide</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">100mg/day</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">400mg/day</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">400</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">Syrup 10mg/ml<br/>Tab 50mg, 100mg, 200mg</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5">Sedation, diplopia, ataxia</td>
+                </tr>
+                <tr className="bg-gray-50 dark:bg-gray-800">
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 font-medium">Lamotrigine</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">0.5mg/kg/day<br/>(Without VPA: 10; With VPA: 5)</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">-</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">500</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">Tab 5mg, 25mg, 50mg, 100mg</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-red-600 font-bold">Allergic reaction (SJS), sedation, tremors, GI upset</td>
+                </tr>
+                <tr className="bg-white dark:bg-gray-900">
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 font-medium">Levetiracetam</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">10mg/kg/day{w > 0 && <><br/><span className="text-green-600 font-mono">{(w*10).toFixed(0)}mg/d</span></>}</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">60</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">3000</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">Syrup 100mg/ml<br/>Tab 500mg, 1000mg<br/>Inj 100mg/ml</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5">Behavioural issues</td>
+                </tr>
+                <tr className="bg-gray-50 dark:bg-gray-800">
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 font-medium">Methylprednisolone</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">30mg/kg/day x3 days{w > 0 && <><br/><span className="text-green-600 font-mono">{(w*30).toFixed(0)}mg/d</span></>}</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">1000mg/day</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">1000</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">Inj 100mg/ml</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5">GI upset, hypertension, behavioural issues, acne, weight gain</td>
+                </tr>
+                <tr className="bg-white dark:bg-gray-900">
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 font-medium">Nitrazepam</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">0.1-0.5mg/kg/day{w > 0 && <><br/><span className="text-green-600 font-mono">{(w*0.3).toFixed(1)}mg/d</span></>}</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">0.5</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">-</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">Tab 5mg</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5">Sedation, GI upset, behavioural issues</td>
+                </tr>
+                <tr className="bg-gray-50 dark:bg-gray-800">
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 font-medium">Oxcarbazepine</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">10mg/kg/day{w > 0 && <><br/><span className="text-green-600 font-mono">{(w*10).toFixed(0)}mg/d</span></>}</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">40</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">2400</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">Syrup 60mg/ml<br/>Tab 300mg, 600mg</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5">Sedation, abdominal pain, allergic reaction, hyponatremia</td>
+                </tr>
+                <tr className="bg-white dark:bg-gray-900">
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 font-medium">Perampanel</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">2mg/day</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">12</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">12</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">Tab 4mg, 8mg, 12mg</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5">Sedation, GI upset</td>
+                </tr>
+                <tr className="bg-gray-50 dark:bg-gray-800">
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 font-medium">Phenobarbital</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">5mg/kg/day{w > 0 && <><br/><span className="text-green-600 font-mono">{(w*5).toFixed(0)}mg/d</span></>}</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">5</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">180</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">Syrup 3mg/ml<br/>Tab 30mg<br/>Inj 200mg/ml</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5">Sedation, hepatitis, behavioural issues</td>
+                </tr>
+                <tr className="bg-white dark:bg-gray-900">
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 font-medium">Phenytoin</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">5mg/kg/day{w > 0 && <><br/><span className="text-green-600 font-mono">{(w*5).toFixed(0)}mg/d</span></>}</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">15</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">600</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">Syrup 6mg/ml<br/>Tab 100mg<br/>Cap 100mg<br/>Inj 50mg/ml</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5">GI upset, hepatitis, gum hypertrophy, allergic reaction</td>
+                </tr>
+                <tr className="bg-gray-50 dark:bg-gray-800">
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 font-medium">Prednisolone</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">2mg/kg/day{w > 0 && <><br/><span className="text-green-600 font-mono">{(w*2).toFixed(0)}mg/d</span></>}</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">NA</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">60</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">Tab 1mg, 5mg, 20mg</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5">GI upset, hypertension, behavioural issues, acne, weight gain</td>
+                </tr>
+                <tr className="bg-white dark:bg-gray-900">
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 font-medium">Pregabalin</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">150mg/day</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">NA</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">600</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">Cap 75mg, 150mg</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5">Sedation, GI upset, behavioural issues, weight gain, allergic reaction</td>
+                </tr>
+                <tr className="bg-gray-50 dark:bg-gray-800">
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 font-medium">Primidone</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">125mg/day</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">NA</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">1500</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">Tab 250mg</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5">Sedation, vertigo, allergic reaction, insomnia</td>
+                </tr>
+                <tr className="bg-white dark:bg-gray-900">
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 font-medium">Pyridoxine</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">50-100mg/day</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">30-50mg</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">1000</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">Tab 50mg<br/>Inj 50mg/ml</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5">GI upset, headaches</td>
+                </tr>
+                <tr className="bg-gray-50 dark:bg-gray-800">
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 font-medium">Retigabine</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">300mg</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">600-1200mg/day</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">1200</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center text-red-500">Not available</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5">Sedation, dysarthria, tremors, diplopia</td>
+                </tr>
+                <tr className="bg-white dark:bg-gray-900">
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 font-medium">Rufinamide</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">Wt&lt;30kg: 200mg/day<br/>Wt&gt;30kg: 400mg/day</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">-</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">3200</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">Tab 200mg, 400mg</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5">Sedation, allergic reaction, lymphadenopathy, haematuria, hepatitis</td>
+                </tr>
+                <tr className="bg-gray-50 dark:bg-gray-800">
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 font-medium">Sodium Valproate</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">10mg/kg/day{w > 0 && <><br/><span className="text-green-600 font-mono">{(w*10).toFixed(0)}mg/d</span></>}</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">60</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">2500</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">Syrup 57.64mg/ml<br/>Tab 200mg, 500mg, 500mg ER<br/>Inj 100mg/ml</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5">Sedation, hepatitis, agranulocytosis, GI upset, weight gain, coagulopathy</td>
+                </tr>
+                <tr className="bg-white dark:bg-gray-900">
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 font-medium">Topiramate</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">1mg/kg/day{w > 0 && <><br/><span className="text-green-600 font-mono">{(w*1).toFixed(0)}mg/d</span></>}</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">10</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">400</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">Tab 25mg, 50mg, 100mg</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5">Sedation, kidney stones, weight loss, acidosis</td>
+                </tr>
+                <tr className="bg-gray-50 dark:bg-gray-800">
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 font-medium">Vigabatrin</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">50mg/kg/day{w > 0 && <><br/><span className="text-green-600 font-mono">{(w*50).toFixed(0)}mg/d</span></>}</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">150</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">3000</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-center">Tab 500mg<br/>Sachet 500mg</td>
+                  <td className="border border-gray-200 dark:border-gray-700 p-1.5 text-red-600 dark:text-red-400 font-bold">Visual field defect (irreversible)</td>
                 </tr>
               </tbody>
             </table>
