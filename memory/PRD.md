@@ -27,12 +27,24 @@ A comprehensive pediatric medical reference application designed for use by qual
 
 ## What's Been Implemented
 
+### February 26, 2026
+- **Drug Formulary Update**: Integrated epilepsy drugs from SMC Epilepsy Pharmacopedia document
+  - Added 7 new antiepileptic drugs: Cenobamate, Eslicarbazepine, Felbamate, Retigabine, Stiripentol, Sulthiame, Tiagabine
+  - Total drugs in formulary: 147 (36 antiepileptic drugs)
+  - All SMC Epilepsy Guideline drugs now display "SMC" badge on drug cards
+  - File: `/app/frontend/src/data/formulary.json`
+  - UI: Added SMC source badge in `/app/frontend/src/pages/children/DrugsPage.jsx`
+
 ### February 24, 2026
 - **Bug Fix**: Fixed Potassium PO rounding bug in Electrolytes Correction Calculator
   - Issue: Per-dose calculations showed floating-point precision errors when dividing daily dose by frequency (BID/TID/QID)
   - Solution: Added `Math.round(perDose * 10) / 10` to properly round to 1 decimal place
   - File: `/app/frontend/src/components/ElectrolytesDialog.jsx`
   - Tested: 17 mEq ÷ 3 (TID) = 5.7 mEq ✓, 17 mEq ÷ 4 (QID) = 4.3 mEq ✓
+
+- **Bug Fix**: Minus sign input on mobile keyboards
+  - Created custom `InputWithSignToggle.jsx` component with +/- toggle button
+  - Applied to all Base Excess fields in Blood Gas and Electrolytes calculators
 
 ### Previous Sessions
 - Comprehensive Renal Dosing System using Bedside CKiD formula
