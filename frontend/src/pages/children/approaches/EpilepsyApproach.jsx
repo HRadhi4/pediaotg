@@ -258,8 +258,8 @@ const EpilepsyApproach = ({ weight: w = 0, age = 0 }) => {
         </div>
 
         {/* FREQUENT SEIZURES ALGORITHM */}
-        <div className="p-2 bg-gray-50 dark:bg-gray-800/50 rounded-lg border border-gray-200 dark:border-gray-700">
-          <p className="text-xs font-bold text-center text-gray-800 dark:text-gray-200 mb-1">FREQUENT SEIZURES ALGORITHM</p>
+        <div className="p-2 bg-orange-50 dark:bg-orange-950/20 rounded-lg border border-orange-200 dark:border-orange-800">
+          <p className="text-xs font-bold text-center text-orange-800 dark:text-orange-200 mb-1">FREQUENT SEIZURES ALGORITHM</p>
           <p className="text-[8px] text-center text-gray-600 dark:text-gray-400 mb-2">
             Applies only to GTC, focal non-motor and motor with impaired awareness seizures<br/>
             (each seizure &lt;5 min with consciousness regained between seizures)<br/>
