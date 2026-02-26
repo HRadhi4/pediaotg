@@ -1172,21 +1172,14 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
                   </p>
                   <div>
                     <Label className="text-xs">Base Deficit (mEq/L)</Label>
-                    <Input
-                      type="text"
-                      inputMode="numeric"
-                      pattern="-?[0-9]*\.?[0-9]*"
+                    <InputWithSignToggle
                       placeholder="e.g., -10"
                       value={baseExcess}
-                      onChange={(e) => {
-                        const val = e.target.value;
-                        if (val === '' || val === '-' || /^-?\d*\.?\d*$/.test(val)) {
-                          setBaseExcess(val);
-                        }
-                      }}
-                      className="font-mono h-9"
+                      onChange={(e) => setBaseExcess(e.target.value)}
+                      className="h-9"
+                      data-testid="be-input-dialog"
                     />
-                    <p className="text-[10px] text-muted-foreground mt-1">Enter negative value (e.g., -10)</p>
+                    <p className="text-[10px] text-muted-foreground mt-1">Use +/- button for negative values</p>
                   </div>
                 </div>
               )}
