@@ -216,19 +216,12 @@ const HeadacheApproach = ({ weight }) => {
         {/* IMAGE 1: FUNDOSCOPY */}
         <div className="p-2 bg-gray-100 dark:bg-gray-800 rounded-lg">
           <p className="text-xs font-bold text-center text-gray-700 dark:text-gray-300 mb-2">IMAGE 1 - FUNDOSCOPY</p>
-          <div className="grid grid-cols-2 gap-2">
-            <div className="text-center">
-              <div className="w-16 h-16 mx-auto bg-red-200 rounded-full flex items-center justify-center border-2 border-red-300">
-                <div className="text-[8px] text-red-700 font-medium">blurred disk margins</div>
-              </div>
-              <p className="text-[9px] font-bold mt-1 text-red-600">Papilledema</p>
-            </div>
-            <div className="text-center">
-              <div className="w-16 h-16 mx-auto bg-orange-100 rounded-full flex items-center justify-center border-2 border-orange-300">
-                <div className="text-[8px] text-orange-700 font-medium">sharp disk margins</div>
-              </div>
-              <p className="text-[9px] font-bold mt-1 text-green-600">Normal Optic Disk</p>
-            </div>
+          <div className="flex justify-center">
+            <img 
+              src="https://customer-assets.emergentagent.com/job_b16982fe-7b8c-4836-9cd1-e9794602d475/artifacts/e8xji0mw_Gemini_Generated_Image_vgi5vpvgi5vpvgi5.png" 
+              alt="Normal Optic Disk vs Papilledema comparison"
+              className="w-full max-w-md rounded-lg border border-gray-300 dark:border-gray-600"
+            />
           </div>
         </div>
 
