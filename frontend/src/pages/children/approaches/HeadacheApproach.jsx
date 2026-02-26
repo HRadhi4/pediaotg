@@ -70,13 +70,17 @@ const HeadacheApproach = ({ weight }) => {
                     </div>
                   </div>
                   <div className="grid grid-cols-2 gap-0.5 mt-0.5">
-                    <div className="p-0.5 bg-black text-white rounded text-[7px] font-bold">RED FLAGS +VE</div>
-                    <div className="p-0.5 bg-black text-white rounded text-[7px] font-bold">RED FLAGS -VE</div>
+                    <div className="text-center">
+                      <div className="p-0.5 bg-black text-white rounded text-[7px] font-bold">RED FLAGS +VE</div>
+                      <div className="flex justify-center mt-0.5">
+                        <div className="w-0.5 h-2 bg-gray-400"></div>
+                      </div>
+                      <div className="p-1 bg-gray-300 dark:bg-gray-600 rounded text-[8px] font-bold">CT SCAN BRAIN</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="p-0.5 bg-black text-white rounded text-[7px] font-bold">RED FLAGS -VE</div>
+                    </div>
                   </div>
-                  <div className="flex justify-center mt-0.5">
-                    <div className="w-0.5 h-2 bg-gray-400"></div>
-                  </div>
-                  <div className="p-1 bg-gray-300 dark:bg-gray-600 rounded text-[8px] font-bold">CT SCAN BRAIN</div>
                 </div>
                 <div className="text-center">
                   <div className="p-1 bg-gray-100 dark:bg-gray-800 rounded text-[9px] font-medium">Episodic</div>
