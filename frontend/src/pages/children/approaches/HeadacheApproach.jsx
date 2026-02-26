@@ -571,7 +571,7 @@ const HeadacheApproach = ({ weight }) => {
             <p className="ml-2">Direct measurement of ICP: CSF pressure &gt; 25 cm in absence of other CSF abnormalities.</p>
             <p><strong>Management:</strong></p>
             <ul className="list-disc list-inside ml-2">
-              <li>Refer to Table 6 for medications</li>
+              <li>Refer to Table 7 for medications</li>
               <li>Weight loss and cessation of triggering medications</li>
             </ul>
           </div>
