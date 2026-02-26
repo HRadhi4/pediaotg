@@ -418,6 +418,15 @@ const EpilepsyApproach = ({ weight: w = 0, age = 0 }) => {
               <p className="text-[8px] font-bold text-green-800 dark:text-green-200">If no more seizures:</p>
               <p className="text-[7px] text-green-700 dark:text-green-300">Observe for 2 hours, if back to baseline with no focal neurological deficit → Discharge</p>
             </div>
+            
+            {/* Discharge Note */}
+            <div className="p-2 bg-blue-50 dark:bg-blue-950/20 rounded border border-blue-200 dark:border-blue-800">
+              <p className="text-[8px] font-bold text-blue-800 dark:text-blue-200">📋 Note on Discharge:</p>
+              <p className="text-[7px] text-blue-700 dark:text-blue-300">
+                If discharged, patient will need adjustments of anti-seizures (if on any) provided there is no secondary causes of seizures. 
+                For that, refer to the table of medications (Table 4). <span className="font-bold">Increase medications by ½ tablet, or ½ ml or their multiplications.</span>
+              </p>
+            </div>
           </div>
         </div>
 
