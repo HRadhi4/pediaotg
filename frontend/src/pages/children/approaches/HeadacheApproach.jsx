@@ -497,6 +497,45 @@ const HeadacheApproach = ({ weight }) => {
           </div>
         </div>
 
+        {/* TABLE 6: Migraine Variants (moved from Table 7) */}
+        <div className="space-y-1">
+          <p className="text-xs font-bold text-center text-gray-700 dark:text-gray-300">TABLE 6 - MIGRAINE VARIANTS</p>
+          <div className="overflow-x-auto -mx-2">
+            <table className="w-full text-[7px] min-w-[450px] border-collapse">
+              <thead>
+                <tr className="bg-orange-200 dark:bg-orange-900/40">
+                  <th className="border border-orange-300 p-1 text-center font-semibold">Classic Migraine</th>
+                  <th className="border border-orange-300 p-1 text-center font-semibold">Migraine with Aura</th>
+                  <th className="border border-orange-300 p-1 text-center font-semibold">Migraine Equivalent</th>
+                  <th className="border border-orange-300 p-1 text-center font-semibold">Ophthalmoplegic Migraine</th>
+                  <th className="border border-orange-300 p-1 text-center font-semibold">Basilar artery Migraine</th>
+                </tr>
+              </thead>
+              <tbody className="text-gray-700 dark:text-gray-300">
+                <tr className="bg-white dark:bg-gray-900">
+                  <td className="border border-orange-200 p-1 text-center">
+                    Occurs w/o aura.<br/>
+                    Bilateral commonly.<br/>
+                    Associated with nausea/vomiting, photophobia/phonophobia.
+                  </td>
+                  <td className="border border-orange-200 p-1 text-center">
+                    Onset is preceded by transient visual changes (blurred vision, scotomata, streaks of light, hemianopsia) or transient unilateral paresthesia or weakness (can be called hemiplegic migraine)
+                  </td>
+                  <td className="border border-orange-200 p-1 text-center">
+                    Absent headache, with prolonged & transient manifestations such as cyclic vomiting, cyclic abdominal pain, or paroxysmal vertigo
+                  </td>
+                  <td className="border border-orange-200 p-1 text-center">
+                    Headache accompanied with unilateral ptosis or cranial nerve III palsy
+                  </td>
+                  <td className="border border-orange-200 p-1 text-center">
+                    Headache preceded by vertigo, tinnitus, ataxia, or dysarthria
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
         {/* IIH Section */}
         <div className="p-2 bg-gray-100 dark:bg-gray-800 rounded-lg border-2 border-gray-300">
           <p className="text-xs font-bold text-gray-800 dark:text-gray-200 mb-1 bg-black text-white inline-block px-2 rounded">IDIOPATHIC INTRACRANIAL HYPERTENSION</p>
