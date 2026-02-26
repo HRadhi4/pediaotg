@@ -84,6 +84,7 @@ const ApproachesPage = ({ onBack }) => {
     { id: "dloc", label: "Decreased LOC", keywords: ["consciousness", "dloc", "coma", "gcs", "lethargy", "stupor", "obtundation", "unresponsive", "altered mental"] },
     { id: "dka", label: "DKA", keywords: ["diabetic", "ketoacidosis", "diabetes", "insulin", "glucose", "acidosis"] },
     { id: "antibiotics", label: "Empirical Antibiotics", keywords: ["antibiotics", "empirical", "abx", "antimicrobial", "sepsis", "meningitis", "pneumonia", "uti", "cellulitis", "skin infection", "soft tissue", "osteomyelitis", "bone infection"] },
+    { id: "epilepsy", label: "Epilepsy - Including Status (SMC)", keywords: ["epilepsy", "seizure", "convulsion", "status epilepticus", "antiepileptic", "anticonvulsant", "febrile", "absence", "tonic", "clonic", "myoclonic", "spasm", "eeg", "diazepam", "levetiracetam", "phenytoin", "phenobarbital", "valproate"] },
     { id: "headache", label: "Headache", keywords: ["headache", "migraine", "tension", "iih", "papilledema", "intracranial hypertension", "photophobia"] },
     { id: "hyperkalemia", label: "Hyperkalemia", keywords: ["potassium", "hyperkalemia", "ecg", "calcium gluconate", "insulin", "kayexalate", "dialysis", "arrhythmia"] },
     { id: "hypocalcemia", label: "Hypocalcemia", keywords: ["calcium", "hypocalcemia", "rickets", "vitamin d", "pth", "parathyroid", "phosphate", "calcitriol", "tetany", "chvostek", "trousseau"] },
