@@ -12293,13 +12293,16 @@
     "hepaticAdjust": "No adjustment for mild-moderate; use caution in severe"
   },
   {
-    "id": "acetazolamide",
+    "id": "acetazolamide_epilepsy",
     "name": "Acetazolamide",
     "category": "Antiepileptic",
     "route": "PO",
     "source": "SMC Epilepsy Guideline",
     "formulations": [
-      {"type": "Tablet", "strengths": "250 mg"}
+      {
+        "type": "Tablet",
+        "strengths": "250 mg"
+      }
     ],
     "doses": {
       "pediatric1mTo12y": {
@@ -12327,7 +12330,10 @@
     "route": "PO",
     "source": "SMC Epilepsy Guideline",
     "formulations": [
-      {"type": "Capsule", "strengths": "5 mg"}
+      {
+        "type": "Capsule",
+        "strengths": "5 mg"
+      }
     ],
     "doses": {
       "pediatric": {
@@ -12348,7 +12354,10 @@
     "route": "PO",
     "source": "SMC Epilepsy Guideline",
     "formulations": [
-      {"type": "Not available in SMC", "strengths": ""}
+      {
+        "type": "Not available in SMC",
+        "strengths": ""
+      }
     ],
     "doses": {
       "pediatricUnder11kg": {
@@ -12359,7 +12368,7 @@
         "maxUnit": "mg/kg/day"
       },
       "pediatricOver11kg": {
-        "label": "Weight ≥11kg",
+        "label": "Weight \u226511kg",
         "value": "1",
         "unit": "mg/kg/day",
         "maxDose": 4,
@@ -12375,7 +12384,10 @@
     "route": "PO",
     "source": "SMC Epilepsy Guideline",
     "formulations": [
-      {"type": "Tablet", "strengths": "850 mg"}
+      {
+        "type": "Tablet",
+        "strengths": "850 mg"
+      }
     ],
     "doses": {
       "pediatric": {
@@ -12395,8 +12407,14 @@
     "route": "PO",
     "source": "SMC Epilepsy Guideline",
     "formulations": [
-      {"type": "Syrup", "strengths": "20 mg/ml"},
-      {"type": "Tablet", "strengths": "200 mg, 400 mg"}
+      {
+        "type": "Syrup",
+        "strengths": "20 mg/ml"
+      },
+      {
+        "type": "Tablet",
+        "strengths": "200 mg, 400 mg"
+      }
     ],
     "doses": {
       "pediatric1mTo12y": {
@@ -12424,7 +12442,10 @@
     "route": "PO",
     "source": "SMC Epilepsy Guideline",
     "formulations": [
-      {"type": "Tablet", "strengths": "10 mg"}
+      {
+        "type": "Tablet",
+        "strengths": "10 mg"
+      }
     ],
     "doses": {
       "pediatric1mTo12y": {
@@ -12452,8 +12473,14 @@
     "route": "PO",
     "source": "SMC Epilepsy Guideline",
     "formulations": [
-      {"type": "Drops", "strengths": "2.5 mg/ml"},
-      {"type": "Tablet", "strengths": "0.5 mg, 2 mg"}
+      {
+        "type": "Drops",
+        "strengths": "2.5 mg/ml"
+      },
+      {
+        "type": "Tablet",
+        "strengths": "0.5 mg, 2 mg"
+      }
     ],
     "doses": {
       "pediatric": {
@@ -12473,8 +12500,14 @@
     "route": "PO",
     "source": "SMC Epilepsy Guideline",
     "formulations": [
-      {"type": "Syrup", "strengths": "50 mg/ml"},
-      {"type": "Tablet", "strengths": "250 mg"}
+      {
+        "type": "Syrup",
+        "strengths": "50 mg/ml"
+      },
+      {
+        "type": "Tablet",
+        "strengths": "250 mg"
+      }
     ],
     "doses": {
       "pediatric1mTo5y": {
@@ -12502,7 +12535,10 @@
     "route": "PO",
     "source": "SMC Epilepsy Guideline",
     "formulations": [
-      {"type": "Tablet", "strengths": "15 mg"}
+      {
+        "type": "Tablet",
+        "strengths": "15 mg"
+      }
     ],
     "doses": {
       "pediatric": {
@@ -12522,7 +12558,10 @@
     "route": "PO",
     "source": "SMC Epilepsy Guideline",
     "formulations": [
-      {"type": "Capsule", "strengths": "300 mg"}
+      {
+        "type": "Capsule",
+        "strengths": "300 mg"
+      }
     ],
     "doses": {
       "pediatric": {
@@ -12542,8 +12581,14 @@
     "route": "PO",
     "source": "SMC Epilepsy Guideline",
     "formulations": [
-      {"type": "Syrup", "strengths": "10 mg/ml"},
-      {"type": "Tablet", "strengths": "50 mg, 100 mg, 200 mg"}
+      {
+        "type": "Syrup",
+        "strengths": "10 mg/ml"
+      },
+      {
+        "type": "Tablet",
+        "strengths": "50 mg, 100 mg, 200 mg"
+      }
     ],
     "doses": {
       "pediatric": {
@@ -12564,7 +12609,10 @@
     "route": "PO",
     "source": "SMC Epilepsy Guideline",
     "formulations": [
-      {"type": "Tablet", "strengths": "5 mg, 25 mg, 50 mg, 100 mg"}
+      {
+        "type": "Tablet",
+        "strengths": "5 mg, 25 mg, 50 mg, 100 mg"
+      }
     ],
     "doses": {
       "pediatricWithoutVPA": {
@@ -12586,15 +12634,24 @@
     "notes": "Titrate slowly. Risk of Stevens-Johnson syndrome especially with rapid titration"
   },
   {
-    "id": "levetiracetam",
+    "id": "levetiracetam_epilepsy",
     "name": "Levetiracetam (Keppra)",
     "category": "Antiepileptic",
     "route": "PO/IV",
     "source": "SMC Epilepsy Guideline",
     "formulations": [
-      {"type": "Syrup", "strengths": "100 mg/ml"},
-      {"type": "Tablet", "strengths": "500 mg, 1000 mg"},
-      {"type": "Injection", "strengths": "100 mg/ml"}
+      {
+        "type": "Syrup",
+        "strengths": "100 mg/ml"
+      },
+      {
+        "type": "Tablet",
+        "strengths": "500 mg, 1000 mg"
+      },
+      {
+        "type": "Injection",
+        "strengths": "100 mg/ml"
+      }
     ],
     "doses": {
       "pediatric": {
@@ -12614,7 +12671,10 @@
     "route": "IV",
     "source": "SMC Epilepsy Guideline",
     "formulations": [
-      {"type": "Injection", "strengths": "1000 mg powder"}
+      {
+        "type": "Injection",
+        "strengths": "1000 mg powder"
+      }
     ],
     "doses": {
       "pediatric": {
@@ -12634,7 +12694,10 @@
     "route": "PO",
     "source": "SMC Epilepsy Guideline",
     "formulations": [
-      {"type": "Tablet", "strengths": "5 mg"}
+      {
+        "type": "Tablet",
+        "strengths": "5 mg"
+      }
     ],
     "doses": {
       "pediatric": {
@@ -12654,8 +12717,14 @@
     "route": "PO",
     "source": "SMC Epilepsy Guideline",
     "formulations": [
-      {"type": "Syrup", "strengths": "60 mg/ml"},
-      {"type": "Tablet", "strengths": "300 mg, 600 mg"}
+      {
+        "type": "Syrup",
+        "strengths": "60 mg/ml"
+      },
+      {
+        "type": "Tablet",
+        "strengths": "300 mg, 600 mg"
+      }
     ],
     "doses": {
       "pediatric": {
@@ -12675,7 +12744,10 @@
     "route": "PO",
     "source": "SMC Epilepsy Guideline",
     "formulations": [
-      {"type": "Tablet", "strengths": "4 mg, 8 mg, 12 mg"}
+      {
+        "type": "Tablet",
+        "strengths": "4 mg, 8 mg, 12 mg"
+      }
     ],
     "doses": {
       "pediatric": {
@@ -12690,15 +12762,24 @@
     "sideEffects": "Sedation, GI upset"
   },
   {
-    "id": "phenobarbital",
+    "id": "phenobarbital_epilepsy",
     "name": "Phenobarbital (Luminal)",
     "category": "Antiepileptic",
     "route": "PO/IV",
     "source": "SMC Epilepsy Guideline",
     "formulations": [
-      {"type": "Syrup", "strengths": "3 mg/ml"},
-      {"type": "Tablet", "strengths": "30 mg"},
-      {"type": "Injection", "strengths": "200 mg/ml"}
+      {
+        "type": "Syrup",
+        "strengths": "3 mg/ml"
+      },
+      {
+        "type": "Tablet",
+        "strengths": "30 mg"
+      },
+      {
+        "type": "Injection",
+        "strengths": "200 mg/ml"
+      }
     ],
     "doses": {
       "pediatric": {
@@ -12712,16 +12793,28 @@
     "sideEffects": "Sedation, hepatitis, behavioural issues"
   },
   {
-    "id": "phenytoin",
+    "id": "phenytoin_epilepsy",
     "name": "Phenytoin (Dilantin)",
     "category": "Antiepileptic",
     "route": "PO/IV",
     "source": "SMC Epilepsy Guideline",
     "formulations": [
-      {"type": "Syrup", "strengths": "6 mg/ml"},
-      {"type": "Tablet", "strengths": "100 mg"},
-      {"type": "Capsule", "strengths": "100 mg"},
-      {"type": "Injection", "strengths": "50 mg/ml"}
+      {
+        "type": "Syrup",
+        "strengths": "6 mg/ml"
+      },
+      {
+        "type": "Tablet",
+        "strengths": "100 mg"
+      },
+      {
+        "type": "Capsule",
+        "strengths": "100 mg"
+      },
+      {
+        "type": "Injection",
+        "strengths": "50 mg/ml"
+      }
     ],
     "doses": {
       "pediatric": {
@@ -12741,8 +12834,14 @@
     "route": "PO",
     "source": "SMC Epilepsy Guideline",
     "formulations": [
-      {"type": "Syrup", "strengths": "3 mg/ml"},
-      {"type": "Tablet", "strengths": "1 mg, 5 mg, 20 mg"}
+      {
+        "type": "Syrup",
+        "strengths": "3 mg/ml"
+      },
+      {
+        "type": "Tablet",
+        "strengths": "1 mg, 5 mg, 20 mg"
+      }
     ],
     "doses": {
       "pediatric": {
@@ -12762,7 +12861,10 @@
     "route": "PO",
     "source": "SMC Epilepsy Guideline",
     "formulations": [
-      {"type": "Capsule", "strengths": "75 mg, 150 mg"}
+      {
+        "type": "Capsule",
+        "strengths": "75 mg, 150 mg"
+      }
     ],
     "doses": {
       "pediatric": {
@@ -12783,7 +12885,10 @@
     "route": "PO",
     "source": "SMC Epilepsy Guideline",
     "formulations": [
-      {"type": "Tablet", "strengths": "250 mg"}
+      {
+        "type": "Tablet",
+        "strengths": "250 mg"
+      }
     ],
     "doses": {
       "pediatric": {
@@ -12804,8 +12909,14 @@
     "route": "PO/IV",
     "source": "SMC Epilepsy Guideline",
     "formulations": [
-      {"type": "Tablet", "strengths": "50 mg"},
-      {"type": "Injection", "strengths": "50 mg/ml"}
+      {
+        "type": "Tablet",
+        "strengths": "50 mg"
+      },
+      {
+        "type": "Injection",
+        "strengths": "50 mg/ml"
+      }
     ],
     "doses": {
       "pediatric": {
@@ -12826,7 +12937,10 @@
     "route": "PO",
     "source": "SMC Epilepsy Guideline",
     "formulations": [
-      {"type": "Tablet", "strengths": "200 mg, 400 mg"}
+      {
+        "type": "Tablet",
+        "strengths": "200 mg, 400 mg"
+      }
     ],
     "doses": {
       "pediatricUnder30kg": {
@@ -12836,7 +12950,7 @@
         "isFixed": true
       },
       "pediatricOver30kg": {
-        "label": "Weight ≥30kg",
+        "label": "Weight \u226530kg",
         "value": "400",
         "unit": "mg/day initial",
         "isFixed": true,
@@ -12853,9 +12967,18 @@
     "route": "PO/IV",
     "source": "SMC Epilepsy Guideline",
     "formulations": [
-      {"type": "Syrup", "strengths": "50 mg/ml (57.64 mg/ml - use as 50), 200 mg/ml"},
-      {"type": "Tablet", "strengths": "200 mg, 500 mg, 500 mg ER"},
-      {"type": "Injection", "strengths": "100 mg/ml"}
+      {
+        "type": "Syrup",
+        "strengths": "50 mg/ml (57.64 mg/ml - use as 50), 200 mg/ml"
+      },
+      {
+        "type": "Tablet",
+        "strengths": "200 mg, 500 mg, 500 mg ER"
+      },
+      {
+        "type": "Injection",
+        "strengths": "100 mg/ml"
+      }
     ],
     "doses": {
       "pediatric": {
@@ -12875,7 +12998,10 @@
     "route": "PO",
     "source": "SMC Epilepsy Guideline",
     "formulations": [
-      {"type": "Tablet", "strengths": "25 mg, 50 mg, 100 mg"}
+      {
+        "type": "Tablet",
+        "strengths": "25 mg, 50 mg, 100 mg"
+      }
     ],
     "doses": {
       "pediatric": {
@@ -12895,7 +13021,10 @@
     "route": "PO",
     "source": "SMC Epilepsy Guideline",
     "formulations": [
-      {"type": "Tablet", "strengths": "500 mg"}
+      {
+        "type": "Tablet",
+        "strengths": "500 mg"
+      }
     ],
     "doses": {
       "pediatric": {
@@ -12915,7 +13044,10 @@
     "route": "PO",
     "source": "SMC Epilepsy Guideline",
     "formulations": [
-      {"type": "Capsule", "strengths": "50 mg, 100 mg"}
+      {
+        "type": "Capsule",
+        "strengths": "50 mg, 100 mg"
+      }
     ],
     "doses": {
       "pediatric": {
@@ -12935,7 +13067,10 @@
     "route": "IV",
     "source": "SMC Epilepsy Guideline",
     "formulations": [
-      {"type": "Injection", "strengths": "50 mg/ml"}
+      {
+        "type": "Injection",
+        "strengths": "50 mg/ml"
+      }
     ],
     "doses": {
       "pediatric": {
