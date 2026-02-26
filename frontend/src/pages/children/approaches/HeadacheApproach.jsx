@@ -220,7 +220,7 @@ const HeadacheApproach = ({ weight }) => {
             <img 
               src="https://customer-assets.emergentagent.com/job_b16982fe-7b8c-4836-9cd1-e9794602d475/artifacts/e8xji0mw_Gemini_Generated_Image_vgi5vpvgi5vpvgi5.png" 
               alt="Normal Optic Disk vs Papilledema comparison"
-              className="w-full max-w-md rounded-lg border border-gray-300 dark:border-gray-600"
+              className="w-3/4 max-w-xs rounded-lg border border-gray-300 dark:border-gray-600"
             />
           </div>
         </div>
