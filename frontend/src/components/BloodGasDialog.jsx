@@ -400,16 +400,27 @@ const ValuesForm = ({ values, onChange }) => {
           {fields.map(({ key, label, placeholder, allowNegative }) => (
             <div key={key} className="space-y-1">
               <Label htmlFor={key} className="text-xs text-muted-foreground">{label}</Label>
-              <Input
-                id={key}
-                type="text"
-                inputMode="decimal"
-                placeholder={placeholder}
-                value={values[key]}
-                onChange={(e) => handleInputChange(key, e.target.value, allowNegative)}
-                className="h-9 font-mono text-sm nightingale-input"
-                data-testid={`input-${key}`}
-              />
+              {allowNegative ? (
+                <InputWithSignToggle
+                  id={key}
+                  placeholder={placeholder}
+                  value={values[key]}
+                  onChange={(e) => onChange(key, e.target.value)}
+                  className="h-9 text-sm nightingale-input"
+                  data-testid={`input-${key}`}
+                />
+              ) : (
+                <Input
+                  id={key}
+                  type="text"
+                  inputMode="decimal"
+                  placeholder={placeholder}
+                  value={values[key]}
+                  onChange={(e) => handleInputChange(key, e.target.value, allowNegative)}
+                  className="h-9 font-mono text-sm nightingale-input"
+                  data-testid={`input-${key}`}
+                />
+              )}
             </div>
           ))}
         </div>
