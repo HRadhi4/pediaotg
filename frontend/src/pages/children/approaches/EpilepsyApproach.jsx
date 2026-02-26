@@ -32,135 +32,218 @@ const EpilepsyApproach = ({ weight: w = 0, age = 0 }) => {
         </div>
 
         {/* SEIZURES ALGORITHM */}
-        <div className="p-2 bg-teal-50 dark:bg-teal-950/20 rounded-lg border border-teal-200 dark:border-teal-800">
-          <p className="text-xs font-bold text-center text-teal-800 dark:text-teal-200 mb-2">SEIZURES ALGORITHM</p>
+        <div className="p-3 bg-white dark:bg-gray-900 rounded-lg border border-gray-300 dark:border-gray-700">
+          <p className="text-xs font-bold text-center text-gray-800 dark:text-gray-200 mb-3">SEIZURES ALGORITHM</p>
           
-          <div className="space-y-2">
-            {/* Start */}
-            <div className="p-2 bg-gray-200 dark:bg-gray-700 rounded text-center">
-              <p className="text-[9px] font-bold text-gray-800 dark:text-gray-200">ABNORMAL MOVEMENT</p>
-            </div>
-            
-            <div className="flex justify-center">
-              <div className="w-0.5 h-3 bg-gray-400"></div>
-            </div>
-            
-            {/* Is it a seizure? */}
-            <div className="p-2 bg-gray-200 dark:bg-gray-700 rounded text-center">
-              <p className="text-[9px] font-bold text-gray-800 dark:text-gray-200">Is it a seizure?</p>
-              <p className="text-[8px] text-gray-600 dark:text-gray-400">(Refer to Box 1)</p>
-            </div>
-            
-            <div className="flex justify-center">
-              <div className="flex items-end">
-                <div className="w-12 h-0.5 bg-gray-400"></div>
-                <div className="w-0.5 h-3 bg-gray-400"></div>
-                <div className="w-12 h-0.5 bg-gray-400"></div>
+          <div className="flex gap-3">
+            {/* Main Flowchart - Left Side */}
+            <div className="flex-1 space-y-2">
+              {/* Start: Abnormal movement */}
+              <div className="flex justify-center">
+                <div className="px-4 py-2 bg-blue-600 rounded-full">
+                  <p className="text-[10px] font-bold text-white">Abnormal movement</p>
+                </div>
+              </div>
+              
+              <div className="flex justify-center">
+                <div className="w-0.5 h-4 bg-blue-600"></div>
+              </div>
+              
+              {/* Is it a seizure? */}
+              <div className="flex justify-center">
+                <div className="px-3 py-2 bg-blue-600 rounded border-2 border-blue-700">
+                  <p className="text-[9px] font-bold text-white text-center">is it a seizure?</p>
+                  <p className="text-[8px] text-blue-200 text-center">refer to box 1</p>
+                </div>
+              </div>
+              
+              {/* Branch connector */}
+              <div className="flex justify-center items-center">
+                <div className="flex items-center">
+                  <div className="w-16 h-0.5 bg-blue-600"></div>
+                  <div className="w-0.5 h-6 bg-blue-600"></div>
+                  <div className="w-16 h-0.5 bg-blue-600"></div>
+                </div>
+              </div>
+              
+              {/* No / Yes branches */}
+              <div className="grid grid-cols-2 gap-4">
+                {/* NO branch */}
+                <div className="flex flex-col items-center">
+                  <div className="px-3 py-1 bg-blue-600 rounded">
+                    <p className="text-[9px] font-bold text-white">No</p>
+                  </div>
+                  <div className="w-0.5 h-3 bg-blue-600"></div>
+                  <div className="px-2 py-1 bg-blue-600 rounded text-center">
+                    <p className="text-[8px] text-red-300 font-medium">(check seizure mimickers in table 2)</p>
+                  </div>
+                </div>
+                
+                {/* YES branch */}
+                <div className="flex flex-col items-center space-y-2">
+                  <div className="px-3 py-1 bg-blue-600 rounded">
+                    <p className="text-[9px] font-bold text-green-300">yes</p>
+                  </div>
+                  <div className="w-0.5 h-3 bg-blue-600"></div>
+                  
+                  {/* Stabilize patient */}
+                  <div className="px-3 py-2 bg-blue-600 rounded border-2 border-blue-700">
+                    <p className="text-[9px] font-bold text-white text-center">stabilize the patient (ABC):</p>
+                    <p className="text-[8px] text-blue-200 text-center">refer to box 2</p>
+                  </div>
+                  
+                  <div className="w-0.5 h-3 bg-blue-600"></div>
+                  
+                  {/* Call for help */}
+                  <div className="px-3 py-2 bg-blue-600 rounded">
+                    <p className="text-[9px] font-bold text-white text-center">call for help</p>
+                  </div>
+                  
+                  <div className="w-0.5 h-3 bg-blue-600"></div>
+                  
+                  {/* Still seizing > 5 min */}
+                  <div className="px-3 py-2 bg-blue-600 rounded">
+                    <p className="text-[9px] font-bold text-white text-center">still seizing &gt; 5 min</p>
+                  </div>
+                  
+                  {/* Branch for still seizing */}
+                  <div className="flex items-center justify-center w-full">
+                    <div className="w-12 h-0.5 bg-blue-600"></div>
+                    <div className="w-0.5 h-4 bg-blue-600"></div>
+                    <div className="w-12 h-0.5 bg-blue-600"></div>
+                  </div>
+                  
+                  {/* No / Yes branches for seizing */}
+                  <div className="grid grid-cols-2 gap-2 w-full">
+                    {/* NO - seizure stopped */}
+                    <div className="flex flex-col items-center space-y-1">
+                      <div className="px-2 py-1 bg-blue-600 rounded">
+                        <p className="text-[8px] font-bold text-white">No</p>
+                      </div>
+                      <div className="w-0.5 h-2 bg-blue-600"></div>
+                      <div className="px-2 py-1 bg-blue-600 rounded text-center">
+                        <p className="text-[7px] text-green-300">1- Observe for 2 hours</p>
+                        <p className="text-[7px] text-green-300">2- Follow up blood collection</p>
+                      </div>
+                      <div className="flex items-center">
+                        <div className="w-0.5 h-2 bg-blue-600"></div>
+                      </div>
+                      <p className="text-[7px] text-gray-500 italic">if seizure stopped</p>
+                      
+                      {/* Generalized / Focal branches */}
+                      <div className="grid grid-cols-2 gap-1 w-full mt-1">
+                        <div className="flex flex-col items-center">
+                          <div className="px-1 py-1 rounded text-center">
+                            <p className="text-[7px] text-green-600 dark:text-green-400 font-medium">Generalized seizure</p>
+                          </div>
+                        </div>
+                        <div className="flex flex-col items-center">
+                          <div className="px-1 py-1 rounded text-center">
+                            <p className="text-[7px] text-red-600 dark:text-red-400 font-medium">Focal seizures or focal deficit on examination</p>
+                          </div>
+                          <div className="w-0.5 h-2 bg-blue-600"></div>
+                          <div className="px-1 py-1 bg-blue-600 rounded text-center">
+                            <p className="text-[7px] text-white">skull US or CTBR according to age</p>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      {/* Level of consciousness */}
+                      <div className="w-full mt-2">
+                        <div className="flex justify-center">
+                          <div className="px-2 py-1 bg-blue-600 rounded">
+                            <p className="text-[7px] text-white font-medium text-center">level of consciousness</p>
+                          </div>
+                        </div>
+                        <div className="flex items-center justify-center mt-1">
+                          <div className="w-8 h-0.5 bg-blue-600"></div>
+                          <div className="w-0.5 h-3 bg-blue-600"></div>
+                          <div className="w-8 h-0.5 bg-blue-600"></div>
+                        </div>
+                        <div className="grid grid-cols-2 gap-1 mt-1">
+                          <div className="flex flex-col items-center">
+                            <div className="px-1 py-1 bg-blue-600 rounded text-center">
+                              <p className="text-[6px] text-white">Back to normal or improving</p>
+                            </div>
+                            <div className="w-0.5 h-2 bg-blue-600"></div>
+                            <div className="px-1 py-1 bg-blue-600 rounded text-center">
+                              <p className="text-[6px] text-green-300">Discharge with follow up in the clinic, if no follow up in system</p>
+                            </div>
+                          </div>
+                          <div className="flex flex-col items-center">
+                            <div className="px-1 py-1 bg-blue-600 rounded text-center">
+                              <p className="text-[6px] text-red-300">Encephalopathic or deteriorating</p>
+                            </div>
+                            <div className="w-0.5 h-2 bg-blue-600"></div>
+                            <div className="px-1 py-1 bg-blue-600 rounded text-center">
+                              <p className="text-[6px] text-white">Follow LOC guidelines</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* YES - still seizing */}
+                    <div className="flex flex-col items-center space-y-1">
+                      <div className="px-2 py-1 bg-blue-600 rounded">
+                        <p className="text-[8px] font-bold text-green-300">yes</p>
+                      </div>
+                      <div className="w-0.5 h-2 bg-blue-600"></div>
+                      
+                      {/* Follow status epilepticus */}
+                      <div className="px-2 py-1 bg-blue-600 rounded text-center">
+                        <p className="text-[7px] text-white">follow the <span className="text-red-300 font-bold">status epilepticus algorithm</span></p>
+                      </div>
+                      
+                      {/* Steps box */}
+                      <div className="px-2 py-1 bg-blue-600 rounded text-left w-full">
+                        <p className="text-[7px] text-green-300">1- Quick history/ examination</p>
+                        <p className="text-[7px] text-green-300">2- To follow collection in box 2</p>
+                        <p className="text-[7px] text-green-300">3- skull US or CT brain</p>
+                        <p className="text-[7px] text-green-300">4- correct reversible causes in table 3</p>
+                      </div>
+                      
+                      {/* Reversible cause branches */}
+                      <div className="grid grid-cols-2 gap-1 w-full mt-1">
+                        <div className="px-1 py-1 bg-blue-600 rounded text-center">
+                          <p className="text-[6px] text-green-300">if reversible cause, go to table 3</p>
+                        </div>
+                        <div className="px-1 py-1 bg-blue-600 rounded text-center">
+                          <p className="text-[6px] text-green-300">If no reversible causes found, Call the neurologist</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
             
-            {/* Yes/No branches */}
-            <div className="grid grid-cols-2 gap-2">
-              <div className="text-center">
-                <p className="text-[8px] font-bold text-gray-600 dark:text-gray-400 mb-1">NO</p>
-                <div className="p-1 bg-gray-100 dark:bg-gray-800 rounded text-[7px]">
-                  Check seizure mimickers<br/>(Table 2)
+            {/* Reference Boxes - Right Side */}
+            <div className="w-48 space-y-3">
+              {/* Box 1 */}
+              <div className="p-2 bg-yellow-100 dark:bg-yellow-900/30 rounded border border-yellow-400 dark:border-yellow-700">
+                <p className="text-[9px] font-bold text-red-600 dark:text-red-400 mb-1">Box 1. Criteria of common seizures</p>
+                <div className="text-[8px] text-gray-800 dark:text-gray-200">
+                  <p><span className="text-red-600 dark:text-red-400">1-</span> Rhythmic movement</p>
+                  <p><span className="text-red-600 dark:text-red-400">2-</span> No clear observable preceding symptoms</p>
+                  <p><span className="text-red-600 dark:text-red-400">3-</span> Should follow the rules of generalized / focal seizures in regard to level of consciousness</p>
+                  <ul className="ml-2 mt-1 text-[7px]">
+                    <li>• Bilateral seizure --→ patient unconscious</li>
+                    <li>• Unilateral seizure --→ patient conscious or unconscious</li>
+                  </ul>
                 </div>
               </div>
-              <div className="text-center">
-                <p className="text-[8px] font-bold text-gray-600 dark:text-gray-400 mb-1">YES</p>
-                <div className="p-1 bg-gray-200 dark:bg-gray-700 rounded text-[8px] font-bold">
-                  Stabilize (ABC)<br/>
-                  <span className="font-normal text-[7px]">(Refer to Box 2)</span>
-                </div>
-              </div>
-            </div>
-            
-            <div className="flex justify-center">
-              <div className="w-0.5 h-3 bg-gray-400"></div>
-            </div>
-            
-            {/* Call for help */}
-            <div className="p-2 bg-gray-200 dark:bg-gray-700 rounded text-center">
-              <p className="text-[9px] font-bold text-gray-800 dark:text-gray-200">Call for help</p>
-            </div>
-            
-            <div className="flex justify-center">
-              <div className="w-0.5 h-3 bg-gray-400"></div>
-            </div>
-            
-            {/* Still seizing > 5 min? */}
-            <div className="p-2 bg-gray-200 dark:bg-gray-700 rounded text-center">
-              <p className="text-[9px] font-bold text-gray-800 dark:text-gray-200">Still seizing &gt;5 min?</p>
-            </div>
-            
-            <div className="flex justify-center">
-              <div className="flex items-end">
-                <div className="w-12 h-0.5 bg-gray-400"></div>
-                <div className="w-0.5 h-3 bg-gray-400"></div>
-                <div className="w-12 h-0.5 bg-gray-400"></div>
-              </div>
-            </div>
-            
-            {/* Yes/No branches for seizing */}
-            <div className="grid grid-cols-2 gap-2">
-              <div className="space-y-1">
-                <p className="text-[8px] font-bold text-center text-gray-600 dark:text-gray-400">NO (Seizure stopped)</p>
-                <div className="p-1 bg-gray-100 dark:bg-gray-800 rounded text-[7px]">
-                  <p className="font-bold">1. Observe for 2 hours</p>
-                  <p className="font-bold">2. Blood collection</p>
-                </div>
-                <div className="p-1 bg-gray-100 dark:bg-gray-800 rounded text-[7px]">
-                  <p className="font-bold">If Generalized:</p>
-                  <p>Check LOC - if back to normal → Discharge with follow up</p>
-                  <p>If encephalopathic → Follow LOC guidelines</p>
-                </div>
-                <div className="p-1 bg-gray-100 dark:bg-gray-800 rounded text-[7px]">
-                  <p className="font-bold text-red-600 dark:text-red-400">If Focal seizure or focal deficit:</p>
-                  <p>Skull US or CT Brain</p>
-                </div>
-              </div>
-              <div className="space-y-1">
-                <p className="text-[8px] font-bold text-center text-gray-600 dark:text-gray-400">YES</p>
-                <div className="p-1 bg-red-100 dark:bg-red-900/30 rounded text-[7px] font-bold text-red-700 dark:text-red-300">
-                  Follow Status Epilepticus Algorithm
-                </div>
-                <div className="p-1 bg-gray-100 dark:bg-gray-800 rounded text-[7px]">
-                  <p>1. Quick history/examination</p>
-                  <p>2. Blood collection (Box 2)</p>
-                  <p>3. Skull US or CT Brain</p>
-                  <p>4. Correct reversible causes (Table 3)</p>
-                  <p>5. If no reversible cause → Call Neurologist</p>
+              
+              {/* Box 2 */}
+              <div className="p-2 bg-yellow-100 dark:bg-yellow-900/30 rounded border border-yellow-400 dark:border-yellow-700">
+                <p className="text-[9px] font-bold text-red-600 dark:text-red-400 mb-1">Box 2.</p>
+                <div className="text-[8px]">
+                  <p><span className="text-red-600 dark:text-red-400 font-bold">A:</span> <span className="text-green-600 dark:text-green-400">airways already protected</span></p>
+                  <p><span className="text-red-600 dark:text-red-400 font-bold">B:</span> <span className="text-green-600 dark:text-green-400">oxygen Facemask</span></p>
+                  <p><span className="text-red-600 dark:text-red-400 font-bold">C:</span> <span className="text-green-600 dark:text-green-400">blood collection</span> <span className="text-gray-600 dark:text-gray-400 text-[7px]">(Blood gas, electrolytes, glucose, CBC, medication levels,</span> <span className="text-blue-600 dark:text-blue-400 text-[7px]">in special cases: ammonia in less than 1 year</span><span className="text-gray-600 dark:text-gray-400 text-[7px]">)</span></p>
                 </div>
               </div>
             </div>
-          </div>
-          
-          {/* Box 1 */}
-          <div className="mt-3 p-2 bg-blue-50 dark:bg-blue-950/20 rounded border border-blue-200 dark:border-blue-800">
-            <p className="text-[9px] font-bold text-blue-800 dark:text-blue-200">Box 1: Criteria of common seizures</p>
-            <ol className="text-[8px] text-blue-700 dark:text-blue-300 list-decimal list-inside">
-              <li>Rhythmic movement</li>
-              <li>No clear observable preceding symptoms</li>
-              <li>Should follow the rules of generalized/focal seizures in regard to level of consciousness:
-                <ul className="list-disc list-inside ml-2 text-[7px]">
-                  <li>Bilateral seizure → patient unconscious</li>
-                  <li>Unilateral seizure → patient conscious or unconscious</li>
-                </ul>
-              </li>
-            </ol>
-          </div>
-          
-          {/* Box 2 */}
-          <div className="mt-2 p-2 bg-green-50 dark:bg-green-950/20 rounded border border-green-200 dark:border-green-800">
-            <p className="text-[9px] font-bold text-green-800 dark:text-green-200">Box 2: ABC & Blood Collection</p>
-            <div className="text-[8px] text-green-700 dark:text-green-300">
-              <p><strong>A:</strong> Airways already protected</p>
-              <p><strong>B:</strong> Oxygen Facemask</p>
-              <p><strong>C:</strong> Blood collection (Blood gas, electrolytes, glucose, CBC, medication levels, in &lt;1 year: ammonia)</p>
-            </div>
-            <p className="text-[8px] font-bold text-green-800 dark:text-green-200 mt-1">Signs during seizure:</p>
-            <p className="text-[7px] text-green-600 dark:text-green-400">Tachycardia, Hypertension, Desaturation, Metabolic/respiratory acidosis, Hyperthermia</p>
           </div>
         </div>
 
