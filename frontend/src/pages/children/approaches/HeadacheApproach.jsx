@@ -175,7 +175,7 @@ const HeadacheApproach = ({ weight }) => {
                 <div className="p-1 bg-green-100 rounded text-[8px] font-bold text-green-700">+VE FINDINGS</div>
                 <div className="w-0.5 h-2 bg-gray-400 mx-auto"></div>
                 <div className="p-1 bg-teal-100 rounded text-[8px] text-teal-700">
-                  Refer to Page 7 CT scan brain imaging findings
+                  Rule out Hematoma, Hemorrhage, Hydrocephalus and Brain tumor from CT scan brain imaging and manage by Neurosurgery if any
                 </div>
               </div>
               <div className="text-center">
