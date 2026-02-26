@@ -79,6 +79,10 @@ const HeadacheApproach = ({ weight }) => {
                     </div>
                     <div className="text-center">
                       <div className="p-0.5 bg-black text-white rounded text-[7px] font-bold">RED FLAGS -VE</div>
+                      <div className="flex justify-center mt-0.5">
+                        <div className="w-0.5 h-2 bg-gray-400"></div>
+                      </div>
+                      <div className="p-1 bg-amber-200 dark:bg-amber-800 rounded text-[8px] font-bold text-amber-800 dark:text-amber-200">Refer to Table 2</div>
                     </div>
                   </div>
                 </div>
