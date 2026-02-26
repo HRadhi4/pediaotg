@@ -12793,5 +12793,1106 @@
       }
     },
     "sideEffects": "Sedation, behavioural issues"
+  },
+  {
+    "id": "acetazolamide-formulary",
+    "name": "Acetazolamide (Diamox)",
+    "category": "Carbonic Anhydrase Inhibitor",
+    "route": "PO/IM/IV",
+    "formulations": [
+      {
+        "type": "Tabs",
+        "strengths": "125 mg, 250 mg"
+      },
+      {
+        "type": "Extended release caps",
+        "strengths": "500 mg"
+      },
+      {
+        "type": "Injection",
+        "strengths": "500 mg"
+      }
+    ],
+    "doses": {
+      "pediatricDiuretic": {
+        "label": "Diuretic (Pediatric)",
+        "value": "5",
+        "unit": "mg/kg/dose once daily or every other day"
+      },
+      "pediatricGlaucoma": {
+        "label": "Glaucoma (PO)",
+        "value": "8-30",
+        "unit": "mg/kg/24hr Q6-8hr",
+        "maxDose": 1000,
+        "maxUnit": "mg/24hr"
+      },
+      "pediatricSeizures": {
+        "label": "Seizures",
+        "value": "8-30",
+        "unit": "mg/kg/24hr Q6-12hr PO",
+        "maxDose": 1000,
+        "maxUnit": "mg/24hr"
+      },
+      "neonatalHydrocephalus": {
+        "label": "Hydrocephalus (Neonate)",
+        "value": "20",
+        "unit": "mg/kg/24hr Q8hr PO/IV, may increase to 100 mg/kg/24hr",
+        "maxDose": 2000,
+        "maxUnit": "mg/24hr"
+      },
+      "adult": {
+        "label": "Adult Diuretic",
+        "value": "250-375",
+        "unit": "mg/dose once daily or every other day",
+        "isFixed": true
+      }
+    },
+    "indication": "Diuretic, Glaucoma, Seizures, Urine alkalization, Hydrocephalus, Pseudotumor cerebri",
+    "contraindications": [
+      "Hepatic failure",
+      "Severe renal failure (GFR <10 mL/min)",
+      "Hypersensitivity to sulfonamides"
+    ],
+    "warnings": [
+      "Do not use sustained release capsules in seizures",
+      "IM injection may be painful",
+      "Bicarbonate replacement may be required",
+      "May increase toxicity of carbamazepine and cyclosporine"
+    ],
+    "sideEffects": [
+      "GI irritation",
+      "Paresthesias",
+      "Sedation",
+      "Hypokalemia",
+      "Acidosis",
+      "Aplastic anemia",
+      "Polyuria",
+      "Renal calculi"
+    ]
+  },
+  {
+    "id": "carbamazepine-formulary",
+    "name": "Carbamazepine (Tegretol)",
+    "category": "Anticonvulsant",
+    "route": "PO",
+    "formulations": [
+      {
+        "type": "Tabs",
+        "strengths": "200 mg"
+      },
+      {
+        "type": "Chewable tabs",
+        "strengths": "100 mg"
+      },
+      {
+        "type": "Extended release tabs",
+        "strengths": "100 mg, 200 mg, 400 mg"
+      },
+      {
+        "type": "Oral suspension",
+        "strengths": "100 mg/5 mL"
+      }
+    ],
+    "doses": {
+      "pediatricUnder6": {
+        "label": "<6 yr",
+        "value": "10-20",
+        "unit": "mg/kg/24hr PO QID (suspension) or BID-TID",
+        "maxDose": 35,
+        "maxUnit": "mg/kg/24hr"
+      },
+      "pediatric6to12": {
+        "label": "6-12 yr",
+        "value": "10",
+        "unit": "mg/kg/24hr initial, maintenance 20-30 mg/kg/24hr",
+        "maxDose": 1000,
+        "maxUnit": "mg/24hr"
+      },
+      "adolescentAdult": {
+        "label": ">12 yr / Adult",
+        "value": "200",
+        "unit": "mg PO BID initial, maintenance 800-1200 mg/24hr",
+        "isFixed": true,
+        "maxDose": 1600,
+        "maxUnit": "mg/24hr (up to 2400 mg in some adults)"
+      }
+    },
+    "indication": "Seizures (partial, generalized tonic-clonic), Trigeminal neuralgia, Bipolar disorder",
+    "contraindications": [
+      "MAO inhibitors",
+      "Sensitivity to tricyclic antidepressants",
+      "Clozapine use",
+      "Bone marrow suppression"
+    ],
+    "warnings": [
+      "Risk of SJS/TEN with HLA-B*1502 allele",
+      "Hepatic autoinduction increases metabolism after 1 month",
+      "Therapeutic levels: 4-12 mg/L"
+    ],
+    "sideEffects": [
+      "Sedation",
+      "Dizziness",
+      "Diplopia",
+      "Aplastic anemia",
+      "Neutropenia",
+      "SIADH",
+      "SJS/TEN",
+      "Suicidal behavior"
+    ]
+  },
+  {
+    "id": "clobazam-formulary",
+    "name": "Clobazam (Onfi, Frisium)",
+    "category": "Benzodiazepine, anticonvulsant",
+    "route": "PO",
+    "formulations": [
+      {
+        "type": "Tabs",
+        "strengths": "10 mg, 20 mg"
+      },
+      {
+        "type": "Oral film",
+        "strengths": "5 mg, 10 mg, 20 mg"
+      },
+      {
+        "type": "Oral suspension",
+        "strengths": "2.5 mg/mL"
+      }
+    ],
+    "doses": {
+      "pediatricUnder2": {
+        "label": "<2 yr",
+        "value": "0.5-1",
+        "unit": "mg/kg/24hr PO BID",
+        "maxDose": 10,
+        "maxUnit": "mg/24hr"
+      },
+      "pediatric2to16": {
+        "label": "2-16 yr",
+        "value": "5",
+        "unit": "mg PO once daily initial, usual 10-20 mg/24hr or 0.3-1 mg/kg/24hr BID",
+        "isFixed": true,
+        "maxDose": 40,
+        "maxUnit": "mg/24hr"
+      },
+      "adult": {
+        "label": "Adult",
+        "value": "10-15",
+        "unit": "mg PO once daily initial",
+        "isFixed": true,
+        "maxDose": 20,
+        "maxUnit": "mg/24hr"
+      }
+    },
+    "indication": "Seizures associated with Lennox-Gastaut syndrome (adjunctive therapy)",
+    "contraindications": [
+      "Avoid with azelastine, olanzapine, sodium oxybate, thioridazine"
+    ],
+    "warnings": [
+      "Do not discontinue abruptly",
+      "CYP450 2C19 substrate",
+      "Potential for drug interactions"
+    ],
+    "sideEffects": [
+      "Constipation",
+      "Drooling",
+      "Ataxia",
+      "Drowsiness",
+      "Insomnia",
+      "Aggressive behavior",
+      "SJS/TEN",
+      "Leukopenia"
+    ]
+  },
+  {
+    "id": "clonazepam-formulary",
+    "name": "Clonazepam (Klonopin, Rivotril)",
+    "category": "Benzodiazepine, anticonvulsant",
+    "route": "PO",
+    "formulations": [
+      {
+        "type": "Tabs",
+        "strengths": "0.5 mg, 1 mg, 2 mg"
+      },
+      {
+        "type": "Disintegrating tabs",
+        "strengths": "0.125 mg, 0.25 mg, 0.5 mg, 1 mg, 2 mg"
+      },
+      {
+        "type": "Oral suspension",
+        "strengths": "100 mcg/mL"
+      }
+    ],
+    "doses": {
+      "pediatricUnder10": {
+        "label": "<10 yr or <30 kg",
+        "value": "0.01-0.03",
+        "unit": "mg/kg/24hr PO BID-TID initial, max 0.05 mg/kg/24hr",
+        "maxDose": 0.2,
+        "maxUnit": "mg/kg/24hr TID"
+      },
+      "pediatricOver10": {
+        "label": "\u226510 yr or \u226530 kg",
+        "value": "1.5",
+        "unit": "mg/24hr PO TID initial",
+        "isFixed": true,
+        "maxDose": 20,
+        "maxUnit": "mg/24hr"
+      }
+    },
+    "indication": "Seizures (absence, myoclonic, akinetic), Panic disorder",
+    "contraindications": [
+      "Severe liver disease",
+      "Acute narrow-angle glaucoma"
+    ],
+    "warnings": [
+      "May cause behavior changes",
+      "Increased bronchial secretions",
+      "Monitor for depression/suicidal behavior",
+      "Do not discontinue abruptly"
+    ],
+    "sideEffects": [
+      "Drowsiness",
+      "Constipation",
+      "Dry mouth",
+      "Sedation",
+      "Dizziness",
+      "Hallucinations",
+      "Restlessness",
+      "Fatigue"
+    ]
+  },
+  {
+    "id": "ethosuximide-formulary",
+    "name": "Ethosuximide (Zarontin)",
+    "category": "Anticonvulsant",
+    "route": "PO",
+    "formulations": [
+      {
+        "type": "Caps",
+        "strengths": "250 mg"
+      },
+      {
+        "type": "Oral solution",
+        "strengths": "250 mg/5 mL"
+      }
+    ],
+    "doses": {
+      "pediatricUnder6": {
+        "label": "\u22646 yr",
+        "value": "10",
+        "unit": "mg/kg/24hr up to 250 mg/24hr BID-TID initial, increase 5-10 mg/kg/24hr Q4-7 days",
+        "maxDose": 40,
+        "maxUnit": "mg/kg/24hr"
+      },
+      "pediatricOver6": {
+        "label": ">6 yr and Adult",
+        "value": "10",
+        "unit": "mg/kg/24hr up to 500 mg/24hr BID-TID initial, increase 250 mg/24hr Q4-7 days",
+        "maxDose": 60,
+        "maxUnit": "mg/kg/24hr or 2 g/24hr"
+      }
+    },
+    "indication": "Drug of choice for absence seizures",
+    "contraindications": [
+      "Hepatic disease",
+      "Renal disease"
+    ],
+    "warnings": [
+      "May cause lupus-like syndrome",
+      "Serious dermatological reactions possible",
+      "May increase grand mal seizure frequency in mixed-type seizures"
+    ],
+    "sideEffects": [
+      "Ataxia",
+      "Anorexia",
+      "Drowsiness",
+      "Sleep disturbances",
+      "Rash",
+      "Blood dyscrasias"
+    ]
+  },
+  {
+    "id": "gabapentin-formulary",
+    "name": "Gabapentin (Neurontin)",
+    "category": "Anticonvulsant",
+    "route": "PO",
+    "formulations": [
+      {
+        "type": "Caps",
+        "strengths": "100 mg, 300 mg, 400 mg"
+      },
+      {
+        "type": "Tabs",
+        "strengths": "300 mg, 600 mg, 800 mg"
+      },
+      {
+        "type": "Oral solution",
+        "strengths": "250 mg/5 mL"
+      }
+    ],
+    "doses": {
+      "pediatric3to12": {
+        "label": "3-<12 yr (Partial seizures)",
+        "value": "10-15",
+        "unit": "mg/kg/24hr TID Day 1, then 40 mg/kg/24hr TID by Day 3-4",
+        "maxDose": 50,
+        "maxUnit": "mg/kg/24hr"
+      },
+      "adult": {
+        "label": "Adult (Partial seizures)",
+        "value": "300",
+        "unit": "mg TID initial, increase up to 1800 mg/24hr TID",
+        "isFixed": true,
+        "maxDose": 3600,
+        "maxUnit": "mg/24hr"
+      },
+      "neuropathicPain": {
+        "label": "Neuropathic Pain (Adult)",
+        "value": "300",
+        "unit": "mg Day 1, 300 mg BID Day 2, 300 mg TID Day 3",
+        "isFixed": true,
+        "maxDose": 3600,
+        "maxUnit": "mg/24hr"
+      }
+    },
+    "indication": "Partial-onset seizures (adjunctive), Neuropathic pain, Postherpetic neuralgia",
+    "contraindications": [],
+    "warnings": [
+      "Do not discontinue abruptly",
+      "Adjust dose in renal impairment"
+    ],
+    "sideEffects": [
+      "Somnolence",
+      "Dizziness",
+      "Ataxia",
+      "Fatigue",
+      "Nystagmus",
+      "Weight gain",
+      "Peripheral edema"
+    ]
+  },
+  {
+    "id": "lacosamide-formulary",
+    "name": "Lacosamide (Vimpat)",
+    "category": "Anticonvulsant",
+    "route": "PO/IV",
+    "formulations": [
+      {
+        "type": "Oral solution",
+        "strengths": "10 mg/mL"
+      },
+      {
+        "type": "Tabs",
+        "strengths": "50 mg, 100 mg, 150 mg, 200 mg"
+      },
+      {
+        "type": "Injection",
+        "strengths": "10 mg/mL"
+      }
+    ],
+    "doses": {
+      "pediatric1moTo6yr": {
+        "label": "1 mo-<6 yr",
+        "value": "1",
+        "unit": "mg/kg/dose BID PO/IV, increase 1 mg/kg/dose BID Q7 days",
+        "maxDose": 7.5,
+        "maxUnit": "mg/kg/dose BID"
+      },
+      "pediatric6yrTo30kg": {
+        "label": "6 yr-<30 kg",
+        "value": "1",
+        "unit": "mg/kg/dose BID PO/IV"
+      },
+      "pediatricOver30kg": {
+        "label": "\u226530 kg",
+        "value": "50",
+        "unit": "mg BID PO/IV",
+        "isFixed": true
+      },
+      "adultMonotherapy": {
+        "label": "Adult Monotherapy",
+        "value": "100",
+        "unit": "mg BID PO initial",
+        "isFixed": true,
+        "maxDose": 300,
+        "maxUnit": "mg BID"
+      },
+      "adultAdjunctive": {
+        "label": "Adult Adjunctive",
+        "value": "50",
+        "unit": "mg BID PO initial",
+        "isFixed": true,
+        "maxDose": 200,
+        "maxUnit": "mg BID"
+      }
+    },
+    "indication": "Partial-onset seizures, Primary generalized tonic-clonic seizures",
+    "contraindications": [],
+    "warnings": [
+      "Use caution with cardiac conduction problems",
+      "PR interval prolongation possible",
+      "100% oral bioavailability"
+    ],
+    "sideEffects": [
+      "Diplopia",
+      "Headache",
+      "Dizziness",
+      "Nausea",
+      "Somnolence",
+      "DRESS syndrome"
+    ]
+  },
+  {
+    "id": "lamotrigine-formulary",
+    "name": "Lamotrigine (Lamictal)",
+    "category": "Anticonvulsant",
+    "route": "PO",
+    "formulations": [
+      {
+        "type": "Tabs",
+        "strengths": "25 mg, 100 mg, 150 mg, 200 mg"
+      },
+      {
+        "type": "Extended release tabs",
+        "strengths": "25 mg, 50 mg, 100 mg, 200 mg, 250 mg, 300 mg"
+      },
+      {
+        "type": "Chewable tabs",
+        "strengths": "5 mg, 25 mg"
+      },
+      {
+        "type": "Disintegrating tabs",
+        "strengths": "25 mg, 50 mg, 100 mg, 200 mg"
+      }
+    ],
+    "doses": {
+      "pediatricWithoutVPA": {
+        "label": "2-12 yr WITHOUT valproate",
+        "value": "0.3",
+        "unit": "mg/kg/24hr BID wk 1-2, then 0.6 mg/kg/24hr BID wk 3-4, maintenance 4.5-7.5 mg/kg/24hr BID",
+        "maxDose": 300,
+        "maxUnit": "mg/24hr"
+      },
+      "pediatricWithVPA": {
+        "label": "2-12 yr WITH valproate",
+        "value": "0.15",
+        "unit": "mg/kg/24hr once daily wk 1-2, then 0.3 mg/kg/24hr once daily wk 3-4, maintenance 1-5 mg/kg/24hr",
+        "maxDose": 200,
+        "maxUnit": "mg/24hr"
+      },
+      "adultWithoutVPA": {
+        "label": "Adult WITHOUT valproate",
+        "value": "25",
+        "unit": "mg once daily wk 1-2, then 50 mg once daily wk 3-4, maintenance 225-375 mg/24hr BID",
+        "isFixed": true,
+        "maxDose": 400,
+        "maxUnit": "mg/24hr"
+      },
+      "adultWithVPA": {
+        "label": "Adult WITH valproate",
+        "value": "25",
+        "unit": "mg every other day wk 1-2, then 25 mg daily wk 3-4, maintenance 100-200 mg/24hr",
+        "isFixed": true,
+        "maxDose": 200,
+        "maxUnit": "mg/24hr"
+      }
+    },
+    "indication": "Partial seizures, Primary generalized tonic-clonic seizures, Lennox-Gastaut syndrome, Bipolar disorder",
+    "contraindications": [],
+    "warnings": [
+      "SLOW TITRATION REQUIRED to minimize rash risk",
+      "Risk of SJS/TEN especially in children",
+      "Do not discontinue abruptly",
+      "Dose adjustment needed with enzyme-inducing AEDs and valproate"
+    ],
+    "sideEffects": [
+      "Dizziness",
+      "Diplopia",
+      "Ataxia",
+      "Rash (may be severe)",
+      "Sedation",
+      "Headache",
+      "Nausea",
+      "Hypersensitivity reactions"
+    ]
+  },
+  {
+    "id": "levetiracetam-formulary",
+    "name": "Levetiracetam (Keppra)",
+    "category": "Anticonvulsant",
+    "route": "PO/IV",
+    "formulations": [
+      {
+        "type": "Tabs",
+        "strengths": "250 mg, 500 mg, 750 mg, 1000 mg"
+      },
+      {
+        "type": "Extended release tabs",
+        "strengths": "500 mg, 750 mg"
+      },
+      {
+        "type": "Oral solution",
+        "strengths": "100 mg/mL"
+      },
+      {
+        "type": "Injection",
+        "strengths": "500 mg/100 mL, 1000 mg/100 mL, 1500 mg/100 mL"
+      }
+    ],
+    "doses": {
+      "infant1to5mo": {
+        "label": "1-5 mo",
+        "value": "7",
+        "unit": "mg/kg/dose BID PO/IV, increase 7 mg/kg/dose BID Q2wk",
+        "maxDose": 21,
+        "maxUnit": "mg/kg/dose BID"
+      },
+      "infant6moTo3yr": {
+        "label": "6 mo-3 yr",
+        "value": "10",
+        "unit": "mg/kg/dose BID PO/IV, increase 10 mg/kg/dose BID Q2wk",
+        "maxDose": 25,
+        "maxUnit": "mg/kg/dose BID"
+      },
+      "child4to15yr": {
+        "label": "4-15 yr",
+        "value": "10",
+        "unit": "mg/kg/dose BID PO/IV, increase 10 mg/kg/dose BID Q2wk",
+        "maxDose": 30,
+        "maxUnit": "mg/kg/dose BID (max 3000 mg/24hr)"
+      },
+      "adult": {
+        "label": "Adult",
+        "value": "500",
+        "unit": "mg BID PO/IV, increase 500 mg BID Q2wk",
+        "isFixed": true,
+        "maxDose": 1500,
+        "maxUnit": "mg BID"
+      }
+    },
+    "indication": "Partial-onset seizures, Myoclonic seizures, Primary generalized tonic-clonic seizures, Status epilepticus",
+    "contraindications": [],
+    "warnings": [
+      "Do not abruptly withdraw",
+      "Adjust dose in renal impairment",
+      "Psychiatric symptoms may occur"
+    ],
+    "sideEffects": [
+      "Drowsiness",
+      "Fatigue",
+      "Nervousness",
+      "Aggression",
+      "Behavior changes",
+      "Suicidal ideation",
+      "Serious dermatologic reactions"
+    ]
+  },
+  {
+    "id": "oxcarbazepine-formulary",
+    "name": "Oxcarbazepine (Trileptal)",
+    "category": "Anticonvulsant",
+    "route": "PO",
+    "formulations": [
+      {
+        "type": "Tabs",
+        "strengths": "150 mg, 300 mg, 600 mg"
+      },
+      {
+        "type": "Extended release tabs",
+        "strengths": "150 mg, 300 mg, 600 mg"
+      },
+      {
+        "type": "Oral suspension",
+        "strengths": "300 mg/5 mL"
+      }
+    ],
+    "doses": {
+      "pediatric2to4yr": {
+        "label": "2-<4 yr (Adjunctive)",
+        "value": "8-10",
+        "unit": "mg/kg/24hr PO BID initial",
+        "maxDose": 600,
+        "maxUnit": "mg/24hr initial"
+      },
+      "pediatric4to16yr": {
+        "label": "4-16 yr (Adjunctive)",
+        "value": "8-10",
+        "unit": "mg/kg/24hr PO BID, increase over 2 wk to maintenance",
+        "maxDose": 1800,
+        "maxUnit": "mg/24hr (weight dependent)"
+      },
+      "adult": {
+        "label": "Adult",
+        "value": "600",
+        "unit": "mg/24hr PO BID initial, increase weekly by 600 mg/24hr",
+        "isFixed": true,
+        "maxDose": 2400,
+        "maxUnit": "mg/24hr"
+      }
+    },
+    "indication": "Partial-onset seizures (monotherapy or adjunctive)",
+    "contraindications": [],
+    "warnings": [
+      "Clinically significant hyponatremia may occur",
+      "Cross-sensitivity with carbamazepine (25-30%)",
+      "May decrease oral contraceptive efficacy"
+    ],
+    "sideEffects": [
+      "Dizziness",
+      "Headache",
+      "Hyponatremia",
+      "Nausea",
+      "Somnolence",
+      "SJS/TEN",
+      "Suicidal behavior"
+    ]
+  },
+  {
+    "id": "phenobarbital-formulary",
+    "name": "Phenobarbital (Luminal)",
+    "category": "Barbiturate, Anticonvulsant",
+    "route": "PO/IM/IV",
+    "formulations": [
+      {
+        "type": "Tabs",
+        "strengths": "15 mg, 30 mg, 60 mg, 100 mg"
+      },
+      {
+        "type": "Elixir",
+        "strengths": "20 mg/5 mL"
+      },
+      {
+        "type": "Injection",
+        "strengths": "65 mg/mL, 130 mg/mL"
+      }
+    ],
+    "doses": {
+      "neonatalLoading": {
+        "label": "Neonate Loading",
+        "value": "15-20",
+        "unit": "mg/kg IV single or divided dose",
+        "maxDose": 1000,
+        "maxUnit": "mg"
+      },
+      "neonatalMaintenance": {
+        "label": "Neonate Maintenance",
+        "value": "3-5",
+        "unit": "mg/kg/24hr PO once daily-BID"
+      },
+      "pediatric": {
+        "label": "Infant/Child",
+        "value": "3-5",
+        "unit": "mg/kg/24hr PO once daily-BID"
+      },
+      "adultLoading": {
+        "label": "Adult Loading",
+        "value": "10-20",
+        "unit": "mg/kg IV",
+        "maxDose": 1500,
+        "maxUnit": "mg"
+      },
+      "adultMaintenance": {
+        "label": "Adult Maintenance",
+        "value": "1-2",
+        "unit": "mg/kg/24hr PO Q6-8hr"
+      }
+    },
+    "indication": "Status epilepticus, Seizures, Neonatal hyperbilirubinemia, Sedation",
+    "contraindications": [
+      "Porphyria",
+      "Severe respiratory disease",
+      "CNS depression",
+      "Hepatic impairment"
+    ],
+    "warnings": [
+      "May cause respiratory depression",
+      "Paradoxical reactions in children",
+      "Potent CYP450 inducer"
+    ],
+    "sideEffects": [
+      "Drowsiness",
+      "Cognitive impairment",
+      "Ataxia",
+      "Hypotension",
+      "Hepatitis",
+      "Respiratory depression",
+      "Megaloblastic anemia"
+    ]
+  },
+  {
+    "id": "phenytoin-formulary",
+    "name": "Phenytoin (Dilantin)",
+    "category": "Anticonvulsant",
+    "route": "PO/IV",
+    "formulations": [
+      {
+        "type": "Chewable tabs",
+        "strengths": "50 mg"
+      },
+      {
+        "type": "Extended release caps",
+        "strengths": "30 mg, 100 mg"
+      },
+      {
+        "type": "Oral suspension",
+        "strengths": "125 mg/5 mL"
+      },
+      {
+        "type": "Injection",
+        "strengths": "50 mg/mL"
+      }
+    ],
+    "doses": {
+      "loading": {
+        "label": "Loading (All ages)",
+        "value": "15-20",
+        "unit": "mg/kg IV",
+        "maxDose": 1500,
+        "maxUnit": "mg/24hr"
+      },
+      "neonateMaintenance": {
+        "label": "Neonate Maintenance",
+        "value": "4-8",
+        "unit": "mg/kg/24hr PO/IV Q8-12hr"
+      },
+      "pediatricMaintenance": {
+        "label": "Child Maintenance",
+        "value": "4-8",
+        "unit": "mg/kg/24hr PO/IV BID-TID"
+      },
+      "adultMaintenance": {
+        "label": "Adult Maintenance",
+        "value": "100",
+        "unit": "mg Q8hr IV/PO, titrate to 300-600 mg/24hr",
+        "isFixed": true,
+        "maxDose": 600,
+        "maxUnit": "mg/24hr"
+      }
+    },
+    "indication": "Status epilepticus, Seizure disorders, Arrhythmias (Class Ib antiarrhythmic)",
+    "contraindications": [
+      "Hypersensitivity to hydantoins",
+      "Sinus bradycardia",
+      "SA/AV block",
+      "Adams-Stokes syndrome"
+    ],
+    "warnings": [
+      "Use caution in renal/hepatic impairment",
+      "Monitor free phenytoin levels",
+      "CYP450 2C9 substrate with many drug interactions",
+      "Therapeutic levels: 10-20 mcg/mL (total), 1-2 mcg/mL (free)"
+    ],
+    "sideEffects": [
+      "Gingival hyperplasia",
+      "Hirsutism",
+      "Rash",
+      "Ataxia",
+      "Nystagmus",
+      "Diplopia",
+      "Megaloblastic anemia",
+      "SJS/TEN"
+    ]
+  },
+  {
+    "id": "pregabalin-formulary",
+    "name": "Pregabalin (Lyrica)",
+    "category": "Anticonvulsant, Antineuralgic",
+    "route": "PO",
+    "formulations": [
+      {
+        "type": "Caps",
+        "strengths": "25 mg, 50 mg, 75 mg, 100 mg, 150 mg, 200 mg, 300 mg"
+      },
+      {
+        "type": "Oral solution",
+        "strengths": "20 mg/mL"
+      }
+    ],
+    "doses": {
+      "pediatricSeizures": {
+        "label": "Partial seizures (1 mo-17 yr)",
+        "value": "2.5",
+        "unit": "mg/kg/24hr BID initial, increase to maintenance 10-14 mg/kg/24hr BID"
+      },
+      "adultSeizures": {
+        "label": "Adult Partial seizures",
+        "value": "75",
+        "unit": "mg BID or 50 mg TID initial, increase to 150-300 mg BID",
+        "isFixed": true,
+        "maxDose": 600,
+        "maxUnit": "mg/24hr"
+      },
+      "neuropathicPain": {
+        "label": "Neuropathic Pain (Adult)",
+        "value": "75",
+        "unit": "mg BID initial, increase to 150 mg BID",
+        "isFixed": true,
+        "maxDose": 300,
+        "maxUnit": "mg/24hr for DPN, 600 mg/24hr for postherpetic"
+      },
+      "fibromyalgia": {
+        "label": "Fibromyalgia (Adult)",
+        "value": "75",
+        "unit": "mg BID initial, may increase to 150-225 mg BID",
+        "isFixed": true,
+        "maxDose": 450,
+        "maxUnit": "mg/24hr"
+      }
+    },
+    "indication": "Partial-onset seizures (adjunctive), Neuropathic pain, Postherpetic neuralgia, Fibromyalgia",
+    "contraindications": [],
+    "warnings": [
+      "Do not discontinue abruptly",
+      "Adjust dose in renal impairment",
+      "May cause angioedema"
+    ],
+    "sideEffects": [
+      "Dizziness",
+      "Somnolence",
+      "Dry mouth",
+      "Peripheral edema",
+      "Weight gain",
+      "Blurred vision",
+      "Suicidal ideation"
+    ]
+  },
+  {
+    "id": "topiramate-formulary",
+    "name": "Topiramate (Topamax)",
+    "category": "Anticonvulsant",
+    "route": "PO",
+    "formulations": [
+      {
+        "type": "Sprinkle caps",
+        "strengths": "15 mg, 25 mg"
+      },
+      {
+        "type": "Tabs",
+        "strengths": "25 mg, 50 mg, 100 mg, 200 mg"
+      },
+      {
+        "type": "Extended release caps",
+        "strengths": "25 mg, 50 mg, 100 mg, 150 mg, 200 mg"
+      }
+    ],
+    "doses": {
+      "pediatricAdjunctive": {
+        "label": "2-16 yr Adjunctive",
+        "value": "1-3",
+        "unit": "mg/kg/dose QHS initial, increase 1-3 mg/kg/24hr Q1-2wk to maintenance 5-9 mg/kg/24hr BID",
+        "maxDose": 400,
+        "maxUnit": "mg/24hr"
+      },
+      "adultAdjunctive": {
+        "label": "Adult Adjunctive",
+        "value": "25-50",
+        "unit": "mg QHS initial, increase 25-50 mg/24hr Q1wk to maintenance 100-200 mg BID",
+        "isFixed": true,
+        "maxDose": 400,
+        "maxUnit": "mg/24hr"
+      },
+      "migraine": {
+        "label": "Migraine Prophylaxis",
+        "value": "25",
+        "unit": "mg QHS wk 1, 25 mg BID wk 2, 25 mg AM + 50 mg PM wk 3, 50 mg BID wk 4+",
+        "isFixed": true,
+        "maxDose": 100,
+        "maxUnit": "mg/24hr"
+      }
+    },
+    "indication": "Partial-onset seizures, Lennox-Gastaut syndrome, Primary generalized tonic-clonic seizures, Migraine prophylaxis",
+    "contraindications": [
+      "Metabolic acidosis with metformin",
+      "Recent alcohol use (within 6 hr)"
+    ],
+    "warnings": [
+      "May cause metabolic acidosis",
+      "Risk of kidney stones",
+      "Oligohidrosis and hyperthermia (especially in children)",
+      "Acute myopia and secondary angle-closure glaucoma"
+    ],
+    "sideEffects": [
+      "Cognitive dysfunction",
+      "Dizziness",
+      "Ataxia",
+      "Paresthesias",
+      "Weight loss",
+      "Kidney stones",
+      "Metabolic acidosis"
+    ]
+  },
+  {
+    "id": "valproate-formulary",
+    "name": "Valproic Acid / Valproate (Depakene, Depakote)",
+    "category": "Anticonvulsant",
+    "route": "PO/IV",
+    "formulations": [
+      {
+        "type": "Caps (valproic acid)",
+        "strengths": "250 mg"
+      },
+      {
+        "type": "Syrup (valproic acid)",
+        "strengths": "250 mg/5 mL"
+      },
+      {
+        "type": "Delayed release tabs (divalproex)",
+        "strengths": "125 mg, 250 mg, 500 mg"
+      },
+      {
+        "type": "Extended release tabs (divalproex ER)",
+        "strengths": "250 mg, 500 mg"
+      },
+      {
+        "type": "Injection (valproate sodium)",
+        "strengths": "100 mg/mL"
+      }
+    ],
+    "doses": {
+      "pediatric": {
+        "label": "Child (Seizures)",
+        "value": "10-15",
+        "unit": "mg/kg/24hr PO/IV once daily-TID initial, increase 5-10 mg/kg/24hr Q1wk to maintenance 30-60 mg/kg/24hr",
+        "maxDose": 60,
+        "maxUnit": "mg/kg/24hr"
+      },
+      "adult": {
+        "label": "Adult (Seizures)",
+        "value": "10-15",
+        "unit": "mg/kg/24hr PO/IV once daily initial, increase 5-10 mg/kg/24hr Q1wk",
+        "maxDose": 60,
+        "maxUnit": "mg/kg/24hr"
+      },
+      "statusEpilepticus": {
+        "label": "Status Epilepticus",
+        "value": "20-40",
+        "unit": "mg/kg IV loading dose over 1-5 min",
+        "maxDose": 3000,
+        "maxUnit": "mg"
+      }
+    },
+    "indication": "Complex partial seizures, Absence seizures, Multiple seizure types, Migraine prophylaxis, Bipolar disorder",
+    "contraindications": [
+      "Hepatic disease",
+      "Urea cycle disorders",
+      "Pregnancy (teratogenic - neural tube defects)",
+      "Mitochondrial disorders (POLG mutations)"
+    ],
+    "warnings": [
+      "BLACK BOX: Hepatotoxicity (especially <2 yr), Teratogenicity, Pancreatitis",
+      "Monitor LFTs, platelets, ammonia",
+      "Therapeutic levels: 50-100 mcg/mL"
+    ],
+    "sideEffects": [
+      "Nausea",
+      "Vomiting",
+      "Weight gain",
+      "Tremor",
+      "Hair loss",
+      "Hepatotoxicity",
+      "Pancreatitis",
+      "Thrombocytopenia",
+      "Hyperammonemia"
+    ]
+  },
+  {
+    "id": "vigabatrin-formulary",
+    "name": "Vigabatrin (Sabril)",
+    "category": "Anticonvulsant",
+    "route": "PO",
+    "formulations": [
+      {
+        "type": "Tabs",
+        "strengths": "500 mg"
+      },
+      {
+        "type": "Powder for oral solution",
+        "strengths": "500 mg/packet"
+      }
+    ],
+    "doses": {
+      "infantileSpasms": {
+        "label": "Infantile Spasms",
+        "value": "50",
+        "unit": "mg/kg/24hr BID initial, increase 25-50 mg/kg/24hr Q3 days",
+        "maxDose": 150,
+        "maxUnit": "mg/kg/24hr"
+      },
+      "refractorySeizures": {
+        "label": "Refractory Complex Partial (Adult)",
+        "value": "500",
+        "unit": "mg BID initial, increase 500 mg/24hr Q1wk",
+        "isFixed": true,
+        "maxDose": 3000,
+        "maxUnit": "mg/24hr"
+      }
+    },
+    "indication": "Infantile spasms, Refractory complex partial seizures (adjunctive)",
+    "contraindications": [],
+    "warnings": [
+      "BLACK BOX: Progressive and PERMANENT VISION LOSS",
+      "Risk increases with dose and duration",
+      "Baseline and periodic vision testing required (Q3 months)",
+      "Only available through SHARE REMS program"
+    ],
+    "sideEffects": [
+      "Vision loss (irreversible)",
+      "Drowsiness",
+      "Fatigue",
+      "Headache",
+      "Weight gain",
+      "Peripheral neuropathy",
+      "MRI signal abnormalities"
+    ]
+  },
+  {
+    "id": "zonisamide-formulary",
+    "name": "Zonisamide (Zonegran)",
+    "category": "Anticonvulsant",
+    "route": "PO",
+    "formulations": [
+      {
+        "type": "Caps",
+        "strengths": "25 mg, 50 mg, 100 mg"
+      }
+    ],
+    "doses": {
+      "pediatric": {
+        "label": "Child \u226516 yr / Adult",
+        "value": "100",
+        "unit": "mg once daily initial, increase 100 mg/24hr Q2wk",
+        "isFixed": true,
+        "maxDose": 600,
+        "maxUnit": "mg/24hr"
+      },
+      "pediatricUnder16": {
+        "label": "Child <16 yr (off-label)",
+        "value": "1-2",
+        "unit": "mg/kg/24hr once daily initial, increase Q2wk",
+        "maxDose": 12,
+        "maxUnit": "mg/kg/24hr"
+      }
+    },
+    "indication": "Partial-onset seizures (adjunctive)",
+    "contraindications": [
+      "Hypersensitivity to sulfonamides"
+    ],
+    "warnings": [
+      "Risk of kidney stones",
+      "Oligohidrosis and hyperthermia",
+      "Metabolic acidosis",
+      "Suicidal ideation"
+    ],
+    "sideEffects": [
+      "Drowsiness",
+      "Anorexia",
+      "Dizziness",
+      "Ataxia",
+      "Agitation",
+      "Kidney stones",
+      "Metabolic acidosis",
+      "Oligohidrosis"
+    ]
   }
 ]
