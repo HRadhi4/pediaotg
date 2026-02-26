@@ -1803,16 +1803,20 @@ const DrugsPage = ({ onBack }) => {
                     )}
 
                     {/* Side Effects */}
-                    {drug.sideEffects && drug.sideEffects.length > 0 && (
+                    {drug.sideEffects && (typeof drug.sideEffects === 'string' ? drug.sideEffects.length > 0 : drug.sideEffects.length > 0) && (
                       <div className="p-3 rounded-lg bg-pink-50 dark:bg-pink-900/20 border border-pink-200 dark:border-pink-800">
                         <p className="text-[11px] font-semibold text-pink-700 dark:text-pink-300 mb-2 flex items-center gap-1">
                           <span>⚡</span> Side Effects
                         </p>
-                        <ul className="list-disc list-inside text-xs text-slate-700 dark:text-slate-300 space-y-0.5">
-                          {drug.sideEffects.map((se, idx) => (
-                            <li key={idx}>{se}</li>
-                          ))}
-                        </ul>
+                        {typeof drug.sideEffects === 'string' ? (
+                          <p className="text-xs text-slate-700 dark:text-slate-300">{drug.sideEffects}</p>
+                        ) : (
+                          <ul className="list-disc list-inside text-xs text-slate-700 dark:text-slate-300 space-y-0.5">
+                            {drug.sideEffects.map((se, idx) => (
+                              <li key={idx}>{se}</li>
+                            ))}
+                          </ul>
+                        )}
                       </div>
                     )}
 
