@@ -347,6 +347,7 @@ const ApproachesPage = ({ onBack }) => {
         {activeTab === "pards" && <PARDSApproach {...commonProps} />}
         {activeTab === "bloodgas" && <BloodGasApproach {...commonProps} />}
         {activeTab === "antibiotics" && <EmpiricalAntibioticsApproach {...commonProps} />}
+        {activeTab === "epilepsy" && <EpilepsyApproach {...commonProps} />}
         </div>
       </div>
 
