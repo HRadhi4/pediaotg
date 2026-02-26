@@ -983,27 +983,100 @@ const EpilepsyApproach = ({ weight: w = 0, age = 0 }) => {
         </div>
 
         {/* EEG Section */}
-        <div className="p-2 bg-gray-50 dark:bg-gray-800/50 rounded-lg border border-gray-200 dark:border-gray-700">
-          <p className="text-xs font-bold text-gray-800 dark:text-gray-200 mb-2">EEG - WHEN TO REQUEST</p>
-          <p className="text-[8px] text-gray-700 dark:text-gray-300 font-bold mb-1">Only to be requested by Neurologist</p>
-          <div className="space-y-2 text-[8px]">
-            <div>
-              <p className="font-bold text-gray-700 dark:text-gray-300">Reasons for requesting EEG:</p>
-              <ul className="list-disc list-inside text-gray-600 dark:text-gray-400 text-[7px]">
-                <li>Unclear nature of event (epileptic vs non-epileptic)</li>
-                <li>Localization in focal epilepsy</li>
-                <li>Documentation of syndromes (absence, infantile spasms)</li>
+        <div className="p-3 bg-indigo-50 dark:bg-indigo-950/20 rounded-lg border-2 border-indigo-200 dark:border-indigo-700">
+          <p className="text-sm font-bold text-indigo-800 dark:text-indigo-200 mb-2">EEG - WHEN TO REQUEST</p>
+          <p className="text-xs text-red-600 dark:text-red-400 font-bold mb-2">⚠️ EEG is ONLY to be requested by a Neurologist order</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div className="p-2 bg-white dark:bg-gray-800 rounded border border-indigo-200 dark:border-indigo-700">
+              <p className="font-bold text-indigo-700 dark:text-indigo-300 text-xs mb-1">Reasons for requesting EEG:</p>
+              <ul className="list-disc list-inside text-gray-700 dark:text-gray-300 text-[10px] space-y-1">
+                <li>Unclear nature of event (Epileptic vs. Non-epileptic)</li>
+                <li>Localization of seizure focus in case of focal epilepsy</li>
+                <li>Documentation of some epileptic syndromes in order to start treatment (Absence, infantile spasms)</li>
               </ul>
             </div>
-            <div>
-              <p className="font-bold text-gray-700 dark:text-gray-300">Include in EEG request:</p>
-              <ul className="list-disc list-inside text-gray-600 dark:text-gray-400 text-[7px]">
-                <li>Age, handedness, date/time of event</li>
-                <li>Event description, consciousness level, frequency</li>
-                <li>Family history, recent imaging, current medications</li>
-                <li>Latest EEG, reason for request</li>
+            <div className="p-2 bg-white dark:bg-gray-800 rounded border border-indigo-200 dark:border-indigo-700">
+              <p className="font-bold text-indigo-700 dark:text-indigo-300 text-xs mb-1">Points to mention in EEG request:</p>
+              <ul className="list-disc list-inside text-gray-700 dark:text-gray-300 text-[10px] space-y-0.5">
+                <li>Age <span className="text-blue-600">(Add corrected age if premature or ex-premature)</span></li>
+                <li>Handedness (right or left)</li>
+                <li>Date of the event</li>
+                <li>Time of the day at which event occurred</li>
+                <li>Description of the event</li>
+                <li>Consciousness level during the event</li>
+                <li>Frequency of the event</li>
+                <li>Any significant family history</li>
+                <li>Results of recent brain imaging</li>
+                <li>Current neuro medications</li>
+                <li>Latest EEG date and conclusion</li>
+                <li>Reason for requesting EEG</li>
               </ul>
             </div>
+          </div>
+        </div>
+
+        {/* Video Resources Section */}
+        <div className="p-3 bg-purple-50 dark:bg-purple-950/20 rounded-lg border border-purple-200 dark:border-purple-700">
+          <p className="text-sm font-bold text-purple-800 dark:text-purple-200 mb-2">📹 VIDEO RESOURCES</p>
+          <p className="text-[10px] text-gray-600 dark:text-gray-400 mb-2">Educational videos showing different seizure types and mimickers</p>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-2 text-[10px]">
+            <div className="space-y-1">
+              <p className="font-bold text-purple-700 dark:text-purple-300">Seizure Types:</p>
+              <p>Video 1 - Generalized Tonic-Clonic</p>
+              <p>Video 2 - Focal preserved consciousness</p>
+              <p>Video 3 - Focal impaired (Motor)</p>
+              <p>Video 4 - Focal impaired (Non-motor)</p>
+              <p>Video 5 - Absence seizure</p>
+              <p>Video 6 - Myoclonic seizures</p>
+              <p>Video 7 - Tonic</p>
+              <p>Video 8 - Atonic</p>
+              <p>Video 9 - Infantile spasm</p>
+            </div>
+            <div className="space-y-1">
+              <p className="font-bold text-purple-700 dark:text-purple-300">Seizure Mimickers:</p>
+              <p>Video 10 - Benign neonatal myoclonus</p>
+              <p>Video 11 - Chorea</p>
+              <p>Video 12 - Dystonia</p>
+              <p>Video 13 - Jitteriness</p>
+              <p>Video 14 - Breath holding spells</p>
+              <p>Video 15 - Parasomnias</p>
+              <p>Video 16 - Apnea</p>
+              <p>Video 17 - Syncope</p>
+              <p>Video 18 - Day dreaming</p>
+              <p>Video 19 - Psychogenic</p>
+            </div>
+          </div>
+        </div>
+
+        {/* References Section */}
+        <div className="p-3 bg-gray-100 dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-600">
+          <p className="text-sm font-bold text-gray-800 dark:text-gray-200 mb-2">📚 REFERENCES</p>
+          <ol className="list-decimal list-inside text-[9px] text-gray-600 dark:text-gray-400 space-y-1">
+            <li>Messahel S, Bracken L, Appleton R. Optimal Management of Status Epilepticus in Children in the Emergency Setting. Open Access Emerg Med. 2022</li>
+            <li>APLS Algorithm - Status Epilepticus (apls.org.au)</li>
+            <li>Bacon M, et al. Review of the new APLS guideline (2022): Management of the convulsing child. Arch Dis Child Educ Pract Ed. 2023</li>
+            <li>NICE Guideline NG217 - Treating status epilepticus</li>
+            <li>Löscher W, Klein P. The Pharmacology and Clinical Efficacy of Antiseizure Medications. CNS Drugs. 2021</li>
+            <li>Stainman RS, Kossoff EH. Seizure mimics in children: An age-based approach. Curr Probl Pediatr Adolesc Health Care. 2020</li>
+            <li>Xixis KL, et al. Febrile Seizure - StatPearls</li>
+            <li>AES Guideline - Prolonged Seizures</li>
+            <li>Bösel J. SOP: First-ever epileptic seizure in adult patients. Neurol Res Pract. 2019</li>
+          </ol>
+        </div>
+
+        {/* Disclaimer */}
+        <div className="p-3 bg-amber-50 dark:bg-amber-950/20 rounded-lg border-2 border-amber-300 dark:border-amber-700">
+          <p className="text-sm font-bold text-amber-800 dark:text-amber-200 mb-2">⚠️ DISCLAIMER</p>
+          <ul className="text-[10px] text-amber-700 dark:text-amber-300 space-y-1">
+            <li>• These are unofficial guidelines at the moment. Official guidelines are in the process of finalization.</li>
+            <li>• These guidelines are not supposed to restrict or limit the approach and thinking of the treating physician.</li>
+            <li>• Not all possibilities of diagnosis, investigations and management modalities are included in these guidelines.</li>
+            <li>• We encourage physicians to keep an open mind for cases that may fall outside the scope of these guidelines.</li>
+          </ul>
+          <div className="mt-2 pt-2 border-t border-amber-300 dark:border-amber-700 text-[9px] text-gray-600 dark:text-gray-400">
+            <p><strong>Done by:</strong> Dr. Safa Shaik, Dr. Hawra Al-Aswad</p>
+            <p><strong>Reviewed by:</strong> Dr. Husain Malalla</p>
+            <p><strong>Date of issue:</strong> 3/10/2025 | <strong>Next revision:</strong> 1/1/2030</p>
           </div>
         </div>
 
