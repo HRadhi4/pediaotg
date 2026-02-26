@@ -12291,5 +12291,660 @@
       "hd": "30% removed by HD; give after dialysis"
     },
     "hepaticAdjust": "No adjustment for mild-moderate; use caution in severe"
+  },
+  {
+    "id": "acetazolamide",
+    "name": "Acetazolamide",
+    "category": "Antiepileptic",
+    "route": "PO",
+    "source": "SMC Epilepsy Guideline",
+    "formulations": [
+      {"type": "Tablet", "strengths": "250 mg"}
+    ],
+    "doses": {
+      "pediatric1mTo12y": {
+        "label": "1mo - 12yr",
+        "value": "5",
+        "unit": "mg/kg/day",
+        "maxDose": 20,
+        "maxUnit": "mg/kg/day (max 750mg/day)"
+      },
+      "pediatric12yTo18y": {
+        "label": "12yr - 18yr",
+        "value": "500",
+        "unit": "mg/day",
+        "isFixed": true,
+        "maxDose": 1000,
+        "maxUnit": "mg/day"
+      }
+    },
+    "sideEffects": "GI upset, Acidosis, numbness, anhydrosis"
+  },
+  {
+    "id": "biotin",
+    "name": "Biotin",
+    "category": "Antiepileptic",
+    "route": "PO",
+    "source": "SMC Epilepsy Guideline",
+    "formulations": [
+      {"type": "Capsule", "strengths": "5 mg"}
+    ],
+    "doses": {
+      "pediatric": {
+        "label": "Pediatric",
+        "value": "5",
+        "unit": "mg/day",
+        "isFixed": true,
+        "maxDose": 10,
+        "maxUnit": "mg/day"
+      }
+    },
+    "sideEffects": "GI upset"
+  },
+  {
+    "id": "brivaracetam",
+    "name": "Brivaracetam",
+    "category": "Antiepileptic",
+    "route": "PO",
+    "source": "SMC Epilepsy Guideline",
+    "formulations": [
+      {"type": "Not available in SMC", "strengths": ""}
+    ],
+    "doses": {
+      "pediatricUnder11kg": {
+        "label": "Weight <11kg",
+        "value": "1.5",
+        "unit": "mg/kg/day",
+        "maxDose": 6,
+        "maxUnit": "mg/kg/day"
+      },
+      "pediatricOver11kg": {
+        "label": "Weight ≥11kg",
+        "value": "1",
+        "unit": "mg/kg/day",
+        "maxDose": 4,
+        "maxUnit": "mg/kg/day (max 200mg/day)"
+      }
+    },
+    "sideEffects": "Behavioural issues, fatigue"
+  },
+  {
+    "id": "potassium-bromide",
+    "name": "Potassium Bromide (Bromide)",
+    "category": "Antiepileptic",
+    "route": "PO",
+    "source": "SMC Epilepsy Guideline",
+    "formulations": [
+      {"type": "Tablet", "strengths": "850 mg"}
+    ],
+    "doses": {
+      "pediatric": {
+        "label": "Pediatric",
+        "value": "30",
+        "unit": "mg/kg/day",
+        "maxDose": 70,
+        "maxUnit": "mg/kg/day"
+      }
+    },
+    "sideEffects": "Sedation, incoordination"
+  },
+  {
+    "id": "carbamazepine",
+    "name": "Carbamazepine (Tegretol)",
+    "category": "Antiepileptic",
+    "route": "PO",
+    "source": "SMC Epilepsy Guideline",
+    "formulations": [
+      {"type": "Syrup", "strengths": "20 mg/ml"},
+      {"type": "Tablet", "strengths": "200 mg, 400 mg"}
+    ],
+    "doses": {
+      "pediatric1mTo12y": {
+        "label": "1mo - 12yr",
+        "value": "5",
+        "unit": "mg/kg/day",
+        "maxDose": 30,
+        "maxUnit": "mg/kg/day"
+      },
+      "pediatric12yTo18y": {
+        "label": "12yr - 18yr",
+        "value": "200",
+        "unit": "mg/day initial",
+        "isFixed": true,
+        "maxDose": 1800,
+        "maxUnit": "mg/day"
+      }
+    },
+    "sideEffects": "Sedation, abdominal pain, allergic reaction, hepatitis, behavioural issues, hyponatremia"
+  },
+  {
+    "id": "clobazam",
+    "name": "Clobazam (Frisium)",
+    "category": "Antiepileptic",
+    "route": "PO",
+    "source": "SMC Epilepsy Guideline",
+    "formulations": [
+      {"type": "Tablet", "strengths": "10 mg"}
+    ],
+    "doses": {
+      "pediatric1mTo12y": {
+        "label": "1mo - 12yr",
+        "value": "0.25",
+        "unit": "mg/kg/day",
+        "maxDose": 1,
+        "maxUnit": "mg/kg/day"
+      },
+      "pediatric12yTo18y": {
+        "label": "12yr - 18yr",
+        "value": "20",
+        "unit": "mg/day",
+        "isFixed": true,
+        "maxDose": 60,
+        "maxUnit": "mg/day"
+      }
+    },
+    "sideEffects": "Sedation, behavioural issues, aggressiveness"
+  },
+  {
+    "id": "clonazepam",
+    "name": "Clonazepam (Rivotril)",
+    "category": "Antiepileptic",
+    "route": "PO",
+    "source": "SMC Epilepsy Guideline",
+    "formulations": [
+      {"type": "Drops", "strengths": "2.5 mg/ml"},
+      {"type": "Tablet", "strengths": "0.5 mg, 2 mg"}
+    ],
+    "doses": {
+      "pediatric": {
+        "label": "Pediatric",
+        "value": "0.05-0.2",
+        "unit": "mg/kg/day",
+        "maxDose": 0.25,
+        "maxUnit": "mg/kg/day (max 8mg/day)"
+      }
+    },
+    "sideEffects": "Sedation, increased salivation"
+  },
+  {
+    "id": "ethosuximide",
+    "name": "Ethosuximide (Zarontin)",
+    "category": "Antiepileptic",
+    "route": "PO",
+    "source": "SMC Epilepsy Guideline",
+    "formulations": [
+      {"type": "Syrup", "strengths": "50 mg/ml"},
+      {"type": "Tablet", "strengths": "250 mg"}
+    ],
+    "doses": {
+      "pediatric1mTo5y": {
+        "label": "1mo - 5yr",
+        "value": "10",
+        "unit": "mg/kg/day",
+        "maxDose": 40,
+        "maxUnit": "mg/kg/day"
+      },
+      "pediatric6yTo18y": {
+        "label": "6yr - 18yr",
+        "value": "500",
+        "unit": "mg/day",
+        "isFixed": true,
+        "maxDose": 2000,
+        "maxUnit": "mg/day"
+      }
+    },
+    "sideEffects": "GI upset, sedation, coagulopathy, allergic reaction"
+  },
+  {
+    "id": "folinic-acid",
+    "name": "Folinic Acid",
+    "category": "Antiepileptic",
+    "route": "PO",
+    "source": "SMC Epilepsy Guideline",
+    "formulations": [
+      {"type": "Tablet", "strengths": "15 mg"}
+    ],
+    "doses": {
+      "pediatric": {
+        "label": "Pediatric",
+        "value": "0.5",
+        "unit": "mg/kg/day",
+        "maxDose": 5,
+        "maxUnit": "mg/kg/day"
+      }
+    },
+    "sideEffects": "GI upset, fatigability"
+  },
+  {
+    "id": "gabapentin",
+    "name": "Gabapentin (Neurontin)",
+    "category": "Antiepileptic",
+    "route": "PO",
+    "source": "SMC Epilepsy Guideline",
+    "formulations": [
+      {"type": "Capsule", "strengths": "300 mg"}
+    ],
+    "doses": {
+      "pediatric": {
+        "label": "Pediatric",
+        "value": "10",
+        "unit": "mg/kg/day",
+        "maxDose": 70,
+        "maxUnit": "mg/kg/day (max 4800mg/day)"
+      }
+    },
+    "sideEffects": "Sedation, GI upset, weight gain, behavioural issues"
+  },
+  {
+    "id": "lacosamide",
+    "name": "Lacosamide (Vimpat)",
+    "category": "Antiepileptic",
+    "route": "PO",
+    "source": "SMC Epilepsy Guideline",
+    "formulations": [
+      {"type": "Syrup", "strengths": "10 mg/ml"},
+      {"type": "Tablet", "strengths": "50 mg, 100 mg, 200 mg"}
+    ],
+    "doses": {
+      "pediatric": {
+        "label": "Pediatric",
+        "value": "100",
+        "unit": "mg/day initial",
+        "isFixed": true,
+        "maxDose": 400,
+        "maxUnit": "mg/day"
+      }
+    },
+    "sideEffects": "Sedation, diplopia, ataxia"
+  },
+  {
+    "id": "lamotrigine",
+    "name": "Lamotrigine (Lamictal)",
+    "category": "Antiepileptic",
+    "route": "PO",
+    "source": "SMC Epilepsy Guideline",
+    "formulations": [
+      {"type": "Tablet", "strengths": "5 mg, 25 mg, 50 mg, 100 mg"}
+    ],
+    "doses": {
+      "pediatricWithoutVPA": {
+        "label": "Without Valproate",
+        "value": "0.5",
+        "unit": "mg/kg/day initial",
+        "maxDose": 10,
+        "maxUnit": "mg/kg/day (max 500mg/day)"
+      },
+      "pediatricWithVPA": {
+        "label": "With Valproate",
+        "value": "0.5",
+        "unit": "mg/kg/day initial",
+        "maxDose": 5,
+        "maxUnit": "mg/kg/day"
+      }
+    },
+    "sideEffects": "Allergic reaction, sedation, tremors, GI upset",
+    "notes": "Titrate slowly. Risk of Stevens-Johnson syndrome especially with rapid titration"
+  },
+  {
+    "id": "levetiracetam",
+    "name": "Levetiracetam (Keppra)",
+    "category": "Antiepileptic",
+    "route": "PO/IV",
+    "source": "SMC Epilepsy Guideline",
+    "formulations": [
+      {"type": "Syrup", "strengths": "100 mg/ml"},
+      {"type": "Tablet", "strengths": "500 mg, 1000 mg"},
+      {"type": "Injection", "strengths": "100 mg/ml"}
+    ],
+    "doses": {
+      "pediatric": {
+        "label": "Pediatric",
+        "value": "10",
+        "unit": "mg/kg/day",
+        "maxDose": 60,
+        "maxUnit": "mg/kg/day (max 3000mg/day)"
+      }
+    },
+    "sideEffects": "Behavioural issues"
+  },
+  {
+    "id": "methylprednisolone-epilepsy",
+    "name": "Methylprednisolone (Solu-Medrol) - Epilepsy",
+    "category": "Antiepileptic",
+    "route": "IV",
+    "source": "SMC Epilepsy Guideline",
+    "formulations": [
+      {"type": "Injection", "strengths": "1000 mg powder"}
+    ],
+    "doses": {
+      "pediatric": {
+        "label": "Pediatric Pulse Therapy",
+        "value": "30",
+        "unit": "mg/kg/day for 3 days",
+        "maxDose": 1000,
+        "maxUnit": "mg/day"
+      }
+    },
+    "sideEffects": "GI upset, hypertension, behavioural issues, acne, weight gain"
+  },
+  {
+    "id": "nitrazepam",
+    "name": "Nitrazepam",
+    "category": "Antiepileptic",
+    "route": "PO",
+    "source": "SMC Epilepsy Guideline",
+    "formulations": [
+      {"type": "Tablet", "strengths": "5 mg"}
+    ],
+    "doses": {
+      "pediatric": {
+        "label": "Pediatric",
+        "value": "0.1-0.5",
+        "unit": "mg/kg/day",
+        "maxDose": 0.5,
+        "maxUnit": "mg/kg/day"
+      }
+    },
+    "sideEffects": "Sedation, GI upset, behavioural issues"
+  },
+  {
+    "id": "oxcarbazepine",
+    "name": "Oxcarbazepine (Trileptal)",
+    "category": "Antiepileptic",
+    "route": "PO",
+    "source": "SMC Epilepsy Guideline",
+    "formulations": [
+      {"type": "Syrup", "strengths": "60 mg/ml"},
+      {"type": "Tablet", "strengths": "300 mg, 600 mg"}
+    ],
+    "doses": {
+      "pediatric": {
+        "label": "Pediatric",
+        "value": "10",
+        "unit": "mg/kg/day",
+        "maxDose": 40,
+        "maxUnit": "mg/kg/day (max 2400mg/day)"
+      }
+    },
+    "sideEffects": "Sedation, abdominal pain, allergic reaction, behavioural issues, hyponatremia"
+  },
+  {
+    "id": "perampanel",
+    "name": "Perampanel (Fycompa)",
+    "category": "Antiepileptic",
+    "route": "PO",
+    "source": "SMC Epilepsy Guideline",
+    "formulations": [
+      {"type": "Tablet", "strengths": "4 mg, 8 mg, 12 mg"}
+    ],
+    "doses": {
+      "pediatric": {
+        "label": "Pediatric",
+        "value": "2",
+        "unit": "mg/day initial",
+        "isFixed": true,
+        "maxDose": 12,
+        "maxUnit": "mg/day"
+      }
+    },
+    "sideEffects": "Sedation, GI upset"
+  },
+  {
+    "id": "phenobarbital",
+    "name": "Phenobarbital (Luminal)",
+    "category": "Antiepileptic",
+    "route": "PO/IV",
+    "source": "SMC Epilepsy Guideline",
+    "formulations": [
+      {"type": "Syrup", "strengths": "3 mg/ml"},
+      {"type": "Tablet", "strengths": "30 mg"},
+      {"type": "Injection", "strengths": "200 mg/ml"}
+    ],
+    "doses": {
+      "pediatric": {
+        "label": "Pediatric Maintenance",
+        "value": "5",
+        "unit": "mg/kg/day",
+        "maxDose": 5,
+        "maxUnit": "mg/kg/day (max 180mg/day)"
+      }
+    },
+    "sideEffects": "Sedation, hepatitis, behavioural issues"
+  },
+  {
+    "id": "phenytoin",
+    "name": "Phenytoin (Dilantin)",
+    "category": "Antiepileptic",
+    "route": "PO/IV",
+    "source": "SMC Epilepsy Guideline",
+    "formulations": [
+      {"type": "Syrup", "strengths": "6 mg/ml"},
+      {"type": "Tablet", "strengths": "100 mg"},
+      {"type": "Capsule", "strengths": "100 mg"},
+      {"type": "Injection", "strengths": "50 mg/ml"}
+    ],
+    "doses": {
+      "pediatric": {
+        "label": "Pediatric Maintenance",
+        "value": "5",
+        "unit": "mg/kg/day",
+        "maxDose": 15,
+        "maxUnit": "mg/kg/day (max 600mg/day)"
+      }
+    },
+    "sideEffects": "GI upset, hepatitis, gum hypertrophy, allergic reaction"
+  },
+  {
+    "id": "prednisolone-epilepsy",
+    "name": "Prednisolone - Epilepsy",
+    "category": "Antiepileptic",
+    "route": "PO",
+    "source": "SMC Epilepsy Guideline",
+    "formulations": [
+      {"type": "Syrup", "strengths": "3 mg/ml"},
+      {"type": "Tablet", "strengths": "1 mg, 5 mg, 20 mg"}
+    ],
+    "doses": {
+      "pediatric": {
+        "label": "Pediatric",
+        "value": "2",
+        "unit": "mg/kg/day",
+        "maxDose": 60,
+        "maxUnit": "mg/day"
+      }
+    },
+    "sideEffects": "GI upset, hypertension, behavioural issues, acne, weight gain"
+  },
+  {
+    "id": "pregabalin",
+    "name": "Pregabalin (Lyrica)",
+    "category": "Antiepileptic",
+    "route": "PO",
+    "source": "SMC Epilepsy Guideline",
+    "formulations": [
+      {"type": "Capsule", "strengths": "75 mg, 150 mg"}
+    ],
+    "doses": {
+      "pediatric": {
+        "label": "Pediatric/Adult",
+        "value": "150",
+        "unit": "mg/day initial",
+        "isFixed": true,
+        "maxDose": 600,
+        "maxUnit": "mg/day"
+      }
+    },
+    "sideEffects": "Sedation, GI upset, behavioural issues, weight gain, allergic reaction"
+  },
+  {
+    "id": "primidone",
+    "name": "Primidone (Mysoline)",
+    "category": "Antiepileptic",
+    "route": "PO",
+    "source": "SMC Epilepsy Guideline",
+    "formulations": [
+      {"type": "Tablet", "strengths": "250 mg"}
+    ],
+    "doses": {
+      "pediatric": {
+        "label": "Pediatric",
+        "value": "125",
+        "unit": "mg/day initial",
+        "isFixed": true,
+        "maxDose": 1500,
+        "maxUnit": "mg/day"
+      }
+    },
+    "sideEffects": "Sedation, vertigo, allergic reaction, insomnia"
+  },
+  {
+    "id": "pyridoxine-epilepsy",
+    "name": "Pyridoxine (Vitamin B6) - Epilepsy",
+    "category": "Antiepileptic",
+    "route": "PO/IV",
+    "source": "SMC Epilepsy Guideline",
+    "formulations": [
+      {"type": "Tablet", "strengths": "50 mg"},
+      {"type": "Injection", "strengths": "50 mg/ml"}
+    ],
+    "doses": {
+      "pediatric": {
+        "label": "Pediatric",
+        "value": "50-100",
+        "unit": "mg/day",
+        "isFixed": true,
+        "maxDose": 1000,
+        "maxUnit": "mg/day"
+      }
+    },
+    "sideEffects": "GI upset, headaches"
+  },
+  {
+    "id": "rufinamide",
+    "name": "Rufinamide (Banzel)",
+    "category": "Antiepileptic",
+    "route": "PO",
+    "source": "SMC Epilepsy Guideline",
+    "formulations": [
+      {"type": "Tablet", "strengths": "200 mg, 400 mg"}
+    ],
+    "doses": {
+      "pediatricUnder30kg": {
+        "label": "Weight <30kg",
+        "value": "200",
+        "unit": "mg/day initial",
+        "isFixed": true
+      },
+      "pediatricOver30kg": {
+        "label": "Weight ≥30kg",
+        "value": "400",
+        "unit": "mg/day initial",
+        "isFixed": true,
+        "maxDose": 3200,
+        "maxUnit": "mg/day"
+      }
+    },
+    "sideEffects": "Sedation, allergic reaction, lymphadenopathy, haematuria, hepatitis"
+  },
+  {
+    "id": "sodium-valproate",
+    "name": "Sodium Valproate (Depakene, Epilim)",
+    "category": "Antiepileptic",
+    "route": "PO/IV",
+    "source": "SMC Epilepsy Guideline",
+    "formulations": [
+      {"type": "Syrup", "strengths": "50 mg/ml (57.64 mg/ml - use as 50), 200 mg/ml"},
+      {"type": "Tablet", "strengths": "200 mg, 500 mg, 500 mg ER"},
+      {"type": "Injection", "strengths": "100 mg/ml"}
+    ],
+    "doses": {
+      "pediatric": {
+        "label": "Pediatric",
+        "value": "10",
+        "unit": "mg/kg/day",
+        "maxDose": 60,
+        "maxUnit": "mg/kg/day (max 2500mg/day)"
+      }
+    },
+    "sideEffects": "Sedation, hepatitis, agranulocytosis, GI upset, weight gain, coagulopathy"
+  },
+  {
+    "id": "topiramate",
+    "name": "Topiramate (Topamax)",
+    "category": "Antiepileptic",
+    "route": "PO",
+    "source": "SMC Epilepsy Guideline",
+    "formulations": [
+      {"type": "Tablet", "strengths": "25 mg, 50 mg, 100 mg"}
+    ],
+    "doses": {
+      "pediatric": {
+        "label": "Pediatric",
+        "value": "1-3",
+        "unit": "mg/kg/day",
+        "maxDose": 15,
+        "maxUnit": "mg/kg/day (max 400mg/day)"
+      }
+    },
+    "sideEffects": "Sedation, acidosis, glaucoma, renal stones, anhydrosis"
+  },
+  {
+    "id": "vigabatrin",
+    "name": "Vigabatrin (Sabril)",
+    "category": "Antiepileptic",
+    "route": "PO",
+    "source": "SMC Epilepsy Guideline",
+    "formulations": [
+      {"type": "Tablet", "strengths": "500 mg"}
+    ],
+    "doses": {
+      "pediatric": {
+        "label": "Pediatric",
+        "value": "30-50",
+        "unit": "mg/kg/day",
+        "maxDose": 150,
+        "maxUnit": "mg/kg/day (max 3000mg/day)"
+      }
+    },
+    "sideEffects": "Sedation, loss of peripheral vision"
+  },
+  {
+    "id": "zonisamide",
+    "name": "Zonisamide (Zonegran)",
+    "category": "Antiepileptic",
+    "route": "PO",
+    "source": "SMC Epilepsy Guideline",
+    "formulations": [
+      {"type": "Capsule", "strengths": "50 mg, 100 mg"}
+    ],
+    "doses": {
+      "pediatric": {
+        "label": "Pediatric",
+        "value": "1",
+        "unit": "mg/kg/day",
+        "maxDose": 8,
+        "maxUnit": "mg/kg/day (max 500mg/day)"
+      }
+    },
+    "sideEffects": "Sedation, acidosis, glaucoma, renal stones, anhydrosis"
+  },
+  {
+    "id": "ivig-epilepsy",
+    "name": "IVIG - Epilepsy",
+    "category": "Antiepileptic",
+    "route": "IV",
+    "source": "SMC Epilepsy Guideline",
+    "formulations": [
+      {"type": "Injection", "strengths": "50 mg/ml"}
+    ],
+    "doses": {
+      "pediatric": {
+        "label": "Pediatric",
+        "value": "2",
+        "unit": "g/kg (STAT or divided)",
+        "isFixed": false
+      }
+    },
+    "sideEffects": "Fever, headache, aseptic meningitis, hypotension"
   }
 ]
