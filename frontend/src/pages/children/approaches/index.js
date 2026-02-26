@@ -29,3 +29,4 @@ export { default as BloodGasApproach } from './BloodGasApproach';
 export { default as PARDSApproach } from './PARDSApproach';
 export { default as MechanicalVentilationApproach } from './MechanicalVentilationApproach';
 export { default as EmpiricalAntibioticsApproach } from './EmpiricalAntibioticsApproach';
+export { default as EpilepsyApproach } from './EpilepsyApproach';
