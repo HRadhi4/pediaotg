@@ -198,26 +198,6 @@ const HeadacheApproach = ({ weight }) => {
               </div>
             </div>
           </div>
-
-          {/* Chronic -VE Flags Path */}
-          <div className="p-2 bg-orange-50 dark:bg-orange-950/30 rounded-lg border border-orange-200 mt-2">
-            <p className="text-[9px] font-bold text-center text-orange-700 mb-1">For Chronic with RED FLAGS -VE</p>
-            <div className="flex justify-center items-center gap-2">
-              <div className="p-1 bg-orange-200 rounded text-[8px] font-bold">Refer to Table 2</div>
-              <span className="text-gray-400">→</span>
-              <div className="p-1 bg-orange-100 rounded text-[8px]">Consult ophthalmology to check for papilledema</div>
-            </div>
-            <div className="grid grid-cols-2 gap-2 mt-2">
-              <div className="p-1.5 bg-purple-100 rounded text-center">
-                <p className="text-[8px] font-bold text-purple-700">PAPILLEDEMA</p>
-                <p className="text-[7px] text-purple-600">Admit for treatment of idiopathic intracranial HTN</p>
-              </div>
-              <div className="p-1.5 bg-orange-100 rounded text-center">
-                <p className="text-[8px] font-bold text-orange-700">NO PAPILLEDEMA</p>
-                <p className="text-[7px] text-orange-600">Inform neurology & admit for further workup</p>
-              </div>
-            </div>
-          </div>
         </div>
 
         {/* TABLE 1: RED FLAGS */}
