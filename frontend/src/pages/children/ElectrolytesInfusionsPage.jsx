@@ -648,13 +648,19 @@ const ElectrolytesInfusionsPage = ({ onBack }) => {
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <Label>HCO3 (mEq/L)</Label>
-                  <Input type="text" step="0.1" min="0" value={hco3Level} onChange={(e) => setHco3Level(e.target.value)} className="font-mono" disabled={nahco3Method === "be"} />
-                  inputMode="decimal"
+                  <Input type="text" inputMode="decimal" step="0.1" min="0" value={hco3Level} onChange={(e) => setHco3Level(e.target.value)} className="font-mono" disabled={nahco3Method === "be"} />
                 </div>
                 <div>
                   <Label>Base Excess</Label>
-                  <Input type="text" step="0.1" placeholder="e.g., -10" value={baseExcess} onChange={(e) => setBaseExcess(e.target.value)} className="font-mono" disabled={nahco3Method === "hco3"} />
-                  inputMode="decimal"
+                  <InputWithSignToggle
+                    placeholder="e.g., -10"
+                    value={baseExcess}
+                    onChange={(e) => setBaseExcess(e.target.value)}
+                    className={nahco3Method === "hco3" ? "opacity-50" : ""}
+                    disabled={nahco3Method === "hco3"}
+                    data-testid="be-input-infusions"
+                  />
+                  <p className="text-[10px] text-muted-foreground mt-1">Use +/- button for negative</p>
                 </div>
               </div>
             </>
