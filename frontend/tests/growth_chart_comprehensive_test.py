@@ -214,7 +214,7 @@ class GrowthChartTester:
             "failed": 0,
             "test_details": []
         }
-        self.base_url = "https://pediatric-calculator.preview.emergentagent.com"
+        self.base_url = "https://headache-flowchart.preview.emergentagent.com"
     
     async def login(self, page):
         """Login to the application"""

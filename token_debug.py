@@ -3,7 +3,7 @@ import json
 
 class TokenDebugger:
     def __init__(self):
-        self.base_url = "https://pediatric-calculator.preview.emergentagent.com"
+        self.base_url = "https://headache-flowchart.preview.emergentagent.com"
         self.user_token = None
         
     def test_signup_and_token(self):
