@@ -577,9 +577,9 @@ const HeadacheApproach = ({ weight }) => {
           </div>
         </div>
 
-        {/* TABLE 6: Treatment for IIH */}
+        {/* TABLE 7: Treatment for IIH */}
         <div className="space-y-1">
-          <p className="text-xs font-bold text-center text-gray-700 dark:text-gray-300">TABLE 6 - TREATMENT FOR IIH (AKA PSEUDOMOTOR CEREBRI)</p>
+          <p className="text-xs font-bold text-center text-gray-700 dark:text-gray-300">TABLE 7 - TREATMENT FOR IIH (AKA PSEUDOMOTOR CEREBRI)</p>
           <div className="overflow-x-auto -mx-2">
             <table className="w-full text-[8px] min-w-[350px] border-collapse">
               <thead>
