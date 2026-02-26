@@ -1,0 +1,1334 @@
+Empirical Use of Antibiotics
+
+Pediatric Guidelines
+
+
+
+Introduction:
+
+Antimicrobial resistance is declared a global threat to health, based on rapidly increasing resistance rates and declining new drug development. 
+
+
+
+The majority of pediatric patients Emergency Department and inpatients wards receive antimicrobials, however it may not be necessary. 
+
+Overprescribing increases the cost of healthcare and lead to emergence of resistant bacteria, super infection with opportunistic fungi as well as increase the likelihood of adverse drug reaction.
+
+
+
+Main Concerns Regarding Abx Use:
+
+Inappropriate choice of empiric antibiotics, 
+
+Continuation of empiric therapy despite negative cultures in stable patients 
+
+Lack of awareness of the accurate utilization of the susceptibility patterns to modify the initial/empirical Abx. 
+
+
+
+
+
+
+
+
+
+BASIC, YET ESSENTIAL, GENERAL RULES:
+
+
+
+Obtain cultures prior to starting/ modifying antibiotics
+
+
+
+Once the culture/sensitivity result is ready: TAILOR your Abx to a narrow spectrum / specific therapy 
+
+
+
+If serum trough level of the Abx is indicated ( ie Vancomycin, Gentamicin)
+
+It should be done before the FOURTH dose.
+
+Do not postpone the administration of the subsequent doses of the Abx UNLESS the renal function is abnormal.
+
+If the renal function is abnormal then Do not administer the abx till ensuring a safe trough level (ie. follow the result)
+
+If the renal function is normal then administer the Abx without delay (ie. Do not wait for th result) 
+
+
+
+The term “Febrile Neutropenia” applies to oncology patients. 
+
+Healthy children may have transient neutropenia during viral illness, yet only symptomatic Rx is needed (antiviral may be needed in certain cases).
+Such patient should neither be labeled as “Febrile Neutropenic”, nor been isolated or kept on Abx. 
+
+Normal response of elevated WBC and neutrophils is expected in such patients in case of secondary bacterial infection.
+
+
+SKIN & S0FT TISSUE INFECTIONS
+
+
+
+indications 
+
+Suspected Pathogen 
+
+Antimicrobial of choice
+
+Alternative / comments
+
+Non-Purulent cellulitis 
+
+GAS
+
+S. aureus
+
+Augmentin
+
+25 mg/kg/dose PO q12h
+
+
+
+Purulent Cellulitis 
+
+
+
+Or Abscesses including
+
+Folliculitis, Furuncles,
+
+carbuncles
+
+
+
+S. aureus
+
+(including MRSA)
+
+
+
+Incision and drainage (I&D)
+
+
+
+AND ( if indicated):
+
+Clindamycin 
+
+10 mg/ kg/ dose PO/IV q8h
+
+
+
+I&D is the main treatment.
+
+Use Antibiotics only if:
+
+Substantial surrounding cellulitis
+
+Abscess >2 cm in diameter;
+ (>1cm in infants and young children)
+
+inability to adequately drain the abscess
+
+presence of signs or symptoms of systemic illness (i.e. fever >38' C)
+
+immunodeficiency
+
+Multiple sites
+
+Necrotizing Fasciitis
+
+
+
+GAS
+
+S. aureus
+
+E. coli
+
+Pseudomonas spp.
+
+Enterobacter spp.
+
+Klebsiella spp.
+
+Proteus spp.
+
+Eacteroides spp.
+
+Clostridia spp.
+
+Peptostreptococcus spp.
+
+Cefepime 
+
+50 mg/ kg/ dose q8hr
+
++
+
+Vancomycin 
+
+15 mg/ kg/ dose lV q6h
+
++
+
+Clindamycin 
+
+10 mg/ kg/ dose lV q8h
+
+Consult  ID & pediatric/ plastic surgery for all cases
+
+Periorbital cellulitis (pre-septal cellulitis)
+
+
+
+S. Pneumo 
+
+S. aureus
+
+GAS
+
+
+
+Clindamycin 
+
+10 mg/ kg/ dose PO/IV q8h
+
+ 
+
+Orbital cellulitis
+
+S. Pneumo
+
+Moraxella
+
+GAS
+
+anaerobes
+
+Clindamycin 
+
+10 mg/ kg/ dose PO/IV q8h
+
++
+
+Ceftriaxone 
+
+50 mg/ kg/ dose lV q12h
+
+lf patient colonized with MRSA
+
+Consult lD
+
+impetigo/ 
+
+Folliculitis
+
+
+
+S. aureus
+
+GAS
+
+Augmenting 
+
+25 mg/ kg/ dose PO BID
+
+AND
+
+Mupirocin 2% topical oint. BID
+
+lf patient colonized with MRSA
+
+Consult lD
+
+Cervical lymphadenitis
+
+S. aureus
+
+GAS
+
+Augmenting 
+
+25 mg/ kg/ dose PO BID
+
+
+
+Clindamycin 
+
+10 mg/ kg/ dose PO/IV q8h
+
+Bites (cats, dogs
+
+or human)
+
+Cat/dog
+
+Pastorella Multocida 
+
+S. aureus 
+
+MRSA 
+
+streptococcus Spp
+
+anaerobes
+
+Human
+
+Eikenella
+
+s. aureus 
+
+MRSA,
+
+streptococcus Spp
+
+anaerobes
+
+
+
+Augmentin 
+
+25 mg/ kg/ dose PO BID
+
+
+
+OR 
+
+
+
+Augmentin 
+
+30 mg/ kg /dose IV q 8 hrs.
+
+
+
+
+
+
+
+
+
+
+
+Ear & Sinus Infections
+
+indications
+
+Suspected Pathogen
+
+Antimicrobial of choice
+
+Alternative/ comments
+
+Otitis media
+
+Pneumococcus,
+
+H. Influenzae non type b,
+
+Moraxella
+
+
+
+No previous Abx:  
+
+Amoxicillin
+
+90 mg/ kg/ dose q8h 
+
+Or
+
+Cefuroxime
+
+
+
+Recurrent:
+
+Augmentin
+
+
+
+severe/ unresponsive to PO Cefotaxime
+
+
+
+Acute mastoiditis
+
+Pneumococcus
+
+S. aureus 
+
+CA-MRSA, 
+
+GAS
+
+Pseudomonas
+
+Clindamycin
+
+10 mg/ kg/ dose lV/PO q8h
+
++
+
+Ceftriaxone
+
+50 mg/ kg/ dose lV q12h
+
+Rule out meningitis.
+
+Surgical intervention as needed
+
+Acute sinusitis 
+
+
+
+1st line Amoxicillin
+
+2nd line Augmentin
+
+Treat with Abx only if not resolving after 7/10 of symptomatic treatment
+
+
+
+
+
+
+
+Oropharyngeal Infections
+
+indications 
+
+Suspected pathogen 
+
+Antimicrobial of choice 
+
+Alternative / comments
+
+Pharyngitis
+
+GAS
+
+Amoxicillin
+
+45 mg/ kg/ day PO q8hr 
+
+for 10 days
+
+OR 
+
+Cefuroxime PO
+
+For penicillin allergy patients, use Azithromycin 
+
+10 mg/ kg /day 
+
+for 5 days
+
+Peritonsillar abscess
+
+
+
+Aerobic/Anaerobic flora
+
+Ca-MRSA
+
+Clindamycin 
+
+10 mg/ kg /dose lV/Po q8h 
+
++ 
+
+Ceftriaxone 
+
+50 mg/ kg/ dose Q 12hrs
+
+
+
+Retropharyngeal abscess
+
+
+
+Aerobic/Anaerobic flora
+
+Ca-MRSA
+
+Clindamycin 
+
+10 mg/ kg/ dose lV/Po q8h 
+
++ 
+
+Ceftriaxone 
+
+50 mg/ kg/ dose Q 12hrs
+
+
+
+Tracheitis
+
+GAS , 
+
+S. aureus 
+
+MRSA , pneumococcus
+
+Pseudomonas
+
+Ceftriaxone
+
+50 mg/ kg/ dose lV q12h
+
++
+
+Vancomycin 
+
+15 mg /kg /dose lV q6h
+
+
+
+GASTROINTESTINAL SYSTEM
+
+indications 
+
+Suspected Pathogen 
+
+Antimicrobial of choice
+
+Alternative / comments
+
+Enterocolitis
+
+Neonates (NEC)
+
+
+
+Enteric GNR
+
+Enterococcus
+
+anaerobes
+
+IV Ampicillin
+
++
+
+Gentamycin
+
++-
+
+Metronidazole
+
+in severely ill patients consider: 
+
+Vancomycin
+
++
+
+Meropenem
+
+C. Difficile- Associated Enterocolitis 
+
+
+
+
+
+C. Diffecile
+
+Metronidazole 
+
+10mg/ kg/ dose PO/IV q8h
+
+Stop offending antibiotic if possible.
+
+Consult ID if fulminant 
+
+or recurrent 
+
+Peritonitis Primary
+
+S. Pneumo 
+
+GNR
+
+Ceftriaxone 
+
+50 mg/ kg/ dose lV q12h
+
+
+
+Peritonitis secondary 
+
+(i.e., post perforation)
+
+
+
+GNR
+
+anaerobes
+
+Ampicillin 
+
+50 mg/ kg/ dose IV q6h
+
++
+
+Gentamicin 
+
+2.5 mg/ kg/ dose lV q8
+
++
+
+Metronidazole 
+
+10 mg/ kg/ dose q8h
+
+Consult ID
+
+Complicated appendicitis
+
+
+
+Tazocin
+
+
+
+
+
+
+
+RESPIRATORY SYSTEM
+
+Pneumonia
+
+indications 
+
+
+
+Suspected Pathogen 
+
+Antimicrobial of choice
+
+
+
+Alternative Therapy/ comments
+
+Neonates-
+
+
+
+GBS,
+
+GNR
+
+Listeria
+
+lV Ampicillin
+
++
+
+lV Gentamicin
+
+
+
+1-3 months
+
+
+
+S Pneumonae
+
+C. Trachomatous
+
+B. Pertussis
+
+S Aureus
+
+H. Influenza
+
+lV Ampicillin
+
++
+
+Cefotaxime 
+
+50 mg / kg,/ dose Q8hr
+
+
+
+Obtain a NPA for respiratory viruses
+
+3 months - 12 years
+
+(Immunized, CA)
+
+
+
+S. Pneumonae
+
+Mycoplasma
+
+S. Aureus
+
+Augmentin 
+
+25 mg/ kg/ dose q12 hr.
+
+or
+
+Cefuroxime 
+
+15 mg/ kg/ dose q12 hr.
+
+Obtain a NPA for respiratory viruses
+
+3year - 12 years (Atypical pneumonia)
+
+M. Pneumonae
+
+Azithromycin 
+
+10 mg/ kg/ day
+
+PO for 5 days
+
+
+
+Complicated pneumonia
+
+
+
+
+
+S. Pneumonae
+
+S. Aureus
+
+H. Influenza
+
+S. Pyogenes
+
+C. Pneumonae
+
+M. Pneumonae
+
+Ceftriaxone 
+
+50 mg/ kg / dose lV q12h
+
++
+
+Vancomycin
+
+ 15mg/ kg/ dose lV q6h
+
+For severely ill patient consider 
+
+Tazocin +Vancomycin
+
+nosocomial (health care associated /
+
+ventilator associated)
+
+P. Aeruginosa
+
+Enterobacter
+
+Klebsiella
+
+Serratia
+
+Tazocin 
+
+100 mg/ kg/ dose q8h
+
++
+
+vancomycin 
+
+15 mg / kg / dose q6 hr.
+
+consider adding aminoglycoside in severe cases
+
+Aspiration pneumonia	
+
+anaerobes	
+
+Augmentin 
+
+30 mg/ kg /dose q8hr
+
+Alternative : Clindamycin
+
+
+
+
+
+
+
+
+
+UTI
+
+indications 
+
+
+
+Suspected Pathogen 
+
+
+
+Antimicrobial of choice 
+
+
+
+Alternative Therapy/ comments
+
+Cystitis
+
+E.coli
+
+Klebsiella
+
+Proteus
+
+Nitrofurantoin 
+
+5-7mg/ kg/ day PO q6 hr.
+
+OR
+
+Cefuroxime 
+
+15 mg/ kg /dose PO BID
+
+
+
+Pyelonephritis
+
+E.coli
+
+Klebsiella
+
+Proteus
+
+Pseudomonas
+
+Ceftriaxone 
+
+50mg/ kg/ dose lV q12h
+
+
+
+
+
+Recurrent UTI prophylaxis (Only for grade 3 - 4 reflux)
+
+
+
+TMP/SMX 
+
+2 mg/ kg/ day Q 24 hr.
+
+
+
+Nitrofurantoin 
+
+2 mg/ kg/ dose Q24 hr.
+
+
+
+
+
+
+
+Osteoarthritis
+
+indications 
+
+
+
+Suspected Pathogen 
+
+
+
+Antimicrobial of choice
+
+
+
+Alternative Therapy/ comments
+
+Neonate
+
+
+
+S. aureus
+
+GBS
+
+GNR
+
+Cefotaxime
+
++
+
+Cloxacillin
+
+
+
+All age groups
+
+
+
+S. aureus, 
+
+S. Pneumonae
+
+
+
+Clindamycin
+
+10 m&/k8,/dose lV q8h
+
+Add Ceftriaxone for non-immunized patients
+
+Sickle cell anemia
+
+S. aureus 
+
+S. Pneumonae
+
+Salmonella Spp
+
+
+
+Clindamycin
+
+10 mg/ kg/ dose lV q8h
+
++
+
+Ceftriaxone 
+
+50 mg/ kg/ dose lV q12h
+
+Clindamycin
+
+10 mg/ kg/ dose lV q8h
+
++
+
+Ciprofloxacin 
+
+10 mg/ kg/ dose lV q12h
+
+
+
+
+
+
+
+Septicemia / Bacteremia
+
+indications
+
+Suspected Pathogen
+
+Antimicrobial of choice
+
+Alternative Therapy/ comments
+
+Neonate 
+
+(up to 4 weeks)
+
+GBS
+
+GNR
+
+Listeria
+
+Enterococcus
+
+lV Ampicillin + lV Gentamycin
+
+
+
+
+
+
+
+4 weeks - 3 months
+
+Same as Neonates and Older Children
+
+
+
+Ampicillin 
+
+50 mg/kg/dose IV q6h
+
++
+
+Cefotaxime
+
+50mg/kg/dose lV q8h
+
+
+
+>3months
+
+(Community acquired)
+
+s. pneumoniae,
+
+Meningococcus
+
+S.aureus,
+
+H. influenza, 
+
+E.coli
+
+
+
+Ceftriaxone 
+
+50 mg/ kg/ dose q12h
+
+
+
+
+
+
+
+Add Vancomycin in severely ill patient
+
+> 3months
+
+And
+
+Hospitalization > 48 hrs
+
+(Hospital acquired)
+
+P. aeruginosa, 
+
+K.pneumoniae 
+
+E. coli,
+
+MRSA
+
+Pipracillin-Tazobactam 
+
+100 mg/kg/dose IV q8h
+
+±
+
+Vancomycin
+
+15 mg/ kg/ dose lV q6h
+
+
+
+
+
+Consider Aminoglycoside in
+
+severely ill patient
+
+Age > 3months
+
+And
+
+Septic Shock
+
+
+
+S. pneumoniae,
+
+Meningococcus
+
+S. aureus, 
+
+H. influenza,
+
+E.coli
+
+Pipracillin-Tazobactam 
+
+100 mg/ kg/ dose IV q8h
+
++
+
+Vancomycin 
+
+15 mg/ kg/ dose lV q6h
+
+
+
+Age > 3months 
+
+And
+
+Septic Shock 
+
+And
+
+Hospitalization >48hr
+
+MRSA
+
+ESBL -producers 
+
+(P. aeruginosa, 
+
+K. Pneumonae 
+
+E. coli)
+
+Meropenem 
+
+40 mg/ kg/ dose q8h
+
++
+
+Vancomycin 
+
+15 mg/ kg/ dose lV q6h
+
+
+
+consider aminoglycoside in
+
+severely ill patient
+
+Sickle Cell Disease
+
+with Sepsis
+
+S.pneumoniae,
+
+H. influenza
+
+Salmonella
+
+Ceftriaxone 
+
+50 mg/ kg/ dose q12h
+
+
+
+
+
+ln severely ill patient, add lV Vancomycin
+
+
+
+
+
+CNS
+
+Meningitis
+
+Check if there is indication for adding DEXAMETHASONE
+
+Dose: 0.15 mg/kg/dose 6 hourly IV 4/7. 
+
+Timing: Give before or within one hour of first dose of abx
+
+Indications
+
+Suspected Pathogen
+
+Antimicrobial of choice
+
+Alternative Therapy/ Comments
+
+Neonate 
+
+(up to 4 weeks)
+
+GBS
+
+GNR
+
+L.monocytoqenes
+
+Ampicillin lV
+
++
+
+cefotaxime lV
+
+( check neonatal doses)
+
+4 weeks - 3 months
+
+Same as Neonates and Older Children
+
+Ampicillin 100mg/ kg/ dose lV q6h
+
++
+
+Cefotaxime 50mg /kg/ dose lV 6h
+
+
+
+Older Children
+
+s. pneumonioe,
+
+N-meningitidis,
+
+Ceftriaxone 50 mg/ kg/ dose q12h
+
+
+
+Add Vancomycin in critical cases 
+
+Target Vancomycin level 15-20
+
+check culture result to Stop vancomycin
+
+Meningo- Encephalitis 
+
+
+
+s. pneumoniae,
+
+N-meningitidis,
+
+HSV
+
+Ceftriaxone 50 mg/ kg/ dose q12h
+
++
+
+Acyclovir 20 mg/ kg/ dose lV q8hr
+
+Ensure direct communication with the lab to receive and process PCR-meningitis panel
+
+V-P Shunt Related
+
+infection
+
+
+
+CoNS 
+
+GNR
+
+
+
+Ceftazidime 50 mg/kg/dose lV 8h
+
++
+
+Vancomycin 15 mg/kg/dose lV 6h
+
+lf patient is severely ill, start Meropenem and consult lD 
+
+Target Vancomycin level 15-20
+
+
+
+Febrile Neutropenia in Immunocompromised
+
+lndication
+
+Suspected Pathogen
+
+Antimicrobial of choice
+
+
+
+Alternative Therapy/ Comments
+
+Stable patients 
+
+
+
+GNR
+
+
+
+Cefepime
+
+OR
+
+Tazocin + Gentamicin
+
+
+
+Unstable patients
+
+GNR
+
+GPC
+
+ fungal
+
+Meropenem
+
++
+
+Gentamicin
+
+Add vancomycin in severely ill patients
+
+
+
+
+
+
+
+
+
+Abbreviations:
+
+
+
+GBS: Group B Streptococcus,
+
+GNR: Gram negative Rods/ Bacilli,
+
+CoNS: Coagulase-negative Staphylococci
+
+
+
+HSV: Herpes Simplex Virus
+
+
+
+
+
+Definition of Complicated pneumonia:
+
+Pneumonia complicated with:
+
+Necrotizing pneumonia,
+
+Para pneumonic effusion,
+
+Empyema, 
+
+Lung abscess
+
+Pneumatocele
+
+
+
+
+
+References:
+
+
+
+Uptodate site
+
+Red Book
+
+Nelson's 
+
+Antimicrobidl Guidelines, King Fahad Medical City

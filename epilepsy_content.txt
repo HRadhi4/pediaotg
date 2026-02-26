@@ -1,0 +1,501 @@
+Drug
+
+Initial dose
+
+Usual maximum daily dose (mg/kg/day)
+
+Usual (Adult) maximum dose (total mg/day)
+
+Available preparations in SMC
+
+Commonest side effects (Others can also occur)
+
+Acetazolamide
+
+1m -12y: 5 mg/kg/day
+
+12y -18y: 500 mg/day
+
+20
+
+1m – 12y: 750
+
+12y – 18y: 1000
+
+Tablet: 250 mg
+
+GI upset, Acidosis, numbness, anhydrosis.
+
+Biotin
+
+5 mg 
+
+10 mg 
+
+10 mg
+
+Capsule: 5 mg
+
+GI upset.
+
+Brivaracetam
+
+
+
+Wt<11kg: 1.5 mg/kg/day 
+
+Wt>11kg: 1 mg/kg/day 
+
+
+
+Wt<11kg: 6 
+
+Wt 11 – 20kg: 5
+
+Wt 20 – 50kg: 4
+
+200
+
+Not available in SMC
+
+Behavioural issues, fatigue.
+
+Bromide 
+
+(Potassium bromide)
+
+30 mg/kg/day
+
+60 - 70 
+
+50
+
+Tablet: 850 mg
+
+Sedation, incoordination.
+
+Carbamazepine
+
+1m – 12y: 5 mg/kg/day
+
+12y – 18y: 200 mg/day
+
+30 
+
+1800
+
+Syrup: 20 mg/ml
+
+Tablet: 200mg, 400 mg
+
+Sedation, abdominal pain, Allergic reaction, hepatitis, behavioural issues, hyponatremia.
+
+Cenobamate
+
+12.5 mg/day
+
+400 mg/day
+
+400 
+
+Not available in SMC
+
+Headache, sedation, dysarthria, ataxia, hyperkalemia, hallucination, diplopia. 
+
+Clobazam
+
+1m – 12y: 0.25 mg/kg/day
+
+12y – 18y: 20 mg/day
+
+1
+
+60
+
+Tablet: 10 mg
+
+Sedation, behavioural issues, aggressiveness.
+
+Clonazepam
+
+0.05 – 0.2 mg/kg/day
+
+0.25 mg
+
+8
+
+Drops: 2.5 mg/ml
+
+Tablet: 0.5 mg, 2 mg
+
+Sedation, increased salivation.
+
+Eslicarbazepine
+
+400 mg/day
+
+1200 mg/day
+
+1200
+
+Not available in SMC
+
+Sedation, GI upset, allergic reaction, dryness of mouth.
+
+Ethosuxemide
+
+1m – 5y: 10 mg/kg/day
+
+6y – 18y: 500 mg/day
+
+40
+
+2000
+
+Syrup: 50 mg/ml
+
+Tablet: 250 mg
+
+GI upset, sedation, coagulopathy, allergic reaction
+
+Felbamate
+
+15 mg/kg/day
+
+60
+
+3600
+
+Not available in SMC
+
+Sedation, GI upset, insomnia, weight loss, acne, allergic reaction,  arrhythmia.
+
+Folinic acid
+
+0.5 mg/kg/day
+
+5 mg/kg/day
+
+
+
+Tablet: 15 mg
+
+GI upset, fatigability
+
+Gabapentin
+
+10 mg/kg/day
+
+70
+
+4800
+
+Capsule: 300 mg
+
+Sedation, GI upset, weight gain, behavioural issues. 
+
+IVIG
+
+2 g/kg (STAT or divided)
+
+
+
+
+
+Injection: 50 mg/ml
+
+Fever, headache, aseptic meningitis, hypotension. 
+
+Lacosemide
+
+100 mg/day
+
+400 mg/day
+
+400
+
+Syrup: 10 mg/ml
+
+Tablet: 50 mg, 100 mg, 200 mg
+
+Sedation, diplopia, ataxia.
+
+Lamotrigine
+
+0.5 mg/kg/day
+
+Without VPA: 10
+
+With VPA: 5
+
+500
+
+Tablet: 5 mg, 25 mg, 50 mg, 100 mg
+
+Allergic reaction, sedation, tremors, GI upset.
+
+Levetiracetam
+
+10 mg/kg/day
+
+60
+
+3000
+
+Syrup: 100 mg/ml
+
+Tablet: 500 mg, 1000 mg
+
+Injection: 100 mg/ml
+
+Behavioural issues.
+
+Methylprednisolone
+
+30 mg/kg/day for 3 days
+
+1000 mg/day
+
+1000 mg/day for 3 days
+
+Injection: 1000 mg powder to be diluted
+
+GI upset, hypertension, behavioural issues, acne, weight gain, 
+
+Nitrazepam
+
+0.1 -0.5 mg/kg/day
+
+0.5
+
+
+
+Tablet: 5 mg
+
+Sedation, GI upset, behavioural issues.
+
+Oxcarbazepine
+
+10 mg/kg/day
+
+40
+
+2400
+
+Syrup: 60 mg/ml
+
+Tablet: 300 mg, 600 mg
+
+Sedation, abdominal pain, Allergic reaction, behavioural issues, hyponatremia.
+
+Perampanel
+
+2 mg/day
+
+12
+
+12
+
+Tablet: 4 mg, 8 mg, 12 mg
+
+Sedation, GI upset.
+
+Phenobarbital
+
+5 mg/kg/day
+
+5
+
+180
+
+Syrup: 3 mg/ml
+
+Tablet: 30 mg
+
+Injection: 200 mg/ml
+
+Sedation, hepatitis, behavioural issues
+
+Phenytoin
+
+5 mg/kg/day
+
+15
+
+600
+
+Syrup: 6 mg/ml
+
+Tablet: 100 mg
+
+Capsule: 100mg
+
+Injection: 50 mg/ml
+
+GI upset, hepatitis, gum hypertrophy, allergic reaction.
+
+Prednisolone
+
+2 mg/kg/day
+
+NA
+
+60
+
+Syrup: 3 mg/ml
+
+Tablet: 1 mg, 5 mg, 20 mg
+
+GI upset, hypertension, behavioural issues, acne, weight gain,
+
+Pregabalin
+
+150 mg/day
+
+NA
+
+600 mg/day
+
+Capsule: 75 mg, 150 mg
+
+Sedation, GI upset, behavioural issues, weight gain, allergic reaction.
+
+Primidone
+
+125 mg/day
+
+NA
+
+1500
+
+Tablet: 250 mg
+
+Sedation, vertigo, allergic reaction, insomnia.
+
+Pyridoxine
+
+50 – 100 mg/day
+
+30 -50 mg
+
+1 g/day
+
+Tablet: 50 mg
+
+Injection: 50 mg/ml
+
+GI upset, headaches
+
+Retigabine
+
+300 mg
+
+600 – 1200 mg/day
+
+1200
+
+Not available in SMC
+
+Sedation, dysarthria, tremors, diplopia.
+
+Rufinamide
+
+Wt<30 kg: 200 mg/day
+
+Wt>30 kg: 400 mg/day
+
+
+
+3200
+
+Tablet: 200 mg, 400 mg
+
+Sedation, allergic reaction, lymphadenopathy, haematuria, hepatitis.
+
+Sodium Valproate
+
+10 mg/kg/day
+
+60
+
+2500
+
+Syrup: 57.64 mg/ml (Deal with it as 50 mg/ml), 200 mg/ml
+
+Tablet: 200 mg, 500 mg, 500 mg extended relaease
+
+Injection: 100 mg/ml
+
+Sedation, hepatitis, agranulocytosis, GI upset, weight gain, coagulopathy.
+
+Stiripentol
+
+10 mg/kg/day
+
+50
+
+3000
+
+Not available in SMC
+
+GI upset, ataxia, dysarthria, insomnia.
+
+Sulthiame
+
+3 mg/kg/day
+
+10 – 15
+
+600
+
+Not available in SMC
+
+GI upset, sedation, weight loss, acidosis
+
+Tiagabine
+
+10 mg/kg/day
+
+15 – 30
+
+55 mg/day
+
+Not available in SMC
+
+Sedation, behavioural issues.
+
+Topiramate
+
+1 – 3 mg/kg/day
+
+15
+
+400
+
+Tablet: 25 mg, 50 mg, 100 mg
+
+Sedation, acidosis, glaucoma, renal stones, anhydrosis.
+
+Vigabatrin
+
+30 - 50 mg/kg/day
+
+150
+
+3000
+
+Tablet: 500 mg
+
+Sedation, loss of peripheral vision.
+
+Zonisamide
+
+1 mg/kg/day
+
+8
+
+500
+
+Capsule: 50 mg, 100 mg
+
+Sedation, acidosis, glaucoma, renal stones, anhydrosis.
