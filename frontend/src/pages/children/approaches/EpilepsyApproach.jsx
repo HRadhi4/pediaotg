@@ -12,16 +12,16 @@ const EpilepsyApproach = ({ weight: w = 0, age = 0 }) => {
         </div>
 
         {/* DEFINITION OF SEIZURES */}
-        <div className="p-2 bg-gray-50 dark:bg-gray-800/50 rounded-lg border border-gray-200 dark:border-gray-700">
-          <p className="text-xs font-bold text-gray-800 dark:text-gray-200 mb-2">DEFINITION OF SEIZURES</p>
+        <div className="p-2 bg-blue-50 dark:bg-blue-950/20 rounded-lg border border-blue-200 dark:border-blue-800">
+          <p className="text-xs font-bold text-blue-800 dark:text-blue-200 mb-2">DEFINITION OF SEIZURES</p>
           <p className="text-[9px] text-gray-700 dark:text-gray-300">
             The clinical expression of abnormal, excessive or synchronous discharges of neurons primarily residing in the cerebral cortex. It is intermittent and self-limiting. On EEG, it is characterized by a sustained abnormal electrical activity.
           </p>
         </div>
 
         {/* DEFINITION OF EPILEPSY */}
-        <div className="p-2 bg-gray-50 dark:bg-gray-800/50 rounded-lg border border-gray-200 dark:border-gray-700">
-          <p className="text-xs font-bold text-gray-800 dark:text-gray-200 mb-2">DEFINITION OF EPILEPSY</p>
+        <div className="p-2 bg-purple-50 dark:bg-purple-950/20 rounded-lg border border-purple-200 dark:border-purple-800">
+          <p className="text-xs font-bold text-purple-800 dark:text-purple-200 mb-2">DEFINITION OF EPILEPSY</p>
           <p className="text-[9px] text-gray-700 dark:text-gray-300 mb-1">
             A state of enduring pre-disposition to recurrent epileptic seizures. Requiring either of the following:
           </p>
@@ -32,8 +32,8 @@ const EpilepsyApproach = ({ weight: w = 0, age = 0 }) => {
         </div>
 
         {/* SEIZURES ALGORITHM */}
-        <div className="p-2 bg-gray-50 dark:bg-gray-800/50 rounded-lg border border-gray-200 dark:border-gray-700">
-          <p className="text-xs font-bold text-center text-gray-800 dark:text-gray-200 mb-2">SEIZURES ALGORITHM</p>
+        <div className="p-2 bg-teal-50 dark:bg-teal-950/20 rounded-lg border border-teal-200 dark:border-teal-800">
+          <p className="text-xs font-bold text-center text-teal-800 dark:text-teal-200 mb-2">SEIZURES ALGORITHM</p>
           
           <div className="space-y-2">
             {/* Start */}
