@@ -1,24 +1,25 @@
 /**
  * Approaches Page - Clinical Approach Algorithms
  * 
- * Contains 15 clinical approach tabs:
- * 1. Septic Shock - Cold/Warm shock algorithm
- * 2. Status Epilepticus - Seizure management
- * 3. Status Asthmaticus - Asthma emergency
- * 4. TBI - Traumatic brain injury
- * 5. DKA - Diabetic ketoacidosis
- * 6. Adrenal Crisis - Acute adrenal insufficiency
- * 7. Anaphylaxis - Allergic reaction
- * 8. Thrombocytopenia - Platelet disorders
- * 9. Hypocalcemia - Calcium disorders & rickets
- * 10. Decreased LOC - GCS, differentials
- * 11. Headache - Migraine, IIH, red flags
- * 12. Acute Weakness - Stroke, GBS, myasthenia
- * 13. Abnormal Gait - Ataxia, gait disorders
- * 14. Hyperkalemia - ECG changes, treatment
- * 15. Upper GI Bleed - UGIB management
+ * Contains 24 clinical approach tabs for pediatric emergencies.
  * 
- * Features: Search bar, collapsible sections, vital signs reference
+ * ============================================================================
+ * PINCH-TO-ZOOM FEATURE (APPLIES TO ALL APPROACHES)
+ * ============================================================================
+ * - All approach content supports pinch-to-zoom on mobile devices
+ * - Zoom range: 100% to 250%
+ * - Double-tap when zoomed to reset to 100%
+ * - Zoom indicator appears in top-right when zoomed
+ * - The zoom container wraps ALL approach components uniformly
+ * 
+ * RULES FOR APPROACH COMPONENTS:
+ * 1. All approaches are rendered inside the zoomable container
+ * 2. Do NOT add separate zoom handling in individual approach components
+ * 3. Keep content responsive - the zoom scales everything uniformly
+ * 4. Use relative units (rem, em, %) where possible for better zoom behavior
+ * ============================================================================
+ * 
+ * Features: Search bar, pinch-to-zoom, collapsible sections, vital signs reference
  * 
  * REFACTORED: Components moved to /approaches/ directory
  */
@@ -57,22 +58,29 @@ import {
   EpilepsyApproach,
 } from "./approaches";
 
+/**
+ * ApproachesPage Component
+ * 
+ * Main container for all clinical approach algorithms with unified pinch-to-zoom support.
+ */
 const ApproachesPage = ({ onBack }) => {
   const [activeTab, setActiveTab] = useState("gait");
   const [weight, setWeight] = useState("");
   const [age, setAge] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [expandedSections, setExpandedSections] = useState({});
+  
+  // ==================== ZOOM STATE & REFS ====================
+  // These control the pinch-to-zoom feature for ALL approaches
   const [zoomLevel, setZoomLevel] = useState(100);
   const contentRef = useRef(null);
   const containerRef = useRef(null);
-  
-  // Zoom gesture refs
   const isPinching = useRef(false);
   const initialDistance = useRef(null);
   const initialZoom = useRef(100);
   const lastTapTime = useRef(0);
   const lastTapTarget = useRef(null);
+  // ===========================================================
   
   const ageNum = parseFloat(age) || 0;
 
