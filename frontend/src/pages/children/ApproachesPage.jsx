@@ -66,10 +66,12 @@ const ApproachesPage = ({ onBack }) => {
   const [zoomLevel, setZoomLevel] = useState(100);
   const contentRef = useRef(null);
   const containerRef = useRef(null);
+  const zoomRef = useRef(100); // Use ref for smooth updates during pinch
   const initialDistance = useRef(null);
   const initialZoom = useRef(100);
-  const pinchCenter = useRef({ x: 0, y: 0 });
-  const scrollPosBeforeZoom = useRef({ left: 0, top: 0 });
+  const initialScrollTop = useRef(0);
+  const pinchCenterY = useRef(0);
+  const rafId = useRef(null);
   const ageNum = parseFloat(age) || 0;
 
   // Define all approach tabs with search keywords - sorted alphabetically by label
