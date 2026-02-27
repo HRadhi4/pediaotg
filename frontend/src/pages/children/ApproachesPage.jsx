@@ -126,7 +126,7 @@ const ApproachesPage = ({ onBack }) => {
     setExpandedSections(prev => ({ ...prev, [section]: !prev[section] }));
   };
 
-  // Pinch-to-zoom handlers - smooth implementation
+  // Pinch-to-zoom handlers - improved implementation
   const getDistance = (touches) => {
     const [touch1, touch2] = touches;
     return Math.hypot(
@@ -135,37 +135,45 @@ const ApproachesPage = ({ onBack }) => {
     );
   };
 
-  const getPinchCenter = (touches, container) => {
-    const [touch1, touch2] = touches;
-    const rect = container.getBoundingClientRect();
-    return {
-      x: ((touch1.clientX + touch2.clientX) / 2 - rect.left) / rect.width * 100,
-      y: ((touch1.clientY + touch2.clientY) / 2 - rect.top) / rect.height * 100
-    };
-  };
-
   const lastTap = useRef(0);
 
   const handleTouchStart = useCallback((e) => {
     if (e.touches.length === 2) {
       e.preventDefault();
-      setIsPinching(true);
       initialDistance.current = getDistance(e.touches);
       initialZoom.current = zoomLevel;
-      lastZoom.current = zoomLevel;
       
-      // Set transform origin to pinch center
+      // Store the pinch center position relative to content
       const container = containerRef.current;
       if (container) {
-        const center = getPinchCenter(e.touches, container);
-        setTransformOrigin(`${center.x}% ${center.y}%`);
+        const [touch1, touch2] = e.touches;
+        const centerX = (touch1.clientX + touch2.clientX) / 2;
+        const centerY = (touch1.clientY + touch2.clientY) / 2;
+        const rect = container.getBoundingClientRect();
+        
+        // Calculate position within the scrollable content
+        pinchCenter.current = {
+          x: centerX - rect.left + container.scrollLeft,
+          y: centerY - rect.top + container.scrollTop,
+          clientX: centerX,
+          clientY: centerY,
+          rectLeft: rect.left,
+          rectTop: rect.top
+        };
+        
+        scrollPosBeforeZoom.current = {
+          left: container.scrollLeft,
+          top: container.scrollTop
+        };
       }
     } else if (e.touches.length === 1) {
       // Double-tap to reset zoom
       const now = Date.now();
       if (now - lastTap.current < 300 && zoomLevel !== 100) {
         setZoomLevel(100);
-        setTransformOrigin('center center');
+        if (containerRef.current) {
+          containerRef.current.scrollTo(0, 0);
+        }
       }
       lastTap.current = now;
     }
@@ -176,24 +184,31 @@ const ApproachesPage = ({ onBack }) => {
       e.preventDefault();
       const currentDistance = getDistance(e.touches);
       const scale = currentDistance / initialDistance.current;
-      const newZoom = Math.min(200, Math.max(100, initialZoom.current * scale));
+      const newZoom = Math.min(250, Math.max(100, initialZoom.current * scale));
       
-      // Only update if zoom changed significantly (reduces jitter)
-      if (Math.abs(newZoom - lastZoom.current) > 1) {
-        lastZoom.current = newZoom;
-        setZoomLevel(Math.round(newZoom));
+      // Update zoom
+      const roundedZoom = Math.round(newZoom);
+      if (roundedZoom !== zoomLevel) {
+        setZoomLevel(roundedZoom);
+        
+        // Adjust scroll position to keep pinch center in place
+        const container = containerRef.current;
+        if (container && pinchCenter.current) {
+          const zoomRatio = roundedZoom / initialZoom.current;
+          
+          // Calculate new scroll position to keep content under fingers
+          const newScrollLeft = (pinchCenter.current.x * zoomRatio) - (pinchCenter.current.clientX - pinchCenter.current.rectLeft);
+          const newScrollTop = (pinchCenter.current.y * zoomRatio) - (pinchCenter.current.clientY - pinchCenter.current.rectTop);
+          
+          container.scrollLeft = Math.max(0, newScrollLeft);
+          container.scrollTop = Math.max(0, newScrollTop);
+        }
       }
     }
-  }, []);
+  }, [zoomLevel]);
 
   const handleTouchEnd = useCallback(() => {
     initialDistance.current = null;
-    setIsPinching(false);
-    
-    // Reset transform origin to center when zoom is 100%
-    if (lastZoom.current <= 100) {
-      setTransformOrigin('center center');
-    }
   }, []);
 
   // Common props for all approach components
