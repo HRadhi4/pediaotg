@@ -128,7 +128,7 @@ const ApproachesPage = ({ onBack }) => {
     setExpandedSections(prev => ({ ...prev, [section]: !prev[section] }));
   };
 
-  // Pinch-to-zoom handlers - improved implementation
+  // Pinch-to-zoom handlers - smooth implementation using RAF
   const getDistance = (touches) => {
     const [touch1, touch2] = touches;
     return Math.hypot(
@@ -139,78 +139,108 @@ const ApproachesPage = ({ onBack }) => {
 
   const lastTap = useRef(0);
 
+  // Apply zoom using requestAnimationFrame for smooth updates
+  const applyZoom = useCallback((newZoom) => {
+    if (contentRef.current) {
+      contentRef.current.style.transform = `scale(${newZoom / 100})`;
+      contentRef.current.style.width = newZoom > 100 ? `${newZoom}%` : '100%';
+    }
+  }, []);
+
   const handleTouchStart = useCallback((e) => {
     if (e.touches.length === 2) {
       e.preventDefault();
-      initialDistance.current = getDistance(e.touches);
-      initialZoom.current = zoomLevel;
+      e.stopPropagation();
       
-      // Store the pinch center position relative to content
+      // Cancel any pending animation frame
+      if (rafId.current) {
+        cancelAnimationFrame(rafId.current);
+      }
+      
+      initialDistance.current = getDistance(e.touches);
+      initialZoom.current = zoomRef.current;
+      
+      // Store initial scroll position and pinch center Y
       const container = containerRef.current;
       if (container) {
         const [touch1, touch2] = e.touches;
-        const centerX = (touch1.clientX + touch2.clientX) / 2;
         const centerY = (touch1.clientY + touch2.clientY) / 2;
         const rect = container.getBoundingClientRect();
         
-        // Calculate position within the scrollable content
-        pinchCenter.current = {
-          x: centerX - rect.left + container.scrollLeft,
-          y: centerY - rect.top + container.scrollTop,
-          clientX: centerX,
-          clientY: centerY,
-          rectLeft: rect.left,
-          rectTop: rect.top
-        };
-        
-        scrollPosBeforeZoom.current = {
-          left: container.scrollLeft,
-          top: container.scrollTop
-        };
+        // Store position relative to viewport
+        pinchCenterY.current = centerY - rect.top;
+        initialScrollTop.current = container.scrollTop;
       }
     } else if (e.touches.length === 1) {
       // Double-tap to reset zoom
       const now = Date.now();
-      if (now - lastTap.current < 300 && zoomLevel !== 100) {
+      if (now - lastTap.current < 300 && zoomRef.current !== 100) {
+        zoomRef.current = 100;
         setZoomLevel(100);
+        applyZoom(100);
         if (containerRef.current) {
-          containerRef.current.scrollTo(0, 0);
+          containerRef.current.scrollTop = 0;
         }
       }
       lastTap.current = now;
     }
-  }, [zoomLevel]);
+  }, [applyZoom]);
 
   const handleTouchMove = useCallback((e) => {
     if (e.touches.length === 2 && initialDistance.current) {
       e.preventDefault();
+      e.stopPropagation();
+      
       const currentDistance = getDistance(e.touches);
       const scale = currentDistance / initialDistance.current;
       const newZoom = Math.min(250, Math.max(100, initialZoom.current * scale));
-      
-      // Update zoom
       const roundedZoom = Math.round(newZoom);
-      if (roundedZoom !== zoomLevel) {
-        setZoomLevel(roundedZoom);
+      
+      // Only update if zoom changed
+      if (roundedZoom !== zoomRef.current) {
+        zoomRef.current = roundedZoom;
         
-        // Adjust scroll position to keep pinch center in place
-        const container = containerRef.current;
-        if (container && pinchCenter.current) {
-          const zoomRatio = roundedZoom / initialZoom.current;
-          
-          // Calculate new scroll position to keep content under fingers
-          const newScrollLeft = (pinchCenter.current.x * zoomRatio) - (pinchCenter.current.clientX - pinchCenter.current.rectLeft);
-          const newScrollTop = (pinchCenter.current.y * zoomRatio) - (pinchCenter.current.clientY - pinchCenter.current.rectTop);
-          
-          container.scrollLeft = Math.max(0, newScrollLeft);
-          container.scrollTop = Math.max(0, newScrollTop);
+        // Use RAF for smooth visual updates
+        if (rafId.current) {
+          cancelAnimationFrame(rafId.current);
         }
+        
+        rafId.current = requestAnimationFrame(() => {
+          applyZoom(roundedZoom);
+          
+          // Adjust scroll to keep pinch center in place
+          const container = containerRef.current;
+          if (container) {
+            const zoomRatio = roundedZoom / initialZoom.current;
+            // Calculate the content position at pinch center before zoom
+            const contentPosBeforeZoom = initialScrollTop.current + pinchCenterY.current;
+            // Calculate where it should be after zoom
+            const contentPosAfterZoom = contentPosBeforeZoom * zoomRatio;
+            // New scroll position keeps the same content under fingers
+            const newScrollTop = contentPosAfterZoom - pinchCenterY.current;
+            container.scrollTop = Math.max(0, newScrollTop);
+          }
+        });
       }
     }
-  }, [zoomLevel]);
+  }, [applyZoom]);
 
   const handleTouchEnd = useCallback(() => {
+    if (rafId.current) {
+      cancelAnimationFrame(rafId.current);
+    }
     initialDistance.current = null;
+    // Sync state with ref value
+    setZoomLevel(zoomRef.current);
+  }, []);
+  
+  // Cleanup RAF on unmount
+  useEffect(() => {
+    return () => {
+      if (rafId.current) {
+        cancelAnimationFrame(rafId.current);
+      }
+    };
   }, []);
 
   // Common props for all approach components
