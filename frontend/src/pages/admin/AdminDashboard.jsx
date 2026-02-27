@@ -197,6 +197,107 @@ const AdminDashboard = () => {
     }
   };
 
+  // Device management functions
+  const openDeviceModal = async (u) => {
+    setDeviceUser(u);
+    setShowDevices(true);
+    setLoadingDevices(true);
+    
+    try {
+      const response = await fetch(`${API_URL}/api/admin/user/${u.id}/devices`, {
+        credentials: 'include',
+        headers: getAuthHeaders()
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        setDevices(data.devices || []);
+      } else {
+        alert('Failed to fetch devices');
+        setDevices([]);
+      }
+    } catch (error) {
+      console.error('Fetch devices error:', error);
+      alert('Error fetching devices');
+      setDevices([]);
+    } finally {
+      setLoadingDevices(false);
+    }
+  };
+
+  const handleRevokeDevice = async (deviceId) => {
+    if (!window.confirm('Are you sure you want to revoke this device? The user will be logged out from this device.')) {
+      return;
+    }
+
+    setRevokingDeviceId(deviceId);
+    try {
+      const response = await fetch(`${API_URL}/api/admin/user/${deviceUser.id}/devices/${deviceId}`, {
+        method: 'DELETE',
+        credentials: 'include',
+        headers: getAuthHeaders()
+      });
+
+      if (response.ok) {
+        // Remove device from list
+        setDevices(devices.filter(d => d.device_id !== deviceId));
+        // Refresh user list to update device count
+        await fetchData();
+      } else {
+        const data = await response.json();
+        alert(data.detail || 'Failed to revoke device');
+      }
+    } catch (error) {
+      console.error('Revoke device error:', error);
+      alert('Error revoking device');
+    } finally {
+      setRevokingDeviceId(null);
+    }
+  };
+
+  const handleRevokeAllDevices = async () => {
+    if (!window.confirm(`Are you sure you want to revoke ALL devices for ${deviceUser.email}? They will be logged out everywhere.`)) {
+      return;
+    }
+
+    setLoadingDevices(true);
+    try {
+      const response = await fetch(`${API_URL}/api/admin/user/${deviceUser.id}/devices`, {
+        method: 'DELETE',
+        credentials: 'include',
+        headers: getAuthHeaders()
+      });
+
+      if (response.ok) {
+        setDevices([]);
+        await fetchData();
+        alert('All devices revoked successfully');
+      } else {
+        const data = await response.json();
+        alert(data.detail || 'Failed to revoke devices');
+      }
+    } catch (error) {
+      console.error('Revoke all devices error:', error);
+      alert('Error revoking devices');
+    } finally {
+      setLoadingDevices(false);
+    }
+  };
+
+  const getDeviceIcon = (type) => {
+    switch (type) {
+      case 'Mobile': return <Smartphone className="h-4 w-4" />;
+      case 'Tablet': return <Tablet className="h-4 w-4" />;
+      default: return <Monitor className="h-4 w-4" />;
+    }
+  };
+
+  const formatDeviceDate = (dateString) => {
+    if (!dateString) return 'Unknown';
+    const date = new Date(dateString);
+    return date.toLocaleString();
+  };
+
   const getStatusBadge = (status) => {
     const styles = {
       active: 'bg-green-100 text-green-700',
