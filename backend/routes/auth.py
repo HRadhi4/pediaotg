@@ -4,6 +4,8 @@ from typing import Optional
 from datetime import datetime, timezone
 import os
 import sys
+import uuid
+import hashlib
 sys.path.insert(0, '/app/backend')
 
 from models.user import UserCreate, UserLogin, UserResponse, TokenResponse
@@ -18,6 +20,48 @@ mongo_url = os.environ.get('MONGO_URL', 'mongodb://localhost:27017')
 client = AsyncIOMotorClient(mongo_url)
 db = client[os.environ.get('DB_NAME', 'test_database')]
 auth_service = AuthService(db)
+
+# Device limit constant
+MAX_DEVICES_PER_USER = 3
+
+
+def generate_device_id(request: Request) -> str:
+    """Generate a unique device ID based on request characteristics"""
+    user_agent = request.headers.get('user-agent', 'unknown')
+    # Use a combination of user-agent and a random component for uniqueness
+    # This allows the same browser to have multiple sessions if needed
+    unique_part = str(uuid.uuid4())[:8]
+    raw = f"{user_agent}-{unique_part}"
+    return hashlib.sha256(raw.encode()).hexdigest()[:16]
+
+
+def get_device_info(request: Request) -> dict:
+    """Extract device information from request headers"""
+    user_agent = request.headers.get('user-agent', 'Unknown Device')
+    
+    # Parse user agent to get device type
+    device_type = 'Desktop'
+    if 'Mobile' in user_agent or 'Android' in user_agent:
+        device_type = 'Mobile'
+    elif 'iPad' in user_agent or 'Tablet' in user_agent:
+        device_type = 'Tablet'
+    
+    # Get browser name
+    browser = 'Unknown'
+    if 'Chrome' in user_agent and 'Edg' not in user_agent:
+        browser = 'Chrome'
+    elif 'Firefox' in user_agent:
+        browser = 'Firefox'
+    elif 'Safari' in user_agent and 'Chrome' not in user_agent:
+        browser = 'Safari'
+    elif 'Edg' in user_agent:
+        browser = 'Edge'
+    
+    return {
+        'user_agent': user_agent[:200],  # Limit length
+        'device_type': device_type,
+        'browser': browser
+    }
 
 
 async def get_current_user(request: Request, credentials: HTTPAuthorizationCredentials = Depends(security)) -> Optional[UserResponse]:
