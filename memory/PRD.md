@@ -41,7 +41,31 @@ All approach content in the Approaches page supports unified pinch-to-zoom:
 - **Ballard Score**
 - **Drugs**
 
+### Admin Dashboard
+- **User Management**: View, edit, delete users
+- **Device Management**: View and revoke logged-in devices (NEW)
+- **Subscription Management**: Manage user subscriptions
+- **Statistics**: User and subscription counts
+
 ## What's Been Implemented
+
+### February 27, 2026
+- **Device Limit Feature (P0)**: Implemented max 3 devices per user account
+  - Users can only be logged in on 3 devices simultaneously
+  - New login attempts blocked with clear error message when limit reached
+  - Admin users bypass the device limit
+  - Files: `/app/backend/routes/auth.py`
+
+- **Admin Device Management (P0)**: Admin can view and revoke user devices
+  - New "Devices" column in admin user table showing X/3 device usage
+  - Click device count to open device management modal
+  - View device details: type, browser, user-agent, last login time
+  - Revoke individual devices or all devices for a user
+  - Files: `/app/backend/routes/admin.py`, `/app/frontend/src/pages/admin/AdminDashboard.jsx`
+
+- **Email Notifications**: Admin notified of new registrations and subscriptions
+  - Already implemented in previous session
+  - Files: `/app/backend/services/email_service.py`, `/app/backend/routes/auth.py`, `/app/backend/routes/subscription.py`
 
 ### June 27, 2026
 - **SEIZURES ALGORITHM Redesign**: Complete overhaul of the Epilepsy approach flowchart
@@ -112,13 +136,34 @@ All approach content in the Approaches page supports unified pinch-to-zoom:
 │       │   ├── formulary.json            # Drug data
 │       │   └── renalAdjustments.js       # Renal dosing rules
 │       └── pages/
+│           ├── admin/
+│           │   └── AdminDashboard.jsx    # Admin panel with device mgmt
 │           ├── children/
 │           │   └── DrugsPage.jsx         # Drug dosing page
 │           └── nicu/
 │               └── GrowthChartPage.jsx   # Growth charts
 └── backend/
+    ├── routes/
+    │   ├── auth.py                       # Login with device limit
+    │   ├── admin.py                      # Admin APIs + device mgmt
+    │   └── subscription.py               # Payment handling
+    ├── services/
+    │   ├── auth_service.py               # Auth logic
+    │   └── email_service.py              # Email notifications
     └── server.py                          # FastAPI server
 ```
+
+## API Endpoints
+
+### Device Management (NEW)
+- `GET /api/admin/user/{user_id}/devices` - List user's logged-in devices
+- `DELETE /api/admin/user/{user_id}/devices/{device_id}` - Revoke specific device
+- `DELETE /api/admin/user/{user_id}/devices` - Revoke all user devices
+
+### Authentication
+- `POST /api/auth/login` - Login (enforces device limit for non-admin users)
+- `POST /api/auth/logout` - Logout (removes device registration)
+- `POST /api/auth/signup` - Register (sends admin notification email)
 
 ## Pending Verification (P1)
 - Sepsis approach table layout fix
@@ -131,12 +176,14 @@ All approach content in the Approaches page supports unified pinch-to-zoom:
 - Add "Mechanical Ventilation" approach to Children section
 - Implement `data-testid` attributes across all interactive elements
 - Review remaining drugs in formulary.json for completeness
+- Refactor large approach components (EpilepsyApproach.jsx, HeadacheApproach.jsx) into smaller sub-components
 
 ## Tech Stack
 - Frontend: React, Tailwind CSS, Shadcn/UI
 - Backend: FastAPI, MongoDB
 - PDF Generation: jsPDF, html2canvas
+- Email: SMTP via Microsoft Office 365
 
 ## Test Credentials
-- Email: test@test.com
-- Password: 12341234
+- **Admin:** admin@pedotg.com / SMC159951
+- **Test User:** test@test.com / 12341234
