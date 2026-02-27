@@ -2,7 +2,7 @@ import requests
 import json
 
 # Test the user token authentication
-base_url = "https://headache-flowchart.preview.emergentagent.com"
+base_url = "https://device-mgmt-portal.preview.emergentagent.com"
 
 # First, create a user and get token
 signup_data = {

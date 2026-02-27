@@ -52,7 +52,7 @@ class EmailService:
         self.smtp_email = os.environ.get('SMTP_EMAIL', 'noreply@pedotg.com')  # For sending (From address)
         self.smtp_password = os.environ.get('SMTP_PASSWORD', '')
         self.app_name = "Pediatrics On The Go"
-        self.frontend_url = os.environ.get('FRONTEND_URL', 'https://headache-flowchart.preview.emergentagent.com')
+        self.frontend_url = os.environ.get('FRONTEND_URL', 'https://device-mgmt-portal.preview.emergentagent.com')
         # Use PNG logo for better email client compatibility (SVG often blocked)
         # Use the preview URL which is always accessible, or a hosted image service
         self.logo_url = os.environ.get('EMAIL_LOGO_URL', f"{self.frontend_url}/logo.png")
