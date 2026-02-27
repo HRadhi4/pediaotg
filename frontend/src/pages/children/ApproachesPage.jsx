@@ -303,14 +303,20 @@ const ApproachesPage = ({ onBack }) => {
         </div>
       )}
 
-      {/* Zoom indicator */}
+      {/* ==================== ZOOM INDICATOR ==================== */}
+      {/* Shows current zoom level when zoomed in */}
       {zoomLevel !== 100 && (
         <div className="fixed top-20 right-4 z-50 bg-black/70 text-white text-xs px-2 py-1 rounded-full">
           {zoomLevel}% <span className="text-[10px] opacity-70">(double-tap to reset)</span>
         </div>
       )}
 
-      {/* Content Container with Pinch-to-Zoom */}
+      {/* ==================== ZOOMABLE CONTENT CONTAINER ==================== */}
+      {/* 
+        IMPORTANT: This container provides pinch-to-zoom for ALL approaches.
+        All approach components are rendered inside this container.
+        DO NOT add separate zoom handling in individual approach components.
+      */}
       <div 
         ref={containerRef}
         className="relative mt-4 rounded-lg"
@@ -323,7 +329,7 @@ const ApproachesPage = ({ onBack }) => {
         onTouchEnd={handleTouchEnd}
         data-testid="zoom-container"
       >
-        {/* Approach Content */}
+        {/* Scalable content wrapper - applies transform to all children */}
         <div 
           ref={contentRef}
           className="space-y-3"
@@ -334,6 +340,8 @@ const ApproachesPage = ({ onBack }) => {
           }}
           data-testid="zoomable-content"
         >
+        {/* ==================== ALL APPROACH COMPONENTS ==================== */}
+        {/* Each approach is rendered here and inherits the zoom behavior */}
         {activeTab === "sepsis" && <SepsisApproach {...commonProps} />}
         {activeTab === "seizure" && <SeizureApproach {...commonProps} />}
         {activeTab === "asthma" && <AsthmaApproach {...commonProps} />}
@@ -358,6 +366,7 @@ const ApproachesPage = ({ onBack }) => {
         {activeTab === "bloodgas" && <BloodGasApproach {...commonProps} />}
         {activeTab === "antibiotics" && <EmpiricalAntibioticsApproach {...commonProps} />}
         {activeTab === "epilepsy" && <EpilepsyApproach {...commonProps} />}
+        {/* ==================== END APPROACH COMPONENTS ==================== */}
         </div>
       </div>
 
