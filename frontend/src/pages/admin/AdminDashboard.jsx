@@ -4,7 +4,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, Users, CreditCard, TrendingUp, Loader2, Search, ChevronLeft, ChevronRight, Trash2, UserPlus, X, Pencil } from 'lucide-react';
+import { ArrowLeft, Users, CreditCard, TrendingUp, Loader2, Search, ChevronLeft, ChevronRight, Trash2, UserPlus, X, Pencil, Smartphone, Monitor, Tablet, LogOut } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
@@ -28,6 +28,12 @@ const AdminDashboard = () => {
   const [editingUser, setEditingUser] = useState(null);
   const [editForm, setEditForm] = useState({ password: '', subscription_type: '', subscription_days: '' });
   const [savingEdit, setSavingEdit] = useState(false);
+  // Device management state
+  const [showDevices, setShowDevices] = useState(false);
+  const [deviceUser, setDeviceUser] = useState(null);
+  const [devices, setDevices] = useState([]);
+  const [loadingDevices, setLoadingDevices] = useState(false);
+  const [revokingDeviceId, setRevokingDeviceId] = useState(null);
   const limit = 20;
 
   useEffect(() => {
