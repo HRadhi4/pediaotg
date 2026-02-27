@@ -288,29 +288,27 @@ const ApproachesPage = ({ onBack }) => {
         </div>
       )}
 
-      {/* Scrollable Container for Zoomed Content */}
+      {/* Content Container with Pinch-to-Zoom */}
       <div 
         ref={containerRef}
-        className="relative mt-4 overflow-auto rounded-lg"
+        className="relative mt-4 rounded-lg"
         style={{
+          overflow: zoomLevel > 100 ? 'auto' : 'visible',
           maxHeight: zoomLevel > 100 ? '85vh' : 'none',
-          WebkitOverflowScrolling: 'touch',
-          touchAction: 'pan-x pan-y pinch-zoom',
         }}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
         data-testid="zoom-container"
       >
-        {/* Approach Content with Pinch-to-Zoom */}
+        {/* Approach Content */}
         <div 
           ref={contentRef}
-          className="space-y-3 will-change-transform"
+          className="space-y-3"
           style={{ 
             transform: `scale(${zoomLevel / 100})`,
             transformOrigin: 'top left',
             width: zoomLevel > 100 ? `${zoomLevel}%` : '100%',
-            minWidth: '100%',
           }}
           data-testid="zoomable-content"
         >
