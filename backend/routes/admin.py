@@ -10,7 +10,10 @@ ENDPOINTS:
 - GET  /api/admin/stats          - Get subscription statistics
 - GET  /api/admin/user/{id}      - Get detailed user info
 - POST /api/admin/user           - Create new user with subscription
+- PUT  /api/admin/user/{id}      - Edit user password/subscription
 - DELETE /api/admin/user/{id}    - Delete user and related data
+- GET  /api/admin/user/{id}/devices - Get user's logged-in devices
+- DELETE /api/admin/user/{id}/devices/{device_id} - Revoke a device
 
 AUTHORIZATION: All endpoints require admin authentication via require_admin dependency
 
@@ -24,6 +27,7 @@ from typing import List, Optional
 from datetime import datetime, timezone, timedelta
 import os
 import sys
+import uuid
 sys.path.insert(0, '/app/backend')
 
 from routes.auth import require_admin
