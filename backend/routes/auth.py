@@ -328,7 +328,7 @@ async def refresh_token(request: Request, response: Response):
         try:
             body = await request.json()
             token = body.get('refresh_token')
-        except:
+        except Exception:
             pass
     
     if not token:
@@ -443,7 +443,6 @@ async def forgot_password(request_data: ForgotPasswordRequest):
     if user:
         # Generate secure token
         reset_token = secrets.token_urlsafe(32)
-        expires_at = datetime.now(timezone.utc).isoformat()
         
         # Store token in database (expires in 1 hour)
         from datetime import timedelta
