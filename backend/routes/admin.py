@@ -97,11 +97,11 @@ async def get_all_users(
     admin: UserResponse = Depends(require_admin)
 ):
     """
-    Get all users with their subscription status (Admin only)
+    Get all users with their subscription status and device count (Admin only)
     """
     users = await db.users.find({}, {'_id': 0, 'hashed_password': 0}).skip(skip).limit(limit).to_list(limit)
     
-    # Get subscription info for each user
+    # Get subscription info and device count for each user
     result = []
     for user in users:
         sub = await db.subscriptions.find_one(
@@ -110,12 +110,16 @@ async def get_all_users(
             sort=[('created_at', -1)]
         )
         
+        # Get device count
+        device_count = await db.user_devices.count_documents({'user_id': user['id']})
+        
         user_data = {
             'id': user['id'],
             'email': user['email'],
             'name': user['name'],
             'is_admin': user.get('is_admin', False),
             'created_at': user['created_at'],
+            'device_count': device_count,
             'subscription': None
         }
         
