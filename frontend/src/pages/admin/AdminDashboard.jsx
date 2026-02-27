@@ -472,6 +472,20 @@ const AdminDashboard = () => {
                               <Button
                                 variant="ghost"
                                 size="sm"
+                                onClick={() => openDeviceModal(u)}
+                                className="h-8 w-8 p-0 text-indigo-500"
+                                data-testid={`devices-btn-mobile-${u.id}`}
+                              >
+                                <Smartphone className="h-4 w-4" />
+                                {u.device_count > 0 && (
+                                  <span className="absolute -top-1 -right-1 w-4 h-4 bg-indigo-500 text-white text-[10px] rounded-full flex items-center justify-center">
+                                    {u.device_count}
+                                  </span>
+                                )}
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="sm"
                                 onClick={() => openEditUser(u)}
                                 className="h-8 w-8 p-0 text-blue-500"
                               >
@@ -504,6 +518,11 @@ const AdminDashboard = () => {
                           )}
                           <span className="text-muted-foreground capitalize">{u.subscription?.plan || 'No plan'}</span>
                           <span className={daysDisplay.className}>{daysDisplay.text}</span>
+                          {u.device_count > 0 && (
+                            <Badge className="bg-indigo-100 text-indigo-700 text-[10px]">
+                              {u.device_count}/3 devices
+                            </Badge>
+                          )}
                         </div>
                         <p className="text-[10px] text-muted-foreground mt-2">Joined: {formatDate(u.created_at)}</p>
                       </div>
