@@ -193,11 +193,13 @@ async def signup(user_data: UserCreate, response: Response):
 
 
 @router.post("/login", response_model=TokenResponse)
-async def login(credentials: UserLogin, response: Response):
+async def login(credentials: UserLogin, request: Request, response: Response):
     """
     Authenticate and login
     
     - Validates email and password
+    - Checks device limit (max 3 devices per user)
+    - Registers new device on successful login
     - Returns access and refresh tokens
     - Sets HTTP-only cookies for web clients
     """
@@ -206,9 +208,48 @@ async def login(credentials: UserLogin, response: Response):
     if error:
         raise HTTPException(status_code=401, detail=error)
     
+    # Generate device ID for this login
+    device_id = generate_device_id(request)
+    device_info = get_device_info(request)
+    
+    # Check current device count for non-admin users
+    if not user.is_admin:
+        active_devices = await db.user_devices.find({
+            'user_id': user.id
+        }).to_list(100)
+        
+        # Check if this is a new device (not already registered)
+        existing_device = next((d for d in active_devices if d.get('device_id') == device_id), None)
+        
+        if not existing_device and len(active_devices) >= MAX_DEVICES_PER_USER:
+            raise HTTPException(
+                status_code=403, 
+                detail=f"Device limit reached. You can only be logged in on {MAX_DEVICES_PER_USER} devices. Please log out from another device or contact admin."
+            )
+    
     # Generate tokens
     access_token = auth_service.create_access_token(user.id, user.is_admin)
     refresh_token = auth_service.create_refresh_token(user.id)
+    
+    # Register/update device
+    now = datetime.now(timezone.utc).isoformat()
+    await db.user_devices.update_one(
+        {'user_id': user.id, 'device_id': device_id},
+        {'$set': {
+            'user_id': user.id,
+            'device_id': device_id,
+            'user_agent': device_info['user_agent'],
+            'device_type': device_info['device_type'],
+            'browser': device_info['browser'],
+            'last_login': now,
+            'refresh_token': refresh_token,  # Store to invalidate on revoke
+            'updated_at': now
+        },
+        '$setOnInsert': {
+            'created_at': now
+        }},
+        upsert=True
+    )
     
     # Set HTTP-only cookies
     response.set_cookie(
@@ -222,6 +263,15 @@ async def login(credentials: UserLogin, response: Response):
     response.set_cookie(
         key="refresh_token",
         value=refresh_token,
+        httponly=True,
+        secure=False,
+        samesite="lax",
+        max_age=604800
+    )
+    # Store device_id in cookie for logout
+    response.set_cookie(
+        key="device_id",
+        value=device_id,
         httponly=True,
         secure=False,
         samesite="lax",
