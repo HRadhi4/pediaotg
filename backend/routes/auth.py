@@ -289,12 +289,29 @@ async def login(credentials: UserLogin, request: Request, response: Response):
 
 
 @router.post("/logout")
-async def logout(response: Response):
+async def logout(request: Request, response: Response):
     """
-    Logout - clears auth cookies
+    Logout - clears auth cookies and removes device registration
     """
+    # Get device_id from cookie to remove device registration
+    device_id = request.cookies.get('device_id')
+    
+    # Get user from token to identify which user's device to remove
+    token = request.cookies.get('access_token')
+    if token and device_id:
+        payload = auth_service.decode_token(token)
+        if payload:
+            user_id = payload.get('sub')
+            if user_id:
+                # Remove device registration
+                await db.user_devices.delete_one({
+                    'user_id': user_id,
+                    'device_id': device_id
+                })
+    
     response.delete_cookie("access_token")
     response.delete_cookie("refresh_token")
+    response.delete_cookie("device_id")
     return {"message": "Logged out successfully"}
 
 
