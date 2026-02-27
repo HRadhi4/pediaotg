@@ -856,6 +856,106 @@ const AdminDashboard = () => {
           </Card>
         </div>
       )}
+
+      {/* Device Management Modal */}
+      {showDevices && deviceUser && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 sm:p-6">
+          <Card className="w-full max-w-[500px] max-h-[80vh] overflow-hidden flex flex-col">
+            <CardHeader className="pb-3 px-4 sm:px-6 flex-shrink-0">
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle className="text-base sm:text-lg flex items-center gap-2">
+                    <Smartphone className="h-5 w-5" />
+                    Logged-in Devices
+                  </CardTitle>
+                  <CardDescription className="mt-1">{deviceUser.email}</CardDescription>
+                </div>
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  onClick={() => { setShowDevices(false); setDeviceUser(null); setDevices([]); }}
+                  className="h-8 w-8 -mr-2"
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent className="px-4 sm:px-6 pb-4 sm:pb-6 overflow-y-auto flex-1">
+              {loadingDevices ? (
+                <div className="flex items-center justify-center py-8">
+                  <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+                </div>
+              ) : devices.length === 0 ? (
+                <div className="text-center py-8">
+                  <Monitor className="h-12 w-12 mx-auto text-muted-foreground mb-3" />
+                  <p className="text-muted-foreground">No devices logged in</p>
+                  <p className="text-xs text-muted-foreground mt-1">This user hasn't logged in from any device yet.</p>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between mb-4">
+                    <p className="text-sm text-muted-foreground">
+                      {devices.length} of 3 device slots used
+                    </p>
+                    {devices.length > 0 && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={handleRevokeAllDevices}
+                        className="text-red-500 border-red-200 hover:bg-red-50"
+                        data-testid="revoke-all-devices-btn"
+                      >
+                        <LogOut className="h-4 w-4 mr-1" />
+                        Revoke All
+                      </Button>
+                    )}
+                  </div>
+                  
+                  {devices.map((device, index) => (
+                    <div 
+                      key={device.device_id} 
+                      className="border rounded-lg p-3 bg-gray-50 dark:bg-gray-800"
+                    >
+                      <div className="flex items-start justify-between">
+                        <div className="flex items-start gap-3">
+                          <div className="w-10 h-10 bg-indigo-100 dark:bg-indigo-900/30 rounded-lg flex items-center justify-center flex-shrink-0">
+                            {getDeviceIcon(device.device_type)}
+                          </div>
+                          <div className="min-w-0">
+                            <p className="font-medium text-sm">
+                              {device.device_type} - {device.browser}
+                            </p>
+                            <p className="text-xs text-muted-foreground truncate max-w-[200px]" title={device.user_agent}>
+                              {device.user_agent}
+                            </p>
+                            <p className="text-xs text-muted-foreground mt-1">
+                              Last login: {formatDeviceDate(device.last_login)}
+                            </p>
+                          </div>
+                        </div>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleRevokeDevice(device.device_id)}
+                          disabled={revokingDeviceId === device.device_id}
+                          className="text-red-500 hover:text-red-700 hover:bg-red-50 h-8 w-8 p-0"
+                          data-testid={`revoke-device-${index}`}
+                        >
+                          {revokingDeviceId === device.device_id ? (
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                          ) : (
+                            <X className="h-4 w-4" />
+                          )}
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+      )}
     </div>
   );
 };
