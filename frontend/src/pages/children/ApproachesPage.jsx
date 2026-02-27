@@ -64,13 +64,12 @@ const ApproachesPage = ({ onBack }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [expandedSections, setExpandedSections] = useState({});
   const [zoomLevel, setZoomLevel] = useState(100);
-  const [transformOrigin, setTransformOrigin] = useState('center center');
-  const [isPinching, setIsPinching] = useState(false);
   const contentRef = useRef(null);
   const containerRef = useRef(null);
   const initialDistance = useRef(null);
   const initialZoom = useRef(100);
-  const lastZoom = useRef(100);
+  const pinchCenter = useRef({ x: 0, y: 0 });
+  const scrollPosBeforeZoom = useRef({ left: 0, top: 0 });
   const ageNum = parseFloat(age) || 0;
 
   // Define all approach tabs with search keywords - sorted alphabetically by label
