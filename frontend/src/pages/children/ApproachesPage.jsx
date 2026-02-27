@@ -138,7 +138,14 @@ const ApproachesPage = ({ onBack }) => {
     setExpandedSections(prev => ({ ...prev, [section]: !prev[section] }));
   };
 
-  // Pinch-to-zoom handlers - simplified and robust
+  // ==================== PINCH-TO-ZOOM HANDLERS ====================
+  // These handlers provide zoom functionality for ALL approach content.
+  // DO NOT duplicate these in individual approach components.
+  // ==================================================================
+  
+  /**
+   * Calculate distance between two touch points
+   */
   const getDistance = (touches) => {
     const [touch1, touch2] = touches;
     return Math.hypot(
@@ -147,8 +154,10 @@ const ApproachesPage = ({ onBack }) => {
     );
   };
 
+  /**
+   * Handle touch start - detect pinch gesture initiation
+   */
   const handleTouchStart = useCallback((e) => {
-    // Two finger pinch start
     if (e.touches.length === 2) {
       isPinching.current = true;
       initialDistance.current = getDistance(e.touches);
@@ -156,8 +165,11 @@ const ApproachesPage = ({ onBack }) => {
     }
   }, [zoomLevel]);
 
+  /**
+   * Handle touch move - update zoom level during pinch
+   * Zoom range: 100% (min) to 250% (max)
+   */
   const handleTouchMove = useCallback((e) => {
-    // Only handle pinch gesture with 2 fingers
     if (e.touches.length === 2 && isPinching.current && initialDistance.current) {
       e.preventDefault();
       
@@ -171,6 +183,9 @@ const ApproachesPage = ({ onBack }) => {
     }
   }, [zoomLevel]);
 
+  /**
+   * Handle touch end - reset pinch state and detect double-tap to reset zoom
+   */
   const handleTouchEnd = useCallback((e) => {
     // Reset pinch state when fingers are lifted
     if (e.touches.length < 2) {
@@ -183,16 +198,15 @@ const ApproachesPage = ({ onBack }) => {
       const now = Date.now();
       const touch = e.changedTouches[0];
       
-      // Check if it's a quick double tap in same area
       if (now - lastTapTime.current < 300) {
-        // Reset zoom
-        setZoomLevel(100);
+        setZoomLevel(100); // Reset to 100%
       }
       
       lastTapTime.current = now;
       lastTapTarget.current = { x: touch.clientX, y: touch.clientY };
     }
   }, [zoomLevel]);
+  // ==================== END ZOOM HANDLERS ====================
 
   // Common props for all approach components
   const commonProps = {
