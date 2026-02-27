@@ -538,6 +538,7 @@ const AdminDashboard = () => {
                         <th className="text-left py-3 px-2 text-sm font-medium text-muted-foreground">User</th>
                         <th className="text-left py-3 px-2 text-sm font-medium text-muted-foreground">Plan</th>
                         <th className="text-left py-3 px-2 text-sm font-medium text-muted-foreground">Status</th>
+                        <th className="text-left py-3 px-2 text-sm font-medium text-muted-foreground">Devices</th>
                         <th className="text-left py-3 px-2 text-sm font-medium text-muted-foreground">Days Left</th>
                         <th className="text-left py-3 px-2 text-sm font-medium text-muted-foreground">Joined</th>
                         <th className="text-left py-3 px-2 text-sm font-medium text-muted-foreground">Actions</th>
@@ -570,6 +571,22 @@ const AdminDashboard = () => {
                               <Badge className={getStatusBadge(u.subscription.status)}>
                                 {u.subscription.status}
                               </Badge>
+                            ) : (
+                              <span className="text-muted-foreground text-sm">-</span>
+                            )}
+                          </td>
+                          <td className="py-3 px-2">
+                            {!u.is_admin ? (
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => openDeviceModal(u)}
+                                className={`text-sm ${u.device_count >= 3 ? 'text-red-600' : u.device_count > 0 ? 'text-indigo-600' : 'text-gray-400'}`}
+                                data-testid={`devices-btn-${u.id}`}
+                              >
+                                <Smartphone className="h-4 w-4 mr-1" />
+                                {u.device_count || 0}/3
+                              </Button>
                             ) : (
                               <span className="text-muted-foreground text-sm">-</span>
                             )}
