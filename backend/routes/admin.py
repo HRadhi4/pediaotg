@@ -585,3 +585,121 @@ async def get_scheduler_logs(
     return {
         "logs": logs
     }
+
+
+
+# =============================================================================
+# DEVICE MANAGEMENT ENDPOINTS
+# =============================================================================
+
+@router.get("/user/{user_id}/devices")
+async def get_user_devices(
+    user_id: str,
+    admin: UserResponse = Depends(require_admin)
+):
+    """
+    Get all logged-in devices for a user (Admin only)
+    
+    Returns list of devices with their login info and last activity
+    """
+    # Check if user exists
+    user = await db.users.find_one({'id': user_id}, {'_id': 0, 'email': 1, 'name': 1})
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    # Get all devices for this user
+    devices = await db.user_devices.find(
+        {'user_id': user_id},
+        {'_id': 0}
+    ).to_list(100)
+    
+    # Format device data for response
+    device_list = []
+    for device in devices:
+        device_list.append({
+            'device_id': device.get('device_id'),
+            'device_type': device.get('device_type', 'Unknown'),
+            'browser': device.get('browser', 'Unknown'),
+            'user_agent': device.get('user_agent', '')[:100],  # Truncate for display
+            'last_login': device.get('last_login'),
+            'created_at': device.get('created_at')
+        })
+    
+    # Sort by last_login descending
+    device_list.sort(key=lambda x: x.get('last_login') or '', reverse=True)
+    
+    return {
+        "user_id": user_id,
+        "user_email": user.get('email'),
+        "user_name": user.get('name'),
+        "device_count": len(device_list),
+        "max_devices": 3,
+        "devices": device_list
+    }
+
+
+@router.delete("/user/{user_id}/devices/{device_id}")
+async def revoke_user_device(
+    user_id: str,
+    device_id: str,
+    admin: UserResponse = Depends(require_admin)
+):
+    """
+    Revoke a specific device's access for a user (Admin only)
+    
+    This logs out the device by removing its registration.
+    The device will need to log in again to regain access.
+    """
+    # Check if user exists
+    user = await db.users.find_one({'id': user_id}, {'_id': 0, 'email': 1})
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    # Check if device exists
+    device = await db.user_devices.find_one({
+        'user_id': user_id,
+        'device_id': device_id
+    })
+    
+    if not device:
+        raise HTTPException(status_code=404, detail="Device not found")
+    
+    # Delete the device
+    result = await db.user_devices.delete_one({
+        'user_id': user_id,
+        'device_id': device_id
+    })
+    
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=500, detail="Failed to revoke device")
+    
+    return {
+        "message": "Device access revoked successfully",
+        "user_id": user_id,
+        "device_id": device_id
+    }
+
+
+@router.delete("/user/{user_id}/devices")
+async def revoke_all_user_devices(
+    user_id: str,
+    admin: UserResponse = Depends(require_admin)
+):
+    """
+    Revoke all devices for a user (Admin only)
+    
+    This logs out the user from all devices.
+    """
+    # Check if user exists
+    user = await db.users.find_one({'id': user_id}, {'_id': 0, 'email': 1})
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    # Delete all devices for this user
+    result = await db.user_devices.delete_many({'user_id': user_id})
+    
+    return {
+        "message": f"All devices revoked successfully",
+        "user_id": user_id,
+        "devices_revoked": result.deleted_count
+    }
