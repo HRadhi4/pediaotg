@@ -703,7 +703,7 @@ async def revoke_all_user_devices(
     result = await db.user_devices.delete_many({'user_id': user_id})
     
     return {
-        "message": f"All devices revoked successfully",
+        "message": "All devices revoked successfully",
         "user_id": user_id,
         "devices_revoked": result.deleted_count
     }
