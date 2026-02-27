@@ -3,6 +3,22 @@
 ## Overview
 A comprehensive pediatric medical reference application designed for use by qualified physicians, featuring drug dosing calculators, growth charts, clinical scoring tools, and treatment approaches.
 
+## Development Rules & Standards
+
+### Pinch-to-Zoom Rule for Approaches Page
+**Location:** `/app/frontend/src/pages/children/ApproachesPage.jsx`
+
+All approach content in the Approaches page supports unified pinch-to-zoom:
+- **Zoom range:** 100% to 250%
+- **Reset:** Double-tap when zoomed to reset to 100%
+- **Indicator:** Shows current zoom % in top-right corner when zoomed
+
+**IMPORTANT RULES:**
+1. All approaches are rendered inside the single zoomable container
+2. Do NOT add separate zoom handling in individual approach components
+3. Keep content responsive - zoom scales everything uniformly
+4. Use relative units (rem, em, %) where possible for better zoom behavior
+
 ## Core Features
 
 ### Children Section
@@ -13,7 +29,7 @@ A comprehensive pediatric medical reference application designed for use by qual
 - **Intubation**: ETT + RSI Checklist
 - **Scoring/Calculators**: GCS, PRAM, Westley, OI, IWL, BSA
 - **CPR**: PALS drugs & algorithms
-- **Approaches**: DKA, SE, Hyperammonemia, Sepsis
+- **Approaches**: 24 clinical algorithms with pinch-to-zoom support
 
 ### NICU Section
 - **Growth Charts**: WHO (0-2 years) and CDC (2-20 years) charts with PDF export
