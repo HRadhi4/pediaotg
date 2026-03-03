@@ -669,14 +669,14 @@ class EmailService:
                 body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; }}
                 .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
                 .header {{ background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }}
-                .header img {{ width: 60px; height: 60px; margin-bottom: 10px; }}
+                .header img {{ width: 60px; height: 60px; margin-bottom: 10px; border-radius: 10px; }}
                 .header h1 {{ color: white; margin: 0; font-size: 22px; }}
                 .content {{ background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }}
                 .info-box {{ background: white; border: 1px solid #e0e0e0; border-radius: 10px; padding: 20px; margin: 20px 0; }}
-                .info-row {{ display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f0f0f0; }}
+                .info-row {{ padding: 10px 0; border-bottom: 1px solid #f0f0f0; }}
                 .info-row:last-child {{ border-bottom: none; }}
-                .label {{ color: #666; font-weight: normal; }}
-                .value {{ color: #333; font-weight: bold; }}
+                .label {{ color: #666; font-weight: normal; font-size: 12px; text-transform: uppercase; margin-bottom: 4px; }}
+                .value {{ color: #333; font-weight: bold; font-size: 14px; word-break: break-all; }}
                 .footer {{ text-align: center; padding: 20px; color: #666; font-size: 12px; }}
                 .badge {{ background: #4CAF50; color: white; padding: 5px 15px; border-radius: 20px; font-size: 12px; display: inline-block; margin-bottom: 15px; }}
             </style>
@@ -693,24 +693,24 @@ class EmailService:
                     
                     <div class="info-box">
                         <div class="info-row">
-                            <span class="label">Name:</span>
-                            <span class="value">{user_name}</span>
+                            <div class="label">Name</div>
+                            <div class="value">{user_name}</div>
                         </div>
                         <div class="info-row">
-                            <span class="label">Email:</span>
-                            <span class="value">{user_email}</span>
+                            <div class="label">Email</div>
+                            <div class="value">{user_email}</div>
                         </div>
                         <div class="info-row">
-                            <span class="label">Registered:</span>
-                            <span class="value">{registered_at}</span>
+                            <div class="label">Registered</div>
+                            <div class="value">{registered_at}</div>
                         </div>
                         <div class="info-row">
-                            <span class="label">Trial Status:</span>
-                            <span class="value">3-day trial started</span>
+                            <div class="label">Trial Status</div>
+                            <div class="value">3-day trial started</div>
                         </div>
                     </div>
                     
-                    <p style="color: #666; font-size: 14px;">This user has been granted a 3-day free trial. They will need to subscribe to continue using the app after the trial period ends.</p>
+                    <p style="color: #666; font-size: 13px;">This user has been granted a 3-day free trial. They will need to subscribe to continue using the app after the trial period ends.</p>
                 </div>
                 <div class="footer">
                     <p>© 2026 {self.app_name}. Admin Notification.</p>
