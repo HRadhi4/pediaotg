@@ -473,7 +473,7 @@ const AdminDashboard = () => {
                                 variant="ghost"
                                 size="sm"
                                 onClick={() => openDeviceModal(u)}
-                                className="h-8 w-8 p-0 text-indigo-500"
+                                className="h-8 w-8 p-0 text-indigo-500 relative"
                                 data-testid={`devices-btn-mobile-${u.id}`}
                               >
                                 <Smartphone className="h-4 w-4" />
