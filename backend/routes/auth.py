@@ -4,7 +4,6 @@ from typing import Optional
 from datetime import datetime, timezone
 import os
 import sys
-import uuid
 import hashlib
 sys.path.insert(0, '/app/backend')
 
@@ -26,13 +25,14 @@ MAX_DEVICES_PER_USER = 3
 
 
 def generate_device_id(request: Request) -> str:
-    """Generate a unique device ID based on request characteristics"""
+    """
+    Generate a consistent device ID based on request characteristics.
+    Same device will always get the same ID, so re-logins don't count as new devices.
+    """
     user_agent = request.headers.get('user-agent', 'unknown')
-    # Use a combination of user-agent and a random component for uniqueness
-    # This allows the same browser to have multiple sessions if needed
-    unique_part = str(uuid.uuid4())[:8]
-    raw = f"{user_agent}-{unique_part}"
-    return hashlib.sha256(raw.encode()).hexdigest()[:16]
+    # Use only user-agent for consistent device identification
+    # This ensures the same browser/device always gets the same device_id
+    return hashlib.sha256(user_agent.encode()).hexdigest()[:16]
 
 
 def get_device_info(request: Request) -> dict:
