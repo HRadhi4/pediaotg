@@ -460,10 +460,10 @@ const BPPage = ({ onBack }) => {
           <div className="grid grid-cols-2 gap-3">
             <Card className="border-blue-200 bg-blue-50 dark:bg-blue-950/30">
               <CardContent className="pt-3 pb-3 text-center">
-                <p className="text-xs text-blue-700 dark:text-blue-300 mb-1">Hypotension</p>
+                <p className="text-xs text-blue-700 dark:text-blue-300 mb-1">Hypotension (5th centile)</p>
                 <p className="text-lg font-mono font-bold text-blue-600">&lt;{getHypotensionThreshold(selectedAge)}</p>
                 <p className="text-xs text-muted-foreground">
-                  {parseInt(selectedAge) >= 10 ? "SBP <90 (≥10y)" : `70 + 2×${selectedAge} (PALS)`}
+                  {parseInt(selectedAge) >= 10 ? "5th centile = 90 (≥10y)" : `70 + 2×${selectedAge} (PALS)`}
                 </p>
               </CardContent>
             </Card>
@@ -513,10 +513,10 @@ const BPPage = ({ onBack }) => {
               <p className="font-semibold text-purple-700 dark:text-purple-300 mb-2">Hypotension Thresholds (Age: {selectedAge} years)</p>
               <div className="grid grid-cols-2 gap-3">
                 <div className="p-2 bg-white dark:bg-gray-900 rounded-lg">
-                  <p className="text-xs text-muted-foreground">Hypotension (SBP)</p>
+                  <p className="text-xs text-muted-foreground">5th Centile (Hypotension)</p>
                   <p className="text-lg font-bold text-blue-600">&lt;{getHypotensionThreshold(selectedAge)} mmHg</p>
                   {parseInt(selectedAge) >= 10 ? (
-                    <p className="text-xs font-medium text-blue-500">Fixed threshold ≥10y</p>
+                    <p className="text-xs font-medium text-blue-500">5th centile = 90 (≥10y)</p>
                   ) : (
                     <p className="text-xs font-mono text-muted-foreground">70 + 2 × {selectedAge} (PALS)</p>
                   )}
@@ -530,7 +530,7 @@ const BPPage = ({ onBack }) => {
               {parseInt(selectedAge) >= 10 && (
                 <div className="mt-2 p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
                   <p className="text-xs font-semibold text-blue-700 dark:text-blue-300">
-                    ≥10 years: SBP &lt;90 mmHg = Hypotension
+                    ≥10 years: 5th centile = 90 mmHg → SBP &lt;90 = Hypotension
                   </p>
                 </div>
               )}
@@ -539,13 +539,13 @@ const BPPage = ({ onBack }) => {
           )}
           
           <div className="mt-2 p-2 rounded-lg bg-blue-50 dark:bg-blue-950/30 border border-blue-200">
-            <p className="font-semibold text-blue-700 dark:text-blue-300 mb-1">Hypotension</p>
+            <p className="font-semibold text-blue-700 dark:text-blue-300 mb-1">Hypotension (below 5th centile)</p>
             <p className="text-blue-600">
               {selectedAge ? (
                 parseInt(selectedAge) >= 10 
-                  ? `SBP <90 mmHg (fixed threshold for ≥10 years)`
+                  ? `5th centile = 90 mmHg → SBP <90 = Hypotension`
                   : `SBP <${70 + 2 * parseInt(selectedAge)} mmHg (PALS: 70 + 2×age)`
-              ) : "Age <10y: PALS (70+2×age) | Age ≥10y: SBP <90 mmHg"}
+              ) : "Age <10y: PALS (70+2×age) | Age ≥10y: 5th centile = 90 mmHg"}
             </p>
             <p className="mt-1 text-xs">Consider: Volume status, cardiac function, sepsis screening</p>
           </div>
