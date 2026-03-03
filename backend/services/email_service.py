@@ -37,25 +37,66 @@ class EmailService:
     
     def __init__(self):
         """
-        Initialize EmailService with SMTP configuration from environment.
-        
-        Environment Variables:
-            - SMTP_SERVER: SMTP server address (default: smtp.office365.com)
-            - SMTP_PORT: SMTP port (default: 587 for STARTTLS)
-            - SMTP_USERNAME: Account for authentication (e.g., admin@pedotg.com)
-            - SMTP_EMAIL: Alias/address to send from (e.g., noreply@pedotg.com)
-            - SMTP_PASSWORD: Password for SMTP_USERNAME account
+        Initialize EmailService. Environment variables are read lazily 
+        to ensure dotenv has been loaded first.
         """
-        self.smtp_server = os.environ.get('SMTP_SERVER', 'smtp.office365.com')
-        self.smtp_port = int(os.environ.get('SMTP_PORT', 587))
-        self.smtp_username = os.environ.get('SMTP_USERNAME', 'admin@pedotg.com')  # For authentication
-        self.smtp_email = os.environ.get('SMTP_EMAIL', 'noreply@pedotg.com')  # For sending (From address)
-        self.smtp_password = os.environ.get('SMTP_PASSWORD', '')
+        self._smtp_server = None
+        self._smtp_port = None
+        self._smtp_username = None
+        self._smtp_email = None
+        self._smtp_password = None
+        self._initialized = False
         self.app_name = "Pediatrics On The Go"
-        self.frontend_url = os.environ.get('FRONTEND_URL', 'https://device-mgmt-portal.preview.emergentagent.com')
-        # Use PNG logo for better email client compatibility (SVG often blocked)
-        # Use the preview URL which is always accessible, or a hosted image service
-        self.logo_url = os.environ.get('EMAIL_LOGO_URL', f"{self.frontend_url}/logo.png")
+    
+    def _ensure_initialized(self):
+        """Load configuration from environment variables on first use."""
+        if self._initialized:
+            return
+        
+        self._smtp_server = os.environ.get('SMTP_SERVER', 'smtp.office365.com')
+        self._smtp_port = int(os.environ.get('SMTP_PORT', 587))
+        self._smtp_username = os.environ.get('SMTP_USERNAME', 'admin@pedotg.com')  # For authentication
+        self._smtp_email = os.environ.get('SMTP_EMAIL', 'noreply@pedotg.com')  # For sending (From address)
+        self._smtp_password = os.environ.get('SMTP_PASSWORD', '')
+        self._frontend_url = os.environ.get('FRONTEND_URL', 'https://device-mgmt-portal.preview.emergentagent.com')
+        self._logo_url = os.environ.get('EMAIL_LOGO_URL', f"{self._frontend_url}/logo.png")
+        self._initialized = True
+        logger.info(f"EmailService initialized - SMTP password configured: {bool(self._smtp_password)}")
+    
+    @property
+    def smtp_server(self):
+        self._ensure_initialized()
+        return self._smtp_server
+    
+    @property
+    def smtp_port(self):
+        self._ensure_initialized()
+        return self._smtp_port
+    
+    @property
+    def smtp_username(self):
+        self._ensure_initialized()
+        return self._smtp_username
+    
+    @property
+    def smtp_email(self):
+        self._ensure_initialized()
+        return self._smtp_email
+    
+    @property
+    def smtp_password(self):
+        self._ensure_initialized()
+        return self._smtp_password
+    
+    @property
+    def frontend_url(self):
+        self._ensure_initialized()
+        return self._frontend_url
+    
+    @property
+    def logo_url(self):
+        self._ensure_initialized()
+        return self._logo_url
     
     def _send_email(self, to_email: str, subject: str, html_body: str, text_body: str = None) -> bool:
         """
