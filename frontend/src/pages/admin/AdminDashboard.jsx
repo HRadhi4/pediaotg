@@ -518,7 +518,7 @@ const AdminDashboard = () => {
                           )}
                           <span className="text-muted-foreground capitalize">{u.subscription?.plan || 'No plan'}</span>
                           <span className={daysDisplay.className}>{daysDisplay.text}</span>
-                          {u.device_count > 0 && (
+                          {!u.is_admin && u.device_count > 0 && (
                             <Badge className="bg-indigo-100 text-indigo-700 text-[10px]">
                               {u.device_count}/3 devices
                             </Badge>

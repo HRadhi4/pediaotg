@@ -518,33 +518,6 @@ const JaundiceDialog = ({ open, onOpenChange }) => {
             </CardContent>
           </Card>
         )}
-
-        {/* Reference Table Info */}
-        <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm">Reference Guidelines</CardTitle>
-          </CardHeader>
-          <CardContent className="text-xs text-muted-foreground space-y-2">
-            <p className="font-medium text-foreground">Pre-term Categories (by Weight OR GA - whichever more conservative):</p>
-            <ul className="list-disc list-inside space-y-0.5 ml-2">
-              <li>Cat 1: Weight &lt;1 kg OR GA &lt;28 wk</li>
-              <li>Cat 2: Weight 1-1.249 kg OR GA 28-29+6d</li>
-              <li>Cat 3: Weight 1.25-1.49 kg OR GA 30-31+6d</li>
-              <li>Cat 4: Weight 1.5-1.99 kg OR GA 32-33+6d</li>
-              <li>Cat 5: Weight 2-2.4 kg OR GA 34-34+6d</li>
-            </ul>
-            <p className="font-medium text-foreground mt-2">Term Categories (≥35 wk - based on risk):</p>
-            <ul className="list-disc list-inside space-y-0.5 ml-2">
-              <li>High Risk: 35-37+6d with risk factors</li>
-              <li>Medium Risk: ≥38 wk + risk factors OR 35-37+6d well</li>
-              <li>Low Risk: ≥38 wk and well</li>
-            </ul>
-            <p className="mt-2">• <span className="font-medium">Extra Rule:</span> Term infants with low weight (&lt;2.5 kg) use preterm thresholds if more conservative</p>
-            <p>• Risk factors: isoimmune hemolytic disease, G6PD deficiency, asphyxia, lethargy, temperature instability, sepsis, acidosis, albumin &lt;3g/dL</p>
-            <p>• When age is between time points, threshold nearest to bilirubin level is used</p>
-            <p className="italic mt-2">Redesigned by Sadiq Jaffar Radhi</p>
-          </CardContent>
-        </Card>
       </DialogContent>
     </Dialog>
   );
