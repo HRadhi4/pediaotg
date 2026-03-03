@@ -317,11 +317,15 @@ const BPPage = ({ onBack }) => {
   const selectedData = selectedAge ? bpData[gender][heightPercentile]?.find(d => d.age === selectedAge) : null;
 
   // Classify patient BP using PALS for hypotension
+  // For children ≥10 years: SBP <90 mmHg = hypotension (simplified adult-like rule)
   const classifyBP = () => {
     if (!patientSBP || !patientDBP || !selectedData || !selectedAge) return null;
     const sbp = parseInt(patientSBP);
     const dbp = parseInt(patientDBP);
-    const hypotensionSBP = 70 + 2 * parseInt(selectedAge); // PALS formula
+    const age = parseInt(selectedAge);
+    
+    // Hypotension threshold: PALS formula for <10y, fixed 90 for ≥10y
+    const hypotensionSBP = age >= 10 ? 90 : (70 + 2 * age);
     
     if (sbp < hypotensionSBP) {
       return { class: "Hypotension", color: "blue", severity: 0 };
@@ -334,6 +338,13 @@ const BPPage = ({ onBack }) => {
     } else {
       return { class: "HTN Stage 1", color: "orange", severity: 3 };
     }
+  };
+
+  // Get hypotension threshold based on age
+  const getHypotensionThreshold = (age) => {
+    if (!age) return null;
+    const ageNum = parseInt(age);
+    return ageNum >= 10 ? 90 : (70 + 2 * ageNum);
   };
 
   const patientClassification = classifyBP();
@@ -449,9 +460,11 @@ const BPPage = ({ onBack }) => {
           <div className="grid grid-cols-2 gap-3">
             <Card className="border-blue-200 bg-blue-50 dark:bg-blue-950/30">
               <CardContent className="pt-3 pb-3 text-center">
-                <p className="text-xs text-blue-700 dark:text-blue-300 mb-1">Hypotension (5th - PALS)</p>
-                <p className="text-lg font-mono font-bold text-blue-600">&lt;{70 + 2 * parseInt(selectedAge || 1)}</p>
-                <p className="text-xs text-muted-foreground">SBP = 70 + 2×age</p>
+                <p className="text-xs text-blue-700 dark:text-blue-300 mb-1">Hypotension</p>
+                <p className="text-lg font-mono font-bold text-blue-600">&lt;{getHypotensionThreshold(selectedAge)}</p>
+                <p className="text-xs text-muted-foreground">
+                  {parseInt(selectedAge) >= 10 ? "SBP <90 (≥10y)" : `70 + 2×${selectedAge} (PALS)`}
+                </p>
               </CardContent>
             </Card>
             <Card className="border-green-200 bg-green-50 dark:bg-green-950/30">
@@ -497,12 +510,16 @@ const BPPage = ({ onBack }) => {
           {/* PALS SBP Calculation */}
           {selectedAge && (
             <div className="mt-2 p-3 rounded-lg bg-purple-50 dark:bg-purple-950/30 border border-purple-200">
-              <p className="font-semibold text-purple-700 dark:text-purple-300 mb-2">PALS SBP Thresholds (Age: {selectedAge} years)</p>
+              <p className="font-semibold text-purple-700 dark:text-purple-300 mb-2">Hypotension Thresholds (Age: {selectedAge} years)</p>
               <div className="grid grid-cols-2 gap-3">
                 <div className="p-2 bg-white dark:bg-gray-900 rounded-lg">
-                  <p className="text-xs text-muted-foreground">5th Centile (Hypotension)</p>
-                  <p className="text-lg font-bold text-purple-600">{70 + 2 * parseInt(selectedAge)} mmHg</p>
-                  <p className="text-xs font-mono text-muted-foreground">70 + 2 × {selectedAge}</p>
+                  <p className="text-xs text-muted-foreground">Hypotension (SBP)</p>
+                  <p className="text-lg font-bold text-blue-600">&lt;{getHypotensionThreshold(selectedAge)} mmHg</p>
+                  {parseInt(selectedAge) >= 10 ? (
+                    <p className="text-xs font-medium text-blue-500">Fixed threshold ≥10y</p>
+                  ) : (
+                    <p className="text-xs font-mono text-muted-foreground">70 + 2 × {selectedAge} (PALS)</p>
+                  )}
                 </div>
                 <div className="p-2 bg-white dark:bg-gray-900 rounded-lg">
                   <p className="text-xs text-muted-foreground">50th Centile (Median)</p>
@@ -510,13 +527,26 @@ const BPPage = ({ onBack }) => {
                   <p className="text-xs font-mono text-muted-foreground">90 + 2 × {selectedAge}</p>
                 </div>
               </div>
+              {parseInt(selectedAge) >= 10 && (
+                <div className="mt-2 p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
+                  <p className="text-xs font-semibold text-blue-700 dark:text-blue-300">
+                    ≥10 years: SBP &lt;90 mmHg = Hypotension
+                  </p>
+                </div>
+              )}
               <p className="text-xs mt-2 italic">Source: PALS (Pediatric Advanced Life Support)</p>
             </div>
           )}
           
           <div className="mt-2 p-2 rounded-lg bg-blue-50 dark:bg-blue-950/30 border border-blue-200">
-            <p className="font-semibold text-blue-700 dark:text-blue-300 mb-1">Hypotension (&lt;5th percentile)</p>
-            <p className="text-blue-600">SBP &lt;{selectedAge ? (70 + 2 * parseInt(selectedAge)) : "5th %ile"} mmHg (PALS) or per Harriet Lane table</p>
+            <p className="font-semibold text-blue-700 dark:text-blue-300 mb-1">Hypotension</p>
+            <p className="text-blue-600">
+              {selectedAge ? (
+                parseInt(selectedAge) >= 10 
+                  ? `SBP <90 mmHg (fixed threshold for ≥10 years)`
+                  : `SBP <${70 + 2 * parseInt(selectedAge)} mmHg (PALS: 70 + 2×age)`
+              ) : "Age <10y: PALS (70+2×age) | Age ≥10y: SBP <90 mmHg"}
+            </p>
             <p className="mt-1 text-xs">Consider: Volume status, cardiac function, sepsis screening</p>
           </div>
           <p className="pt-2">• <span className="text-green-600 font-medium">Normal:</span> &lt;90th percentile for age, sex, height</p>
