@@ -304,7 +304,9 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
       },
       administration: { duration, rate: `${totalVolume.toFixed(1)} ml/hr` },
       preparation: `Draw ${doseMl.toFixed(1)} ml Ca Gluconate + ${diluentMl.toFixed(1)} ml NS = ${totalVolume.toFixed(1)} ml`,
-      order: `${doseMg.toFixed(0)} mg Ca Gluconate in ${totalVolume.toFixed(0)} ml NS over ${duration}`,
+      order: calciumDoseUnit === "ml"
+        ? `${doseMl.toFixed(1)} ml Ca Gluconate 10% in ${totalVolume.toFixed(0)} ml NS over ${duration}`
+        : `${doseMg.toFixed(0)} mg Ca Gluconate in ${totalVolume.toFixed(0)} ml NS over ${duration}`,
       frequency: calciumLevel && parseFloat(calciumLevel) < 7 ? "BD" : "OD"
     });
   };
