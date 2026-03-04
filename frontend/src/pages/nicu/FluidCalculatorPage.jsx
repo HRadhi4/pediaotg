@@ -252,7 +252,7 @@ const FluidCalculatorPage = () => {
                     <Label className="text-xs">Volume (ml/24hr)</Label>
                     <Input
                       type="text"
-                  inputMode="decimal"
+                      inputMode="decimal"
                       placeholder="e.g., 50"
                       value={item.volume}
                       onChange={(e) => updateDextroseItem(item.id, "volume", e.target.value)}
@@ -288,15 +288,13 @@ const FluidCalculatorPage = () => {
         <CardContent className="space-y-3">
           <div className="space-y-1">
             <Label className="text-xs">3% NaCl (ml/kg/day)</Label>
-            <Input type="text" step="0.1" placeholder="0" value={naclAmount} onChange={(e) => setNaclAmount(e.target.value)} className="nightingale-input font-mono h-9" />
-            inputMode="decimal"
+            <Input type="text" inputMode="decimal" step="0.1" placeholder="0" value={naclAmount} onChange={(e) => setNaclAmount(e.target.value)} className="nightingale-input font-mono h-9" />
           </div>
           
           <div className="grid grid-cols-2 gap-2">
             <div className="space-y-1">
               <Label className="text-xs">Feed Volume (ml/feed)</Label>
-              <Input type="text" placeholder="5" value={feedVolume} onChange={(e) => setFeedVolume(e.target.value)} className="nightingale-input font-mono h-9" />
-              inputMode="decimal"
+              <Input type="text" inputMode="decimal" placeholder="5" value={feedVolume} onChange={(e) => setFeedVolume(e.target.value)} className="nightingale-input font-mono h-9" />
             </div>
             <div className="space-y-1">
               <Label className="text-xs">Feed Type</Label>
@@ -342,7 +340,7 @@ const FluidCalculatorPage = () => {
               <Label className="text-xs">Amino Acids (g/kg/day)</Label>
               <Input 
                 type="text"
-                  inputMode="decimal" 
+                inputMode="decimal" 
                 step="0.1" 
                 min="0"
                 max="3"
@@ -362,7 +360,7 @@ const FluidCalculatorPage = () => {
               <Label className="text-xs">Lipids (g/kg/day)</Label>
               <Input 
                 type="text"
-                  inputMode="decimal" 
+                inputMode="decimal" 
                 step="0.1" 
                 min="0"
                 max="3"
