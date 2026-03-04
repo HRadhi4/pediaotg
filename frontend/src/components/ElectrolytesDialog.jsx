@@ -33,6 +33,7 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
 
   // Electrolyte-specific states
   const [calciumLevel, setCalciumLevel] = useState("");
+  const [calciumDoseUnit, setCalciumDoseUnit] = useState("mg"); // "mg" for mg/kg or "ml" for ml/kg
   const [sodiumType, setSodiumType] = useState("hyponatremia");
   const [hyponatremiaType, setHyponatremiaType] = useState("mild");
   const [hyponatremiaMethod, setHyponatremiaMethod] = useState("standard"); // "standard" or "3percent"
@@ -187,6 +188,11 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
       doseMin = potassiumRoute === "IV" ? currentElectrolyte.doseMinIV : currentElectrolyte.doseMinPO;
       doseMax = potassiumRoute === "IV" ? currentElectrolyte.doseMaxIV : currentElectrolyte.doseMaxPO;
       maxAbsolute = potassiumRoute === "IV" ? currentElectrolyte.maxAbsoluteIV : currentElectrolyte.maxAbsolutePO;
+    } else if (selectedElectrolyte === "calcium" && calciumDoseUnit === "ml") {
+      // Calcium in ml/kg mode: 0.5-1 ml/kg, max 10 ml
+      doseMin = 0.5;
+      doseMax = 1;
+      maxAbsolute = 10;
     } else {
       doseMin = currentElectrolyte.doseMin;
       doseMax = currentElectrolyte.doseMax;
@@ -195,8 +201,8 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
     const minAbsDose = doseMin * w;
     const maxAbsDose = Math.min(doseMax * w, maxAbsolute);
     
-    // When rounding is enabled, snap to multiples of 5
-    if (roundToFives) {
+    // When rounding is enabled, snap to multiples of 5 (only for mg, not ml)
+    if (roundToFives && !(selectedElectrolyte === "calcium" && calciumDoseUnit === "ml")) {
       // Round min DOWN to nearest 5 (allow slightly below range for easier dilution)
       const roundedMin = Math.floor(minAbsDose / 5) * 5;
       // Round max UP to nearest 5
@@ -210,6 +216,11 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
       };
     }
     
+    // For calcium ml/kg, use smaller step
+    if (selectedElectrolyte === "calcium" && calciumDoseUnit === "ml") {
+      return { min: minAbsDose, max: maxAbsDose, step: 0.1, originalMin: minAbsDose, originalMax: maxAbsDose };
+    }
+    
     const step = maxAbsDose < 10 ? 0.1 : maxAbsDose < 100 ? 1 : 10;
     return { min: minAbsDose, max: maxAbsDose, step, originalMin: minAbsDose, originalMax: maxAbsDose };
   };
@@ -220,6 +231,9 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
   const getCurrentDoseRange = () => {
     if (selectedElectrolyte === "potassium") {
       return potassiumRoute === "IV" ? currentElectrolyte.doseRangeIV : currentElectrolyte.doseRangePO;
+    }
+    if (selectedElectrolyte === "calcium" && calciumDoseUnit === "ml") {
+      return "0.5-1 ml/kg (max 10 ml)";
     }
     return currentElectrolyte?.doseRange || "";
   };
@@ -249,26 +263,41 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
   };
 
   const calculateCalcium = () => {
-    const maxDose = 1000;
-    // Dose is already rounded by slider when roundToFives is enabled
-    let doseMg = currentDose;
-    // Ensure dose doesn't exceed max
-    doseMg = Math.min(doseMg, maxDose);
-    let isMaxed = doseMg >= maxDose;
+    let doseMg;
+    let doseMl;
+    let isMaxed = false;
     
-    const doseMl = doseMg / 100;
+    if (calciumDoseUnit === "ml") {
+      // ml/kg mode: max 10 ml total
+      doseMl = currentDose; // currentDose is in ml
+      doseMl = Math.min(doseMl, 10); // Max 10 ml
+      isMaxed = doseMl >= 10;
+      doseMg = doseMl * 100; // Convert to mg (100 mg/ml)
+    } else {
+      // mg/kg mode: max 1000 mg
+      doseMg = currentDose;
+      doseMg = Math.min(doseMg, 1000);
+      isMaxed = doseMg >= 1000;
+      doseMl = doseMg / 100;
+    }
+    
     const targetConc = 50;
     const totalVolume = doseMg / targetConc;
     const diluentMl = totalVolume - doseMl;
     const dosePerKg = (doseMg / w).toFixed(1);
+    const dosePerKgMl = (doseMl / w).toFixed(2);
     const duration = "1 hour";
     
     setResults({
       medication: "Calcium Gluconate 10%",
       isRounded: roundToFives,
       calculation: {
-        dose: `${doseMg.toFixed(0)} mg${isMaxed ? ' (MAX)' : ''}${roundToFives ? ' ≈' : ''} (${dosePerKg} mg/kg)`,
-        formula: `Selected: ${dosePerKg} mg/kg x ${w} kg`,
+        dose: calciumDoseUnit === "ml" 
+          ? `${doseMl.toFixed(1)} ml${isMaxed ? ' (MAX)' : ''} (${dosePerKgMl} ml/kg) = ${doseMg.toFixed(0)} mg`
+          : `${doseMg.toFixed(0)} mg${isMaxed ? ' (MAX)' : ''}${roundToFives ? ' ≈' : ''} (${dosePerKg} mg/kg)`,
+        formula: calciumDoseUnit === "ml"
+          ? `Selected: ${dosePerKgMl} ml/kg x ${w} kg`
+          : `Selected: ${dosePerKg} mg/kg x ${w} kg`,
         drugVolume: `${doseMl.toFixed(1)} ml`,
         diluent: `${diluentMl.toFixed(1)} ml (NS or D5W)`,
         totalVolume: `${totalVolume.toFixed(1)} ml (at 50 mg/ml)`
@@ -948,6 +977,36 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
             </div>
           )}
 
+          {/* Calcium Dose Unit Toggle - mg/kg vs ml/kg */}
+          {selectedElectrolyte === "calcium" && (
+            <div className="flex items-center justify-center gap-2 p-2 rounded-lg bg-teal-50 dark:bg-teal-950/30 border border-teal-200">
+              <span className="text-xs text-teal-700 dark:text-teal-300 mr-2">Dose Unit:</span>
+              <button
+                type="button"
+                onClick={() => { setCalciumDoseUnit("mg"); setCustomDose(""); setResults(null); }}
+                className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
+                  calciumDoseUnit === "mg" 
+                    ? "bg-teal-600 text-white" 
+                    : "text-teal-700 hover:bg-teal-100"
+                }`}
+              >
+                mg/kg
+              </button>
+              <button
+                type="button"
+                onClick={() => { setCalciumDoseUnit("ml"); setCustomDose(""); setResults(null); }}
+                className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
+                  calciumDoseUnit === "ml" 
+                    ? "bg-teal-600 text-white" 
+                    : "text-teal-700 hover:bg-teal-100"
+                }`}
+              >
+                ml/kg
+              </button>
+              <span className="text-[10px] text-muted-foreground ml-1">(max 10 ml)</span>
+            </div>
+          )}
+
           {/* Potassium IV/PO Switch */}
           {selectedElectrolyte === "potassium" && (
             <div className="flex items-center justify-center gap-2 p-2 rounded-lg bg-purple-50 dark:bg-purple-950/30 border border-purple-200">
@@ -1040,13 +1099,13 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
             <div className="p-3 rounded-lg bg-blue-50 dark:bg-blue-950/30 border border-blue-200 space-y-2">
               <div className="flex justify-between items-center">
                 <Label className="text-xs font-semibold text-blue-800 dark:text-blue-300">
-                  Select {selectedElectrolyte === "potassium" && potassiumRoute === "PO" ? "Daily " : ""}Dose ({currentElectrolyte.resultUnit})
+                  Select {selectedElectrolyte === "potassium" && potassiumRoute === "PO" ? "Daily " : ""}Dose ({selectedElectrolyte === "calcium" && calciumDoseUnit === "ml" ? "ml" : currentElectrolyte.resultUnit})
                 </Label>
                 <div className="text-right">
                   <span className="text-xs text-muted-foreground">
-                    {doseLimits.min.toFixed(roundToFives ? 0 : (doseLimits.step < 1 ? 2 : 0))} - {doseLimits.max.toFixed(roundToFives ? 0 : (doseLimits.step < 1 ? 2 : 0))} {currentElectrolyte.resultUnit}
+                    {doseLimits.min.toFixed(selectedElectrolyte === "calcium" && calciumDoseUnit === "ml" ? 1 : (roundToFives ? 0 : (doseLimits.step < 1 ? 2 : 0)))} - {doseLimits.max.toFixed(selectedElectrolyte === "calcium" && calciumDoseUnit === "ml" ? 1 : (roundToFives ? 0 : (doseLimits.step < 1 ? 2 : 0)))} {selectedElectrolyte === "calcium" && calciumDoseUnit === "ml" ? "ml" : currentElectrolyte.resultUnit}
                   </span>
-                  {roundToFives && (
+                  {roundToFives && !(selectedElectrolyte === "calcium" && calciumDoseUnit === "ml") && (
                     <span className="block text-[10px] text-amber-600">
                       (adjusted from {doseLimits.originalMin.toFixed(1)} - {doseLimits.originalMax.toFixed(1)})
                     </span>
@@ -1081,9 +1140,11 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
                   }}
                   className="font-mono h-10 w-28"
                 />
-                <span className="text-sm font-medium">{currentElectrolyte.resultUnit}</span>
+                <span className="text-sm font-medium">
+                  {selectedElectrolyte === "calcium" && calciumDoseUnit === "ml" ? "ml" : currentElectrolyte.resultUnit}
+                </span>
                 <span className="text-xs text-muted-foreground ml-auto">
-                  ({(currentDose / w).toFixed(currentElectrolyte.unit.includes("mEq") || currentElectrolyte.unit.includes("mmol") ? 2 : 1)} {currentElectrolyte.unit})
+                  ({(currentDose / w).toFixed(selectedElectrolyte === "calcium" && calciumDoseUnit === "ml" ? 2 : (currentElectrolyte.unit.includes("mEq") || currentElectrolyte.unit.includes("mmol") ? 2 : 1))} {selectedElectrolyte === "calcium" && calciumDoseUnit === "ml" ? "ml/kg" : currentElectrolyte.unit})
                 </span>
               </div>
             </div>
