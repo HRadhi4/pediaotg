@@ -95,6 +95,12 @@ All approach content in the Approaches page supports unified pinch-to-zoom:
   - Interpretation guide for clinical use
   - File: `/app/frontend/src/pages/children/approaches/DkaApproach.jsx`
 
+- **Sodium Correction Calculator (Scoring/Calculators)**: Added the same calculator as a standalone tab in Scoring/Calculators
+  - New "Na⁺ Correction" tab in the Scoring/Calculators page
+  - Same functionality as the DKA version with unit toggle (mg/dL ↔ mmol/L)
+  - Includes formula reference card, clinical interpretation, and unit conversion guide
+  - File: `/app/frontend/src/pages/children/ScoringPage.jsx`
+
 ### June 27, 2026
 - **SEIZURES ALGORITHM Redesign**: Complete overhaul of the Epilepsy approach flowchart
   - Larger, more readable text with better visual hierarchy
