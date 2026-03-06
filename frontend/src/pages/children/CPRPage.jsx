@@ -263,6 +263,10 @@ const CPRPage = ({ onBack }) => {
       startCPR();
     } else {
       // Pause/Resume
+      if (!isRunning) {
+        // Resuming - remove any CPR End event if present (so we only have one end when truly finished)
+        setEvents(prev => prev.filter(e => e.type !== 'cpr-end'));
+      }
       setIsRunning(!isRunning);
     }
   };
@@ -892,7 +896,7 @@ const CPRPage = ({ onBack }) => {
 
       {/* Drug Reference */}
       {drugs && (
-        <Section title="Drug Doses Reference" defaultOpen className="mt-3">
+        <Section title="Drug Doses Reference" className="mt-3">
           <div className="space-y-2">
             {/* Epinephrine */}
             <div className="p-2 rounded bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800">
