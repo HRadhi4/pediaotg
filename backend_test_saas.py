@@ -7,7 +7,7 @@ import io
 import json
 
 class PediaOTGBackendTester:
-    def __init__(self, base_url="https://clinical-calc-qa.preview.emergentagent.com"):
+    def __init__(self, base_url="https://resus-recorder.preview.emergentagent.com"):
         self.base_url = base_url
         self.tests_run = 0
         self.tests_passed = 0

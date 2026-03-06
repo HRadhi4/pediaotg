@@ -69,23 +69,16 @@ All approach content in the Approaches page supports unified pinch-to-zoom:
 
 ### March 6, 2026
 - **CPR Page Redesign (PALS Card)**: Complete redesign of the Children > CPR page
-  - **3 Tabs**: CPR, Medications, Recording
+  - **3 Tabs**: CPR, Drugs, Recording
   - **CPR Tab**: Track-based PALS algorithm with clear section headers
     - **CARDIAC ARREST** section (VF/pVT, Asystole/PEA tracks)
     - **TACHYCARDIA WITH PULSE** section (Narrow QRS, Wide QRS tracks)
+    - **Side-by-side Stable/Unstable layout** for tachycardia decisions
+    - **Shock icons (⚡)** next to all defibrillation/cardioversion steps
+    - **Syringe icons (💉)** next to all medication steps
     - H's and T's always visible
-  - **Medications Tab**: Complete drug reference from PALS card
-    - Epinephrine (with IV/IO, ETT, infusion doses)
-    - Amiodarone (arrest and perfusing tachycardia doses)
-    - Lidocaine (bolus, infusion, ETT)
-    - Adenosine (1st/2nd dose with administration notes)
-    - Atropine (bradycardia dose)
-    - Sodium Bicarbonate (with indications)
-    - Calcium (Chloride and Gluconate)
-    - Glucose (D10W, D25W)
-    - Magnesium Sulfate
-    - Procainamide
-    - Energy Doses (Defibrillation, Cardioversion)
+  - **Drugs Tab**: Complete drug reference from PALS card (27 drugs)
+    - Searchable drug list with indication-based filtering
     - All doses calculated based on patient weight
   - **Recording Tab**: CPR event recorder
     - Timer with 2-min pulse reminder (vibration)

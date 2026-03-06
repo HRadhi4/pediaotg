@@ -366,7 +366,11 @@ const CPRPage = ({ onBack }) => {
             <div className="space-y-2 animate-in slide-in-from-top-2">
               <FlowArrow />
               <FlowBox color="amber" title="3. Shock">
-                <p>Defibrillation <span className={calcValueSm}>2 J/kg</span></p>
+                <div className="flex items-center gap-1 mb-1">
+                  <Zap className="h-3 w-3 text-amber-600" />
+                  <span className="font-semibold">Defibrillation</span>
+                </div>
+                <p><span className={calcValueSm}>2 J/kg</span></p>
                 {drugs && <p className={calcValue}>{drugs.defib.first} J</p>}
               </FlowBox>
               
@@ -377,26 +381,40 @@ const CPRPage = ({ onBack }) => {
 
               <FlowArrow label="Rhythm check" />
               <FlowBox color="amber" title="5. Shock">
-                <p>Defibrillation <span className={calcValueSm}>4 J/kg</span></p>
+                <div className="flex items-center gap-1 mb-1">
+                  <Zap className="h-3 w-3 text-amber-600" />
+                  <span className="font-semibold">Defibrillation</span>
+                </div>
+                <p><span className={calcValueSm}>4 J/kg</span></p>
                 {drugs && <p className={calcValue}>{drugs.defib.second} J</p>}
               </FlowBox>
 
               <FlowArrow />
               <FlowBox color="red" title="6. CPR 2 min + Epinephrine">
-                <p>Epi 0.01 mg/kg IV/IO q3-5min</p>
+                <div className="flex items-center gap-1 mb-1">
+                  <Syringe className="h-3 w-3 text-red-600" />
+                  <span className="font-semibold">Epi 0.01 mg/kg IV/IO q3-5min</span>
+                </div>
                 {drugs && <p className={calcValue}>{drugs.epinephrine.dose} mg ({drugs.epinephrine.volume} mL)</p>}
                 <p className="mt-1">• Consider advanced airway</p>
               </FlowBox>
 
               <FlowArrow label="Rhythm check" />
               <FlowBox color="amber" title="7. Shock">
+                <div className="flex items-center gap-1 mb-1">
+                  <Zap className="h-3 w-3 text-amber-600" />
+                  <span className="font-semibold">Defibrillation</span>
+                </div>
                 <p>≥4 J/kg (max 10 J/kg)</p>
                 {drugs && <p className={calcValue}>{drugs.defib.second}-{drugs.defib.max} J</p>}
               </FlowBox>
 
               <FlowArrow />
               <FlowBox color="purple" title="8. CPR 2 min + Amiodarone">
-                <p>Amiodarone 5 mg/kg IV/IO bolus</p>
+                <div className="flex items-center gap-1 mb-1">
+                  <Syringe className="h-3 w-3 text-purple-600" />
+                  <span className="font-semibold">Amiodarone 5 mg/kg IV/IO</span>
+                </div>
                 {drugs && <p className={calcValue}>{drugs.amiodarone.dose} mg (max 300mg)</p>}
                 <p className="mt-1 text-[9px]">Or Lidocaine 1 mg/kg {drugs && <span className={calcValueSm}>({drugs.lidocaine.bolus} mg)</span>}</p>
               </FlowBox>
@@ -435,7 +453,10 @@ const CPRPage = ({ onBack }) => {
 
               <FlowArrow />
               <FlowBox color="red" title="4. Epinephrine ASAP">
-                <p>Epi 0.01 mg/kg IV/IO</p>
+                <div className="flex items-center gap-1 mb-1">
+                  <Syringe className="h-3 w-3 text-red-600" />
+                  <span className="font-semibold">Epi 0.01 mg/kg IV/IO</span>
+                </div>
                 {drugs && <p className={calcValue}>{drugs.epinephrine.dose} mg ({drugs.epinephrine.volume} mL)</p>}
                 <p className="text-[9px] mt-1">Give as soon as IV/IO available</p>
               </FlowBox>
@@ -449,7 +470,10 @@ const CPRPage = ({ onBack }) => {
               <FlowArrow label="Rhythm check" />
               <FlowBox color="blue" title="6. If still Asystole/PEA">
                 <p>• CPR 2 min</p>
-                <p>• Epinephrine q3-5 min</p>
+                <div className="flex items-center gap-1">
+                  <Syringe className="h-3 w-3 text-red-600" />
+                  <span>Epinephrine q3-5 min</span>
+                </div>
                 {drugs && <p className={calcValueSm}>{drugs.epinephrine.dose} mg</p>}
               </FlowBox>
 
@@ -507,27 +531,46 @@ const CPRPage = ({ onBack }) => {
                   <p>• Signs of shock</p>
                 </FlowBox>
 
-                <FlowArrow label="If Stable" />
-                <FlowBox color="green" title="3. Vagal Maneuvers">
-                  <p>• Ice to face (infants)</p>
-                  <p>• Valsalva (older children)</p>
-                </FlowBox>
-
                 <FlowArrow />
-                <FlowBox color="blue" title="4. Adenosine">
-                  <p>Rapid IV push with flush</p>
-                  <p className="mt-1">1st: 0.1 mg/kg (max 6mg)</p>
-                  {drugs && <p className={calcValueSm}>{drugs.adenosine.first} mg</p>}
-                  <p className="mt-1">2nd: 0.2 mg/kg (max 12mg)</p>
-                  {drugs && <p className={calcValueSm}>{drugs.adenosine.second} mg</p>}
-                </FlowBox>
-
-                <FlowArrow label="If Unstable" />
-                <FlowBox color="red" title="5. Synchronized Cardioversion">
-                  <p className="font-semibold">Sedate if possible</p>
-                  <p>0.5-1 J/kg → increase to 2 J/kg</p>
-                  {drugs && <p className={calcValue}>{drugs.cardioversion.first}-{drugs.cardioversion.max} J</p>}
-                </FlowBox>
+                {/* Side-by-side Stable vs Unstable */}
+                <div className="grid grid-cols-2 gap-1">
+                  {/* STABLE PATH */}
+                  <div className="space-y-1">
+                    <div className="text-center py-1 rounded bg-green-100 dark:bg-green-900/30 border border-green-300">
+                      <span className="text-xs font-bold text-green-700 dark:text-green-400">STABLE</span>
+                    </div>
+                    <FlowBox color="green">
+                      <p className="font-bold">Vagal</p>
+                      <p>Ice / Valsalva</p>
+                    </FlowBox>
+                    <FlowArrow />
+                    <FlowBox color="blue">
+                      <div className="flex items-center gap-1">
+                        <Syringe className="h-3 w-3 text-blue-600 flex-shrink-0" />
+                        <span className="font-bold">Adeno</span>
+                      </div>
+                      <p>1st: 0.1 mg/kg</p>
+                      {drugs && <p className={calcValueSm}>{drugs.adenosine.first} mg</p>}
+                      <p>2nd: 0.2 mg/kg</p>
+                      {drugs && <p className={calcValueSm}>{drugs.adenosine.second} mg</p>}
+                    </FlowBox>
+                  </div>
+                  {/* UNSTABLE PATH */}
+                  <div className="space-y-1">
+                    <div className="text-center py-1 rounded bg-red-100 dark:bg-red-900/30 border border-red-300">
+                      <span className="text-xs font-bold text-red-700 dark:text-red-400">UNSTABLE</span>
+                    </div>
+                    <FlowBox color="red">
+                      <div className="flex items-center gap-1">
+                        <Zap className="h-3 w-3 text-amber-600 flex-shrink-0" />
+                        <span className="font-bold">Sync CV</span>
+                      </div>
+                      <p>Sedate if able</p>
+                      <p>0.5-1 → 2 J/kg</p>
+                      {drugs && <p className={calcValue}>{drugs.cardioversion.first}-{drugs.cardioversion.max} J</p>}
+                    </FlowBox>
+                  </div>
+                </div>
               </div>
             )}
           </div>
@@ -559,25 +602,45 @@ const CPRPage = ({ onBack }) => {
                   <p className="font-semibold text-red-600">Pulseless → Cardiac Arrest (VF/pVT)</p>
                 </FlowBox>
 
-                <FlowArrow label="If Stable with Pulse" />
-                <FlowBox color="purple" title="3. Expert Consultation">
-                  <p>• Pediatric cardiology</p>
-                  <p>• Determine: VT vs SVT with aberrancy</p>
-                </FlowBox>
-
                 <FlowArrow />
-                <FlowBox color="purple" title="4. Amiodarone">
-                  <p>For stable monomorphic VT</p>
-                  <p>5 mg/kg IV over 20-60 min</p>
-                  {drugs && <p className={calcValue}>{drugs.amiodarone.dose} mg</p>}
-                </FlowBox>
-
-                <FlowArrow label="If Unstable" />
-                <FlowBox color="red" title="5. Synchronized Cardioversion">
-                  <p className="font-semibold">Sedate if possible</p>
-                  <p>0.5-1 J/kg → increase to 2 J/kg</p>
-                  {drugs && <p className={calcValue}>{drugs.cardioversion.first}-{drugs.cardioversion.max} J</p>}
-                </FlowBox>
+                {/* Side-by-side Stable vs Unstable */}
+                <div className="grid grid-cols-2 gap-1">
+                  {/* STABLE PATH */}
+                  <div className="space-y-1">
+                    <div className="text-center py-1 rounded bg-green-100 dark:bg-green-900/30 border border-green-300">
+                      <span className="text-xs font-bold text-green-700 dark:text-green-400">STABLE</span>
+                    </div>
+                    <FlowBox color="purple">
+                      <p className="font-bold">Consult</p>
+                      <p>Peds cardiology</p>
+                    </FlowBox>
+                    <FlowArrow />
+                    <FlowBox color="purple">
+                      <div className="flex items-center gap-1">
+                        <Syringe className="h-3 w-3 text-purple-600 flex-shrink-0" />
+                        <span className="font-bold">Amio</span>
+                      </div>
+                      <p>5 mg/kg IV</p>
+                      <p>over 20-60 min</p>
+                      {drugs && <p className={calcValue}>{drugs.amiodarone.dose} mg</p>}
+                    </FlowBox>
+                  </div>
+                  {/* UNSTABLE PATH */}
+                  <div className="space-y-1">
+                    <div className="text-center py-1 rounded bg-red-100 dark:bg-red-900/30 border border-red-300">
+                      <span className="text-xs font-bold text-red-700 dark:text-red-400">UNSTABLE</span>
+                    </div>
+                    <FlowBox color="red">
+                      <div className="flex items-center gap-1">
+                        <Zap className="h-3 w-3 text-amber-600 flex-shrink-0" />
+                        <span className="font-bold">Sync CV</span>
+                      </div>
+                      <p>Sedate if able</p>
+                      <p>0.5-1 → 2 J/kg</p>
+                      {drugs && <p className={calcValue}>{drugs.cardioversion.first}-{drugs.cardioversion.max} J</p>}
+                    </FlowBox>
+                  </div>
+                </div>
               </div>
             )}
           </div>
