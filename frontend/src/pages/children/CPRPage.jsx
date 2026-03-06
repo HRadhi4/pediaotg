@@ -78,19 +78,14 @@ const CPRPage = ({ onBack }) => {
   const prevEventsCountRef = useRef(0);
 
   // Auto-scroll event log to bottom only when NEW events are added
-  // and only if user is already near the bottom (within 100px)
+  // and only if timer is NOT running (so user can freely scroll during CPR)
   useEffect(() => {
-    if (eventLogRef.current && events.length > prevEventsCountRef.current) {
+    if (eventLogRef.current && events.length > prevEventsCountRef.current && !isRunning) {
       const el = eventLogRef.current;
-      const isNearBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 100;
-      
-      // Only auto-scroll if user is near bottom or it's the first few events
-      if (isNearBottom || events.length <= 3) {
-        el.scrollTop = el.scrollHeight;
-      }
+      el.scrollTop = el.scrollHeight;
     }
     prevEventsCountRef.current = events.length;
-  }, [events.length]);
+  }, [events.length, isRunning]);
 
   // Vibration function
   const vibrate = (pattern) => {
