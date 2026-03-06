@@ -47,6 +47,8 @@ const CPRPage = ({ onBack }) => {
   const [elapsedTime, setElapsedTime] = useState(0);
   const [events, setEvents] = useState([]);
   const [lastPulseCheck, setLastPulseCheck] = useState(0);
+  const [lastRxTime, setLastRxTime] = useState(0);
+  const [lastRxDrug, setLastRxDrug] = useState(null);
   const [showReminder, setShowReminder] = useState(false);
   const [showDrugMenu, setShowDrugMenu] = useState(false);
   const [pendingRxEvent, setPendingRxEvent] = useState(null); // Stores time when Rx was pressed
@@ -147,7 +149,7 @@ const CPRPage = ({ onBack }) => {
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
-  // Record event (for Shock and Pulse)
+  // Record event (for Shock only now)
   const recordEvent = (type) => {
     const newEvent = {
       type,
@@ -156,11 +158,6 @@ const CPRPage = ({ onBack }) => {
       timestamp: new Date().toLocaleTimeString(),
     };
     setEvents(prev => [...prev, newEvent]);
-    
-    if (type === 'pulse') {
-      setLastPulseCheck(elapsedTime);
-      setShowReminder(false);
-    }
   };
 
   // Handle Rx button click - record timestamp immediately, show drug menu
@@ -182,6 +179,8 @@ const CPRPage = ({ onBack }) => {
         timestamp: pendingRxEvent.timestamp,
       };
       setEvents(prev => [...prev, newEvent]);
+      setLastRxTime(pendingRxEvent.time);
+      setLastRxDrug(drugName);
     }
     setShowDrugMenu(false);
     setPendingRxEvent(null);
@@ -198,6 +197,8 @@ const CPRPage = ({ onBack }) => {
         timestamp: pendingRxEvent.timestamp,
       };
       setEvents(prev => [...prev, newEvent]);
+      setLastRxTime(pendingRxEvent.time);
+      setLastRxDrug(null);
     }
     setShowDrugMenu(false);
     setPendingRxEvent(null);
@@ -224,6 +225,8 @@ const CPRPage = ({ onBack }) => {
     setElapsedTime(0);
     setEvents([]);
     setLastPulseCheck(0);
+    setLastRxTime(0);
+    setLastRxDrug(null);
     setShowReminder(false);
   };
 
@@ -308,6 +311,11 @@ const CPRPage = ({ onBack }) => {
   // ==================== CARDIAC ARREST FLOWCHART ====================
   const CardiacArrestFlowchart = () => (
     <div className="space-y-3">
+      {/* CARDIAC ARREST SECTION HEADER */}
+      <div className="text-center py-2 px-4 rounded-lg bg-red-100 dark:bg-red-900/30 border border-red-300 dark:border-red-700">
+        <p className="text-sm font-bold text-red-700 dark:text-red-400">CARDIAC ARREST</p>
+      </div>
+
       {/* Step 1: Start CPR */}
       <FlowBox color="red" highlight>
         <p className="font-bold text-sm mb-1">1. Start High-Quality CPR</p>
@@ -462,7 +470,9 @@ const CPRPage = ({ onBack }) => {
 
       {/* TACHYCARDIA SECTION */}
       <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
-        <p className="text-center text-sm font-semibold mb-3 text-gray-600 dark:text-gray-400">Tachycardia with Pulse</p>
+        <div className="text-center py-2 px-4 rounded-lg bg-blue-100 dark:bg-blue-900/30 border border-blue-300 dark:border-blue-700 mb-3">
+          <p className="text-sm font-bold text-blue-700 dark:text-blue-400">TACHYCARDIA WITH PULSE</p>
+        </div>
         
         <div className="grid grid-cols-2 gap-2">
           {/* NARROW QRS */}
@@ -757,17 +767,7 @@ const CPRPage = ({ onBack }) => {
           <p className="text-xs text-muted-foreground">Tap to timestamp</p>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-3 gap-3">
-            <Button
-              variant="outline"
-              className="h-20 flex flex-col items-center gap-2 border-2 border-green-400 hover:bg-green-50 dark:hover:bg-green-900/20"
-              onClick={() => recordEvent('pulse')}
-              disabled={!isRunning}
-            >
-              <Activity className="h-6 w-6 text-green-600" />
-              <span className="font-semibold text-sm">Pulse</span>
-            </Button>
-            
+          <div className="grid grid-cols-2 gap-3">
             {/* Rx Button - Simple tap to open menu */}
             <Button
               variant="outline"
@@ -807,15 +807,12 @@ const CPRPage = ({ onBack }) => {
                 <div
                   key={idx}
                   className={`flex items-center justify-between p-2 rounded-lg border ${
-                    event.type === 'pulse' 
-                      ? 'border-green-200 bg-green-50 dark:bg-green-900/20 dark:border-green-800' 
-                      : event.type === 'rx'
-                        ? 'border-blue-200 bg-blue-50 dark:bg-blue-900/20 dark:border-blue-800'
-                        : 'border-amber-200 bg-amber-50 dark:bg-amber-900/20 dark:border-amber-800'
+                    event.type === 'rx'
+                      ? 'border-blue-200 bg-blue-50 dark:bg-blue-900/20 dark:border-blue-800'
+                      : 'border-amber-200 bg-amber-50 dark:bg-amber-900/20 dark:border-amber-800'
                   }`}
                 >
                   <div className="flex items-center gap-2 flex-1">
-                    {event.type === 'pulse' && <Activity className="h-4 w-4 text-green-600" />}
                     {event.type === 'rx' && <Pill className="h-4 w-4 text-blue-600" />}
                     {event.type === 'shock' && <Zap className="h-4 w-4 text-amber-600" />}
                     
@@ -854,12 +851,10 @@ const CPRPage = ({ onBack }) => {
                     )}
                   </div>
                   
-                  {/* Time display - only elapsed time for Rx/Shock, nothing for Pulse */}
-                  {event.type !== 'pulse' && (
-                    <div className="text-right">
-                      <p className="font-mono text-sm">{formatTime(event.time)}</p>
-                    </div>
-                  )}
+                  {/* Time display */}
+                  <div className="text-right">
+                    <p className="font-mono text-sm">{formatTime(event.time)}</p>
+                  </div>
                 </div>
               ))}
             </div>
@@ -867,10 +862,11 @@ const CPRPage = ({ onBack }) => {
         </Card>
       )}
 
-      {/* Time Since Last Pulse Check */}
+      {/* Time Trackers */}
       {isRunning && (
         <Card className="nightingale-card">
-          <CardContent className="pt-4">
+          <CardContent className="pt-4 space-y-3">
+            {/* Time since last pulse check */}
             <div className="flex items-center justify-between">
               <span className="text-sm text-muted-foreground">Time since last pulse check:</span>
               <span className={`font-mono font-bold ${
@@ -879,6 +875,19 @@ const CPRPage = ({ onBack }) => {
                   : 'text-foreground'
               }`}>
                 {formatTime(elapsedTime - lastPulseCheck)}
+              </span>
+            </div>
+            
+            {/* Time since last Rx with drug name */}
+            <div className="flex items-center justify-between pt-2 border-t border-gray-200 dark:border-gray-700">
+              <div className="flex flex-col">
+                <span className="text-sm text-muted-foreground">Time since last Rx:</span>
+                {lastRxDrug && (
+                  <span className="text-xs text-blue-600 dark:text-blue-400">({lastRxDrug})</span>
+                )}
+              </div>
+              <span className="font-mono font-bold text-foreground">
+                {lastRxTime > 0 ? formatTime(elapsedTime - lastRxTime) : '--:--'}
               </span>
             </div>
           </CardContent>

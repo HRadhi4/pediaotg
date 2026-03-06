@@ -69,20 +69,18 @@ All approach content in the Approaches page supports unified pinch-to-zoom:
 
 ### March 6, 2026
 - **CPR Page Redesign (PALS Card)**: Complete redesign of the Children > CPR page with interactive flowchart
-  - **CPR Tab**: Track-based PALS algorithm following the PALS card exactly
-    - Initial screen: CPR basics (Rate, Depth, C:V ratio, Connect to 12-lead ECG) and rhythm selection
-    - VF/pVT (Shockable) track: Full algorithm with defibrillation doses
-    - Asystole/PEA (Non-Shockable) track: Full algorithm with epinephrine emphasis
-    - **Tachycardia with Pulse section**: Narrow QRS (SVT) and Wide QRS (VT) tracks
+  - **CPR Tab**: Track-based PALS algorithm with clear section headers
+    - **CARDIAC ARREST** section header (red) with VF/pVT and Asystole/PEA tracks
+    - **TACHYCARDIA WITH PULSE** section header (blue) with Narrow QRS (SVT) and Wide QRS (VT) tracks
     - H's and T's always visible (not collapsible)
     - Quick Drug Doses Reference section with all PALS drugs
   - **Recording Tab**: CPR event recorder with timer
     - Timer with Start/Pause/Reset controls
     - 2-minute pulse check reminder with **phone vibration** (no animation)
-    - **Tap Rx** to show drug selection modal (Epinephrine, Adenosine, Amiodarone, NaHCO₃, Calcium Gluconate)
-    - Timestamp recorded when Rx is pressed (before drug selection)
-    - Pulse events recorded **without timestamp**
-    - **Editable drug names** in event log (pencil icon to edit)
+    - **Only Rx and Shock buttons** (Pulse button removed)
+    - Tap Rx to show drug selection (Epinephrine, Adenosine, Amiodarone, NaHCO₃, Calcium Gluconate)
+    - **Time since last Rx** tracker with last drug name displayed
+    - Editable drug names in event log (pencil icon to edit)
   - Drug calculations based on weight
   - File: `/app/frontend/src/pages/children/CPRPage.jsx`
 
