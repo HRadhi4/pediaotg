@@ -33,8 +33,10 @@ import {
   Pencil,
   Check,
   Search,
-  Syringe
+  Syringe,
+  Download
 } from "lucide-react";
+import { jsPDF } from "jspdf";
 
 const CPRPage = ({ onBack }) => {
   const [mainTab, setMainTab] = useState("cpr");
@@ -231,6 +233,115 @@ const CPRPage = ({ onBack }) => {
     setLastRxTime(0);
     setLastRxDrug(null);
     setShowReminder(false);
+  };
+
+  // Save Event Log as PDF
+  const saveEventLogAsPDF = () => {
+    const doc = new jsPDF();
+    const pageWidth = doc.internal.pageSize.getWidth();
+    
+    // Title
+    doc.setFontSize(18);
+    doc.setFont("helvetica", "bold");
+    doc.text("CPR Event Log", pageWidth / 2, 20, { align: "center" });
+    
+    // Date and time
+    doc.setFontSize(10);
+    doc.setFont("helvetica", "normal");
+    const now = new Date();
+    doc.text(`Generated: ${now.toLocaleDateString()} ${now.toLocaleTimeString()}`, pageWidth / 2, 28, { align: "center" });
+    
+    // Patient weight if available
+    if (weight) {
+      doc.text(`Patient Weight: ${weight} kg`, pageWidth / 2, 34, { align: "center" });
+    }
+    
+    // Total duration
+    doc.setFontSize(12);
+    doc.setFont("helvetica", "bold");
+    doc.text(`Total Duration: ${formatTime(elapsedTime)}`, 20, 45);
+    
+    // Event log header
+    doc.setFontSize(11);
+    doc.text("Event Log", 20, 55);
+    
+    // Draw table header
+    doc.setFillColor(240, 240, 240);
+    doc.rect(20, 58, pageWidth - 40, 8, "F");
+    doc.setFontSize(10);
+    doc.setFont("helvetica", "bold");
+    doc.text("Time", 25, 64);
+    doc.text("Event", 55, 64);
+    doc.text("Details", 95, 64);
+    doc.text("Clock Time", 150, 64);
+    
+    // Draw events
+    doc.setFont("helvetica", "normal");
+    let yPos = 72;
+    
+    events.forEach((event, idx) => {
+      // Check if we need a new page
+      if (yPos > 270) {
+        doc.addPage();
+        yPos = 20;
+      }
+      
+      // Alternate row background
+      if (idx % 2 === 0) {
+        doc.setFillColor(250, 250, 250);
+        doc.rect(20, yPos - 4, pageWidth - 40, 8, "F");
+      }
+      
+      doc.text(formatTime(event.time), 25, yPos);
+      doc.text(event.type === 'rx' ? 'Medication' : 'Shock', 55, yPos);
+      doc.text(event.drug || '-', 95, yPos);
+      doc.text(event.timestamp || '-', 150, yPos);
+      
+      yPos += 8;
+    });
+    
+    // Summary section
+    yPos += 10;
+    if (yPos > 250) {
+      doc.addPage();
+      yPos = 20;
+    }
+    
+    doc.setFont("helvetica", "bold");
+    doc.text("Summary", 20, yPos);
+    yPos += 8;
+    
+    doc.setFont("helvetica", "normal");
+    const rxEvents = events.filter(e => e.type === 'rx');
+    const shockEvents = events.filter(e => e.type === 'shock');
+    
+    doc.text(`Total Medications: ${rxEvents.length}`, 25, yPos);
+    yPos += 6;
+    doc.text(`Total Shocks: ${shockEvents.length}`, 25, yPos);
+    
+    // Medication breakdown
+    if (rxEvents.length > 0) {
+      yPos += 10;
+      doc.setFont("helvetica", "bold");
+      doc.text("Medications Given:", 25, yPos);
+      yPos += 6;
+      doc.setFont("helvetica", "normal");
+      
+      const drugCounts = {};
+      rxEvents.forEach(e => {
+        const drugName = e.drug || 'Unspecified';
+        drugCounts[drugName] = (drugCounts[drugName] || 0) + 1;
+      });
+      
+      Object.entries(drugCounts).forEach(([drug, count]) => {
+        doc.text(`• ${drug}: ${count}x`, 30, yPos);
+        yPos += 6;
+      });
+    }
+    
+    // Save the PDF
+    const filename = `CPR_Event_Log_${now.toISOString().slice(0,10)}_${now.toTimeString().slice(0,5).replace(':','-')}.pdf`;
+    doc.save(filename);
   };
 
   // Drug selection options
@@ -870,10 +981,21 @@ const CPRPage = ({ onBack }) => {
       {events.length > 0 && (
         <Card className="nightingale-card">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-semibold flex items-center gap-2">
-              <Clock className="h-4 w-4" />
-              Event Log ({events.length})
-            </CardTitle>
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-sm font-semibold flex items-center gap-2">
+                <Clock className="h-4 w-4" />
+                Event Log ({events.length})
+              </CardTitle>
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={saveEventLogAsPDF}
+                className="h-8 text-xs"
+              >
+                <Download className="h-3 w-3 mr-1" />
+                Save PDF
+              </Button>
+            </div>
           </CardHeader>
           <CardContent>
             <div className="space-y-2 max-h-[300px] overflow-y-auto">
