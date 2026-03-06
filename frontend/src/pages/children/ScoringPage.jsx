@@ -65,10 +65,10 @@ const GCSScoring = () => {
   const [eye, setEye] = useState(0);
   const [verbal, setVerbal] = useState(0);
   const [motor, setMotor] = useState(0);
-  const [leftPupil, setLeftPupil] = useState("");
-  const [rightPupil, setRightPupil] = useState("");
+  const [pupilReactivity, setPupilReactivity] = useState(0); // 0, -1, or -2
 
-  const total = eye + verbal + motor;
+  const gcsTotal = eye + verbal + motor;
+  const gcsPTotal = gcsTotal + pupilReactivity; // GCS-P includes pupil reactivity
 
   const eyeOptions = [
     { value: 4, label: "Spontaneous" },
@@ -94,7 +94,11 @@ const GCSScoring = () => {
     { value: 1, label: "None" }
   ];
 
-  const pupilOptions = ["Reactive", "Sluggish", "Fixed", "Dilated"];
+  const pupilReactivityOptions = [
+    { value: 0, label: "Both reactive", description: "Normal pupil response" },
+    { value: -1, label: "One unreactive", description: "One pupil unreactive to light" },
+    { value: -2, label: "Both unreactive", description: "Both pupils unreactive to light" }
+  ];
 
   return (
     <div className="space-y-4">
@@ -148,37 +152,43 @@ const GCSScoring = () => {
 
       <Card className="nightingale-card">
         <CardHeader className="pb-2">
-          <CardTitle className="text-sm">Pupil Assessment</CardTitle>
+          <CardTitle className="text-sm">Pupil Reactivity (P)</CardTitle>
+          <p className="text-xs text-muted-foreground">GCS-Pupils score modifier</p>
         </CardHeader>
-        <CardContent className="grid grid-cols-2 gap-3">
-          <div className="space-y-2">
-            <Label className="text-xs">Left Pupil</Label>
-            <select value={leftPupil} onChange={(e) => setLeftPupil(e.target.value)} className="w-full h-9 rounded-lg bg-gray-50 dark:bg-gray-800 px-2 text-sm">
-              <option value="">Select...</option>
-              {pupilOptions.map((p) => <option key={p} value={p}>{p}</option>)}
-            </select>
-          </div>
-          <div className="space-y-2">
-            <Label className="text-xs">Right Pupil</Label>
-            <select value={rightPupil} onChange={(e) => setRightPupil(e.target.value)} className="w-full h-9 rounded-lg bg-gray-50 dark:bg-gray-800 px-2 text-sm">
-              <option value="">Select...</option>
-              {pupilOptions.map((p) => <option key={p} value={p}>{p}</option>)}
-            </select>
-          </div>
+        <CardContent>
+          <RadioGroup value={pupilReactivity.toString()} onValueChange={(v) => setPupilReactivity(parseInt(v))}>
+            {pupilReactivityOptions.map((opt) => (
+              <div key={opt.value} className="flex items-center space-x-2 py-1">
+                <RadioGroupItem value={opt.value.toString()} id={`pupil-${opt.value}`} />
+                <Label htmlFor={`pupil-${opt.value}`} className="text-sm flex-1">
+                  <span className={`font-mono font-bold ${opt.value < 0 ? 'text-red-600' : 'text-green-600'}`}>
+                    {opt.value === 0 ? '0' : opt.value}
+                  </span>
+                  <span className="ml-2">{opt.label}</span>
+                  <span className="block text-xs text-muted-foreground">{opt.description}</span>
+                </Label>
+              </div>
+            ))}
+          </RadioGroup>
         </CardContent>
       </Card>
 
-      {total > 0 && (
-        <Card className={`border-2 ${total <= 8 ? 'border-red-300 bg-red-50 dark:bg-red-950/30' : total <= 12 ? 'border-amber-300 bg-amber-50 dark:bg-amber-950/30' : 'border-green-300 bg-green-50 dark:bg-green-950/30'}`}>
+      {gcsTotal > 0 && (
+        <Card className={`border-2 ${gcsPTotal <= 8 ? 'border-red-300 bg-red-50 dark:bg-red-950/30' : gcsPTotal <= 12 ? 'border-amber-300 bg-amber-50 dark:bg-amber-950/30' : 'border-green-300 bg-green-50 dark:bg-green-950/30'}`}>
           <CardContent className="pt-4 text-center">
-            <p className="text-sm text-muted-foreground">Total GCS Score</p>
-            <p className="text-5xl font-mono font-bold">{total}/15</p>
-            <p className="text-sm mt-2">E{eye} V{verbal} M{motor}</p>
-            {leftPupil && rightPupil && (
-              <p className="text-xs text-muted-foreground mt-1">Pupils: L-{leftPupil}, R-{rightPupil}</p>
-            )}
+            <p className="text-sm text-muted-foreground">GCS-Pupils Score</p>
+            <p className="text-5xl font-mono font-bold">{gcsPTotal}</p>
+            <p className="text-sm mt-2">
+              E{eye} + V{verbal} + M{motor} = {gcsTotal}
+              {pupilReactivity !== 0 && (
+                <span className="text-red-600"> {pupilReactivity}</span>
+              )}
+            </p>
+            <p className="text-xs text-muted-foreground mt-1">
+              Range: 1-15 (lower with pupil modifier)
+            </p>
             <p className="text-xs mt-2 font-medium">
-              {total <= 8 ? "Severe (≤8)" : total <= 12 ? "Moderate (9-12)" : "Mild (13-15)"}
+              {gcsPTotal <= 8 ? "Severe (≤8)" : gcsPTotal <= 12 ? "Moderate (9-12)" : "Mild (13-15)"}
             </p>
           </CardContent>
         </Card>
