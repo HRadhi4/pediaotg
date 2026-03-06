@@ -1031,7 +1031,7 @@ const CPRPage = ({ onBack }) => {
                 className="absolute top-0 right-0 p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-full transition-colors"
                 title="Reset all"
               >
-                <X className="h-4 w-4" />
+                <RotateCcw className="h-4 w-4" />
               </button>
             )}
             <div className={`text-6xl font-mono font-bold ${isRunning ? 'text-red-600 dark:text-red-400' : 'text-foreground'}`}>
