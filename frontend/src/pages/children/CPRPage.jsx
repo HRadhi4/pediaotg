@@ -76,11 +76,47 @@ const CPRPage = ({ onBack }) => {
 
   // Track previous events count to detect new events
   const prevEventsCountRef = useRef(0);
+  // Track if user is manually scrolling
+  const userScrollingRef = useRef(false);
+  const scrollTimeoutRef = useRef(null);
+  // Store scroll position to restore after re-renders
+  const savedScrollPosRef = useRef(0);
+
+  // Save scroll position before re-render
+  useEffect(() => {
+    if (eventLogRef.current && isRunning) {
+      savedScrollPosRef.current = eventLogRef.current.scrollTop;
+    }
+  });
+
+  // Restore scroll position after re-render (when timer is running)
+  useEffect(() => {
+    if (eventLogRef.current && isRunning && savedScrollPosRef.current > 0) {
+      eventLogRef.current.scrollTop = savedScrollPosRef.current;
+    }
+  });
+
+  // Handle scroll event to detect user scrolling and save position
+  const handleEventLogScroll = (e) => {
+    userScrollingRef.current = true;
+    savedScrollPosRef.current = e.target.scrollTop;
+    
+    // Reset the flag after user stops scrolling for 1 second
+    if (scrollTimeoutRef.current) {
+      clearTimeout(scrollTimeoutRef.current);
+    }
+    scrollTimeoutRef.current = setTimeout(() => {
+      userScrollingRef.current = false;
+    }, 1000);
+  };
 
   // Auto-scroll event log to bottom only when NEW events are added
-  // and only if timer is NOT running (so user can freely scroll during CPR)
+  // COMPLETELY DISABLED when timer is running
   useEffect(() => {
-    if (eventLogRef.current && events.length > prevEventsCountRef.current && !isRunning) {
+    // Do nothing if timer is running - user has full scroll control
+    if (isRunning) return;
+    
+    if (eventLogRef.current && events.length > prevEventsCountRef.current && !userScrollingRef.current) {
       const el = eventLogRef.current;
       el.scrollTop = el.scrollHeight;
     }
@@ -1145,7 +1181,16 @@ const CPRPage = ({ onBack }) => {
             </div>
           </CardHeader>
           <CardContent>
-            <div ref={eventLogRef} className="space-y-2 max-h-[300px] overflow-y-auto">
+            <div 
+              ref={eventLogRef} 
+              onScroll={handleEventLogScroll}
+              className="space-y-2 max-h-[300px] overflow-y-auto overscroll-contain isolate"
+              style={{ 
+                WebkitOverflowScrolling: 'touch',
+                contain: 'strict',
+                position: 'relative'
+              }}
+            >
               {events.map((event, idx) => (
                 <div
                   key={idx}
