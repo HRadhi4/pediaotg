@@ -31,12 +31,14 @@ import {
   Clock,
   X,
   Pencil,
-  Check
+  Check,
+  Search
 } from "lucide-react";
 
 const CPRPage = ({ onBack }) => {
   const [mainTab, setMainTab] = useState("cpr");
   const [weight, setWeight] = useState("");
+  const [drugSearch, setDrugSearch] = useState("");
   const w = parseFloat(weight) || 0;
 
   // CPR Flow State
@@ -887,300 +889,376 @@ const CPRPage = ({ onBack }) => {
     </div>
   );
 
-  // ==================== MEDICATIONS TAB ====================
-  const MedicationsTab = () => (
+  // ==================== DRUGS TAB ====================
+  // All drugs from PALS Card pages 2-3 "Drugs Used in PALS"
+  const allDrugs = [
+    {
+      name: "Adenosine",
+      color: "blue",
+      indications: "SVT",
+      doses: [
+        { label: "1st dose", value: "0.1 mg/kg IV/IO rapid push", max: "max 6 mg", calc: drugs ? `${drugs.adenosine.first} mg` : null },
+        { label: "2nd dose", value: "0.2 mg/kg IV/IO rapid push", max: "max 12 mg", calc: drugs ? `${drugs.adenosine.second} mg` : null },
+      ],
+      notes: "Use rapid IV push technique. Follow immediately with NS flush (5-10 mL). Use proximal IV site if possible."
+    },
+    {
+      name: "Albuterol",
+      color: "teal",
+      indications: "Asthma, Anaphylaxis (bronchospasm), Hyperkalemia",
+      doses: [
+        { label: "MDI", value: "4-8 puffs via inhalation q20min PRN with spacer" },
+        { label: "Nebulizer (<20kg)", value: "2.5 mg/dose via inhalation q20min PRN" },
+        { label: "Nebulizer (>20kg)", value: "5 mg/dose via inhalation q20min PRN" },
+        { label: "Continuous nebulizer", value: "0.5 mg/kg/hr via inhalation", max: "max 20 mg/hr", calc: drugs ? `${(w * 0.5).toFixed(1)} mg/hr` : null },
+      ],
+      notes: ""
+    },
+    {
+      name: "Amiodarone",
+      color: "purple",
+      indications: "VF/pulseless VT, SVT, VT (with pulses)",
+      doses: [
+        { label: "Pulseless arrest", value: "5 mg/kg IV/IO bolus", max: "max 300 mg", calc: drugs ? `${drugs.amiodarone.dose} mg` : null },
+        { label: "SVT/VT with pulses", value: "5 mg/kg IV/IO over 20-60 min", max: "max 300 mg", calc: drugs ? `${drugs.amiodarone.dose} mg` : null },
+      ],
+      notes: "May repeat to daily max 15 mg/kg (2.2g in adolescents)"
+    },
+    {
+      name: "Atropine Sulfate",
+      color: "green",
+      indications: "Symptomatic Bradycardia",
+      doses: [
+        { label: "IV/IO", value: "0.02 mg/kg", max: "max single dose 0.5 mg", calc: drugs ? `${drugs.atropine.dose} mg` : null },
+      ],
+      notes: "May repeat once in 3-5 min. Max total: child 1 mg, adolescent 3 mg. Use for increased vagal tone or primary AV block."
+    },
+    {
+      name: "Calcium Chloride 10%",
+      color: "teal",
+      indications: "Hypocalcemia, Hyperkalemia, Hypermagnesemia, Ca channel blocker OD",
+      doses: [
+        { label: "IV/IO", value: "20 mg/kg (0.2 mL/kg) slow push", calc: drugs ? `${drugs.calcium.chloride} mg (${drugs.calcium.chlorideVol} mL)` : null },
+      ],
+      notes: "Repeat PRN. Central line preferred. Contains 27 mg/mL elemental calcium."
+    },
+    {
+      name: "Calcium Gluconate",
+      color: "teal",
+      indications: "Hypocalcemia, Hyperkalemia, Hypermagnesemia, Ca channel blocker OD",
+      doses: [
+        { label: "IV/IO", value: "60 mg/kg (0.6 mL/kg) slow push", calc: drugs ? `${drugs.calcium.gluconate} mg (${drugs.calcium.gluconateVol} mL)` : null },
+      ],
+      notes: "Repeat PRN. Safer for peripheral IV. Contains 9 mg/mL elemental calcium."
+    },
+    {
+      name: "Dexamethasone",
+      color: "orange",
+      indications: "Croup",
+      doses: [
+        { label: "PO/IM/IV", value: "0.6 mg/kg", max: "max 16 mg", calc: drugs ? `${(w * 0.6).toFixed(1)} mg` : null },
+      ],
+      notes: ""
+    },
+    {
+      name: "Dextrose (Glucose)",
+      color: "orange",
+      indications: "Hypoglycemia",
+      doses: [
+        { label: "IV/IO", value: "0.5-1 g/kg", calc: drugs ? `${drugs.glucose.dose}-${(w * 1).toFixed(1)} g` : null },
+        { label: "D10W", value: "5-10 mL/kg", calc: drugs ? `${drugs.glucose.d10Vol}-${(w * 10).toFixed(1)} mL` : null },
+        { label: "D25W", value: "2-4 mL/kg", calc: drugs ? `${(w * 2).toFixed(1)}-${(w * 4).toFixed(1)} mL` : null },
+      ],
+      notes: "D50W not recommended for pediatrics."
+    },
+    {
+      name: "Dobutamine",
+      color: "pink",
+      indications: "Heart failure, Cardiogenic shock",
+      doses: [
+        { label: "IV/IO infusion", value: "2-20 mcg/kg/min", calc: drugs ? `${(w * 2).toFixed(0)}-${(w * 20).toFixed(0)} mcg/min` : null },
+      ],
+      notes: "Titrate to desired effect."
+    },
+    {
+      name: "Dopamine",
+      color: "pink",
+      indications: "Cardiogenic shock, Distributive shock",
+      doses: [
+        { label: "IV/IO infusion", value: "2-20 mcg/kg/min", calc: drugs ? `${(w * 2).toFixed(0)}-${(w * 20).toFixed(0)} mcg/min` : null },
+      ],
+      notes: "Titrate to desired effect."
+    },
+    {
+      name: "Epinephrine",
+      color: "red",
+      indications: "Pulseless arrest, Bradycardia, Hypotensive shock, Anaphylaxis, Asthma, Croup",
+      doses: [
+        { label: "Arrest/Bradycardia IV/IO", value: "0.01 mg/kg (0.1 mL/kg of 0.1 mg/mL) q3-5min", max: "max 1 mg", calc: drugs ? `${drugs.epinephrine.dose} mg (${drugs.epinephrine.volume} mL)` : null },
+        { label: "Arrest/Bradycardia ETT", value: "0.1 mg/kg (0.1 mL/kg of 1 mg/mL) q3-5min", calc: drugs ? `${drugs.epinephrine.ettDose} mg` : null },
+        { label: "Hypotensive shock", value: "0.1-1 mcg/kg/min IV/IO infusion", calc: drugs ? `${(w * 0.1).toFixed(1)}-${(w * 1).toFixed(1)} mcg/min` : null },
+        { label: "Anaphylaxis IM", value: "0.01 mg/kg IM q15min PRN", max: "max 0.3 mg", calc: drugs ? `${(w * 0.01).toFixed(2)} mg` : null },
+        { label: "Anaphylaxis autoinjector", value: "0.3 mg (≥30kg) or 0.15 mg (10-30kg)" },
+        { label: "Asthma SC", value: "0.01 mg/kg q15min", max: "max 0.3 mg" },
+      ],
+      notes: "Multiple routes. For croup: nebulized racemic epi 0.25-0.5 mL of 2.25% in 3mL NS."
+    },
+    {
+      name: "Etomidate",
+      color: "gray",
+      indications: "RSI (Rapid Sequence Intubation)",
+      doses: [
+        { label: "IV/IO", value: "0.2-0.4 mg/kg over 30-60 sec", max: "max 20 mg", calc: drugs ? `${(w * 0.2).toFixed(1)}-${(w * 0.4).toFixed(1)} mg` : null },
+      ],
+      notes: "Produces rapid sedation lasting 10-15 minutes."
+    },
+    {
+      name: "Hydrocortisone",
+      color: "orange",
+      indications: "Adrenal insufficiency",
+      doses: [
+        { label: "IV bolus", value: "2 mg/kg", max: "max 100 mg", calc: drugs ? `${(w * 2).toFixed(0)} mg` : null },
+      ],
+      notes: ""
+    },
+    {
+      name: "Ipratropium Bromide",
+      color: "teal",
+      indications: "Asthma",
+      doses: [
+        { label: "Inhalation", value: "250-500 mcg q20min PRN x3 doses" },
+      ],
+      notes: ""
+    },
+    {
+      name: "Lidocaine",
+      color: "gray",
+      indications: "VF/pulseless VT, Wide-complex tachycardia (with pulses)",
+      doses: [
+        { label: "Bolus", value: "1 mg/kg IV/IO", calc: drugs ? `${drugs.lidocaine.bolus} mg` : null },
+        { label: "Maintenance", value: "20-50 mcg/kg/min IV/IO infusion", calc: drugs ? `${drugs.lidocaine.infusionMin}-${drugs.lidocaine.infusionMax} mcg/min` : null },
+        { label: "ETT", value: "2-3 mg/kg", calc: drugs ? `${(w * 2).toFixed(1)}-${(w * 3).toFixed(1)} mg` : null },
+      ],
+      notes: "Repeat bolus if infusion initiated >15 min after initial bolus."
+    },
+    {
+      name: "Magnesium Sulfate",
+      color: "pink",
+      indications: "Torsades de pointes, Hypomagnesemia, Refractory status asthmaticus",
+      doses: [
+        { label: "Pulseless VT (Torsades)", value: "25-50 mg/kg IV/IO bolus", max: "max 2 g", calc: drugs ? `${(w * 25).toFixed(0)}-${(w * 50).toFixed(0)} mg` : null },
+        { label: "VT with pulses", value: "25-50 mg/kg over 10-20 min", max: "max 2 g" },
+        { label: "Status asthmaticus", value: "25-50 mg/kg slow infusion over 15-30 min", max: "max 2 g" },
+      ],
+      notes: "Rapid administration may cause hypotension. Monitor BP."
+    },
+    {
+      name: "Methylprednisolone",
+      color: "orange",
+      indications: "Status asthmaticus, Anaphylactic shock",
+      doses: [
+        { label: "Loading", value: "2 mg/kg IV/IO/IM", max: "max 60 mg", calc: drugs ? `${(w * 2).toFixed(0)} mg` : null },
+        { label: "Maintenance", value: "0.5 mg/kg IV/IO q6h", max: "max 120 mg/day", calc: drugs ? `${(w * 0.5).toFixed(1)} mg` : null },
+      ],
+      notes: "Only use acetate salt IM."
+    },
+    {
+      name: "Milrinone",
+      color: "pink",
+      indications: "Myocardial dysfunction, Increased SVR/PVR",
+      doses: [
+        { label: "Loading", value: "50 mcg/kg IV/IO over 10-60 min", calc: drugs ? `${(w * 50).toFixed(0)} mcg` : null },
+        { label: "Maintenance", value: "0.25-0.75 mcg/kg/min IV/IO infusion", calc: drugs ? `${(w * 0.25).toFixed(2)}-${(w * 0.75).toFixed(2)} mcg/min` : null },
+      ],
+      notes: ""
+    },
+    {
+      name: "Naloxone",
+      color: "purple",
+      indications: "Narcotic (opiate) reversal",
+      doses: [
+        { label: "Overdose (full reversal)", value: "0.1 mg/kg IV/IO/IM/SC q2min PRN", max: "max 2 mg", calc: drugs ? `${(w * 0.1).toFixed(2)} mg` : null },
+        { label: "Therapeutic reversal", value: "1-5 mcg/kg IV/IO/IM/SC, titrate", calc: drugs ? `${(w * 0.001).toFixed(3)}-${(w * 0.005).toFixed(3)} mg` : null },
+        { label: "Maintenance", value: "0.002-0.16 mg/kg/hr IV/IO infusion" },
+      ],
+      notes: "Dosing varies by situation."
+    },
+    {
+      name: "Nitroglycerin",
+      color: "pink",
+      indications: "Heart failure, Cardiogenic shock",
+      doses: [
+        { label: "Pediatric", value: "0.25-0.5 mcg/kg/min, titrate by 1 mcg/kg/min q15-20min", max: "max 10 mcg/kg/min", calc: drugs ? `Start ${(w * 0.25).toFixed(1)}-${(w * 0.5).toFixed(1)} mcg/min` : null },
+        { label: "Adolescent", value: "Start 5-10 mcg/min (not per kg)", max: "max 200 mcg/min" },
+      ],
+      notes: "Typical range 1-5 mcg/kg/min."
+    },
+    {
+      name: "Nitroprusside",
+      color: "pink",
+      indications: "Cardiogenic shock (high SVR), Severe hypertension",
+      doses: [
+        { label: "IV/IO", value: "0.3-1 mcg/kg/min initial, titrate up to 8 mcg/kg/min", calc: drugs ? `${(w * 0.3).toFixed(1)}-${(w * 1).toFixed(1)} mcg/min initial` : null },
+      ],
+      notes: ""
+    },
+    {
+      name: "Norepinephrine",
+      color: "red",
+      indications: "Hypotensive (distributive) shock, Fluid refractory",
+      doses: [
+        { label: "IV/IO infusion", value: "0.1-2 mcg/kg/min", calc: drugs ? `${(w * 0.1).toFixed(1)}-${(w * 2).toFixed(1)} mcg/min` : null },
+      ],
+      notes: "Titrate to desired effect. For low SVR states."
+    },
+    {
+      name: "Procainamide",
+      color: "indigo",
+      indications: "SVT, Atrial flutter, VT (with pulses)",
+      doses: [
+        { label: "IV/IO load", value: "15 mg/kg over 30-60 min", calc: drugs ? `${(w * 15).toFixed(0)} mg` : null },
+      ],
+      notes: "Do NOT use routinely with amiodarone. Monitor ECG - stop if QRS widens >50% or hypotension."
+    },
+    {
+      name: "Prostaglandin E₁ (PGE₁)",
+      color: "pink",
+      indications: "Ductal-dependent congenital heart disease (all forms)",
+      doses: [
+        { label: "Initial", value: "0.05-0.1 mcg/kg/min IV/IO infusion", calc: drugs ? `${(w * 0.05).toFixed(2)}-${(w * 0.1).toFixed(2)} mcg/min` : null },
+        { label: "Maintenance", value: "0.01-0.05 mcg/kg/min IV/IO", calc: drugs ? `${(w * 0.01).toFixed(2)}-${(w * 0.05).toFixed(2)} mcg/min` : null },
+      ],
+      notes: "May cause apnea, hypotension, fever."
+    },
+    {
+      name: "Sodium Bicarbonate",
+      color: "amber",
+      indications: "Severe metabolic acidosis, Hyperkalemia, Na channel blocker OD (TCA)",
+      doses: [
+        { label: "Acidosis/Hyperkalemia", value: "1 mEq/kg IV/IO slow bolus", calc: drugs ? `${drugs.nahco3.dose} mEq` : null },
+        { label: "TCA overdose", value: "1-2 mEq/kg IV/IO bolus until pH >7.45" },
+      ],
+      notes: "Ensure adequate ventilation. Do not mix with calcium."
+    },
+    {
+      name: "Terbutaline",
+      color: "teal",
+      indications: "Status asthmaticus, Hyperkalemia",
+      doses: [
+        { label: "IV/IO infusion", value: "0.1-10 mcg/kg/min", calc: drugs ? `${(w * 0.1).toFixed(1)}-${(w * 10).toFixed(0)} mcg/min` : null },
+        { label: "Loading (optional)", value: "10 mcg/kg IV/IO over 5 min", calc: drugs ? `${(w * 10).toFixed(0)} mcg` : null },
+      ],
+      notes: ""
+    },
+    {
+      name: "Vasopressin",
+      color: "indigo",
+      indications: "Catecholamine-resistant hypotension",
+      doses: [
+        { label: "Continuous infusion", value: "0.0002-0.002 units/kg/min (0.2-2 milliunits/kg/min)", calc: drugs ? `${(w * 0.0002).toFixed(4)}-${(w * 0.002).toFixed(4)} units/min` : null },
+      ],
+      notes: ""
+    },
+  ];
+
+  const colorMap = {
+    red: "border-red-500",
+    blue: "border-blue-500",
+    purple: "border-purple-500",
+    green: "border-green-500",
+    amber: "border-amber-500",
+    orange: "border-orange-500",
+    pink: "border-pink-500",
+    teal: "border-teal-500",
+    gray: "border-gray-500",
+    indigo: "border-indigo-500",
+  };
+
+  const textColorMap = {
+    red: "text-red-700 dark:text-red-400",
+    blue: "text-blue-700 dark:text-blue-400",
+    purple: "text-purple-700 dark:text-purple-400",
+    green: "text-green-700 dark:text-green-400",
+    amber: "text-amber-700 dark:text-amber-400",
+    orange: "text-orange-700 dark:text-orange-400",
+    pink: "text-pink-700 dark:text-pink-400",
+    teal: "text-teal-700 dark:text-teal-400",
+    gray: "text-gray-700 dark:text-gray-400",
+    indigo: "text-indigo-700 dark:text-indigo-400",
+  };
+
+  const filteredDrugs = allDrugs.filter(drug => 
+    drug.name.toLowerCase().includes(drugSearch.toLowerCase()) ||
+    drug.indications.toLowerCase().includes(drugSearch.toLowerCase())
+  );
+
+  const DrugsTab = () => (
     <div className="space-y-3">
-      {/* Epinephrine */}
-      <Card className="nightingale-card border-l-4 border-red-500">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-base font-bold text-red-700 dark:text-red-400">Epinephrine</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-2 text-sm">
-          <div className="space-y-1">
-            <p className="font-semibold">Cardiac Arrest / Bradycardia:</p>
-            <p>IV/IO: 0.01 mg/kg (0.1 mL/kg of 1:10,000)</p>
-            {drugs && <p className={calcValue}>{drugs.epinephrine.dose} mg = {drugs.epinephrine.volume} mL</p>}
-            <p className="text-xs text-muted-foreground">Repeat every 3-5 minutes</p>
-            <p className="text-xs text-muted-foreground">Max single dose: 1 mg</p>
-          </div>
-          <div className="pt-2 border-t border-gray-200 dark:border-gray-700 space-y-1">
-            <p className="font-semibold">ETT (if no IV/IO):</p>
-            <p>0.1 mg/kg (0.1 mL/kg of 1:1,000)</p>
-            {drugs && <p className={calcValue}>{drugs.epinephrine.ettDose} mg</p>}
-          </div>
-          <div className="pt-2 border-t border-gray-200 dark:border-gray-700 space-y-1">
-            <p className="font-semibold">Continuous Infusion:</p>
-            <p>0.1-1 mcg/kg/min</p>
-            {drugs && <p className={calcValueSm}>{(w * 0.1).toFixed(1)}-{(w * 1).toFixed(1)} mcg/min</p>}
-            <p className="text-xs text-muted-foreground">Titrate to effect</p>
-          </div>
-        </CardContent>
-      </Card>
+      {/* Search Bar */}
+      <div className="relative">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        <Input
+          type="text"
+          placeholder="Search drugs or indications..."
+          value={drugSearch}
+          onChange={(e) => setDrugSearch(e.target.value)}
+          className="pl-9"
+        />
+        {drugSearch && (
+          <button 
+            onClick={() => setDrugSearch("")}
+            className="absolute right-3 top-1/2 -translate-y-1/2 p-1 hover:bg-gray-100 dark:hover:bg-gray-800 rounded"
+          >
+            <X className="h-3 w-3" />
+          </button>
+        )}
+      </div>
 
-      {/* Amiodarone */}
-      <Card className="nightingale-card border-l-4 border-purple-500">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-base font-bold text-purple-700 dark:text-purple-400">Amiodarone</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-2 text-sm">
-          <div className="space-y-1">
-            <p className="font-semibold">VF/Pulseless VT (refractory):</p>
-            <p>5 mg/kg IV/IO bolus</p>
-            {drugs && <p className={calcValue}>{drugs.amiodarone.dose} mg</p>}
-            <p className="text-xs text-muted-foreground">May repeat up to 2 times</p>
-            <p className="text-xs text-muted-foreground">Max single dose: 300 mg</p>
-          </div>
-          <div className="pt-2 border-t border-gray-200 dark:border-gray-700 space-y-1">
-            <p className="font-semibold">Perfusing Tachycardia:</p>
-            <p>5 mg/kg IV over 20-60 min</p>
-            {drugs && <p className={calcValue}>{drugs.amiodarone.dose} mg</p>}
-            <p className="text-xs text-muted-foreground">May repeat to max daily dose 15 mg/kg</p>
-          </div>
-        </CardContent>
-      </Card>
+      {/* Results count */}
+      {drugSearch && (
+        <p className="text-xs text-muted-foreground">
+          Found {filteredDrugs.length} of {allDrugs.length} drugs
+        </p>
+      )}
 
-      {/* Lidocaine */}
-      <Card className="nightingale-card border-l-4 border-gray-500">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-base font-bold">Lidocaine</CardTitle>
-          <p className="text-xs text-muted-foreground">Alternative to Amiodarone</p>
-        </CardHeader>
-        <CardContent className="space-y-2 text-sm">
-          <div className="space-y-1">
-            <p className="font-semibold">VF/Pulseless VT:</p>
-            <p>Initial: 1 mg/kg IV/IO bolus</p>
-            {drugs && <p className={calcValue}>{drugs.lidocaine.bolus} mg</p>}
-          </div>
-          <div className="pt-2 border-t border-gray-200 dark:border-gray-700 space-y-1">
-            <p className="font-semibold">Maintenance Infusion:</p>
-            <p>20-50 mcg/kg/min</p>
-            {drugs && <p className={calcValueSm}>{drugs.lidocaine.infusionMin}-{drugs.lidocaine.infusionMax} mcg/min</p>}
-          </div>
-          <div className="pt-2 border-t border-gray-200 dark:border-gray-700 space-y-1">
-            <p className="font-semibold">ETT:</p>
-            <p>2-3 mg/kg</p>
-            {drugs && <p className={calcValueSm}>{(w * 2).toFixed(1)}-{(w * 3).toFixed(1)} mg</p>}
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Adenosine */}
-      <Card className="nightingale-card border-l-4 border-blue-500">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-base font-bold text-blue-700 dark:text-blue-400">Adenosine</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-2 text-sm">
-          <div className="space-y-1">
-            <p className="font-semibold">SVT:</p>
-            <p>1st dose: 0.1 mg/kg rapid IV push (max 6 mg)</p>
-            {drugs && <p className={calcValue}>{drugs.adenosine.first} mg</p>}
-          </div>
-          <div className="pt-2 border-t border-gray-200 dark:border-gray-700 space-y-1">
-            <p>2nd dose: 0.2 mg/kg rapid IV push (max 12 mg)</p>
-            {drugs && <p className={calcValue}>{drugs.adenosine.second} mg</p>}
-          </div>
-          <div className="pt-2 border-t border-gray-200 dark:border-gray-700">
-            <p className="text-xs text-muted-foreground font-semibold">Administration:</p>
-            <p className="text-xs text-muted-foreground">• Use rapid IV push technique</p>
-            <p className="text-xs text-muted-foreground">• Follow immediately with NS flush (5-10 mL)</p>
-            <p className="text-xs text-muted-foreground">• Use proximal IV site if possible</p>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Atropine */}
-      <Card className="nightingale-card border-l-4 border-green-500">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-base font-bold text-green-700 dark:text-green-400">Atropine</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-2 text-sm">
-          <div className="space-y-1">
-            <p className="font-semibold">Symptomatic Bradycardia:</p>
-            <p>0.02 mg/kg IV/IO</p>
-            {drugs && <p className={calcValue}>{drugs.atropine.dose} mg</p>}
-            <p className="text-xs text-muted-foreground">Min dose: 0.1 mg</p>
-            <p className="text-xs text-muted-foreground">Max single dose: 0.5 mg</p>
-            <p className="text-xs text-muted-foreground">May repeat once</p>
-          </div>
-          <div className="pt-2 border-t border-gray-200 dark:border-gray-700 space-y-1">
-            <p className="font-semibold">ETT:</p>
-            <p>0.04-0.06 mg/kg</p>
-            {drugs && <p className={calcValueSm}>{(w * 0.04).toFixed(2)}-{(w * 0.06).toFixed(2)} mg</p>}
-          </div>
-          <div className="pt-2 border-t border-gray-200 dark:border-gray-700">
-            <p className="text-xs text-muted-foreground">Use for increased vagal tone or primary AV block. Unlikely to be effective for hypoxic/ischemic bradycardia.</p>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Sodium Bicarbonate */}
-      <Card className="nightingale-card border-l-4 border-amber-500">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-base font-bold text-amber-700 dark:text-amber-400">Sodium Bicarbonate</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-2 text-sm">
-          <div className="space-y-1">
-            <p className="font-semibold">Metabolic Acidosis / Hyperkalemia:</p>
-            <p>1 mEq/kg IV/IO slow push</p>
-            {drugs && <p className={calcValue}>{drugs.nahco3.dose} mEq</p>}
-          </div>
-          <div className="pt-2 border-t border-gray-200 dark:border-gray-700">
-            <p className="text-xs text-muted-foreground font-semibold">Indications:</p>
-            <p className="text-xs text-muted-foreground">• Severe metabolic acidosis (pH &lt;7.1)</p>
-            <p className="text-xs text-muted-foreground">• Hyperkalemia</p>
-            <p className="text-xs text-muted-foreground">• Tricyclic antidepressant overdose</p>
-            <p className="text-xs text-muted-foreground">• Sodium channel blocker toxicity</p>
-          </div>
-          <div className="pt-2 border-t border-gray-200 dark:border-gray-700">
-            <p className="text-xs text-muted-foreground">Ensure adequate ventilation before giving. Do not mix with calcium.</p>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Calcium */}
-      <Card className="nightingale-card border-l-4 border-teal-500">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-base font-bold text-teal-700 dark:text-teal-400">Calcium</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-2 text-sm">
-          <div className="space-y-1">
-            <p className="font-semibold">Calcium Chloride 10% (27 mg/mL Ca):</p>
-            <p>20 mg/kg IV/IO slow push</p>
-            {drugs && <p className={calcValue}>{drugs.calcium.chloride} mg ({drugs.calcium.chlorideVol} mL)</p>}
-            <p className="text-xs text-muted-foreground">Max: 2 g (20 mL)</p>
-            <p className="text-xs text-muted-foreground">Central line preferred</p>
-          </div>
-          <div className="pt-2 border-t border-gray-200 dark:border-gray-700 space-y-1">
-            <p className="font-semibold">Calcium Gluconate 10% (9 mg/mL Ca):</p>
-            <p>60 mg/kg IV/IO slow push</p>
-            {drugs && <p className={calcValue}>{drugs.calcium.gluconate} mg ({drugs.calcium.gluconateVol} mL)</p>}
-            <p className="text-xs text-muted-foreground">Max: 3 g (30 mL)</p>
-            <p className="text-xs text-muted-foreground">Safer for peripheral IV</p>
-          </div>
-          <div className="pt-2 border-t border-gray-200 dark:border-gray-700">
-            <p className="text-xs text-muted-foreground font-semibold">Indications:</p>
-            <p className="text-xs text-muted-foreground">• Documented hypocalcemia</p>
-            <p className="text-xs text-muted-foreground">• Hyperkalemia</p>
-            <p className="text-xs text-muted-foreground">• Hypermagnesemia</p>
-            <p className="text-xs text-muted-foreground">• Calcium channel blocker overdose</p>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Glucose */}
-      <Card className="nightingale-card border-l-4 border-orange-500">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-base font-bold text-orange-700 dark:text-orange-400">Glucose</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-2 text-sm">
-          <div className="space-y-1">
-            <p className="font-semibold">Hypoglycemia:</p>
-            <p>0.5-1 g/kg IV/IO</p>
-            {drugs && <p className={calcValue}>{drugs.glucose.dose}-{(w * 1).toFixed(1)} g</p>}
-          </div>
-          <div className="pt-2 border-t border-gray-200 dark:border-gray-700 space-y-1">
-            <p className="font-semibold">D10W (Neonates/Infants):</p>
-            <p>5-10 mL/kg</p>
-            {drugs && <p className={calcValueSm}>{drugs.glucose.d10Vol}-{(w * 10).toFixed(1)} mL</p>}
-          </div>
-          <div className="pt-2 border-t border-gray-200 dark:border-gray-700 space-y-1">
-            <p className="font-semibold">D25W (Children):</p>
-            <p>2-4 mL/kg</p>
-            {drugs && <p className={calcValueSm}>{(w * 2).toFixed(1)}-{(w * 4).toFixed(1)} mL</p>}
-          </div>
-          <div className="pt-2 border-t border-gray-200 dark:border-gray-700">
-            <p className="text-xs text-muted-foreground">Check blood glucose. D50W not recommended for pediatrics (use D10W or D25W).</p>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Magnesium Sulfate */}
-      <Card className="nightingale-card border-l-4 border-pink-500">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-base font-bold text-pink-700 dark:text-pink-400">Magnesium Sulfate</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-2 text-sm">
-          <div className="space-y-1">
-            <p className="font-semibold">Torsades de Pointes / Hypomagnesemia:</p>
-            <p>25-50 mg/kg IV/IO over 10-20 min</p>
-            {drugs && <p className={calcValue}>{(w * 25).toFixed(0)}-{(w * 50).toFixed(0)} mg</p>}
-            <p className="text-xs text-muted-foreground">Max: 2 g</p>
-          </div>
-          <div className="pt-2 border-t border-gray-200 dark:border-gray-700 space-y-1">
-            <p className="font-semibold">Asthma (refractory):</p>
-            <p>25-75 mg/kg IV over 20 min</p>
-            {drugs && <p className={calcValueSm}>{(w * 25).toFixed(0)}-{(w * 75).toFixed(0)} mg</p>}
-            <p className="text-xs text-muted-foreground">Max: 2 g</p>
-          </div>
-          <div className="pt-2 border-t border-gray-200 dark:border-gray-700">
-            <p className="text-xs text-muted-foreground">Rapid administration may cause hypotension. Monitor BP during infusion.</p>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Procainamide */}
-      <Card className="nightingale-card border-l-4 border-indigo-500">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-base font-bold text-indigo-700 dark:text-indigo-400">Procainamide</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-2 text-sm">
-          <div className="space-y-1">
-            <p className="font-semibold">SVT / VT (with pulse):</p>
-            <p>15 mg/kg IV/IO over 30-60 min</p>
-            {drugs && <p className={calcValue}>{(w * 15).toFixed(0)} mg</p>}
-          </div>
-          <div className="pt-2 border-t border-gray-200 dark:border-gray-700">
-            <p className="text-xs text-muted-foreground font-semibold">Monitoring:</p>
-            <p className="text-xs text-muted-foreground">• Continuous ECG and BP monitoring</p>
-            <p className="text-xs text-muted-foreground">• Stop if QRS widens &gt;50%</p>
-            <p className="text-xs text-muted-foreground">• Stop if hypotension occurs</p>
-          </div>
-          <div className="pt-2 border-t border-gray-200 dark:border-gray-700">
-            <p className="text-xs text-muted-foreground">Do not use with amiodarone or other drugs that prolong QT.</p>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Energy Doses */}
-      <Card className="nightingale-card border-l-4 border-yellow-500">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-base font-bold text-yellow-700 dark:text-yellow-400">Energy Doses</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-2 text-sm">
-          <div className="space-y-1">
-            <p className="font-semibold">Defibrillation (VF/pVT):</p>
-            <p>1st shock: 2 J/kg</p>
-            {drugs && <p className={calcValue}>{drugs.defib.first} J</p>}
-            <p>2nd+ shocks: 4 J/kg</p>
-            {drugs && <p className={calcValue}>{drugs.defib.second} J</p>}
-            <p className="text-xs text-muted-foreground">Max: 10 J/kg or adult dose</p>
-          </div>
-          <div className="pt-2 border-t border-gray-200 dark:border-gray-700 space-y-1">
-            <p className="font-semibold">Synchronized Cardioversion:</p>
-            <p>Initial: 0.5-1 J/kg</p>
-            {drugs && <p className={calcValue}>{drugs.cardioversion.first}-{drugs.cardioversion.second} J</p>}
-            <p>Subsequent: 2 J/kg</p>
-            {drugs && <p className={calcValue}>{drugs.cardioversion.max} J</p>}
-          </div>
-          <div className="pt-2 border-t border-gray-200 dark:border-gray-700">
-            <p className="text-xs text-muted-foreground font-semibold">Cardioversion Indications:</p>
-            <p className="text-xs text-muted-foreground">• Unstable SVT</p>
-            <p className="text-xs text-muted-foreground">• Unstable VT with pulse</p>
-            <p className="text-xs text-muted-foreground">Sedate if possible, but do not delay cardioversion if hemodynamically unstable.</p>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* No weight entered message */}
+      {/* No weight warning */}
       {!drugs && (
-        <Card className="nightingale-card border-amber-300 bg-amber-50 dark:bg-amber-900/20">
-          <CardContent className="pt-4">
-            <div className="flex items-center gap-3">
-              <AlertCircle className="h-5 w-5 text-amber-600" />
-              <p className="text-sm text-amber-700 dark:text-amber-400">Enter patient weight above to see calculated doses</p>
-            </div>
+        <div className="p-3 rounded-lg bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 flex items-center gap-2">
+          <AlertCircle className="h-4 w-4 text-amber-600" />
+          <p className="text-xs text-amber-700 dark:text-amber-400">Enter weight above to see calculated doses</p>
+        </div>
+      )}
+
+      {/* Drug Cards */}
+      {filteredDrugs.map((drug, idx) => (
+        <Card key={idx} className={`nightingale-card border-l-4 ${colorMap[drug.color]}`}>
+          <CardHeader className="pb-2">
+            <CardTitle className={`text-base font-bold ${textColorMap[drug.color]}`}>{drug.name}</CardTitle>
+            <p className="text-xs text-muted-foreground">{drug.indications}</p>
+          </CardHeader>
+          <CardContent className="space-y-2 text-sm">
+            {drug.doses.map((dose, dIdx) => (
+              <div key={dIdx} className={dIdx > 0 ? "pt-2 border-t border-gray-200 dark:border-gray-700" : ""}>
+                <p className="font-semibold text-xs">{dose.label}:</p>
+                <p>{dose.value}</p>
+                {dose.max && <p className="text-xs text-muted-foreground">{dose.max}</p>}
+                {dose.calc && <p className={calcValue}>{dose.calc}</p>}
+              </div>
+            ))}
+            {drug.notes && (
+              <div className="pt-2 border-t border-gray-200 dark:border-gray-700">
+                <p className="text-xs text-muted-foreground">{drug.notes}</p>
+              </div>
+            )}
           </CardContent>
         </Card>
+      ))}
+
+      {/* No results */}
+      {filteredDrugs.length === 0 && (
+        <div className="text-center py-8 text-muted-foreground">
+          <p>No drugs found matching "{drugSearch}"</p>
+        </div>
       )}
     </div>
   );
@@ -1216,8 +1294,8 @@ const CPRPage = ({ onBack }) => {
           <TabsTrigger value="cpr" className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-900 text-xs">
             CPR
           </TabsTrigger>
-          <TabsTrigger value="medications" className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-900 text-xs">
-            Medications
+          <TabsTrigger value="drugs" className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-900 text-xs">
+            Drugs
           </TabsTrigger>
           <TabsTrigger value="recording" className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-900 text-xs">
             Recording
@@ -1228,8 +1306,8 @@ const CPRPage = ({ onBack }) => {
           <CardiacArrestFlowchart />
         </TabsContent>
 
-        <TabsContent value="medications" className="mt-4">
-          <MedicationsTab />
+        <TabsContent value="drugs" className="mt-4">
+          <DrugsTab />
         </TabsContent>
 
         <TabsContent value="recording" className="mt-4">
