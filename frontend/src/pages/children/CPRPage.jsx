@@ -34,7 +34,8 @@ import {
   Check,
   Search,
   Syringe,
-  Download
+  Download,
+  RefreshCw
 } from "lucide-react";
 import { jsPDF } from "jspdf";
 
@@ -1024,14 +1025,14 @@ const CPRPage = ({ onBack }) => {
       <Card className="nightingale-card">
         <CardContent className="pt-6">
           <div className="text-center mb-6 relative">
-            {/* Small Reset Button - Always visible when there's time or events */}
-            {(elapsedTime > 0 || events.length > 0) && (
+            {/* Small Reset Button - Only enabled after CPR is finished */}
+            {events.some(e => e.type === 'cpr-end') && (
               <button
                 onClick={clearAll}
-                className="absolute top-0 right-0 p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-full transition-colors"
-                title="Reset all"
+                className="absolute top-0 right-0 p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-full transition-colors"
+                title="Reset and start new"
               >
-                <RotateCcw className="h-4 w-4" />
+                <RefreshCw className="h-5 w-5" />
               </button>
             )}
             <div className={`text-6xl font-mono font-bold ${isRunning ? 'text-red-600 dark:text-red-400' : 'text-foreground'}`}>
