@@ -1023,12 +1023,22 @@ const CPRPage = ({ onBack }) => {
       {/* Timer Display */}
       <Card className="nightingale-card">
         <CardContent className="pt-6">
-          <div className="text-center mb-6">
+          <div className="text-center mb-6 relative">
+            {/* Small Reset Button - Always visible when there's time or events */}
+            {(elapsedTime > 0 || events.length > 0) && (
+              <button
+                onClick={clearAll}
+                className="absolute top-0 right-0 p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-full transition-colors"
+                title="Reset all"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            )}
             <div className={`text-6xl font-mono font-bold ${isRunning ? 'text-red-600 dark:text-red-400' : 'text-foreground'}`}>
               {formatTime(elapsedTime)}
             </div>
             <p className="text-sm text-muted-foreground mt-2">
-              {isRunning ? "CPR in progress" : "Ready to start"}
+              {isRunning ? "CPR in progress" : elapsedTime > 0 ? "Paused" : "Ready to start"}
             </p>
           </div>
 
@@ -1072,20 +1082,6 @@ const CPRPage = ({ onBack }) => {
               {elapsedTime > 0 ? "Finish" : "Reset"}
             </Button>
           </div>
-          
-          {/* Clear All button - only show when there are events and timer is stopped */}
-          {!isRunning && events.length > 0 && events.some(e => e.type === 'cpr-end') && (
-            <div className="mt-3 text-center">
-              <Button 
-                size="sm" 
-                variant="ghost" 
-                onClick={clearAll}
-                className="text-xs text-muted-foreground"
-              >
-                Clear All & Start New
-              </Button>
-            </div>
-          )}
         </CardContent>
       </Card>
 
