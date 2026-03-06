@@ -70,21 +70,20 @@ All approach content in the Approaches page supports unified pinch-to-zoom:
 ### March 6, 2026
 - **CPR Page Redesign (PALS Card)**: Complete redesign of the Children > CPR page with interactive flowchart
   - **CPR Tab**: Track-based PALS algorithm following the PALS card exactly
-    - Initial screen: CPR basics (Rate, Depth, C:V ratio) and rhythm selection
-    - VF/pVT (Shockable) track: 7-step algorithm with defibrillation doses
-    - Asystole/PEA (Non-Shockable) track: 7-step algorithm with epinephrine emphasis
-    - Narrow QRS (SVT) track: Vagal maneuvers, adenosine doses
-    - Wide QRS (VT) track: Amiodarone, cardioversion doses
-    - Step-by-step navigation with Previous/Next buttons
-    - Quick Drug Doses collapsible section
-    - H's & T's (Reversible Causes) section
+    - Initial screen: CPR basics (Rate, Depth, C:V ratio, Connect to 12-lead ECG) and rhythm selection
+    - VF/pVT (Shockable) track: Full algorithm with defibrillation doses
+    - Asystole/PEA (Non-Shockable) track: Full algorithm with epinephrine emphasis
+    - **Tachycardia with Pulse section**: Narrow QRS (SVT) and Wide QRS (VT) tracks
+    - H's and T's always visible (not collapsible)
+    - Quick Drug Doses Reference section with all PALS drugs
   - **Recording Tab**: CPR event recorder with timer
     - Timer with Start/Pause/Reset controls
-    - 2-minute pulse check reminder (visual alert when due)
-    - Pulse/Rx/Shock buttons to record timestamped events
-    - Event Log displays all recorded events with elapsed time and wall clock time
-    - Time since last pulse check tracker
-  - Drug calculations based on weight (Epinephrine, Amiodarone, Defibrillation, Cardioversion)
+    - 2-minute pulse check reminder with **phone vibration** (no animation)
+    - **Tap Rx** to show drug selection modal (Epinephrine, Adenosine, Amiodarone, NaHCO₃, Calcium Gluconate)
+    - Timestamp recorded when Rx is pressed (before drug selection)
+    - Pulse events recorded **without timestamp**
+    - **Editable drug names** in event log (pencil icon to edit)
+  - Drug calculations based on weight
   - File: `/app/frontend/src/pages/children/CPRPage.jsx`
 
 ### June 27, 2026
