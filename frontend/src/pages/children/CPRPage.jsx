@@ -74,12 +74,23 @@ const CPRPage = ({ onBack }) => {
     window.scrollTo(0, 0);
   }, []);
 
-  // Auto-scroll event log to bottom when new events are added
+  // Track previous events count to detect new events
+  const prevEventsCountRef = useRef(0);
+
+  // Auto-scroll event log to bottom only when NEW events are added
+  // and only if user is already near the bottom (within 100px)
   useEffect(() => {
-    if (eventLogRef.current) {
-      eventLogRef.current.scrollTop = eventLogRef.current.scrollHeight;
+    if (eventLogRef.current && events.length > prevEventsCountRef.current) {
+      const el = eventLogRef.current;
+      const isNearBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 100;
+      
+      // Only auto-scroll if user is near bottom or it's the first few events
+      if (isNearBottom || events.length <= 3) {
+        el.scrollTop = el.scrollHeight;
+      }
     }
-  }, [events]);
+    prevEventsCountRef.current = events.length;
+  }, [events.length]);
 
   // Vibration function
   const vibrate = (pattern) => {
