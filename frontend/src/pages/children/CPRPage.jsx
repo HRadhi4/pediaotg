@@ -51,7 +51,7 @@ const CPRPage = ({ onBack }) => {
   const [lastRxDrug, setLastRxDrug] = useState(null);
   const [showReminder, setShowReminder] = useState(false);
   const [showDrugMenu, setShowDrugMenu] = useState(false);
-  const [pendingRxEvent, setPendingRxEvent] = useState(null); // Stores time when Rx was pressed
+  const [pendingRxEvent, setPendingRxEvent] = useState(null);
   const [editingEventIndex, setEditingEventIndex] = useState(null);
   const [editingDrugName, setEditingDrugName] = useState("");
   const timerRef = useRef(null);
@@ -70,7 +70,7 @@ const CPRPage = ({ onBack }) => {
     }
   };
 
-  // Timer logic with vibration reminder
+  // Timer logic with 2-minute pulse check reminder
   useEffect(() => {
     if (isRunning) {
       timerRef.current = setInterval(() => {
@@ -80,7 +80,7 @@ const CPRPage = ({ onBack }) => {
           // At exactly 120 seconds, trigger reminder with vibration
           if (timeSinceLastPulse === 120) {
             setShowReminder(true);
-            vibrate([200, 100, 200]); // Vibrate twice: 200ms, pause, 200ms
+            vibrate([200, 100, 200]); // Vibrate twice
           }
           return newTime;
         });
@@ -723,14 +723,20 @@ const CPRPage = ({ onBack }) => {
             </p>
           </div>
 
-          {/* 2-Minute Reminder Alert - No animation, just shows */}
+          {/* 2-Minute Pulse Check Reminder */}
           {showReminder && (
-            <div className="mb-4 p-4 rounded-lg bg-amber-100 dark:bg-amber-900/30 border-2 border-amber-500">
+            <div 
+              className="mb-4 p-4 rounded-lg bg-amber-100 dark:bg-amber-900/30 border-2 border-amber-500 cursor-pointer"
+              onClick={() => {
+                setShowReminder(false);
+                setLastPulseCheck(elapsedTime);
+              }}
+            >
               <div className="flex items-center gap-3">
                 <AlertCircle className="h-6 w-6 text-amber-600" />
                 <div>
                   <p className="font-bold text-amber-700 dark:text-amber-400">2-Minute Pulse Check!</p>
-                  <p className="text-sm text-amber-600 dark:text-amber-500">Assess rhythm and pulse</p>
+                  <p className="text-sm text-amber-600 dark:text-amber-500">Tap to dismiss</p>
                 </div>
               </div>
             </div>
@@ -741,10 +747,7 @@ const CPRPage = ({ onBack }) => {
             <Button
               size="lg"
               variant={isRunning ? "destructive" : "default"}
-              onClick={() => {
-                if (!isRunning && elapsedTime === 0) setLastPulseCheck(0);
-                setIsRunning(!isRunning);
-              }}
+              onClick={() => setIsRunning(!isRunning)}
               className="flex-1 max-w-[150px]"
             >
               {isRunning ? (
@@ -865,21 +868,9 @@ const CPRPage = ({ onBack }) => {
       {/* Time Trackers */}
       {isRunning && (
         <Card className="nightingale-card">
-          <CardContent className="pt-4 space-y-3">
-            {/* Time since last pulse check */}
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-muted-foreground">Time since last pulse check:</span>
-              <span className={`font-mono font-bold ${
-                (elapsedTime - lastPulseCheck) >= 120 
-                  ? 'text-red-600 dark:text-red-400' 
-                  : 'text-foreground'
-              }`}>
-                {formatTime(elapsedTime - lastPulseCheck)}
-              </span>
-            </div>
-            
+          <CardContent className="pt-4">
             {/* Time since last Rx with drug name */}
-            <div className="flex items-center justify-between pt-2 border-t border-gray-200 dark:border-gray-700">
+            <div className="flex items-center justify-between">
               <div className="flex flex-col">
                 <span className="text-sm text-muted-foreground">Time since last Rx:</span>
                 {lastRxDrug && (
