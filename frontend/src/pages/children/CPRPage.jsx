@@ -74,16 +74,8 @@ const CPRPage = ({ onBack }) => {
     window.scrollTo(0, 0);
   }, []);
 
-  // Simple scroll to bottom only when timer stops and new events were added
+  // NO auto-scroll - let user control scroll completely
   const prevEventsCountRef = useRef(0);
-  
-  useEffect(() => {
-    // Only auto-scroll when timer is NOT running
-    if (!isRunning && eventLogRef.current && events.length > prevEventsCountRef.current) {
-      eventLogRef.current.scrollTop = eventLogRef.current.scrollHeight;
-    }
-    prevEventsCountRef.current = events.length;
-  }, [events.length, isRunning]);
 
   // Vibration function
   const vibrate = (pattern) => {
@@ -1539,6 +1531,40 @@ const CPRPage = ({ onBack }) => {
               </CardContent>
             </Card>
 
+            {/* Time Trackers - Moved BEFORE Event Log to prevent scroll issues */}
+            {isRunning && (lastEpiTime > 0 || lastRxTime > 0) && (
+              <Card className="nightingale-card">
+                <CardContent className="pt-4 space-y-3">
+                  {/* Time since last Epinephrine - Always show if Epi was given */}
+                  {lastEpiTime > 0 && (
+                    <div className="flex items-center justify-between p-2 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800">
+                      <div className="flex flex-col">
+                        <span className="text-sm font-semibold text-red-700 dark:text-red-400">Time since last Epinephrine:</span>
+                      </div>
+                      <span className="font-mono font-bold text-red-600 dark:text-red-400 text-lg">
+                        {formatTime(elapsedTime - lastEpiTime)}
+                      </span>
+                    </div>
+                  )}
+                  
+                  {/* Time since last Rx (any drug) */}
+                  {lastRxTime > 0 && (
+                    <div className="flex items-center justify-between">
+                      <div className="flex flex-col">
+                        <span className="text-sm text-muted-foreground">Time since last Rx:</span>
+                        {lastRxDrug && !lastRxDrug.toLowerCase().includes('epinephrine') && (
+                          <span className="text-xs text-blue-600 dark:text-blue-400">({lastRxDrug})</span>
+                        )}
+                      </div>
+                      <span className="font-mono font-bold text-foreground">
+                        {formatTime(elapsedTime - lastRxTime)}
+                      </span>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            )}
+
             {/* Event Log */}
             {events.length > 0 && (
               <Card className="nightingale-card">
@@ -1563,6 +1589,7 @@ const CPRPage = ({ onBack }) => {
                   <div 
                     ref={eventLogRef} 
                     className="space-y-2 max-h-[300px] overflow-y-auto"
+                    style={{ overflowAnchor: 'none' }}
                   >
                     {events.map((event, idx) => (
                       <div
@@ -1649,38 +1676,6 @@ const CPRPage = ({ onBack }) => {
                         </div>
                       </div>
                     ))}
-                  </div>
-                </CardContent>
-              </Card>
-            )}
-
-            {/* Time Trackers */}
-            {isRunning && (
-              <Card className="nightingale-card">
-                <CardContent className="pt-4 space-y-3">
-                  {/* Time since last Epinephrine - Always show if Epi was given */}
-                  {lastEpiTime > 0 && (
-                    <div className="flex items-center justify-between p-2 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800">
-                      <div className="flex flex-col">
-                        <span className="text-sm font-semibold text-red-700 dark:text-red-400">Time since last Epinephrine:</span>
-                      </div>
-                      <span className="font-mono font-bold text-red-600 dark:text-red-400 text-lg">
-                        {formatTime(elapsedTime - lastEpiTime)}
-                      </span>
-                    </div>
-                  )}
-                  
-                  {/* Time since last Rx (any drug) */}
-                  <div className="flex items-center justify-between">
-                    <div className="flex flex-col">
-                      <span className="text-sm text-muted-foreground">Time since last Rx:</span>
-                      {lastRxDrug && !lastRxDrug.toLowerCase().includes('epinephrine') && (
-                        <span className="text-xs text-blue-600 dark:text-blue-400">({lastRxDrug})</span>
-                      )}
-                    </div>
-                    <span className="font-mono font-bold text-foreground">
-                      {lastRxTime > 0 ? formatTime(elapsedTime - lastRxTime) : '--:--'}
-                    </span>
                   </div>
                 </CardContent>
               </Card>
