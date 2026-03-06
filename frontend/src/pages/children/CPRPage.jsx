@@ -346,154 +346,156 @@ const CPRPage = ({ onBack }) => {
         <p className="font-bold text-sm text-center">2. Check Rhythm - Shockable?</p>
       </FlowBox>
 
-      {/* Branch: Cardiac Arrest - Shockable vs Non-Shockable */}
-      <div className="grid grid-cols-2 gap-2">
-        {/* SHOCKABLE PATHWAY */}
-        <div className="space-y-2">
-          <Button
-            variant={selectedTrack === 'shockable' ? 'default' : 'outline'}
-            className={`w-full h-auto py-2 text-xs ${selectedTrack === 'shockable' ? 'bg-amber-500 hover:bg-amber-600' : 'border-amber-400'}`}
-            onClick={() => setSelectedTrack(selectedTrack === 'shockable' ? null : 'shockable')}
-          >
-            <div className="flex flex-col items-center">
-              <Zap className="h-4 w-4 mb-1" />
-              <span className="font-bold">VF / pVT</span>
-              <span className="text-[10px] opacity-80">Shockable</span>
-            </div>
-          </Button>
+      {/* Rhythm Selection Buttons - Side by Side */}
+      <div className="grid grid-cols-2 gap-2 mb-3">
+        {/* SHOCKABLE Button */}
+        <Button
+          variant={selectedTrack === 'shockable' ? 'default' : 'outline'}
+          className={`w-full h-auto py-2 text-xs ${selectedTrack === 'shockable' ? 'bg-amber-500 hover:bg-amber-600' : 'border-amber-400'}`}
+          onClick={() => setSelectedTrack(selectedTrack === 'shockable' ? null : 'shockable')}
+        >
+          <div className="flex flex-col items-center">
+            <Zap className="h-4 w-4 mb-1" />
+            <span className="font-bold">VF / pVT</span>
+            <span className="text-[10px] opacity-80">Shockable</span>
+          </div>
+        </Button>
 
-          {selectedTrack === 'shockable' && (
-            <div className="space-y-2 animate-in slide-in-from-top-2">
-              <FlowArrow />
-              <FlowBox color="amber" title="3. Shock">
-                <div className="flex items-center gap-1 mb-1">
-                  <Zap className="h-3 w-3 text-amber-600" />
-                  <span className="font-semibold">Defibrillation</span>
-                </div>
-                <p><span className={calcValueSm}>2 J/kg</span></p>
-                {drugs && <p className={calcValue}>{drugs.defib.first} J</p>}
-              </FlowBox>
-              
-              <FlowArrow />
-              <FlowBox color="gray" title="4. CPR 2 min">
-                <p>• IV/IO access</p>
-              </FlowBox>
-
-              <FlowArrow label="Rhythm check" />
-              <FlowBox color="amber" title="5. Shock">
-                <div className="flex items-center gap-1 mb-1">
-                  <Zap className="h-3 w-3 text-amber-600" />
-                  <span className="font-semibold">Defibrillation</span>
-                </div>
-                <p><span className={calcValueSm}>4 J/kg</span></p>
-                {drugs && <p className={calcValue}>{drugs.defib.second} J</p>}
-              </FlowBox>
-
-              <FlowArrow />
-              <FlowBox color="red" title="6. CPR 2 min + Epinephrine">
-                <div className="flex items-center gap-1 mb-1">
-                  <Syringe className="h-3 w-3 text-red-600" />
-                  <span className="font-semibold">Epi 0.01 mg/kg IV/IO q3-5min</span>
-                </div>
-                {drugs && <p className={calcValue}>{drugs.epinephrine.dose} mg ({drugs.epinephrine.volume} mL)</p>}
-                <p className="mt-1">• Consider advanced airway</p>
-              </FlowBox>
-
-              <FlowArrow label="Rhythm check" />
-              <FlowBox color="amber" title="7. Shock">
-                <div className="flex items-center gap-1 mb-1">
-                  <Zap className="h-3 w-3 text-amber-600" />
-                  <span className="font-semibold">Defibrillation</span>
-                </div>
-                <p>≥4 J/kg (max 10 J/kg)</p>
-                {drugs && <p className={calcValue}>{drugs.defib.second}-{drugs.defib.max} J</p>}
-              </FlowBox>
-
-              <FlowArrow />
-              <FlowBox color="purple" title="8. CPR 2 min + Amiodarone">
-                <div className="flex items-center gap-1 mb-1">
-                  <Syringe className="h-3 w-3 text-purple-600" />
-                  <span className="font-semibold">Amiodarone 5 mg/kg IV/IO</span>
-                </div>
-                {drugs && <p className={calcValue}>{drugs.amiodarone.dose} mg (max 300mg)</p>}
-                <p className="mt-1 text-[9px]">Or Lidocaine 1 mg/kg {drugs && <span className={calcValueSm}>({drugs.lidocaine.bolus} mg)</span>}</p>
-              </FlowBox>
-
-              <FlowArrow label="Repeat cycle" />
-              <FlowBox color="green" title="Continue">
-                <p>• Shock → CPR 2 min → Rhythm check</p>
-                <p>• Epinephrine q3-5 min</p>
-                <p>• Treat reversible causes</p>
-                <p className="font-bold mt-1">If ROSC → Post-arrest care</p>
-              </FlowBox>
-            </div>
-          )}
-        </div>
-
-        {/* NON-SHOCKABLE PATHWAY */}
-        <div className="space-y-2">
-          <Button
-            variant={selectedTrack === 'non-shockable' ? 'default' : 'outline'}
-            className={`w-full h-auto py-2 text-xs ${selectedTrack === 'non-shockable' ? 'bg-blue-500 hover:bg-blue-600' : 'border-blue-400'}`}
-            onClick={() => setSelectedTrack(selectedTrack === 'non-shockable' ? null : 'non-shockable')}
-          >
-            <div className="flex flex-col items-center">
-              <Activity className="h-4 w-4 mb-1" />
-              <span className="font-bold">Asystole / PEA</span>
-              <span className="text-[10px] opacity-80">Non-Shockable</span>
-            </div>
-          </Button>
-
-          {selectedTrack === 'non-shockable' && (
-            <div className="space-y-2 animate-in slide-in-from-top-2">
-              <FlowArrow />
-              <FlowBox color="blue" title="3. CPR 2 min">
-                <p>• IV/IO access</p>
-              </FlowBox>
-
-              <FlowArrow />
-              <FlowBox color="red" title="4. Epinephrine ASAP">
-                <div className="flex items-center gap-1 mb-1">
-                  <Syringe className="h-3 w-3 text-red-600" />
-                  <span className="font-semibold">Epi 0.01 mg/kg IV/IO</span>
-                </div>
-                {drugs && <p className={calcValue}>{drugs.epinephrine.dose} mg ({drugs.epinephrine.volume} mL)</p>}
-                <p className="text-[9px] mt-1">Give as soon as IV/IO available</p>
-              </FlowBox>
-
-              <FlowArrow />
-              <FlowBox color="gray" title="5. CPR 2 min">
-                <p>• Consider advanced airway</p>
-                <p>• Capnography if intubated</p>
-              </FlowBox>
-
-              <FlowArrow label="Rhythm check" />
-              <FlowBox color="blue" title="6. If still Asystole/PEA">
-                <p>• CPR 2 min</p>
-                <div className="flex items-center gap-1">
-                  <Syringe className="h-3 w-3 text-red-600" />
-                  <span>Epinephrine q3-5 min</span>
-                </div>
-                {drugs && <p className={calcValueSm}>{drugs.epinephrine.dose} mg</p>}
-              </FlowBox>
-
-              <FlowArrow />
-              <FlowBox color="amber" title="7. Treat Reversible Causes">
-                <p>Search for H's & T's</p>
-                <p className="font-semibold mt-1">If rhythm becomes shockable → Shock pathway</p>
-              </FlowBox>
-
-              <FlowArrow label="Repeat" />
-              <FlowBox color="green" title="Continue">
-                <p>• CPR 2 min → Rhythm check</p>
-                <p>• Epinephrine q3-5 min</p>
-                <p>• Treat reversible causes</p>
-                <p className="font-bold mt-1">If ROSC → Post-arrest care</p>
-              </FlowBox>
-            </div>
-          )}
-        </div>
+        {/* NON-SHOCKABLE Button */}
+        <Button
+          variant={selectedTrack === 'non-shockable' ? 'default' : 'outline'}
+          className={`w-full h-auto py-2 text-xs ${selectedTrack === 'non-shockable' ? 'bg-blue-500 hover:bg-blue-600' : 'border-blue-400'}`}
+          onClick={() => setSelectedTrack(selectedTrack === 'non-shockable' ? null : 'non-shockable')}
+        >
+          <div className="flex flex-col items-center">
+            <Activity className="h-4 w-4 mb-1" />
+            <span className="font-bold">Asystole / PEA</span>
+            <span className="text-[10px] opacity-80">Non-Shockable</span>
+          </div>
+        </Button>
       </div>
+
+      {/* SHOCKABLE (VF/pVT) Expanded Content - Full Width */}
+      {selectedTrack === 'shockable' && (
+        <div className="space-y-2 animate-in slide-in-from-top-2">
+          <FlowArrow />
+          <FlowBox color="amber" title="3. Shock">
+            <div className="flex items-center gap-1.5 mb-1">
+              <Zap className="h-4 w-4 text-amber-600" />
+              <span className="font-bold text-xs">Defibrillation</span>
+            </div>
+            <p>2 J/kg</p>
+            {drugs && <p className={calcValue}>{drugs.defib.first} J</p>}
+          </FlowBox>
+          
+          <FlowArrow />
+          <FlowBox color="gray" title="4. CPR 2 min">
+            <p>• IV/IO access</p>
+          </FlowBox>
+
+          <FlowArrow label="Rhythm check" />
+          <FlowBox color="amber" title="5. Shock">
+            <div className="flex items-center gap-1.5 mb-1">
+              <Zap className="h-4 w-4 text-amber-600" />
+              <span className="font-bold text-xs">Defibrillation</span>
+            </div>
+            <p>4 J/kg</p>
+            {drugs && <p className={calcValue}>{drugs.defib.second} J</p>}
+          </FlowBox>
+
+          <FlowArrow />
+          <FlowBox color="red" title="6. CPR 2 min + Epinephrine">
+            <div className="flex items-center gap-1.5 mb-1">
+              <Syringe className="h-4 w-4 text-red-600" />
+              <span className="font-bold text-xs">Epinephrine</span>
+            </div>
+            <p>0.01 mg/kg IV/IO q3-5min</p>
+            {drugs && <p className={calcValue}>{drugs.epinephrine.dose} mg ({drugs.epinephrine.volume} mL)</p>}
+            <p className="mt-1">• Consider advanced airway</p>
+          </FlowBox>
+
+          <FlowArrow label="Rhythm check" />
+          <FlowBox color="amber" title="7. Shock">
+            <div className="flex items-center gap-1.5 mb-1">
+              <Zap className="h-4 w-4 text-amber-600" />
+              <span className="font-bold text-xs">Defibrillation</span>
+            </div>
+            <p>≥4 J/kg (max 10 J/kg)</p>
+            {drugs && <p className={calcValue}>{drugs.defib.second}-{drugs.defib.max} J</p>}
+          </FlowBox>
+
+          <FlowArrow />
+          <FlowBox color="purple" title="8. CPR 2 min + Amiodarone">
+            <div className="flex items-center gap-1.5 mb-1">
+              <Syringe className="h-4 w-4 text-purple-600" />
+              <span className="font-bold text-xs">Amiodarone</span>
+            </div>
+            <p>5 mg/kg IV/IO bolus</p>
+            {drugs && <p className={calcValue}>{drugs.amiodarone.dose} mg (max 300mg)</p>}
+            <p className="mt-1 text-[9px]">Or Lidocaine 1 mg/kg {drugs && <span className={calcValueSm}>({drugs.lidocaine.bolus} mg)</span>}</p>
+          </FlowBox>
+
+          <FlowArrow label="Repeat cycle" />
+          <FlowBox color="green" title="Continue">
+            <p>• Shock → CPR 2 min → Rhythm check</p>
+            <p>• Epinephrine q3-5 min</p>
+            <p>• Treat reversible causes</p>
+            <p className="font-bold mt-1">If ROSC → Post-arrest care</p>
+          </FlowBox>
+        </div>
+      )}
+
+      {/* NON-SHOCKABLE (Asystole/PEA) Expanded Content - Full Width */}
+      {selectedTrack === 'non-shockable' && (
+        <div className="space-y-2 animate-in slide-in-from-top-2">
+          <FlowArrow />
+          <FlowBox color="blue" title="3. CPR 2 min">
+            <p>• IV/IO access</p>
+          </FlowBox>
+
+          <FlowArrow />
+          <FlowBox color="red" title="4. Epinephrine ASAP">
+            <div className="flex items-center gap-1.5 mb-1">
+              <Syringe className="h-4 w-4 text-red-600" />
+              <span className="font-bold text-xs">Epinephrine</span>
+            </div>
+            <p>0.01 mg/kg IV/IO</p>
+            {drugs && <p className={calcValue}>{drugs.epinephrine.dose} mg ({drugs.epinephrine.volume} mL)</p>}
+            <p className="text-[9px] mt-1">Give as soon as IV/IO available</p>
+          </FlowBox>
+
+          <FlowArrow />
+          <FlowBox color="gray" title="5. CPR 2 min">
+            <p>• Consider advanced airway</p>
+            <p>• Capnography if intubated</p>
+          </FlowBox>
+
+          <FlowArrow label="Rhythm check" />
+          <FlowBox color="blue" title="6. If still Asystole/PEA">
+            <p>• CPR 2 min</p>
+            <div className="flex items-center gap-1.5">
+              <Syringe className="h-4 w-4 text-red-600" />
+              <span className="font-bold text-xs">Epinephrine</span>
+              <span>q3-5 min</span>
+            </div>
+            {drugs && <p className={calcValueSm}>{drugs.epinephrine.dose} mg</p>}
+          </FlowBox>
+
+          <FlowArrow />
+          <FlowBox color="amber" title="7. Treat Reversible Causes">
+            <p>Search for H's & T's</p>
+            <p className="font-semibold mt-1">If rhythm becomes shockable → Shock pathway</p>
+          </FlowBox>
+
+          <FlowArrow label="Repeat" />
+          <FlowBox color="green" title="Continue">
+            <p>• CPR 2 min → Rhythm check</p>
+            <p>• Epinephrine q3-5 min</p>
+            <p>• Treat reversible causes</p>
+            <p className="font-bold mt-1">If ROSC → Post-arrest care</p>
+          </FlowBox>
+        </div>
+      )}
 
       {/* TACHYCARDIA SECTION */}
       <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
@@ -553,15 +555,15 @@ const CPRPage = ({ onBack }) => {
                   <span className="text-sm font-bold text-green-700 dark:text-green-400">STABLE</span>
                 </div>
                 <FlowBox color="green">
-                  <p className="font-bold">Vagal Maneuvers</p>
+                  <p className="font-bold text-xs">Vagal Maneuvers</p>
                   <p>• Ice to face (infants)</p>
                   <p>• Valsalva (older children)</p>
                 </FlowBox>
                 <FlowArrow />
                 <FlowBox color="blue">
-                  <div className="flex items-center gap-1 mb-1">
-                    <Syringe className="h-3 w-3 text-blue-600 flex-shrink-0" />
-                    <span className="font-bold">Adenosine</span>
+                  <div className="flex items-center gap-1.5 mb-1">
+                    <Syringe className="h-4 w-4 text-blue-600 flex-shrink-0" />
+                    <span className="font-bold text-xs">Adenosine</span>
                   </div>
                   <p>Rapid IV push with NS flush</p>
                   <p className="mt-1">1st dose: 0.1 mg/kg (max 6mg)</p>
@@ -576,9 +578,9 @@ const CPRPage = ({ onBack }) => {
                   <span className="text-sm font-bold text-red-700 dark:text-red-400">UNSTABLE</span>
                 </div>
                 <FlowBox color="red">
-                  <div className="flex items-center gap-1 mb-1">
+                  <div className="flex items-center gap-1.5 mb-1">
                     <Zap className="h-4 w-4 text-amber-600 flex-shrink-0" />
-                    <span className="font-bold">Synchronized Cardioversion</span>
+                    <span className="font-bold text-xs">Synchronized Cardioversion</span>
                   </div>
                   <p className="font-semibold">Sedate if possible</p>
                   <p className="mt-1">1st: 0.5-1 J/kg</p>
@@ -614,15 +616,15 @@ const CPRPage = ({ onBack }) => {
                   <span className="text-sm font-bold text-green-700 dark:text-green-400">STABLE</span>
                 </div>
                 <FlowBox color="purple">
-                  <p className="font-bold">Expert Consultation</p>
+                  <p className="font-bold text-xs">Expert Consultation</p>
                   <p>• Pediatric cardiology</p>
                   <p>• Determine: VT vs SVT with aberrancy</p>
                 </FlowBox>
                 <FlowArrow />
                 <FlowBox color="purple">
-                  <div className="flex items-center gap-1 mb-1">
-                    <Syringe className="h-3 w-3 text-purple-600 flex-shrink-0" />
-                    <span className="font-bold">Amiodarone</span>
+                  <div className="flex items-center gap-1.5 mb-1">
+                    <Syringe className="h-4 w-4 text-purple-600 flex-shrink-0" />
+                    <span className="font-bold text-xs">Amiodarone</span>
                   </div>
                   <p>For stable monomorphic VT</p>
                   <p>5 mg/kg IV over 20-60 min</p>
@@ -635,9 +637,9 @@ const CPRPage = ({ onBack }) => {
                   <span className="text-sm font-bold text-red-700 dark:text-red-400">UNSTABLE</span>
                 </div>
                 <FlowBox color="red">
-                  <div className="flex items-center gap-1 mb-1">
+                  <div className="flex items-center gap-1.5 mb-1">
                     <Zap className="h-4 w-4 text-amber-600 flex-shrink-0" />
-                    <span className="font-bold">Synchronized Cardioversion</span>
+                    <span className="font-bold text-xs">Synchronized Cardioversion</span>
                   </div>
                   <p className="font-semibold">Sedate if possible</p>
                   <p className="mt-1">1st: 0.5-1 J/kg</p>
