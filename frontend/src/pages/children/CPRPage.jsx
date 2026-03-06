@@ -294,7 +294,7 @@ const CPRPage = ({ onBack }) => {
   );
 
   // Flowchart Box Component
-  const FlowBox = ({ title, children, color = "gray", highlight = false }) => {
+  const FlowBox = ({ title, children, color = "gray", highlight = false, compact = false }) => {
     const colors = {
       red: "border-red-400 bg-red-50 dark:bg-red-900/20",
       blue: "border-blue-400 bg-blue-50 dark:bg-blue-900/20",
@@ -304,7 +304,7 @@ const CPRPage = ({ onBack }) => {
       gray: "border-gray-300 bg-gray-50 dark:bg-gray-800/50",
     };
     return (
-      <div className={`p-2 rounded-lg border-2 ${colors[color]} ${highlight ? 'ring-2 ring-offset-1 ring-red-400' : ''}`}>
+      <div className={`${compact ? 'p-1.5' : 'p-2'} rounded-lg border-2 ${colors[color]} ${highlight ? 'ring-2 ring-offset-1 ring-red-400' : ''}`}>
         {title && <p className="font-bold text-xs mb-1">{title}</p>}
         <div className="text-[10px] space-y-0.5">{children}</div>
       </div>
@@ -501,150 +501,153 @@ const CPRPage = ({ onBack }) => {
           <p className="text-sm font-bold text-blue-700 dark:text-blue-400">TACHYCARDIA WITH PULSE</p>
         </div>
         
-        <div className="grid grid-cols-2 gap-2">
-          {/* NARROW QRS */}
-          <div className="space-y-2">
-            <Button
-              variant={selectedTrack === 'narrow-qrs' ? 'default' : 'outline'}
-              className={`w-full h-auto py-2 text-xs ${selectedTrack === 'narrow-qrs' ? 'bg-green-500 hover:bg-green-600' : 'border-green-400'}`}
-              onClick={() => setSelectedTrack(selectedTrack === 'narrow-qrs' ? null : 'narrow-qrs')}
-            >
-              <div className="flex flex-col items-center">
-                <span className="font-bold">Narrow QRS</span>
-                <span className="text-[10px] opacity-80">≤0.09 sec (SVT)</span>
-              </div>
-            </Button>
+        {/* Track Selection Buttons */}
+        <div className="grid grid-cols-2 gap-2 mb-3">
+          {/* NARROW QRS Button */}
+          <Button
+            variant={selectedTrack === 'narrow-qrs' ? 'default' : 'outline'}
+            className={`w-full h-auto py-2 text-xs ${selectedTrack === 'narrow-qrs' ? 'bg-green-500 hover:bg-green-600' : 'border-green-400'}`}
+            onClick={() => setSelectedTrack(selectedTrack === 'narrow-qrs' ? null : 'narrow-qrs')}
+          >
+            <div className="flex flex-col items-center">
+              <span className="font-bold">Narrow QRS</span>
+              <span className="text-[10px] opacity-80">≤0.09 sec (SVT)</span>
+            </div>
+          </Button>
 
-            {selectedTrack === 'narrow-qrs' && (
-              <div className="space-y-2 animate-in slide-in-from-top-2">
-                <FlowArrow />
-                <FlowBox color="green" title="1. Initial Assessment">
-                  <p>• Support ABCs, give O₂</p>
-                  <p>• IV/IO access, 12-lead ECG</p>
-                  <p>• Identify: Sinus tachy vs SVT</p>
-                </FlowBox>
-
-                <FlowArrow />
-                <FlowBox color="gray" title="2. Hemodynamically Stable?">
-                  <p className="font-semibold">Signs of instability:</p>
-                  <p>• Hypotension, Altered mental status</p>
-                  <p>• Signs of shock</p>
-                </FlowBox>
-
-                <FlowArrow />
-                {/* Side-by-side Stable vs Unstable */}
-                <div className="grid grid-cols-2 gap-1">
-                  {/* STABLE PATH */}
-                  <div className="space-y-1">
-                    <div className="text-center py-1 rounded bg-green-100 dark:bg-green-900/30 border border-green-300">
-                      <span className="text-xs font-bold text-green-700 dark:text-green-400">STABLE</span>
-                    </div>
-                    <FlowBox color="green">
-                      <p className="font-bold">Vagal</p>
-                      <p>Ice / Valsalva</p>
-                    </FlowBox>
-                    <FlowArrow />
-                    <FlowBox color="blue">
-                      <div className="flex items-center gap-1">
-                        <Syringe className="h-3 w-3 text-blue-600 flex-shrink-0" />
-                        <span className="font-bold">Adeno</span>
-                      </div>
-                      <p>1st: 0.1 mg/kg</p>
-                      {drugs && <p className={calcValueSm}>{drugs.adenosine.first} mg</p>}
-                      <p>2nd: 0.2 mg/kg</p>
-                      {drugs && <p className={calcValueSm}>{drugs.adenosine.second} mg</p>}
-                    </FlowBox>
-                  </div>
-                  {/* UNSTABLE PATH */}
-                  <div className="space-y-1">
-                    <div className="text-center py-1 rounded bg-red-100 dark:bg-red-900/30 border border-red-300">
-                      <span className="text-xs font-bold text-red-700 dark:text-red-400">UNSTABLE</span>
-                    </div>
-                    <FlowBox color="red">
-                      <div className="flex items-center gap-1">
-                        <Zap className="h-3 w-3 text-amber-600 flex-shrink-0" />
-                        <span className="font-bold">Sync CV</span>
-                      </div>
-                      <p>Sedate if able</p>
-                      <p>0.5-1 → 2 J/kg</p>
-                      {drugs && <p className={calcValue}>{drugs.cardioversion.first}-{drugs.cardioversion.max} J</p>}
-                    </FlowBox>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* WIDE QRS */}
-          <div className="space-y-2">
-            <Button
-              variant={selectedTrack === 'wide-qrs' ? 'default' : 'outline'}
-              className={`w-full h-auto py-2 text-xs ${selectedTrack === 'wide-qrs' ? 'bg-purple-500 hover:bg-purple-600' : 'border-purple-400'}`}
-              onClick={() => setSelectedTrack(selectedTrack === 'wide-qrs' ? null : 'wide-qrs')}
-            >
-              <div className="flex flex-col items-center">
-                <span className="font-bold">Wide QRS</span>
-                <span className="text-[10px] opacity-80">&gt;0.09 sec (VT)</span>
-              </div>
-            </Button>
-
-            {selectedTrack === 'wide-qrs' && (
-              <div className="space-y-2 animate-in slide-in-from-top-2">
-                <FlowArrow />
-                <FlowBox color="purple" title="1. Initial Assessment">
-                  <p>• Support ABCs, give O₂</p>
-                  <p>• IV/IO access, 12-lead ECG</p>
-                  <p>• Assume VT until proven otherwise</p>
-                </FlowBox>
-
-                <FlowArrow />
-                <FlowBox color="gray" title="2. Pulse Present?">
-                  <p className="font-semibold text-red-600">Pulseless → Cardiac Arrest (VF/pVT)</p>
-                </FlowBox>
-
-                <FlowArrow />
-                {/* Side-by-side Stable vs Unstable */}
-                <div className="grid grid-cols-2 gap-1">
-                  {/* STABLE PATH */}
-                  <div className="space-y-1">
-                    <div className="text-center py-1 rounded bg-green-100 dark:bg-green-900/30 border border-green-300">
-                      <span className="text-xs font-bold text-green-700 dark:text-green-400">STABLE</span>
-                    </div>
-                    <FlowBox color="purple">
-                      <p className="font-bold">Consult</p>
-                      <p>Peds cardiology</p>
-                    </FlowBox>
-                    <FlowArrow />
-                    <FlowBox color="purple">
-                      <div className="flex items-center gap-1">
-                        <Syringe className="h-3 w-3 text-purple-600 flex-shrink-0" />
-                        <span className="font-bold">Amio</span>
-                      </div>
-                      <p>5 mg/kg IV</p>
-                      <p>over 20-60 min</p>
-                      {drugs && <p className={calcValue}>{drugs.amiodarone.dose} mg</p>}
-                    </FlowBox>
-                  </div>
-                  {/* UNSTABLE PATH */}
-                  <div className="space-y-1">
-                    <div className="text-center py-1 rounded bg-red-100 dark:bg-red-900/30 border border-red-300">
-                      <span className="text-xs font-bold text-red-700 dark:text-red-400">UNSTABLE</span>
-                    </div>
-                    <FlowBox color="red">
-                      <div className="flex items-center gap-1">
-                        <Zap className="h-3 w-3 text-amber-600 flex-shrink-0" />
-                        <span className="font-bold">Sync CV</span>
-                      </div>
-                      <p>Sedate if able</p>
-                      <p>0.5-1 → 2 J/kg</p>
-                      {drugs && <p className={calcValue}>{drugs.cardioversion.first}-{drugs.cardioversion.max} J</p>}
-                    </FlowBox>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
+          {/* WIDE QRS Button */}
+          <Button
+            variant={selectedTrack === 'wide-qrs' ? 'default' : 'outline'}
+            className={`w-full h-auto py-2 text-xs ${selectedTrack === 'wide-qrs' ? 'bg-purple-500 hover:bg-purple-600' : 'border-purple-400'}`}
+            onClick={() => setSelectedTrack(selectedTrack === 'wide-qrs' ? null : 'wide-qrs')}
+          >
+            <div className="flex flex-col items-center">
+              <span className="font-bold">Wide QRS</span>
+              <span className="text-[10px] opacity-80">&gt;0.09 sec (VT)</span>
+            </div>
+          </Button>
         </div>
+
+        {/* NARROW QRS Expanded Content - Full Width */}
+        {selectedTrack === 'narrow-qrs' && (
+          <div className="space-y-2 animate-in slide-in-from-top-2">
+            <FlowArrow />
+            <FlowBox color="green" title="1. Initial Assessment">
+              <p>• Support ABCs, give O₂</p>
+              <p>• IV/IO access, 12-lead ECG</p>
+              <p>• Identify: Sinus tachy vs SVT</p>
+            </FlowBox>
+
+            <FlowArrow />
+            <FlowBox color="gray" title="2. Hemodynamically Stable?">
+              <p className="font-semibold">Signs of instability:</p>
+              <p>• Hypotension, Altered mental status, Signs of shock</p>
+            </FlowBox>
+
+            <FlowArrow />
+            {/* Side-by-side Stable vs Unstable - Now Full Width */}
+            <div className="grid grid-cols-2 gap-3">
+              {/* STABLE PATH */}
+              <div className="space-y-2">
+                <div className="text-center py-1.5 rounded bg-green-100 dark:bg-green-900/30 border border-green-300">
+                  <span className="text-sm font-bold text-green-700 dark:text-green-400">STABLE</span>
+                </div>
+                <FlowBox color="green">
+                  <p className="font-bold">Vagal Maneuvers</p>
+                  <p>• Ice to face (infants)</p>
+                  <p>• Valsalva (older children)</p>
+                </FlowBox>
+                <FlowArrow />
+                <FlowBox color="blue">
+                  <div className="flex items-center gap-1 mb-1">
+                    <Syringe className="h-3 w-3 text-blue-600 flex-shrink-0" />
+                    <span className="font-bold">Adenosine</span>
+                  </div>
+                  <p>Rapid IV push with NS flush</p>
+                  <p className="mt-1">1st dose: 0.1 mg/kg (max 6mg)</p>
+                  {drugs && <p className={calcValue}>{drugs.adenosine.first} mg</p>}
+                  <p className="mt-1">2nd dose: 0.2 mg/kg (max 12mg)</p>
+                  {drugs && <p className={calcValue}>{drugs.adenosine.second} mg</p>}
+                </FlowBox>
+              </div>
+              {/* UNSTABLE PATH */}
+              <div className="space-y-2">
+                <div className="text-center py-1.5 rounded bg-red-100 dark:bg-red-900/30 border border-red-300">
+                  <span className="text-sm font-bold text-red-700 dark:text-red-400">UNSTABLE</span>
+                </div>
+                <FlowBox color="red">
+                  <div className="flex items-center gap-1 mb-1">
+                    <Zap className="h-4 w-4 text-amber-600 flex-shrink-0" />
+                    <span className="font-bold">Synchronized Cardioversion</span>
+                  </div>
+                  <p className="font-semibold">Sedate if possible</p>
+                  <p className="mt-1">1st: 0.5-1 J/kg</p>
+                  <p>2nd: increase to 2 J/kg</p>
+                  {drugs && <p className={calcValue}>{drugs.cardioversion.first}-{drugs.cardioversion.max} J</p>}
+                </FlowBox>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* WIDE QRS Expanded Content - Full Width */}
+        {selectedTrack === 'wide-qrs' && (
+          <div className="space-y-2 animate-in slide-in-from-top-2">
+            <FlowArrow />
+            <FlowBox color="purple" title="1. Initial Assessment">
+              <p>• Support ABCs, give O₂</p>
+              <p>• IV/IO access, 12-lead ECG</p>
+              <p>• Assume VT until proven otherwise</p>
+            </FlowBox>
+
+            <FlowArrow />
+            <FlowBox color="gray" title="2. Pulse Present?">
+              <p className="font-semibold text-red-600">Pulseless → Cardiac Arrest (VF/pVT pathway)</p>
+            </FlowBox>
+
+            <FlowArrow />
+            {/* Side-by-side Stable vs Unstable - Now Full Width */}
+            <div className="grid grid-cols-2 gap-3">
+              {/* STABLE PATH */}
+              <div className="space-y-2">
+                <div className="text-center py-1.5 rounded bg-green-100 dark:bg-green-900/30 border border-green-300">
+                  <span className="text-sm font-bold text-green-700 dark:text-green-400">STABLE</span>
+                </div>
+                <FlowBox color="purple">
+                  <p className="font-bold">Expert Consultation</p>
+                  <p>• Pediatric cardiology</p>
+                  <p>• Determine: VT vs SVT with aberrancy</p>
+                </FlowBox>
+                <FlowArrow />
+                <FlowBox color="purple">
+                  <div className="flex items-center gap-1 mb-1">
+                    <Syringe className="h-3 w-3 text-purple-600 flex-shrink-0" />
+                    <span className="font-bold">Amiodarone</span>
+                  </div>
+                  <p>For stable monomorphic VT</p>
+                  <p>5 mg/kg IV over 20-60 min</p>
+                  {drugs && <p className={calcValue}>{drugs.amiodarone.dose} mg (max 300mg)</p>}
+                </FlowBox>
+              </div>
+              {/* UNSTABLE PATH */}
+              <div className="space-y-2">
+                <div className="text-center py-1.5 rounded bg-red-100 dark:bg-red-900/30 border border-red-300">
+                  <span className="text-sm font-bold text-red-700 dark:text-red-400">UNSTABLE</span>
+                </div>
+                <FlowBox color="red">
+                  <div className="flex items-center gap-1 mb-1">
+                    <Zap className="h-4 w-4 text-amber-600 flex-shrink-0" />
+                    <span className="font-bold">Synchronized Cardioversion</span>
+                  </div>
+                  <p className="font-semibold">Sedate if possible</p>
+                  <p className="mt-1">1st: 0.5-1 J/kg</p>
+                  <p>2nd: increase to 2 J/kg</p>
+                  {drugs && <p className={calcValue}>{drugs.cardioversion.first}-{drugs.cardioversion.max} J</p>}
+                </FlowBox>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* H's and T's - Always visible */}
