@@ -77,17 +77,17 @@ const CPRPage = ({ onBack }) => {
     }
   };
 
-  // Timer logic with 2-minute pulse check reminder
+  // Timer logic with 2-minute pulse check reminder (repeating every 2 mins)
   useEffect(() => {
     if (isRunning) {
       timerRef.current = setInterval(() => {
         setElapsedTime(prev => {
           const newTime = prev + 1;
           const timeSinceLastPulse = newTime - lastPulseCheck;
-          // At exactly 120 seconds, trigger reminder with vibration
+          // At exactly 120 seconds since last pulse check, trigger reminder with vibration
           if (timeSinceLastPulse === 120) {
             setShowReminder(true);
-            vibrate([200, 100, 200]); // Vibrate twice
+            vibrate([200, 100, 200, 100, 200]); // Vibrate 3 times for attention
           }
           return newTime;
         });
@@ -244,6 +244,7 @@ const CPRPage = ({ onBack }) => {
     };
     setEvents([startEvent]);
     setCprStartTime(now);
+    setLastPulseCheck(0); // Reset pulse check timer
     setIsRunning(true);
   };
 
