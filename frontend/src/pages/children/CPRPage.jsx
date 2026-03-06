@@ -2,16 +2,16 @@
  * CPR Page - PALS Algorithms & Recording
  * 
  * Features:
- * - CPR Tab: Interactive flowchart following PALS card exactly
- *   - Track-based navigation (Shockable vs Non-Shockable, Narrow vs Wide QRS)
+ * - CPR Tab: Full visual flowchart with arrows and cards (not slides)
+ *   - H's and T's visible at all times
+ *   - All drug calculations based on weight
  * - Recording Tab: Timer with 2-min pulse check reminders
+ *   - Long-press Rx to select drug (Epinephrine/Adenosine/Amiodarone/NaHCO3)
  *   - Timestamp buttons for Pulse, Rx, Shock events
- * 
- * Drug calculations based on weight (PALS 2025)
  */
 
-import { useState, useEffect, useRef, useCallback } from "react";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { useState, useEffect, useRef } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -19,8 +19,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { HeartIcon } from "@/components/HealthIcons";
 import { 
   ChevronDown, 
-  ChevronRight, 
-  ArrowLeft, 
+  ArrowDown,
   Play, 
   Pause, 
   RotateCcw,
@@ -28,8 +27,8 @@ import {
   Pill,
   Activity,
   AlertCircle,
-  CheckCircle2,
-  Clock
+  Clock,
+  X
 } from "lucide-react";
 
 const CPRPage = ({ onBack }) => {
@@ -38,8 +37,7 @@ const CPRPage = ({ onBack }) => {
   const w = parseFloat(weight) || 0;
 
   // CPR Flow State
-  const [flowState, setFlowState] = useState("start"); // start, shockable, non-shockable, tachy-narrow, tachy-wide
-  const [currentStep, setCurrentStep] = useState(0);
+  const [selectedTrack, setSelectedTrack] = useState(null); // null, 'shockable', 'non-shockable'
 
   // Recording State
   const [isRunning, setIsRunning] = useState(false);
@@ -47,10 +45,13 @@ const CPRPage = ({ onBack }) => {
   const [events, setEvents] = useState([]);
   const [lastPulseCheck, setLastPulseCheck] = useState(0);
   const [showReminder, setShowReminder] = useState(false);
+  const [showDrugMenu, setShowDrugMenu] = useState(false);
+  const [drugMenuPosition, setDrugMenuPosition] = useState({ x: 0, y: 0 });
   const timerRef = useRef(null);
-  const audioRef = useRef(null);
+  const longPressRef = useRef(null);
+  const rxButtonRef = useRef(null);
 
-  // Scroll to top when page loads
+  // Scroll to top
   useEffect(() => {
     const scrollContainer = document.querySelector('.native-scroll');
     if (scrollContainer) scrollContainer.scrollTo(0, 0);
@@ -63,16 +64,9 @@ const CPRPage = ({ onBack }) => {
       timerRef.current = setInterval(() => {
         setElapsedTime(prev => {
           const newTime = prev + 1;
-          // Check for 2-minute reminder
           const timeSinceLastPulse = newTime - lastPulseCheck;
           if (timeSinceLastPulse >= 120 && timeSinceLastPulse < 123) {
             setShowReminder(true);
-            // Try to play audio alert
-            try {
-              if (audioRef.current) {
-                audioRef.current.play().catch(() => {});
-              }
-            } catch (e) {}
           }
           return newTime;
         });
@@ -83,36 +77,68 @@ const CPRPage = ({ onBack }) => {
     return () => clearInterval(timerRef.current);
   }, [isRunning, lastPulseCheck]);
 
-  // Drug calculations
+  // Drug calculations (PALS 2025)
   const drugs = w ? {
     epinephrine: {
       dose: (w * 0.01).toFixed(3),
       volume: (w * 0.1).toFixed(2),
+      ettDose: (w * 0.1).toFixed(2),
+      ettVolume: (w * 0.1).toFixed(2),
     },
-    amiodarone: { dose: (w * 5).toFixed(1) },
+    amiodarone: { 
+      dose: (w * 5).toFixed(1),
+      maxDose: Math.min(w * 5, 300).toFixed(0)
+    },
     adenosine: {
       first: Math.min(w * 0.1, 6).toFixed(2),
       second: Math.min(w * 0.2, 12).toFixed(2),
     },
-    atropine: { dose: Math.max(Math.min(w * 0.02, 0.5), 0.1).toFixed(2) },
-    defib: { first: (w * 2).toFixed(0), second: (w * 4).toFixed(0) },
-    cardioversion: { first: (w * 0.5).toFixed(1), second: (w * 1).toFixed(0) },
-    lidocaine: { dose: (w * 1).toFixed(1) },
+    atropine: { 
+      dose: Math.max(Math.min(w * 0.02, 0.5), 0.1).toFixed(2) 
+    },
+    lidocaine: { 
+      bolus: (w * 1).toFixed(1),
+      infusionMin: (w * 20).toFixed(0),
+      infusionMax: (w * 50).toFixed(0),
+    },
+    nahco3: { 
+      dose: (w * 1).toFixed(1) 
+    },
+    calcium: {
+      chloride: (w * 20).toFixed(0),
+      chlorideVol: (w * 0.2).toFixed(2),
+      gluconate: (w * 60).toFixed(0),
+      gluconateVol: (w * 0.6).toFixed(2),
+    },
+    glucose: {
+      dose: (w * 0.5).toFixed(1),
+      d10Vol: (w * 5).toFixed(1),
+    },
+    defib: { 
+      first: (w * 2).toFixed(0), 
+      second: (w * 4).toFixed(0),
+      max: Math.min(w * 10, 200).toFixed(0)
+    },
+    cardioversion: { 
+      first: (w * 0.5).toFixed(1), 
+      second: (w * 1).toFixed(0),
+      max: (w * 2).toFixed(0)
+    },
   } : null;
 
   const calcValue = "font-mono font-bold text-red-600 dark:text-red-400";
+  const calcValueSm = "font-mono font-semibold text-red-600 dark:text-red-400 text-xs";
 
-  // Format time as MM:SS
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
-  // Record event
-  const recordEvent = (type) => {
+  const recordEvent = (type, drug = null) => {
     const newEvent = {
       type,
+      drug,
       time: elapsedTime,
       timestamp: new Date().toLocaleTimeString(),
     };
@@ -122,9 +148,9 @@ const CPRPage = ({ onBack }) => {
       setLastPulseCheck(elapsedTime);
       setShowReminder(false);
     }
+    setShowDrugMenu(false);
   };
 
-  // Reset timer
   const resetTimer = () => {
     setIsRunning(false);
     setElapsedTime(0);
@@ -133,683 +159,364 @@ const CPRPage = ({ onBack }) => {
     setShowReminder(false);
   };
 
-  // Reset flow
-  const resetFlow = () => {
-    setFlowState("start");
-    setCurrentStep(0);
+  // Long press handler for Rx button
+  const handleRxTouchStart = (e) => {
+    e.preventDefault();
+    longPressRef.current = setTimeout(() => {
+      const rect = rxButtonRef.current?.getBoundingClientRect();
+      if (rect) {
+        setDrugMenuPosition({ x: rect.left, y: rect.top - 200 });
+      }
+      setShowDrugMenu(true);
+    }, 500);
   };
 
+  const handleRxTouchEnd = () => {
+    if (longPressRef.current) {
+      clearTimeout(longPressRef.current);
+    }
+    if (!showDrugMenu) {
+      // Short press - just record generic Rx
+      recordEvent('rx');
+    }
+  };
+
+  // Drug selection menu items
+  const drugOptions = [
+    { id: 'epinephrine', name: 'Epinephrine', color: 'text-red-600' },
+    { id: 'adenosine', name: 'Adenosine', color: 'text-blue-600' },
+    { id: 'amiodarone', name: 'Amiodarone', color: 'text-purple-600' },
+    { id: 'nahco3', name: 'NaHCO₃', color: 'text-amber-600' },
+  ];
+
   // Collapsible Section
-  const Section = ({ title, children, defaultOpen = false }) => {
+  const Section = ({ title, children, defaultOpen = false, className = "" }) => {
     const [isOpen, setIsOpen] = useState(defaultOpen);
     return (
-      <div className="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
+      <div className={`border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden ${className}`}>
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="w-full px-4 py-3 flex items-center justify-between bg-gray-50 dark:bg-gray-800/50 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-          data-testid={`section-toggle-${title.toLowerCase().replace(/[^a-z0-9]/g, '-')}`}
+          className="w-full px-3 py-2 flex items-center justify-between bg-gray-50 dark:bg-gray-800/50 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
         >
-          <span className="font-medium text-sm">{title}</span>
-          <ChevronDown className={`h-4 w-4 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+          <span className="font-medium text-xs">{title}</span>
+          <ChevronDown className={`h-3 w-3 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
         </button>
-        {isOpen && <div className="p-4 bg-white dark:bg-gray-900 text-sm">{children}</div>}
+        {isOpen && <div className="p-3 bg-white dark:bg-gray-900 text-xs">{children}</div>}
       </div>
     );
   };
 
-  // ==================== CPR FLOW COMPONENTS ====================
-
-  // Start Screen - Initial Assessment
-  const StartScreen = () => (
-    <div className="space-y-4">
-      {/* CPR Basics */}
-      <Card className="nightingale-card border-red-200 dark:border-red-800/50">
-        <CardContent className="pt-4 space-y-4">
-          <div className="p-4 rounded-lg bg-red-50 dark:bg-red-900/20 border-l-4 border-red-500">
-            <p className="font-bold text-base mb-2 text-red-700 dark:text-red-400">1. Start High-Quality CPR</p>
-            <div className="grid grid-cols-2 gap-3 text-sm">
-              <div className="space-y-1">
-                <p>Rate: <span className={calcValue}>100-120/min</span></p>
-                <p>Depth: <span className={calcValue}>⅓ AP diameter</span></p>
-              </div>
-              <div className="space-y-1">
-                <p>C:V ratio: <span className={calcValue}>15:2</span></p>
-                <p>CPR fraction: <span className={calcValue}>&gt;60%</span></p>
-              </div>
-            </div>
-          </div>
-
-          <div className="p-4 rounded-lg bg-gray-50 dark:bg-gray-800/50">
-            <p className="font-semibold text-sm mb-2">Give oxygen • Attach monitor/defibrillator</p>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Rhythm Decision */}
-      <Card className="nightingale-card">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-base font-semibold">2. Check Rhythm - Shockable?</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          <div className="grid grid-cols-2 gap-3">
-            <Button
-              variant="outline"
-              className="h-auto py-4 flex flex-col items-center gap-2 border-2 border-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/20"
-              onClick={() => setFlowState("shockable")}
-              data-testid="select-shockable"
-            >
-              <Zap className="h-6 w-6 text-amber-500" />
-              <span className="font-semibold">VF / pVT</span>
-              <span className="text-xs text-muted-foreground">Shockable</span>
-            </Button>
-            <Button
-              variant="outline"
-              className="h-auto py-4 flex flex-col items-center gap-2 border-2 border-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20"
-              onClick={() => setFlowState("non-shockable")}
-              data-testid="select-non-shockable"
-            >
-              <Activity className="h-6 w-6 text-blue-500" />
-              <span className="font-semibold">Asystole / PEA</span>
-              <span className="text-xs text-muted-foreground">Non-Shockable</span>
-            </Button>
-          </div>
-
-          {/* Tachycardia Path */}
-          <div className="pt-3 border-t border-gray-200 dark:border-gray-700">
-            <p className="text-sm text-muted-foreground mb-3 text-center">Tachycardia with Pulse?</p>
-            <div className="grid grid-cols-2 gap-3">
-              <Button
-                variant="outline"
-                className="h-auto py-3 flex flex-col items-center gap-1 border border-green-400 hover:bg-green-50 dark:hover:bg-green-900/20"
-                onClick={() => setFlowState("tachy-narrow")}
-                data-testid="select-narrow-qrs"
-              >
-                <span className="font-semibold text-sm">Narrow QRS</span>
-                <span className="text-xs text-muted-foreground">≤0.09 sec (SVT)</span>
-              </Button>
-              <Button
-                variant="outline"
-                className="h-auto py-3 flex flex-col items-center gap-1 border border-purple-400 hover:bg-purple-50 dark:hover:bg-purple-900/20"
-                onClick={() => setFlowState("tachy-wide")}
-                data-testid="select-wide-qrs"
-              >
-                <span className="font-semibold text-sm">Wide QRS</span>
-                <span className="text-xs text-muted-foreground">&gt;0.09 sec (VT)</span>
-              </Button>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* H's and T's */}
-      <Section title="Reversible Causes (H's & T's)">
-        <div className="grid grid-cols-2 gap-4 text-sm">
-          <div>
-            <p className="font-semibold mb-2">H&apos;s</p>
-            <ul className="space-y-1 text-muted-foreground">
-              <li>• Hypoxia</li>
-              <li>• Hypovolemia</li>
-              <li>• H+ (Acidosis)</li>
-              <li>• Hypo/Hyperkalemia</li>
-              <li>• Hypothermia</li>
-              <li>• Hypoglycemia</li>
-            </ul>
-          </div>
-          <div>
-            <p className="font-semibold mb-2">T&apos;s</p>
-            <ul className="space-y-1 text-muted-foreground">
-              <li>• Tension pneumothorax</li>
-              <li>• Tamponade (cardiac)</li>
-              <li>• Toxins</li>
-              <li>• Thrombosis (PE)</li>
-              <li>• Thrombosis (coronary)</li>
-            </ul>
-          </div>
+  // ==================== H's and T's Component ====================
+  const HsAndTs = () => (
+    <div className="p-3 rounded-lg bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800">
+      <p className="font-bold text-xs mb-2 text-amber-800 dark:text-amber-300">Reversible Causes (H's & T's)</p>
+      <div className="grid grid-cols-2 gap-2 text-[10px]">
+        <div>
+          <p className="font-semibold text-amber-700 dark:text-amber-400">H's</p>
+          <p>• Hypoxia</p>
+          <p>• Hypovolemia</p>
+          <p>• H+ (Acidosis)</p>
+          <p>• Hypo/Hyperkalemia</p>
+          <p>• Hypothermia</p>
+          <p>• Hypoglycemia</p>
         </div>
-      </Section>
+        <div>
+          <p className="font-semibold text-amber-700 dark:text-amber-400">T's</p>
+          <p>• Tension pneumothorax</p>
+          <p>• Tamponade (cardiac)</p>
+          <p>• Toxins</p>
+          <p>• Thrombosis (PE)</p>
+          <p>• Thrombosis (coronary)</p>
+        </div>
+      </div>
     </div>
   );
 
-  // Shockable Rhythm Track (VF/pVT)
-  const ShockableTrack = () => {
-    const steps = [
-      {
-        title: "Shock",
-        content: (
-          <div className="space-y-2">
-            <p className="font-semibold">Defibrillation 2 J/kg</p>
-            {drugs && <p className={calcValue}>{drugs.defib.first} J</p>}
-          </div>
-        ),
-      },
-      {
-        title: "CPR 2 min + IV/IO access",
-        content: (
-          <div className="space-y-1 text-sm text-muted-foreground">
-            <p>• Continue high-quality CPR</p>
-            <p>• Establish IV/IO access</p>
-          </div>
-        ),
-      },
-      {
-        title: "Rhythm check → Shock",
-        content: (
-          <div className="space-y-2">
-            <p className="font-semibold">Defibrillation 4 J/kg</p>
-            {drugs && <p className={calcValue}>{drugs.defib.second} J</p>}
-          </div>
-        ),
-      },
-      {
-        title: "CPR 2 min + Epinephrine",
-        content: (
-          <div className="space-y-2">
-            <p className="text-sm text-muted-foreground">Epinephrine 0.01 mg/kg IV/IO</p>
-            {drugs && (
-              <p className={calcValue}>{drugs.epinephrine.dose} mg ({drugs.epinephrine.volume} mL)</p>
-            )}
-            <p className="text-xs text-muted-foreground mt-2">Repeat every 3-5 minutes</p>
-          </div>
-        ),
-      },
-      {
-        title: "Rhythm check → Shock",
-        content: (
-          <div className="space-y-2">
-            <p className="font-semibold">Defibrillation 4 J/kg</p>
-            {drugs && <p className={calcValue}>{drugs.defib.second} J</p>}
-          </div>
-        ),
-      },
-      {
-        title: "CPR 2 min + Amiodarone",
-        content: (
-          <div className="space-y-2">
-            <p className="text-sm text-muted-foreground">Amiodarone 5 mg/kg IV/IO</p>
-            {drugs && <p className={calcValue}>{drugs.amiodarone.dose} mg</p>}
-            <p className="text-xs text-muted-foreground mt-2">Or Lidocaine 1 mg/kg {drugs && <span className={calcValue}>({drugs.lidocaine.dose} mg)</span>}</p>
-          </div>
-        ),
-      },
-      {
-        title: "Continue Cycle",
-        content: (
-          <div className="space-y-2 text-sm text-muted-foreground">
-            <p>• Shock → CPR 2 min → Rhythm check</p>
-            <p>• Epinephrine every 3-5 min</p>
-            <p>• Treat reversible causes</p>
-            <p className="font-semibold text-foreground mt-3">If ROSC → Post-cardiac arrest care</p>
-          </div>
-        ),
-      },
-    ];
+  // ==================== Flowchart Arrow Component ====================
+  const FlowArrow = ({ label, className = "" }) => (
+    <div className={`flex flex-col items-center my-1 ${className}`}>
+      <ArrowDown className="h-4 w-4 text-gray-400" />
+      {label && <span className="text-[9px] text-gray-500 -mt-1">{label}</span>}
+    </div>
+  );
 
-    return (
-      <TrackLayout
-        title="VF / pVT (Shockable)"
-        color="amber"
-        steps={steps}
-        currentStep={currentStep}
-        setCurrentStep={setCurrentStep}
-        onBack={resetFlow}
-      />
-    );
-  };
-
-  // Non-Shockable Rhythm Track (Asystole/PEA)
-  const NonShockableTrack = () => {
-    const steps = [
-      {
-        title: "CPR 2 min",
-        content: (
-          <div className="space-y-1 text-sm text-muted-foreground">
-            <p>• High-quality CPR immediately</p>
-            <p>• Establish IV/IO access</p>
-          </div>
-        ),
-      },
-      {
-        title: "Epinephrine ASAP",
-        content: (
-          <div className="space-y-2">
-            <p className="text-sm text-muted-foreground">Epinephrine 0.01 mg/kg IV/IO</p>
-            {drugs && (
-              <p className={calcValue}>{drugs.epinephrine.dose} mg ({drugs.epinephrine.volume} mL)</p>
-            )}
-            <p className="text-xs text-muted-foreground mt-2">Give as soon as IV/IO available</p>
-          </div>
-        ),
-      },
-      {
-        title: "CPR 2 min + Advanced Airway",
-        content: (
-          <div className="space-y-1 text-sm text-muted-foreground">
-            <p>• Continue CPR</p>
-            <p>• Consider advanced airway</p>
-            <p>• Capnography if intubated</p>
-          </div>
-        ),
-      },
-      {
-        title: "Rhythm Check",
-        content: (
-          <div className="space-y-2 text-sm">
-            <p className="font-semibold">Is rhythm shockable now?</p>
-            <div className="grid grid-cols-2 gap-2 mt-3">
-              <Button
-                variant="outline"
-                size="sm"
-                className="border-amber-400"
-                onClick={() => {
-                  setFlowState("shockable");
-                  setCurrentStep(0);
-                }}
-              >
-                Yes → VF/pVT
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                className="border-blue-400"
-                onClick={() => setCurrentStep(4)}
-              >
-                No → Continue
-              </Button>
-            </div>
-          </div>
-        ),
-      },
-      {
-        title: "CPR 2 min + Epinephrine",
-        content: (
-          <div className="space-y-2">
-            <p className="text-sm text-muted-foreground">Repeat Epinephrine every 3-5 min</p>
-            {drugs && (
-              <p className={calcValue}>{drugs.epinephrine.dose} mg ({drugs.epinephrine.volume} mL)</p>
-            )}
-          </div>
-        ),
-      },
-      {
-        title: "Treat Reversible Causes",
-        content: (
-          <div className="space-y-2 text-sm text-muted-foreground">
-            <p>Search for and treat:</p>
-            <div className="grid grid-cols-2 gap-2 mt-2 text-xs">
-              <div>
-                <p>• Hypoxia</p>
-                <p>• Hypovolemia</p>
-                <p>• H+ (Acidosis)</p>
-              </div>
-              <div>
-                <p>• Tension pneumo</p>
-                <p>• Tamponade</p>
-                <p>• Toxins</p>
-              </div>
-            </div>
-          </div>
-        ),
-      },
-      {
-        title: "Continue Cycle",
-        content: (
-          <div className="space-y-2 text-sm text-muted-foreground">
-            <p>• CPR 2 min → Rhythm check</p>
-            <p>• Epinephrine every 3-5 min</p>
-            <p>• Treat reversible causes</p>
-            <p className="font-semibold text-foreground mt-3">If ROSC → Post-cardiac arrest care</p>
-          </div>
-        ),
-      },
-    ];
-
-    return (
-      <TrackLayout
-        title="Asystole / PEA (Non-Shockable)"
-        color="blue"
-        steps={steps}
-        currentStep={currentStep}
-        setCurrentStep={setCurrentStep}
-        onBack={resetFlow}
-      />
-    );
-  };
-
-  // Narrow QRS Tachycardia Track (SVT)
-  const NarrowQRSTrack = () => {
-    const steps = [
-      {
-        title: "Initial Assessment",
-        content: (
-          <div className="space-y-1 text-sm text-muted-foreground">
-            <p>• Support ABCs, give O₂</p>
-            <p>• IV/IO access, 12-lead ECG</p>
-            <p>• Identify: Sinus tachy vs SVT</p>
-          </div>
-        ),
-      },
-      {
-        title: "Hemodynamically Stable?",
-        content: (
-          <div className="space-y-3 text-sm">
-            <p className="font-semibold">Check for signs of instability:</p>
-            <ul className="text-muted-foreground space-y-1">
-              <li>• Hypotension</li>
-              <li>• Altered mental status</li>
-              <li>• Signs of shock</li>
-            </ul>
-            <div className="grid grid-cols-2 gap-2 mt-3">
-              <Button
-                variant="outline"
-                size="sm"
-                className="border-green-400"
-                onClick={() => setCurrentStep(2)}
-              >
-                Stable
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                className="border-red-400"
-                onClick={() => setCurrentStep(4)}
-              >
-                Unstable
-              </Button>
-            </div>
-          </div>
-        ),
-      },
-      {
-        title: "Vagal Maneuvers",
-        content: (
-          <div className="space-y-2 text-sm text-muted-foreground">
-            <p className="font-semibold text-foreground">Try first:</p>
-            <p>• Ice to face (infants)</p>
-            <p>• Valsalva (older children)</p>
-            <p>• Carotid massage (if appropriate)</p>
-          </div>
-        ),
-      },
-      {
-        title: "Adenosine",
-        content: (
-          <div className="space-y-2">
-            <p className="text-sm text-muted-foreground">Rapid IV push with flush</p>
-            <div className="space-y-2 mt-2">
-              <div className="p-2 rounded bg-gray-50 dark:bg-gray-800">
-                <p className="text-sm">1st dose: 0.1 mg/kg (max 6mg)</p>
-                {drugs && <p className={calcValue}>{drugs.adenosine.first} mg</p>}
-              </div>
-              <div className="p-2 rounded bg-gray-50 dark:bg-gray-800">
-                <p className="text-sm">2nd dose: 0.2 mg/kg (max 12mg)</p>
-                {drugs && <p className={calcValue}>{drugs.adenosine.second} mg</p>}
-              </div>
-            </div>
-          </div>
-        ),
-      },
-      {
-        title: "Synchronized Cardioversion",
-        content: (
-          <div className="space-y-2">
-            <p className="font-semibold text-red-600 dark:text-red-400">For unstable patients</p>
-            <p className="text-sm text-muted-foreground">Sedate if possible, don&apos;t delay</p>
-            <div className="mt-2 p-3 rounded bg-gray-50 dark:bg-gray-800">
-              <p className="text-sm">0.5-1 J/kg → increase to 2 J/kg</p>
-              {drugs && <p className={calcValue}>{drugs.cardioversion.first} - {drugs.cardioversion.second} J</p>}
-            </div>
-          </div>
-        ),
-      },
-      {
-        title: "Post-Conversion",
-        content: (
-          <div className="space-y-2 text-sm text-muted-foreground">
-            <p>• Monitor for recurrence</p>
-            <p>• Expert consultation</p>
-            <p>• Consider maintenance antiarrhythmic</p>
-          </div>
-        ),
-      },
-    ];
-
-    return (
-      <TrackLayout
-        title="Narrow QRS Tachycardia (SVT)"
-        color="green"
-        steps={steps}
-        currentStep={currentStep}
-        setCurrentStep={setCurrentStep}
-        onBack={resetFlow}
-      />
-    );
-  };
-
-  // Wide QRS Tachycardia Track (VT)
-  const WideQRSTrack = () => {
-    const steps = [
-      {
-        title: "Initial Assessment",
-        content: (
-          <div className="space-y-1 text-sm text-muted-foreground">
-            <p>• Support ABCs, give O₂</p>
-            <p>• IV/IO access, 12-lead ECG</p>
-            <p>• Assume VT until proven otherwise</p>
-          </div>
-        ),
-      },
-      {
-        title: "Hemodynamically Stable?",
-        content: (
-          <div className="space-y-3 text-sm">
-            <p className="font-semibold">Check for pulse and stability:</p>
-            <ul className="text-muted-foreground space-y-1">
-              <li>• Pulseless → Cardiac arrest protocol</li>
-              <li>• Unstable with pulse → Cardioversion</li>
-              <li>• Stable → Drug therapy</li>
-            </ul>
-            <div className="grid grid-cols-2 gap-2 mt-3">
-              <Button
-                variant="outline"
-                size="sm"
-                className="border-green-400"
-                onClick={() => setCurrentStep(2)}
-              >
-                Stable
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                className="border-red-400"
-                onClick={() => setCurrentStep(4)}
-              >
-                Unstable
-              </Button>
-            </div>
-          </div>
-        ),
-      },
-      {
-        title: "Expert Consultation",
-        content: (
-          <div className="space-y-2 text-sm text-muted-foreground">
-            <p className="font-semibold text-foreground">Get expert help early</p>
-            <p>• Pediatric cardiology</p>
-            <p>• Determine: VT vs SVT with aberrancy</p>
-          </div>
-        ),
-      },
-      {
-        title: "Amiodarone",
-        content: (
-          <div className="space-y-2">
-            <p className="text-sm text-muted-foreground">For stable monomorphic VT</p>
-            <div className="mt-2 p-3 rounded bg-gray-50 dark:bg-gray-800">
-              <p className="text-sm">5 mg/kg IV over 20-60 min</p>
-              {drugs && <p className={calcValue}>{drugs.amiodarone.dose} mg</p>}
-            </div>
-            <p className="text-xs text-muted-foreground mt-2">Or Procainamide 15 mg/kg over 30-60 min</p>
-          </div>
-        ),
-      },
-      {
-        title: "Synchronized Cardioversion",
-        content: (
-          <div className="space-y-2">
-            <p className="font-semibold text-red-600 dark:text-red-400">For unstable patients</p>
-            <p className="text-sm text-muted-foreground">Sedate if possible, don&apos;t delay</p>
-            <div className="mt-2 p-3 rounded bg-gray-50 dark:bg-gray-800">
-              <p className="text-sm">0.5-1 J/kg → increase to 2 J/kg</p>
-              {drugs && <p className={calcValue}>{drugs.cardioversion.first} - {drugs.cardioversion.second} J</p>}
-            </div>
-          </div>
-        ),
-      },
-      {
-        title: "Pulseless → Arrest Protocol",
-        content: (
-          <div className="space-y-2 text-sm">
-            <p className="font-semibold text-red-600">If pulseless at any time:</p>
-            <Button
-              variant="outline"
-              className="w-full border-amber-400 mt-2"
-              onClick={() => {
-                setFlowState("shockable");
-                setCurrentStep(0);
-              }}
-            >
-              Go to VF/pVT Protocol
-            </Button>
-          </div>
-        ),
-      },
-    ];
-
-    return (
-      <TrackLayout
-        title="Wide QRS Tachycardia (VT)"
-        color="purple"
-        steps={steps}
-        currentStep={currentStep}
-        setCurrentStep={setCurrentStep}
-        onBack={resetFlow}
-      />
-    );
-  };
-
-  // Reusable Track Layout Component
-  const TrackLayout = ({ title, color, steps, currentStep, setCurrentStep, onBack }) => {
-    const colorClasses = {
-      amber: "border-amber-400 bg-amber-50 dark:bg-amber-900/20",
+  // ==================== Flowchart Box Component ====================
+  const FlowBox = ({ title, children, color = "gray", highlight = false }) => {
+    const colors = {
+      red: "border-red-400 bg-red-50 dark:bg-red-900/20",
       blue: "border-blue-400 bg-blue-50 dark:bg-blue-900/20",
       green: "border-green-400 bg-green-50 dark:bg-green-900/20",
+      amber: "border-amber-400 bg-amber-50 dark:bg-amber-900/20",
       purple: "border-purple-400 bg-purple-50 dark:bg-purple-900/20",
+      gray: "border-gray-300 bg-gray-50 dark:bg-gray-800/50",
     };
-
     return (
-      <div className="space-y-4">
-        {/* Header with Back Button */}
-        <div className="flex items-center gap-3">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={onBack}
-            className="p-2"
-            data-testid="track-back-button"
-          >
-            <ArrowLeft className="h-4 w-4" />
-          </Button>
-          <h2 className="font-semibold text-lg">{title}</h2>
-        </div>
-
-        {/* Progress Indicators */}
-        <div className="flex gap-1 overflow-x-auto pb-2">
-          {steps.map((_, idx) => (
-            <button
-              key={idx}
-              onClick={() => setCurrentStep(idx)}
-              className={`min-w-[32px] h-2 rounded-full transition-colors ${
-                idx === currentStep 
-                  ? `bg-${color}-500` 
-                  : idx < currentStep 
-                    ? `bg-${color}-300 dark:bg-${color}-700` 
-                    : 'bg-gray-200 dark:bg-gray-700'
-              }`}
-              style={{
-                backgroundColor: idx === currentStep 
-                  ? `var(--${color}-500, #f59e0b)` 
-                  : idx < currentStep 
-                    ? `var(--${color}-300, #fcd34d)` 
-                    : undefined
-              }}
-              data-testid={`step-indicator-${idx}`}
-            />
-          ))}
-        </div>
-
-        {/* Current Step Card */}
-        <Card className={`nightingale-card border-l-4 ${colorClasses[color]}`}>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-base font-semibold flex items-center gap-2">
-              <span className="flex items-center justify-center w-6 h-6 rounded-full bg-white dark:bg-gray-800 text-sm font-bold border">
-                {currentStep + 1}
-              </span>
-              {steps[currentStep].title}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            {steps[currentStep].content}
-          </CardContent>
-        </Card>
-
-        {/* Navigation Buttons */}
-        <div className="flex gap-3">
-          <Button
-            variant="outline"
-            onClick={() => setCurrentStep(Math.max(0, currentStep - 1))}
-            disabled={currentStep === 0}
-            className="flex-1"
-            data-testid="step-prev-button"
-          >
-            Previous
-          </Button>
-          <Button
-            onClick={() => setCurrentStep(Math.min(steps.length - 1, currentStep + 1))}
-            disabled={currentStep === steps.length - 1}
-            className="flex-1"
-            data-testid="step-next-button"
-          >
-            Next Step
-            <ChevronRight className="h-4 w-4 ml-1" />
-          </Button>
-        </div>
-
-        {/* Quick Drug Reference */}
-        {drugs && (
-          <Section title="Quick Drug Doses" defaultOpen={false}>
-            <div className="grid grid-cols-2 gap-2 text-sm">
-              <div className="p-2 rounded bg-gray-50 dark:bg-gray-800">
-                <p className="text-xs text-muted-foreground">Epinephrine</p>
-                <p className={calcValue}>{drugs.epinephrine.dose} mg</p>
-              </div>
-              <div className="p-2 rounded bg-gray-50 dark:bg-gray-800">
-                <p className="text-xs text-muted-foreground">Amiodarone</p>
-                <p className={calcValue}>{drugs.amiodarone.dose} mg</p>
-              </div>
-              <div className="p-2 rounded bg-gray-50 dark:bg-gray-800">
-                <p className="text-xs text-muted-foreground">Defib</p>
-                <p className={calcValue}>{drugs.defib.first} / {drugs.defib.second} J</p>
-              </div>
-              <div className="p-2 rounded bg-gray-50 dark:bg-gray-800">
-                <p className="text-xs text-muted-foreground">Cardioversion</p>
-                <p className={calcValue}>{drugs.cardioversion.first}-{drugs.cardioversion.second} J</p>
-              </div>
-            </div>
-          </Section>
-        )}
+      <div className={`p-2 rounded-lg border-2 ${colors[color]} ${highlight ? 'ring-2 ring-offset-1 ring-red-400' : ''}`}>
+        {title && <p className="font-bold text-xs mb-1">{title}</p>}
+        <div className="text-[10px] space-y-0.5">{children}</div>
       </div>
     );
   };
+
+  // ==================== CARDIAC ARREST FLOWCHART ====================
+  const CardiacArrestFlowchart = () => (
+    <div className="space-y-3">
+      {/* Step 1: Start CPR */}
+      <FlowBox color="red" highlight>
+        <p className="font-bold text-sm mb-1">1. Start High-Quality CPR</p>
+        <div className="grid grid-cols-2 gap-2">
+          <div>
+            <p>• Rate: <span className={calcValueSm}>100-120/min</span></p>
+            <p>• Depth: <span className={calcValueSm}>⅓ AP diameter</span></p>
+            <p>• Full chest recoil</p>
+          </div>
+          <div>
+            <p>• C:V ratio: <span className={calcValueSm}>15:2</span> (2 rescuers)</p>
+            <p>• CPR fraction: <span className={calcValueSm}>&gt;60%</span></p>
+            <p>• Minimize interruptions</p>
+          </div>
+        </div>
+        <div className="mt-2 pt-2 border-t border-red-200 dark:border-red-800">
+          <p className="font-semibold">Give oxygen • Attach monitor/defibrillator</p>
+        </div>
+      </FlowBox>
+
+      <FlowArrow />
+
+      {/* Step 2: Rhythm Check */}
+      <FlowBox color="gray">
+        <p className="font-bold text-sm text-center">2. Check Rhythm - Shockable?</p>
+      </FlowBox>
+
+      {/* Branch: Shockable vs Non-Shockable */}
+      <div className="grid grid-cols-2 gap-2">
+        {/* SHOCKABLE PATHWAY */}
+        <div className="space-y-2">
+          <Button
+            variant={selectedTrack === 'shockable' ? 'default' : 'outline'}
+            className={`w-full h-auto py-2 text-xs ${selectedTrack === 'shockable' ? 'bg-amber-500 hover:bg-amber-600' : 'border-amber-400'}`}
+            onClick={() => setSelectedTrack(selectedTrack === 'shockable' ? null : 'shockable')}
+          >
+            <div className="flex flex-col items-center">
+              <Zap className="h-4 w-4 mb-1" />
+              <span className="font-bold">VF / pVT</span>
+              <span className="text-[10px] opacity-80">Shockable</span>
+            </div>
+          </Button>
+
+          {selectedTrack === 'shockable' && (
+            <div className="space-y-2 animate-in slide-in-from-top-2">
+              <FlowArrow />
+              <FlowBox color="amber" title="3. Shock">
+                <p>Defibrillation <span className={calcValueSm}>2 J/kg</span></p>
+                {drugs && <p className={calcValue}>{drugs.defib.first} J</p>}
+              </FlowBox>
+              
+              <FlowArrow />
+              <FlowBox color="gray" title="4. CPR 2 min">
+                <p>• IV/IO access</p>
+              </FlowBox>
+
+              <FlowArrow label="Rhythm check" />
+              <FlowBox color="amber" title="5. Shock">
+                <p>Defibrillation <span className={calcValueSm}>4 J/kg</span></p>
+                {drugs && <p className={calcValue}>{drugs.defib.second} J</p>}
+              </FlowBox>
+
+              <FlowArrow />
+              <FlowBox color="red" title="6. CPR 2 min + Epinephrine">
+                <p>Epi 0.01 mg/kg IV/IO q3-5min</p>
+                {drugs && <p className={calcValue}>{drugs.epinephrine.dose} mg ({drugs.epinephrine.volume} mL)</p>}
+                <p className="mt-1">• Consider advanced airway</p>
+              </FlowBox>
+
+              <FlowArrow label="Rhythm check" />
+              <FlowBox color="amber" title="7. Shock">
+                <p>≥4 J/kg (max 10 J/kg)</p>
+                {drugs && <p className={calcValue}>{drugs.defib.second}-{drugs.defib.max} J</p>}
+              </FlowBox>
+
+              <FlowArrow />
+              <FlowBox color="purple" title="8. CPR 2 min + Amiodarone">
+                <p>Amiodarone 5 mg/kg IV/IO bolus</p>
+                {drugs && <p className={calcValue}>{drugs.amiodarone.dose} mg (max 300mg)</p>}
+                <p className="mt-1 text-[9px]">Or Lidocaine 1 mg/kg {drugs && <span className={calcValueSm}>({drugs.lidocaine.bolus} mg)</span>}</p>
+              </FlowBox>
+
+              <FlowArrow label="Repeat cycle" />
+              <FlowBox color="green" title="Continue">
+                <p>• Shock → CPR 2 min → Rhythm check</p>
+                <p>• Epinephrine q3-5 min</p>
+                <p>• Treat reversible causes</p>
+                <p className="font-bold mt-1">If ROSC → Post-arrest care</p>
+              </FlowBox>
+            </div>
+          )}
+        </div>
+
+        {/* NON-SHOCKABLE PATHWAY */}
+        <div className="space-y-2">
+          <Button
+            variant={selectedTrack === 'non-shockable' ? 'default' : 'outline'}
+            className={`w-full h-auto py-2 text-xs ${selectedTrack === 'non-shockable' ? 'bg-blue-500 hover:bg-blue-600' : 'border-blue-400'}`}
+            onClick={() => setSelectedTrack(selectedTrack === 'non-shockable' ? null : 'non-shockable')}
+          >
+            <div className="flex flex-col items-center">
+              <Activity className="h-4 w-4 mb-1" />
+              <span className="font-bold">Asystole / PEA</span>
+              <span className="text-[10px] opacity-80">Non-Shockable</span>
+            </div>
+          </Button>
+
+          {selectedTrack === 'non-shockable' && (
+            <div className="space-y-2 animate-in slide-in-from-top-2">
+              <FlowArrow />
+              <FlowBox color="blue" title="3. CPR 2 min">
+                <p>• IV/IO access</p>
+              </FlowBox>
+
+              <FlowArrow />
+              <FlowBox color="red" title="4. Epinephrine ASAP">
+                <p>Epi 0.01 mg/kg IV/IO</p>
+                {drugs && <p className={calcValue}>{drugs.epinephrine.dose} mg ({drugs.epinephrine.volume} mL)</p>}
+                <p className="text-[9px] mt-1">Give as soon as IV/IO available</p>
+              </FlowBox>
+
+              <FlowArrow />
+              <FlowBox color="gray" title="5. CPR 2 min">
+                <p>• Consider advanced airway</p>
+                <p>• Capnography if intubated</p>
+              </FlowBox>
+
+              <FlowArrow label="Rhythm check" />
+              <FlowBox color="blue" title="6. If still Asystole/PEA">
+                <p>• CPR 2 min</p>
+                <p>• Epinephrine q3-5 min</p>
+                {drugs && <p className={calcValueSm}>{drugs.epinephrine.dose} mg</p>}
+              </FlowBox>
+
+              <FlowArrow />
+              <FlowBox color="amber" title="7. Treat Reversible Causes">
+                <p>Search for H's & T's</p>
+                <p className="font-semibold mt-1">If rhythm becomes shockable → Shock pathway</p>
+              </FlowBox>
+
+              <FlowArrow label="Repeat" />
+              <FlowBox color="green" title="Continue">
+                <p>• CPR 2 min → Rhythm check</p>
+                <p>• Epinephrine q3-5 min</p>
+                <p>• Treat reversible causes</p>
+                <p className="font-bold mt-1">If ROSC → Post-arrest care</p>
+              </FlowBox>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* H's and T's - Always visible */}
+      <HsAndTs />
+
+      {/* Drug Reference - Always visible when weight entered */}
+      {drugs && (
+        <Section title="Drug Doses Reference" defaultOpen className="mt-3">
+          <div className="space-y-2">
+            {/* Epinephrine */}
+            <div className="p-2 rounded bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800">
+              <p className="font-bold text-red-700 dark:text-red-400">Epinephrine (1:10,000)</p>
+              <p>Arrest/Bradycardia: 0.01 mg/kg IV/IO q3-5min</p>
+              <p className={calcValue}>{drugs.epinephrine.dose} mg ({drugs.epinephrine.volume} mL)</p>
+              <p className="text-[9px] mt-1">ETT: 0.1 mg/kg = {drugs.epinephrine.ettDose} mg ({drugs.epinephrine.ettVolume} mL of 1:1000)</p>
+              <p className="text-[9px]">Max single dose: 1 mg</p>
+            </div>
+
+            {/* Amiodarone */}
+            <div className="p-2 rounded bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800">
+              <p className="font-bold text-purple-700 dark:text-purple-400">Amiodarone</p>
+              <p>VF/pVT: 5 mg/kg IV/IO bolus</p>
+              <p className={calcValue}>{drugs.amiodarone.dose} mg (max 300mg)</p>
+              <p className="text-[9px]">May repeat x2 for refractory VF/pVT. Daily max: 15 mg/kg</p>
+            </div>
+
+            {/* Lidocaine */}
+            <div className="p-2 rounded bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+              <p className="font-bold">Lidocaine (alternative to Amiodarone)</p>
+              <p>Bolus: 1 mg/kg IV/IO = <span className={calcValueSm}>{drugs.lidocaine.bolus} mg</span></p>
+              <p>Infusion: 20-50 mcg/kg/min = <span className={calcValueSm}>{drugs.lidocaine.infusionMin}-{drugs.lidocaine.infusionMax} mcg/min</span></p>
+            </div>
+
+            {/* Adenosine */}
+            <div className="p-2 rounded bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800">
+              <p className="font-bold text-blue-700 dark:text-blue-400">Adenosine (SVT)</p>
+              <p>1st dose: 0.1 mg/kg = <span className={calcValueSm}>{drugs.adenosine.first} mg</span> (max 6mg)</p>
+              <p>2nd dose: 0.2 mg/kg = <span className={calcValueSm}>{drugs.adenosine.second} mg</span> (max 12mg)</p>
+              <p className="text-[9px]">Rapid IV push with NS flush</p>
+            </div>
+
+            {/* Atropine */}
+            <div className="p-2 rounded bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800">
+              <p className="font-bold text-green-700 dark:text-green-400">Atropine (Bradycardia)</p>
+              <p>0.02 mg/kg IV/IO = <span className={calcValueSm}>{drugs.atropine.dose} mg</span></p>
+              <p className="text-[9px]">Min 0.1mg, Max single dose 0.5mg. May repeat once.</p>
+            </div>
+
+            {/* Sodium Bicarbonate */}
+            <div className="p-2 rounded bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800">
+              <p className="font-bold text-amber-700 dark:text-amber-400">Sodium Bicarbonate</p>
+              <p>1 mEq/kg IV/IO slow push = <span className={calcValueSm}>{drugs.nahco3.dose} mEq</span></p>
+              <p className="text-[9px]">For severe metabolic acidosis, hyperkalemia</p>
+            </div>
+
+            {/* Calcium */}
+            <div className="p-2 rounded bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+              <p className="font-bold">Calcium</p>
+              <p>CaCl 10%: 20 mg/kg = <span className={calcValueSm}>{drugs.calcium.chloride} mg ({drugs.calcium.chlorideVol} mL)</span></p>
+              <p>Ca Gluconate: 60 mg/kg = <span className={calcValueSm}>{drugs.calcium.gluconate} mg ({drugs.calcium.gluconateVol} mL)</span></p>
+              <p className="text-[9px]">Slow push. For hypocalcemia, hyperkalemia, Ca blocker OD</p>
+            </div>
+
+            {/* Glucose */}
+            <div className="p-2 rounded bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+              <p className="font-bold">Glucose (Hypoglycemia)</p>
+              <p>0.5-1 g/kg IV/IO = <span className={calcValueSm}>{drugs.glucose.dose}-{(w * 1).toFixed(1)} g</span></p>
+              <p>D10W: 5-10 mL/kg = <span className={calcValueSm}>{drugs.glucose.d10Vol}-{(w * 10).toFixed(1)} mL</span></p>
+            </div>
+
+            {/* Energy Doses */}
+            <div className="p-2 rounded bg-amber-100 dark:bg-amber-900/30 border border-amber-300 dark:border-amber-700">
+              <p className="font-bold text-amber-800 dark:text-amber-300">Energy Doses</p>
+              <div className="grid grid-cols-2 gap-2 mt-1">
+                <div>
+                  <p className="font-semibold">Defibrillation</p>
+                  <p>1st: 2 J/kg = <span className={calcValueSm}>{drugs.defib.first} J</span></p>
+                  <p>2nd+: 4 J/kg = <span className={calcValueSm}>{drugs.defib.second} J</span></p>
+                  <p className="text-[9px]">Max: 10 J/kg or adult dose</p>
+                </div>
+                <div>
+                  <p className="font-semibold">Cardioversion</p>
+                  <p>0.5-1 J/kg = <span className={calcValueSm}>{drugs.cardioversion.first}-{drugs.cardioversion.second} J</span></p>
+                  <p>If needed: 2 J/kg = <span className={calcValueSm}>{drugs.cardioversion.max} J</span></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </Section>
+      )}
+
+      {/* CPR Quality Targets */}
+      <Section title="CPR Quality Targets" className="mt-2">
+        <ul className="space-y-1">
+          <li>• Push hard (≥⅓ AP diameter) and fast (100-120/min)</li>
+          <li>• Allow complete chest recoil between compressions</li>
+          <li>• Minimize interruptions (&lt;10 sec for rhythm checks)</li>
+          <li>• Avoid excessive ventilation</li>
+          <li>• Rotate compressor every 2 minutes</li>
+          <li>• If no advanced airway: 15:2 compression-to-ventilation ratio</li>
+          <li>• Quantitative waveform capnography: PETCO2 &lt;10-15 mmHg → improve CPR quality</li>
+          <li>• Diastolic pressure goal: ≥25 mmHg (infant), ≥30 mmHg (child)</li>
+        </ul>
+      </Section>
+    </div>
+  );
 
   // ==================== RECORDING TAB ====================
   const RecordingTab = () => (
@@ -817,7 +524,6 @@ const CPRPage = ({ onBack }) => {
       {/* Timer Display */}
       <Card className="nightingale-card">
         <CardContent className="pt-6">
-          {/* Main Timer */}
           <div className="text-center mb-6">
             <div className={`text-6xl font-mono font-bold ${isRunning ? 'text-red-600 dark:text-red-400' : 'text-foreground'}`}>
               {formatTime(elapsedTime)}
@@ -846,74 +552,91 @@ const CPRPage = ({ onBack }) => {
               size="lg"
               variant={isRunning ? "destructive" : "default"}
               onClick={() => {
-                if (!isRunning && elapsedTime === 0) {
-                  setLastPulseCheck(0);
-                }
+                if (!isRunning && elapsedTime === 0) setLastPulseCheck(0);
                 setIsRunning(!isRunning);
               }}
               className="flex-1 max-w-[150px]"
-              data-testid="timer-toggle-button"
             >
               {isRunning ? (
-                <>
-                  <Pause className="h-5 w-5 mr-2" />
-                  Pause
-                </>
+                <><Pause className="h-5 w-5 mr-2" />Pause</>
               ) : (
-                <>
-                  <Play className="h-5 w-5 mr-2" />
-                  {elapsedTime > 0 ? "Resume" : "Start"}
-                </>
+                <><Play className="h-5 w-5 mr-2" />{elapsedTime > 0 ? "Resume" : "Start"}</>
               )}
             </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              onClick={resetTimer}
-              className="flex-1 max-w-[150px]"
-              data-testid="timer-reset-button"
-            >
-              <RotateCcw className="h-5 w-5 mr-2" />
-              Reset
+            <Button size="lg" variant="outline" onClick={resetTimer} className="flex-1 max-w-[150px]">
+              <RotateCcw className="h-5 w-5 mr-2" />Reset
             </Button>
           </div>
         </CardContent>
       </Card>
 
       {/* Event Buttons */}
-      <Card className="nightingale-card">
+      <Card className="nightingale-card overflow-visible">
         <CardHeader className="pb-2">
           <CardTitle className="text-sm font-semibold">Record Events</CardTitle>
-          <CardDescription className="text-xs">Tap to timestamp</CardDescription>
+          <p className="text-xs text-muted-foreground">Tap to timestamp • Hold Rx to select drug</p>
         </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-3 gap-3">
+        <CardContent className="overflow-visible">
+          <div className="grid grid-cols-3 gap-3 relative overflow-visible">
             <Button
               variant="outline"
               className="h-20 flex flex-col items-center gap-2 border-2 border-green-400 hover:bg-green-50 dark:hover:bg-green-900/20"
               onClick={() => recordEvent('pulse')}
               disabled={!isRunning}
-              data-testid="record-pulse-button"
             >
               <Activity className="h-6 w-6 text-green-600" />
               <span className="font-semibold text-sm">Pulse</span>
             </Button>
-            <Button
-              variant="outline"
-              className="h-20 flex flex-col items-center gap-2 border-2 border-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20"
-              onClick={() => recordEvent('rx')}
-              disabled={!isRunning}
-              data-testid="record-rx-button"
-            >
-              <Pill className="h-6 w-6 text-blue-600" />
-              <span className="font-semibold text-sm">Rx</span>
-            </Button>
+            
+            {/* Rx Button with Long Press */}
+            <div className="relative">
+              <Button
+                ref={rxButtonRef}
+                variant="outline"
+                className="h-20 w-full flex flex-col items-center gap-2 border-2 border-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20"
+                onTouchStart={handleRxTouchStart}
+                onTouchEnd={handleRxTouchEnd}
+                onMouseDown={handleRxTouchStart}
+                onMouseUp={handleRxTouchEnd}
+                onMouseLeave={() => clearTimeout(longPressRef.current)}
+                disabled={!isRunning}
+              >
+                <Pill className="h-6 w-6 text-blue-600" />
+                <span className="font-semibold text-sm">Rx</span>
+              </Button>
+
+              {/* Drug Selection Menu - Modal overlay */}
+              {showDrugMenu && (
+                <>
+                  <div className="fixed inset-0 bg-black/20 z-40" onClick={() => setShowDrugMenu(false)} />
+                  <div className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-gray-900 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 p-3 z-50 min-w-[200px]">
+                    <div className="flex justify-between items-center mb-3 pb-2 border-b">
+                      <span className="text-sm font-semibold">Select Drug</span>
+                      <button onClick={() => setShowDrugMenu(false)} className="p-1 hover:bg-gray-100 dark:hover:bg-gray-800 rounded">
+                        <X className="h-4 w-4" />
+                      </button>
+                    </div>
+                    <div className="space-y-1">
+                      {drugOptions.map((drug) => (
+                        <button
+                          key={drug.id}
+                          onClick={() => recordEvent('rx', drug.name)}
+                          className={`w-full text-left px-4 py-3 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 text-base font-medium ${drug.color} transition-colors`}
+                        >
+                          {drug.name}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
+
             <Button
               variant="outline"
               className="h-20 flex flex-col items-center gap-2 border-2 border-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/20"
               onClick={() => recordEvent('shock')}
               disabled={!isRunning}
-              data-testid="record-shock-button"
             >
               <Zap className="h-6 w-6 text-amber-600" />
               <span className="font-semibold text-sm">Shock</span>
@@ -948,7 +671,10 @@ const CPRPage = ({ onBack }) => {
                     {event.type === 'pulse' && <Activity className="h-4 w-4 text-green-600" />}
                     {event.type === 'rx' && <Pill className="h-4 w-4 text-blue-600" />}
                     {event.type === 'shock' && <Zap className="h-4 w-4 text-amber-600" />}
-                    <span className="font-medium text-sm capitalize">{event.type}</span>
+                    <div>
+                      <span className="font-medium text-sm capitalize">{event.type}</span>
+                      {event.drug && <span className="text-xs text-muted-foreground ml-1">({event.drug})</span>}
+                    </div>
                   </div>
                   <div className="text-right">
                     <p className="font-mono text-sm">{formatTime(event.time)}</p>
@@ -978,11 +704,6 @@ const CPRPage = ({ onBack }) => {
           </CardContent>
         </Card>
       )}
-
-      {/* Hidden audio element for alerts */}
-      <audio ref={audioRef} preload="auto">
-        <source src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdH2Onqarpp+Xk5WfoKatr7CxsbCvrauqqqmoqKinp6alpaSjoqGgnpyam5mXlZSTkpGQj46NjIuKiYiHhoWEg4KBgH9+fXx7enl4d3Z1dHNycXBvbm1sa2ppaGdmZWRjYmFgX15dXFtaWVhXVlVUU1JRUE9OTUxLSklIR0ZFRENCQUA/Pj08Ozo5ODc2NTQzMjEwLy4tLCsqKSgnJiUkIyIhIB8eHRwbGhkYFxYVFBMSERAPDg0MCwoJCAcGBQQDAgEAAQIDBAUGBwgJCgsMDQ4PEBESExQVFhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4/QEFCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaW1xdXl9gYWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXp7fH1+f4CBgoOEhYaHiImKi4yNjo+QkZKTlJWWl5iZmpucnZ6foKGio6SlpqeoqaqrrK2ur7CxsrO0tba3uLm6u7y9vr/AwcLDxMXGx8jJysvMzc7P0NHS09TV1tfY2drb3N3e3+Dh4uPk5ebn6Onq6+zt7u/w8fLz9PX29/j5+vv8/f7/AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ1Njc4OTo7PD0+P0BBQkNERUZHSElKS0xNTk9QUVJTVFVWV1hZWltcXV5fYGFiY2RlZmdoaWprbG1ub3BxcnN0dXZ3eHl6e3x9fn+AgYKDhIWGh4iJiouMjY6PkJGSk5SVlpeYmZqbnJ2en6ChoqOkpaanqKmqq6ytrq+wsbKztLW2t7i5uru8vb6/wMHCw8TFxsfIycrLzM3Oz9DR0tPU1dbX2Nna29zd3t/g4eLj5OXm5+jp6uvs7e7v8PHy8/T19vf4+fr7/P3+/w==" type="audio/wav" />
-      </audio>
     </div>
   );
 
@@ -1005,7 +726,6 @@ const CPRPage = ({ onBack }) => {
                 value={weight}
                 onChange={(e) => setWeight(e.target.value)}
                 className="font-mono mt-1"
-                data-testid="weight-input"
               />
             </div>
           </div>
@@ -1015,32 +735,18 @@ const CPRPage = ({ onBack }) => {
       {/* Main Tab Navigation */}
       <Tabs value={mainTab} onValueChange={setMainTab}>
         <TabsList className="grid w-full grid-cols-2 bg-gray-100 dark:bg-gray-800">
-          <TabsTrigger 
-            value="cpr" 
-            className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-900"
-            data-testid="tab-cpr"
-          >
+          <TabsTrigger value="cpr" className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-900">
             CPR
           </TabsTrigger>
-          <TabsTrigger 
-            value="recording" 
-            className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-900"
-            data-testid="tab-recording"
-          >
+          <TabsTrigger value="recording" className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-900">
             Recording
           </TabsTrigger>
         </TabsList>
 
-        {/* CPR Tab */}
         <TabsContent value="cpr" className="mt-4">
-          {flowState === "start" && <StartScreen />}
-          {flowState === "shockable" && <ShockableTrack />}
-          {flowState === "non-shockable" && <NonShockableTrack />}
-          {flowState === "tachy-narrow" && <NarrowQRSTrack />}
-          {flowState === "tachy-wide" && <WideQRSTrack />}
+          <CardiacArrestFlowchart />
         </TabsContent>
 
-        {/* Recording Tab */}
         <TabsContent value="recording" className="mt-4">
           <RecordingTab />
         </TabsContent>
