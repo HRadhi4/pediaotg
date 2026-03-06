@@ -54,6 +54,8 @@ const CPRPage = ({ onBack }) => {
   const [lastPulseCheck, setLastPulseCheck] = useState(0);
   const [lastRxTime, setLastRxTime] = useState(0);
   const [lastRxDrug, setLastRxDrug] = useState(null);
+  const [lastEpiTime, setLastEpiTime] = useState(0); // Track Epinephrine specifically
+  const [cprStartTime, setCprStartTime] = useState(null); // Actual clock time when CPR started
   const [showReminder, setShowReminder] = useState(false);
   const [showDrugMenu, setShowDrugMenu] = useState(false);
   const [pendingRxEvent, setPendingRxEvent] = useState(null);
@@ -186,6 +188,11 @@ const CPRPage = ({ onBack }) => {
       setEvents(prev => [...prev, newEvent]);
       setLastRxTime(pendingRxEvent.time);
       setLastRxDrug(drugName);
+      
+      // Track Epinephrine specifically
+      if (drugName.toLowerCase().includes('epinephrine')) {
+        setLastEpiTime(pendingRxEvent.time);
+      }
     }
     setShowDrugMenu(false);
     setPendingRxEvent(null);
@@ -225,13 +232,73 @@ const CPRPage = ({ onBack }) => {
     setEditingDrugName("");
   };
 
+  // Start CPR - log start event
+  const startCPR = () => {
+    const now = new Date();
+    const startEvent = {
+      type: 'cpr-start',
+      drug: null,
+      time: 0,
+      timestamp: now.toLocaleTimeString(),
+      clockTime: now.toISOString(),
+    };
+    setEvents([startEvent]);
+    setCprStartTime(now);
+    setIsRunning(true);
+  };
+
+  // Toggle timer (pause/resume)
+  const toggleTimer = () => {
+    if (!isRunning && elapsedTime === 0) {
+      // First start
+      startCPR();
+    } else {
+      // Pause/Resume
+      setIsRunning(!isRunning);
+    }
+  };
+
+  // Reset/Finish CPR - log end event with total duration
   const resetTimer = () => {
+    if (elapsedTime > 0) {
+      // Add CPR End event before resetting
+      const now = new Date();
+      const endEvent = {
+        type: 'cpr-end',
+        drug: null,
+        time: elapsedTime,
+        timestamp: now.toLocaleTimeString(),
+        clockTime: now.toISOString(),
+        totalDuration: formatTime(elapsedTime),
+      };
+      setEvents(prev => [...prev, endEvent]);
+      
+      // Don't reset immediately - let user see the final log
+      setIsRunning(false);
+    } else {
+      // Just reset if no time elapsed
+      setIsRunning(false);
+      setElapsedTime(0);
+      setEvents([]);
+      setLastPulseCheck(0);
+      setLastRxTime(0);
+      setLastRxDrug(null);
+      setLastEpiTime(0);
+      setCprStartTime(null);
+      setShowReminder(false);
+    }
+  };
+
+  // Clear all and start fresh
+  const clearAll = () => {
     setIsRunning(false);
     setElapsedTime(0);
     setEvents([]);
     setLastPulseCheck(0);
     setLastRxTime(0);
     setLastRxDrug(null);
+    setLastEpiTime(0);
+    setCprStartTime(null);
     setShowReminder(false);
   };
 
@@ -929,7 +996,7 @@ const CPRPage = ({ onBack }) => {
             <Button
               size="lg"
               variant={isRunning ? "destructive" : "default"}
-              onClick={() => setIsRunning(!isRunning)}
+              onClick={toggleTimer}
               className="flex-1 max-w-[150px]"
             >
               {isRunning ? (
@@ -938,10 +1005,30 @@ const CPRPage = ({ onBack }) => {
                 <><Play className="h-5 w-5 mr-2" />{elapsedTime > 0 ? "Resume" : "Start"}</>
               )}
             </Button>
-            <Button size="lg" variant="outline" onClick={resetTimer} className="flex-1 max-w-[150px]">
-              <RotateCcw className="h-5 w-5 mr-2" />Reset
+            <Button 
+              size="lg" 
+              variant="outline" 
+              onClick={resetTimer} 
+              className="flex-1 max-w-[150px]"
+            >
+              <RotateCcw className="h-5 w-5 mr-2" />
+              {elapsedTime > 0 ? "Finish" : "Reset"}
             </Button>
           </div>
+          
+          {/* Clear All button - only show when there are events and timer is stopped */}
+          {!isRunning && events.length > 0 && events.some(e => e.type === 'cpr-end') && (
+            <div className="mt-3 text-center">
+              <Button 
+                size="sm" 
+                variant="ghost" 
+                onClick={clearAll}
+                className="text-xs text-muted-foreground"
+              >
+                Clear All & Start New
+              </Button>
+            </div>
+          )}
         </CardContent>
       </Card>
 
@@ -1003,17 +1090,39 @@ const CPRPage = ({ onBack }) => {
                 <div
                   key={idx}
                   className={`flex items-center justify-between p-2 rounded-lg border ${
-                    event.type === 'rx'
+                    event.type === 'cpr-start'
+                      ? 'border-green-300 bg-green-50 dark:bg-green-900/20 dark:border-green-800'
+                      : event.type === 'cpr-end'
+                      ? 'border-red-300 bg-red-50 dark:bg-red-900/20 dark:border-red-800'
+                      : event.type === 'rx'
                       ? 'border-blue-200 bg-blue-50 dark:bg-blue-900/20 dark:border-blue-800'
                       : 'border-amber-200 bg-amber-50 dark:bg-amber-900/20 dark:border-amber-800'
                   }`}
                 >
                   <div className="flex items-center gap-2 flex-1">
+                    {event.type === 'cpr-start' && <Play className="h-4 w-4 text-green-600" />}
+                    {event.type === 'cpr-end' && <RotateCcw className="h-4 w-4 text-red-600" />}
                     {event.type === 'rx' && <Pill className="h-4 w-4 text-blue-600" />}
                     {event.type === 'shock' && <Zap className="h-4 w-4 text-amber-600" />}
                     
+                    {/* CPR Start event */}
+                    {event.type === 'cpr-start' && (
+                      <div className="flex flex-col">
+                        <span className="font-bold text-sm text-green-700 dark:text-green-400">CPR Started</span>
+                        <span className="text-xs text-muted-foreground">{event.timestamp}</span>
+                      </div>
+                    )}
+                    
+                    {/* CPR End event */}
+                    {event.type === 'cpr-end' && (
+                      <div className="flex flex-col">
+                        <span className="font-bold text-sm text-red-700 dark:text-red-400">CPR Ended</span>
+                        <span className="text-xs text-muted-foreground">{event.timestamp} • Total: {event.totalDuration}</span>
+                      </div>
+                    )}
+                    
                     {/* Editable drug name for Rx events */}
-                    {event.type === 'rx' ? (
+                    {event.type === 'rx' && (
                       editingEventIndex === idx ? (
                         <div className="flex items-center gap-1 flex-1">
                           <Input
@@ -1031,25 +1140,34 @@ const CPRPage = ({ onBack }) => {
                           </button>
                         </div>
                       ) : (
-                        <div className="flex items-center gap-1">
-                          <span className="font-medium text-sm">Rx</span>
-                          {event.drug && <span className="text-xs text-muted-foreground">({event.drug})</span>}
-                          <button
-                            onClick={() => startEditingDrug(idx)}
-                            className="p-1 hover:bg-blue-100 dark:hover:bg-blue-900 rounded ml-1"
-                          >
-                            <Pencil className="h-3 w-3 text-blue-500" />
-                          </button>
+                        <div className="flex flex-col">
+                          <div className="flex items-center gap-1">
+                            <span className="font-medium text-sm">Rx</span>
+                            {event.drug && <span className="text-xs text-muted-foreground">({event.drug})</span>}
+                            <button
+                              onClick={() => startEditingDrug(idx)}
+                              className="p-1 hover:bg-blue-100 dark:hover:bg-blue-900 rounded ml-1"
+                            >
+                              <Pencil className="h-3 w-3 text-blue-500" />
+                            </button>
+                          </div>
+                          <span className="text-xs text-muted-foreground">{event.timestamp}</span>
                         </div>
                       )
-                    ) : (
-                      <span className="font-medium text-sm capitalize">{event.type}</span>
+                    )}
+                    
+                    {/* Shock event */}
+                    {event.type === 'shock' && (
+                      <div className="flex flex-col">
+                        <span className="font-medium text-sm">Shock</span>
+                        <span className="text-xs text-muted-foreground">{event.timestamp}</span>
+                      </div>
                     )}
                   </div>
                   
                   {/* Time display */}
                   <div className="text-right">
-                    <p className="font-mono text-sm">{formatTime(event.time)}</p>
+                    <p className="font-mono text-sm font-bold">{formatTime(event.time)}</p>
                   </div>
                 </div>
               ))}
@@ -1061,12 +1179,24 @@ const CPRPage = ({ onBack }) => {
       {/* Time Trackers */}
       {isRunning && (
         <Card className="nightingale-card">
-          <CardContent className="pt-4">
-            {/* Time since last Rx with drug name */}
+          <CardContent className="pt-4 space-y-3">
+            {/* Time since last Epinephrine - Always show if Epi was given */}
+            {lastEpiTime > 0 && (
+              <div className="flex items-center justify-between p-2 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800">
+                <div className="flex flex-col">
+                  <span className="text-sm font-semibold text-red-700 dark:text-red-400">Time since last Epinephrine:</span>
+                </div>
+                <span className="font-mono font-bold text-red-600 dark:text-red-400 text-lg">
+                  {formatTime(elapsedTime - lastEpiTime)}
+                </span>
+              </div>
+            )}
+            
+            {/* Time since last Rx (any drug) */}
             <div className="flex items-center justify-between">
               <div className="flex flex-col">
                 <span className="text-sm text-muted-foreground">Time since last Rx:</span>
-                {lastRxDrug && (
+                {lastRxDrug && !lastRxDrug.toLowerCase().includes('epinephrine') && (
                   <span className="text-xs text-blue-600 dark:text-blue-400">({lastRxDrug})</span>
                 )}
               </div>
