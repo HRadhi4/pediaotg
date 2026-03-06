@@ -11,7 +11,7 @@
  *   - Editable drug names in log
  */
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -62,6 +62,8 @@ const CPRPage = ({ onBack }) => {
   const [editingEventIndex, setEditingEventIndex] = useState(null);
   const [editingDrugName, setEditingDrugName] = useState("");
   const timerRef = useRef(null);
+  const lastPulseCheckRef = useRef(0); // Use ref to avoid stale closure in timer
+  const elapsedTimeRef = useRef(0); // Track current elapsed time for callbacks
 
   // Scroll to top
   useEffect(() => {
@@ -83,7 +85,8 @@ const CPRPage = ({ onBack }) => {
       timerRef.current = setInterval(() => {
         setElapsedTime(prev => {
           const newTime = prev + 1;
-          const timeSinceLastPulse = newTime - lastPulseCheck;
+          elapsedTimeRef.current = newTime; // Keep ref in sync
+          const timeSinceLastPulse = newTime - lastPulseCheckRef.current;
           // At exactly 120 seconds since last pulse check, trigger reminder with vibration
           if (timeSinceLastPulse === 120) {
             setShowReminder(true);
@@ -96,7 +99,7 @@ const CPRPage = ({ onBack }) => {
       clearInterval(timerRef.current);
     }
     return () => clearInterval(timerRef.current);
-  }, [isRunning, lastPulseCheck]);
+  }, [isRunning]);
 
   // Drug calculations (PALS 2025)
   const drugs = w ? {
@@ -245,6 +248,7 @@ const CPRPage = ({ onBack }) => {
     setEvents([startEvent]);
     setCprStartTime(now);
     setLastPulseCheck(0); // Reset pulse check timer
+    lastPulseCheckRef.current = 0; // Reset ref too
     setIsRunning(true);
   };
 
@@ -491,7 +495,8 @@ const CPRPage = ({ onBack }) => {
   };
 
   // ==================== CARDIAC ARREST FLOWCHART ====================
-  const CardiacArrestFlowchart = () => (
+  // Memoize to prevent re-rendering on timer updates
+  const CardiacArrestFlowchart = useMemo(() => (
     <div className="space-y-3">
       {/* CARDIAC ARREST SECTION HEADER */}
       <div className="text-center py-2 px-4 rounded-lg bg-red-100 dark:bg-red-900/30 border border-red-300 dark:border-red-700">
@@ -930,7 +935,7 @@ const CPRPage = ({ onBack }) => {
         </ul>
       </Section>
     </div>
-  );
+  ), [selectedTrack, drugs, w, calcValue, calcValueSm]);
 
   // ==================== RECORDING TAB ====================
   const RecordingTab = () => (
@@ -979,7 +984,9 @@ const CPRPage = ({ onBack }) => {
               className="mb-4 p-4 rounded-lg bg-amber-100 dark:bg-amber-900/30 border-2 border-amber-500 cursor-pointer"
               onClick={() => {
                 setShowReminder(false);
-                setLastPulseCheck(elapsedTime);
+                const currentTime = elapsedTimeRef.current;
+                setLastPulseCheck(currentTime);
+                lastPulseCheckRef.current = currentTime; // Update ref for next 2-min check
               }}
             >
               <div className="flex items-center gap-3">
@@ -1554,7 +1561,7 @@ const CPRPage = ({ onBack }) => {
         </TabsList>
 
         <TabsContent value="cpr" className="mt-4">
-          <CardiacArrestFlowchart />
+          {CardiacArrestFlowchart}
         </TabsContent>
 
         <TabsContent value="drugs" className="mt-4">
