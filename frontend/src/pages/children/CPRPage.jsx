@@ -32,7 +32,8 @@ import {
   X,
   Pencil,
   Check,
-  Search
+  Search,
+  Syringe
 } from "lucide-react";
 
 const CPRPage = ({ onBack }) => {
