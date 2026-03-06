@@ -28,7 +28,7 @@ All approach content in the Approaches page supports unified pinch-to-zoom:
 - **Infusions**: IV drug calculations
 - **Intubation**: ETT + RSI Checklist
 - **Scoring/Calculators**: GCS, PRAM, Westley, OI, IWL, BSA
-- **CPR**: PALS drugs & algorithms
+- **CPR**: PALS algorithms with interactive flowchart & CPR event recorder (Recording tab with timer)
 - **Approaches**: 24 clinical algorithms with pinch-to-zoom support
 
 ### NICU Section
@@ -66,6 +66,26 @@ All approach content in the Approaches page supports unified pinch-to-zoom:
 - **Email Notifications**: Admin notified of new registrations and subscriptions
   - Already implemented in previous session
   - Files: `/app/backend/services/email_service.py`, `/app/backend/routes/auth.py`, `/app/backend/routes/subscription.py`
+
+### March 6, 2026
+- **CPR Page Redesign (PALS Card)**: Complete redesign of the Children > CPR page with interactive flowchart
+  - **CPR Tab**: Track-based PALS algorithm following the PALS card exactly
+    - Initial screen: CPR basics (Rate, Depth, C:V ratio) and rhythm selection
+    - VF/pVT (Shockable) track: 7-step algorithm with defibrillation doses
+    - Asystole/PEA (Non-Shockable) track: 7-step algorithm with epinephrine emphasis
+    - Narrow QRS (SVT) track: Vagal maneuvers, adenosine doses
+    - Wide QRS (VT) track: Amiodarone, cardioversion doses
+    - Step-by-step navigation with Previous/Next buttons
+    - Quick Drug Doses collapsible section
+    - H's & T's (Reversible Causes) section
+  - **Recording Tab**: CPR event recorder with timer
+    - Timer with Start/Pause/Reset controls
+    - 2-minute pulse check reminder (visual alert when due)
+    - Pulse/Rx/Shock buttons to record timestamped events
+    - Event Log displays all recorded events with elapsed time and wall clock time
+    - Time since last pulse check tracker
+  - Drug calculations based on weight (Epinephrine, Amiodarone, Defibrillation, Cardioversion)
+  - File: `/app/frontend/src/pages/children/CPRPage.jsx`
 
 ### June 27, 2026
 - **SEIZURES ALGORITHM Redesign**: Complete overhaul of the Epilepsy approach flowchart
