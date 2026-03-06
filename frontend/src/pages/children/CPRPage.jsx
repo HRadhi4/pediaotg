@@ -1184,12 +1184,7 @@ const CPRPage = ({ onBack }) => {
             <div 
               ref={eventLogRef} 
               onScroll={handleEventLogScroll}
-              className="space-y-2 max-h-[300px] overflow-y-auto overscroll-contain isolate"
-              style={{ 
-                WebkitOverflowScrolling: 'touch',
-                contain: 'strict',
-                position: 'relative'
-              }}
+              className="space-y-2 max-h-[300px] overflow-y-auto overscroll-contain"
             >
               {events.map((event, idx) => (
                 <div
