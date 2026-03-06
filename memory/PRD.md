@@ -68,20 +68,29 @@ All approach content in the Approaches page supports unified pinch-to-zoom:
   - Files: `/app/backend/services/email_service.py`, `/app/backend/routes/auth.py`, `/app/backend/routes/subscription.py`
 
 ### March 6, 2026
-- **CPR Page Redesign (PALS Card)**: Complete redesign of the Children > CPR page with interactive flowchart
+- **CPR Page Redesign (PALS Card)**: Complete redesign of the Children > CPR page
+  - **3 Tabs**: CPR, Medications, Recording
   - **CPR Tab**: Track-based PALS algorithm with clear section headers
-    - **CARDIAC ARREST** section header (red) with VF/pVT and Asystole/PEA tracks
-    - **TACHYCARDIA WITH PULSE** section header (blue) with Narrow QRS (SVT) and Wide QRS (VT) tracks
-    - H's and T's always visible (not collapsible)
-    - Quick Drug Doses Reference section with all PALS drugs
-  - **Recording Tab**: CPR event recorder with timer
-    - Timer with Start/Pause/Reset controls
-    - 2-minute pulse check reminder with **phone vibration** (no animation)
-    - **Only Rx and Shock buttons** (Pulse button removed)
-    - Tap Rx to show drug selection (Epinephrine, Adenosine, Amiodarone, NaHCO₃, Calcium Gluconate)
-    - **Time since last Rx** tracker with last drug name displayed
-    - Editable drug names in event log (pencil icon to edit)
-  - Drug calculations based on weight
+    - **CARDIAC ARREST** section (VF/pVT, Asystole/PEA tracks)
+    - **TACHYCARDIA WITH PULSE** section (Narrow QRS, Wide QRS tracks)
+    - H's and T's always visible
+  - **Medications Tab**: Complete drug reference from PALS card
+    - Epinephrine (with IV/IO, ETT, infusion doses)
+    - Amiodarone (arrest and perfusing tachycardia doses)
+    - Lidocaine (bolus, infusion, ETT)
+    - Adenosine (1st/2nd dose with administration notes)
+    - Atropine (bradycardia dose)
+    - Sodium Bicarbonate (with indications)
+    - Calcium (Chloride and Gluconate)
+    - Glucose (D10W, D25W)
+    - Magnesium Sulfate
+    - Procainamide
+    - Energy Doses (Defibrillation, Cardioversion)
+    - All doses calculated based on patient weight
+  - **Recording Tab**: CPR event recorder
+    - Timer with 2-min pulse reminder (vibration)
+    - Rx and Shock buttons only
+    - Time since last Rx tracker with drug name
   - File: `/app/frontend/src/pages/children/CPRPage.jsx`
 
 ### June 27, 2026

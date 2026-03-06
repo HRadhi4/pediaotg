@@ -887,6 +887,304 @@ const CPRPage = ({ onBack }) => {
     </div>
   );
 
+  // ==================== MEDICATIONS TAB ====================
+  const MedicationsTab = () => (
+    <div className="space-y-3">
+      {/* Epinephrine */}
+      <Card className="nightingale-card border-l-4 border-red-500">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-base font-bold text-red-700 dark:text-red-400">Epinephrine</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-2 text-sm">
+          <div className="space-y-1">
+            <p className="font-semibold">Cardiac Arrest / Bradycardia:</p>
+            <p>IV/IO: 0.01 mg/kg (0.1 mL/kg of 1:10,000)</p>
+            {drugs && <p className={calcValue}>{drugs.epinephrine.dose} mg = {drugs.epinephrine.volume} mL</p>}
+            <p className="text-xs text-muted-foreground">Repeat every 3-5 minutes</p>
+            <p className="text-xs text-muted-foreground">Max single dose: 1 mg</p>
+          </div>
+          <div className="pt-2 border-t border-gray-200 dark:border-gray-700 space-y-1">
+            <p className="font-semibold">ETT (if no IV/IO):</p>
+            <p>0.1 mg/kg (0.1 mL/kg of 1:1,000)</p>
+            {drugs && <p className={calcValue}>{drugs.epinephrine.ettDose} mg</p>}
+          </div>
+          <div className="pt-2 border-t border-gray-200 dark:border-gray-700 space-y-1">
+            <p className="font-semibold">Continuous Infusion:</p>
+            <p>0.1-1 mcg/kg/min</p>
+            {drugs && <p className={calcValueSm}>{(w * 0.1).toFixed(1)}-{(w * 1).toFixed(1)} mcg/min</p>}
+            <p className="text-xs text-muted-foreground">Titrate to effect</p>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Amiodarone */}
+      <Card className="nightingale-card border-l-4 border-purple-500">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-base font-bold text-purple-700 dark:text-purple-400">Amiodarone</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-2 text-sm">
+          <div className="space-y-1">
+            <p className="font-semibold">VF/Pulseless VT (refractory):</p>
+            <p>5 mg/kg IV/IO bolus</p>
+            {drugs && <p className={calcValue}>{drugs.amiodarone.dose} mg</p>}
+            <p className="text-xs text-muted-foreground">May repeat up to 2 times</p>
+            <p className="text-xs text-muted-foreground">Max single dose: 300 mg</p>
+          </div>
+          <div className="pt-2 border-t border-gray-200 dark:border-gray-700 space-y-1">
+            <p className="font-semibold">Perfusing Tachycardia:</p>
+            <p>5 mg/kg IV over 20-60 min</p>
+            {drugs && <p className={calcValue}>{drugs.amiodarone.dose} mg</p>}
+            <p className="text-xs text-muted-foreground">May repeat to max daily dose 15 mg/kg</p>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Lidocaine */}
+      <Card className="nightingale-card border-l-4 border-gray-500">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-base font-bold">Lidocaine</CardTitle>
+          <p className="text-xs text-muted-foreground">Alternative to Amiodarone</p>
+        </CardHeader>
+        <CardContent className="space-y-2 text-sm">
+          <div className="space-y-1">
+            <p className="font-semibold">VF/Pulseless VT:</p>
+            <p>Initial: 1 mg/kg IV/IO bolus</p>
+            {drugs && <p className={calcValue}>{drugs.lidocaine.bolus} mg</p>}
+          </div>
+          <div className="pt-2 border-t border-gray-200 dark:border-gray-700 space-y-1">
+            <p className="font-semibold">Maintenance Infusion:</p>
+            <p>20-50 mcg/kg/min</p>
+            {drugs && <p className={calcValueSm}>{drugs.lidocaine.infusionMin}-{drugs.lidocaine.infusionMax} mcg/min</p>}
+          </div>
+          <div className="pt-2 border-t border-gray-200 dark:border-gray-700 space-y-1">
+            <p className="font-semibold">ETT:</p>
+            <p>2-3 mg/kg</p>
+            {drugs && <p className={calcValueSm}>{(w * 2).toFixed(1)}-{(w * 3).toFixed(1)} mg</p>}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Adenosine */}
+      <Card className="nightingale-card border-l-4 border-blue-500">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-base font-bold text-blue-700 dark:text-blue-400">Adenosine</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-2 text-sm">
+          <div className="space-y-1">
+            <p className="font-semibold">SVT:</p>
+            <p>1st dose: 0.1 mg/kg rapid IV push (max 6 mg)</p>
+            {drugs && <p className={calcValue}>{drugs.adenosine.first} mg</p>}
+          </div>
+          <div className="pt-2 border-t border-gray-200 dark:border-gray-700 space-y-1">
+            <p>2nd dose: 0.2 mg/kg rapid IV push (max 12 mg)</p>
+            {drugs && <p className={calcValue}>{drugs.adenosine.second} mg</p>}
+          </div>
+          <div className="pt-2 border-t border-gray-200 dark:border-gray-700">
+            <p className="text-xs text-muted-foreground font-semibold">Administration:</p>
+            <p className="text-xs text-muted-foreground">• Use rapid IV push technique</p>
+            <p className="text-xs text-muted-foreground">• Follow immediately with NS flush (5-10 mL)</p>
+            <p className="text-xs text-muted-foreground">• Use proximal IV site if possible</p>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Atropine */}
+      <Card className="nightingale-card border-l-4 border-green-500">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-base font-bold text-green-700 dark:text-green-400">Atropine</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-2 text-sm">
+          <div className="space-y-1">
+            <p className="font-semibold">Symptomatic Bradycardia:</p>
+            <p>0.02 mg/kg IV/IO</p>
+            {drugs && <p className={calcValue}>{drugs.atropine.dose} mg</p>}
+            <p className="text-xs text-muted-foreground">Min dose: 0.1 mg</p>
+            <p className="text-xs text-muted-foreground">Max single dose: 0.5 mg</p>
+            <p className="text-xs text-muted-foreground">May repeat once</p>
+          </div>
+          <div className="pt-2 border-t border-gray-200 dark:border-gray-700 space-y-1">
+            <p className="font-semibold">ETT:</p>
+            <p>0.04-0.06 mg/kg</p>
+            {drugs && <p className={calcValueSm}>{(w * 0.04).toFixed(2)}-{(w * 0.06).toFixed(2)} mg</p>}
+          </div>
+          <div className="pt-2 border-t border-gray-200 dark:border-gray-700">
+            <p className="text-xs text-muted-foreground">Use for increased vagal tone or primary AV block. Unlikely to be effective for hypoxic/ischemic bradycardia.</p>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Sodium Bicarbonate */}
+      <Card className="nightingale-card border-l-4 border-amber-500">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-base font-bold text-amber-700 dark:text-amber-400">Sodium Bicarbonate</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-2 text-sm">
+          <div className="space-y-1">
+            <p className="font-semibold">Metabolic Acidosis / Hyperkalemia:</p>
+            <p>1 mEq/kg IV/IO slow push</p>
+            {drugs && <p className={calcValue}>{drugs.nahco3.dose} mEq</p>}
+          </div>
+          <div className="pt-2 border-t border-gray-200 dark:border-gray-700">
+            <p className="text-xs text-muted-foreground font-semibold">Indications:</p>
+            <p className="text-xs text-muted-foreground">• Severe metabolic acidosis (pH &lt;7.1)</p>
+            <p className="text-xs text-muted-foreground">• Hyperkalemia</p>
+            <p className="text-xs text-muted-foreground">• Tricyclic antidepressant overdose</p>
+            <p className="text-xs text-muted-foreground">• Sodium channel blocker toxicity</p>
+          </div>
+          <div className="pt-2 border-t border-gray-200 dark:border-gray-700">
+            <p className="text-xs text-muted-foreground">Ensure adequate ventilation before giving. Do not mix with calcium.</p>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Calcium */}
+      <Card className="nightingale-card border-l-4 border-teal-500">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-base font-bold text-teal-700 dark:text-teal-400">Calcium</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-2 text-sm">
+          <div className="space-y-1">
+            <p className="font-semibold">Calcium Chloride 10% (27 mg/mL Ca):</p>
+            <p>20 mg/kg IV/IO slow push</p>
+            {drugs && <p className={calcValue}>{drugs.calcium.chloride} mg ({drugs.calcium.chlorideVol} mL)</p>}
+            <p className="text-xs text-muted-foreground">Max: 2 g (20 mL)</p>
+            <p className="text-xs text-muted-foreground">Central line preferred</p>
+          </div>
+          <div className="pt-2 border-t border-gray-200 dark:border-gray-700 space-y-1">
+            <p className="font-semibold">Calcium Gluconate 10% (9 mg/mL Ca):</p>
+            <p>60 mg/kg IV/IO slow push</p>
+            {drugs && <p className={calcValue}>{drugs.calcium.gluconate} mg ({drugs.calcium.gluconateVol} mL)</p>}
+            <p className="text-xs text-muted-foreground">Max: 3 g (30 mL)</p>
+            <p className="text-xs text-muted-foreground">Safer for peripheral IV</p>
+          </div>
+          <div className="pt-2 border-t border-gray-200 dark:border-gray-700">
+            <p className="text-xs text-muted-foreground font-semibold">Indications:</p>
+            <p className="text-xs text-muted-foreground">• Documented hypocalcemia</p>
+            <p className="text-xs text-muted-foreground">• Hyperkalemia</p>
+            <p className="text-xs text-muted-foreground">• Hypermagnesemia</p>
+            <p className="text-xs text-muted-foreground">• Calcium channel blocker overdose</p>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Glucose */}
+      <Card className="nightingale-card border-l-4 border-orange-500">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-base font-bold text-orange-700 dark:text-orange-400">Glucose</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-2 text-sm">
+          <div className="space-y-1">
+            <p className="font-semibold">Hypoglycemia:</p>
+            <p>0.5-1 g/kg IV/IO</p>
+            {drugs && <p className={calcValue}>{drugs.glucose.dose}-{(w * 1).toFixed(1)} g</p>}
+          </div>
+          <div className="pt-2 border-t border-gray-200 dark:border-gray-700 space-y-1">
+            <p className="font-semibold">D10W (Neonates/Infants):</p>
+            <p>5-10 mL/kg</p>
+            {drugs && <p className={calcValueSm}>{drugs.glucose.d10Vol}-{(w * 10).toFixed(1)} mL</p>}
+          </div>
+          <div className="pt-2 border-t border-gray-200 dark:border-gray-700 space-y-1">
+            <p className="font-semibold">D25W (Children):</p>
+            <p>2-4 mL/kg</p>
+            {drugs && <p className={calcValueSm}>{(w * 2).toFixed(1)}-{(w * 4).toFixed(1)} mL</p>}
+          </div>
+          <div className="pt-2 border-t border-gray-200 dark:border-gray-700">
+            <p className="text-xs text-muted-foreground">Check blood glucose. D50W not recommended for pediatrics (use D10W or D25W).</p>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Magnesium Sulfate */}
+      <Card className="nightingale-card border-l-4 border-pink-500">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-base font-bold text-pink-700 dark:text-pink-400">Magnesium Sulfate</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-2 text-sm">
+          <div className="space-y-1">
+            <p className="font-semibold">Torsades de Pointes / Hypomagnesemia:</p>
+            <p>25-50 mg/kg IV/IO over 10-20 min</p>
+            {drugs && <p className={calcValue}>{(w * 25).toFixed(0)}-{(w * 50).toFixed(0)} mg</p>}
+            <p className="text-xs text-muted-foreground">Max: 2 g</p>
+          </div>
+          <div className="pt-2 border-t border-gray-200 dark:border-gray-700 space-y-1">
+            <p className="font-semibold">Asthma (refractory):</p>
+            <p>25-75 mg/kg IV over 20 min</p>
+            {drugs && <p className={calcValueSm}>{(w * 25).toFixed(0)}-{(w * 75).toFixed(0)} mg</p>}
+            <p className="text-xs text-muted-foreground">Max: 2 g</p>
+          </div>
+          <div className="pt-2 border-t border-gray-200 dark:border-gray-700">
+            <p className="text-xs text-muted-foreground">Rapid administration may cause hypotension. Monitor BP during infusion.</p>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Procainamide */}
+      <Card className="nightingale-card border-l-4 border-indigo-500">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-base font-bold text-indigo-700 dark:text-indigo-400">Procainamide</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-2 text-sm">
+          <div className="space-y-1">
+            <p className="font-semibold">SVT / VT (with pulse):</p>
+            <p>15 mg/kg IV/IO over 30-60 min</p>
+            {drugs && <p className={calcValue}>{(w * 15).toFixed(0)} mg</p>}
+          </div>
+          <div className="pt-2 border-t border-gray-200 dark:border-gray-700">
+            <p className="text-xs text-muted-foreground font-semibold">Monitoring:</p>
+            <p className="text-xs text-muted-foreground">• Continuous ECG and BP monitoring</p>
+            <p className="text-xs text-muted-foreground">• Stop if QRS widens &gt;50%</p>
+            <p className="text-xs text-muted-foreground">• Stop if hypotension occurs</p>
+          </div>
+          <div className="pt-2 border-t border-gray-200 dark:border-gray-700">
+            <p className="text-xs text-muted-foreground">Do not use with amiodarone or other drugs that prolong QT.</p>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Energy Doses */}
+      <Card className="nightingale-card border-l-4 border-yellow-500">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-base font-bold text-yellow-700 dark:text-yellow-400">Energy Doses</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-2 text-sm">
+          <div className="space-y-1">
+            <p className="font-semibold">Defibrillation (VF/pVT):</p>
+            <p>1st shock: 2 J/kg</p>
+            {drugs && <p className={calcValue}>{drugs.defib.first} J</p>}
+            <p>2nd+ shocks: 4 J/kg</p>
+            {drugs && <p className={calcValue}>{drugs.defib.second} J</p>}
+            <p className="text-xs text-muted-foreground">Max: 10 J/kg or adult dose</p>
+          </div>
+          <div className="pt-2 border-t border-gray-200 dark:border-gray-700 space-y-1">
+            <p className="font-semibold">Synchronized Cardioversion:</p>
+            <p>Initial: 0.5-1 J/kg</p>
+            {drugs && <p className={calcValue}>{drugs.cardioversion.first}-{drugs.cardioversion.second} J</p>}
+            <p>Subsequent: 2 J/kg</p>
+            {drugs && <p className={calcValue}>{drugs.cardioversion.max} J</p>}
+          </div>
+          <div className="pt-2 border-t border-gray-200 dark:border-gray-700">
+            <p className="text-xs text-muted-foreground font-semibold">Cardioversion Indications:</p>
+            <p className="text-xs text-muted-foreground">• Unstable SVT</p>
+            <p className="text-xs text-muted-foreground">• Unstable VT with pulse</p>
+            <p className="text-xs text-muted-foreground">Sedate if possible, but do not delay cardioversion if hemodynamically unstable.</p>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* No weight entered message */}
+      {!drugs && (
+        <Card className="nightingale-card border-amber-300 bg-amber-50 dark:bg-amber-900/20">
+          <CardContent className="pt-4">
+            <div className="flex items-center gap-3">
+              <AlertCircle className="h-5 w-5 text-amber-600" />
+              <p className="text-sm text-amber-700 dark:text-amber-400">Enter patient weight above to see calculated doses</p>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+    </div>
+  );
+
   // ==================== RENDER ====================
   return (
     <div className="space-y-4 pt-4 pb-8">
@@ -914,17 +1212,24 @@ const CPRPage = ({ onBack }) => {
 
       {/* Main Tab Navigation */}
       <Tabs value={mainTab} onValueChange={setMainTab}>
-        <TabsList className="grid w-full grid-cols-2 bg-gray-100 dark:bg-gray-800">
-          <TabsTrigger value="cpr" className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-900">
+        <TabsList className="grid w-full grid-cols-3 bg-gray-100 dark:bg-gray-800">
+          <TabsTrigger value="cpr" className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-900 text-xs">
             CPR
           </TabsTrigger>
-          <TabsTrigger value="recording" className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-900">
+          <TabsTrigger value="medications" className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-900 text-xs">
+            Medications
+          </TabsTrigger>
+          <TabsTrigger value="recording" className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-900 text-xs">
             Recording
           </TabsTrigger>
         </TabsList>
 
         <TabsContent value="cpr" className="mt-4">
           <CardiacArrestFlowchart />
+        </TabsContent>
+
+        <TabsContent value="medications" className="mt-4">
+          <MedicationsTab />
         </TabsContent>
 
         <TabsContent value="recording" className="mt-4">
