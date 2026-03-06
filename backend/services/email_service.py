@@ -58,7 +58,7 @@ class EmailService:
         self._smtp_username = os.environ.get('SMTP_USERNAME', 'admin@pedotg.com')  # For authentication
         self._smtp_email = os.environ.get('SMTP_EMAIL', 'noreply@pedotg.com')  # For sending (From address)
         self._smtp_password = os.environ.get('SMTP_PASSWORD', '')
-        self._frontend_url = os.environ.get('FRONTEND_URL', 'https://device-mgmt-portal.preview.emergentagent.com')
+        self._frontend_url = os.environ.get('FRONTEND_URL', 'https://clinical-calc-qa.preview.emergentagent.com')
         self._logo_url = os.environ.get('EMAIL_LOGO_URL', f"{self._frontend_url}/logo.png")
         self._initialized = True
         logger.info(f"EmailService initialized - SMTP password configured: {bool(self._smtp_password)}")

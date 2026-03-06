@@ -147,7 +147,7 @@ const SidePanel = ({ isOpen, onClose, theme, toggleTheme }) => {
       >
         <div className="flex flex-col h-full">
           {/* Header */}
-          <div className="p-4 border-b flex items-center justify-between flex-shrink-0">
+          <div className="p-4 border-b flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-[#00d9c5]/10 flex items-center justify-center overflow-hidden p-1">
                 <img src="/icon.svg" alt="Logo" className="w-full h-full object-contain" />
@@ -165,10 +165,8 @@ const SidePanel = ({ isOpen, onClose, theme, toggleTheme }) => {
             </button>
           </div>
 
-          {/* Scrollable Content - Desktop only */}
-          <div className="flex-1 overflow-y-auto md:overflow-y-auto overflow-y-hidden">
-            {/* Navigation */}
-            <nav className="p-4 space-y-2">
+          {/* Navigation */}
+          <nav className="flex-1 p-4 space-y-2">
             {/* User Info */}
             {user && (
               <div className="p-3 mb-4 rounded-xl bg-gray-50 dark:bg-gray-800">
@@ -263,7 +261,6 @@ const SidePanel = ({ isOpen, onClose, theme, toggleTheme }) => {
               </button>
             )}
           </div>
-          </div> {/* End of scrollable content */}
         </div>
       </div>
 
