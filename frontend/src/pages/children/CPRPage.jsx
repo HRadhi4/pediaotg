@@ -348,28 +348,54 @@ const CPRPage = ({ onBack }) => {
       doc.text(`Patient Weight: ${weight} kg`, pageWidth / 2, 34, { align: "center" });
     }
     
-    // Total duration
-    doc.setFontSize(12);
+    // Find CPR start and end events
+    const cprStartEvent = events.find(e => e.type === 'cpr-start');
+    const cprEndEvent = events.find(e => e.type === 'cpr-end');
+    
+    // CPR Time Summary Box
+    doc.setFontSize(11);
     doc.setFont("helvetica", "bold");
-    doc.text(`Total Duration: ${formatTime(elapsedTime)}`, 20, 45);
+    doc.setFillColor(255, 245, 245);
+    doc.rect(20, 42, pageWidth - 40, 22, "F");
+    doc.setDrawColor(200, 200, 200);
+    doc.rect(20, 42, pageWidth - 40, 22, "S");
+    
+    let summaryY = 50;
+    doc.text("CPR Summary", 25, summaryY);
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(10);
+    
+    // CPR Start Time
+    if (cprStartEvent) {
+      doc.text(`Started: ${cprStartEvent.timestamp}`, 25, summaryY + 8);
+    }
+    
+    // CPR End Time and Duration
+    if (cprEndEvent) {
+      doc.text(`Ended: ${cprEndEvent.timestamp}`, 90, summaryY + 8);
+      doc.text(`Duration: ${cprEndEvent.totalDuration}`, 155, summaryY + 8);
+    } else {
+      doc.text(`Duration: ${formatTime(elapsedTime)} (ongoing)`, 90, summaryY + 8);
+    }
     
     // Event log header
     doc.setFontSize(11);
-    doc.text("Event Log", 20, 55);
+    doc.setFont("helvetica", "bold");
+    doc.text("Event Log", 20, 72);
     
     // Draw table header
     doc.setFillColor(240, 240, 240);
-    doc.rect(20, 58, pageWidth - 40, 8, "F");
+    doc.rect(20, 75, pageWidth - 40, 8, "F");
     doc.setFontSize(10);
     doc.setFont("helvetica", "bold");
-    doc.text("Time", 25, 64);
-    doc.text("Event", 55, 64);
-    doc.text("Details", 95, 64);
-    doc.text("Clock Time", 150, 64);
+    doc.text("Time", 25, 81);
+    doc.text("Event", 55, 81);
+    doc.text("Details", 95, 81);
+    doc.text("Clock Time", 150, 81);
     
     // Draw events
     doc.setFont("helvetica", "normal");
-    let yPos = 72;
+    let yPos = 89;
     
     events.forEach((event, idx) => {
       // Check if we need a new page
