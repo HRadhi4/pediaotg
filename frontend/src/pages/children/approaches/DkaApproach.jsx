@@ -84,92 +84,6 @@ const DkaApproach = ({ weight, expandedSections, toggleSection }) => {
       </CardHeader>
       
       <CardContent className="space-y-3">
-        {/* Sodium Correction Calculator - Available in both guidelines */}
-        <Section id="sodium-calculator" title="Sodium Correction Calculator" expandedSections={expandedSections} toggleSection={toggleSection}>
-          <div className="space-y-3">
-            <div className="flex items-center gap-2 text-xs text-muted-foreground">
-              <Calculator className="h-4 w-4" />
-              <span>Calculate corrected sodium for hyperglycemia</span>
-            </div>
-            
-            <div className="grid grid-cols-2 gap-3">
-              {/* Measured Sodium Input */}
-              <div className="space-y-1">
-                <Label htmlFor="sodium-na" className="text-xs font-medium">
-                  Measured Na⁺ (mEq/L)
-                </Label>
-                <Input
-                  id="sodium-na"
-                  type="number"
-                  placeholder="e.g., 130"
-                  value={sodiumCalcNa}
-                  onChange={(e) => setSodiumCalcNa(e.target.value)}
-                  className="h-9 text-sm"
-                  data-testid="sodium-calc-na-input"
-                />
-              </div>
-              
-              {/* Glucose Input */}
-              <div className="space-y-1">
-                <Label htmlFor="sodium-glucose" className="text-xs font-medium">
-                  Blood Glucose
-                </Label>
-                <Input
-                  id="sodium-glucose"
-                  type="number"
-                  placeholder={glucoseUnit === "mg/dL" ? "e.g., 400" : "e.g., 22"}
-                  value={sodiumCalcGlucose}
-                  onChange={(e) => setSodiumCalcGlucose(e.target.value)}
-                  className="h-9 text-sm"
-                  data-testid="sodium-calc-glucose-input"
-                />
-              </div>
-            </div>
-            
-            {/* Unit Toggle */}
-            <div className="flex items-center justify-center gap-3 p-2 bg-slate-50 dark:bg-slate-800 rounded-lg">
-              <span className={`text-xs font-medium ${glucoseUnit === 'mg/dL' ? 'text-blue-600' : 'text-muted-foreground'}`}>
-                mg/dL
-              </span>
-              <Switch
-                id="glucose-unit-switch"
-                checked={glucoseUnit === "mmol/L"}
-                onCheckedChange={(checked) => setGlucoseUnit(checked ? "mmol/L" : "mg/dL")}
-                data-testid="sodium-calc-unit-switch"
-              />
-              <span className={`text-xs font-medium ${glucoseUnit === 'mmol/L' ? 'text-green-600' : 'text-muted-foreground'}`}>
-                mmol/L
-              </span>
-            </div>
-            
-            {/* Result */}
-            {calculateCorrectedSodium() && (
-              <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
-                <p className="text-xs text-muted-foreground mb-1">Corrected Sodium:</p>
-                <p className="text-xl font-bold text-blue-700 dark:text-blue-400" data-testid="sodium-calc-result">
-                  {calculateCorrectedSodium()} mEq/L
-                </p>
-                <p className="text-[10px] text-muted-foreground mt-2">
-                  Formula: Na(corrected) = Na(measured) + 2 × (BG - 5.5) / 5.5
-                </p>
-                {glucoseUnit === "mg/dL" && sodiumCalcGlucose && (
-                  <p className="text-[10px] text-muted-foreground">
-                    Glucose converted: {(parseFloat(sodiumCalcGlucose) / 18).toFixed(1)} mmol/L
-                  </p>
-                )}
-              </div>
-            )}
-            
-            {/* Interpretation Guide */}
-            <div className="text-[10px] text-muted-foreground space-y-1 pt-2 border-t">
-              <p className="font-medium text-foreground">Interpretation:</p>
-              <p>• Corrected Na⁺ should rise as hyperglycemia is corrected</p>
-              <p>• If corrected Na⁺ is low and not rising → risk of cerebral edema</p>
-              <p>• Target: Corrected Na⁺ should gradually increase during treatment</p>
-            </div>
-          </div>
-        </Section>
-
         {!useSMCGuideline ? (
           /* Saudi Booklet Guideline (Original) */
           <>
@@ -311,6 +225,86 @@ const DkaApproach = ({ weight, expandedSections, toggleSection }) => {
                   <p>• Start oral fluids (controlled)</p>
                   <p>• Give SC insulin, stop IV 30 min after</p>
                   <p>• Start diabetic diet</p>
+                </div>
+              </div>
+            </Section>
+
+            {/* Sodium Correction Calculator */}
+            <Section id="dka-sodium-calculator" title="Sodium Correction Calculator" expandedSections={expandedSections} toggleSection={toggleSection}>
+              <div className="space-y-3">
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <Calculator className="h-4 w-4" />
+                  <span>Calculate corrected sodium for hyperglycemia</span>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-1">
+                    <Label htmlFor="sodium-na-saudi" className="text-xs font-medium">
+                      Measured Na⁺ (mEq/L)
+                    </Label>
+                    <Input
+                      id="sodium-na-saudi"
+                      type="number"
+                      placeholder="e.g., 130"
+                      value={sodiumCalcNa}
+                      onChange={(e) => setSodiumCalcNa(e.target.value)}
+                      className="h-9 text-sm"
+                      data-testid="sodium-calc-na-input"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <Label htmlFor="sodium-glucose-saudi" className="text-xs font-medium">
+                      Blood Glucose
+                    </Label>
+                    <Input
+                      id="sodium-glucose-saudi"
+                      type="number"
+                      placeholder={glucoseUnit === "mg/dL" ? "e.g., 400" : "e.g., 22"}
+                      value={sodiumCalcGlucose}
+                      onChange={(e) => setSodiumCalcGlucose(e.target.value)}
+                      className="h-9 text-sm"
+                      data-testid="sodium-calc-glucose-input"
+                    />
+                  </div>
+                </div>
+                
+                <div className="flex items-center justify-center gap-3 p-2 bg-slate-50 dark:bg-slate-800 rounded-lg">
+                  <span className={`text-xs font-medium ${glucoseUnit === 'mg/dL' ? 'text-blue-600' : 'text-muted-foreground'}`}>
+                    mg/dL
+                  </span>
+                  <Switch
+                    id="glucose-unit-switch-saudi"
+                    checked={glucoseUnit === "mmol/L"}
+                    onCheckedChange={(checked) => setGlucoseUnit(checked ? "mmol/L" : "mg/dL")}
+                    data-testid="sodium-calc-unit-switch"
+                  />
+                  <span className={`text-xs font-medium ${glucoseUnit === 'mmol/L' ? 'text-green-600' : 'text-muted-foreground'}`}>
+                    mmol/L
+                  </span>
+                </div>
+                
+                {calculateCorrectedSodium() && (
+                  <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+                    <p className="text-xs text-muted-foreground mb-1">Corrected Sodium:</p>
+                    <p className="text-xl font-bold text-blue-700 dark:text-blue-400" data-testid="sodium-calc-result">
+                      {calculateCorrectedSodium()} mEq/L
+                    </p>
+                    <p className="text-[10px] text-muted-foreground mt-2">
+                      Formula: Na(corrected) = Na(measured) + 2 × (BG - 5.5) / 5.5
+                    </p>
+                    {glucoseUnit === "mg/dL" && sodiumCalcGlucose && (
+                      <p className="text-[10px] text-muted-foreground">
+                        Glucose converted: {(parseFloat(sodiumCalcGlucose) / 18).toFixed(1)} mmol/L
+                      </p>
+                    )}
+                  </div>
+                )}
+                
+                <div className="text-[10px] text-muted-foreground space-y-1 pt-2 border-t">
+                  <p className="font-medium text-foreground">Interpretation:</p>
+                  <p>• Corrected Na⁺ should rise as hyperglycemia is corrected</p>
+                  <p>• If corrected Na⁺ is low and not rising → risk of cerebral edema</p>
+                  <p>• Target: Corrected Na⁺ should gradually increase during treatment</p>
                 </div>
               </div>
             </Section>
@@ -598,6 +592,86 @@ const DkaApproach = ({ weight, expandedSections, toggleSection }) => {
                   <li>Consider sepsis</li>
                   <li>Contact endocrinologist on call</li>
                 </ul>
+              </div>
+            </Section>
+
+            {/* Sodium Correction Calculator */}
+            <Section id="smc-sodium-calculator" title="Sodium Correction Calculator" expandedSections={expandedSections} toggleSection={toggleSection}>
+              <div className="space-y-3">
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <Calculator className="h-4 w-4" />
+                  <span>Calculate corrected sodium for hyperglycemia</span>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-1">
+                    <Label htmlFor="sodium-na-smc" className="text-xs font-medium">
+                      Measured Na⁺ (mEq/L)
+                    </Label>
+                    <Input
+                      id="sodium-na-smc"
+                      type="number"
+                      placeholder="e.g., 130"
+                      value={sodiumCalcNa}
+                      onChange={(e) => setSodiumCalcNa(e.target.value)}
+                      className="h-9 text-sm"
+                      data-testid="sodium-calc-na-input-smc"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <Label htmlFor="sodium-glucose-smc" className="text-xs font-medium">
+                      Blood Glucose
+                    </Label>
+                    <Input
+                      id="sodium-glucose-smc"
+                      type="number"
+                      placeholder={glucoseUnit === "mg/dL" ? "e.g., 400" : "e.g., 22"}
+                      value={sodiumCalcGlucose}
+                      onChange={(e) => setSodiumCalcGlucose(e.target.value)}
+                      className="h-9 text-sm"
+                      data-testid="sodium-calc-glucose-input-smc"
+                    />
+                  </div>
+                </div>
+                
+                <div className="flex items-center justify-center gap-3 p-2 bg-slate-50 dark:bg-slate-800 rounded-lg">
+                  <span className={`text-xs font-medium ${glucoseUnit === 'mg/dL' ? 'text-blue-600' : 'text-muted-foreground'}`}>
+                    mg/dL
+                  </span>
+                  <Switch
+                    id="glucose-unit-switch-smc"
+                    checked={glucoseUnit === "mmol/L"}
+                    onCheckedChange={(checked) => setGlucoseUnit(checked ? "mmol/L" : "mg/dL")}
+                    data-testid="sodium-calc-unit-switch-smc"
+                  />
+                  <span className={`text-xs font-medium ${glucoseUnit === 'mmol/L' ? 'text-green-600' : 'text-muted-foreground'}`}>
+                    mmol/L
+                  </span>
+                </div>
+                
+                {calculateCorrectedSodium() && (
+                  <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+                    <p className="text-xs text-muted-foreground mb-1">Corrected Sodium:</p>
+                    <p className="text-xl font-bold text-blue-700 dark:text-blue-400" data-testid="sodium-calc-result-smc">
+                      {calculateCorrectedSodium()} mEq/L
+                    </p>
+                    <p className="text-[10px] text-muted-foreground mt-2">
+                      Formula: Na(corrected) = Na(measured) + 2 × (BG - 5.5) / 5.5
+                    </p>
+                    {glucoseUnit === "mg/dL" && sodiumCalcGlucose && (
+                      <p className="text-[10px] text-muted-foreground">
+                        Glucose converted: {(parseFloat(sodiumCalcGlucose) / 18).toFixed(1)} mmol/L
+                      </p>
+                    )}
+                  </div>
+                )}
+                
+                <div className="text-[10px] text-muted-foreground space-y-1 pt-2 border-t">
+                  <p className="font-medium text-foreground">Interpretation:</p>
+                  <p>• Corrected Na⁺ should rise as hyperglycemia is corrected</p>
+                  <p>• If corrected Na⁺ is low and not rising → risk of cerebral edema</p>
+                  <p>• Target: Corrected Na⁺ should gradually increase during treatment</p>
+                </div>
               </div>
             </Section>
 

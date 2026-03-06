@@ -18,10 +18,40 @@ import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { ArrowLeftIcon, ScoringIcon } from "@/components/HealthIcons";
-import { Calculator } from "lucide-react";
+import { Calculator, Search, X } from "lucide-react";
 
 const ScoringPage = ({ onBack }) => {
   const [activeScore, setActiveScore] = useState("gcs");
+  const [searchQuery, setSearchQuery] = useState("");
+
+  // Calculator definitions with search keywords
+  const calculators = [
+    { id: "gcs", label: "GCS", keywords: ["glasgow", "coma", "scale", "consciousness", "eye", "verbal", "motor", "pupil", "neuro", "brain", "head"] },
+    { id: "pram", label: "PRAM", keywords: ["pediatric", "respiratory", "assessment", "asthma", "wheeze", "breathing", "scalene", "retractions", "air entry", "oxygen", "saturation"] },
+    { id: "westley", label: "Westley", keywords: ["croup", "stridor", "retractions", "cyanosis", "consciousness", "airway", "laryngitis"] },
+    { id: "oi", label: "OI", keywords: ["oxygenation", "index", "hypoxia", "respiratory", "failure", "map", "fio2", "pao2", "ecmo", "ventilator"] },
+    { id: "iwl", label: "IWL", keywords: ["insensible", "water", "loss", "bsa", "body", "surface", "area", "fluid"] },
+    { id: "bsa", label: "BSA", keywords: ["body", "surface", "area", "mosteller", "height", "weight", "chemotherapy", "drug", "dosing"] },
+    { id: "sodium", label: "Na⁺ Correction", keywords: ["sodium", "correction", "hyperglycemia", "dka", "glucose", "diabetes", "ketoacidosis", "corrected"] },
+    { id: "abg", label: "Blood Gas Compensation", keywords: ["blood", "gas", "abg", "compensation", "acidosis", "alkalosis", "metabolic", "respiratory", "ph", "pco2", "hco3", "bicarbonate", "winter"] }
+  ];
+
+  // Filter calculators based on search query
+  const filteredCalculators = searchQuery.trim() === "" 
+    ? calculators 
+    : calculators.filter(calc => 
+        calc.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        calc.keywords.some(keyword => keyword.toLowerCase().includes(searchQuery.toLowerCase()))
+      );
+
+  // Auto-select first matching calculator when searching
+  useEffect(() => {
+    if (searchQuery.trim() !== "" && filteredCalculators.length > 0) {
+      if (!filteredCalculators.find(c => c.id === activeScore)) {
+        setActiveScore(filteredCalculators[0].id);
+      }
+    }
+  }, [searchQuery, filteredCalculators, activeScore]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -29,17 +59,30 @@ const ScoringPage = ({ onBack }) => {
 
   return (
     <div className="space-y-4 pt-4 pb-8">
+      {/* Search Bar */}
+      <div className="relative">
+        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        <Input
+          type="text"
+          placeholder="Search calculators (e.g., sodium, coma, asthma...)"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="pl-10 pr-10"
+          data-testid="scoring-search-input"
+        />
+        {searchQuery && (
+          <button
+            onClick={() => setSearchQuery("")}
+            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        )}
+      </div>
+
+      {/* Calculator Tabs */}
       <div className="flex gap-2 overflow-x-auto pb-2 -mx-4 px-4 scrollbar-hide">
-        {[
-          { id: "gcs", label: "GCS" },
-          { id: "pram", label: "PRAM" },
-          { id: "westley", label: "Westley" },
-          { id: "oi", label: "OI" },
-          { id: "iwl", label: "IWL" },
-          { id: "bsa", label: "BSA" },
-          { id: "sodium", label: "Na⁺ Correction" },
-          { id: "abg", label: "Blood Gas Compensation" }
-        ].map((score) => (
+        {filteredCalculators.map((score) => (
           <Button
             key={score.id}
             variant={activeScore === score.id ? "default" : "outline"}
@@ -51,6 +94,16 @@ const ScoringPage = ({ onBack }) => {
           </Button>
         ))}
       </div>
+
+      {/* No results message */}
+      {filteredCalculators.length === 0 && (
+        <div className="text-center py-8 text-muted-foreground">
+          <p>No calculators found for "{searchQuery}"</p>
+          <Button variant="link" onClick={() => setSearchQuery("")} className="mt-2">
+            Clear search
+          </Button>
+        </div>
+      )}
 
       {activeScore === "gcs" && <GCSScoring />}
       {activeScore === "pram" && <PRAMScoring />}
