@@ -79,16 +79,15 @@ const CPRPage = ({ onBack }) => {
     }
   };
 
-  // Timer logic with 2-minute pulse check reminder (repeating every 2 mins)
+  // Timer logic with 2-minute pulse check reminder (every 2 mins from start)
   useEffect(() => {
     if (isRunning) {
       timerRef.current = setInterval(() => {
         setElapsedTime(prev => {
           const newTime = prev + 1;
           elapsedTimeRef.current = newTime; // Keep ref in sync
-          const timeSinceLastPulse = newTime - lastPulseCheckRef.current;
-          // At exactly 120 seconds since last pulse check, trigger reminder with vibration
-          if (timeSinceLastPulse === 120) {
+          // Trigger reminder every 120 seconds (2:00, 4:00, 6:00, etc.)
+          if (newTime > 0 && newTime % 120 === 0) {
             setShowReminder(true);
             vibrate([200, 100, 200, 100, 200]); // Vibrate 3 times for attention
           }
@@ -982,12 +981,7 @@ const CPRPage = ({ onBack }) => {
           {showReminder && (
             <div 
               className="mb-4 p-4 rounded-lg bg-amber-100 dark:bg-amber-900/30 border-2 border-amber-500 cursor-pointer"
-              onClick={() => {
-                setShowReminder(false);
-                const currentTime = elapsedTimeRef.current;
-                setLastPulseCheck(currentTime);
-                lastPulseCheckRef.current = currentTime; // Update ref for next 2-min check
-              }}
+              onClick={() => setShowReminder(false)}
             >
               <div className="flex items-center gap-3">
                 <AlertCircle className="h-6 w-6 text-amber-600" />
