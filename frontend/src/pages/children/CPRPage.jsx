@@ -1261,77 +1261,6 @@ const CPRPage = ({ onBack }) => {
     drug.indications.toLowerCase().includes(drugSearch.toLowerCase())
   );
 
-  const DrugsTab = () => (
-    <div className="space-y-3">
-      {/* Search Bar */}
-      <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-        <Input
-          type="text"
-          placeholder="Search drugs or indications..."
-          value={drugSearch}
-          onChange={(e) => setDrugSearch(e.target.value)}
-          className="pl-9"
-        />
-        {drugSearch && (
-          <button 
-            onClick={() => setDrugSearch("")}
-            className="absolute right-3 top-1/2 -translate-y-1/2 p-1 hover:bg-gray-100 dark:hover:bg-gray-800 rounded"
-          >
-            <X className="h-3 w-3" />
-          </button>
-        )}
-      </div>
-
-      {/* Results count */}
-      {drugSearch && (
-        <p className="text-xs text-muted-foreground">
-          Found {filteredDrugs.length} of {allDrugs.length} drugs
-        </p>
-      )}
-
-      {/* No weight warning */}
-      {!drugs && (
-        <div className="p-3 rounded-lg bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 flex items-center gap-2">
-          <AlertCircle className="h-4 w-4 text-amber-600" />
-          <p className="text-xs text-amber-700 dark:text-amber-400">Enter weight above to see calculated doses</p>
-        </div>
-      )}
-
-      {/* Drug Cards */}
-      {filteredDrugs.map((drug, idx) => (
-        <Card key={idx} className={`nightingale-card border-l-4 ${colorMap[drug.color]}`}>
-          <CardHeader className="pb-2">
-            <CardTitle className={`text-base font-bold ${textColorMap[drug.color]}`}>{drug.name}</CardTitle>
-            <p className="text-xs text-muted-foreground">{drug.indications}</p>
-          </CardHeader>
-          <CardContent className="space-y-2 text-sm">
-            {drug.doses.map((dose, dIdx) => (
-              <div key={dIdx} className={dIdx > 0 ? "pt-2 border-t border-gray-200 dark:border-gray-700" : ""}>
-                <p className="font-semibold text-xs">{dose.label}:</p>
-                <p>{dose.value}</p>
-                {dose.max && <p className="text-xs text-muted-foreground">{dose.max}</p>}
-                {dose.calc && <p className={calcValue}>{dose.calc}</p>}
-              </div>
-            ))}
-            {drug.notes && (
-              <div className="pt-2 border-t border-gray-200 dark:border-gray-700">
-                <p className="text-xs text-muted-foreground">{drug.notes}</p>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-      ))}
-
-      {/* No results */}
-      {filteredDrugs.length === 0 && (
-        <div className="text-center py-8 text-muted-foreground">
-          <p>No drugs found matching "{drugSearch}"</p>
-        </div>
-      )}
-    </div>
-  );
-
   // ==================== RENDER ====================
   return (
     <div className="space-y-4 pt-4 pb-8">
@@ -1376,7 +1305,74 @@ const CPRPage = ({ onBack }) => {
         </TabsContent>
 
         <TabsContent value="drugs" className="mt-4">
-          <DrugsTab />
+          <div className="space-y-3">
+            {/* Search Bar */}
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                type="text"
+                placeholder="Search drugs or indications..."
+                value={drugSearch}
+                onChange={(e) => setDrugSearch(e.target.value)}
+                className="pl-9"
+              />
+              {drugSearch && (
+                <button 
+                  onClick={() => setDrugSearch("")}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 p-1 hover:bg-gray-100 dark:hover:bg-gray-800 rounded"
+                >
+                  <X className="h-3 w-3" />
+                </button>
+              )}
+            </div>
+
+            {/* Results count */}
+            {drugSearch && (
+              <p className="text-xs text-muted-foreground">
+                Found {filteredDrugs.length} of {allDrugs.length} drugs
+              </p>
+            )}
+
+            {/* No weight warning */}
+            {!drugs && (
+              <div className="p-3 rounded-lg bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 flex items-center gap-2">
+                <AlertCircle className="h-4 w-4 text-amber-600" />
+                <p className="text-xs text-amber-700 dark:text-amber-400">Enter weight above to see calculated doses</p>
+              </div>
+            )}
+
+            {/* Drug Cards */}
+            {filteredDrugs.map((drug, idx) => (
+              <Card key={drug.name} className={`nightingale-card border-l-4 ${colorMap[drug.color]}`}>
+                <CardHeader className="pb-2">
+                  <CardTitle className={`text-base font-bold ${textColorMap[drug.color]}`}>{drug.name}</CardTitle>
+                  <p className="text-xs text-muted-foreground">{drug.indications}</p>
+                </CardHeader>
+                <CardContent className="space-y-2 text-sm">
+                  {drug.doses.map((dose, dIdx) => (
+                    <div key={dIdx} className={dIdx > 0 ? "pt-2 border-t border-gray-200 dark:border-gray-700" : ""}>
+                      <p className="font-semibold text-xs">{dose.label}:</p>
+                      <p>{dose.value}</p>
+                      {dose.max && <p className="text-xs text-muted-foreground">{dose.max}</p>}
+                      {dose.calc && <p className={calcValue}>{dose.calc}</p>}
+                    </div>
+                  ))}
+                  {drug.notes && (
+                    <div className="pt-2 border-t border-gray-200 dark:border-gray-700">
+                      <p className="text-xs text-muted-foreground">{drug.notes}</p>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            ))}
+
+            {/* No results */}
+            {filteredDrugs.length === 0 && (
+              <div className="text-center py-8 text-muted-foreground">
+                <p>No drugs found matching "{drugSearch}"</p>
+              </div>
+            )}
+          </div>
         </TabsContent>
 
         <TabsContent value="recording" className="mt-4">
