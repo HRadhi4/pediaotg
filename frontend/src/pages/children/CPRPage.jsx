@@ -64,13 +64,21 @@ const CPRPage = ({ onBack }) => {
   const timerRef = useRef(null);
   const lastPulseCheckRef = useRef(0); // Use ref to avoid stale closure in timer
   const elapsedTimeRef = useRef(0); // Track current elapsed time for callbacks
+  const eventLogRef = useRef(null); // Ref for auto-scrolling event log
 
-  // Scroll to top
+  // Scroll to top on mount
   useEffect(() => {
     const scrollContainer = document.querySelector('.native-scroll');
     if (scrollContainer) scrollContainer.scrollTo(0, 0);
     window.scrollTo(0, 0);
   }, []);
+
+  // Auto-scroll event log to bottom when new events are added
+  useEffect(() => {
+    if (eventLogRef.current) {
+      eventLogRef.current.scrollTop = eventLogRef.current.scrollHeight;
+    }
+  }, [events]);
 
   // Vibration function
   const vibrate = (pattern) => {
@@ -311,6 +319,19 @@ const CPRPage = ({ onBack }) => {
     const doc = new jsPDF();
     const pageWidth = doc.internal.pageSize.getWidth();
     
+    // Helper to sanitize drug names for PDF (fix encoding issues)
+    const sanitizeForPDF = (text) => {
+      if (!text) return '-';
+      // Replace subscript characters with regular numbers
+      return text
+        .replace(/₃/g, '3')
+        .replace(/₂/g, '2')
+        .replace(/₄/g, '4')
+        .replace(/₁/g, '1')
+        .replace(/NaHCO3/gi, 'NaHCO3') // Ensure NaHCO3 is plain text
+        .replace(/[^\x00-\x7F]/g, ''); // Remove any other non-ASCII characters
+    };
+    
     // Title
     doc.setFontSize(18);
     doc.setFont("helvetica", "bold");
@@ -364,8 +385,16 @@ const CPRPage = ({ onBack }) => {
       }
       
       doc.text(formatTime(event.time), 25, yPos);
-      doc.text(event.type === 'rx' ? 'Medication' : 'Shock', 55, yPos);
-      doc.text(event.drug || '-', 95, yPos);
+      
+      // Handle different event types
+      let eventType = '-';
+      if (event.type === 'cpr-start') eventType = 'CPR Start';
+      else if (event.type === 'cpr-end') eventType = 'CPR End';
+      else if (event.type === 'rx') eventType = 'Medication';
+      else if (event.type === 'shock') eventType = 'Shock';
+      
+      doc.text(eventType, 55, yPos);
+      doc.text(sanitizeForPDF(event.drug), 95, yPos);
       doc.text(event.timestamp || '-', 150, yPos);
       
       yPos += 8;
@@ -405,7 +434,7 @@ const CPRPage = ({ onBack }) => {
       });
       
       Object.entries(drugCounts).forEach(([drug, count]) => {
-        doc.text(`• ${drug}: ${count}x`, 30, yPos);
+        doc.text(`• ${sanitizeForPDF(drug)}: ${count}x`, 30, yPos);
         yPos += 6;
       });
     }
@@ -1087,7 +1116,7 @@ const CPRPage = ({ onBack }) => {
             </div>
           </CardHeader>
           <CardContent>
-            <div className="space-y-2 max-h-[300px] overflow-y-auto">
+            <div ref={eventLogRef} className="space-y-2 max-h-[300px] overflow-y-auto">
               {events.map((event, idx) => (
                 <div
                   key={idx}
