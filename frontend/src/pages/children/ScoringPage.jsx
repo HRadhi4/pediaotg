@@ -18,7 +18,7 @@ import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { ArrowLeftIcon, ScoringIcon } from "@/components/HealthIcons";
-import { Calculator, Search, X } from "lucide-react";
+import { Search, X } from "lucide-react";
 
 const ScoringPage = ({ onBack }) => {
   const [activeScore, setActiveScore] = useState("gcs");
@@ -443,21 +443,21 @@ const OxygenationIndex = () => {
   return (
     <div className="space-y-4">
       <Card className="nightingale-card">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-sm">Oxygenation Index (OI)</CardTitle>
-          <CardDescription className="text-xs">Assess severity of hypoxic respiratory failure</CardDescription>
+        <CardHeader className="pb-3">
+          <CardTitle className="text-base">Oxygenation Index (OI)</CardTitle>
+          <CardDescription>Assess severity of hypoxic respiratory failure</CardDescription>
         </CardHeader>
         <CardContent className="space-y-3">
           <div className="space-y-2">
-            <Label className="text-xs">Mean Airway Pressure (MAP) cmH2O</Label>
+            <Label className="text-sm">Mean Airway Pressure (MAP) cmH2O</Label>
             <Input type="text" inputMode="decimal" placeholder="e.g., 15" value={map} onChange={(e) => setMap(e.target.value)} className="font-mono" />
           </div>
           <div className="space-y-2">
-            <Label className="text-xs">FiO2 (as decimal, e.g., 0.6)</Label>
+            <Label className="text-sm">FiO2 (as decimal, e.g., 0.6)</Label>
             <Input type="text" inputMode="decimal" step="0.01" placeholder="e.g., 0.6" value={fio2} onChange={(e) => setFio2(e.target.value)} className="font-mono" />
           </div>
           <div className="space-y-2">
-            <Label className="text-xs">PaO2 (mmHg)</Label>
+            <Label className="text-sm">PaO2 (mmHg)</Label>
             <Input type="text" inputMode="decimal" placeholder="e.g., 60" value={pao2} onChange={(e) => setPao2(e.target.value)} className="font-mono" />
           </div>
         </CardContent>
@@ -514,11 +514,11 @@ const IWLCalculator = () => {
         <CardContent className="space-y-3">
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-2">
-              <Label>Weight (kg)</Label>
+              <Label className="text-sm">Weight (kg)</Label>
               <Input type="text" inputMode="decimal" placeholder="e.g., 15" value={weight} onChange={(e) => setWeight(e.target.value)} className="font-mono" />
             </div>
             <div className="space-y-2">
-              <Label>Height (cm)</Label>
+              <Label className="text-sm">Height (cm)</Label>
               <Input type="text" inputMode="decimal" placeholder="e.g., 100" value={height} onChange={(e) => setHeight(e.target.value)} className="font-mono" />
             </div>
           </div>
@@ -720,10 +720,7 @@ const SodiumCorrectionCalculator = () => {
     <div className="space-y-4">
       <Card className="nightingale-card">
         <CardHeader className="pb-3">
-          <CardTitle className="text-base flex items-center gap-2">
-            <Calculator className="h-5 w-5 text-[#00d9c5]" />
-            Sodium Correction Calculator
-          </CardTitle>
+          <CardTitle className="text-base">Sodium Correction Calculator</CardTitle>
           <CardDescription>Calculate corrected sodium for hyperglycemia</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
