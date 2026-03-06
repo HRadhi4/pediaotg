@@ -7,16 +7,40 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Calculator } from "lucide-react";
 import Section from "./Section";
 
 const DkaApproach = ({ weight, expandedSections, toggleSection }) => {
   const w = parseFloat(weight) || 0;
   const [useSMCGuideline, setUseSMCGuideline] = useState(false);
+  
+  // Sodium correction calculator state
+  const [sodiumCalcNa, setSodiumCalcNa] = useState("");
+  const [sodiumCalcGlucose, setSodiumCalcGlucose] = useState("");
+  const [glucoseUnit, setGlucoseUnit] = useState("mg/dL"); // "mg/dL" or "mmol/L"
 
   // Calculate corrected sodium (formula from SMC guideline)
+  // Formula: Na(corrected) = Na(measured) + 2 × (BG - 5.5) / 5.5 (when BG in mmol/L)
+  // Conversion: 1 mmol/L = 18 mg/dL
   const correctedSodium = (measuredNa, bloodGlucose) => {
     if (!measuredNa || !bloodGlucose) return null;
     return (parseFloat(measuredNa) + 2 * (parseFloat(bloodGlucose) - 5.5) / 5.5).toFixed(1);
+  };
+  
+  // Calculate corrected sodium for the calculator (handles unit conversion)
+  const calculateCorrectedSodium = () => {
+    const na = parseFloat(sodiumCalcNa);
+    const glucose = parseFloat(sodiumCalcGlucose);
+    
+    if (!na || !glucose || isNaN(na) || isNaN(glucose)) return null;
+    
+    // Convert to mmol/L if needed (mg/dL ÷ 18 = mmol/L)
+    const glucoseInMmol = glucoseUnit === "mg/dL" ? glucose / 18 : glucose;
+    
+    // Formula: Na(corrected) = Na(measured) + 2 × (BG - 5.5) / 5.5
+    const corrected = na + 2 * (glucoseInMmol - 5.5) / 5.5;
+    return corrected.toFixed(1);
   };
 
   // Calculate serum osmolality
@@ -60,6 +84,92 @@ const DkaApproach = ({ weight, expandedSections, toggleSection }) => {
       </CardHeader>
       
       <CardContent className="space-y-3">
+        {/* Sodium Correction Calculator - Available in both guidelines */}
+        <Section id="sodium-calculator" title="Sodium Correction Calculator" expandedSections={expandedSections} toggleSection={toggleSection}>
+          <div className="space-y-3">
+            <div className="flex items-center gap-2 text-xs text-muted-foreground">
+              <Calculator className="h-4 w-4" />
+              <span>Calculate corrected sodium for hyperglycemia</span>
+            </div>
+            
+            <div className="grid grid-cols-2 gap-3">
+              {/* Measured Sodium Input */}
+              <div className="space-y-1">
+                <Label htmlFor="sodium-na" className="text-xs font-medium">
+                  Measured Na⁺ (mEq/L)
+                </Label>
+                <Input
+                  id="sodium-na"
+                  type="number"
+                  placeholder="e.g., 130"
+                  value={sodiumCalcNa}
+                  onChange={(e) => setSodiumCalcNa(e.target.value)}
+                  className="h-9 text-sm"
+                  data-testid="sodium-calc-na-input"
+                />
+              </div>
+              
+              {/* Glucose Input */}
+              <div className="space-y-1">
+                <Label htmlFor="sodium-glucose" className="text-xs font-medium">
+                  Blood Glucose
+                </Label>
+                <Input
+                  id="sodium-glucose"
+                  type="number"
+                  placeholder={glucoseUnit === "mg/dL" ? "e.g., 400" : "e.g., 22"}
+                  value={sodiumCalcGlucose}
+                  onChange={(e) => setSodiumCalcGlucose(e.target.value)}
+                  className="h-9 text-sm"
+                  data-testid="sodium-calc-glucose-input"
+                />
+              </div>
+            </div>
+            
+            {/* Unit Toggle */}
+            <div className="flex items-center justify-center gap-3 p-2 bg-slate-50 dark:bg-slate-800 rounded-lg">
+              <span className={`text-xs font-medium ${glucoseUnit === 'mg/dL' ? 'text-blue-600' : 'text-muted-foreground'}`}>
+                mg/dL
+              </span>
+              <Switch
+                id="glucose-unit-switch"
+                checked={glucoseUnit === "mmol/L"}
+                onCheckedChange={(checked) => setGlucoseUnit(checked ? "mmol/L" : "mg/dL")}
+                data-testid="sodium-calc-unit-switch"
+              />
+              <span className={`text-xs font-medium ${glucoseUnit === 'mmol/L' ? 'text-green-600' : 'text-muted-foreground'}`}>
+                mmol/L
+              </span>
+            </div>
+            
+            {/* Result */}
+            {calculateCorrectedSodium() && (
+              <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+                <p className="text-xs text-muted-foreground mb-1">Corrected Sodium:</p>
+                <p className="text-xl font-bold text-blue-700 dark:text-blue-400" data-testid="sodium-calc-result">
+                  {calculateCorrectedSodium()} mEq/L
+                </p>
+                <p className="text-[10px] text-muted-foreground mt-2">
+                  Formula: Na(corrected) = Na(measured) + 2 × (BG - 5.5) / 5.5
+                </p>
+                {glucoseUnit === "mg/dL" && sodiumCalcGlucose && (
+                  <p className="text-[10px] text-muted-foreground">
+                    Glucose converted: {(parseFloat(sodiumCalcGlucose) / 18).toFixed(1)} mmol/L
+                  </p>
+                )}
+              </div>
+            )}
+            
+            {/* Interpretation Guide */}
+            <div className="text-[10px] text-muted-foreground space-y-1 pt-2 border-t">
+              <p className="font-medium text-foreground">Interpretation:</p>
+              <p>• Corrected Na⁺ should rise as hyperglycemia is corrected</p>
+              <p>• If corrected Na⁺ is low and not rising → risk of cerebral edema</p>
+              <p>• Target: Corrected Na⁺ should gradually increase during treatment</p>
+            </div>
+          </div>
+        </Section>
+
         {!useSMCGuideline ? (
           /* Saudi Booklet Guideline (Original) */
           <>

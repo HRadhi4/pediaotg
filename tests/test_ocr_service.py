@@ -24,7 +24,7 @@ from pathlib import Path
 # Get BASE_URL from environment
 BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', '').rstrip('/')
 if not BASE_URL:
-    BASE_URL = "https://resus-recorder.preview.emergentagent.com"
+    BASE_URL = "https://pediatric-pals.preview.emergentagent.com"
 
 # Test credentials
 TEST_USER_EMAIL = "test@pedotg.com"

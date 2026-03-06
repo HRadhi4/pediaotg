@@ -13,7 +13,7 @@
 
 #### 1. Basic API Endpoints - ✅ VERIFIED
 **Root API Endpoint:**
-- ✅ Successfully connected to https://resus-recorder.preview.emergentagent.com/api/
+- ✅ Successfully connected to https://pediatric-pals.preview.emergentagent.com/api/
 - ✅ Returns proper API message: "PediaOTG API"
 
 **Status Check Endpoints:**

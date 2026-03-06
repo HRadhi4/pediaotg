@@ -86,6 +86,15 @@ All approach content in the Approaches page supports unified pinch-to-zoom:
     - Time since last Rx tracker with drug name
   - File: `/app/frontend/src/pages/children/CPRPage.jsx`
 
+### March 6, 2026 (Continued)
+- **Sodium Correction Calculator (DKA Page)**: Added interactive sodium correction calculator to the DKA/Hyperglycemia approach
+  - Input fields for Measured Na⁺ (mEq/L) and Blood Glucose
+  - **Unit toggle switch** to choose between mg/dL and mmol/L for glucose input
+  - Real-time calculation of corrected sodium using formula: Na(corrected) = Na(measured) + 2 × (BG - 5.5) / 5.5
+  - Shows glucose conversion when using mg/dL (glucose ÷ 18 = mmol/L)
+  - Interpretation guide for clinical use
+  - File: `/app/frontend/src/pages/children/approaches/DkaApproach.jsx`
+
 ### June 27, 2026
 - **SEIZURES ALGORITHM Redesign**: Complete overhaul of the Epilepsy approach flowchart
   - Larger, more readable text with better visual hierarchy
