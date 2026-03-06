@@ -74,51 +74,13 @@ const CPRPage = ({ onBack }) => {
     window.scrollTo(0, 0);
   }, []);
 
-  // Track previous events count to detect new events
+  // Simple scroll to bottom only when timer stops and new events were added
   const prevEventsCountRef = useRef(0);
-  // Track if user is manually scrolling
-  const userScrollingRef = useRef(false);
-  const scrollTimeoutRef = useRef(null);
-  // Store scroll position to restore after re-renders
-  const savedScrollPosRef = useRef(0);
-
-  // Save scroll position before re-render
+  
   useEffect(() => {
-    if (eventLogRef.current && isRunning) {
-      savedScrollPosRef.current = eventLogRef.current.scrollTop;
-    }
-  });
-
-  // Restore scroll position after re-render (when timer is running)
-  useEffect(() => {
-    if (eventLogRef.current && isRunning && savedScrollPosRef.current > 0) {
-      eventLogRef.current.scrollTop = savedScrollPosRef.current;
-    }
-  });
-
-  // Handle scroll event to detect user scrolling and save position
-  const handleEventLogScroll = (e) => {
-    userScrollingRef.current = true;
-    savedScrollPosRef.current = e.target.scrollTop;
-    
-    // Reset the flag after user stops scrolling for 1 second
-    if (scrollTimeoutRef.current) {
-      clearTimeout(scrollTimeoutRef.current);
-    }
-    scrollTimeoutRef.current = setTimeout(() => {
-      userScrollingRef.current = false;
-    }, 1000);
-  };
-
-  // Auto-scroll event log to bottom only when NEW events are added
-  // COMPLETELY DISABLED when timer is running
-  useEffect(() => {
-    // Do nothing if timer is running - user has full scroll control
-    if (isRunning) return;
-    
-    if (eventLogRef.current && events.length > prevEventsCountRef.current && !userScrollingRef.current) {
-      const el = eventLogRef.current;
-      el.scrollTop = el.scrollHeight;
+    // Only auto-scroll when timer is NOT running
+    if (!isRunning && eventLogRef.current && events.length > prevEventsCountRef.current) {
+      eventLogRef.current.scrollTop = eventLogRef.current.scrollHeight;
     }
     prevEventsCountRef.current = events.length;
   }, [events.length, isRunning]);
@@ -1035,281 +997,6 @@ const CPRPage = ({ onBack }) => {
   ), [selectedTrack, drugs, w, calcValue, calcValueSm]);
 
   // ==================== RECORDING TAB ====================
-  const RecordingTab = () => (
-    <div className="space-y-4">
-      {/* Drug Selection Modal */}
-      {showDrugMenu && (
-        <>
-          <div className="fixed inset-0 bg-black/30 z-40" onClick={handleDrugMenuCancel} />
-          <div className="fixed left-4 right-4 top-1/3 bg-white dark:bg-gray-900 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700 p-4 z-50">
-            <div className="flex justify-between items-center mb-3 pb-2 border-b">
-              <span className="text-base font-semibold">Select Drug</span>
-              <button onClick={handleDrugMenuCancel} className="p-1 hover:bg-gray-100 dark:hover:bg-gray-800 rounded">
-                <X className="h-5 w-5" />
-              </button>
-            </div>
-            <div className="space-y-2">
-              {drugOptions.map((drug) => (
-                <button
-                  key={drug.id}
-                  onClick={() => handleDrugSelect(drug.name)}
-                  className={`w-full text-left px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-base font-medium ${drug.color} transition-colors border border-gray-200 dark:border-gray-700`}
-                >
-                  {drug.name}
-                </button>
-              ))}
-            </div>
-          </div>
-        </>
-      )}
-
-      {/* Timer Display */}
-      <Card className="nightingale-card">
-        <CardContent className="pt-6">
-          <div className="text-center mb-6 relative">
-            {/* Small Reset Button - Only enabled after CPR is finished */}
-            {events.some(e => e.type === 'cpr-end') && (
-              <button
-                onClick={clearAll}
-                className="absolute top-0 right-0 p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-full transition-colors"
-                title="Reset and start new"
-              >
-                <RefreshCw className="h-5 w-5" />
-              </button>
-            )}
-            <div className={`text-6xl font-mono font-bold ${isRunning ? 'text-red-600 dark:text-red-400' : 'text-foreground'}`}>
-              {formatTime(elapsedTime)}
-            </div>
-            <p className="text-sm text-muted-foreground mt-2">
-              {isRunning ? "CPR in progress" : elapsedTime > 0 ? "Paused" : "Ready to start"}
-            </p>
-          </div>
-
-          {/* 2-Minute Pulse Check Reminder */}
-          {showReminder && (
-            <div 
-              className="mb-4 p-4 rounded-lg bg-amber-100 dark:bg-amber-900/30 border-2 border-amber-500 cursor-pointer"
-              onClick={() => setShowReminder(false)}
-            >
-              <div className="flex items-center gap-3">
-                <AlertCircle className="h-6 w-6 text-amber-600" />
-                <div>
-                  <p className="font-bold text-amber-700 dark:text-amber-400">2-Minute Pulse Check!</p>
-                  <p className="text-sm text-amber-600 dark:text-amber-500">Tap to dismiss</p>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Timer Controls */}
-          <div className="flex gap-3 justify-center">
-            <Button
-              size="lg"
-              variant={isRunning ? "destructive" : "default"}
-              onClick={toggleTimer}
-              className="flex-1 max-w-[150px]"
-            >
-              {isRunning ? (
-                <><Pause className="h-5 w-5 mr-2" />Pause</>
-              ) : (
-                <><Play className="h-5 w-5 mr-2" />{elapsedTime > 0 ? "Resume" : "Start"}</>
-              )}
-            </Button>
-            <Button 
-              size="lg" 
-              variant="outline" 
-              onClick={resetTimer} 
-              className="flex-1 max-w-[150px]"
-            >
-              <RotateCcw className="h-5 w-5 mr-2" />
-              {elapsedTime > 0 ? "Finish" : "Reset"}
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Event Buttons */}
-      <Card className="nightingale-card">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-semibold">Record Events</CardTitle>
-          <p className="text-xs text-muted-foreground">Tap to timestamp</p>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-2 gap-3">
-            {/* Rx Button - Simple tap to open menu */}
-            <Button
-              variant="outline"
-              className="h-20 flex flex-col items-center gap-2 border-2 border-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20"
-              onClick={handleRxClick}
-              disabled={!isRunning}
-            >
-              <Pill className="h-6 w-6 text-blue-600" />
-              <span className="font-semibold text-sm">Rx</span>
-            </Button>
-
-            <Button
-              variant="outline"
-              className="h-20 flex flex-col items-center gap-2 border-2 border-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/20"
-              onClick={() => recordEvent('shock')}
-              disabled={!isRunning}
-            >
-              <Zap className="h-6 w-6 text-amber-600" />
-              <span className="font-semibold text-sm">Shock</span>
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Event Log */}
-      {events.length > 0 && (
-        <Card className="nightingale-card">
-          <CardHeader className="pb-2">
-            <div className="flex items-center justify-between">
-              <CardTitle className="text-sm font-semibold flex items-center gap-2">
-                <Clock className="h-4 w-4" />
-                Event Log ({events.length})
-              </CardTitle>
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={saveEventLogAsPDF}
-                className="h-8 text-xs"
-              >
-                <Download className="h-3 w-3 mr-1" />
-                Save PDF
-              </Button>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div 
-              ref={eventLogRef} 
-              onScroll={handleEventLogScroll}
-              className="space-y-2 max-h-[300px] overflow-y-auto overscroll-contain"
-            >
-              {events.map((event, idx) => (
-                <div
-                  key={idx}
-                  className={`flex items-center justify-between p-2 rounded-lg border ${
-                    event.type === 'cpr-start'
-                      ? 'border-green-300 bg-green-50 dark:bg-green-900/20 dark:border-green-800'
-                      : event.type === 'cpr-end'
-                      ? 'border-red-300 bg-red-50 dark:bg-red-900/20 dark:border-red-800'
-                      : event.type === 'rx'
-                      ? 'border-blue-200 bg-blue-50 dark:bg-blue-900/20 dark:border-blue-800'
-                      : 'border-amber-200 bg-amber-50 dark:bg-amber-900/20 dark:border-amber-800'
-                  }`}
-                >
-                  <div className="flex items-center gap-2 flex-1">
-                    {event.type === 'cpr-start' && <Play className="h-4 w-4 text-green-600" />}
-                    {event.type === 'cpr-end' && <RotateCcw className="h-4 w-4 text-red-600" />}
-                    {event.type === 'rx' && <Pill className="h-4 w-4 text-blue-600" />}
-                    {event.type === 'shock' && <Zap className="h-4 w-4 text-amber-600" />}
-                    
-                    {/* CPR Start event */}
-                    {event.type === 'cpr-start' && (
-                      <div className="flex flex-col">
-                        <span className="font-bold text-sm text-green-700 dark:text-green-400">CPR Started</span>
-                        <span className="text-xs text-muted-foreground">{event.timestamp}</span>
-                      </div>
-                    )}
-                    
-                    {/* CPR End event */}
-                    {event.type === 'cpr-end' && (
-                      <div className="flex flex-col">
-                        <span className="font-bold text-sm text-red-700 dark:text-red-400">CPR Ended</span>
-                        <span className="text-xs text-muted-foreground">{event.timestamp} • Total: {event.totalDuration}</span>
-                      </div>
-                    )}
-                    
-                    {/* Editable drug name for Rx events */}
-                    {event.type === 'rx' && (
-                      editingEventIndex === idx ? (
-                        <div className="flex items-center gap-1 flex-1">
-                          <Input
-                            value={editingDrugName}
-                            onChange={(e) => setEditingDrugName(e.target.value)}
-                            className="h-7 text-sm py-0 px-2"
-                            placeholder="Drug name"
-                            autoFocus
-                          />
-                          <button
-                            onClick={saveEditedDrug}
-                            className="p-1 hover:bg-blue-100 dark:hover:bg-blue-900 rounded"
-                          >
-                            <Check className="h-4 w-4 text-blue-600" />
-                          </button>
-                        </div>
-                      ) : (
-                        <div className="flex flex-col">
-                          <div className="flex items-center gap-1">
-                            <span className="font-medium text-sm">Rx</span>
-                            {event.drug && <span className="text-xs text-muted-foreground">({event.drug})</span>}
-                            <button
-                              onClick={() => startEditingDrug(idx)}
-                              className="p-1 hover:bg-blue-100 dark:hover:bg-blue-900 rounded ml-1"
-                            >
-                              <Pencil className="h-3 w-3 text-blue-500" />
-                            </button>
-                          </div>
-                          <span className="text-xs text-muted-foreground">{event.timestamp}</span>
-                        </div>
-                      )
-                    )}
-                    
-                    {/* Shock event */}
-                    {event.type === 'shock' && (
-                      <div className="flex flex-col">
-                        <span className="font-medium text-sm">Shock</span>
-                        <span className="text-xs text-muted-foreground">{event.timestamp}</span>
-                      </div>
-                    )}
-                  </div>
-                  
-                  {/* Time display */}
-                  <div className="text-right">
-                    <p className="font-mono text-sm font-bold">{formatTime(event.time)}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Time Trackers */}
-      {isRunning && (
-        <Card className="nightingale-card">
-          <CardContent className="pt-4 space-y-3">
-            {/* Time since last Epinephrine - Always show if Epi was given */}
-            {lastEpiTime > 0 && (
-              <div className="flex items-center justify-between p-2 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800">
-                <div className="flex flex-col">
-                  <span className="text-sm font-semibold text-red-700 dark:text-red-400">Time since last Epinephrine:</span>
-                </div>
-                <span className="font-mono font-bold text-red-600 dark:text-red-400 text-lg">
-                  {formatTime(elapsedTime - lastEpiTime)}
-                </span>
-              </div>
-            )}
-            
-            {/* Time since last Rx (any drug) */}
-            <div className="flex items-center justify-between">
-              <div className="flex flex-col">
-                <span className="text-sm text-muted-foreground">Time since last Rx:</span>
-                {lastRxDrug && !lastRxDrug.toLowerCase().includes('epinephrine') && (
-                  <span className="text-xs text-blue-600 dark:text-blue-400">({lastRxDrug})</span>
-                )}
-              </div>
-              <span className="font-mono font-bold text-foreground">
-                {lastRxTime > 0 ? formatTime(elapsedTime - lastRxTime) : '--:--'}
-              </span>
-            </div>
-          </CardContent>
-        </Card>
-      )}
-    </div>
-  );
-
   // ==================== DRUGS TAB ====================
   // All drugs from PALS Card pages 2-3 "Drugs Used in PALS"
   const allDrugs = [
@@ -1728,7 +1415,277 @@ const CPRPage = ({ onBack }) => {
         </TabsContent>
 
         <TabsContent value="recording" className="mt-4">
-          <RecordingTab />
+          <div className="space-y-4">
+            {/* Drug Selection Modal */}
+            {showDrugMenu && (
+              <>
+                <div className="fixed inset-0 bg-black/30 z-40" onClick={handleDrugMenuCancel} />
+                <div className="fixed left-4 right-4 top-1/3 bg-white dark:bg-gray-900 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700 p-4 z-50">
+                  <div className="flex justify-between items-center mb-3 pb-2 border-b">
+                    <span className="text-base font-semibold">Select Drug</span>
+                    <button onClick={handleDrugMenuCancel} className="p-1 hover:bg-gray-100 dark:hover:bg-gray-800 rounded">
+                      <X className="h-5 w-5" />
+                    </button>
+                  </div>
+                  <div className="space-y-2">
+                    {drugOptions.map((drug) => (
+                      <button
+                        key={drug.id}
+                        onClick={() => handleDrugSelect(drug.name)}
+                        className={`w-full text-left px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-base font-medium ${drug.color} transition-colors border border-gray-200 dark:border-gray-700`}
+                      >
+                        {drug.name}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </>
+            )}
+
+            {/* Timer Display */}
+            <Card className="nightingale-card">
+              <CardContent className="pt-6">
+                <div className="text-center mb-6 relative">
+                  {/* Small Reset Button - Only enabled after CPR is finished */}
+                  {events.some(e => e.type === 'cpr-end') && (
+                    <button
+                      onClick={clearAll}
+                      className="absolute top-0 right-0 p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-full transition-colors"
+                      title="Reset and start new"
+                    >
+                      <RefreshCw className="h-5 w-5" />
+                    </button>
+                  )}
+                  <div className={`text-6xl font-mono font-bold ${isRunning ? 'text-red-600 dark:text-red-400' : 'text-foreground'}`}>
+                    {formatTime(elapsedTime)}
+                  </div>
+                  <p className="text-sm text-muted-foreground mt-2">
+                    {isRunning ? "CPR in progress" : elapsedTime > 0 ? "Paused" : "Ready to start"}
+                  </p>
+                </div>
+
+                {/* 2-Minute Pulse Check Reminder */}
+                {showReminder && (
+                  <div 
+                    className="mb-4 p-4 rounded-lg bg-amber-100 dark:bg-amber-900/30 border-2 border-amber-500 cursor-pointer"
+                    onClick={() => setShowReminder(false)}
+                  >
+                    <div className="flex items-center gap-3">
+                      <AlertCircle className="h-6 w-6 text-amber-600" />
+                      <div>
+                        <p className="font-bold text-amber-700 dark:text-amber-400">2-Minute Pulse Check!</p>
+                        <p className="text-sm text-amber-600 dark:text-amber-500">Tap to dismiss</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Timer Controls */}
+                <div className="flex gap-3 justify-center">
+                  <Button
+                    size="lg"
+                    variant={isRunning ? "destructive" : "default"}
+                    onClick={toggleTimer}
+                    className="flex-1 max-w-[150px]"
+                  >
+                    {isRunning ? (
+                      <><Pause className="h-5 w-5 mr-2" />Pause</>
+                    ) : (
+                      <><Play className="h-5 w-5 mr-2" />{elapsedTime > 0 ? "Resume" : "Start"}</>
+                    )}
+                  </Button>
+                  <Button 
+                    size="lg" 
+                    variant="outline" 
+                    onClick={resetTimer} 
+                    className="flex-1 max-w-[150px]"
+                  >
+                    <RotateCcw className="h-5 w-5 mr-2" />
+                    {elapsedTime > 0 ? "Finish" : "Reset"}
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Event Buttons */}
+            <Card className="nightingale-card">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-semibold">Record Events</CardTitle>
+                <p className="text-xs text-muted-foreground">Tap to timestamp</p>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-2 gap-3">
+                  {/* Rx Button - Simple tap to open menu */}
+                  <Button
+                    variant="outline"
+                    className="h-20 flex flex-col items-center gap-2 border-2 border-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20"
+                    onClick={handleRxClick}
+                    disabled={!isRunning}
+                  >
+                    <Pill className="h-6 w-6 text-blue-600" />
+                    <span className="font-semibold text-sm">Rx</span>
+                  </Button>
+
+                  <Button
+                    variant="outline"
+                    className="h-20 flex flex-col items-center gap-2 border-2 border-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/20"
+                    onClick={() => recordEvent('shock')}
+                    disabled={!isRunning}
+                  >
+                    <Zap className="h-6 w-6 text-amber-600" />
+                    <span className="font-semibold text-sm">Shock</span>
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Event Log */}
+            {events.length > 0 && (
+              <Card className="nightingale-card">
+                <CardHeader className="pb-2">
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-sm font-semibold flex items-center gap-2">
+                      <Clock className="h-4 w-4" />
+                      Event Log ({events.length})
+                    </CardTitle>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={saveEventLogAsPDF}
+                      className="h-8 text-xs"
+                    >
+                      <Download className="h-3 w-3 mr-1" />
+                      Save PDF
+                    </Button>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div 
+                    ref={eventLogRef} 
+                    className="space-y-2 max-h-[300px] overflow-y-auto"
+                  >
+                    {events.map((event, idx) => (
+                      <div
+                        key={idx}
+                        className={`flex items-center justify-between p-2 rounded-lg border ${
+                          event.type === 'cpr-start'
+                            ? 'border-green-300 bg-green-50 dark:bg-green-900/20 dark:border-green-800'
+                            : event.type === 'cpr-end'
+                            ? 'border-red-300 bg-red-50 dark:bg-red-900/20 dark:border-red-800'
+                            : event.type === 'rx'
+                            ? 'border-blue-200 bg-blue-50 dark:bg-blue-900/20 dark:border-blue-800'
+                            : 'border-amber-200 bg-amber-50 dark:bg-amber-900/20 dark:border-amber-800'
+                        }`}
+                      >
+                        <div className="flex items-center gap-2 flex-1">
+                          {event.type === 'cpr-start' && <Play className="h-4 w-4 text-green-600" />}
+                          {event.type === 'cpr-end' && <RotateCcw className="h-4 w-4 text-red-600" />}
+                          {event.type === 'rx' && <Pill className="h-4 w-4 text-blue-600" />}
+                          {event.type === 'shock' && <Zap className="h-4 w-4 text-amber-600" />}
+                          
+                          {/* CPR Start event */}
+                          {event.type === 'cpr-start' && (
+                            <div className="flex flex-col">
+                              <span className="font-bold text-sm text-green-700 dark:text-green-400">CPR Started</span>
+                              <span className="text-xs text-muted-foreground">{event.timestamp}</span>
+                            </div>
+                          )}
+                          
+                          {/* CPR End event */}
+                          {event.type === 'cpr-end' && (
+                            <div className="flex flex-col">
+                              <span className="font-bold text-sm text-red-700 dark:text-red-400">CPR Ended</span>
+                              <span className="text-xs text-muted-foreground">{event.timestamp} • Total: {event.totalDuration}</span>
+                            </div>
+                          )}
+                          
+                          {/* Editable drug name for Rx events */}
+                          {event.type === 'rx' && (
+                            editingEventIndex === idx ? (
+                              <div className="flex items-center gap-1 flex-1">
+                                <Input
+                                  value={editingDrugName}
+                                  onChange={(e) => setEditingDrugName(e.target.value)}
+                                  className="h-7 text-sm py-0 px-2"
+                                  placeholder="Drug name"
+                                  autoFocus
+                                />
+                                <button
+                                  onClick={saveEditedDrug}
+                                  className="p-1 hover:bg-blue-100 dark:hover:bg-blue-900 rounded"
+                                >
+                                  <Check className="h-4 w-4 text-blue-600" />
+                                </button>
+                              </div>
+                            ) : (
+                              <div className="flex flex-col">
+                                <div className="flex items-center gap-1">
+                                  <span className="font-medium text-sm">Rx</span>
+                                  {event.drug && <span className="text-xs text-muted-foreground">({event.drug})</span>}
+                                  <button
+                                    onClick={() => startEditingDrug(idx)}
+                                    className="p-1 hover:bg-blue-100 dark:hover:bg-blue-900 rounded ml-1"
+                                  >
+                                    <Pencil className="h-3 w-3 text-blue-500" />
+                                  </button>
+                                </div>
+                                <span className="text-xs text-muted-foreground">{event.timestamp}</span>
+                              </div>
+                            )
+                          )}
+                          
+                          {/* Shock event */}
+                          {event.type === 'shock' && (
+                            <div className="flex flex-col">
+                              <span className="font-medium text-sm">Shock</span>
+                              <span className="text-xs text-muted-foreground">{event.timestamp}</span>
+                            </div>
+                          )}
+                        </div>
+                        
+                        {/* Time display */}
+                        <div className="text-right">
+                          <p className="font-mono text-sm font-bold">{formatTime(event.time)}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Time Trackers */}
+            {isRunning && (
+              <Card className="nightingale-card">
+                <CardContent className="pt-4 space-y-3">
+                  {/* Time since last Epinephrine - Always show if Epi was given */}
+                  {lastEpiTime > 0 && (
+                    <div className="flex items-center justify-between p-2 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800">
+                      <div className="flex flex-col">
+                        <span className="text-sm font-semibold text-red-700 dark:text-red-400">Time since last Epinephrine:</span>
+                      </div>
+                      <span className="font-mono font-bold text-red-600 dark:text-red-400 text-lg">
+                        {formatTime(elapsedTime - lastEpiTime)}
+                      </span>
+                    </div>
+                  )}
+                  
+                  {/* Time since last Rx (any drug) */}
+                  <div className="flex items-center justify-between">
+                    <div className="flex flex-col">
+                      <span className="text-sm text-muted-foreground">Time since last Rx:</span>
+                      {lastRxDrug && !lastRxDrug.toLowerCase().includes('epinephrine') && (
+                        <span className="text-xs text-blue-600 dark:text-blue-400">({lastRxDrug})</span>
+                      )}
+                    </div>
+                    <span className="font-mono font-bold text-foreground">
+                      {lastRxTime > 0 ? formatTime(elapsedTime - lastRxTime) : '--:--'}
+                    </span>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+          </div>
         </TabsContent>
       </Tabs>
     </div>
