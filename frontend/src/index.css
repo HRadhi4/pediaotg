@@ -145,26 +145,36 @@ a, code, pre {
     --radius: 1rem;
   }
 
+  /* Eye-friendly dark mode with warmer tones and reduced contrast */
   .dark {
-    --background: 200 25% 8%;
-    --foreground: 170 30% 95%;
-    --card: 200 20% 12%;
-    --card-foreground: 170 30% 95%;
-    --popover: 200 20% 12%;
-    --popover-foreground: 170 30% 95%;
-    --primary: 174 100% 50%;
-    --primary-foreground: 200 25% 8%;
-    --secondary: 200 20% 18%;
-    --secondary-foreground: 170 30% 90%;
-    --muted: 200 20% 15%;
-    --muted-foreground: 170 20% 60%;
-    --accent: 174 100% 50%;
-    --accent-foreground: 200 25% 8%;
-    --destructive: 0 63% 40%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 200 20% 20%;
-    --input: 200 20% 20%;
-    --ring: 174 100% 50%;
+    /* Warmer dark background - not pure black, slightly warm */
+    --background: 220 15% 13%;
+    /* Soft off-white text - easier on eyes than pure white */
+    --foreground: 220 10% 85%;
+    /* Card with subtle warmth */
+    --card: 220 15% 16%;
+    --card-foreground: 220 10% 88%;
+    --popover: 220 15% 16%;
+    --popover-foreground: 220 10% 88%;
+    /* Softer primary accent - less saturated for night use */
+    --primary: 174 80% 45%;
+    --primary-foreground: 220 15% 10%;
+    /* Warmer secondary tones */
+    --secondary: 220 12% 22%;
+    --secondary-foreground: 220 10% 80%;
+    /* Muted elements with warmth */
+    --muted: 220 12% 20%;
+    --muted-foreground: 220 8% 55%;
+    /* Softer accent */
+    --accent: 174 70% 40%;
+    --accent-foreground: 220 15% 10%;
+    /* Less harsh destructive */
+    --destructive: 0 55% 45%;
+    --destructive-foreground: 0 0% 95%;
+    /* Subtle borders */
+    --border: 220 12% 22%;
+    --input: 220 12% 22%;
+    --ring: 174 70% 45%;
   }
 }
 
@@ -197,8 +207,14 @@ a, code, pre {
   background: linear-gradient(145deg, hsl(174, 60%, 92%) 0%, hsl(170, 40%, 98%) 50%, hsl(0, 0%, 100%) 100%);
 }
 
+/* Eye-friendly dark gradient - warmer, less blue */
 .gradient-bg-dark {
-  background: linear-gradient(145deg, hsl(174, 50%, 15%) 0%, hsl(200, 30%, 10%) 50%, hsl(200, 25%, 8%) 100%);
+  background: linear-gradient(
+    145deg, 
+    hsl(220, 18%, 14%) 0%, 
+    hsl(220, 15%, 12%) 50%, 
+    hsl(220, 15%, 11%) 100%
+  );
 }
 
 /* Drug name scroll animation - now defined in tailwind.config.js */

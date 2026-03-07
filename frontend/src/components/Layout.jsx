@@ -142,7 +142,7 @@ const SidePanel = ({ isOpen, onClose, theme, toggleTheme }) => {
       
       {/* Side Panel */}
       <div 
-        className={`fixed top-0 left-0 h-full w-72 bg-white dark:bg-gray-900 z-[60] transform transition-transform duration-300 shadow-xl ${
+        className={`fixed top-0 left-0 h-full w-72 bg-white dark:bg-[#1e232e] z-[60] transform transition-transform duration-300 shadow-xl ${
           isOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
@@ -160,7 +160,7 @@ const SidePanel = ({ isOpen, onClose, theme, toggleTheme }) => {
             </div>
             <button 
               onClick={onClose}
-              className="w-8 h-8 rounded-lg bg-gray-100 dark:bg-gray-800 flex items-center justify-center"
+              className="w-8 h-8 rounded-lg bg-gray-100 dark:bg-[#2a303e] flex items-center justify-center"
             >
               <X className="h-4 w-4" />
             </button>
@@ -170,7 +170,7 @@ const SidePanel = ({ isOpen, onClose, theme, toggleTheme }) => {
           <nav className="flex-1 p-4 space-y-2">
             {/* User Info */}
             {user && (
-              <div className="p-3 mb-4 rounded-xl bg-gray-50 dark:bg-gray-800">
+              <div className="p-3 mb-4 rounded-xl bg-gray-50 dark:bg-[#252a38]">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full bg-[#00d9c5]/10 flex items-center justify-center">
                     <User className="h-5 w-5 text-[#00d9c5]" />
@@ -287,7 +287,7 @@ const SidePanel = ({ isOpen, onClose, theme, toggleTheme }) => {
             
             {/* Disclaimer Tab */}
             <TabsContent value="disclaimer" className="flex-1 overflow-auto mt-4">
-              <div className="p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50 text-sm">
+              <div className="p-4 rounded-xl bg-gray-50 dark:bg-[#252a38]/70 text-sm">
                 <p className="text-muted-foreground leading-relaxed">
                   This application is designed for use by <strong>qualified physicians</strong> and is based on multiple clinical guidelines, including <strong>Salmaniya Medical Complex guidelines</strong>.
                 </p>
@@ -302,7 +302,7 @@ const SidePanel = ({ isOpen, onClose, theme, toggleTheme }) => {
             
             {/* About Us Tab */}
             <TabsContent value="about" className="flex-1 overflow-auto mt-4">
-              <div className="p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50 text-sm text-center space-y-4">
+              <div className="p-4 rounded-xl bg-gray-50 dark:bg-[#252a38]/70 text-sm text-center space-y-4">
                 <p className="text-muted-foreground leading-relaxed">
                   An app crafted by those who know pediatrics best — <strong>pediatricians themselves</strong>.
                 </p>
@@ -322,7 +322,7 @@ const SidePanel = ({ isOpen, onClose, theme, toggleTheme }) => {
             <TabsContent value="references" className="flex-1 overflow-auto mt-4">
               <div className="space-y-2 max-h-[40vh] overflow-y-auto pr-2">
                 {APP_REFERENCES.map((ref, idx) => (
-                  <div key={idx} className="p-2 rounded-lg bg-gray-50 dark:bg-gray-800/50 text-xs">
+                  <div key={idx} className="p-2 rounded-lg bg-gray-50 dark:bg-[#252a38]/70 text-xs">
                     <p className="font-medium text-[#00d9c5]">{ref.category}</p>
                     <p className="text-muted-foreground">{ref.source}</p>
                   </div>
@@ -368,7 +368,7 @@ const Layout = ({ children, theme, toggleTheme, showNavBar = true, showHamburger
       {showHamburger && (
         <button
           onClick={() => setSidebarOpen(true)}
-          className="fixed top-4 left-4 z-50 w-10 h-10 rounded-xl bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-lg flex items-center justify-center hover:bg-white dark:hover:bg-gray-800 transition-colors"
+          className="fixed top-4 left-4 z-50 w-10 h-10 rounded-xl bg-white/80 dark:bg-[#252a38]/90 backdrop-blur-sm shadow-lg flex items-center justify-center hover:bg-white dark:hover:bg-[#2a303e] transition-colors"
         >
           <Menu className="h-5 w-5" />
         </button>
@@ -378,7 +378,7 @@ const Layout = ({ children, theme, toggleTheme, showNavBar = true, showHamburger
       <div className="fixed top-4 right-4 z-50 flex items-center gap-2">
         <OfflineIndicator />
         <PWAInstallButton 
-          className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-lg hover:bg-white dark:hover:bg-gray-800" 
+          className="bg-white/80 dark:bg-[#252a38]/90 backdrop-blur-sm shadow-lg hover:bg-white dark:hover:bg-[#2a303e]" 
         />
       </div>
 
