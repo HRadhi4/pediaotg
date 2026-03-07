@@ -12,6 +12,13 @@ from datetime import datetime, timezone
 import base64
 from contextlib import asynccontextmanager
 
+# Import security middleware
+from middleware.security import (
+    SecurityHeadersMiddleware,
+    RateLimitMiddleware,
+    ErrorHandlerMiddleware
+)
+
 # Import optimized Tesseract OCR service (100% local, medical-grade preprocessing)
 from services.ocr_service import (
     perform_ocr as perform_paddle_ocr,
@@ -608,6 +615,11 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Add security middleware (order matters - added after CORS)
+app.add_middleware(SecurityHeadersMiddleware)
+app.add_middleware(RateLimitMiddleware)
+app.add_middleware(ErrorHandlerMiddleware)
 
 # Configure logging
 logging.basicConfig(

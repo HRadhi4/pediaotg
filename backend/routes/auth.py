@@ -164,21 +164,22 @@ async def signup(user_data: UserCreate, response: Response):
     access_token = auth_service.create_access_token(user.id, user.is_admin)
     refresh_token = auth_service.create_refresh_token(user.id)
     
-    # Set HTTP-only cookie for web clients
+    # Set HTTP-only cookie for web clients with secure flags
+    is_production = os.environ.get('FRONTEND_URL', '').startswith('https')
     response.set_cookie(
         key="access_token",
         value=access_token,
         httponly=True,
-        secure=False,  # Set to True in production with HTTPS
-        samesite="lax",
+        secure=is_production,
+        samesite="strict" if is_production else "lax",
         max_age=1800  # 30 minutes
     )
     response.set_cookie(
         key="refresh_token",
         value=refresh_token,
         httponly=True,
-        secure=False,
-        samesite="lax",
+        secure=is_production,
+        samesite="strict" if is_production else "lax",
         max_age=604800  # 7 days
     )
     
@@ -206,7 +207,8 @@ async def login(credentials: UserLogin, request: Request, response: Response):
     user, error = await auth_service.authenticate_user(credentials.email, credentials.password)
     
     if error:
-        raise HTTPException(status_code=401, detail=error)
+        # Return generic error message to prevent user enumeration
+        raise HTTPException(status_code=401, detail="Invalid email or password")
     
     # Generate device ID for this login
     device_id = generate_device_id(request)
@@ -251,21 +253,23 @@ async def login(credentials: UserLogin, request: Request, response: Response):
         upsert=True
     )
     
-    # Set HTTP-only cookies
+    # Set HTTP-only cookies with secure flags
+    # secure=True requires HTTPS, samesite=strict for CSRF protection
+    is_production = os.environ.get('FRONTEND_URL', '').startswith('https')
     response.set_cookie(
         key="access_token",
         value=access_token,
         httponly=True,
-        secure=False,
-        samesite="lax",
+        secure=is_production,
+        samesite="strict" if is_production else "lax",
         max_age=1800
     )
     response.set_cookie(
         key="refresh_token",
         value=refresh_token,
         httponly=True,
-        secure=False,
-        samesite="lax",
+        secure=is_production,
+        samesite="strict" if is_production else "lax",
         max_age=604800
     )
     # Store device_id in cookie for logout
@@ -273,8 +277,8 @@ async def login(credentials: UserLogin, request: Request, response: Response):
         key="device_id",
         value=device_id,
         httponly=True,
-        secure=False,
-        samesite="lax",
+        secure=is_production,
+        samesite="strict" if is_production else "lax",
         max_age=604800
     )
     
