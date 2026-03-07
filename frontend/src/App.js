@@ -1,8 +1,9 @@
 import "@/App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { AuthProvider } from "@/contexts/AuthContext";
+import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import ProtectedRoute from "@/components/ProtectedRoute";
+import AppLoadingScreen from "@/components/AppLoadingScreen";
 
 // Main App Pages
 import LandingPage from "@/pages/LandingPage";
@@ -27,6 +28,44 @@ import AdminDashboard from "@/pages/admin/AdminDashboard";
 import { Toaster } from "@/components/ui/sonner";
 import { PWAUpdateBanner } from "@/components/PWAComponents";
 
+// Inner app component that uses auth context
+function AppRoutes({ theme, toggleTheme }) {
+  const { loading, initialAuthComplete } = useAuth();
+
+  // Show loading screen during initial auth check / auto-login
+  if (!initialAuthComplete || loading) {
+    return <AppLoadingScreen />;
+  }
+
+  return (
+    <>
+      <Routes>
+        {/* Public Auth Routes */}
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignupPage />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/reset-password" element={<ResetPasswordPage />} />
+
+        {/* Subscription Routes (Auth required, no subscription required) */}
+        <Route path="/pricing" element={<ProtectedRoute requireSubscription={false}><PricingPage /></ProtectedRoute>} />
+        <Route path="/subscription/success" element={<ProtectedRoute requireSubscription={false}><SubscriptionSuccessPage /></ProtectedRoute>} />
+        <Route path="/subscription/cancel" element={<ProtectedRoute requireSubscription={false}><SubscriptionCancelPage /></ProtectedRoute>} />
+        <Route path="/account" element={<ProtectedRoute requireSubscription={false}><AccountPage /></ProtectedRoute>} />
+
+        {/* Admin Routes */}
+        <Route path="/admin/*" element={<ProtectedRoute requireAdmin={true}><AdminDashboard /></ProtectedRoute>} />
+
+        {/* Main App Routes (Auth + Subscription required) */}
+        <Route path="/nicu/*" element={<ProtectedRoute><NICUCalculator theme={theme} toggleTheme={toggleTheme} /></ProtectedRoute>} />
+        <Route path="/children/*" element={<ProtectedRoute><ChildrenDashboard theme={theme} toggleTheme={toggleTheme} /></ProtectedRoute>} />
+        <Route path="/" element={<LandingPage theme={theme} toggleTheme={toggleTheme} />} />
+      </Routes>
+      <Toaster position="top-right" />
+      <PWAUpdateBanner />
+    </>
+  );
+}
+
 function App() {
   const [theme, setTheme] = useState(() => {
     if (typeof window !== "undefined") {
@@ -50,66 +89,8 @@ function App() {
     <div className="min-h-screen bg-background">
       <AuthProvider>
         <BrowserRouter>
-          <Routes>
-            {/* Public Auth Routes */}
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/signup" element={<SignupPage />} />
-            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-            <Route path="/reset-password" element={<ResetPasswordPage />} />
-
-            {/* Subscription Routes (Auth required, no subscription required) */}
-            <Route path="/pricing" element={
-              <PricingPage />
-            } />
-            <Route path="/subscription/success" element={
-              <SubscriptionSuccessPage />
-            } />
-            <Route path="/subscription/cancel" element={
-              <SubscriptionCancelPage />
-            } />
-            <Route path="/account" element={
-              <ProtectedRoute requireSubscription={false}>
-                <AccountPage />
-              </ProtectedRoute>
-            } />
-
-            {/* Admin Routes */}
-            <Route path="/admin" element={
-              <ProtectedRoute requireSubscription={false}>
-                <AdminDashboard />
-              </ProtectedRoute>
-            } />
-
-            {/* Protected App Routes (Auth + Subscription required) */}
-            <Route path="/" element={
-              <ProtectedRoute>
-                <LandingPage theme={theme} toggleTheme={toggleTheme} />
-              </ProtectedRoute>
-            } />
-            <Route path="/nicu" element={
-              <ProtectedRoute>
-                <NICUCalculator theme={theme} toggleTheme={toggleTheme} />
-              </ProtectedRoute>
-            } />
-            <Route path="/nicu/:page" element={
-              <ProtectedRoute>
-                <NICUCalculator theme={theme} toggleTheme={toggleTheme} />
-              </ProtectedRoute>
-            } />
-            <Route path="/children" element={
-              <ProtectedRoute>
-                <ChildrenDashboard theme={theme} toggleTheme={toggleTheme} />
-              </ProtectedRoute>
-            } />
-            <Route path="/children/:page" element={
-              <ProtectedRoute>
-                <ChildrenDashboard theme={theme} toggleTheme={toggleTheme} />
-              </ProtectedRoute>
-            } />
-          </Routes>
+          <AppRoutes theme={theme} toggleTheme={toggleTheme} />
         </BrowserRouter>
-        <Toaster position="top-right" />
-        <PWAUpdateBanner />
       </AuthProvider>
     </div>
   );

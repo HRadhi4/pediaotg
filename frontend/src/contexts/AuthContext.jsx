@@ -15,6 +15,7 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [initialAuthComplete, setInitialAuthComplete] = useState(false);
   const [tokens, setTokens] = useState(() => {
     // Load tokens from localStorage for mobile app support
     const stored = localStorage.getItem('auth_tokens');
@@ -47,29 +48,104 @@ export const AuthProvider = ({ children }) => {
             subscriptionStatus: data.subscription_status,
             subscriptionPlan: data.subscription_plan
           });
+          return true;
         } else {
           setUser(null);
           setTokens(null);
           localStorage.removeItem('auth_tokens');
+          return false;
         }
       } else {
         setUser(null);
         setTokens(null);
         localStorage.removeItem('auth_tokens');
+        return false;
       }
     } catch (error) {
       console.error('Auth check failed:', error);
       setUser(null);
+      return false;
     } finally {
       setLoading(false);
+      setInitialAuthComplete(true);
     }
   }, [tokens]);
 
-  useEffect(() => {
-    checkAuth();
-  }, [checkAuth]);
+  // Auto-login with remembered credentials
+  const attemptAutoLogin = useCallback(async () => {
+    const remembered = localStorage.getItem('remembered_user');
+    if (remembered) {
+      try {
+        const { email, password } = JSON.parse(remembered);
+        if (email && password) {
+          const response = await fetch(`${API_URL}/api/auth/login`, {
+            method: 'POST',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+          });
 
-  const login = async (email, password) => {
+          const data = await response.json();
+
+          if (response.ok) {
+            const newTokens = {
+              access_token: data.access_token,
+              refresh_token: data.refresh_token
+            };
+            setTokens(newTokens);
+            localStorage.setItem('auth_tokens', JSON.stringify(newTokens));
+
+            setUser({
+              id: data.user.id,
+              email: data.user.email,
+              name: data.user.name,
+              isAdmin: data.user.is_admin,
+              hasSubscription: data.user.has_active_subscription,
+              subscriptionStatus: data.user.subscription_status,
+              subscriptionPlan: data.user.subscription_plan,
+              trialEndsAt: data.user.trial_ends_at,
+              subscriptionRenewsAt: data.user.subscription_renews_at
+            });
+            return true;
+          } else {
+            // Credentials invalid, clear remembered user
+            localStorage.removeItem('remembered_user');
+            return false;
+          }
+        }
+      } catch (e) {
+        console.error('Auto-login failed:', e);
+        localStorage.removeItem('remembered_user');
+        return false;
+      }
+    }
+    return false;
+  }, []);
+
+  // Initial auth check on mount
+  useEffect(() => {
+    const initAuth = async () => {
+      setLoading(true);
+      
+      // First, try to check existing auth (via cookies/tokens)
+      const isAuthed = await checkAuth();
+      
+      // If not authenticated and we have remembered credentials, try auto-login
+      if (!isAuthed) {
+        const remembered = localStorage.getItem('remembered_user');
+        if (remembered) {
+          await attemptAutoLogin();
+        }
+      }
+      
+      setLoading(false);
+      setInitialAuthComplete(true);
+    };
+    
+    initAuth();
+  }, []); // Only run once on mount
+
+  const login = async (email, password, rememberMe = false) => {
     try {
       const response = await fetch(`${API_URL}/api/auth/login`, {
         method: 'POST',
@@ -91,6 +167,13 @@ export const AuthProvider = ({ children }) => {
       };
       setTokens(newTokens);
       localStorage.setItem('auth_tokens', JSON.stringify(newTokens));
+
+      // Handle remember me
+      if (rememberMe) {
+        localStorage.setItem('remembered_user', JSON.stringify({ email, password }));
+      } else {
+        localStorage.removeItem('remembered_user');
+      }
 
       setUser({
         id: data.user.id,
@@ -197,6 +280,7 @@ export const AuthProvider = ({ children }) => {
   const value = {
     user,
     loading,
+    initialAuthComplete,
     isAuthenticated: !!user,
     isAdmin: user?.isAdmin || false,
     hasSubscription: user?.hasSubscription || user?.isAdmin || false,
