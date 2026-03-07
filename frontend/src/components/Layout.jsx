@@ -6,6 +6,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/contexts/AuthContext";
+import { PWAInstallButton, OfflineIndicator } from "@/components/PWAComponents";
 
 const APP_VERSION = "1.0.0";
 
@@ -372,6 +373,14 @@ const Layout = ({ children, theme, toggleTheme, showNavBar = true, showHamburger
           <Menu className="h-5 w-5" />
         </button>
       )}
+
+      {/* PWA Install Button & Offline Indicator - Fixed Top Right */}
+      <div className="fixed top-4 right-4 z-50 flex items-center gap-2">
+        <OfflineIndicator />
+        <PWAInstallButton 
+          className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-lg hover:bg-white dark:hover:bg-gray-800" 
+        />
+      </div>
 
       {/* Main Content */}
       {children}

@@ -1,10 +1,12 @@
 // craco.config.js
 const path = require("path");
 require("dotenv").config();
+const { GenerateSW } = require('workbox-webpack-plugin');
 
 // Check if we're in development/preview mode (not production build)
 // Craco sets NODE_ENV=development for start, NODE_ENV=production for build
 const isDevServer = process.env.NODE_ENV !== "production";
+const isProduction = process.env.NODE_ENV === "production";
 
 // Environment variable overrides
 const config = {
@@ -65,6 +67,87 @@ const webpackConfig = {
       if (config.enableHealthCheck && healthPluginInstance) {
         webpackConfig.plugins.push(healthPluginInstance);
       }
+
+      // Add Workbox service worker plugin for production builds
+      if (isProduction) {
+        webpackConfig.plugins.push(
+          new GenerateSW({
+            clientsClaim: true,
+            skipWaiting: false, // We handle this manually for update prompts
+            swDest: 'service-worker.js',
+            maximumFileSizeToCacheInBytes: 5 * 1024 * 1024, // 5MB
+            exclude: [
+              /\.map$/,
+              /asset-manifest\.json$/,
+              /LICENSE/,
+              /\.txt$/,
+            ],
+            // Cache strategies
+            runtimeCaching: [
+              // Cache images with Cache-First
+              {
+                urlPattern: /\.(?:png|jpg|jpeg|svg|gif|webp|ico)$/,
+                handler: 'CacheFirst',
+                options: {
+                  cacheName: 'pedotg-v1-images',
+                  expiration: {
+                    maxEntries: 100,
+                    maxAgeSeconds: 30 * 24 * 60 * 60, // 30 days
+                  },
+                },
+              },
+              // Cache fonts with Cache-First
+              {
+                urlPattern: /\.(?:woff|woff2|ttf|otf|eot)$/,
+                handler: 'CacheFirst',
+                options: {
+                  cacheName: 'pedotg-v1-fonts',
+                  expiration: {
+                    maxEntries: 30,
+                    maxAgeSeconds: 365 * 24 * 60 * 60, // 1 year
+                  },
+                },
+              },
+              // Cache Google Fonts
+              {
+                urlPattern: /^https:\/\/fonts\.googleapis\.com/,
+                handler: 'StaleWhileRevalidate',
+                options: {
+                  cacheName: 'pedotg-v1-google-fonts-stylesheets',
+                },
+              },
+              {
+                urlPattern: /^https:\/\/fonts\.gstatic\.com/,
+                handler: 'CacheFirst',
+                options: {
+                  cacheName: 'pedotg-v1-google-fonts-webfonts',
+                  expiration: {
+                    maxEntries: 30,
+                    maxAgeSeconds: 365 * 24 * 60 * 60, // 1 year
+                  },
+                },
+              },
+              // Cache API requests with Network-First
+              {
+                urlPattern: /\/api\//,
+                handler: 'NetworkFirst',
+                options: {
+                  cacheName: 'pedotg-v1-api',
+                  networkTimeoutSeconds: 10,
+                  expiration: {
+                    maxEntries: 50,
+                    maxAgeSeconds: 24 * 60 * 60, // 1 day
+                  },
+                },
+              },
+            ],
+            // Offline fallback
+            navigateFallback: '/index.html',
+            navigateFallbackDenylist: [/^\/api\//, /^\/__/],
+          })
+        );
+      }
+
       return webpackConfig;
     },
   },

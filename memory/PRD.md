@@ -21,6 +21,16 @@ All approach content in the Approaches page supports unified pinch-to-zoom:
 
 ## Core Features
 
+### Progressive Web App (PWA)
+The application is now a fully offline-capable PWA with:
+- **Service Worker**: Workbox-powered with Cache-First for static assets, NetworkFirst for API
+- **Web App Manifest**: Proper icons, theme colors, standalone display mode
+- **Offline Support**: All scoring/calculation tools work offline after first load
+- **Install Prompt**: Native install button in header for supported browsers
+- **Update Banner**: Automatic notification when new version is available
+- **IndexedDB Storage**: Save calculation results locally for persistence across sessions
+- **iOS Support**: Apple-specific meta tags for Safari PWA support
+
 ### Children Section
 - **Drugs Page**: Data-driven dosing calculator with comprehensive renal dose adjustment system based on Chapter 31 formulary
 - **Electrolytes Correction Calculator**: Multi-electrolyte calculator (Calcium, Magnesium, Potassium IV/PO, Sodium Bicarbonate, Sodium, Phosphate)

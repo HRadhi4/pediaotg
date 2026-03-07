@@ -25,6 +25,7 @@ import AccountPage from "@/pages/subscription/AccountPage";
 import AdminDashboard from "@/pages/admin/AdminDashboard";
 
 import { Toaster } from "@/components/ui/sonner";
+import { PWAUpdateBanner } from "@/components/PWAComponents";
 
 function App() {
   const [theme, setTheme] = useState(() => {
@@ -108,6 +109,7 @@ function App() {
           </Routes>
         </BrowserRouter>
         <Toaster position="top-right" />
+        <PWAUpdateBanner />
       </AuthProvider>
     </div>
   );
