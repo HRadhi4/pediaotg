@@ -26,10 +26,12 @@ The application is now a fully offline-capable PWA with:
 - **Service Worker**: Workbox-powered with Cache-First for static assets, NetworkFirst for API
 - **Web App Manifest**: Proper icons, theme colors, standalone display mode
 - **Offline Support**: All scoring/calculation tools work offline after first load
+- **Offline Login**: Users who checked "Remember Me" can log in offline with cached encrypted credentials
 - **Install Prompt**: Native install button in header for supported browsers
 - **Update Banner**: Automatic notification when new version is available
 - **IndexedDB Storage**: Save calculation results locally for persistence across sessions
 - **iOS Support**: Apple-specific meta tags for Safari PWA support
+- **Secure Credential Storage**: AES-GCM encryption for all stored credentials
 
 ### Children Section
 - **Drugs Page**: Data-driven dosing calculator with comprehensive renal dose adjustment system based on Chapter 31 formulary
@@ -58,6 +60,16 @@ The application is now a fully offline-capable PWA with:
 - **Statistics**: User and subscription counts
 
 ## What's Been Implemented
+
+### December 2025
+- **Offline Login Bug Fix (P0)**: Fixed issue where users couldn't log in when offline
+  - Root cause: `LoginPage.jsx` had early return blocking login() call when offline
+  - Fix: Removed early return, allowing AuthContext.login() to handle offline case
+  - AuthContext.login() checks cached encrypted credentials when offline
+  - If credentials match, loads cached user data and authenticates locally
+  - Updated offline warning message to inform users they can use saved credentials
+  - Files: `/app/frontend/src/pages/auth/LoginPage.jsx`, `/app/frontend/src/contexts/AuthContext.jsx`
+  - Tested: 100% success rate verified by testing agent
 
 ### February 27, 2026
 - **Device Limit Feature (P0)**: Implemented max 3 devices per user account
