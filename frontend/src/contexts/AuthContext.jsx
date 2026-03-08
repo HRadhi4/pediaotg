@@ -64,7 +64,8 @@ export const AuthProvider = ({ children }) => {
   // Check authentication status
   const checkAuth = useCallback(async () => {
     // If offline, try to use cached user data
-    if (isOffline) {
+    if (!navigator.onLine) {
+      console.log('[Auth] checkAuth: offline, loading cached user');
       const cachedUser = await loadCachedUser();
       if (cachedUser) {
         setUser(cachedUser);
@@ -116,22 +117,23 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {
       console.error('Auth check failed:', error);
       // If network error (likely offline), try cached data
-      if (error.name === 'TypeError' || error.message.includes('fetch')) {
-        const cachedUser = await loadCachedUser();
-        if (cachedUser) {
-          setUser(cachedUser);
-          return true;
-        }
+      console.log('[Auth] Network error, trying cached user');
+      const cachedUser = await loadCachedUser();
+      if (cachedUser) {
+        console.log('[Auth] Using cached user after network error');
+        setUser(cachedUser);
+        return true;
       }
       setUser(null);
       return false;
     }
-  }, [tokens, isOffline, loadCachedUser, cacheUserData]);
+  }, [tokens, loadCachedUser, cacheUserData]);
 
   // Auto-login with remembered credentials (encrypted)
   const attemptAutoLogin = useCallback(async () => {
     // If offline, we can't make login API call, but we can use cached user
-    if (isOffline) {
+    if (!navigator.onLine) {
+      console.log('[Auth] attemptAutoLogin: offline, loading cached user');
       const cachedUser = await loadCachedUser();
       if (cachedUser) {
         setUser(cachedUser);
@@ -149,6 +151,7 @@ export const AuthProvider = ({ children }) => {
       try {
         const { email, password } = remembered;
         if (email && password) {
+          console.log('[Auth] Attempting auto-login with saved credentials');
           const response = await fetch(`${API_URL}/api/auth/login`, {
             method: 'POST',
             credentials: 'include',
@@ -180,9 +183,11 @@ export const AuthProvider = ({ children }) => {
             setUser(userData);
             // Cache for offline use
             await cacheUserData(userData);
+            console.log('[Auth] Auto-login successful');
             return true;
           } else {
             // Credentials invalid, clear remembered user
+            console.log('[Auth] Auto-login failed - invalid credentials');
             await secureRemove(STORAGE_KEYS.REMEMBERED_USER);
             return false;
           }
@@ -190,25 +195,45 @@ export const AuthProvider = ({ children }) => {
       } catch (e) {
         console.error('Auto-login failed:', e);
         // If network error, try cached user
-        if (e.name === 'TypeError' || e.message?.includes('fetch')) {
-          const cachedUser = await loadCachedUser();
-          if (cachedUser) {
-            setUser(cachedUser);
-            return true;
-          }
+        console.log('[Auth] Network error during auto-login, trying cached user');
+        const cachedUser = await loadCachedUser();
+        if (cachedUser) {
+          setUser(cachedUser);
+          return true;
         }
         return false;
       }
     }
     return false;
-  }, [isOffline, loadCachedUser, cacheUserData]);
+  }, [loadCachedUser, cacheUserData]);
 
   // Initial auth check on mount
   useEffect(() => {
     const initAuth = async () => {
       setLoading(true);
       
-      // First, try to check existing auth (via cookies/tokens)
+      // Check if we're offline first
+      const currentlyOffline = !navigator.onLine;
+      
+      if (currentlyOffline) {
+        // If offline, immediately try to load cached user data
+        console.log('[Auth] Offline mode - checking for cached user');
+        const cachedUser = await loadCachedUser();
+        if (cachedUser) {
+          console.log('[Auth] Found cached user, using offline mode');
+          setUser(cachedUser);
+          setLoading(false);
+          setInitialAuthComplete(true);
+          return;
+        }
+        // No cached user while offline - will show login page
+        console.log('[Auth] No cached user available for offline mode');
+        setLoading(false);
+        setInitialAuthComplete(true);
+        return;
+      }
+      
+      // Online - try to check existing auth (via cookies/tokens)
       const isAuthed = await checkAuth();
       
       // If not authenticated and we have remembered credentials, try auto-login
@@ -229,6 +254,30 @@ export const AuthProvider = ({ children }) => {
   }, []); // Only run once on mount
 
   const login = async (email, password, rememberMe = false) => {
+    // If offline, check if we have cached user data that matches
+    if (!navigator.onLine) {
+      console.log('[Auth] Login attempt while offline');
+      
+      // Check if we have remembered credentials that match
+      if (isSecureStorageAvailable()) {
+        const remembered = await secureGet(STORAGE_KEYS.REMEMBERED_USER);
+        if (remembered && remembered.email === email && remembered.password === password) {
+          // Credentials match remembered - load cached user
+          const cachedUser = await loadCachedUser();
+          if (cachedUser) {
+            console.log('[Auth] Offline login successful with cached data');
+            setUser(cachedUser);
+            return { success: true };
+          }
+        }
+      }
+      
+      return { 
+        success: false, 
+        error: 'You are offline. Please connect to the internet to sign in for the first time.' 
+      };
+    }
+
     try {
       const response = await fetch(`${API_URL}/api/auth/login`, {
         method: 'POST',
@@ -277,6 +326,26 @@ export const AuthProvider = ({ children }) => {
       return { success: true };
     } catch (error) {
       console.error('Login error:', error);
+      
+      // If it's a network error and we have cached data, try offline login
+      if (error.message === 'Failed to fetch' || error.name === 'TypeError') {
+        if (isSecureStorageAvailable()) {
+          const remembered = await secureGet(STORAGE_KEYS.REMEMBERED_USER);
+          if (remembered && remembered.email === email && remembered.password === password) {
+            const cachedUser = await loadCachedUser();
+            if (cachedUser) {
+              console.log('[Auth] Network error but found matching cached credentials');
+              setUser(cachedUser);
+              return { success: true };
+            }
+          }
+        }
+        return { 
+          success: false, 
+          error: 'Unable to connect. If you\'ve logged in before with "Remember me", try again.' 
+        };
+      }
+      
       return { success: false, error: error.message };
     }
   };

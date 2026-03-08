@@ -45,14 +45,9 @@ const LoginPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-    
-    if (isOffline) {
-      setError('You are offline. Please connect to the internet to log in.');
-      return;
-    }
-    
     setLoading(true);
 
+    // Let the login function handle offline cases - it checks cached credentials
     const result = await login(email, password, rememberMe);
 
     if (result.success) {
@@ -99,7 +94,7 @@ const LoginPage = () => {
             {isOffline && (
               <div className="flex items-center gap-2 p-3 bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 rounded-lg text-sm">
                 <WifiOff className="h-4 w-4 flex-shrink-0" />
-                <span>You're offline. Connect to internet to sign in.</span>
+                <span>You're offline. Use your saved credentials to sign in.</span>
               </div>
             )}
 
