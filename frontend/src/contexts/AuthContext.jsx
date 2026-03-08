@@ -1,6 +1,14 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { secureSet, secureGet, secureRemove, isSecureStorageAvailable } from '@/lib/secureStorage';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || '';
+
+// Storage keys
+const STORAGE_KEYS = {
+  REMEMBERED_USER: 'pedotg_remembered_user',
+  CACHED_USER: 'pedotg_cached_user',
+  AUTH_TOKENS: 'auth_tokens'
+};
 
 const AuthContext = createContext(null);
 
@@ -16,14 +24,55 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [initialAuthComplete, setInitialAuthComplete] = useState(false);
+  const [isOffline, setIsOffline] = useState(!navigator.onLine);
   const [tokens, setTokens] = useState(() => {
     // Load tokens from localStorage for mobile app support
-    const stored = localStorage.getItem('auth_tokens');
+    const stored = localStorage.getItem(STORAGE_KEYS.AUTH_TOKENS);
     return stored ? JSON.parse(stored) : null;
   });
 
+  // Track online/offline status
+  useEffect(() => {
+    const handleOnline = () => setIsOffline(false);
+    const handleOffline = () => setIsOffline(true);
+    
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+    
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
+
+  // Cache user data for offline access
+  const cacheUserData = useCallback(async (userData) => {
+    if (userData && isSecureStorageAvailable()) {
+      await secureSet(STORAGE_KEYS.CACHED_USER, userData);
+    }
+  }, []);
+
+  // Load cached user data for offline mode
+  const loadCachedUser = useCallback(async () => {
+    if (isSecureStorageAvailable()) {
+      const cached = await secureGet(STORAGE_KEYS.CACHED_USER);
+      return cached;
+    }
+    return null;
+  }, []);
+
   // Check authentication status
   const checkAuth = useCallback(async () => {
+    // If offline, try to use cached user data
+    if (isOffline) {
+      const cachedUser = await loadCachedUser();
+      if (cachedUser) {
+        setUser(cachedUser);
+        return true;
+      }
+      return false;
+    }
+
     try {
       const headers = {};
       if (tokens?.access_token) {
@@ -39,7 +88,7 @@ export const AuthProvider = ({ children }) => {
       if (response.ok) {
         const data = await response.json();
         if (data.authenticated) {
-          setUser({
+          const userData = {
             id: data.user_id,
             email: data.email,
             name: data.name,
@@ -47,36 +96,58 @@ export const AuthProvider = ({ children }) => {
             hasSubscription: data.has_subscription,
             subscriptionStatus: data.subscription_status,
             subscriptionPlan: data.subscription_plan
-          });
+          };
+          setUser(userData);
+          // Cache for offline use
+          await cacheUserData(userData);
           return true;
         } else {
           setUser(null);
           setTokens(null);
-          localStorage.removeItem('auth_tokens');
+          localStorage.removeItem(STORAGE_KEYS.AUTH_TOKENS);
           return false;
         }
       } else {
         setUser(null);
         setTokens(null);
-        localStorage.removeItem('auth_tokens');
+        localStorage.removeItem(STORAGE_KEYS.AUTH_TOKENS);
         return false;
       }
     } catch (error) {
       console.error('Auth check failed:', error);
+      // If network error (likely offline), try cached data
+      if (error.name === 'TypeError' || error.message.includes('fetch')) {
+        const cachedUser = await loadCachedUser();
+        if (cachedUser) {
+          setUser(cachedUser);
+          return true;
+        }
+      }
       setUser(null);
       return false;
-    } finally {
-      setLoading(false);
-      setInitialAuthComplete(true);
     }
-  }, [tokens]);
+  }, [tokens, isOffline, loadCachedUser, cacheUserData]);
 
-  // Auto-login with remembered credentials
+  // Auto-login with remembered credentials (encrypted)
   const attemptAutoLogin = useCallback(async () => {
-    const remembered = localStorage.getItem('remembered_user');
+    // If offline, we can't make login API call, but we can use cached user
+    if (isOffline) {
+      const cachedUser = await loadCachedUser();
+      if (cachedUser) {
+        setUser(cachedUser);
+        return true;
+      }
+      return false;
+    }
+
+    if (!isSecureStorageAvailable()) {
+      return false;
+    }
+
+    const remembered = await secureGet(STORAGE_KEYS.REMEMBERED_USER);
     if (remembered) {
       try {
-        const { email, password } = JSON.parse(remembered);
+        const { email, password } = remembered;
         if (email && password) {
           const response = await fetch(`${API_URL}/api/auth/login`, {
             method: 'POST',
@@ -93,9 +164,9 @@ export const AuthProvider = ({ children }) => {
               refresh_token: data.refresh_token
             };
             setTokens(newTokens);
-            localStorage.setItem('auth_tokens', JSON.stringify(newTokens));
+            localStorage.setItem(STORAGE_KEYS.AUTH_TOKENS, JSON.stringify(newTokens));
 
-            setUser({
+            const userData = {
               id: data.user.id,
               email: data.user.email,
               name: data.user.name,
@@ -105,22 +176,32 @@ export const AuthProvider = ({ children }) => {
               subscriptionPlan: data.user.subscription_plan,
               trialEndsAt: data.user.trial_ends_at,
               subscriptionRenewsAt: data.user.subscription_renews_at
-            });
+            };
+            setUser(userData);
+            // Cache for offline use
+            await cacheUserData(userData);
             return true;
           } else {
             // Credentials invalid, clear remembered user
-            localStorage.removeItem('remembered_user');
+            await secureRemove(STORAGE_KEYS.REMEMBERED_USER);
             return false;
           }
         }
       } catch (e) {
         console.error('Auto-login failed:', e);
-        localStorage.removeItem('remembered_user');
+        // If network error, try cached user
+        if (e.name === 'TypeError' || e.message?.includes('fetch')) {
+          const cachedUser = await loadCachedUser();
+          if (cachedUser) {
+            setUser(cachedUser);
+            return true;
+          }
+        }
         return false;
       }
     }
     return false;
-  }, []);
+  }, [isOffline, loadCachedUser, cacheUserData]);
 
   // Initial auth check on mount
   useEffect(() => {
@@ -132,7 +213,9 @@ export const AuthProvider = ({ children }) => {
       
       // If not authenticated and we have remembered credentials, try auto-login
       if (!isAuthed) {
-        const remembered = localStorage.getItem('remembered_user');
+        const remembered = isSecureStorageAvailable() 
+          ? await secureGet(STORAGE_KEYS.REMEMBERED_USER)
+          : null;
         if (remembered) {
           await attemptAutoLogin();
         }
@@ -166,16 +249,16 @@ export const AuthProvider = ({ children }) => {
         refresh_token: data.refresh_token
       };
       setTokens(newTokens);
-      localStorage.setItem('auth_tokens', JSON.stringify(newTokens));
+      localStorage.setItem(STORAGE_KEYS.AUTH_TOKENS, JSON.stringify(newTokens));
 
-      // Handle remember me
-      if (rememberMe) {
-        localStorage.setItem('remembered_user', JSON.stringify({ email, password }));
+      // Handle remember me with encrypted storage
+      if (rememberMe && isSecureStorageAvailable()) {
+        await secureSet(STORAGE_KEYS.REMEMBERED_USER, { email, password });
       } else {
-        localStorage.removeItem('remembered_user');
+        await secureRemove(STORAGE_KEYS.REMEMBERED_USER);
       }
 
-      setUser({
+      const userData = {
         id: data.user.id,
         email: data.user.email,
         name: data.user.name,
@@ -185,7 +268,11 @@ export const AuthProvider = ({ children }) => {
         subscriptionPlan: data.user.subscription_plan,
         trialEndsAt: data.user.trial_ends_at,
         subscriptionRenewsAt: data.user.subscription_renews_at
-      });
+      };
+      setUser(userData);
+      
+      // Cache user for offline access
+      await cacheUserData(userData);
 
       return { success: true };
     } catch (error) {
@@ -215,9 +302,9 @@ export const AuthProvider = ({ children }) => {
         refresh_token: data.refresh_token
       };
       setTokens(newTokens);
-      localStorage.setItem('auth_tokens', JSON.stringify(newTokens));
+      localStorage.setItem(STORAGE_KEYS.AUTH_TOKENS, JSON.stringify(newTokens));
 
-      setUser({
+      const userData = {
         id: data.user.id,
         email: data.user.email,
         name: data.user.name,
@@ -226,7 +313,11 @@ export const AuthProvider = ({ children }) => {
         subscriptionStatus: data.user.subscription_status,
         subscriptionPlan: data.user.subscription_plan,
         trialEndsAt: data.user.trial_ends_at
-      });
+      };
+      setUser(userData);
+      
+      // Cache user for offline access
+      await cacheUserData(userData);
 
       return { success: true };
     } catch (error) {
@@ -247,10 +338,13 @@ export const AuthProvider = ({ children }) => {
       // Clear all auth state
       setUser(null);
       setTokens(null);
-      localStorage.removeItem('auth_tokens');
+      localStorage.removeItem(STORAGE_KEYS.AUTH_TOKENS);
+      // Clear cached user data (but keep remembered credentials if they want to log back in)
+      secureRemove(STORAGE_KEYS.CACHED_USER);
       // Clear any other auth-related localStorage items
       localStorage.removeItem('user');
       localStorage.removeItem('token');
+      localStorage.removeItem('auth_tokens'); // Legacy cleanup
       // Force a page reload to clear any cached state
       window.location.href = '/';
     }
@@ -274,13 +368,14 @@ export const AuthProvider = ({ children }) => {
       refresh_token: refreshToken
     };
     setTokens(newTokens);
-    localStorage.setItem('auth_tokens', JSON.stringify(newTokens));
+    localStorage.setItem(STORAGE_KEYS.AUTH_TOKENS, JSON.stringify(newTokens));
   };
 
   const value = {
     user,
     loading,
     initialAuthComplete,
+    isOffline,
     isAuthenticated: !!user,
     isAdmin: user?.isAdmin || false,
     hasSubscription: user?.hasSubscription || user?.isAdmin || false,

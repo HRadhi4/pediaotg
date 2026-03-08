@@ -6,11 +6,12 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
-import { AlertCircle, Loader2, Eye, EyeOff } from 'lucide-react';
+import { AlertCircle, Loader2, Eye, EyeOff, WifiOff } from 'lucide-react';
+import { secureGet } from '@/lib/secureStorage';
 
 const LoginPage = () => {
   const navigate = useNavigate();
-  const { login, isAuthenticated, loading: authLoading, initialAuthComplete } = useAuth();
+  const { login, isAuthenticated, loading: authLoading, initialAuthComplete, isOffline } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -25,25 +26,31 @@ const LoginPage = () => {
     }
   }, [isAuthenticated, initialAuthComplete, navigate]);
 
-  // Pre-fill email if remembered (but not password for security display)
+  // Pre-fill email if remembered (from encrypted storage)
   useEffect(() => {
-    const remembered = localStorage.getItem('remembered_user');
-    if (remembered) {
+    const loadRememberedEmail = async () => {
       try {
-        const { email: savedEmail } = JSON.parse(remembered);
-        if (savedEmail) {
-          setEmail(savedEmail);
+        const remembered = await secureGet('pedotg_remembered_user');
+        if (remembered?.email) {
+          setEmail(remembered.email);
           setRememberMe(true);
         }
       } catch (e) {
-        // Ignore parse errors
+        // Ignore errors
       }
-    }
+    };
+    loadRememberedEmail();
   }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    
+    if (isOffline) {
+      setError('You are offline. Please connect to the internet to log in.');
+      return;
+    }
+    
     setLoading(true);
 
     const result = await login(email, password, rememberMe);
@@ -59,9 +66,6 @@ const LoginPage = () => {
 
   const handleRememberMeChange = (checked) => {
     setRememberMe(checked);
-    if (!checked) {
-      localStorage.removeItem('remembered_user');
-    }
   };
 
   // Show loading screen while auth is being checked (auto-login in progress)
@@ -91,6 +95,14 @@ const LoginPage = () => {
         </CardHeader>
         <CardContent className="pt-0">
           <form onSubmit={handleSubmit} className="space-y-3">
+            {/* Offline Warning */}
+            {isOffline && (
+              <div className="flex items-center gap-2 p-3 bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 rounded-lg text-sm">
+                <WifiOff className="h-4 w-4 flex-shrink-0" />
+                <span>You're offline. Connect to internet to sign in.</span>
+              </div>
+            )}
+
             {error && (
               <div className="flex items-center gap-2 p-3 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-lg text-sm">
                 <AlertCircle className="h-4 w-4 flex-shrink-0" />
