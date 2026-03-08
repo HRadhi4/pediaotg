@@ -133,7 +133,9 @@ const SortableNICUWidget = ({ widget, isEditMode, onClick, getWidgetIcon, isFavo
 
 const NICUCalculator = ({ theme, toggleTheme }) => {
   const navigate = useNavigate();
-  const { page } = useParams();
+  const params = useParams();
+  // In React Router v7, wildcard routes use "*" as the param key
+  const page = params["*"] || params.page;
   const currentPage = page || "main";
   const scrollContainerRef = React.useRef(null);
   

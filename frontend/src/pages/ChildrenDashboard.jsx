@@ -144,9 +144,11 @@ const SortableWidget = ({ widget, isEditMode, onClick, getColorClass, isFavorite
  */
 const ChildrenDashboard = ({ theme, toggleTheme }) => {
   const navigate = useNavigate();
-  const { page } = useParams();
+  const params = useParams();
   
-  // Use page directly from URL params
+  // In React Router v7, wildcard routes use "*" as the param key
+  // Route is /children/* so we get the path after /children/
+  const page = params["*"] || params.page;
   const currentPage = page || "main";
   const [isEditMode, setIsEditMode] = useState(false);
   const [activeId, setActiveId] = useState(null);
