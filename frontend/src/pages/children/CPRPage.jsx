@@ -476,6 +476,7 @@ const CPRPage = ({ onBack }) => {
     { id: 'epinephrine', name: 'Epinephrine', color: 'text-red-600' },
     { id: 'adenosine', name: 'Adenosine', color: 'text-blue-600' },
     { id: 'amiodarone', name: 'Amiodarone', color: 'text-purple-600' },
+    { id: 'lidocaine', name: 'Lidocaine', color: 'text-gray-600' },
     { id: 'nahco3', name: 'NaHCO₃', color: 'text-amber-600' },
     { id: 'calcium', name: 'Calcium Gluconate', color: 'text-green-600' },
   ];

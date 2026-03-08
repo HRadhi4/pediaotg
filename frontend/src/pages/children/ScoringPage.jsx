@@ -32,6 +32,7 @@ const ScoringPage = ({ onBack }) => {
     { id: "oi", label: "OI", keywords: ["oxygenation", "index", "hypoxia", "respiratory", "failure", "map", "fio2", "pao2", "ecmo", "ventilator"] },
     { id: "iwl", label: "IWL", keywords: ["insensible", "water", "loss", "bsa", "body", "surface", "area", "fluid"] },
     { id: "bsa", label: "BSA", keywords: ["body", "surface", "area", "mosteller", "height", "weight", "chemotherapy", "drug", "dosing"] },
+    { id: "schwartz", label: "Schwartz", keywords: ["schwartz", "gfr", "egfr", "creatinine", "kidney", "renal", "function", "filtration", "ckid"] },
     { id: "sodium", label: "Na⁺ Correction", keywords: ["sodium", "correction", "hyperglycemia", "dka", "glucose", "diabetes", "ketoacidosis", "corrected"] },
     { id: "abg", label: "Blood Gas Compensation", keywords: ["blood", "gas", "abg", "compensation", "acidosis", "alkalosis", "metabolic", "respiratory", "ph", "pco2", "hco3", "bicarbonate", "winter"] }
   ];
@@ -111,6 +112,7 @@ const ScoringPage = ({ onBack }) => {
       {activeScore === "oi" && <OxygenationIndex />}
       {activeScore === "iwl" && <IWLCalculator />}
       {activeScore === "bsa" && <BSACalculator />}
+      {activeScore === "schwartz" && <SchwartzCalculator />}
       {activeScore === "sodium" && <SodiumCorrectionCalculator />}
       {activeScore === "abg" && <ABGCompensation />}
     </div>
@@ -680,6 +682,252 @@ const BSACalculator = () => {
           <p>• Cardiac index calculation</p>
           <p>• Renal function assessment</p>
           <p>• Burn area estimation</p>
+        </CardContent>
+      </Card>
+    </div>
+  );
+};
+
+// Schwartz Formula Calculator (eGFR)
+const SchwartzCalculator = () => {
+  const [height, setHeight] = useState("");
+  const [creatinine, setCreatinine] = useState("");
+  const [schwartzType, setSchwartzType] = useState("revised");
+  const [ageCategory, setAgeCategory] = useState("child");
+
+  const h = parseFloat(height) || 0;
+  const scr = parseFloat(creatinine) || 0;
+
+  // Original Schwartz k values by age
+  const getKValue = () => {
+    switch(ageCategory) {
+      case "preterm": return 0.33;
+      case "term": return 0.45;
+      case "child": return 0.55;
+      case "adolescentM": return 0.70;
+      case "adolescentF": return 0.55;
+      default: return 0.55;
+    }
+  };
+
+  const getAgeCategoryLabel = () => {
+    switch(ageCategory) {
+      case "preterm": return "Preterm infant";
+      case "term": return "Term infant (<1 year)";
+      case "child": return "Child (1-13 years)";
+      case "adolescentM": return "Adolescent male (>13 years)";
+      case "adolescentF": return "Adolescent female (>13 years)";
+      default: return "Child";
+    }
+  };
+
+  // GFR Calculation
+  const calculateGFR = () => {
+    if (h > 0 && scr > 0) {
+      if (schwartzType === "revised") {
+        // Revised Schwartz (Bedside): single k=0.413 for all ages 1-17
+        // For µmol/L: 0.413 × 88.4 = 36.5
+        return (36.5 * h / scr).toFixed(1);
+      } else {
+        // Original Schwartz: age-specific k values
+        const k = getKValue();
+        const kAdjusted = k * 88.4;
+        return (kAdjusted * h / scr).toFixed(1);
+      }
+    }
+    return null;
+  };
+
+  const gfr = calculateGFR();
+
+  // Get GFR category
+  const getGFRCategory = () => {
+    if (!gfr) return null;
+    const gfrNum = parseFloat(gfr);
+    if (gfrNum >= 90) return { label: "Normal", color: "green" };
+    if (gfrNum >= 60) return { label: "Mild decrease (G2)", color: "green" };
+    if (gfrNum >= 45) return { label: "Mild-Moderate (G3a)", color: "amber" };
+    if (gfrNum >= 30) return { label: "Moderate-Severe (G3b)", color: "amber" };
+    if (gfrNum >= 15) return { label: "Severe (G4)", color: "red" };
+    return { label: "Kidney failure (G5)", color: "red" };
+  };
+
+  const category = gfr ? getGFRCategory() : null;
+
+  const clearInputs = () => {
+    setHeight("");
+    setCreatinine("");
+  };
+
+  return (
+    <div className="space-y-4">
+      <Card className="nightingale-card">
+        <CardHeader className="pb-3">
+          <CardTitle className="text-base">Schwartz Formula (Pediatric eGFR)</CardTitle>
+          <CardDescription>Estimate glomerular filtration rate</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {/* Equation Type Toggle */}
+          <div className="space-y-2">
+            <Label className="text-xs text-muted-foreground">Schwartz Equation</Label>
+            <div className="flex gap-2">
+              <Button
+                variant={schwartzType === "revised" ? "default" : "outline"}
+                size="sm"
+                onClick={() => setSchwartzType("revised")}
+                className="flex-1 text-xs"
+              >
+                Revised (CKiD)
+              </Button>
+              <Button
+                variant={schwartzType === "original" ? "default" : "outline"}
+                size="sm"
+                onClick={() => setSchwartzType("original")}
+                className="flex-1 text-xs"
+              >
+                Original
+              </Button>
+            </div>
+            <p className="text-[10px] text-muted-foreground">
+              {schwartzType === "revised" 
+                ? "Bedside Schwartz: single k=0.413 for ages 1-17 (CKiD study)" 
+                : `Original: age-specific k values (k=${getKValue()} for ${getAgeCategoryLabel()})`}
+            </p>
+          </div>
+
+          {/* Age Category - Only for Original Schwartz */}
+          {schwartzType === "original" && (
+            <div className="space-y-2">
+              <Label className="text-xs text-muted-foreground">Age Category</Label>
+              <select
+                value={ageCategory}
+                onChange={(e) => setAgeCategory(e.target.value)}
+                className="w-full p-2 border rounded-md bg-background text-sm"
+              >
+                <option value="preterm">Preterm infant (k=0.33)</option>
+                <option value="term">Term infant &lt;1 year (k=0.45)</option>
+                <option value="child">Child 1-13 years (k=0.55)</option>
+                <option value="adolescentM">Adolescent male &gt;13y (k=0.70)</option>
+                <option value="adolescentF">Adolescent female &gt;13y (k=0.55)</option>
+              </select>
+            </div>
+          )}
+
+          {/* Inputs */}
+          <div className="grid grid-cols-2 gap-3">
+            <div className="space-y-2">
+              <Label className="text-sm">Height (cm)</Label>
+              <Input
+                type="text"
+                inputMode="decimal"
+                placeholder="e.g., 100"
+                value={height}
+                onChange={(e) => setHeight(e.target.value)}
+                className="font-mono"
+                data-testid="schwartz-height-input"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label className="text-sm">Creatinine (µmol/L)</Label>
+              <Input
+                type="text"
+                inputMode="decimal"
+                placeholder="e.g., 50"
+                value={creatinine}
+                onChange={(e) => setCreatinine(e.target.value)}
+                className="font-mono"
+                data-testid="schwartz-creatinine-input"
+              />
+            </div>
+          </div>
+
+          {(height || creatinine) && (
+            <Button variant="outline" size="sm" onClick={clearInputs} className="w-full">
+              Clear
+            </Button>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Result */}
+      {gfr && category && (
+        <Card className={`border-2 border-${category.color}-300 bg-${category.color}-50 dark:bg-${category.color}-950/30`}>
+          <CardContent className="pt-6 pb-6 text-center">
+            <p className="text-sm text-muted-foreground mb-2">Estimated GFR</p>
+            <p className="text-5xl font-mono font-bold text-[#00d9c5]" data-testid="schwartz-result">
+              {gfr} <span className="text-xl">mL/min/1.73m²</span>
+            </p>
+            <p className="text-sm mt-3 font-medium text-muted-foreground">{category.label}</p>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Formula Reference */}
+      <Card className="nightingale-card">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-sm">Formula</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <div className="bg-gray-900 dark:bg-gray-950 rounded-lg p-4 text-center">
+            {schwartzType === "revised" ? (
+              <>
+                <p className="text-white text-sm font-medium mb-2">Revised (Bedside) Schwartz Formula</p>
+                <p className="text-white font-mono text-sm">eGFR = 0.413 × Height(cm) / SCr(mg/dL)</p>
+                <p className="text-white font-mono text-sm">eGFR = 36.5 × Height(cm) / SCr(µmol/L)</p>
+                <p className="text-amber-400 text-xs mt-2">Ref: Schwartz GJ et al. JASN 2009 (CKiD study)</p>
+              </>
+            ) : (
+              <>
+                <p className="text-white text-sm font-medium mb-2">Original Schwartz Formula</p>
+                <p className="text-white font-mono text-sm">eGFR = k × Height(cm) / SCr(mg/dL)</p>
+                <p className="text-white font-mono text-sm">eGFR = k × 88.4 × Height(cm) / SCr(µmol/L)</p>
+                <p className="text-gray-400 text-xs mt-2">k = {getKValue()} ({getAgeCategoryLabel()})</p>
+                <p className="text-amber-400 text-xs mt-1">Ref: Schwartz GJ et al. J Pediatr 1976</p>
+              </>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* k Values Reference - Show for Original */}
+      {schwartzType === "original" && (
+        <Card className="nightingale-card">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm">k Values Reference</CardTitle>
+          </CardHeader>
+          <CardContent className="text-xs text-muted-foreground space-y-1">
+            <p>• Preterm infant: k = 0.33</p>
+            <p>• Term infant (&lt;1 year): k = 0.45</p>
+            <p>• Child (1-13 years): k = 0.55</p>
+            <p>• Adolescent male (&gt;13 years): k = 0.70</p>
+            <p>• Adolescent female (&gt;13 years): k = 0.55</p>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* GFR Categories */}
+      <Card className="nightingale-card">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-sm">GFR Categories (KDIGO)</CardTitle>
+        </CardHeader>
+        <CardContent className="text-xs text-muted-foreground space-y-1">
+          <p className="text-green-600 dark:text-green-400">• G1: ≥90 - Normal or high</p>
+          <p className="text-green-600 dark:text-green-400">• G2: 60-89 - Mildly decreased</p>
+          <p className="text-amber-600 dark:text-amber-400">• G3a: 45-59 - Mild to moderate decrease</p>
+          <p className="text-amber-600 dark:text-amber-400">• G3b: 30-44 - Moderate to severe decrease</p>
+          <p className="text-red-600 dark:text-red-400">• G4: 15-29 - Severely decreased</p>
+          <p className="text-red-600 dark:text-red-400">• G5: &lt;15 - Kidney failure</p>
+        </CardContent>
+      </Card>
+
+      {/* Unit Conversion */}
+      <Card className="nightingale-card">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-sm">Creatinine Unit Conversion</CardTitle>
+        </CardHeader>
+        <CardContent className="text-xs text-muted-foreground">
+          <p className="font-mono">mg/dL × 88.4 = µmol/L</p>
+          <p className="mt-1">Example: 0.5 mg/dL = 44.2 µmol/L</p>
         </CardContent>
       </Card>
     </div>
