@@ -1416,15 +1416,15 @@ const CPRPage = ({ onBack }) => {
             {/* Drug Selection Modal */}
             {showDrugMenu && (
               <>
-                <div className="fixed inset-0 bg-black/30 z-40" onClick={handleDrugMenuCancel} />
-                <div className="fixed left-4 right-4 top-1/3 bg-white dark:bg-gray-900 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700 p-4 z-50">
+                <div className="fixed inset-0 bg-black/30 z-[100]" onClick={handleDrugMenuCancel} />
+                <div className="fixed left-4 right-4 bottom-24 bg-white dark:bg-gray-900 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700 p-4 z-[101]">
                   <div className="flex justify-between items-center mb-3 pb-2 border-b">
                     <span className="text-base font-semibold">Select Drug</span>
                     <button onClick={handleDrugMenuCancel} className="p-1 hover:bg-gray-100 dark:hover:bg-gray-800 rounded">
                       <X className="h-5 w-5" />
                     </button>
                   </div>
-                  <div className="space-y-2">
+                  <div className="space-y-2 max-h-[50vh] overflow-y-auto">
                     {drugOptions.map((drug) => (
                       <button
                         key={drug.id}
