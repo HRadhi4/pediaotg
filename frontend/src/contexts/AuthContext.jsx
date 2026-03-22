@@ -83,7 +83,6 @@ export const AuthProvider = ({ children }) => {
 
       const response = await fetch(`${API_URL}/api/auth/check`, {
         method: 'GET',
-        credentials: 'include',
         headers
       });
 
@@ -155,7 +154,6 @@ export const AuthProvider = ({ children }) => {
           console.log('[Auth] Attempting auto-login with saved credentials');
           const response = await fetch(`${API_URL}/api/auth/login`, {
             method: 'POST',
-            credentials: 'include',
             headers: getDeviceIdHeaders({ 'Content-Type': 'application/json' }),
             body: JSON.stringify({ email, password })
           });
@@ -282,7 +280,6 @@ export const AuthProvider = ({ children }) => {
     try {
       const response = await fetch(`${API_URL}/api/auth/login`, {
         method: 'POST',
-        credentials: 'include',
         headers: getDeviceIdHeaders({ 'Content-Type': 'application/json' }),
         body: JSON.stringify({ email, password })
       });
@@ -355,7 +352,6 @@ export const AuthProvider = ({ children }) => {
     try {
       const response = await fetch(`${API_URL}/api/auth/signup`, {
         method: 'POST',
-        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password, name })
       });
@@ -398,9 +394,13 @@ export const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     try {
+      const headers = {};
+      if (tokens?.access_token) {
+        headers['Authorization'] = `Bearer ${tokens.access_token}`;
+      }
       await fetch(`${API_URL}/api/auth/logout`, {
         method: 'POST',
-        credentials: 'include'
+        headers
       });
     } catch (error) {
       console.error('Logout error:', error);

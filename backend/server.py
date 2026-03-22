@@ -1,4 +1,5 @@
-from fastapi import FastAPI, APIRouter, HTTPException
+from fastapi import FastAPI, APIRouter, HTTPException, Request
+from fastapi.responses import Response
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -723,36 +724,64 @@ cors_origins_env = os.environ.get('CORS_ORIGINS', '')
 
 if cors_origins_env:
     # Use environment-specified origins (production)
-    cors_origins = [origin.strip() for origin in cors_origins_env.split(',') if origin.strip()]
+    ALLOWED_ORIGINS = set(origin.strip() for origin in cors_origins_env.split(',') if origin.strip())
 else:
-    # Development fallback - REMOVE localhost in production
+    # Development fallback
     is_production = os.environ.get('ENVIRONMENT', 'development') == 'production'
     if is_production:
-        cors_origins = [
+        ALLOWED_ORIGINS = {
             "https://app.pedotg.com",
             "https://pedotg.com",
             "https://www.pedotg.com",
-        ]
+        }
     else:
-        cors_origins = [
+        ALLOWED_ORIGINS = {
             "http://localhost:3000",
             "http://127.0.0.1:3000",
             "https://content-gateway-10.preview.emergentagent.com",
             "https://app.pedotg.com",
             "https://pedotg.com",
             "https://www.pedotg.com",
-        ]
+        }
 
 # Log CORS configuration for debugging
-logger.info(f"CORS origins configured: {cors_origins}")
+logger.info(f"CORS origins configured: {ALLOWED_ORIGINS}")
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_credentials=True,
-    allow_origins=cors_origins,
-    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],  # Explicit methods, not wildcard
-    allow_headers=["Authorization", "Content-Type", "Accept", "Origin", "X-Requested-With", "X-Device-ID"],  # Include X-Device-ID for device tracking
-)
+# Custom CORS middleware to ensure headers aren't overwritten by proxy
+@app.middleware("http")
+async def cors_middleware(request: Request, call_next):
+    origin = request.headers.get("origin", "")
+    
+    # Handle preflight OPTIONS requests
+    if request.method == "OPTIONS":
+        if origin in ALLOWED_ORIGINS or not origin:
+            return Response(
+                status_code=200,
+                headers={
+                    "Access-Control-Allow-Origin": origin if origin else "*",
+                    "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+                    "Access-Control-Allow-Headers": "Authorization, Content-Type, Accept, Origin, X-Requested-With, X-Device-ID",
+                    "Access-Control-Max-Age": "600",
+                }
+            )
+        else:
+            return Response(status_code=403, content="Origin not allowed")
+    
+    # Process the actual request
+    response = await call_next(request)
+    
+    # Add CORS headers to all responses
+    if origin in ALLOWED_ORIGINS:
+        response.headers["Access-Control-Allow-Origin"] = origin
+    else:
+        response.headers["Access-Control-Allow-Origin"] = "*"
+    response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS"
+    response.headers["Access-Control-Allow-Headers"] = "Authorization, Content-Type, Accept, Origin, X-Requested-With, X-Device-ID"
+    
+    return response
+
+# Remove standard CORSMiddleware since we're using custom middleware above
+# app.add_middleware(CORSMiddleware, ...)
 
 # Add security middleware (order matters - added after CORS)
 # AdminRouteProtection first to block unauthorized admin access early
