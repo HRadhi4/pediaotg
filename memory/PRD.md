@@ -83,6 +83,24 @@ Comprehensive security audit and hardening implemented:
 ## What's Been Implemented
 
 ### March 22, 2026
+- **Content Migration to Server-Side APIs (P0)**:
+  - Migrated all drug formulary data from frontend static files to MongoDB
+  - Created `/app/backend/routes/content.py` with protected API endpoints:
+    - `GET /api/content/formulary` - Full drug list (requires subscription)
+    - `GET /api/content/formulary/{drug_id}` - Single drug lookup
+    - `GET /api/content/drug-categories` - Drug categories (auth only)
+    - `GET /api/content/metadata` - Content counts/version (auth only)
+    - `GET /api/content/renal-adjustments` - Renal dosing data (requires subscription)
+  - Created `/app/backend/scripts/seed_content.py` for one-time data migration
+  - Created `/app/frontend/src/services/contentService.js` API client
+  - Refactored `DrugsPage.jsx` and `FormularyPage.jsx` to fetch from API
+  - Added loading and error states for API-driven content
+  - Data migrated: 164 drugs, 40 renal adjustments, 97 drug categories
+  - Security: All content APIs require authentication; formulary/renal require active subscription
+  - Admin users bypass subscription checks
+  - Bundle size reduction: ~500KB saved by moving large JSON data to backend
+  - Testing: 22/22 backend tests passed, frontend integration verified
+
 - **Production Security Hardening (Backend)**:
   - Enhanced JWT secret validation: Min 32 chars in production, weak pattern detection
   - Enhanced admin credential validation: Hash required in production, plain text ignored
@@ -235,20 +253,26 @@ Comprehensive security audit and hardening implemented:
 │       │   ├── ElectrolytesDialog.jsx    # Electrolyte calculator
 │       │   └── ui/                        # Shadcn components
 │       ├── data/
-│       │   ├── formulary.json            # Drug data
-│       │   └── renalAdjustments.js       # Renal dosing rules
+│       │   ├── formulary.json            # Legacy static data (migrated to DB)
+│       │   └── renalAdjustments.js       # Renal dosing rules (business logic)
+│       ├── services/
+│       │   └── contentService.js         # Content API client (NEW)
 │       └── pages/
 │           ├── admin/
 │           │   └── AdminDashboard.jsx    # Admin panel with device mgmt
 │           ├── children/
-│           │   └── DrugsPage.jsx         # Drug dosing page
+│           │   ├── DrugsPage.jsx         # Drug dosing (API-driven)
+│           │   └── FormularyPage.jsx     # Drug formulary (API-driven)
 │           └── nicu/
 │               └── GrowthChartPage.jsx   # Growth charts
 └── backend/
     ├── routes/
     │   ├── auth.py                       # Login with device limit
     │   ├── admin.py                      # Admin APIs + device mgmt
+    │   ├── content.py                    # Medical content APIs (NEW)
     │   └── subscription.py               # Payment handling
+    ├── scripts/
+    │   └── seed_content.py               # Content migration script (NEW)
     ├── services/
     │   ├── auth_service.py               # Auth logic
     │   └── email_service.py              # Email notifications
@@ -257,7 +281,14 @@ Comprehensive security audit and hardening implemented:
 
 ## API Endpoints
 
-### Device Management (NEW)
+### Content APIs (NEW - Subscription Protected)
+- `GET /api/content/formulary` - Get drug formulary (filter by category, search, pagination)
+- `GET /api/content/formulary/{drug_id}` - Get single drug details
+- `GET /api/content/drug-categories` - Get all drug categories (auth only)
+- `GET /api/content/metadata` - Get content counts and version (auth only)
+- `GET /api/content/renal-adjustments` - Get renal adjustment data
+
+### Device Management
 - `GET /api/admin/user/{user_id}/devices` - List user's logged-in devices
 - `DELETE /api/admin/user/{user_id}/devices/{device_id}` - Revoke specific device
 - `DELETE /api/admin/user/{user_id}/devices` - Revoke all user devices
@@ -273,7 +304,11 @@ Comprehensive security audit and hardening implemented:
 - CDH and BPD Approach UI updates
 - CDC Girls & Boys chart plotting accuracy
 
+## Completed Recently (P0)
+- **Content Migration**: Moved formulary data to backend APIs (164 drugs, 40 renal adjustments)
+
 ## Backlog (P2)
+- **Saved Results UI**: Create UI panel for viewing/managing IndexedDB saved calculation results
 - Refactor `DrugsPage.jsx` into smaller components (GfrCalculator, DrugCard, DoseDisplayGrid)
 - Add "Mechanical Ventilation" approach to Children section
 - Implement `data-testid` attributes across all interactive elements
