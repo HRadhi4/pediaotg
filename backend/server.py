@@ -19,6 +19,10 @@ from middleware.security import (
     ErrorHandlerMiddleware,
     AdminRouteProtectionMiddleware
 )
+from middleware.validation import (
+    InputValidationMiddleware,
+    RequestLoggingMiddleware
+)
 
 # Import optimized Tesseract OCR service (100% local, medical-grade preprocessing)
 from services.ocr_service import (
@@ -594,27 +598,40 @@ app.include_router(layouts_router, prefix="/api")
 app.include_router(admin_router, prefix="/api")
 
 # CORS configuration - for credentials, we need explicit origins
-cors_origins_env = os.environ.get('CORS_ORIGINS', '*')
-if cors_origins_env == '*':
-    # When using wildcard, we need to explicitly list allowed origins for credentials
-    cors_origins = [
-        "http://localhost:3000",
-        "http://127.0.0.1:3000",
-        "https://pwa-security-build.preview.emergentagent.com",
-        "https://app.pedotg.com",
-        "https://pedotg.com",
-        "https://www.pedotg.com",
-        "https://peds-go.emergent.host"
-    ]
+# SECURITY: Only allow known production and development origins
+cors_origins_env = os.environ.get('CORS_ORIGINS', '')
+
+if cors_origins_env:
+    # Use environment-specified origins (production)
+    cors_origins = [origin.strip() for origin in cors_origins_env.split(',') if origin.strip()]
 else:
-    cors_origins = cors_origins_env.split(',')
+    # Development fallback - REMOVE localhost in production
+    is_production = os.environ.get('ENVIRONMENT', 'development') == 'production'
+    if is_production:
+        cors_origins = [
+            "https://app.pedotg.com",
+            "https://pedotg.com",
+            "https://www.pedotg.com",
+        ]
+    else:
+        cors_origins = [
+            "http://localhost:3000",
+            "http://127.0.0.1:3000",
+            "https://pwa-security-build.preview.emergentagent.com",
+            "https://app.pedotg.com",
+            "https://pedotg.com",
+            "https://www.pedotg.com",
+        ]
+
+# Log CORS configuration for debugging
+logger.info(f"CORS origins configured: {cors_origins}")
 
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
     allow_origins=cors_origins,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],  # Explicit methods, not wildcard
+    allow_headers=["Authorization", "Content-Type", "Accept", "Origin", "X-Requested-With"],  # Explicit headers
 )
 
 # Add security middleware (order matters - added after CORS)
@@ -622,6 +639,8 @@ app.add_middleware(
 app.add_middleware(AdminRouteProtectionMiddleware)
 app.add_middleware(SecurityHeadersMiddleware)
 app.add_middleware(RateLimitMiddleware)
+app.add_middleware(InputValidationMiddleware)  # Validate input data
+app.add_middleware(RequestLoggingMiddleware)   # Audit logging
 app.add_middleware(ErrorHandlerMiddleware)
 
 # Configure logging

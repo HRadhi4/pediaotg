@@ -20,6 +20,7 @@ CONFIGURATION: All settings loaded from environment variables in .env file
 from datetime import datetime, timedelta, timezone
 from typing import Optional, Tuple
 import os
+import re
 import bcrypt
 import jwt
 from motor.motor_asyncio import AsyncIOMotorDatabase
@@ -105,6 +106,42 @@ class AuthService:
         
         return False
     
+    def validate_password_strength(self, password: str) -> tuple[bool, str]:
+        """
+        Validate password meets security requirements.
+        
+        Requirements:
+        - Minimum 8 characters
+        - At least one uppercase letter
+        - At least one lowercase letter
+        - At least one digit
+        - At least one special character
+        
+        Returns:
+            Tuple of (is_valid, error_message)
+        """
+        if len(password) < 8:
+            return False, "Password must be at least 8 characters long"
+        
+        if not re.search(r'[A-Z]', password):
+            return False, "Password must contain at least one uppercase letter"
+        
+        if not re.search(r'[a-z]', password):
+            return False, "Password must contain at least one lowercase letter"
+        
+        if not re.search(r'\d', password):
+            return False, "Password must contain at least one digit"
+        
+        if not re.search(r'[!@#$%^&*(),.?":{}|<>]', password):
+            return False, "Password must contain at least one special character (!@#$%^&*(),.?\":{}|<>)"
+        
+        # Check for common weak passwords
+        weak_passwords = ['password', '12345678', 'qwerty', 'letmein', 'welcome', 'admin123']
+        if password.lower() in weak_passwords:
+            return False, "Password is too common. Please choose a stronger password."
+        
+        return True, ""
+    
     def hash_password(self, password: str) -> str:
         """
         Hash a password using bcrypt with auto-generated salt.
@@ -133,14 +170,33 @@ class AuthService:
         }
         return jwt.encode(payload, self.jwt_secret, algorithm=self.jwt_algorithm)
     
-    def create_refresh_token(self, user_id: str) -> str:
-        """Create a JWT refresh token"""
-        expire = datetime.now(timezone.utc) + timedelta(days=self.refresh_token_expire)
+    def create_refresh_token(self, user_id: str, remember_me: bool = False) -> str:
+        """
+        Create a JWT refresh token.
+        
+        Args:
+            user_id: User's unique identifier
+            remember_me: If True, uses longer expiry (configured days). 
+                        If False, uses shorter expiry (1 day) for better security.
+        """
+        # Shorter expiry for non-remembered sessions (better security)
+        if remember_me:
+            expiry_days = self.refresh_token_expire  # Default: 7 days
+        else:
+            expiry_days = 1  # 1 day for non-remembered sessions
+        
+        expire = datetime.now(timezone.utc) + timedelta(days=expiry_days)
+        
+        # Add jti (JWT ID) for token revocation support
+        import uuid
+        jti = str(uuid.uuid4())
+        
         payload = {
             'sub': user_id,
             'type': 'refresh',
             'exp': expire,
-            'iat': datetime.now(timezone.utc)
+            'iat': datetime.now(timezone.utc),
+            'jti': jti  # Unique token ID for future revocation support
         }
         return jwt.encode(payload, self.jwt_secret, algorithm=self.jwt_algorithm)
     

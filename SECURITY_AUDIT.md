@@ -59,7 +59,28 @@ object-src 'none';
 | Admin routes (`/api/admin/*`) | 30 req/min | ✅ ACTIVE |
 | General API | 100 req/min | ✅ ACTIVE |
 
-### 6. Source Maps & Code Exposure
+### 6. Input Validation & Sanitization
+
+| Check | Status | Description |
+|-------|--------|-------------|
+| NoSQL Injection Patterns | ✅ LOGGED | Detects `$where`, `$gt`, etc. |
+| XSS Patterns | ✅ LOGGED | Detects `<script>`, `javascript:`, etc. |
+| Path Traversal | ✅ LOGGED | Detects `../` patterns |
+| Request Size Limit | ✅ BLOCKED | Max 10MB body size |
+| Content-Type Validation | ✅ CHECKED | Validates JSON/form requests |
+
+### 7. Password Policy
+
+| Requirement | Status |
+|-------------|--------|
+| Minimum 8 characters | ✅ ENFORCED |
+| At least one uppercase | ✅ ENFORCED |
+| At least one lowercase | ✅ ENFORCED |
+| At least one digit | ✅ ENFORCED |
+| At least one special char | ✅ ENFORCED |
+| Common password check | ✅ ENFORCED |
+
+### 8. Source Maps & Code Exposure
 
 | Item | Status | Fix Applied |
 |------|--------|-------------|
@@ -90,21 +111,31 @@ object-src 'none';
 
 1. `/app/backend/middleware/security.py` - Enhanced security headers, CSP, rate limiting
 2. `/app/backend/middleware/rbac.py` - NEW: Role-based access control system
-3. `/app/backend/server.py` - Added `AdminRouteProtectionMiddleware`
-4. `/app/backend/services/auth_service.py` - Removed hardcoded defaults, fail-fast validation
-5. `/app/frontend/craco.config.js` - Disabled source maps in production
+3. `/app/backend/middleware/validation.py` - NEW: Input validation & request logging
+4. `/app/backend/server.py` - Added all security middleware, tightened CORS
+5. `/app/backend/services/auth_service.py` - Removed hardcoded defaults, added password policy, token JTI
+6. `/app/frontend/craco.config.js` - Disabled source maps in production
+7. `/app/frontend/src/lib/secureStorage.js` - Improved key derivation with browser fingerprint
 
 ## Remaining Risks (Require Manual Review)
 
-### Medium Priority
-1. **CORS Configuration**: Currently allows multiple origins. Review if all are necessary.
-2. **Token Refresh**: Refresh tokens have 7-day expiry. Consider shorter for high-security scenarios.
-3. **Device Limit**: 3 devices per user - consider if this is appropriate for your use case.
+### ✅ ADDRESSED - Previously Medium Priority
+1. **CORS Configuration**: ✅ FIXED - Now uses explicit allowed methods and headers, removes localhost in production
+2. **Token Refresh**: ✅ FIXED - Non-remembered sessions use 1-day expiry, remembered use 7-day
+3. **Client-side encryption key**: ✅ IMPROVED - Key now includes browser fingerprint for device-specific encryption
+4. **Input Validation**: ✅ ADDED - New middleware detects injection patterns and XSS
+5. **Password Policy**: ✅ ADDED - Enforces strong password requirements
 
-### Low Priority
-1. **Client-side encryption key**: The encryption seed in `secureStorage.js` is hardcoded. This is acceptable for localStorage protection but provides no security if an attacker has full page access.
-2. **PayPal Integration**: Uses external PayPal URLs in CSP. Monitor for PayPal SDK changes.
-3. **In-memory rate limiting**: Consider Redis for clustered deployments.
+### Low Priority (Acceptable Risks)
+1. **PayPal Integration**: Uses external PayPal URLs in CSP. Monitor for PayPal SDK changes.
+2. **In-memory rate limiting**: Consider Redis for clustered deployments.
+3. **Device Limit**: 3 devices per user - review if appropriate for use case.
+
+### Future Enhancements
+1. Add token revocation support (use jti claim added to tokens)
+2. Implement account lockout after repeated failures
+3. Add two-factor authentication option
+4. Consider Web Application Firewall (WAF) for production
 
 ## Testing Verification
 

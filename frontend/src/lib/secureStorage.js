@@ -2,10 +2,24 @@
  * Secure Storage Utility
  * Encrypts sensitive data before storing in localStorage
  * Uses AES-GCM encryption with a derived key
+ * 
+ * SECURITY NOTE: This provides protection against casual inspection of localStorage
+ * but not against determined attackers with full page access. The real security
+ * comes from server-side token validation on every request.
  */
 
-// Generate a consistent key from a seed (app-specific)
-const ENCRYPTION_KEY_SEED = 'PediaOTG-SecureStorage-v1';
+// Generate a device-specific key seed by combining app identifier with browser fingerprint
+function getKeyMaterial() {
+  const appId = 'PediaOTG-SecureStorage-v2';
+  // Add some browser-specific entropy (not cryptographically secure, but adds variability)
+  const browserEntropy = [
+    navigator.userAgent,
+    navigator.language,
+    screen.width + 'x' + screen.height,
+    new Date().getTimezoneOffset()
+  ].join('|');
+  return appId + '|' + browserEntropy;
+}
 
 // Convert string to ArrayBuffer
 function stringToBuffer(str) {
@@ -41,7 +55,7 @@ function base64ToBuffer(base64) {
 async function getEncryptionKey() {
   const keyMaterial = await crypto.subtle.importKey(
     'raw',
-    stringToBuffer(ENCRYPTION_KEY_SEED),
+    stringToBuffer(getKeyMaterial()),
     'PBKDF2',
     false,
     ['deriveBits', 'deriveKey']
@@ -50,7 +64,7 @@ async function getEncryptionKey() {
   return crypto.subtle.deriveKey(
     {
       name: 'PBKDF2',
-      salt: stringToBuffer('PediaOTG-Salt'),
+      salt: stringToBuffer('PediaOTG-Salt-v2'),
       iterations: 100000,
       hash: 'SHA-256'
     },
