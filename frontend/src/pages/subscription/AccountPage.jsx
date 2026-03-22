@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, User, CreditCard, Calendar, Shield, AlertTriangle, Loader2 } from 'lucide-react';
-import { API_URL } from '@/config/api';
+import { getApiUrl as getAPI } from '@/config/api';
 
 const AccountPage = () => {
   const navigate = useNavigate();
@@ -21,7 +21,7 @@ const AccountPage = () => {
 
   const fetchSubscription = async () => {
     try {
-      const response = await fetch(`${API_URL}/api/subscription/status`, {
+      const response = await fetch(`${getAPI()}/api/subscription/status`, {
         
         headers: getAuthHeaders()
       });
@@ -41,7 +41,7 @@ const AccountPage = () => {
 
     setCanceling(true);
     try {
-      const response = await fetch(`${API_URL}/api/subscription/cancel`, {
+      const response = await fetch(`${getAPI()}/api/subscription/cancel`, {
         method: 'POST',
         
         headers: getAuthHeaders()

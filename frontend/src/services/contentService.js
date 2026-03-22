@@ -12,7 +12,7 @@
  * - Subscription-gated access for premium content
  */
 
-import { API_URL } from '@/config/api';
+import { getApiUrl } from '@/config/api';
 
 /**
  * Get auth headers from localStorage
@@ -58,7 +58,7 @@ export const fetchFormulary = async ({ category, search, limit = 200, offset = 0
   params.append('offset', offset.toString());
   
   const response = await fetch(
-    `${API_URL}/api/content/formulary?${params.toString()}`,
+    `${getApiUrl()}/api/content/formulary?${params.toString()}`,
     { headers: getAuthHeaders() }
   );
   
@@ -73,7 +73,7 @@ export const fetchFormulary = async ({ category, search, limit = 200, offset = 0
  */
 export const fetchDrugById = async (drugId) => {
   const response = await fetch(
-    `${API_URL}/api/content/formulary/${drugId}`,
+    `${getApiUrl()}/api/content/formulary/${drugId}`,
     { headers: getAuthHeaders() }
   );
   
@@ -87,7 +87,7 @@ export const fetchDrugById = async (drugId) => {
  */
 export const fetchDrugCategories = async () => {
   const response = await fetch(
-    `${API_URL}/api/content/drug-categories`,
+    `${getApiUrl()}/api/content/drug-categories`,
     { headers: getAuthHeaders() }
   );
   
@@ -106,8 +106,8 @@ export const fetchDrugCategories = async () => {
  */
 export const fetchRenalAdjustments = async (drugId = null) => {
   const url = drugId 
-    ? `${API_URL}/api/content/renal-adjustments?drug_id=${drugId}`
-    : `${API_URL}/api/content/renal-adjustments`;
+    ? `${getApiUrl()}/api/content/renal-adjustments?drug_id=${drugId}`
+    : `${getApiUrl()}/api/content/renal-adjustments`;
   
   const response = await fetch(url, { headers: getAuthHeaders() });
   return handleResponse(response);
@@ -124,7 +124,7 @@ export const fetchRenalAdjustments = async (drugId = null) => {
  */
 export const fetchContentMetadata = async () => {
   const response = await fetch(
-    `${API_URL}/api/content/metadata`,
+    `${getApiUrl()}/api/content/metadata`,
     { headers: getAuthHeaders() }
   );
   

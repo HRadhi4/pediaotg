@@ -23,8 +23,11 @@ const PRODUCTION_DOMAINS = [
   'www.pedotg.com'
 ];
 
+// Cache for the computed API URL
+let _cachedApiUrl = null;
+
 /**
- * Get the API base URL
+ * Get the API base URL - computed lazily at first call
  * 
  * Priority:
  * 1. If on a known production domain, use same-origin (empty string)
@@ -33,55 +36,65 @@ const PRODUCTION_DOMAINS = [
  * 4. Empty string (for SSR/testing environments)
  */
 export const getApiUrl = () => {
+  // Return cached value if already computed
+  if (_cachedApiUrl !== null) {
+    return _cachedApiUrl;
+  }
+  
   // Check if we're in a browser
   if (typeof window !== 'undefined' && window.location?.hostname) {
     const currentHostname = window.location.hostname;
     
     // If on a known production domain, ALWAYS use same-origin to avoid CORS
     if (PRODUCTION_DOMAINS.includes(currentHostname)) {
-      console.log('[API Config] Production domain detected, using same-origin');
-      return ''; // Empty string = same-origin requests
+      console.log('[API Config] Production domain detected:', currentHostname, '- using same-origin');
+      _cachedApiUrl = '';
+      return _cachedApiUrl;
     }
   }
   
   // Use environment variable if set
   if (process.env.REACT_APP_BACKEND_URL) {
-    return process.env.REACT_APP_BACKEND_URL;
+    _cachedApiUrl = process.env.REACT_APP_BACKEND_URL;
+    return _cachedApiUrl;
   }
   
   // Fall back to current origin (works when frontend/backend on same domain)
   if (typeof window !== 'undefined' && window.location?.origin) {
-    return window.location.origin;
+    _cachedApiUrl = window.location.origin;
+    return _cachedApiUrl;
   }
   
   // Last resort for SSR or test environments
-  return '';
+  _cachedApiUrl = '';
+  return _cachedApiUrl;
 };
 
 /**
- * The resolved API base URL
- * All API calls should use this: `${API_URL}/api/...`
+ * Get the API URL - this is a getter that ensures lazy evaluation
+ * Use this in components: `${API_URL}/api/...`
  */
-export const API_URL = getApiUrl();
+export const API_URL = typeof window !== 'undefined' ? getApiUrl() : '';
 
 /**
  * Debug logging for development builds
  * Logs the API URL and performs a health check
  */
 export const debugApiConfig = () => {
-  if (process.env.NODE_ENV !== 'production') {
-    console.log('[API Config] Using API_URL =', API_URL || '(same-origin)');
-    console.log('[API Config] REACT_APP_BACKEND_URL env =', process.env.REACT_APP_BACKEND_URL || '(not set)');
-    console.log('[API Config] window.location.origin =', typeof window !== 'undefined' ? window.location.origin : '(no window)');
-    console.log('[API Config] window.location.hostname =', typeof window !== 'undefined' ? window.location.hostname : '(no window)');
-    
-    // Perform health check
-    const healthUrl = API_URL ? `${API_URL}/api/health` : '/api/health';
-    fetch(healthUrl)
-      .then(res => res.json())
-      .then(data => console.log('[API Config] Health check passed:', data))
-      .catch(err => console.warn('[API Config] Health check failed:', err.message));
+  const url = getApiUrl();
+  console.log('[API Config] Using API_URL =', url || '(same-origin)');
+  console.log('[API Config] REACT_APP_BACKEND_URL env =', process.env.REACT_APP_BACKEND_URL || '(not set)');
+  if (typeof window !== 'undefined') {
+    console.log('[API Config] window.location.hostname =', window.location.hostname);
+    console.log('[API Config] Is production domain =', PRODUCTION_DOMAINS.includes(window.location.hostname));
   }
+  
+  // Perform health check
+  const healthUrl = url ? `${url}/api/health` : '/api/health';
+  fetch(healthUrl)
+    .then(res => res.json())
+    .then(data => console.log('[API Config] Health check passed:', data))
+    .catch(err => console.warn('[API Config] Health check failed:', err.message));
 };
 
 /**

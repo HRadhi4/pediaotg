@@ -9,9 +9,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Camera, Upload, PenLine, Loader2, AlertTriangle, CheckCircle, X } from "lucide-react";
 import { toast } from "sonner";
 import axios from "axios";
-import { API_URL } from "@/config/api";
+import { getApiUrl } from "@/config/api";
 
-const API = `${API_URL}/api`;
+const getAPI = () => `${getApiUrl()}/api`;
 
 const BloodGasDialog = ({ open, onOpenChange }) => {
   const [activeTab, setActiveTab] = useState("auto");
@@ -119,7 +119,7 @@ const BloodGasDialog = ({ open, onOpenChange }) => {
         
         try {
           // 100% local OCR (no external API)
-          const response = await axios.post(`${API}/blood-gas/analyze-image-offline`, {
+          const response = await axios.post(`${getAPI()}/blood-gas/analyze-image-offline`, {
             image_base64: base64
           }, {
             signal: abortControllerRef.current?.signal,
@@ -209,7 +209,7 @@ const BloodGasDialog = ({ open, onOpenChange }) => {
 
     setIsLoading(true);
     try {
-      const response = await axios.post(`${API}/blood-gas/analyze`, { values });
+      const response = await axios.post(`${getAPI()}/blood-gas/analyze`, { values });
       setAnalysis(response.data);
       toast.success("Analysis complete!");
     } catch (err) {

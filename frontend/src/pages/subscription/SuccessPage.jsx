@@ -4,7 +4,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { CheckCircle, Loader2, XCircle, AlertTriangle, RefreshCw } from 'lucide-react';
-import { API_URL } from '@/config/api';
+import { getApiUrl as getAPI } from '@/config/api';
 
 /**
  * Error message mapping for PayPal error codes
@@ -93,7 +93,7 @@ const SubscriptionSuccessPage = () => {
         console.log('[PayPal] Using state-based capture (auth may be lost after redirect)');
         setMessage('Verifying payment with PayPal...');
         
-        const response = await fetch(`${API_URL}/api/subscription/capture-order-with-state`, {
+        const response = await fetch(`${getAPI()}/api/subscription/capture-order-with-state`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -147,7 +147,7 @@ const SubscriptionSuccessPage = () => {
         console.log('[PayPal] Using auth-based capture (no state token)');
         setMessage('Completing payment...');
         
-        const response = await fetch(`${API_URL}/api/subscription/capture-order`, {
+        const response = await fetch(`${getAPI()}/api/subscription/capture-order`, {
           method: 'POST',
           
           headers: {

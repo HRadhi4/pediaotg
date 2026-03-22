@@ -1,9 +1,9 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { secureSet, secureGet, secureRemove, isSecureStorageAvailable } from '@/lib/secureStorage';
 import { getDeviceId, getDeviceIdHeaders } from '@/lib/deviceId';
-import { API_URL, debugApiConfig, isNetworkError } from '@/config/api';
+import { getApiUrl, debugApiConfig, isNetworkError } from '@/config/api';
 
-// Run debug logging in development
+// Run debug logging when component loads
 if (typeof window !== 'undefined') {
   debugApiConfig();
 }
@@ -14,6 +14,9 @@ const STORAGE_KEYS = {
   CACHED_USER: 'pedotg_cached_user',
   AUTH_TOKENS: 'auth_tokens'
 };
+
+// Get API URL dynamically (handles production domain detection)
+const getAPI = () => getApiUrl();
 
 const AuthContext = createContext(null);
 
@@ -85,7 +88,7 @@ export const AuthProvider = ({ children }) => {
         headers['Authorization'] = `Bearer ${tokens.access_token}`;
       }
 
-      const response = await fetch(`${API_URL}/api/auth/check`, {
+      const response = await fetch(`${getAPI()}/api/auth/check`, {
         method: 'GET',
         headers
       });
@@ -156,7 +159,7 @@ export const AuthProvider = ({ children }) => {
         const { email, password } = remembered;
         if (email && password) {
           console.log('[Auth] Attempting auto-login with saved credentials');
-          const response = await fetch(`${API_URL}/api/auth/login`, {
+          const response = await fetch(`${getAPI()}/api/auth/login`, {
             method: 'POST',
             headers: getDeviceIdHeaders({ 'Content-Type': 'application/json' }),
             body: JSON.stringify({ email, password })
@@ -282,7 +285,7 @@ export const AuthProvider = ({ children }) => {
     }
 
     try {
-      const response = await fetch(`${API_URL}/api/auth/login`, {
+      const response = await fetch(`${getAPI()}/api/auth/login`, {
         method: 'POST',
         headers: getDeviceIdHeaders({ 'Content-Type': 'application/json' }),
         body: JSON.stringify({ email, password })
@@ -367,7 +370,7 @@ export const AuthProvider = ({ children }) => {
 
   const signup = async (email, password, name) => {
     try {
-      const response = await fetch(`${API_URL}/api/auth/signup`, {
+      const response = await fetch(`${getAPI()}/api/auth/signup`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password, name })
@@ -426,7 +429,7 @@ export const AuthProvider = ({ children }) => {
       if (tokens?.access_token) {
         headers['Authorization'] = `Bearer ${tokens.access_token}`;
       }
-      await fetch(`${API_URL}/api/auth/logout`, {
+      await fetch(`${getAPI()}/api/auth/logout`, {
         method: 'POST',
         headers
       });

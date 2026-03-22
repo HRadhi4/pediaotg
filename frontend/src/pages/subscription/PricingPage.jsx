@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { CheckCircle, Loader2, Crown, Clock, AlertCircle, XCircle, Smartphone, Monitor } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { API_URL } from '@/config/api';
+import { getApiUrl as getAPI } from '@/config/api';
 
 /**
  * Detect if user is on a mobile device
@@ -118,7 +118,7 @@ const PricingPage = () => {
 
   const fetchPricing = async () => {
     try {
-      const response = await fetch(`${API_URL}/api/subscription/pricing`);
+      const response = await fetch(`${getAPI()}/api/subscription/pricing`);
       const data = await response.json();
       setPricing(data);
     } catch (error) {
@@ -157,7 +157,7 @@ const PricingPage = () => {
     try {
       console.log(`[PayPal] Creating order for plan: ${planName}`);
       
-      const response = await fetch(`${API_URL}/api/subscription/create-order`, {
+      const response = await fetch(`${getAPI()}/api/subscription/create-order`, {
         method: 'POST',
         
         headers: {
@@ -236,7 +236,7 @@ const PricingPage = () => {
         try {
           console.log(`[PayPal] Creating order for plan: ${plan}`);
           
-          const response = await fetch(`${API_URL}/api/subscription/create-order`, {
+          const response = await fetch(`${getAPI()}/api/subscription/create-order`, {
             method: 'POST',
             
             headers: {
