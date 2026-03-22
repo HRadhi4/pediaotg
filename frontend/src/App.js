@@ -52,8 +52,15 @@ function AppRoutes({ theme, toggleTheme }) {
         <Route path="/subscription/cancel" element={<ProtectedRoute requireSubscription={false}><SubscriptionCancelPage /></ProtectedRoute>} />
         <Route path="/account" element={<ProtectedRoute requireSubscription={false}><AccountPage /></ProtectedRoute>} />
 
-        {/* Admin Routes */}
-        <Route path="/admin/*" element={<ProtectedRoute requireAdmin={true}><AdminDashboard /></ProtectedRoute>} />
+        {/* Admin Routes (Admin only, no subscription required) */}
+        <Route 
+          path="/admin/*" 
+          element={
+            <ProtectedRoute requireAdmin={true} requireSubscription={false}>
+              <AdminDashboard />
+            </ProtectedRoute>
+          } 
+        />
 
         {/* Main App Routes (Auth + Subscription required) */}
         <Route path="/nicu/*" element={<ProtectedRoute><NICUCalculator theme={theme} toggleTheme={toggleTheme} /></ProtectedRoute>} />
