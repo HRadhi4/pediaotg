@@ -751,7 +751,7 @@ app.add_middleware(
     allow_credentials=True,
     allow_origins=cors_origins,
     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],  # Explicit methods, not wildcard
-    allow_headers=["Authorization", "Content-Type", "Accept", "Origin", "X-Requested-With"],  # Explicit headers
+    allow_headers=["Authorization", "Content-Type", "Accept", "Origin", "X-Requested-With", "X-Device-ID"],  # Include X-Device-ID for device tracking
 )
 
 # Add security middleware (order matters - added after CORS)
