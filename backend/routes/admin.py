@@ -663,7 +663,10 @@ async def revoke_user_device(
     """
     Revoke a specific device's access for a user (Admin only)
     
-    This logs out the device by removing its registration.
+    This logs out the device by:
+    1. Revoking the associated refresh token (prevents token reuse)
+    2. Removing the device registration
+    
     The device will need to log in again to regain access.
     """
     # Check if user exists
@@ -671,7 +674,7 @@ async def revoke_user_device(
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     
-    # Check if device exists
+    # Check if device exists and get its refresh token
     device = await db.user_devices.find_one({
         'user_id': user_id,
         'device_id': device_id
@@ -680,7 +683,31 @@ async def revoke_user_device(
     if not device:
         raise HTTPException(status_code=404, detail="Device not found")
     
-    # Delete the device
+    # SECURITY: Revoke the refresh token to prevent reuse
+    # The refresh token is stored when device logs in
+    refresh_token = device.get('refresh_token')
+    if refresh_token:
+        try:
+            auth_service = AuthService(db)
+            payload = auth_service.decode_token(refresh_token)
+            if payload and payload.get('jti'):
+                await auth_service.revoke_token(
+                    jti=payload['jti'], 
+                    user_id=user_id, 
+                    reason="device_revoked_by_admin"
+                )
+                import logging
+                logging.getLogger(__name__).info(
+                    f"Revoked refresh token for device {device_id[:8]}... of user {user_id}"
+                )
+        except Exception as e:
+            # Log but don't fail - device will still be deleted
+            import logging
+            logging.getLogger(__name__).warning(
+                f"Could not revoke refresh token for device {device_id}: {e}"
+            )
+    
+    # Delete the device registration
     result = await db.user_devices.delete_one({
         'user_id': user_id,
         'device_id': device_id
@@ -692,7 +719,8 @@ async def revoke_user_device(
     return {
         "message": "Device access revoked successfully",
         "user_id": user_id,
-        "device_id": device_id
+        "device_id": device_id,
+        "token_revoked": refresh_token is not None
     }
 
 
@@ -704,20 +732,48 @@ async def revoke_all_user_devices(
     """
     Revoke all devices for a user (Admin only)
     
-    This logs out the user from all devices.
+    This logs out the user from all devices by:
+    1. Revoking all associated refresh tokens
+    2. Deleting all device registrations
     """
+    import logging
+    logger = logging.getLogger(__name__)
+    
     # Check if user exists
     user = await db.users.find_one({'id': user_id}, {'_id': 0, 'email': 1})
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     
+    # SECURITY: Revoke all refresh tokens before deleting devices
+    tokens_revoked = 0
+    devices = await db.user_devices.find({'user_id': user_id}).to_list(100)
+    
+    auth_service = AuthService(db)
+    for device in devices:
+        refresh_token = device.get('refresh_token')
+        if refresh_token:
+            try:
+                payload = auth_service.decode_token(refresh_token)
+                if payload and payload.get('jti'):
+                    await auth_service.revoke_token(
+                        jti=payload['jti'],
+                        user_id=user_id,
+                        reason="all_devices_revoked_by_admin"
+                    )
+                    tokens_revoked += 1
+            except Exception as e:
+                logger.warning(f"Could not revoke token for device: {e}")
+    
     # Delete all devices for this user
     result = await db.user_devices.delete_many({'user_id': user_id})
+    
+    logger.info(f"Revoked all devices for user {user_id}: {result.deleted_count} devices, {tokens_revoked} tokens")
     
     return {
         "message": "All devices revoked successfully",
         "user_id": user_id,
-        "devices_revoked": result.deleted_count
+        "devices_revoked": result.deleted_count,
+        "tokens_revoked": tokens_revoked
     }
 
 

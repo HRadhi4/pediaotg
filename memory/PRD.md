@@ -99,6 +99,14 @@ Comprehensive security audit and hardening implemented:
   - Shows amber alert with explanation and "Try Anyway" option
   - Files: `/app/frontend/src/pages/subscription/PricingPage.jsx`
 
+- **Red Team Security Audit**:
+  - Comprehensive external attacker simulation audit
+  - Verified: Admin route protection, IDOR prevention, subscription bypass blocked, PayPal webhook verification
+  - Fixed: Device revocation now properly revokes refresh tokens (prevents token reuse after admin revokes device)
+  - Documented: Static content in SPA bundles (business decision, not code bug)
+  - Created: `/app/docs/RED_TEAM_SECURITY_AUDIT.md`
+  - Files modified: `/app/backend/routes/admin.py` (device revocation token revocation)
+
 ### December 2025
 - **Offline Login Bug Fix (P0)**: Fixed issue where users couldn't log in when offline
   - Root cause: `LoginPage.jsx` had early return blocking login() call when offline
