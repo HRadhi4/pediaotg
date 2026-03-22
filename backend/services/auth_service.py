@@ -32,6 +32,16 @@ class AuthService:
     """
     Main authentication service class.
     Instantiated with a MongoDB database connection.
+    
+    PRODUCTION REQUIREMENTS:
+    - ENVIRONMENT=production must be set
+    - JWT_SECRET_KEY: Min 32 chars, cryptographically random
+    - ADMIN_EMAIL: Required
+    - ADMIN_PASSWORD_HASH: Required (plain ADMIN_PASSWORD ignored in production)
+    - TESTER_PASSWORD_HASH: Required if tester enabled (TESTER_PASSWORD ignored)
+    
+    ENVIRONMENT FLAGS:
+    - ENABLE_TESTER_LOGIN=true: Enable tester account (default: false in production)
     """
     
     def __init__(self, db: AsyncIOMotorDatabase):
@@ -42,63 +52,119 @@ class AuthService:
             db: MongoDB database instance (async motor client)
         
         Configuration loaded from environment:
-            - JWT_SECRET_KEY: Secret for signing tokens
+            - JWT_SECRET_KEY: Secret for signing tokens (min 32 chars in production)
             - JWT_ALGORITHM: Algorithm for JWT (default: HS256)
             - ACCESS_TOKEN_EXPIRE_MINUTES: Token expiry (default: 30)
-            - ADMIN_EMAIL/PASSWORD: Hardcoded admin credentials
-            - TESTER_EMAIL/PASSWORD: Hardcoded tester credentials
+            - ADMIN_EMAIL/ADMIN_PASSWORD_HASH: Admin credentials (hash required in production)
+            - TESTER_EMAIL/TESTER_PASSWORD_HASH: Tester credentials
             - TRIAL_DAYS: Trial subscription length (default: 3)
+            
+        Raises:
+            ValueError: If required secrets are missing or insecure in production
         """
+        import logging
+        logger = logging.getLogger(__name__)
+        
         self.db = db
         
-        # SECURITY: Required secrets - fail fast if not provided
+        # Detect environment
+        is_production = os.environ.get('ENVIRONMENT', 'development').lower() == 'production'
+        
+        # =================================================================
+        # JWT SECRET VALIDATION
+        # =================================================================
         self.jwt_secret = os.environ.get('JWT_SECRET_KEY')
         if not self.jwt_secret:
             raise ValueError("JWT_SECRET_KEY environment variable is required")
+        
+        # In production, enforce strong JWT secret
+        if is_production:
+            if len(self.jwt_secret) < 32:
+                raise ValueError(
+                    "SECURITY ERROR: JWT_SECRET_KEY must be at least 32 characters in production. "
+                    f"Current length: {len(self.jwt_secret)}"
+                )
+            # Warn about weak-looking secrets
+            weak_patterns = ['secret', 'password', 'change', 'default', 'example', 'test']
+            if any(p in self.jwt_secret.lower() for p in weak_patterns):
+                logger.warning(
+                    "SECURITY WARNING: JWT_SECRET_KEY appears to contain weak patterns. "
+                    "Use a cryptographically random value in production."
+                )
         
         self.jwt_algorithm = os.environ.get('JWT_ALGORITHM', 'HS256')
         self.access_token_expire = int(os.environ.get('ACCESS_TOKEN_EXPIRE_MINUTES', 30))
         self.refresh_token_expire = int(os.environ.get('REFRESH_TOKEN_EXPIRE_DAYS', 7))
         
-        # Admin account - MUST be configured via environment
+        # =================================================================
+        # ADMIN ACCOUNT VALIDATION
+        # =================================================================
         self.admin_email = os.environ.get('ADMIN_EMAIL')
         if not self.admin_email:
             raise ValueError("ADMIN_EMAIL environment variable is required")
         self.admin_email = self.admin_email.lower()
         
-        # Admin password - prefer hash, require at least one
         self._admin_password_hash = os.environ.get('ADMIN_PASSWORD_HASH', '')
         self._admin_password_plain = os.environ.get('ADMIN_PASSWORD', '')
-        if not self._admin_password_hash and not self._admin_password_plain:
-            raise ValueError("ADMIN_PASSWORD_HASH or ADMIN_PASSWORD environment variable is required")
         
-        # Tester account configuration
+        # In production, REQUIRE password hash and warn about plain text
+        if is_production:
+            if not self._admin_password_hash:
+                raise ValueError(
+                    "SECURITY ERROR: ADMIN_PASSWORD_HASH is required in production. "
+                    "Plain text ADMIN_PASSWORD is not accepted in production mode."
+                )
+            if self._admin_password_plain:
+                logger.warning(
+                    "SECURITY WARNING: Plain text ADMIN_PASSWORD detected in production. "
+                    "This value will be IGNORED. Remove it from environment for clarity."
+                )
+        else:
+            # Development mode - require at least one
+            if not self._admin_password_hash and not self._admin_password_plain:
+                raise ValueError("ADMIN_PASSWORD_HASH or ADMIN_PASSWORD environment variable is required")
+        
+        # =================================================================
+        # TESTER ACCOUNT CONFIGURATION
+        # =================================================================
         # SECURITY: Tester account is DISABLED by default in production
-        # Enable with ENABLE_TESTER_LOGIN=true (use with caution)
+        # Enable with ENABLE_TESTER_LOGIN=true (use with extreme caution)
         self.tester_email = os.environ.get('TESTER_EMAIL', '').lower()
         self._tester_password_hash = os.environ.get('TESTER_PASSWORD_HASH', '')
         self._tester_password_plain = os.environ.get('TESTER_PASSWORD', '')
         
-        # Production gate for tester account
-        is_production = os.environ.get('ENVIRONMENT', 'development').lower() == 'production'
         enable_tester = os.environ.get('ENABLE_TESTER_LOGIN', 'false').lower() == 'true'
         
         self._tester_enabled = True
         if is_production and not enable_tester:
             self._tester_enabled = False
-            import logging
-            logging.getLogger(__name__).info(
-                "Tester account DISABLED in production. "
-                "Set ENABLE_TESTER_LOGIN=true to enable (not recommended)."
+            logger.info(
+                "Tester account DISABLED in production (default secure behavior). "
+                "Set ENABLE_TESTER_LOGIN=true to enable (NOT RECOMMENDED)."
             )
         elif is_production and enable_tester:
-            import logging
-            logging.getLogger(__name__).warning(
-                "SECURITY: Tester account ENABLED in production via ENABLE_TESTER_LOGIN=true. "
-                "This is not recommended for production environments."
-            )
+            # If tester is enabled in production, require hash (not plain text)
+            if not self._tester_password_hash:
+                logger.error(
+                    "SECURITY ERROR: ENABLE_TESTER_LOGIN=true but TESTER_PASSWORD_HASH not set. "
+                    "Tester account will be disabled."
+                )
+                self._tester_enabled = False
+            else:
+                logger.warning(
+                    "SECURITY WARNING: Tester account ENABLED in production via ENABLE_TESTER_LOGIN=true. "
+                    "This is NOT RECOMMENDED for production environments."
+                )
+                if self._tester_password_plain:
+                    logger.warning(
+                        "Plain text TESTER_PASSWORD detected in production. "
+                        "This value will be IGNORED. Remove it from environment."
+                    )
         
         self.trial_days = int(os.environ.get('TRIAL_DAYS', 3))
+        
+        # Log startup configuration summary
+        logger.info(f"AuthService initialized: production={is_production}, tester_enabled={self._tester_enabled}")
     
     def _verify_special_account_password(self, password: str, stored_hash: str, fallback_plain: str) -> bool:
         """

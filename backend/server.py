@@ -24,6 +24,93 @@ from middleware.validation import (
     RequestLoggingMiddleware
 )
 
+# =============================================================================
+# PRODUCTION ENVIRONMENT VALIDATION
+# =============================================================================
+# Validates critical environment configuration on startup.
+# In production, missing or insecure settings will cause startup failure.
+# =============================================================================
+
+def validate_production_environment():
+    """
+    Validate environment configuration for production security.
+    
+    Checks performed:
+    - Required environment variables are set
+    - Secrets meet minimum security requirements
+    - Dangerous development flags are disabled
+    
+    Raises:
+        ValueError: If critical security configuration is missing or insecure
+    """
+    is_production = os.environ.get('ENVIRONMENT', 'development').lower() == 'production'
+    
+    errors = []
+    warnings = []
+    
+    # JWT Secret validation
+    jwt_secret = os.environ.get('JWT_SECRET_KEY', '')
+    if not jwt_secret:
+        errors.append("JWT_SECRET_KEY is required")
+    elif is_production and len(jwt_secret) < 32:
+        errors.append(f"JWT_SECRET_KEY must be at least 32 characters in production (current: {len(jwt_secret)})")
+    
+    # Admin account validation
+    if not os.environ.get('ADMIN_EMAIL'):
+        errors.append("ADMIN_EMAIL is required")
+    
+    if is_production:
+        if not os.environ.get('ADMIN_PASSWORD_HASH'):
+            errors.append("ADMIN_PASSWORD_HASH is required in production")
+        if os.environ.get('ADMIN_PASSWORD'):
+            warnings.append("Plain text ADMIN_PASSWORD detected - will be ignored in production")
+    
+    # Database validation
+    if not os.environ.get('MONGO_URL'):
+        errors.append("MONGO_URL is required")
+    
+    # Production-specific checks
+    if is_production:
+        # Check for dangerous flags
+        if os.environ.get('ALLOW_REMOTE_LLM', 'false').lower() == 'true':
+            warnings.append("ALLOW_REMOTE_LLM=true - OCR text may be sent to external LLM")
+        
+        if os.environ.get('ENABLE_TESTER_LOGIN', 'false').lower() == 'true':
+            warnings.append("ENABLE_TESTER_LOGIN=true - Tester account is enabled in production")
+        
+        if os.environ.get('ENABLE_SUBSCRIPTION_DEBUG', 'false').lower() == 'true':
+            warnings.append("ENABLE_SUBSCRIPTION_DEBUG=true - Debug endpoints are accessible")
+        
+        if os.environ.get('PAYPAL_DEBUG', 'false').lower() == 'true':
+            warnings.append("PAYPAL_DEBUG=true - Full webhook payloads will be logged")
+        
+        if not os.environ.get('PAYPAL_WEBHOOK_ID'):
+            warnings.append("PAYPAL_WEBHOOK_ID not set - Webhook signature verification disabled")
+        
+        # SMTP for emails
+        if not os.environ.get('SMTP_PASSWORD'):
+            warnings.append("SMTP_PASSWORD not set - Email functionality may not work")
+    
+    # Log results
+    for warning in warnings:
+        logger.warning(f"CONFIG WARNING: {warning}")
+    
+    if errors:
+        for error in errors:
+            logger.error(f"CONFIG ERROR: {error}")
+        
+        if is_production:
+            raise ValueError(
+                "Production configuration errors detected:\n" + 
+                "\n".join(f"  - {e}" for e in errors)
+            )
+        else:
+            logger.warning("Configuration errors detected but allowing startup in development mode")
+    
+    # Log summary
+    logger.info(f"Environment: {'PRODUCTION' if is_production else 'DEVELOPMENT'}")
+    logger.info(f"Configuration validation: {len(errors)} errors, {len(warnings)} warnings")
+
 # Import optimized Tesseract OCR service (100% local, medical-grade preprocessing)
 from services.ocr_service import (
     perform_ocr as perform_paddle_ocr,
@@ -53,12 +140,16 @@ db = client[os.environ['DB_NAME']]
 async def lifespan(app: FastAPI):
     """
     Lifespan context manager to handle startup and shutdown events.
+    - Validates production configuration
     - Creates database indexes
     - Starts the scheduler on startup
     - Stops the scheduler on shutdown
     """
     # Startup
     logger.info("Starting application...")
+    
+    # Validate environment configuration (will raise in production if invalid)
+    validate_production_environment()
     
     # Create TTL index for revoked_tokens collection (auto-cleanup after 30 days)
     try:
@@ -131,7 +222,7 @@ async def root():
     return {"message": "PediaOTG API"}
 
 @api_router.get("/health")
-async def health_check():
+async def api_health_check():
     return {"status": "healthy", "service": "pediaotg-api"}
 
 @api_router.post("/status", response_model=StatusCheck)
@@ -470,7 +561,7 @@ async def analyze_blood_gas(request: BloodGasAnalysisRequest):
     pH = values.get("pH")
     pCO2 = values.get("pCO2")
     HCO3 = values.get("HCO3")
-    BE = values.get("BE")
+    _BE = values.get("BE")  # Extracted but not used in current analysis
     Na = values.get("Na")
     K = values.get("K")
     Cl = values.get("Cl")

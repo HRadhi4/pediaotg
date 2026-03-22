@@ -1,7 +1,56 @@
 # Security Hardening Audit Report
 
 **Date:** March 2026  
-**Application:** PediaOTG (Pediatric Medical Guide)
+**Application:** PediaOTG (Pediatric Medical Guide)  
+**Last Updated:** March 22, 2026
+
+## Executive Summary
+
+This document tracks all security controls implemented in PediaOTG. The application has been comprehensively hardened with multiple layers of protection including RBAC, token revocation, rate limiting, CSP, input validation, and environment-gated features.
+
+---
+
+## Environment Configuration Flags
+
+### CRITICAL - Required for Production
+
+| Flag | Required Value | Description |
+|------|---------------|-------------|
+| `ENVIRONMENT` | `production` | Enables production security mode |
+| `JWT_SECRET_KEY` | Random ≥32 chars | **CRITICAL**: Must be cryptographically random |
+| `ADMIN_EMAIL` | Valid email | Admin account email address |
+| `ADMIN_PASSWORD_HASH` | bcrypt hash | **REQUIRED** in production (plain text ignored) |
+| `MONGO_URL` | Connection string | MongoDB connection URL |
+
+### SECURITY - Feature Flags (Defaults Secure)
+
+| Flag | Default | Recommended Production | Description |
+|------|---------|----------------------|-------------|
+| `ENABLE_TESTER_LOGIN` | `false` | `false` | Gates tester account access |
+| `ALLOW_REMOTE_LLM` | `false` | `false` | Gates external LLM for OCR text parsing |
+| `ENABLE_SUBSCRIPTION_DEBUG` | `false` | `false` | Gates PayPal debug endpoints |
+| `PAYPAL_DEBUG` | `false` | `false` | Full webhook payload logging |
+| `STRICT_INPUT_VALIDATION` | `false` | `true` | Block (vs log) malicious payloads |
+
+### VERIFICATION - PayPal Security
+
+| Flag | Required | Description |
+|------|----------|-------------|
+| `PAYPAL_WEBHOOK_ID` | Yes | Webhook signature verification ID |
+| `PAYPAL_CLIENT_ID` | Yes | PayPal API credentials |
+| `PAYPAL_CLIENT_SECRET` | Yes | PayPal API credentials |
+
+### OPTIONAL - Email Configuration
+
+| Flag | Required | Description |
+|------|----------|-------------|
+| `SMTP_SERVER` | For email | SMTP server hostname |
+| `SMTP_PORT` | For email | SMTP port (587 for TLS) |
+| `SMTP_EMAIL` | For email | Sender email address |
+| `SMTP_PASSWORD` | For email | SMTP authentication password |
+| `SMTP_USERNAME` | For email | SMTP username (if different from email) |
+
+---
 
 ## Vulnerabilities Fixed
 
@@ -176,10 +225,12 @@ object-src 'none';
 3. **Device Limit**: 3 devices per user - review if appropriate for use case.
 
 ### Future Enhancements
-1. Add token revocation support (use jti claim added to tokens)
-2. Implement account lockout after repeated failures
+1. ~~Add token revocation support~~ ✅ IMPLEMENTED
+2. Implement account lockout after repeated failures (rate limiting provides partial protection)
 3. Add two-factor authentication option
 4. Consider Web Application Firewall (WAF) for production
+5. Remove `'unsafe-inline'` from CSP script-src (requires nonces/hashes)
+6. Implement Redis-based rate limiting for horizontal scaling
 
 ## Testing Verification
 
@@ -194,14 +245,63 @@ curl -s -H "Authorization: Bearer $USER_TOKEN" https://your-app.com/api/admin/st
 
 # Test security headers
 curl -sI https://your-app.com/api/health | grep -E "^(x-|content-security|strict-transport|referrer|permissions)"
+
+# Test input validation (should be blocked if STRICT_INPUT_VALIDATION=true)
+curl -s -X POST https://your-app.com/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email": "test@test.com", "password": {"$gt": ""}}'
+# Expected: 400 Bad Request
+
+# Test PayPal webhook without signature (should fail)
+curl -s -X POST https://your-app.com/api/subscription/webhook/paypal \
+  -H "Content-Type: application/json" \
+  -d '{"event_type": "PAYMENT.CAPTURE.COMPLETED"}'
+# Expected: 401 Unauthorized (if PAYPAL_WEBHOOK_ID is set)
 ```
 
-## Deployment Checklist
+## Production Deployment Checklist
 
-- [ ] Set unique `JWT_SECRET_KEY` (min 32 chars, random)
-- [ ] Set `ADMIN_EMAIL` and `ADMIN_PASSWORD_HASH`
-- [ ] Set `ENVIRONMENT=production` for production deployments
-- [ ] Remove `ADMIN_PASSWORD` (plain text) after setting hash
-- [ ] Verify all origins in `CORS_ORIGINS` are legitimate
-- [ ] Test admin routes are inaccessible without proper auth
-- [ ] Verify source maps are not served in production
+### Required Environment Variables
+- [x] `ENVIRONMENT=production`
+- [x] `JWT_SECRET_KEY` - Min 32 chars, cryptographically random (`openssl rand -base64 32`)
+- [x] `ADMIN_EMAIL` - Admin account email
+- [x] `ADMIN_PASSWORD_HASH` - bcrypt hash of admin password
+- [x] `MONGO_URL` - Production MongoDB connection string
+- [x] `PAYPAL_WEBHOOK_ID` - From PayPal Developer Dashboard
+- [x] `PAYPAL_CLIENT_ID` and `PAYPAL_CLIENT_SECRET` - Live PayPal credentials
+
+### Security Configuration
+- [x] Remove `ADMIN_PASSWORD` (plain text) after setting hash
+- [x] Set `STRICT_INPUT_VALIDATION=true` for blocking malicious payloads
+- [x] Verify `ENABLE_TESTER_LOGIN=false` (default)
+- [x] Verify `ALLOW_REMOTE_LLM=false` (default)
+- [x] Verify `ENABLE_SUBSCRIPTION_DEBUG=false` (default)
+- [x] Verify `PAYPAL_DEBUG=false` (default)
+
+### Verification Steps
+- [x] Test admin routes are inaccessible without proper auth
+- [x] Verify source maps are not served in production
+- [x] Test rate limiting on login endpoint
+- [x] Verify PayPal webhook signature verification works
+- [x] All origins in `CORS_ORIGINS` are legitimate production domains
+
+### Email Configuration (Optional but Recommended)
+- [ ] `SMTP_SERVER`, `SMTP_PORT`, `SMTP_EMAIL`, `SMTP_PASSWORD`
+- [ ] `FRONTEND_URL` - For email links
+
+---
+
+## Implementation Status Summary
+
+| Category | Status | Notes |
+|----------|--------|-------|
+| Authentication | ✅ Complete | bcrypt, JWT, token revocation |
+| Authorization | ✅ Complete | RBAC, middleware protection |
+| Secrets Management | ✅ Complete | Env-based, hash-only in prod |
+| HTTP Security | ✅ Complete | All headers, CSP configured |
+| Rate Limiting | ✅ Complete | Login, admin, general API |
+| Input Validation | ✅ Complete | Injection/XSS detection |
+| PayPal Security | ✅ Complete | Webhook verification, PII protection |
+| LLM/PHI Safety | ✅ Complete | Disabled by default |
+| Logging | ✅ Complete | Minimal PII, debug flags |
+| Source Maps | ✅ Complete | Disabled in production |

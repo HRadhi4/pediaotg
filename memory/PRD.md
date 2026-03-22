@@ -42,7 +42,17 @@ Comprehensive security audit and hardening implemented:
 - **Source Maps Disabled**: Production builds do not expose source maps
 - **Fail-Fast Config**: Required secrets must be set or app fails to start
 - **No Hardcoded Secrets**: All sensitive config from environment variables only
+- **Token Revocation**: JTI-based refresh token revocation with TTL auto-cleanup
+- **Password Policy**: Min 8 chars, mixed case, digit, special char, common password rejection
+- **Device Identification**: Client-generated stable device ID via X-Device-ID header
+- **PayPal Webhook Verification**: Signature verification via PayPal's API
+- **Environment-Gated Features**: 
+  - `ENABLE_TESTER_LOGIN` - Gates tester account (default: disabled in production)
+  - `ALLOW_REMOTE_LLM` - Gates external LLM for OCR (default: disabled)
+  - `ENABLE_SUBSCRIPTION_DEBUG` - Gates PayPal debug endpoints (default: disabled)
+  - `STRICT_INPUT_VALIDATION` - Block vs log malicious payloads (recommended: enabled)
 - See `/app/SECURITY_AUDIT.md` for full details
+- See `/app/docs/DEPLOYMENT_ENV_VARS.md` for production setup guide
 
 ### Children Section
 - **Drugs Page**: Data-driven dosing calculator with comprehensive renal dose adjustment system based on Chapter 31 formulary
@@ -71,6 +81,23 @@ Comprehensive security audit and hardening implemented:
 - **Statistics**: User and subscription counts
 
 ## What's Been Implemented
+
+### March 22, 2026
+- **Production Security Hardening (Backend)**:
+  - Enhanced JWT secret validation: Min 32 chars in production, weak pattern detection
+  - Enhanced admin credential validation: Hash required in production, plain text ignored
+  - Enhanced tester account gating: Hash required if enabled in production
+  - Added startup configuration validation with detailed error reporting
+  - All security flags documented in SECURITY_AUDIT.md
+  - Complete production deployment guide in docs/DEPLOYMENT_ENV_VARS.md
+  - Files: `/app/backend/services/auth_service.py`, `/app/backend/server.py`, `/app/SECURITY_AUDIT.md`, `/app/docs/DEPLOYMENT_ENV_VARS.md`
+
+- **Mobile PayPal Warning (Frontend)** - Issue 1 fix:
+  - Added user-friendly warning when subscribing from mobile device in preview environment
+  - Detects mobile via user agent + screen size + touch capability
+  - Detects preview environment via hostname patterns
+  - Shows amber alert with explanation and "Try Anyway" option
+  - Files: `/app/frontend/src/pages/subscription/PricingPage.jsx`
 
 ### December 2025
 - **Offline Login Bug Fix (P0)**: Fixed issue where users couldn't log in when offline
