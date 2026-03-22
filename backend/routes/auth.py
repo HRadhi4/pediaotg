@@ -153,12 +153,21 @@ async def signup(user_data: UserCreate, response: Response):
     # Send welcome email and admin notification (non-blocking)
     try:
         from services.email_service import email_service
-        email_service.send_welcome_email(user.email, user.name)
+        import logging
+        logger = logging.getLogger(__name__)
+        
+        # Send welcome email to user
+        welcome_result = email_service.send_welcome_email(user.email, user.name)
+        logger.info(f"Welcome email to {user.email}: {'sent' if welcome_result else 'failed'}")
+        
         # Notify admin of new registration
-        email_service.send_admin_new_registration_email(user.email, user.name)
+        admin_result = email_service.send_admin_new_registration_email(user.email, user.name)
+        logger.info(f"Admin notification email for {user.email}: {'sent' if admin_result else 'failed'}")
+        
     except Exception as e:
         # Log error but don't fail registration
-        print(f"Failed to send welcome/admin notification email: {e}")
+        import logging
+        logging.getLogger(__name__).error(f"Failed to send welcome/admin notification email: {e}", exc_info=True)
     
     # Generate tokens
     access_token = auth_service.create_access_token(user.id, user.is_admin)

@@ -707,3 +707,48 @@ async def revoke_all_user_devices(
         "user_id": user_id,
         "devices_revoked": result.deleted_count
     }
+
+
+
+# =============================================================================
+# TEST EMAIL ENDPOINT
+# =============================================================================
+
+@router.post("/test-email")
+async def test_admin_email(
+    admin = Depends(require_admin)
+):
+    """
+    Test endpoint to verify admin email notifications are working.
+    Sends a test email to the configured ADMIN_EMAIL address.
+    """
+    from services.email_service import email_service
+    import logging
+    logger = logging.getLogger(__name__)
+    
+    admin_email = os.environ.get('ADMIN_EMAIL', 'admin@pedotg.com')
+    
+    # Send test registration notification
+    registration_result = email_service.send_admin_new_registration_email(
+        user_email="test@example.com",
+        user_name="Test User (Email Test)"
+    )
+    
+    # Send test subscription notification  
+    subscription_result = email_service.send_admin_subscription_renewal_email(
+        user_email="test@example.com",
+        user_name="Test User (Email Test)",
+        plan_name="Monthly",
+        amount="1.0 BHD",
+        is_new=True
+    )
+    
+    logger.info(f"Test email results - Registration: {registration_result}, Subscription: {subscription_result}")
+    
+    return {
+        "success": registration_result and subscription_result,
+        "admin_email": admin_email,
+        "registration_email_sent": registration_result,
+        "subscription_email_sent": subscription_result,
+        "message": "Check your inbox (and spam folder) for 2 test emails"
+    }

@@ -340,31 +340,31 @@ async def capture_paypal_order(
             renews_at_str = subscription.renews_at.strftime("%B %d, %Y") if subscription.renews_at else "N/A"
             plan_display = subscription.plan_name.value.capitalize() if hasattr(subscription.plan_name, 'value') else str(subscription.plan_name).capitalize()
             
-            email_service.send_subscription_change_email(
+            # Send confirmation email to user
+            user_email_result = email_service.send_subscription_change_email(
                 to_email=user_doc.get('email'),
                 user_name=user_doc.get('name', 'User'),
                 plan_name=plan_display,
                 renews_at=renews_at_str
             )
-            logger.info(f"Subscription confirmation email sent to {user_doc.get('email')}")
+            logger.info(f"Subscription confirmation email to {user_doc.get('email')}: {'sent' if user_email_result else 'failed'}")
             
             # Send admin notification email
-            # Determine if this is a new subscription or renewal
             is_new_subscription = True  # From capture-order, typically a new subscription
             monthly_price = float(os.environ.get('MONTHLY_PRICE_BHD', 1.0))
             annual_price = float(os.environ.get('ANNUAL_PRICE_BHD', 10.0))
             amount = f"{monthly_price} BHD" if capture_data.plan_name == 'monthly' else f"{annual_price} BHD"
             
-            email_service.send_admin_subscription_renewal_email(
+            admin_email_result = email_service.send_admin_subscription_renewal_email(
                 user_email=user_doc.get('email'),
                 user_name=user_doc.get('name', 'User'),
                 plan_name=plan_display,
                 amount=amount,
                 is_new=is_new_subscription
             )
-            logger.info(f"Admin notification email sent for subscription by {user_doc.get('email')}")
+            logger.info(f"Admin subscription notification email: {'sent' if admin_email_result else 'failed'}")
         except Exception as e:
-            logger.error(f"Failed to send subscription email: {e}")
+            logger.error(f"Failed to send subscription email: {e}", exc_info=True)
             # Don't fail the subscription activation if email fails
         
         return {
