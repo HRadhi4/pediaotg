@@ -40,7 +40,6 @@ const ElectrolytesInfusionsPage = ({ onBack }) => {
   const [sodiumType, setSodiumType] = useState("hyponatremia");
   const [hyponatremiaType, setHyponatremiaType] = useState("mild");
   const [phosphateLevel, setPhosphateLevel] = useState("");
-  const [phosphateSeverity, setPhosphateSeverity] = useState("moderate");
 
   // Electrolyte definitions with dose ranges (numeric for slider)
   const electrolytes = {
@@ -455,14 +454,14 @@ const ElectrolytesInfusionsPage = ({ onBack }) => {
         dose: `${doseMmol.toFixed(2)} mmol${isMaxed ? ' (MAX)' : ''} (${dosePerKg} mmol/kg)`,
         formula: `Selected: ${dosePerKg} mmol/kg x ${w} kg = ${doseMmol.toFixed(2)} mmol`,
         drugVolume: `${drugVolume.toFixed(2)} ml`,
-        diluent: `${diluent.toFixed(0)} ml NS (Peripheral 0.05 mmol/ml)`,
-        totalVolume: `${totalVolume.toFixed(0)} ml`
+        diluent: `${diluent.toFixed(2)} ml NS (Peripheral 0.05 mmol/ml)`,
+        totalVolume: `${totalVolume.toFixed(2)} ml`
       },
       administration: {
         duration: "4-6 hours (slow)",
-        rate: `${(totalVolume/6).toFixed(1)} - ${(totalVolume/4).toFixed(1)} ml/hr`
+        rate: `${(totalVolume/6).toFixed(2)} - ${(totalVolume/4).toFixed(2)} ml/hr`
       },
-      preparation: `${drugVolume.toFixed(2)} ml Addiphos + ${diluent.toFixed(0)} ml NS = ${totalVolume.toFixed(0)} ml`,
+      preparation: `${drugVolume.toFixed(2)} ml Addiphos + ${diluent.toFixed(2)} ml NS = ${totalVolume.toFixed(2)} ml`,
       warnings: ["Rapid infusion can cause severe hypocalcemia!"],
       ...(isMaxed && { warning: "Dose capped at maximum (15 mmol)" })
     });
@@ -706,23 +705,19 @@ const ElectrolytesInfusionsPage = ({ onBack }) => {
           )}
 
           {selectedElectrolyte === "phosphate" && (
-            <>
-              <div>
-                <Label>Phosphate Level (optional)</Label>
-                <Input type="text" step="0.1" min="0" placeholder="mg/dL" value={phosphateLevel} onChange={(e) => setPhosphateLevel(e.target.value)} className="font-mono" />
+            <div>
+              <Label>Phosphate Level (optional)</Label>
+              <Input 
+                type="text" 
                 inputMode="decimal"
-              </div>
-              <RadioGroup value={phosphateSeverity} onValueChange={setPhosphateSeverity} className="flex gap-4">
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="moderate" id="phos-moderate" />
-                  <Label htmlFor="phos-moderate">Moderate (P 1-2 mg/dL)</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="severe" id="phos-severe" />
-                  <Label htmlFor="phos-severe">Severe (P &lt;1 mg/dL)</Label>
-                </div>
-              </RadioGroup>
-            </>
+                step="0.1" 
+                min="0" 
+                placeholder="mg/dL" 
+                value={phosphateLevel} 
+                onChange={(e) => setPhosphateLevel(e.target.value)} 
+                className="font-mono" 
+              />
+            </div>
           )}
 
           <Button onClick={calculate} className="w-full h-12" data-testid="calculate-btn">
