@@ -58,10 +58,19 @@ class EmailService:
         self._smtp_username = os.environ.get('SMTP_USERNAME', 'admin@pedotg.com')  # For authentication
         self._smtp_email = os.environ.get('SMTP_EMAIL', 'noreply@pedotg.com')  # For sending (From address)
         self._smtp_password = os.environ.get('SMTP_PASSWORD', '')
-        self._frontend_url = os.environ.get('FRONTEND_URL', 'https://pwa-security-build.preview.emergentagent.com')
+        self._frontend_url = os.environ.get('FRONTEND_URL', 'https://app.pedotg.com')
         self._logo_url = os.environ.get('EMAIL_LOGO_URL', f"{self._frontend_url}/logo.png")
         self._initialized = True
-        logger.info(f"EmailService initialized - SMTP password configured: {bool(self._smtp_password)}")
+        
+        # Log configuration status (without exposing password)
+        if not self._smtp_password:
+            logger.warning("EMAIL SERVICE: SMTP_PASSWORD not configured - emails will NOT be sent!")
+        else:
+            logger.info(f"EmailService initialized:")
+            logger.info(f"  SMTP Server: {self._smtp_server}:{self._smtp_port}")
+            logger.info(f"  From: {self._smtp_email}")
+            logger.info(f"  Auth User: {self._smtp_username}")
+            logger.info(f"  Password: {'configured' if self._smtp_password else 'NOT SET'}")
     
     @property
     def smtp_server(self):
