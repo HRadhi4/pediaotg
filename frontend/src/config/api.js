@@ -16,15 +16,34 @@
  *   REACT_APP_BACKEND_URL=https://app.pedotg.com npm run build
  */
 
+// Known production domains where we should use same-origin requests
+const PRODUCTION_DOMAINS = [
+  'app.pedotg.com',
+  'pedotg.com',
+  'www.pedotg.com'
+];
+
 /**
  * Get the API base URL
  * 
  * Priority:
- * 1. REACT_APP_BACKEND_URL environment variable (set at build time)
- * 2. window.location.origin (same-origin fallback for production)
- * 3. Empty string (for SSR/testing environments)
+ * 1. If on a known production domain, use same-origin (empty string)
+ * 2. REACT_APP_BACKEND_URL environment variable (set at build time)
+ * 3. window.location.origin (same-origin fallback for production)
+ * 4. Empty string (for SSR/testing environments)
  */
 export const getApiUrl = () => {
+  // Check if we're in a browser
+  if (typeof window !== 'undefined' && window.location?.hostname) {
+    const currentHostname = window.location.hostname;
+    
+    // If on a known production domain, ALWAYS use same-origin to avoid CORS
+    if (PRODUCTION_DOMAINS.includes(currentHostname)) {
+      console.log('[API Config] Production domain detected, using same-origin');
+      return ''; // Empty string = same-origin requests
+    }
+  }
+  
   // Use environment variable if set
   if (process.env.REACT_APP_BACKEND_URL) {
     return process.env.REACT_APP_BACKEND_URL;
@@ -51,12 +70,14 @@ export const API_URL = getApiUrl();
  */
 export const debugApiConfig = () => {
   if (process.env.NODE_ENV !== 'production') {
-    console.log('[API Config] Using API_URL =', API_URL);
+    console.log('[API Config] Using API_URL =', API_URL || '(same-origin)');
     console.log('[API Config] REACT_APP_BACKEND_URL env =', process.env.REACT_APP_BACKEND_URL || '(not set)');
     console.log('[API Config] window.location.origin =', typeof window !== 'undefined' ? window.location.origin : '(no window)');
+    console.log('[API Config] window.location.hostname =', typeof window !== 'undefined' ? window.location.hostname : '(no window)');
     
     // Perform health check
-    fetch(`${API_URL}/api/health`)
+    const healthUrl = API_URL ? `${API_URL}/api/health` : '/api/health';
+    fetch(healthUrl)
       .then(res => res.json())
       .then(data => console.log('[API Config] Health check passed:', data))
       .catch(err => console.warn('[API Config] Health check failed:', err.message));
