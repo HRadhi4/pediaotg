@@ -168,13 +168,15 @@ class OfflineStorage {
 // Singleton instance
 const offlineStorage = new OfflineStorage();
 
+import { API_URL } from '@/config/api';
+
 /**
  * Layout Manager
  * 
  * Handles saving and syncing user layouts with offline support
  */
 export const layoutManager = {
-  API_URL: process.env.REACT_APP_BACKEND_URL || '',
+  // Use centralized API URL from config
 
   // Save layout locally (for offline-first)
   async saveLocalLayout(layoutType, config) {
@@ -205,7 +207,7 @@ export const layoutManager = {
     if (layouts.length === 0) return;
 
     try {
-      const response = await fetch(`${this.API_URL}/api/layouts/sync`, {
+      const response = await fetch(`${API_URL}/api/layouts/sync`, {
         method: 'POST',
         
         headers: {
@@ -232,7 +234,7 @@ export const layoutManager = {
   // Fetch layouts from server
   async fetchFromServer(authHeaders) {
     try {
-      const response = await fetch(`${this.API_URL}/api/layouts`, {
+      const response = await fetch(`${API_URL}/api/layouts`, {
         
         headers: authHeaders
       });
@@ -304,7 +306,7 @@ export const layoutManager = {
     // If online, try to fetch from server
     if (navigator.onLine && authHeaders) {
       try {
-        const response = await fetch(`${this.API_URL}/api/layouts/${layoutType}`, {
+        const response = await fetch(`${API_URL}/api/layouts/${layoutType}`, {
           
           headers: authHeaders
         });

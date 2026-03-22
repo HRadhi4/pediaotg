@@ -4,8 +4,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { CheckCircle, Loader2, XCircle, AlertTriangle, RefreshCw } from 'lucide-react';
-
-const API_URL = process.env.REACT_APP_BACKEND_URL || '';
+import { API_URL } from '@/config/api';
 
 /**
  * Error message mapping for PayPal error codes

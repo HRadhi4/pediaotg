@@ -5,8 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { AlertCircle, Loader2, Mail, ArrowLeft, CheckCircle } from 'lucide-react';
-
-const API_URL = process.env.REACT_APP_BACKEND_URL || '';
+import { API_URL } from '@/config/api';
 
 const ForgotPasswordPage = () => {
   const [email, setEmail] = useState('');

@@ -12,7 +12,7 @@
  * - Subscription-gated access for premium content
  */
 
-const API_URL = process.env.REACT_APP_BACKEND_URL || '';
+import { API_URL } from '@/config/api';
 
 /**
  * Get auth headers from localStorage

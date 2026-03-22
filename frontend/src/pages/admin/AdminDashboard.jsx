@@ -7,8 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, Users, CreditCard, TrendingUp, Loader2, Search, ChevronLeft, ChevronRight, Trash2, UserPlus, X, Pencil, Smartphone, Monitor, Tablet, LogOut } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-
-const API_URL = process.env.REACT_APP_BACKEND_URL || '';
+import { API_URL } from '@/config/api';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();

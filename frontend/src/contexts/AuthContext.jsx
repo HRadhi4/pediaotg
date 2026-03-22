@@ -1,8 +1,12 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { secureSet, secureGet, secureRemove, isSecureStorageAvailable } from '@/lib/secureStorage';
 import { getDeviceId, getDeviceIdHeaders } from '@/lib/deviceId';
+import { API_URL, debugApiConfig, isNetworkError } from '@/config/api';
 
-const API_URL = process.env.REACT_APP_BACKEND_URL || '';
+// Run debug logging in development
+if (typeof window !== 'undefined') {
+  debugApiConfig();
+}
 
 // Storage keys
 const STORAGE_KEYS = {
@@ -325,26 +329,39 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {
       console.error('Login error:', error);
       
-      // If it's a network error and we have cached data, try offline login
-      if (error.message === 'Failed to fetch' || error.name === 'TypeError') {
+      // Check if this is a network/connection error
+      if (isNetworkError(error)) {
+        // Try offline login with cached credentials
         if (isSecureStorageAvailable()) {
           const remembered = await secureGet(STORAGE_KEYS.REMEMBERED_USER);
           if (remembered && remembered.email === email && remembered.password === password) {
             const cachedUser = await loadCachedUser();
             if (cachedUser) {
-              console.log('[Auth] Network error but found matching cached credentials');
+              console.log('[Auth] Network error but found matching cached credentials - using offline mode');
               setUser(cachedUser);
               return { success: true };
             }
           }
         }
+        
+        // Network error with no cached data
+        const hasCachedData = isSecureStorageAvailable() && await secureGet(STORAGE_KEYS.REMEMBERED_USER);
+        if (hasCachedData) {
+          return { 
+            success: false, 
+            error: "Unable to reach the server. If you've logged in before with 'Remember me', try again with your saved credentials.",
+            isNetworkError: true
+          };
+        }
         return { 
           success: false, 
-          error: 'Unable to connect. If you\'ve logged in before with "Remember me", try again.' 
+          error: 'Unable to reach the server. Please check your internet connection and try again.',
+          isNetworkError: true
         };
       }
       
-      return { success: false, error: error.message };
+      // Backend returned an error (400/401/etc.) - show that message
+      return { success: false, error: error.message, isNetworkError: false };
     }
   };
 
@@ -388,7 +405,18 @@ export const AuthProvider = ({ children }) => {
       return { success: true };
     } catch (error) {
       console.error('Signup error:', error);
-      return { success: false, error: error.message };
+      
+      // Check if this is a network/connection error
+      if (isNetworkError(error)) {
+        return { 
+          success: false, 
+          error: 'Unable to reach the server. Please check your internet connection and try again.',
+          isNetworkError: true
+        };
+      }
+      
+      // Backend returned an error - show that message
+      return { success: false, error: error.message, isNetworkError: false };
     }
   };
 

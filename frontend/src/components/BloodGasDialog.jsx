@@ -9,9 +9,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Camera, Upload, PenLine, Loader2, AlertTriangle, CheckCircle, X } from "lucide-react";
 import { toast } from "sonner";
 import axios from "axios";
+import { API_URL } from "@/config/api";
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
+const API = `${API_URL}/api`;
 
 const BloodGasDialog = ({ open, onOpenChange }) => {
   const [activeTab, setActiveTab] = useState("auto");

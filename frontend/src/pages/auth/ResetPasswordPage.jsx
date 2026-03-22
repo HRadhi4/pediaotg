@@ -6,8 +6,7 @@ import { AlertCircle, Loader2, Lock, CheckCircle, ArrowLeft } from 'lucide-react
 import { PasswordInput, ConfirmPasswordInput } from '@/components/auth/PasswordInput';
 import { validatePassword, isPasswordPolicyError } from '@/utils/passwordValidation';
 import { toast } from 'sonner';
-
-const API_URL = process.env.REACT_APP_BACKEND_URL || '';
+import { API_URL } from '@/config/api';
 
 const ResetPasswordPage = () => {
   const navigate = useNavigate();

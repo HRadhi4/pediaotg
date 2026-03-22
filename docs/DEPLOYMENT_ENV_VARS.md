@@ -34,7 +34,44 @@ SMTP_PASSWORD=<smtp-password>
 
 # URLs
 FRONTEND_URL=https://yourdomain.com
+
+# Frontend Build (set when building)
+REACT_APP_BACKEND_URL=https://app.pedotg.com  # See section below
 ```
+
+---
+
+## Frontend API URL Configuration (IMPORTANT)
+
+### `REACT_APP_BACKEND_URL`
+
+| Setting | When to Use | Example |
+|---------|-------------|---------|
+| Set to production domain | Recommended for production | `REACT_APP_BACKEND_URL=https://app.pedotg.com` |
+| Leave empty/unset | When frontend & backend on same domain | Frontend will use `window.location.origin` |
+
+**Build command for production:**
+```bash
+REACT_APP_BACKEND_URL=https://app.pedotg.com npm run build
+```
+
+**How it works:**
+1. If `REACT_APP_BACKEND_URL` is set (e.g., `https://app.pedotg.com`), all API calls go to that URL
+2. If `REACT_APP_BACKEND_URL` is empty or not set, the frontend falls back to `window.location.origin`
+3. This allows the app to work correctly when accessed via any domain that proxies to the backend
+
+**Example configurations:**
+
+| Access URL | REACT_APP_BACKEND_URL | API Calls Go To |
+|------------|----------------------|-----------------|
+| `https://app.pedotg.com` | `https://app.pedotg.com` | `https://app.pedotg.com/api/...` |
+| `https://app.pedotg.com` | (empty) | `https://app.pedotg.com/api/...` |
+| `https://peds-go.emergent.host` | (empty) | `https://peds-go.emergent.host/api/...` |
+
+**Important:** If using a custom domain (e.g., `app.pedotg.com`) that proxies to another host:
+- Set `REACT_APP_BACKEND_URL=` (empty) so the frontend uses the current origin
+- OR set `REACT_APP_BACKEND_URL=https://app.pedotg.com` to explicitly use that domain
+- Ensure CORS allows requests from your custom domain (see CORS section below)
 
 ---
 
