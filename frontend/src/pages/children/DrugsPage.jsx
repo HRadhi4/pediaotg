@@ -26,14 +26,15 @@
  * =============================================================================
  */
 
-import { useState, useEffect, useMemo } from "react";
-import { AlertTriangle, ChevronDown, ChevronUp, Scale, Info, AlertCircle } from "lucide-react";
+import { useState, useEffect, useMemo, useCallback } from "react";
+import { AlertTriangle, ChevronDown, ChevronUp, Scale, Info, AlertCircle, Loader2 } from "lucide-react";
 import { ArrowLeftIcon } from "@/components/HealthIcons";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { childrenFormulary, drugCategories } from "@/data/childrenFormularyData";
+import { fetchFormulary, fetchDrugCategories } from "@/services/contentService";
+// Keep renal adjustments as static import for now (they contain business logic)
 import { 
   getRenalAdjustment, 
   getEGFRCategory, 
@@ -56,6 +57,40 @@ const DrugsPage = ({ onBack }) => {
   const [schwartzType, setSchwartzType] = useState("revised"); // GFR equation type
   const [expandedDrug, setExpandedDrug] = useState(null);  // Currently expanded drug card
   const [showGFRCalc, setShowGFRCalc] = useState(false);   // GFR calculator visibility
+  
+  // API-fetched data states
+  const [formularyData, setFormularyData] = useState([]);  // Drug data from API
+  const [drugCategoriesData, setDrugCategoriesData] = useState([]); // Categories from API
+  const [isLoading, setIsLoading] = useState(true);        // Loading state
+  const [fetchError, setFetchError] = useState(null);      // Error state
+  
+  // ==========================================================================
+  // FETCH FORMULARY DATA FROM API
+  // ==========================================================================
+  const loadFormularyData = useCallback(async () => {
+    setIsLoading(true);
+    setFetchError(null);
+    
+    try {
+      // Fetch formulary and categories in parallel
+      const [formularyResult, categoriesResult] = await Promise.all([
+        fetchFormulary({ limit: 500 }), // Get all drugs
+        fetchDrugCategories()
+      ]);
+      
+      setFormularyData(formularyResult.drugs || []);
+      setDrugCategoriesData(categoriesResult.categories || []);
+      setIsLoading(false);
+    } catch (error) {
+      console.error('Error fetching formulary:', error);
+      setFetchError(error.message || 'Failed to load drug formulary');
+      setIsLoading(false);
+    }
+  }, []);
+  
+  useEffect(() => {
+    loadFormularyData();
+  }, [loadFormularyData]);
   
   // Parsed numeric values for calculations
   const w = parseFloat(weight) || 0;
@@ -405,10 +440,10 @@ const DrugsPage = ({ onBack }) => {
     window.scrollTo(0, 0);
   }, []);
 
-  // Sort drugs alphabetically by name - using data from childrenFormulary.js
+  // Sort drugs alphabetically by name - using API data
   const sortedDrugs = useMemo(() => 
-    [...childrenFormulary].sort((a, b) => a.name.localeCompare(b.name)), 
-    []
+    [...formularyData].sort((a, b) => a.name.localeCompare(b.name)), 
+    [formularyData]
   );
 
   // Filter drugs based on search term (searches name, category, and indication)
@@ -660,6 +695,50 @@ const DrugsPage = ({ onBack }) => {
     if (gfrNum >= 15) return "text-orange-600";
     return "text-red-600";
   };
+
+  // ==========================================================================
+  // LOADING AND ERROR STATES
+  // ==========================================================================
+  if (isLoading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-4">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        <p className="text-muted-foreground">Loading drug formulary...</p>
+      </div>
+    );
+  }
+
+  if (fetchError) {
+    return (
+      <div className="space-y-4 pt-4 pb-4">
+        <Card className="border-red-200 bg-red-50 dark:bg-red-900/20">
+          <CardContent className="pt-6">
+            <div className="flex flex-col items-center text-center space-y-4">
+              <AlertCircle className="h-10 w-10 text-red-500" />
+              <div>
+                <h3 className="font-semibold text-red-700 dark:text-red-300">
+                  Failed to Load Formulary
+                </h3>
+                <p className="text-sm text-red-600 dark:text-red-400 mt-1">
+                  {fetchError}
+                </p>
+              </div>
+              <Button 
+                onClick={loadFormularyData}
+                variant="outline"
+                className="border-red-300 text-red-700 hover:bg-red-100"
+              >
+                Try Again
+              </Button>
+              <p className="text-xs text-muted-foreground">
+                Make sure you have an active subscription to access the drug formulary.
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-4 pt-4 pb-4">

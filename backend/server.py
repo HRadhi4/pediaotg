@@ -707,6 +707,7 @@ from routes.auth import router as auth_router
 from routes.subscription import router as subscription_router
 from routes.layouts import router as layouts_router
 from routes.admin import router as admin_router
+from routes.content import router as content_router
 
 # Include the router in the main app
 app.include_router(api_router)
@@ -714,6 +715,7 @@ app.include_router(auth_router, prefix="/api")
 app.include_router(subscription_router, prefix="/api")
 app.include_router(layouts_router, prefix="/api")
 app.include_router(admin_router, prefix="/api")
+app.include_router(content_router, prefix="/api")
 
 # CORS configuration - for credentials, we need explicit origins
 # SECURITY: Only allow known production and development origins
@@ -735,7 +737,7 @@ else:
         cors_origins = [
             "http://localhost:3000",
             "http://127.0.0.1:3000",
-            "https://pediatric-security.preview.emergentagent.com",
+            "https://content-gateway-10.preview.emergentagent.com",
             "https://app.pedotg.com",
             "https://pedotg.com",
             "https://www.pedotg.com",

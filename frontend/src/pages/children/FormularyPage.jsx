@@ -13,11 +13,11 @@
  * - Drug categories and search functionality
  * - Expandable drug cards with full prescribing information
  * 
- * DATA SOURCE: childrenFormulary.js - Based on Harriet Lane Handbook
+ * DATA SOURCE: Backend API - /api/content/formulary
  * =============================================================================
  */
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { 
   AlertTriangle, 
   ChevronDown, 
@@ -28,7 +28,8 @@ import {
   Info,
   Calculator,
   AlertCircle,
-  Filter
+  Filter,
+  Loader2
 } from "lucide-react";
 import { ArrowLeftIcon } from "@/components/HealthIcons";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -37,7 +38,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { childrenFormulary, drugCategories, getDrugById } from "@/data/childrenFormularyData";
+import { fetchFormulary, fetchDrugCategories } from "@/services/contentService";
 
 const FormularyPage = ({ onBack }) => {
   // ==========================================================================
@@ -53,11 +54,44 @@ const FormularyPage = ({ onBack }) => {
   const [expandedDrug, setExpandedDrug] = useState(null);
   const [showGFRCalc, setShowGFRCalc] = useState(false);
   const [showCalculatorFor, setShowCalculatorFor] = useState(null);
+  
+  // API data states
+  const [formularyData, setFormularyData] = useState([]);
+  const [categoriesData, setCategoriesData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [fetchError, setFetchError] = useState(null);
 
   // Parsed numeric values
   const w = parseFloat(weight) || 0;
   const h = parseFloat(height) || 0;
   const scr = parseFloat(creatinine) || 0;
+
+  // ==========================================================================
+  // FETCH FORMULARY DATA FROM API
+  // ==========================================================================
+  const loadFormularyData = useCallback(async () => {
+    setIsLoading(true);
+    setFetchError(null);
+    
+    try {
+      const [formularyResult, categoriesResult] = await Promise.all([
+        fetchFormulary({ limit: 500 }),
+        fetchDrugCategories()
+      ]);
+      
+      setFormularyData(formularyResult.drugs || []);
+      setCategoriesData(categoriesResult.categories || []);
+      setIsLoading(false);
+    } catch (error) {
+      console.error('Error fetching formulary:', error);
+      setFetchError(error.message || 'Failed to load drug formulary');
+      setIsLoading(false);
+    }
+  }, []);
+  
+  useEffect(() => {
+    loadFormularyData();
+  }, [loadFormularyData]);
 
   // ==========================================================================
   // GFR CALCULATIONS
@@ -103,7 +137,7 @@ const FormularyPage = ({ onBack }) => {
   // FILTERED DRUGS
   // ==========================================================================
   const filteredDrugs = useMemo(() => {
-    return childrenFormulary.filter(drug => {
+    return formularyData.filter(drug => {
       const matchesSearch = 
         drug.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         drug.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -114,7 +148,7 @@ const FormularyPage = ({ onBack }) => {
       
       return matchesSearch && matchesCategory;
     });
-  }, [searchTerm, selectedCategory]);
+  }, [searchTerm, selectedCategory, formularyData]);
 
   // ==========================================================================
   // DOSE CALCULATOR
@@ -248,6 +282,42 @@ const FormularyPage = ({ onBack }) => {
   }, []);
 
   // ==========================================================================
+  // RENDER - Loading and Error States
+  // ==========================================================================
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-slate-900 flex flex-col items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-cyan-400" />
+        <p className="text-slate-400 mt-4">Loading drug formulary...</p>
+      </div>
+    );
+  }
+
+  if (fetchError) {
+    return (
+      <div className="min-h-screen bg-slate-900 flex flex-col items-center justify-center p-4">
+        <Card className="bg-red-500/10 border-red-500/30 max-w-md">
+          <CardContent className="pt-6 text-center">
+            <AlertCircle className="h-10 w-10 text-red-400 mx-auto mb-4" />
+            <h3 className="font-semibold text-red-300 text-lg">Failed to Load Formulary</h3>
+            <p className="text-sm text-red-200 mt-2">{fetchError}</p>
+            <Button 
+              onClick={loadFormularyData}
+              variant="outline"
+              className="mt-4 border-red-400 text-red-300 hover:bg-red-500/20"
+            >
+              Try Again
+            </Button>
+            <p className="text-xs text-slate-500 mt-4">
+              Make sure you have an active subscription to access the drug formulary.
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  // ==========================================================================
   // RENDER
   // ==========================================================================
   return (
@@ -269,7 +339,7 @@ const FormularyPage = ({ onBack }) => {
               <Pill className="w-5 h-5 text-cyan-400" />
               Drug Formulary
             </h1>
-            <p className="text-xs text-slate-400">{childrenFormulary.length} medications</p>
+            <p className="text-xs text-slate-400">{formularyData.length} medications</p>
           </div>
           <Button
             variant="outline"
@@ -308,9 +378,9 @@ const FormularyPage = ({ onBack }) => {
                   : 'border-slate-700 text-slate-400'
               }`}
             >
-              All ({childrenFormulary.length})
+              All ({formularyData.length})
             </Button>
-            {drugCategories.slice(0, 8).map(cat => (
+            {categoriesData.slice(0, 8).map(cat => (
               <Button
                 key={cat}
                 size="sm"
@@ -636,7 +706,7 @@ const FormularyPage = ({ onBack }) => {
       {/* Footer Count */}
       <div className="fixed bottom-0 left-0 right-0 bg-slate-900/95 border-t border-slate-800 px-4 py-2">
         <div className="text-center text-sm text-slate-500">
-          Showing {filteredDrugs.length} of {childrenFormulary.length} drugs
+          Showing {filteredDrugs.length} of {formularyData.length} drugs
           {w > 0 && <span className="text-emerald-400 ml-2">• Weight: {w} kg</span>}
           {gfr && <span className="text-amber-400 ml-2">• eGFR: {gfr}</span>}
         </div>
