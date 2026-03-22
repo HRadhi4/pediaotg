@@ -207,7 +207,7 @@ export const layoutManager = {
     try {
       const response = await fetch(`${this.API_URL}/api/layouts/sync`, {
         method: 'POST',
-        credentials: 'include',
+        
         headers: {
           'Content-Type': 'application/json',
           ...authHeaders
@@ -233,7 +233,7 @@ export const layoutManager = {
   async fetchFromServer(authHeaders) {
     try {
       const response = await fetch(`${this.API_URL}/api/layouts`, {
-        credentials: 'include',
+        
         headers: authHeaders
       });
 
@@ -271,7 +271,7 @@ export const layoutManager = {
       try {
         await fetch(`${this.API_URL}/api/layouts`, {
           method: 'POST',
-          credentials: 'include',
+          
           headers: {
             'Content-Type': 'application/json',
             ...authHeaders
@@ -305,7 +305,7 @@ export const layoutManager = {
     if (navigator.onLine && authHeaders) {
       try {
         const response = await fetch(`${this.API_URL}/api/layouts/${layoutType}`, {
-          credentials: 'include',
+          
           headers: authHeaders
         });
 

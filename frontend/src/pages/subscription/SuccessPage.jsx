@@ -150,7 +150,7 @@ const SubscriptionSuccessPage = () => {
         
         const response = await fetch(`${API_URL}/api/subscription/capture-order`, {
           method: 'POST',
-          credentials: 'include',
+          
           headers: {
             'Content-Type': 'application/json',
             ...getAuthHeaders()

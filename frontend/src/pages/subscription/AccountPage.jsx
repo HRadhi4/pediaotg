@@ -23,7 +23,7 @@ const AccountPage = () => {
   const fetchSubscription = async () => {
     try {
       const response = await fetch(`${API_URL}/api/subscription/status`, {
-        credentials: 'include',
+        
         headers: getAuthHeaders()
       });
       const data = await response.json();
@@ -44,7 +44,7 @@ const AccountPage = () => {
     try {
       const response = await fetch(`${API_URL}/api/subscription/cancel`, {
         method: 'POST',
-        credentials: 'include',
+        
         headers: getAuthHeaders()
       });
 

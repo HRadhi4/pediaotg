@@ -160,7 +160,7 @@ const PricingPage = () => {
       
       const response = await fetch(`${API_URL}/api/subscription/create-order`, {
         method: 'POST',
-        credentials: 'include',
+        
         headers: {
           'Content-Type': 'application/json',
           ...getAuthHeaders()
@@ -239,7 +239,7 @@ const PricingPage = () => {
           
           const response = await fetch(`${API_URL}/api/subscription/create-order`, {
             method: 'POST',
-            credentials: 'include',
+            
             headers: {
               'Content-Type': 'application/json',
               ...getAuthHeaders()

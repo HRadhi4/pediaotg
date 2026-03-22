@@ -49,7 +49,7 @@ const AdminDashboard = () => {
     try {
       // Fetch stats
       const statsResponse = await fetch(`${API_URL}/api/admin/stats`, {
-        credentials: 'include',
+        
         headers: getAuthHeaders()
       });
       const statsData = await statsResponse.json();
@@ -59,7 +59,7 @@ const AdminDashboard = () => {
       const usersResponse = await fetch(
         `${API_URL}/api/admin/users?skip=${page * limit}&limit=${limit}`,
         {
-          credentials: 'include',
+          
           headers: getAuthHeaders()
         }
       );
@@ -88,7 +88,7 @@ const AdminDashboard = () => {
     try {
       const response = await fetch(`${API_URL}/api/admin/user/${userId}`, {
         method: 'DELETE',
-        credentials: 'include',
+        
         headers: getAuthHeaders()
       });
 
@@ -120,7 +120,7 @@ const AdminDashboard = () => {
     try {
       const response = await fetch(`${API_URL}/api/admin/user`, {
         method: 'POST',
-        credentials: 'include',
+        
         headers: {
           ...getAuthHeaders(),
           'Content-Type': 'application/json'
@@ -170,7 +170,7 @@ const AdminDashboard = () => {
     try {
       const response = await fetch(`${API_URL}/api/admin/user/${editingUser.id}`, {
         method: 'PUT',
-        credentials: 'include',
+        
         headers: {
           ...getAuthHeaders(),
           'Content-Type': 'application/json'
@@ -205,7 +205,7 @@ const AdminDashboard = () => {
     
     try {
       const response = await fetch(`${API_URL}/api/admin/user/${u.id}/devices`, {
-        credentials: 'include',
+        
         headers: getAuthHeaders()
       });
       
@@ -234,7 +234,7 @@ const AdminDashboard = () => {
     try {
       const response = await fetch(`${API_URL}/api/admin/user/${deviceUser.id}/devices/${deviceId}`, {
         method: 'DELETE',
-        credentials: 'include',
+        
         headers: getAuthHeaders()
       });
 
@@ -264,7 +264,7 @@ const AdminDashboard = () => {
     try {
       const response = await fetch(`${API_URL}/api/admin/user/${deviceUser.id}/devices`, {
         method: 'DELETE',
-        credentials: 'include',
+        
         headers: getAuthHeaders()
       });
 
