@@ -6,8 +6,15 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
-import { AlertCircle, Loader2, Eye, EyeOff, WifiOff } from 'lucide-react';
+import { AlertCircle, Loader2, Eye, EyeOff, WifiOff, Info, Shield } from 'lucide-react';
 import { secureGet } from '@/lib/secureStorage';
+import { toast } from 'sonner';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -51,9 +58,28 @@ const LoginPage = () => {
     const result = await login(email, password, rememberMe);
 
     if (result.success) {
+      toast.success('Welcome back!');
       navigate('/');
     } else {
-      setError(result.error);
+      // Display user-friendly error messages
+      let errorMsg = result.error;
+      
+      // Map common errors to user-friendly messages
+      if (errorMsg?.toLowerCase().includes('invalid credentials') || 
+          errorMsg?.toLowerCase().includes('incorrect password')) {
+        errorMsg = 'Invalid email or password. Please try again.';
+      } else if (errorMsg?.toLowerCase().includes('locked') || 
+                 errorMsg?.toLowerCase().includes('too many')) {
+        errorMsg = 'Too many failed attempts. Please try again later.';
+        toast.error('Account temporarily locked', {
+          description: 'Please wait a few minutes before trying again.'
+        });
+      } else if (errorMsg?.toLowerCase().includes('not found')) {
+        errorMsg = 'No account found with this email address.';
+      }
+      
+      setError(errorMsg);
+      toast.error(errorMsg);
     }
 
     setLoading(false);
@@ -159,6 +185,26 @@ const LoginPage = () => {
                 >
                   Remember me
                 </Label>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <button type="button" className="inline-flex" tabIndex={-1}>
+                        <Info className="h-3.5 w-3.5 text-gray-400 hover:text-gray-600" />
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent side="top" className="max-w-[250px] text-xs">
+                      <div className="flex items-start gap-2">
+                        <Shield className="h-4 w-4 text-[#00d9c5] flex-shrink-0 mt-0.5" />
+                        <p>
+                          Stores your encrypted credentials on this device for faster login and offline access.
+                          <span className="block mt-1 text-amber-500 font-medium">
+                            Only enable on personal, trusted devices.
+                          </span>
+                        </p>
+                      </div>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               </div>
               <Link to="/forgot-password" className="text-xs text-[#00d9c5] hover:underline">
                 Forgot password?

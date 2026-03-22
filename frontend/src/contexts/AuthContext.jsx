@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { secureSet, secureGet, secureRemove, isSecureStorageAvailable } from '@/lib/secureStorage';
+import { getDeviceId, getDeviceIdHeaders } from '@/lib/deviceId';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || '';
 
@@ -7,27 +8,7 @@ const API_URL = process.env.REACT_APP_BACKEND_URL || '';
 const STORAGE_KEYS = {
   REMEMBERED_USER: 'pedotg_remembered_user',
   CACHED_USER: 'pedotg_cached_user',
-  AUTH_TOKENS: 'auth_tokens',
-  DEVICE_ID: 'pedotg_device_id'
-};
-
-/**
- * Get or create a stable device identifier.
- * This is stored in localStorage and sent with login requests
- * to provide better device tracking than user-agent alone.
- */
-const getDeviceId = () => {
-  let deviceId = localStorage.getItem(STORAGE_KEYS.DEVICE_ID);
-  if (!deviceId) {
-    // Generate a UUID v4
-    deviceId = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
-      const r = Math.random() * 16 | 0;
-      const v = c === 'x' ? r : (r & 0x3 | 0x8);
-      return v.toString(16);
-    });
-    localStorage.setItem(STORAGE_KEYS.DEVICE_ID, deviceId);
-  }
-  return deviceId;
+  AUTH_TOKENS: 'auth_tokens'
 };
 
 const AuthContext = createContext(null);
@@ -175,10 +156,7 @@ export const AuthProvider = ({ children }) => {
           const response = await fetch(`${API_URL}/api/auth/login`, {
             method: 'POST',
             credentials: 'include',
-            headers: { 
-              'Content-Type': 'application/json',
-              'X-Device-ID': getDeviceId()
-            },
+            headers: getDeviceIdHeaders({ 'Content-Type': 'application/json' }),
             body: JSON.stringify({ email, password })
           });
 
@@ -305,10 +283,7 @@ export const AuthProvider = ({ children }) => {
       const response = await fetch(`${API_URL}/api/auth/login`, {
         method: 'POST',
         credentials: 'include',
-        headers: { 
-          'Content-Type': 'application/json',
-          'X-Device-ID': getDeviceId()
-        },
+        headers: getDeviceIdHeaders({ 'Content-Type': 'application/json' }),
         body: JSON.stringify({ email, password })
       });
 

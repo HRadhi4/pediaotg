@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { AlertCircle, Loader2, Lock, CheckCircle, ArrowLeft } from 'lucide-react';
+import { PasswordInput, ConfirmPasswordInput } from '@/components/auth/PasswordInput';
+import { validatePassword, isPasswordPolicyError } from '@/utils/passwordValidation';
+import { toast } from 'sonner';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || '';
 
@@ -16,8 +17,12 @@ const ResetPasswordPage = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+
+  // Validate password in real-time
+  const passwordValidation = useMemo(() => validatePassword(password), [password]);
 
   // No token provided
   if (!token) {
@@ -48,14 +53,19 @@ const ResetPasswordPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    setPasswordError('');
 
-    if (password !== confirmPassword) {
-      setError('Passwords do not match');
+    // Client-side validation (matches backend policy)
+    if (!passwordValidation.valid) {
+      const errorMsg = passwordValidation.errors[0];
+      setPasswordError(errorMsg);
+      toast.error(errorMsg);
       return;
     }
 
-    if (password.length < 6) {
-      setError('Password must be at least 6 characters');
+    if (password !== confirmPassword) {
+      setError('Passwords do not match');
+      toast.error('Passwords do not match');
       return;
     }
 
@@ -72,11 +82,21 @@ const ResetPasswordPage = () => {
 
       if (response.ok) {
         setSuccess(true);
+        toast.success('Password reset successfully!');
       } else {
-        setError(data.detail || 'Failed to reset password');
+        // Check if it's a password policy error
+        if (isPasswordPolicyError(data.detail)) {
+          setPasswordError(data.detail);
+          toast.error(data.detail);
+        } else {
+          setError(data.detail || 'Failed to reset password');
+          toast.error(data.detail || 'Failed to reset password');
+        }
       }
     } catch (err) {
-      setError('Network error. Please try again.');
+      const errorMsg = 'Network error. Please try again.';
+      setError(errorMsg);
+      toast.error(errorMsg);
     }
 
     setLoading(false);
@@ -99,6 +119,7 @@ const ResetPasswordPage = () => {
             <Button 
               onClick={() => navigate('/login')} 
               className="w-full bg-[#00d9c5] hover:bg-[#00c4b0]"
+              data-testid="reset-go-to-login"
             >
               Go to Login
             </Button>
@@ -117,7 +138,7 @@ const ResetPasswordPage = () => {
           </div>
           <CardTitle className="text-xl font-bold">Reset Password</CardTitle>
           <CardDescription className="text-sm">
-            Enter your new password below
+            Create a new secure password for your account
           </CardDescription>
         </CardHeader>
         <CardContent className="pt-0">
@@ -129,38 +150,33 @@ const ResetPasswordPage = () => {
               </div>
             )}
 
-            <div className="space-y-2">
-              <Label htmlFor="password">New Password</Label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                disabled={loading}
-                minLength={6}
-              />
-            </div>
+            <PasswordInput
+              id="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              label="New Password"
+              placeholder="Create a strong password"
+              error={passwordError}
+              showStrength={true}
+              showCriteria={true}
+              disabled={loading}
+              dataTestId="reset-password"
+              autoComplete="new-password"
+            />
 
-            <div className="space-y-2">
-              <Label htmlFor="confirmPassword">Confirm Password</Label>
-              <Input
-                id="confirmPassword"
-                type="password"
-                placeholder="••••••••"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                required
-                disabled={loading}
-                minLength={6}
-              />
-            </div>
+            <ConfirmPasswordInput
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              originalPassword={password}
+              disabled={loading}
+              dataTestId="reset-confirm-password"
+            />
 
             <Button
               type="submit"
               className="w-full bg-[#00d9c5] hover:bg-[#00c4b0] text-white"
-              disabled={loading}
+              disabled={loading || !passwordValidation.valid || password !== confirmPassword}
+              data-testid="reset-submit"
             >
               {loading ? (
                 <>

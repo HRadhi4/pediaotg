@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
@@ -6,6 +6,9 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { AlertCircle, Loader2, CheckCircle } from 'lucide-react';
+import { PasswordInput, ConfirmPasswordInput } from '@/components/auth/PasswordInput';
+import { validatePassword, isPasswordPolicyError } from '@/utils/passwordValidation';
+import { toast } from 'sonner';
 
 const SignupPage = () => {
   const navigate = useNavigate();
@@ -15,19 +18,28 @@ const SignupPage = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
   const [loading, setLoading] = useState(false);
+
+  // Validate password in real-time
+  const passwordValidation = useMemo(() => validatePassword(password), [password]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    setPasswordError('');
 
-    if (password !== confirmPassword) {
-      setError('Passwords do not match');
+    // Client-side validation (matches backend policy)
+    if (!passwordValidation.valid) {
+      const errorMsg = passwordValidation.errors[0];
+      setPasswordError(errorMsg);
+      toast.error(errorMsg);
       return;
     }
 
-    if (password.length < 6) {
-      setError('Password must be at least 6 characters');
+    if (password !== confirmPassword) {
+      setError('Passwords do not match');
+      toast.error('Passwords do not match');
       return;
     }
 
@@ -36,9 +48,17 @@ const SignupPage = () => {
     const result = await signup(email, password, name);
 
     if (result.success) {
+      toast.success('Account created successfully!');
       navigate('/');
     } else {
-      setError(result.error);
+      // Check if it's a password policy error from backend
+      if (isPasswordPolicyError(result.error)) {
+        setPasswordError(result.error);
+        toast.error(result.error);
+      } else {
+        setError(result.error);
+        toast.error(result.error);
+      }
     }
 
     setLoading(false);
@@ -92,6 +112,8 @@ const SignupPage = () => {
                 onChange={(e) => setName(e.target.value)}
                 required
                 disabled={loading}
+                data-testid="signup-name"
+                autoComplete="name"
               />
             </div>
 
@@ -105,39 +127,38 @@ const SignupPage = () => {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 disabled={loading}
+                data-testid="signup-email"
+                autoComplete="email"
               />
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                disabled={loading}
-              />
-            </div>
+            <PasswordInput
+              id="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              label="Password"
+              placeholder="Create a strong password"
+              error={passwordError}
+              showStrength={true}
+              showCriteria={true}
+              disabled={loading}
+              dataTestId="signup-password"
+              autoComplete="new-password"
+            />
 
-            <div className="space-y-2">
-              <Label htmlFor="confirmPassword">Confirm Password</Label>
-              <Input
-                id="confirmPassword"
-                type="password"
-                placeholder="••••••••"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                required
-                disabled={loading}
-              />
-            </div>
+            <ConfirmPasswordInput
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              originalPassword={password}
+              disabled={loading}
+              dataTestId="signup-confirm-password"
+            />
 
             <Button
               type="submit"
               className="w-full bg-[#00d9c5] hover:bg-[#00c4b0] text-white"
-              disabled={loading}
+              disabled={loading || !passwordValidation.valid || password !== confirmPassword}
+              data-testid="signup-submit"
             >
               {loading ? (
                 <>
