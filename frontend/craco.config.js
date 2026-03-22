@@ -49,6 +49,12 @@ const webpackConfig = {
       '@': path.resolve(__dirname, 'src'),
     },
     configure: (webpackConfig) => {
+      
+      // SECURITY: Disable source maps in production
+      // Source maps expose original source code to browser inspector
+      if (isProduction) {
+        webpackConfig.devtool = false;
+      }
 
       // Add ignored patterns to reduce watched directories
         webpackConfig.watchOptions = {

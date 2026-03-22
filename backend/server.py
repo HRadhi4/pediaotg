@@ -16,7 +16,8 @@ from contextlib import asynccontextmanager
 from middleware.security import (
     SecurityHeadersMiddleware,
     RateLimitMiddleware,
-    ErrorHandlerMiddleware
+    ErrorHandlerMiddleware,
+    AdminRouteProtectionMiddleware
 )
 
 # Import optimized Tesseract OCR service (100% local, medical-grade preprocessing)
@@ -617,6 +618,8 @@ app.add_middleware(
 )
 
 # Add security middleware (order matters - added after CORS)
+# AdminRouteProtection first to block unauthorized admin access early
+app.add_middleware(AdminRouteProtectionMiddleware)
 app.add_middleware(SecurityHeadersMiddleware)
 app.add_middleware(RateLimitMiddleware)
 app.add_middleware(ErrorHandlerMiddleware)

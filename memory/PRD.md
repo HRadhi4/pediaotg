@@ -33,6 +33,17 @@ The application is now a fully offline-capable PWA with:
 - **iOS Support**: Apple-specific meta tags for Safari PWA support
 - **Secure Credential Storage**: AES-GCM encryption for all stored credentials
 
+### Security Hardening (March 2026)
+Comprehensive security audit and hardening implemented:
+- **RBAC System**: Role-based access control with deny-by-default rules (`/backend/middleware/rbac.py`)
+- **Admin Route Protection**: Multi-layer protection for admin endpoints
+- **Security Headers**: Full CSP, X-Frame-Options, HSTS, X-Content-Type-Options, etc.
+- **Rate Limiting**: Login (5/15min), Admin (30/min), General (100/min)
+- **Source Maps Disabled**: Production builds do not expose source maps
+- **Fail-Fast Config**: Required secrets must be set or app fails to start
+- **No Hardcoded Secrets**: All sensitive config from environment variables only
+- See `/app/SECURITY_AUDIT.md` for full details
+
 ### Children Section
 - **Drugs Page**: Data-driven dosing calculator with comprehensive renal dose adjustment system based on Chapter 31 formulary
 - **Electrolytes Correction Calculator**: Multi-electrolyte calculator (Calcium, Magnesium, Potassium IV/PO, Sodium Bicarbonate, Sodium, Phosphate)

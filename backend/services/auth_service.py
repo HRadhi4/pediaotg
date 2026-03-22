@@ -49,20 +49,33 @@ class AuthService:
             - TRIAL_DAYS: Trial subscription length (default: 3)
         """
         self.db = db
-        self.jwt_secret = os.environ.get('JWT_SECRET_KEY', 'default-secret-key')
+        
+        # SECURITY: Required secrets - fail fast if not provided
+        self.jwt_secret = os.environ.get('JWT_SECRET_KEY')
+        if not self.jwt_secret:
+            raise ValueError("JWT_SECRET_KEY environment variable is required")
+        
         self.jwt_algorithm = os.environ.get('JWT_ALGORITHM', 'HS256')
         self.access_token_expire = int(os.environ.get('ACCESS_TOKEN_EXPIRE_MINUTES', 30))
         self.refresh_token_expire = int(os.environ.get('REFRESH_TOKEN_EXPIRE_DAYS', 7))
-        # Admin account - uses hashed password for security
-        self.admin_email = os.environ.get('ADMIN_EMAIL', 'admin@pedotg.com').lower()
-        # Store hashed version of admin password (bcrypt hash of the password)
+        
+        # Admin account - MUST be configured via environment
+        self.admin_email = os.environ.get('ADMIN_EMAIL')
+        if not self.admin_email:
+            raise ValueError("ADMIN_EMAIL environment variable is required")
+        self.admin_email = self.admin_email.lower()
+        
+        # Admin password - prefer hash, require at least one
         self._admin_password_hash = os.environ.get('ADMIN_PASSWORD_HASH', '')
-        # Fallback: if no hash provided, hash the plain password on first load (for backward compatibility)
-        self._admin_password_plain = os.environ.get('ADMIN_PASSWORD', 'SMC159951')
-        # Tester account - uses hashed password for security
-        self.tester_email = os.environ.get('TESTER_EMAIL', 'test@pedotg.com').lower()
+        self._admin_password_plain = os.environ.get('ADMIN_PASSWORD', '')
+        if not self._admin_password_hash and not self._admin_password_plain:
+            raise ValueError("ADMIN_PASSWORD_HASH or ADMIN_PASSWORD environment variable is required")
+        
+        # Tester account (optional)
+        self.tester_email = os.environ.get('TESTER_EMAIL', '').lower()
         self._tester_password_hash = os.environ.get('TESTER_PASSWORD_HASH', '')
-        self._tester_password_plain = os.environ.get('TESTER_PASSWORD', 'SMC2000')
+        self._tester_password_plain = os.environ.get('TESTER_PASSWORD', '')
+        
         self.trial_days = int(os.environ.get('TRIAL_DAYS', 3))
     
     def _verify_special_account_password(self, password: str, stored_hash: str, fallback_plain: str) -> bool:
