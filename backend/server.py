@@ -644,7 +644,7 @@ else:
         cors_origins = [
             "http://localhost:3000",
             "http://127.0.0.1:3000",
-            "https://pwa-security-build.preview.emergentagent.com",
+            "https://pediatric-security.preview.emergentagent.com",
             "https://app.pedotg.com",
             "https://pedotg.com",
             "https://www.pedotg.com",

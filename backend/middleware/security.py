@@ -113,7 +113,7 @@ def get_client_ip(request: Request) -> str:
 # Allowed sources for CSP
 CSP_ALLOWED_ORIGINS = [
     "'self'",
-    "https://pwa-security-build.preview.emergentagent.com",
+    "https://pediatric-security.preview.emergentagent.com",
     "https://app.pedotg.com",
     "https://pedotg.com",
     "https://www.pedotg.com",

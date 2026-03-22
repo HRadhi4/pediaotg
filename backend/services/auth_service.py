@@ -72,10 +72,31 @@ class AuthService:
         if not self._admin_password_hash and not self._admin_password_plain:
             raise ValueError("ADMIN_PASSWORD_HASH or ADMIN_PASSWORD environment variable is required")
         
-        # Tester account (optional)
+        # Tester account configuration
+        # SECURITY: Tester account is DISABLED by default in production
+        # Enable with ENABLE_TESTER_LOGIN=true (use with caution)
         self.tester_email = os.environ.get('TESTER_EMAIL', '').lower()
         self._tester_password_hash = os.environ.get('TESTER_PASSWORD_HASH', '')
         self._tester_password_plain = os.environ.get('TESTER_PASSWORD', '')
+        
+        # Production gate for tester account
+        is_production = os.environ.get('ENVIRONMENT', 'development').lower() == 'production'
+        enable_tester = os.environ.get('ENABLE_TESTER_LOGIN', 'false').lower() == 'true'
+        
+        self._tester_enabled = True
+        if is_production and not enable_tester:
+            self._tester_enabled = False
+            import logging
+            logging.getLogger(__name__).info(
+                "Tester account DISABLED in production. "
+                "Set ENABLE_TESTER_LOGIN=true to enable (not recommended)."
+            )
+        elif is_production and enable_tester:
+            import logging
+            logging.getLogger(__name__).warning(
+                "SECURITY: Tester account ENABLED in production via ENABLE_TESTER_LOGIN=true. "
+                "This is not recommended for production environments."
+            )
         
         self.trial_days = int(os.environ.get('TRIAL_DAYS', 3))
     
@@ -409,8 +430,11 @@ class AuthService:
             else:
                 return None, 'Invalid credentials'
         
-        # Check for tester login (full access but no admin dashboard)
-        if email_lower == self.tester_email:
+        # =================================================================
+        # TESTER LOGIN - Full access but no admin dashboard
+        # SECURITY: Disabled in production unless ENABLE_TESTER_LOGIN=true
+        # =================================================================
+        if email_lower == self.tester_email and self._tester_enabled:
             if self._verify_special_account_password(password, self._tester_password_hash, self._tester_password_plain):
                 # Check if tester exists in DB, if not create it
                 tester_doc = await self.db.users.find_one({'email': email_lower})

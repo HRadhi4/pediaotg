@@ -1,12 +1,53 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { CheckCircle, Loader2, Crown, Clock, AlertCircle, XCircle } from 'lucide-react';
+import { CheckCircle, Loader2, Crown, Clock, AlertCircle, XCircle, Smartphone, Monitor } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || '';
+
+/**
+ * Detect if user is on a mobile device
+ */
+const isMobileDevice = () => {
+  if (typeof window === 'undefined') return false;
+  
+  // Check for mobile user agents
+  const mobileRegex = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|mobile|CriOS/i;
+  const isMobileUA = mobileRegex.test(navigator.userAgent);
+  
+  // Also check screen width as a fallback
+  const isSmallScreen = window.innerWidth <= 768;
+  
+  // Check for touch capability
+  const hasTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+  
+  return isMobileUA || (isSmallScreen && hasTouch);
+};
+
+/**
+ * Detect if running in a preview/development environment
+ */
+const isPreviewEnvironment = () => {
+  if (typeof window === 'undefined') return false;
+  
+  const hostname = window.location.hostname;
+  
+  // Check for common preview/staging patterns
+  const previewPatterns = [
+    'preview.emergentagent.com',
+    'localhost',
+    '127.0.0.1',
+    'staging',
+    'dev.',
+    'test.',
+    '.local'
+  ];
+  
+  return previewPatterns.some(pattern => hostname.includes(pattern));
+};
 
 /**
  * Error message mapping for PayPal error codes
@@ -64,6 +105,13 @@ const PricingPage = () => {
   const [loading, setLoading] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [error, setError] = useState(null);
+  const [showMobileWarning, setShowMobileWarning] = useState(false);
+  const [pendingPlan, setPendingPlan] = useState(null);
+
+  // Detect mobile + preview environment combination
+  const isMobile = useMemo(() => isMobileDevice(), []);
+  const isPreview = useMemo(() => isPreviewEnvironment(), []);
+  const shouldWarnMobile = isMobile && isPreview;
 
   useEffect(() => {
     fetchPricing();
@@ -92,6 +140,17 @@ const PricingPage = () => {
     if (loading) {
       return;
     }
+
+    // If on mobile in preview environment, show warning first
+    if (shouldWarnMobile && !showMobileWarning) {
+      setPendingPlan(planName);
+      setShowMobileWarning(true);
+      return;
+    }
+
+    // Reset mobile warning state
+    setShowMobileWarning(false);
+    setPendingPlan(null);
 
     setLoading(true);
     setSelectedPlan(planName);
@@ -162,6 +221,74 @@ const PricingPage = () => {
 
   const trialDaysLeft = getTrialRemaining();
 
+  // Handle proceeding with payment despite mobile warning
+  const handleProceedAnyway = () => {
+    if (pendingPlan) {
+      setShowMobileWarning(false);
+      // Set a flag to bypass the warning check
+      const plan = pendingPlan;
+      setPendingPlan(null);
+      
+      // Directly proceed with the plan
+      (async () => {
+        setLoading(true);
+        setSelectedPlan(plan);
+        
+        try {
+          console.log(`[PayPal] Creating order for plan: ${plan}`);
+          
+          const response = await fetch(`${API_URL}/api/subscription/create-order`, {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+              'Content-Type': 'application/json',
+              ...getAuthHeaders()
+            },
+            body: JSON.stringify({ plan_name: plan })
+          });
+
+          const data = await response.json();
+          console.log('[PayPal] Create order response:', data);
+
+          if (data.success && data.approval_url) {
+            localStorage.setItem('pending_order', JSON.stringify({
+              order_id: data.order_id,
+              plan_name: plan,
+              state_token: data.state_token
+            }));
+            
+            console.log('[PayPal] Redirecting to PayPal with order:', data.order_id);
+            window.location.href = data.approval_url;
+          } else {
+            const errorMessage = getErrorMessage(data);
+            console.error('[PayPal] Order creation failed:', data);
+            setError({
+              title: 'Payment Error',
+              message: errorMessage,
+              code: data.error_code
+            });
+          }
+        } catch (err) {
+          console.error('[PayPal] Network error:', err);
+          setError({
+            title: 'Connection Error',
+            message: 'Unable to connect to payment service. Please check your internet connection and try again.',
+            code: 'NETWORK_ERROR'
+          });
+        } finally {
+          setLoading(false);
+          setSelectedPlan(null);
+        }
+      })();
+    }
+  };
+
+  // Dismiss mobile warning
+  const handleDismissWarning = () => {
+    setShowMobileWarning(false);
+    setPendingPlan(null);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-teal-50 to-blue-50 dark:from-gray-900 dark:to-gray-800 py-12 px-4">
       <div className="max-w-4xl mx-auto">
@@ -203,6 +330,45 @@ const PricingPage = () => {
             >
               Dismiss
             </Button>
+          </Alert>
+        )}
+
+        {/* Mobile Preview Environment Warning */}
+        {showMobileWarning && (
+          <Alert className="mb-6 border-amber-500 bg-amber-50 dark:bg-amber-900/20" data-testid="mobile-preview-warning">
+            <Smartphone className="h-4 w-4 text-amber-600" />
+            <AlertTitle className="text-amber-800 dark:text-amber-400">Mobile Payment Notice</AlertTitle>
+            <AlertDescription className="text-amber-700 dark:text-amber-300">
+              <p className="mb-2">
+                You're using a mobile device in our preview/test environment. PayPal may block payments 
+                from mobile devices on non-production URLs for security reasons.
+              </p>
+              <p className="mb-3 text-sm">
+                <strong>Recommended:</strong> Please try subscribing from a desktop/laptop browser, 
+                or wait until the app is deployed to production.
+              </p>
+              <div className="flex flex-wrap gap-2">
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={handleDismissWarning}
+                  className="border-amber-500 text-amber-700 hover:bg-amber-100"
+                  data-testid="dismiss-mobile-warning"
+                >
+                  Cancel
+                </Button>
+                <Button 
+                  variant="default" 
+                  size="sm"
+                  onClick={handleProceedAnyway}
+                  className="bg-amber-600 hover:bg-amber-700 text-white"
+                  data-testid="proceed-anyway-btn"
+                >
+                  <Monitor className="h-3 w-3 mr-1" />
+                  Try Anyway
+                </Button>
+              </div>
+            </AlertDescription>
           </Alert>
         )}
 

@@ -5,11 +5,14 @@ from datetime import datetime, timezone
 import os
 import sys
 import hashlib
+import logging
 sys.path.insert(0, '/app/backend')
 
 from models.user import UserCreate, UserLogin, UserResponse, TokenResponse
 from services.auth_service import AuthService
 from motor.motor_asyncio import AsyncIOMotorClient
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 security = HTTPBearer(auto_error=False)
@@ -22,6 +25,82 @@ auth_service = AuthService(db)
 
 # Device limit constant
 MAX_DEVICES_PER_USER = 3
+
+# =============================================================================
+# COOKIE CONFIGURATION
+# =============================================================================
+# Centralized cookie settings to ensure consistency across all auth endpoints
+
+def is_production_environment() -> bool:
+    """
+    Determine if we're running in production environment.
+    
+    Checks:
+    1. ENVIRONMENT env var (primary)
+    2. FRONTEND_URL starts with https (fallback)
+    """
+    env = os.environ.get('ENVIRONMENT', 'development').lower()
+    if env == 'production':
+        return True
+    
+    # Fallback: check if frontend URL is HTTPS
+    frontend_url = os.environ.get('FRONTEND_URL', '')
+    return frontend_url.startswith('https')
+
+
+def set_auth_cookies(
+    response: Response,
+    access_token: str,
+    refresh_token: str,
+    remember_me: bool = False
+) -> None:
+    """
+    Set authentication cookies with secure attributes.
+    
+    Centralized cookie-setting logic to ensure consistency across:
+    - login
+    - signup
+    - token refresh
+    
+    Security attributes:
+    - httponly: True (prevents JavaScript access)
+    - secure: True in production (requires HTTPS)
+    - samesite: "strict" in production, "lax" in development
+    
+    Args:
+        response: FastAPI Response object
+        access_token: JWT access token
+        refresh_token: JWT refresh token
+        remember_me: If True, use longer expiry for refresh token
+    """
+    is_production = is_production_environment()
+    
+    # Access token cookie (30 min expiry)
+    response.set_cookie(
+        key="access_token",
+        value=access_token,
+        httponly=True,
+        secure=is_production,
+        samesite="strict" if is_production else "lax",
+        max_age=1800  # 30 minutes
+    )
+    
+    # Refresh token cookie
+    # Longer expiry if remember_me, standard otherwise
+    refresh_max_age = 604800 if remember_me else 86400  # 7 days vs 1 day
+    response.set_cookie(
+        key="refresh_token",
+        value=refresh_token,
+        httponly=True,
+        secure=is_production,
+        samesite="strict" if is_production else "lax",
+        max_age=refresh_max_age
+    )
+    
+    if is_production:
+        logger.debug("Auth cookies set with production security (secure=true, samesite=strict)")
+    else:
+        logger.debug("Auth cookies set with development settings (secure=false, samesite=lax)")
 
 
 def generate_device_id(request: Request) -> str:
@@ -199,24 +278,8 @@ async def signup(user_data: UserCreate, response: Response):
     access_token = auth_service.create_access_token(user.id, user.is_admin)
     refresh_token = auth_service.create_refresh_token(user.id)
     
-    # Set HTTP-only cookie for web clients with secure flags
-    is_production = os.environ.get('FRONTEND_URL', '').startswith('https')
-    response.set_cookie(
-        key="access_token",
-        value=access_token,
-        httponly=True,
-        secure=is_production,
-        samesite="strict" if is_production else "lax",
-        max_age=1800  # 30 minutes
-    )
-    response.set_cookie(
-        key="refresh_token",
-        value=refresh_token,
-        httponly=True,
-        secure=is_production,
-        samesite="strict" if is_production else "lax",
-        max_age=604800  # 7 days
-    )
+    # Set HTTP-only cookies with secure flags using centralized helper
+    set_auth_cookies(response, access_token, refresh_token, remember_me=False)
     
     # Get user with subscription info
     user_response = await auth_service.get_user_with_subscription(user.id)
@@ -288,26 +351,11 @@ async def login(credentials: UserLogin, request: Request, response: Response):
         upsert=True
     )
     
-    # Set HTTP-only cookies with secure flags
-    # secure=True requires HTTPS, samesite=strict for CSRF protection
-    is_production = os.environ.get('FRONTEND_URL', '').startswith('https')
-    response.set_cookie(
-        key="access_token",
-        value=access_token,
-        httponly=True,
-        secure=is_production,
-        samesite="strict" if is_production else "lax",
-        max_age=1800
-    )
-    response.set_cookie(
-        key="refresh_token",
-        value=refresh_token,
-        httponly=True,
-        secure=is_production,
-        samesite="strict" if is_production else "lax",
-        max_age=604800
-    )
+    # Set HTTP-only cookies with secure flags using centralized helper
+    set_auth_cookies(response, access_token, refresh_token, remember_me=True)
+    
     # Store device_id in cookie for logout
+    is_production = is_production_environment()
     response.set_cookie(
         key="device_id",
         value=device_id,
@@ -425,23 +473,8 @@ async def refresh_token(request: Request, response: Response):
     access_token = auth_service.create_access_token(user.id, user.is_admin)
     new_refresh_token = auth_service.create_refresh_token(user.id)
     
-    # Update cookies
-    response.set_cookie(
-        key="access_token",
-        value=access_token,
-        httponly=True,
-        secure=False,
-        samesite="lax",
-        max_age=1800
-    )
-    response.set_cookie(
-        key="refresh_token",
-        value=new_refresh_token,
-        httponly=True,
-        secure=False,
-        samesite="lax",
-        max_age=604800
-    )
+    # Update cookies using centralized helper with secure settings
+    set_auth_cookies(response, access_token, new_refresh_token, remember_me=True)
     
     user_response = await auth_service.get_user_with_subscription(user.id)
     

@@ -59,6 +59,149 @@ paypal_service = PayPalService()
 subscription_service = SubscriptionService(db)
 auth_service = AuthService(db)
 
+# =============================================================================
+# CONFIGURATION FLAGS
+# =============================================================================
+
+# Debug endpoints control - disabled by default in production
+# Set ENABLE_SUBSCRIPTION_DEBUG=true to enable /verify-paypal and /self-test
+ENABLE_SUBSCRIPTION_DEBUG = os.environ.get('ENABLE_SUBSCRIPTION_DEBUG', 'false').lower() == 'true'
+
+# PayPal webhook verification - should always be enabled in production
+# Set PAYPAL_WEBHOOK_ID to enable signature verification
+PAYPAL_WEBHOOK_ID = os.environ.get('PAYPAL_WEBHOOK_ID', '')
+
+# PayPal debug logging - disabled by default to protect PII
+# Set PAYPAL_DEBUG=true to log full webhook payloads
+PAYPAL_DEBUG = os.environ.get('PAYPAL_DEBUG', 'false').lower() == 'true'
+
+# Log configuration on startup
+if ENABLE_SUBSCRIPTION_DEBUG:
+    logger.warning("SUBSCRIPTION DEBUG ENDPOINTS ENABLED - /verify-paypal and /self-test are accessible")
+else:
+    logger.info("Subscription debug endpoints disabled (set ENABLE_SUBSCRIPTION_DEBUG=true to enable)")
+
+if PAYPAL_WEBHOOK_ID:
+    logger.info(f"PayPal webhook verification enabled (webhook_id: {PAYPAL_WEBHOOK_ID[:8]}...)")
+else:
+    logger.warning("PayPal webhook verification DISABLED - no PAYPAL_WEBHOOK_ID configured")
+
+
+# =============================================================================
+# PAYPAL WEBHOOK SIGNATURE VERIFICATION
+# =============================================================================
+
+import hashlib
+import base64
+import zlib
+from typing import Tuple
+import httpx
+
+async def verify_paypal_webhook_signature(
+    request: Request,
+    body: bytes
+) -> Tuple[bool, str]:
+    """
+    Verify PayPal webhook signature using their certificate-based verification.
+    
+    PayPal uses the following headers for verification:
+    - PAYPAL-TRANSMISSION-ID: Unique message ID
+    - PAYPAL-TRANSMISSION-SIG: The signature
+    - PAYPAL-CERT-URL: URL to fetch the signing certificate
+    - PAYPAL-AUTH-ALGO: Algorithm used (e.g., SHA256withRSA)
+    - PAYPAL-TRANSMISSION-TIME: Timestamp
+    
+    Verification process:
+    1. Get required headers
+    2. Compute expected signature string
+    3. Call PayPal's verify-webhook-signature API
+    
+    Args:
+        request: FastAPI request object
+        body: Raw request body bytes
+    
+    Returns:
+        Tuple of (is_valid, error_message)
+    """
+    if not PAYPAL_WEBHOOK_ID:
+        logger.warning("Webhook signature verification skipped - no PAYPAL_WEBHOOK_ID configured")
+        return True, "Verification skipped (no webhook ID)"
+    
+    # Get required headers
+    transmission_id = request.headers.get('PAYPAL-TRANSMISSION-ID')
+    transmission_sig = request.headers.get('PAYPAL-TRANSMISSION-SIG')
+    cert_url = request.headers.get('PAYPAL-CERT-URL')
+    auth_algo = request.headers.get('PAYPAL-AUTH-ALGO')
+    transmission_time = request.headers.get('PAYPAL-TRANSMISSION-TIME')
+    
+    # Check all required headers are present
+    if not all([transmission_id, transmission_sig, cert_url, auth_algo, transmission_time]):
+        missing = []
+        if not transmission_id: missing.append('PAYPAL-TRANSMISSION-ID')
+        if not transmission_sig: missing.append('PAYPAL-TRANSMISSION-SIG')
+        if not cert_url: missing.append('PAYPAL-CERT-URL')
+        if not auth_algo: missing.append('PAYPAL-AUTH-ALGO')
+        if not transmission_time: missing.append('PAYPAL-TRANSMISSION-TIME')
+        return False, f"Missing required PayPal headers: {', '.join(missing)}"
+    
+    # Use PayPal's verify-webhook-signature API for proper verification
+    try:
+        paypal_mode = os.environ.get('PAYPAL_MODE', 'sandbox')
+        base_url = "https://api-m.paypal.com" if paypal_mode == 'live' else "https://api-m.sandbox.paypal.com"
+        
+        # Get access token
+        client_id = os.environ.get('PAYPAL_CLIENT_ID', '')
+        client_secret = os.environ.get('PAYPAL_CLIENT_SECRET', '')
+        
+        if not client_id or not client_secret:
+            return False, "PayPal credentials not configured"
+        
+        async with httpx.AsyncClient() as http_client:
+            # Get access token
+            auth_response = await http_client.post(
+                f"{base_url}/v1/oauth2/token",
+                data={"grant_type": "client_credentials"},
+                auth=(client_id, client_secret),
+                headers={"Content-Type": "application/x-www-form-urlencoded"}
+            )
+            
+            if auth_response.status_code != 200:
+                return False, "Failed to authenticate with PayPal"
+            
+            access_token = auth_response.json().get('access_token')
+            
+            # Verify webhook signature
+            verify_response = await http_client.post(
+                f"{base_url}/v1/notifications/verify-webhook-signature",
+                json={
+                    "auth_algo": auth_algo,
+                    "cert_url": cert_url,
+                    "transmission_id": transmission_id,
+                    "transmission_sig": transmission_sig,
+                    "transmission_time": transmission_time,
+                    "webhook_id": PAYPAL_WEBHOOK_ID,
+                    "webhook_event": body.decode('utf-8') if isinstance(body, bytes) else body
+                },
+                headers={
+                    "Authorization": f"Bearer {access_token}",
+                    "Content-Type": "application/json"
+                }
+            )
+            
+            if verify_response.status_code == 200:
+                result = verify_response.json()
+                verification_status = result.get('verification_status', 'FAILURE')
+                if verification_status == 'SUCCESS':
+                    return True, "Signature verified"
+                else:
+                    return False, f"Verification failed: {verification_status}"
+            else:
+                return False, f"PayPal verification API returned {verify_response.status_code}"
+                
+    except Exception as e:
+        logger.error(f"Webhook signature verification error: {e}")
+        return False, f"Verification error: {str(e)}"
+
 
 class PricingResponse(BaseModel):
     monthly_price: float
@@ -121,17 +264,33 @@ async def get_pricing():
 
 
 @router.get("/verify-paypal")
-async def verify_paypal_config():
+async def verify_paypal_config(admin: UserResponse = Depends(require_auth)):
     """
     Debug endpoint to verify PayPal configuration.
     Returns credential status without exposing secrets.
+    
+    SECURITY:
+    - Disabled by default in production
+    - Requires authentication
+    - When ENABLE_SUBSCRIPTION_DEBUG=false, requires admin privileges
+    - Set ENABLE_SUBSCRIPTION_DEBUG=true to allow any authenticated user
     """
+    # Check if debug mode is enabled
+    if not ENABLE_SUBSCRIPTION_DEBUG:
+        # In non-debug mode, require admin privileges
+        if not admin.is_admin:
+            raise HTTPException(
+                status_code=403,
+                detail="Debug endpoints are disabled. Set ENABLE_SUBSCRIPTION_DEBUG=true or use admin account."
+            )
+        logger.warning(f"Admin {admin.email} accessed /verify-paypal debug endpoint")
+    
     result = await paypal_service.verify_credentials()
     return result
 
 
 @router.get("/self-test")
-async def paypal_self_test():
+async def paypal_self_test(admin: UserResponse = Depends(require_auth)):
     """
     Run comprehensive PayPal integration self-test.
     
@@ -141,7 +300,23 @@ async def paypal_self_test():
     3. API is reachable
     
     Returns detailed report of each step.
+    
+    SECURITY:
+    - Disabled by default in production
+    - Requires authentication
+    - When ENABLE_SUBSCRIPTION_DEBUG=false, requires admin privileges
+    - Set ENABLE_SUBSCRIPTION_DEBUG=true to allow any authenticated user
     """
+    # Check if debug mode is enabled
+    if not ENABLE_SUBSCRIPTION_DEBUG:
+        # In non-debug mode, require admin privileges
+        if not admin.is_admin:
+            raise HTTPException(
+                status_code=403,
+                detail="Debug endpoints are disabled. Set ENABLE_SUBSCRIPTION_DEBUG=true or use admin account."
+            )
+        logger.warning(f"Admin {admin.email} accessed /self-test debug endpoint")
+    
     report = await paypal_service.self_test()
     return report
 
@@ -679,40 +854,102 @@ async def handle_paypal_webhook(request: Request):
     """
     Handle PayPal webhooks for subscription events.
     
+    SECURITY:
+    - Verifies webhook signature using PayPal's verification API
+    - Only processes events after successful verification
+    - Minimal logging to protect PII (full body only if PAYPAL_DEBUG=true)
+    
     Events handled:
     - PAYMENT.CAPTURE.COMPLETED: Successful payment
     - PAYMENT.CAPTURE.DENIED: Failed payment
+    - BILLING.SUBSCRIPTION.ACTIVATED: New subscription
+    - BILLING.SUBSCRIPTION.CANCELLED: Subscription cancelled
     
-    TODO: Add webhook signature verification for production
+    Required env vars for verification:
+    - PAYPAL_WEBHOOK_ID: Your webhook endpoint ID from PayPal Developer Dashboard
+    - PAYPAL_CLIENT_ID: PayPal API client ID
+    - PAYPAL_CLIENT_SECRET: PayPal API client secret
     """
     try:
+        # Read raw body for signature verification
+        body_bytes = await request.body()
         body = await request.json()
-        event_type = body.get('event_type', '')
         
-        logger.info(f"Received PayPal webhook: {event_type}")
-        logger.debug(f"Webhook body: {body}")
+        # Extract minimal identifying information for logging
+        event_type = body.get('event_type', 'UNKNOWN')
+        event_id = body.get('id', 'unknown')
+        resource = body.get('resource', {})
+        resource_id = resource.get('id', 'unknown')
+        custom_id = resource.get('custom_id', '')  # Our user ID
         
-        # TODO: Verify webhook signature for production
-        # headers = dict(request.headers)
-        # verify_webhook_signature(headers, body)
+        # Log minimal info (no PII)
+        logger.info(f"PayPal webhook received: event_type={event_type}, event_id={event_id}, resource_id={resource_id[:20] if resource_id else 'N/A'}")
         
+        # Full body logging only in debug mode
+        if PAYPAL_DEBUG:
+            logger.debug(f"Full webhook body: {body}")
+        
+        # =================================================================
+        # SIGNATURE VERIFICATION
+        # =================================================================
+        is_valid, verification_message = await verify_paypal_webhook_signature(request, body_bytes)
+        
+        if not is_valid:
+            logger.warning(f"PayPal webhook signature verification FAILED: {verification_message}")
+            logger.warning(f"Rejected event: event_type={event_type}, event_id={event_id}")
+            return JSONResponse(
+                status_code=401,
+                content={"status": "error", "message": "Webhook signature verification failed"}
+            )
+        
+        logger.info(f"Webhook signature verified: {verification_message}")
+        
+        # =================================================================
+        # EVENT PROCESSING
+        # =================================================================
         if event_type == 'PAYMENT.CAPTURE.COMPLETED':
             # Handle successful payment/renewal
-            resource = body.get('resource', {})
-            custom_id = resource.get('custom_id')
-            
             if custom_id:
-                logger.info(f"Payment completed for user: {custom_id}")
-                # Could update subscription renewal date here
+                logger.info(f"Payment completed for user_ref: {custom_id[:16]}...")
+                # Update subscription renewal date
+                await db.subscriptions.update_one(
+                    {'user_id': custom_id},
+                    {'$set': {
+                        'last_payment_at': datetime.now(timezone.utc).isoformat(),
+                        'payment_status': 'completed'
+                    }}
+                )
         
         elif event_type == 'PAYMENT.CAPTURE.DENIED':
-            # Handle failed payment
-            resource = body.get('resource', {})
-            logger.warning(f"Payment denied: {resource}")
+            # Handle failed payment - log without PII
+            logger.warning(f"Payment denied for resource: {resource_id[:20] if resource_id else 'N/A'}")
+            if custom_id:
+                await db.subscriptions.update_one(
+                    {'user_id': custom_id},
+                    {'$set': {'payment_status': 'denied'}}
+                )
         
-        return {"status": "received"}
+        elif event_type == 'BILLING.SUBSCRIPTION.ACTIVATED':
+            logger.info(f"Subscription activated: resource_id={resource_id[:20] if resource_id else 'N/A'}")
+        
+        elif event_type == 'BILLING.SUBSCRIPTION.CANCELLED':
+            logger.info(f"Subscription cancelled: resource_id={resource_id[:20] if resource_id else 'N/A'}")
+            if custom_id:
+                await db.subscriptions.update_one(
+                    {'user_id': custom_id},
+                    {'$set': {
+                        'status': 'cancelled',
+                        'cancelled_at': datetime.now(timezone.utc).isoformat()
+                    }}
+                )
+        
+        else:
+            logger.debug(f"Unhandled webhook event type: {event_type}")
+        
+        return {"status": "received", "event_id": event_id}
     
     except Exception as e:
-        logger.error(f"Webhook error: {e}", exc_info=True)
-        # Return 200 to prevent PayPal retries
-        return {"status": "error", "message": str(e)}
+        logger.error(f"Webhook processing error: {e}", exc_info=PAYPAL_DEBUG)
+        # Return 200 to prevent PayPal retries for processing errors
+        # (vs 401 for verification failures which should be retried)
+        return {"status": "error", "message": "Processing error"}

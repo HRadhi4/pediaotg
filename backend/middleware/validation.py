@@ -13,6 +13,15 @@ Features:
 Configuration:
 - STRICT_INPUT_VALIDATION=true: Block requests with detected threats (returns 400)
 - STRICT_INPUT_VALIDATION=false (default): Log threats but allow requests through
+
+RECOMMENDED PRODUCTION SETTINGS:
+- Set STRICT_INPUT_VALIDATION=true in production for maximum security
+- This may cause false positives for legitimate requests containing special characters
+- If false positives occur, review the INJECTION_PATTERNS list to adjust sensitivity
+
+TRADEOFFS:
+- true: Maximum security, may block legitimate requests with special characters
+- false: Allows all requests through, only logs potential threats for review
 """
 
 from fastapi import Request, HTTPException
@@ -28,8 +37,23 @@ logger = logging.getLogger(__name__)
 # Maximum request body size (10MB)
 MAX_BODY_SIZE = 10 * 1024 * 1024
 
-# Configuration: strict mode blocks malicious requests, non-strict mode logs only
+# =============================================================================
+# STRICT INPUT VALIDATION CONFIGURATION
+# =============================================================================
+# Read once at module load to ensure consistent behavior
+# 
+# Recommended: true in production, false in development
+# 
+# When true: Requests with detected injection/XSS patterns are BLOCKED (400 error)
+# When false: Threats are LOGGED but requests are allowed through
+
 STRICT_INPUT_VALIDATION = os.environ.get('STRICT_INPUT_VALIDATION', 'false').lower() == 'true'
+
+# Log configuration status at module load
+if STRICT_INPUT_VALIDATION:
+    logger.info("INPUT VALIDATION: STRICT MODE ENABLED - Malicious payloads will be BLOCKED (400)")
+else:
+    logger.info("INPUT VALIDATION: Permissive mode - Threats logged but allowed (set STRICT_INPUT_VALIDATION=true for production)")
 
 # Patterns that indicate potential injection attacks
 INJECTION_PATTERNS = [
