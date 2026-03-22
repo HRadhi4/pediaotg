@@ -53,11 +53,25 @@ db = client[os.environ['DB_NAME']]
 async def lifespan(app: FastAPI):
     """
     Lifespan context manager to handle startup and shutdown events.
+    - Creates database indexes
     - Starts the scheduler on startup
     - Stops the scheduler on shutdown
     """
     # Startup
     logger.info("Starting application...")
+    
+    # Create TTL index for revoked_tokens collection (auto-cleanup after 30 days)
+    try:
+        await db.revoked_tokens.create_index(
+            "expires_at",
+            expireAfterSeconds=0,  # MongoDB uses the date in expires_at field
+            name="revoked_tokens_ttl"
+        )
+        logger.info("Created TTL index for revoked_tokens collection")
+    except Exception as e:
+        # Index might already exist
+        logger.debug(f"TTL index creation: {e}")
+    
     scheduler = init_scheduler(db)
     scheduler.start()
     logger.info("Scheduler started - renewal reminders will run daily at 9:00 AM UTC")
@@ -298,10 +312,21 @@ async def analyze_blood_gas_image(request: BloodGasInput):
     - Automatic extraction of key metrics (pH, pCO2, pO2, etc.)
     - Optional LLM fallback for complex text parsing (OCR stays 100% local)
     
-    Note: LLM is used for TEXT parsing only, NOT for OCR.
+    LLM FALLBACK (PRIVACY NOTICE):
+    - LLM parsing is DISABLED by default to protect PHI (Protected Health Information)
+    - To enable, set ALLOW_REMOTE_LLM=true in environment
+    - When enabled, OCR text (NOT the image) may be sent to a third-party LLM endpoint
+    - The image itself is NEVER sent externally - OCR is always 100% local
+    
+    Environment Variables:
+    - ALLOW_REMOTE_LLM=true: Enable LLM text parsing fallback
+    - EMERGENT_LLM_KEY: API key for LLM service (required if LLM enabled)
     """
     if not request.image_base64:
         raise HTTPException(status_code=400, detail="Image is required")
+    
+    # Check if LLM fallback is allowed
+    allow_remote_llm = os.getenv("ALLOW_REMOTE_LLM", "false").lower() == "true"
     
     try:
         # Step 1: Perform OCR using 100% local medical-grade Tesseract
@@ -341,17 +366,19 @@ async def analyze_blood_gas_image(request: BloodGasInput):
                 response["low_confidence_warning"] = f"OCR confidence: {ocr_result.avg_confidence:.0%}. Consider taking a clearer photo."
             return response
         
-        # Step 3: If basic parsing failed, try LLM-assisted TEXT parsing
-        # (LLM parses the TEXT from OCR, NOT the image - OCR stays 100% local)
-        try:
-            from emergentintegrations.llm.chat import LlmChat, UserMessage
-            
-            api_key = os.getenv("EMERGENT_LLM_KEY")
-            if api_key and ocr_result.ocr_text.strip():
-                chat = LlmChat(
-                    api_key=api_key,
-                    session_id=f"blood-gas-parse-{uuid.uuid4()}",
-                    system_message="""You are a medical data parser. Given OCR text from a blood gas report, extract the values.
+        # Step 3: If basic parsing failed and LLM is allowed, try LLM-assisted TEXT parsing
+        # PRIVACY: Only OCR text is sent to LLM, NEVER the original image
+        if allow_remote_llm:
+            try:
+                from emergentintegrations.llm.chat import LlmChat, UserMessage
+                
+                api_key = os.getenv("EMERGENT_LLM_KEY")
+                if api_key and ocr_result.ocr_text.strip():
+                    logging.info("Using LLM fallback for blood gas text parsing (ALLOW_REMOTE_LLM=true)")
+                    chat = LlmChat(
+                        api_key=api_key,
+                        session_id=f"blood-gas-parse-{uuid.uuid4()}",
+                        system_message="""You are a medical data parser. Given OCR text from a blood gas report, extract the values.
 Return ONLY a JSON object with these fields (use null if not found):
 {
   "pH": number or null,
@@ -366,41 +393,41 @@ Return ONLY a JSON object with these fields (use null if not found):
   "Hb": number or null (g/dL)
 }
 Do not include any text outside the JSON."""
-                ).with_model("gemini", "gemini-2.5-flash")
-                
-                # Send OCR text (NOT image) to LLM for parsing
-                response = await chat.send_message(UserMessage(
-                    text=f"Parse these blood gas values from OCR text:\n\n{ocr_result.ocr_text}"
-                ))
-                
-                import json
-                clean_response = response.strip()
-                if clean_response.startswith("```"):
-                    clean_response = clean_response.split("```")[1]
-                    if clean_response.startswith("json"):
-                        clean_response = clean_response[4:]
-                clean_response = clean_response.strip()
-                if clean_response.endswith("```"):
-                    clean_response = clean_response[:-3].strip()
-                
-                extracted_values = json.loads(clean_response)
-                # Remove null values
-                extracted_values = {k: v for k, v in extracted_values.items() if v is not None}
-                
-                result_response = {
-                    "success": True,
-                    "values": extracted_values,
-                    "raw_text": ocr_result.ocr_text,
-                    "avg_confidence": ocr_result.avg_confidence,
-                    "confidence_avg": ocr_result.avg_confidence,
-                    "quality": quality,
-                    "engine": "paddle_ocr_local+llm_parser"
-                }
-                if ocr_result.avg_confidence < LOW_CONFIDENCE_THRESHOLD:
-                    result_response["low_confidence_warning"] = f"OCR confidence: {ocr_result.avg_confidence:.0%}. Consider taking a clearer photo."
-                return result_response
-        except Exception as llm_error:
-            logging.warning(f"LLM parsing fallback failed: {llm_error}")
+                    ).with_model("gemini", "gemini-2.5-flash")
+                    
+                    # Send OCR text (NOT image) to LLM for parsing
+                    response = await chat.send_message(UserMessage(
+                        text=f"Parse these blood gas values from OCR text:\n\n{ocr_result.ocr_text}"
+                    ))
+                    
+                    import json
+                    clean_response = response.strip()
+                    if clean_response.startswith("```"):
+                        clean_response = clean_response.split("```")[1]
+                        if clean_response.startswith("json"):
+                            clean_response = clean_response[4:]
+                    clean_response = clean_response.strip()
+                    if clean_response.endswith("```"):
+                        clean_response = clean_response[:-3].strip()
+                    
+                    extracted_values = json.loads(clean_response)
+                    # Remove null values
+                    extracted_values = {k: v for k, v in extracted_values.items() if v is not None}
+                    
+                    result_response = {
+                        "success": True,
+                        "values": extracted_values,
+                        "raw_text": ocr_result.ocr_text,
+                        "avg_confidence": ocr_result.avg_confidence,
+                        "confidence_avg": ocr_result.avg_confidence,
+                        "quality": quality,
+                        "engine": "paddle_ocr_local+llm_parser"
+                    }
+                    if ocr_result.avg_confidence < LOW_CONFIDENCE_THRESHOLD:
+                        result_response["low_confidence_warning"] = f"OCR confidence: {ocr_result.avg_confidence:.0%}. Consider taking a clearer photo."
+                    return result_response
+            except Exception as llm_error:
+                logging.warning(f"LLM parsing fallback failed: {llm_error}")
         
         # Return with whatever we have (no cloud fallback - stay 100% local)
         response = {

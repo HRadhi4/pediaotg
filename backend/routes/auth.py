@@ -26,13 +26,33 @@ MAX_DEVICES_PER_USER = 3
 
 def generate_device_id(request: Request) -> str:
     """
-    Generate a consistent device ID based on request characteristics.
-    Same device will always get the same ID, so re-logins don't count as new devices.
+    Generate a stable device identifier for device limit tracking.
+    
+    Identification Strategy (in order of preference):
+    1. X-Device-ID header: Stable client-generated ID stored in localStorage (preferred)
+    2. User-Agent: Browser/device fingerprint (fallback)
+    
+    The frontend should generate a UUID on first visit, store it in localStorage,
+    and send it with every login request via X-Device-ID header.
+    
+    Returns:
+        Hashed device identifier string (16 chars for backwards compatibility)
     """
     user_agent = request.headers.get('user-agent', 'unknown')
-    # Use only user-agent for consistent device identification
-    # This ensures the same browser/device always gets the same device_id
-    return hashlib.sha256(user_agent.encode()).hexdigest()[:16]
+    
+    # Prefer client-provided device ID (more stable across sessions)
+    client_device_id = request.headers.get("x-device-id", "")
+    
+    if client_device_id:
+        # Client provided a stable device ID - use it combined with user-agent
+        # This provides better stability while still differentiating device types
+        raw_id = f"{client_device_id}|{user_agent}"
+    else:
+        # Fallback: Use only user-agent (less stable but backwards compatible)
+        raw_id = user_agent
+    
+    # Hash for privacy and consistent length (16 chars for backwards compatibility)
+    return hashlib.sha256(raw_id.encode()).hexdigest()[:16]
 
 
 def get_device_info(request: Request) -> dict:
@@ -140,11 +160,17 @@ async def signup(user_data: UserCreate, response: Response):
     """
     Register a new user account
     
+    - Validates password strength against central policy
     - Creates user with hashed password
     - Automatically creates 3-day trial subscription
     - Sends welcome email
     - Returns access and refresh tokens
     """
+    # Validate password strength using central policy
+    is_valid, error_msg = auth_service.validate_password_strength(user_data.password)
+    if not is_valid:
+        raise HTTPException(status_code=400, detail=error_msg)
+    
     user, error = await auth_service.create_user(user_data)
     
     if error:
@@ -304,23 +330,46 @@ async def login(credentials: UserLogin, request: Request, response: Response):
 @router.post("/logout")
 async def logout(request: Request, response: Response):
     """
-    Logout - clears auth cookies and removes device registration
+    Logout - clears auth cookies, removes device registration, and revokes refresh token.
+    
+    Security:
+    - Revokes the refresh token to prevent reuse
+    - Clears all auth cookies
+    - Removes device from user's registered devices
     """
     # Get device_id from cookie to remove device registration
     device_id = request.cookies.get('device_id')
     
-    # Get user from token to identify which user's device to remove
-    token = request.cookies.get('access_token')
-    if token and device_id:
-        payload = auth_service.decode_token(token)
+    # Get tokens to revoke and identify user
+    access_token = request.cookies.get('access_token')
+    refresh_token = request.cookies.get('refresh_token')
+    
+    user_id = None
+    
+    # Try to get user_id from access token
+    if access_token:
+        payload = auth_service.decode_token(access_token)
         if payload:
             user_id = payload.get('sub')
-            if user_id:
-                # Remove device registration
-                await db.user_devices.delete_one({
-                    'user_id': user_id,
-                    'device_id': device_id
-                })
+    
+    # Revoke the refresh token if present
+    if refresh_token:
+        refresh_payload = auth_service.decode_token(refresh_token)
+        if refresh_payload:
+            jti = refresh_payload.get('jti')
+            token_user_id = refresh_payload.get('sub')
+            if jti and token_user_id:
+                await auth_service.revoke_token(jti, token_user_id, reason="logout")
+                logger.info(f"Revoked refresh token on logout: user={token_user_id}")
+            if not user_id:
+                user_id = token_user_id
+    
+    # Remove device registration
+    if user_id and device_id:
+        await db.user_devices.delete_one({
+            'user_id': user_id,
+            'device_id': device_id
+        })
     
     response.delete_cookie("access_token")
     response.delete_cookie("refresh_token")
@@ -331,7 +380,12 @@ async def logout(request: Request, response: Response):
 @router.post("/refresh", response_model=TokenResponse)
 async def refresh_token(request: Request, response: Response):
     """
-    Refresh access token using refresh token
+    Refresh access token using refresh token.
+    
+    Security checks:
+    - Validates refresh token signature and expiration
+    - Checks if token has been revoked (via jti)
+    - Issues new token pair on success
     """
     # Get refresh token from cookie or body
     token = request.cookies.get('refresh_token')
@@ -351,11 +405,21 @@ async def refresh_token(request: Request, response: Response):
     if not payload or payload.get('type') != 'refresh':
         raise HTTPException(status_code=401, detail="Invalid refresh token")
     
+    # Check if token has been revoked
+    jti = payload.get('jti')
+    if jti and await auth_service.is_token_revoked(jti):
+        logger.warning(f"Attempted use of revoked refresh token: jti={jti}")
+        raise HTTPException(status_code=401, detail="Token has been revoked")
+    
     user_id = payload.get('sub')
     user = await auth_service.get_user_by_id(user_id)
     
     if not user:
         raise HTTPException(status_code=401, detail="User not found")
+    
+    # Revoke the old refresh token (token rotation for security)
+    if jti:
+        await auth_service.revoke_token(jti, user_id, reason="token_refresh")
     
     # Generate new tokens
     access_token = auth_service.create_access_token(user.id, user.is_admin)
@@ -493,6 +557,7 @@ async def reset_password(request_data: ResetPasswordRequest):
     Reset password using token from email.
     
     - Validates token and expiration
+    - Validates password strength against central policy
     - Updates user password
     - Deletes used token
     """
@@ -508,9 +573,10 @@ async def reset_password(request_data: ResetPasswordRequest):
         await db.password_resets.delete_one({'token': request_data.token})
         raise HTTPException(status_code=400, detail="Reset token has expired")
     
-    # Validate password
-    if len(request_data.new_password) < 6:
-        raise HTTPException(status_code=400, detail="Password must be at least 6 characters")
+    # Validate password strength using central policy
+    is_valid, error_msg = auth_service.validate_password_strength(request_data.new_password)
+    if not is_valid:
+        raise HTTPException(status_code=400, detail=error_msg)
     
     # Update password
     hashed = auth_service.hash_password(request_data.new_password)

@@ -13,6 +13,21 @@
 | Missing role-based access control | ✅ FIXED | Implemented RBAC system (`/backend/middleware/rbac.py`) |
 | Regular users accessing admin APIs | ✅ FIXED | `require_admin` dependency on all admin endpoints |
 | IDOR on user resources | ✅ VERIFIED | User queries filtered by authenticated user ID |
+| Weak password policy | ✅ FIXED | Central `validate_password_strength` enforced on all flows |
+| Plain text passwords in production | ✅ FIXED | Production mode only accepts bcrypt hashes |
+| No token revocation | ✅ FIXED | JTI-based revocation with `revoked_tokens` collection |
+| Unstable device identification | ✅ FIXED | Client-generated device ID via `X-Device-ID` header |
+
+### 2. Password Policy (Enforced Everywhere)
+
+| Requirement | Enforced On |
+|-------------|-------------|
+| Minimum 8 characters | Signup, Password Reset, Admin Create/Edit User |
+| At least one uppercase | Signup, Password Reset, Admin Create/Edit User |
+| At least one lowercase | Signup, Password Reset, Admin Create/Edit User |
+| At least one digit | Signup, Password Reset, Admin Create/Edit User |
+| At least one special char | Signup, Password Reset, Admin Create/Edit User |
+| Common password check | Signup, Password Reset, Admin Create/Edit User |
 
 ### 2. Secrets & Configuration
 
@@ -88,6 +103,32 @@ object-src 'none';
 | Developer comments | ✅ REVIEWED | No sensitive comments in production code |
 | Business logic exposure | ✅ ACCEPTABLE | All sensitive logic is server-side |
 
+### 9. Token Security & Revocation
+
+| Feature | Status | Description |
+|---------|--------|-------------|
+| JTI in refresh tokens | ✅ IMPLEMENTED | Unique identifier for each refresh token |
+| Token revocation on logout | ✅ IMPLEMENTED | Refresh token revoked on explicit logout |
+| Token rotation on refresh | ✅ IMPLEMENTED | Old token revoked when new token issued |
+| Revoked token collection | ✅ IMPLEMENTED | `revoked_tokens` with TTL auto-cleanup |
+| Revocation check | ✅ IMPLEMENTED | Token refresh checks if JTI is revoked |
+
+### 10. LLM/PHI Safety
+
+| Feature | Status | Description |
+|---------|--------|-------------|
+| LLM off by default | ✅ IMPLEMENTED | `ALLOW_REMOTE_LLM=false` is default |
+| PHI protection | ✅ IMPLEMENTED | Image never sent externally, only OCR text if enabled |
+| Explicit opt-in | ✅ IMPLEMENTED | Must set `ALLOW_REMOTE_LLM=true` to enable |
+
+### 11. Device Identification
+
+| Feature | Status | Description |
+|---------|--------|-------------|
+| Client device ID | ✅ IMPLEMENTED | Frontend generates stable UUID in localStorage |
+| X-Device-ID header | ✅ IMPLEMENTED | Sent with login requests for better tracking |
+| Backward compatibility | ✅ MAINTAINED | Falls back to user-agent if header missing |
+
 ### 7. Data Storage Security
 
 | Storage | Data | Protection |
@@ -111,11 +152,14 @@ object-src 'none';
 
 1. `/app/backend/middleware/security.py` - Enhanced security headers, CSP, rate limiting
 2. `/app/backend/middleware/rbac.py` - NEW: Role-based access control system
-3. `/app/backend/middleware/validation.py` - NEW: Input validation & request logging
-4. `/app/backend/server.py` - Added all security middleware, tightened CORS
-5. `/app/backend/services/auth_service.py` - Removed hardcoded defaults, added password policy, token JTI
-6. `/app/frontend/craco.config.js` - Disabled source maps in production
-7. `/app/frontend/src/lib/secureStorage.js` - Improved key derivation with browser fingerprint
+3. `/app/backend/middleware/validation.py` - Input validation with STRICT_INPUT_VALIDATION mode
+4. `/app/backend/server.py` - Security middleware, CORS, LLM guard, TTL index for revoked tokens
+5. `/app/backend/services/auth_service.py` - Password policy, token revocation, production-only hash verification
+6. `/app/backend/routes/auth.py` - Password validation on signup/reset, token revocation on logout/refresh, device ID
+7. `/app/backend/routes/admin.py` - Password validation on user create/edit
+8. `/app/frontend/craco.config.js` - Disabled source maps in production
+9. `/app/frontend/src/lib/secureStorage.js` - Improved key derivation with browser fingerprint
+10. `/app/frontend/src/contexts/AuthContext.jsx` - Device ID generation and X-Device-ID header
 
 ## Remaining Risks (Require Manual Review)
 

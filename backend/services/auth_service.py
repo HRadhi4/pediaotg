@@ -82,27 +82,62 @@ class AuthService:
     def _verify_special_account_password(self, password: str, stored_hash: str, fallback_plain: str) -> bool:
         """
         Verify password for special accounts (admin/tester).
-        Uses hashed password if available, falls back to plain text comparison for backward compatibility.
+        
+        SECURITY BEHAVIOR:
+        - Production (ENVIRONMENT=production): ONLY accepts bcrypt hash verification
+        - Non-production: Falls back to plain text comparison for development convenience
+        
+        Args:
+            password: The password attempt
+            stored_hash: The bcrypt hash from environment (ADMIN_PASSWORD_HASH/TESTER_PASSWORD_HASH)
+            fallback_plain: Plain text password (ADMIN_PASSWORD/TESTER_PASSWORD) - ignored in production
+        
+        Returns:
+            True if password is valid, False otherwise
         """
         import logging
         logger = logging.getLogger(__name__)
         
-        # First try plain text comparison (most reliable)
-        if fallback_plain and password == fallback_plain:
-            logger.info("Password verified via plain text match")
-            return True
+        is_production = os.environ.get('ENVIRONMENT', 'development').lower() == 'production'
         
-        # Then try hash verification
-        if stored_hash:
+        # SECURITY: In production, ONLY accept hash verification
+        if is_production:
+            if fallback_plain:
+                logger.warning(
+                    "SECURITY WARNING: Plain text password env var detected in production. "
+                    "Use ADMIN_PASSWORD_HASH or TESTER_PASSWORD_HASH instead. "
+                    "Plain text passwords are ignored in production mode."
+                )
+            
+            if not stored_hash:
+                logger.error("No password hash configured for special account in production mode")
+                return False
+            
             try:
-                # Strip any quotes that might have been included
                 clean_hash = stored_hash.strip('"\'')
                 result = bcrypt.checkpw(password.encode('utf-8'), clean_hash.encode('utf-8'))
-                logger.info(f"Password hash verification result: {result}")
+                if result:
+                    logger.info("Password verified via bcrypt hash (production mode)")
                 return result
             except Exception as e:
-                logger.error(f"Hash verification error: {e}")
+                logger.error(f"Hash verification error in production: {e}")
                 return False
+        
+        # Non-production: Try hash first, then fall back to plain text
+        if stored_hash:
+            try:
+                clean_hash = stored_hash.strip('"\'')
+                result = bcrypt.checkpw(password.encode('utf-8'), clean_hash.encode('utf-8'))
+                if result:
+                    logger.info("Password verified via bcrypt hash")
+                    return True
+            except Exception as e:
+                logger.debug(f"Hash verification failed, trying plain text: {e}")
+        
+        # Development fallback: plain text comparison
+        if fallback_plain and password == fallback_plain:
+            logger.info("Password verified via plain text match (development mode only)")
+            return True
         
         return False
     
@@ -209,6 +244,79 @@ class AuthService:
             return None
         except jwt.InvalidTokenError:
             return None
+    
+    async def revoke_token(self, jti: str, user_id: str, reason: str = "logout") -> bool:
+        """
+        Revoke a refresh token by its JTI (JWT ID).
+        
+        Stores the JTI in a revoked_tokens collection to prevent reuse.
+        
+        Args:
+            jti: The JWT ID of the token to revoke
+            user_id: The user ID associated with the token
+            reason: Reason for revocation (e.g., 'logout', 'device_revoked', 'password_changed')
+        
+        Returns:
+            True if successfully revoked, False otherwise
+        """
+        try:
+            await self.db.revoked_tokens.insert_one({
+                'jti': jti,
+                'user_id': user_id,
+                'revoked_at': datetime.now(timezone.utc).isoformat(),
+                'reason': reason,
+                # Auto-expire after 30 days (tokens expire in 7 days max, so this is safe)
+                'expires_at': (datetime.now(timezone.utc) + timedelta(days=30)).isoformat()
+            })
+            return True
+        except Exception as e:
+            import logging
+            logging.error(f"Failed to revoke token: {e}")
+            return False
+    
+    async def is_token_revoked(self, jti: str) -> bool:
+        """
+        Check if a token has been revoked.
+        
+        Args:
+            jti: The JWT ID to check
+        
+        Returns:
+            True if the token is revoked, False otherwise
+        """
+        if not jti:
+            return False
+        
+        revoked = await self.db.revoked_tokens.find_one({'jti': jti})
+        return revoked is not None
+    
+    async def revoke_all_user_tokens(self, user_id: str, reason: str = "password_changed") -> int:
+        """
+        Revoke all active refresh tokens for a user.
+        
+        Used when password is changed or user requests logout from all devices.
+        
+        Args:
+            user_id: The user ID whose tokens should be revoked
+            reason: Reason for revocation
+        
+        Returns:
+            Number of device sessions revoked
+        """
+        try:
+            # Get all active device sessions for the user
+            sessions = await self.db.user_devices.find({'user_id': user_id}).to_list(length=100)
+            
+            # Mark all sessions as revoked
+            for session in sessions:
+                if session.get('refresh_token_jti'):
+                    await self.revoke_token(session['refresh_token_jti'], user_id, reason)
+            
+            return len(sessions)
+        except Exception as e:
+            import logging
+            logging.error(f"Failed to revoke all user tokens: {e}")
+            return 0
     
     async def create_user(self, user_data: UserCreate) -> Tuple[User, Optional[str]]:
         """Create a new user with optional trial subscription"""

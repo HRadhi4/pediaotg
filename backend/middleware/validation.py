@@ -9,6 +9,10 @@ Features:
 - Path traversal prevention
 - Request size limits
 - Content-Type validation
+
+Configuration:
+- STRICT_INPUT_VALIDATION=true: Block requests with detected threats (returns 400)
+- STRICT_INPUT_VALIDATION=false (default): Log threats but allow requests through
 """
 
 from fastapi import Request, HTTPException
@@ -17,11 +21,15 @@ from starlette.responses import JSONResponse
 import re
 import logging
 import json
+import os
 
 logger = logging.getLogger(__name__)
 
 # Maximum request body size (10MB)
 MAX_BODY_SIZE = 10 * 1024 * 1024
+
+# Configuration: strict mode blocks malicious requests, non-strict mode logs only
+STRICT_INPUT_VALIDATION = os.environ.get('STRICT_INPUT_VALIDATION', 'false').lower() == 'true'
 
 # Patterns that indicate potential injection attacks
 INJECTION_PATTERNS = [
@@ -115,6 +123,10 @@ class InputValidationMiddleware(BaseHTTPMiddleware):
     - Injection patterns in JSON body
     - XSS patterns in request data
     - Valid Content-Type for POST/PUT requests
+    
+    Behavior controlled by STRICT_INPUT_VALIDATION env var:
+    - true: Block requests with detected threats (returns 400)
+    - false: Log threats but allow requests through (default)
     """
     
     async def dispatch(self, request: Request, call_next):
@@ -158,16 +170,22 @@ class InputValidationMiddleware(BaseHTTPMiddleware):
                         if isinstance(data, dict):
                             threats = scan_dict_for_threats(data)
                             if threats:
+                                client_ip = request.headers.get("x-forwarded-for", "").split(",")[0].strip()
+                                if not client_ip:
+                                    client_ip = request.client.host if request.client else "unknown"
+                                
                                 logger.warning(
-                                    f"Potential attack detected from {request.client.host} "
+                                    f"SECURITY: Potential attack detected from {client_ip} "
                                     f"on {request.url.path}: {threats}"
                                 )
-                                # Don't block, just log - false positives possible
-                                # In strict mode, uncomment below:
-                                # return JSONResponse(
-                                #     status_code=400,
-                                #     content={"detail": "Invalid request data"}
-                                # )
+                                
+                                # In strict mode, block the request
+                                if STRICT_INPUT_VALIDATION:
+                                    logger.warning(f"SECURITY: Blocking request due to STRICT_INPUT_VALIDATION=true")
+                                    return JSONResponse(
+                                        status_code=400,
+                                        content={"detail": "Invalid request data detected"}
+                                    )
                     except json.JSONDecodeError:
                         pass  # Let FastAPI handle invalid JSON
             except Exception as e:

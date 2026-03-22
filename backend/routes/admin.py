@@ -257,6 +257,10 @@ async def create_user(
 ):
     """
     Create a new user with subscription (Admin only)
+    
+    - Validates password strength against central policy
+    - Creates user with hashed password
+    - Creates subscription based on type
     """
     email_lower = user_data.email.lower()
     
@@ -265,8 +269,13 @@ async def create_user(
     if existing:
         raise HTTPException(status_code=400, detail="Email already registered")
     
-    # Create auth service instance for password hashing
+    # Create auth service instance for password hashing and validation
     auth_service = AuthService(db)
+    
+    # Validate password strength using central policy
+    is_valid, error_msg = auth_service.validate_password_strength(user_data.password)
+    if not is_valid:
+        raise HTTPException(status_code=400, detail=error_msg)
     
     # Create user
     user = User(
@@ -345,7 +354,7 @@ async def edit_user(
     """
     Edit a user's password and/or subscription (Admin only)
     
-    - password: Updates user's password (hashed)
+    - password: Updates user's password (validated against central policy, then hashed)
     - subscription_type: Changes subscription plan type
     - subscription_days: Sets subscription to expire in X days from now
     """
@@ -359,10 +368,13 @@ async def edit_user(
     
     # Update password if provided
     if user_data.password:
-        if len(user_data.password) < 6:
-            raise HTTPException(status_code=400, detail="Password must be at least 6 characters")
-        
         auth_service = AuthService(db)
+        
+        # Validate password strength using central policy
+        is_valid, error_msg = auth_service.validate_password_strength(user_data.password)
+        if not is_valid:
+            raise HTTPException(status_code=400, detail=error_msg)
+        
         hashed = auth_service.hash_password(user_data.password)
         await db.users.update_one(
             {'id': user_id},
