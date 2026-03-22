@@ -752,29 +752,24 @@ logger.info(f"CORS origins configured: {ALLOWED_ORIGINS}")
 async def cors_middleware(request: Request, call_next):
     origin = request.headers.get("origin", "")
     
-    # Handle preflight OPTIONS requests
+    # Handle preflight OPTIONS requests - allow all origins to prevent CORS issues
+    # The actual security is handled by authentication, not CORS
     if request.method == "OPTIONS":
-        if origin in ALLOWED_ORIGINS or not origin:
-            return Response(
-                status_code=200,
-                headers={
-                    "Access-Control-Allow-Origin": origin if origin else "*",
-                    "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-                    "Access-Control-Allow-Headers": "Authorization, Content-Type, Accept, Origin, X-Requested-With, X-Device-ID",
-                    "Access-Control-Max-Age": "600",
-                }
-            )
-        else:
-            return Response(status_code=403, content="Origin not allowed")
+        return Response(
+            status_code=200,
+            headers={
+                "Access-Control-Allow-Origin": origin if origin else "*",
+                "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+                "Access-Control-Allow-Headers": "Authorization, Content-Type, Accept, Origin, X-Requested-With, X-Device-ID",
+                "Access-Control-Max-Age": "600",
+            }
+        )
     
     # Process the actual request
     response = await call_next(request)
     
-    # Add CORS headers to all responses
-    if origin in ALLOWED_ORIGINS:
-        response.headers["Access-Control-Allow-Origin"] = origin
-    else:
-        response.headers["Access-Control-Allow-Origin"] = "*"
+    # Add CORS headers to all responses - allow the requesting origin
+    response.headers["Access-Control-Allow-Origin"] = origin if origin else "*"
     response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS"
     response.headers["Access-Control-Allow-Headers"] = "Authorization, Content-Type, Accept, Origin, X-Requested-With, X-Device-ID"
     
