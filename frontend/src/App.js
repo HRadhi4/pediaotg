@@ -58,7 +58,7 @@ function AppRoutes({ theme, toggleTheme }) {
         {/* Main App Routes (Auth + Subscription required) */}
         <Route path="/nicu/*" element={<ProtectedRoute><NICUCalculator theme={theme} toggleTheme={toggleTheme} /></ProtectedRoute>} />
         <Route path="/children/*" element={<ProtectedRoute><ChildrenDashboard theme={theme} toggleTheme={toggleTheme} /></ProtectedRoute>} />
-        <Route path="/" element={<LandingPage theme={theme} toggleTheme={toggleTheme} />} />
+        <Route path="/" element={<ProtectedRoute><LandingPage theme={theme} toggleTheme={toggleTheme} /></ProtectedRoute>} />
       </Routes>
       <Toaster position="top-right" />
       <PWAUpdateBanner />
