@@ -47,7 +47,6 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
   const [hypoDeficitType, setHypoDeficitType] = useState("infant"); // For hyponatremia mild
   const [hypoDeficitPercent, setHypoDeficitPercent] = useState("10"); // For hyponatremia mild
   const [includeFluidDeficit, setIncludeFluidDeficit] = useState(true); // Toggle for including fluid deficit in mild hyponatremia
-  const [phosphateSeverity, setPhosphateSeverity] = useState("moderate");
   const [potassiumRoute, setPotassiumRoute] = useState("IV"); // "IV" or "PO"
   const [potassiumLineType, setPotassiumLineType] = useState("peripheral"); // "peripheral", "central", "central_restricted"
   const [kclPoFrequency, setKclPoFrequency] = useState("BD");
@@ -874,7 +873,7 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
 
   const calculatePhosphate = () => {
     const maxDose = 15;
-    // Dose is already rounded by slider when roundToFives is enabled
+    // Use exact dose without rounding for Phosphate
     let doseMmol = currentDose;
     // Ensure dose doesn't exceed max
     doseMmol = Math.min(doseMmol, maxDose);
@@ -888,17 +887,17 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
     
     setResults({
       medication: "Addiphos (Phosphate)",
-      isRounded: roundToFives,
+      isRounded: false, // Never show rounded for phosphate
       calculation: {
-        dose: `${doseMmol.toFixed(roundToFives ? 0 : 2)} mmol${isMaxed ? ' (MAX)' : ''}${roundToFives ? ' ≈' : ''} (${dosePerKg} mmol/kg)`,
+        dose: `${doseMmol.toFixed(2)} mmol${isMaxed ? ' (MAX)' : ''} (${dosePerKg} mmol/kg)`,
         formula: `Selected: ${dosePerKg} mmol/kg x ${w} kg`,
         drugVolume: `${drugVolume.toFixed(2)} ml`,
-        diluent: `${diluent.toFixed(0)} ml NS (0.05 mmol/ml)`,
-        totalVolume: `${totalVolume.toFixed(0)} ml`
+        diluent: `${diluent.toFixed(2)} ml NS (0.05 mmol/ml)`,
+        totalVolume: `${totalVolume.toFixed(2)} ml`
       },
-      administration: { duration, rate: `${(totalVolume/5).toFixed(1)} ml/hr` },
-      preparation: `${drugVolume.toFixed(2)} ml Addiphos + ${diluent.toFixed(0)} ml NS = ${totalVolume.toFixed(0)} ml`,
-      order: `${doseMmol.toFixed(roundToFives ? 0 : 1)} mmol Phosphate in ${totalVolume.toFixed(0)} ml NS over ${duration}`,
+      administration: { duration, rate: `${(totalVolume/5).toFixed(2)} ml/hr` },
+      preparation: `${drugVolume.toFixed(2)} ml Addiphos + ${diluent.toFixed(2)} ml NS = ${totalVolume.toFixed(2)} ml`,
+      order: `${doseMmol.toFixed(2)} mmol Phosphate in ${totalVolume.toFixed(2)} ml NS over ${duration}`,
       warnings: ["Rapid infusion causes hypocalcemia!"]
     });
   };
@@ -957,8 +956,8 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
             </Select>
           </div>
 
-          {/* Round to 5s Toggle - Hide for Sodium */}
-          {selectedElectrolyte !== "sodium" && (
+          {/* Round to 5s Toggle - Hide for Sodium and Phosphate */}
+          {selectedElectrolyte !== "sodium" && selectedElectrolyte !== "phosphate" && (
             <div className="flex items-center justify-between p-2 rounded-lg bg-amber-50 dark:bg-amber-950/30 border border-amber-200">
               <div className="flex items-center gap-2">
                 <span className="text-sm font-medium text-amber-800 dark:text-amber-200">Round dose</span>
@@ -1783,20 +1782,6 @@ const ElectrolytesDialog = ({ open, onOpenChange }) => {
                 </>
               )}
             </div>
-          )}
-
-          {/* Phosphate-specific options */}
-          {selectedElectrolyte === "phosphate" && (
-            <RadioGroup value={phosphateSeverity} onValueChange={setPhosphateSeverity} className="flex gap-4">
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="moderate" id="phos-mod" />
-                <Label htmlFor="phos-mod" className="text-sm">Moderate (P 1-2)</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="severe" id="phos-sev" />
-                <Label htmlFor="phos-sev" className="text-sm">Severe (P &lt;1)</Label>
-              </div>
-            </RadioGroup>
           )}
 
           <Button onClick={calculate} className="w-full h-10">
