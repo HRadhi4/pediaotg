@@ -4,130 +4,129 @@
  * 
  * Centralized API URL configuration for the application.
  * 
- * DEPLOYMENT REQUIREMENT:
- * -----------------------
- * In production, set REACT_APP_BACKEND_URL to the public backend origin.
- * Example: REACT_APP_BACKEND_URL=https://app.pedotg.com
- * 
- * If REACT_APP_BACKEND_URL is not set, the app falls back to window.location.origin,
- * which works when frontend and backend are served from the same domain.
- * 
- * Build command for production:
- *   REACT_APP_BACKEND_URL=https://app.pedotg.com npm run build
+ * IMPORTANT: On production domains (app.pedotg.com, etc.), we ALWAYS use
+ * same-origin requests to avoid CORS issues, regardless of REACT_APP_BACKEND_URL.
  */
 
-// Known production domains where we should use same-origin requests
+// Known production domains where we MUST use same-origin requests
 const PRODUCTION_DOMAINS = [
   'app.pedotg.com',
-  'pedotg.com',
+  'pedotg.com', 
   'www.pedotg.com'
 ];
 
-// Cache for the computed API URL
-let _cachedApiUrl = null;
-
 /**
- * Get the API base URL - computed lazily at first call
- * 
- * Priority:
- * 1. If on a known production domain, use same-origin (empty string)
- * 2. REACT_APP_BACKEND_URL environment variable (set at build time)
- * 3. window.location.origin (same-origin fallback for production)
- * 4. Empty string (for SSR/testing environments)
+ * Check if current hostname is a production domain
  */
-export const getApiUrl = () => {
-  // Return cached value if already computed
-  if (_cachedApiUrl !== null) {
-    return _cachedApiUrl;
+const isProductionDomain = () => {
+  if (typeof window === 'undefined' || !window.location?.hostname) {
+    return false;
   }
-  
-  // Check if we're in a browser
-  if (typeof window !== 'undefined' && window.location?.hostname) {
-    const currentHostname = window.location.hostname;
-    
-    // If on a known production domain, ALWAYS use same-origin to avoid CORS
-    if (PRODUCTION_DOMAINS.includes(currentHostname)) {
-      console.log('[API Config] Production domain detected:', currentHostname, '- using same-origin');
-      _cachedApiUrl = '';
-      return _cachedApiUrl;
-    }
-  }
-  
-  // Use environment variable if set
-  if (process.env.REACT_APP_BACKEND_URL) {
-    _cachedApiUrl = process.env.REACT_APP_BACKEND_URL;
-    return _cachedApiUrl;
-  }
-  
-  // Fall back to current origin (works when frontend/backend on same domain)
-  if (typeof window !== 'undefined' && window.location?.origin) {
-    _cachedApiUrl = window.location.origin;
-    return _cachedApiUrl;
-  }
-  
-  // Last resort for SSR or test environments
-  _cachedApiUrl = '';
-  return _cachedApiUrl;
+  return PRODUCTION_DOMAINS.includes(window.location.hostname);
 };
 
 /**
- * Get the API URL - this is a getter that ensures lazy evaluation
- * Use this in components: `${API_URL}/api/...`
+ * Get the API base URL
+ * 
+ * CRITICAL: Production domain check MUST come first to avoid CORS issues.
+ * When on app.pedotg.com, we ALWAYS use same-origin ('/api/...') requests.
+ * 
+ * Priority:
+ * 1. If on a known production domain → return '' (same-origin)
+ * 2. If REACT_APP_BACKEND_URL is set → use it
+ * 3. Otherwise → use window.location.origin
  */
-export const API_URL = typeof window !== 'undefined' ? getApiUrl() : '';
+export const getApiUrl = () => {
+  // FIRST: Check if we're on a production domain - this MUST take priority
+  if (isProductionDomain()) {
+    // On production domains, ALWAYS use same-origin to avoid CORS
+    return '';
+  }
+  
+  // SECOND: Use environment variable if set (for development/staging)
+  if (process.env.REACT_APP_BACKEND_URL) {
+    return process.env.REACT_APP_BACKEND_URL;
+  }
+  
+  // THIRD: Fall back to current origin
+  if (typeof window !== 'undefined' && window.location?.origin) {
+    return window.location.origin;
+  }
+  
+  // Last resort for SSR
+  return '';
+};
+
+// Export for use in components - computed fresh each time to handle SPA navigation
+export const API_URL = '';  // Deprecated - use getApiUrl() instead
 
 /**
- * Debug logging for development builds
- * Logs the API URL and performs a health check
+ * Debug logging - always runs to help diagnose issues
  */
 export const debugApiConfig = () => {
   const url = getApiUrl();
-  console.log('[API Config] Using API_URL =', url || '(same-origin)');
-  console.log('[API Config] REACT_APP_BACKEND_URL env =', process.env.REACT_APP_BACKEND_URL || '(not set)');
-  if (typeof window !== 'undefined') {
-    console.log('[API Config] window.location.hostname =', window.location.hostname);
-    console.log('[API Config] Is production domain =', PRODUCTION_DOMAINS.includes(window.location.hostname));
-  }
+  const hostname = typeof window !== 'undefined' ? window.location.hostname : 'N/A';
+  const isProd = isProductionDomain();
   
-  // Perform health check
+  console.log('[API Config] ===== Configuration =====');
+  console.log('[API Config] Hostname:', hostname);
+  console.log('[API Config] Is production domain:', isProd);
+  console.log('[API Config] REACT_APP_BACKEND_URL:', process.env.REACT_APP_BACKEND_URL || '(not set)');
+  console.log('[API Config] Resolved API URL:', url || '(same-origin)');
+  console.log('[API Config] ========================');
+  
+  // Health check
   const healthUrl = url ? `${url}/api/health` : '/api/health';
   fetch(healthUrl)
     .then(res => res.json())
-    .then(data => console.log('[API Config] Health check passed:', data))
-    .catch(err => console.warn('[API Config] Health check failed:', err.message));
+    .then(data => console.log('[API Config] Health check:', data.status))
+    .catch(err => console.error('[API Config] Health check FAILED:', err.message));
 };
 
 /**
- * Check if an error is a network/connection error vs a backend error
- * 
- * @param {Error} error - The caught error
- * @returns {boolean} - True if it's a network error, false if it's a backend response
+ * Check if an error is a network/connection error
  */
 export const isNetworkError = (error) => {
-  // TypeError with "Failed to fetch" indicates network failure
-  if (error instanceof TypeError && error.message.includes('Failed to fetch')) {
+  if (!error) return false;
+  
+  // Log for debugging
+  console.log('[isNetworkError] Checking error:', {
+    name: error.name,
+    message: error.message,
+    type: typeof error
+  });
+  
+  // If it's a standard Error thrown from our code (like "Email already registered"), 
+  // it's NOT a network error
+  if (error.name === 'Error' && error.message && !error.message.includes('Failed to fetch')) {
+    console.log('[isNetworkError] Standard Error with message - NOT network error');
+    return false;
+  }
+  
+  // TypeError with "Failed to fetch" = network failure
+  if (error instanceof TypeError && error.message?.includes('Failed to fetch')) {
+    console.log('[isNetworkError] TypeError with Failed to fetch - IS network error');
     return true;
   }
   
-  // Check for common network error patterns
-  if (error.name === 'TypeError' || error.name === 'NetworkError') {
+  // NetworkError type
+  if (error.name === 'NetworkError') {
+    console.log('[isNetworkError] NetworkError type - IS network error');
     return true;
   }
   
-  // Check if browser is offline
+  // Browser is offline
   if (typeof navigator !== 'undefined' && !navigator.onLine) {
+    console.log('[isNetworkError] Browser offline - IS network error');
     return true;
   }
   
+  console.log('[isNetworkError] Default - NOT network error');
   return false;
 };
 
 /**
- * Get user-friendly error message based on error type
- * 
- * @param {Error} error - The caught error
- * @param {boolean} hasCachedData - Whether cached/remembered credentials exist
- * @returns {string} - User-friendly error message
+ * Get user-friendly error message
  */
 export const getErrorMessage = (error, hasCachedData = false) => {
   if (isNetworkError(error)) {
@@ -137,8 +136,7 @@ export const getErrorMessage = (error, hasCachedData = false) => {
     return "Unable to reach the server. Please check your internet connection and try again.";
   }
   
-  // For other errors, return the error message
-  return error.message || 'An unexpected error occurred. Please try again.';
+  return error?.message || 'An unexpected error occurred. Please try again.';
 };
 
-export default API_URL;
+export default getApiUrl;

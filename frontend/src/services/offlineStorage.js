@@ -271,7 +271,7 @@ export const layoutManager = {
     // Try to sync to server if online
     if (navigator.onLine) {
       try {
-        await fetch(`${this.API_URL}/api/layouts`, {
+        await fetch(`${getApiUrl()}/api/layouts`, {
           method: 'POST',
           
           headers: {

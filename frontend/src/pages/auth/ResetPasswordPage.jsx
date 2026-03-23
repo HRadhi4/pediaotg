@@ -6,7 +6,7 @@ import { AlertCircle, Loader2, Lock, CheckCircle, ArrowLeft } from 'lucide-react
 import { PasswordInput, ConfirmPasswordInput } from '@/components/auth/PasswordInput';
 import { validatePassword, isPasswordPolicyError } from '@/utils/passwordValidation';
 import { toast } from 'sonner';
-import { getApiUrl as getAPI } from '@/config/api';
+import { getApiUrl } from '@/config/api';
 
 const ResetPasswordPage = () => {
   const navigate = useNavigate();
@@ -71,7 +71,7 @@ const ResetPasswordPage = () => {
     setLoading(true);
 
     try {
-      const response = await fetch(`${getAPI()}/api/auth/reset-password`, {
+      const response = await fetch(`${getApiUrl()}/api/auth/reset-password`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ token, new_password: password })

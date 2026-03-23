@@ -48,8 +48,13 @@ const SignupPage = () => {
     const result = await signup(email, password, name);
 
     if (result.success) {
-      toast.success('Account created successfully!');
-      navigate('/');
+      toast.success(result.message || 'Account created successfully!');
+      // If we need to redirect to login (body was consumed), go to login page
+      if (result.redirectToLogin) {
+        navigate('/login');
+      } else {
+        navigate('/');
+      }
     } else {
       // Check if it's a password policy error from backend
       if (isPasswordPolicyError(result.error)) {

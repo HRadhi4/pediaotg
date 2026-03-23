@@ -7,7 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, Users, CreditCard, TrendingUp, Loader2, Search, ChevronLeft, ChevronRight, Trash2, UserPlus, X, Pencil, Smartphone, Monitor, Tablet, LogOut } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { getApiUrl as getAPI } from '@/config/api';
+import { getApiUrl } from '@/config/api';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -47,7 +47,7 @@ const AdminDashboard = () => {
     setLoading(true);
     try {
       // Fetch stats
-      const statsResponse = await fetch(`${getAPI()}/api/admin/stats`, {
+      const statsResponse = await fetch(`${getApiUrl()}/api/admin/stats`, {
         
         headers: getAuthHeaders()
       });
@@ -56,7 +56,7 @@ const AdminDashboard = () => {
 
       // Fetch users
       const usersResponse = await fetch(
-        `${getAPI()}/api/admin/users?skip=${page * limit}&limit=${limit}`,
+        `${getApiUrl()}/api/admin/users?skip=${page * limit}&limit=${limit}`,
         {
           
           headers: getAuthHeaders()
@@ -85,7 +85,7 @@ const AdminDashboard = () => {
 
     setDeletingUserId(userId);
     try {
-      const response = await fetch(`${getAPI()}/api/admin/user/${userId}`, {
+      const response = await fetch(`${getApiUrl()}/api/admin/user/${userId}`, {
         method: 'DELETE',
         
         headers: getAuthHeaders()
@@ -117,7 +117,7 @@ const AdminDashboard = () => {
 
     setAddingUser(true);
     try {
-      const response = await fetch(`${getAPI()}/api/admin/user`, {
+      const response = await fetch(`${getApiUrl()}/api/admin/user`, {
         method: 'POST',
         
         headers: {
@@ -167,7 +167,7 @@ const AdminDashboard = () => {
 
     setSavingEdit(true);
     try {
-      const response = await fetch(`${getAPI()}/api/admin/user/${editingUser.id}`, {
+      const response = await fetch(`${getApiUrl()}/api/admin/user/${editingUser.id}`, {
         method: 'PUT',
         
         headers: {
@@ -203,7 +203,7 @@ const AdminDashboard = () => {
     setLoadingDevices(true);
     
     try {
-      const response = await fetch(`${getAPI()}/api/admin/user/${u.id}/devices`, {
+      const response = await fetch(`${getApiUrl()}/api/admin/user/${u.id}/devices`, {
         
         headers: getAuthHeaders()
       });
@@ -231,7 +231,7 @@ const AdminDashboard = () => {
 
     setRevokingDeviceId(deviceId);
     try {
-      const response = await fetch(`${getAPI()}/api/admin/user/${deviceUser.id}/devices/${deviceId}`, {
+      const response = await fetch(`${getApiUrl()}/api/admin/user/${deviceUser.id}/devices/${deviceId}`, {
         method: 'DELETE',
         
         headers: getAuthHeaders()
@@ -261,7 +261,7 @@ const AdminDashboard = () => {
 
     setLoadingDevices(true);
     try {
-      const response = await fetch(`${getAPI()}/api/admin/user/${deviceUser.id}/devices`, {
+      const response = await fetch(`${getApiUrl()}/api/admin/user/${deviceUser.id}/devices`, {
         method: 'DELETE',
         
         headers: getAuthHeaders()

@@ -3,9 +3,10 @@ import { secureSet, secureGet, secureRemove, isSecureStorageAvailable } from '@/
 import { getDeviceId, getDeviceIdHeaders } from '@/lib/deviceId';
 import { getApiUrl, debugApiConfig, isNetworkError } from '@/config/api';
 
-// Run debug logging when component loads
+// Run debug logging immediately
 if (typeof window !== 'undefined') {
-  debugApiConfig();
+  // Small delay to ensure window.location is fully available
+  setTimeout(() => debugApiConfig(), 0);
 }
 
 // Storage keys
@@ -14,9 +15,6 @@ const STORAGE_KEYS = {
   CACHED_USER: 'pedotg_cached_user',
   AUTH_TOKENS: 'auth_tokens'
 };
-
-// Get API URL dynamically (handles production domain detection)
-const getAPI = () => getApiUrl();
 
 const AuthContext = createContext(null);
 
@@ -88,7 +86,7 @@ export const AuthProvider = ({ children }) => {
         headers['Authorization'] = `Bearer ${tokens.access_token}`;
       }
 
-      const response = await fetch(`${getAPI()}/api/auth/check`, {
+      const response = await fetch(`${getApiUrl()}/api/auth/check`, {
         method: 'GET',
         headers
       });
@@ -159,7 +157,7 @@ export const AuthProvider = ({ children }) => {
         const { email, password } = remembered;
         if (email && password) {
           console.log('[Auth] Attempting auto-login with saved credentials');
-          const response = await fetch(`${getAPI()}/api/auth/login`, {
+          const response = await fetch(`${getApiUrl()}/api/auth/login`, {
             method: 'POST',
             headers: getDeviceIdHeaders({ 'Content-Type': 'application/json' }),
             body: JSON.stringify({ email, password })
@@ -285,7 +283,7 @@ export const AuthProvider = ({ children }) => {
     }
 
     try {
-      const response = await fetch(`${getAPI()}/api/auth/login`, {
+      const response = await fetch(`${getApiUrl()}/api/auth/login`, {
         method: 'POST',
         headers: getDeviceIdHeaders({ 'Content-Type': 'application/json' }),
         body: JSON.stringify({ email, password })
@@ -369,19 +367,62 @@ export const AuthProvider = ({ children }) => {
   };
 
   const signup = async (email, password, name) => {
+    console.log('[Signup] Starting signup for:', email);
+    
     try {
-      const response = await fetch(`${getAPI()}/api/auth/signup`, {
+      const apiUrl = getApiUrl();
+      console.log('[Signup] Making fetch request to:', `${apiUrl}/api/auth/signup`);
+      
+      const response = await fetch(`${apiUrl}/api/auth/signup`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password, name })
       });
 
-      const data = await response.json();
+      console.log('[Signup] Response status:', response.status);
+
+      // Handle the case where body is already consumed (edge runtime issue)
+      let responseText;
+      if (response.bodyUsed) {
+        console.warn('[Signup] Response body already consumed - using status-based handling');
+        // If body is already used, we can only rely on status code
+        if (response.ok) {
+          // Success but can't read body - this is unusual, ask user to login
+          return { 
+            success: true,
+            redirectToLogin: true,
+            message: 'Account created successfully! Please log in.'
+          };
+        } else {
+          // Error but can't read body
+          return { 
+            success: false, 
+            error: response.status === 400 ? 'Email may already be registered. Try logging in.' : 'Signup failed. Please try again.',
+            isNetworkError: false 
+          };
+        }
+      }
+
+      // Normal flow - read response
+      responseText = await response.text();
+      console.log('[Signup] Response text:', responseText.substring(0, 200));
+      
+      let data;
+      try {
+        data = JSON.parse(responseText);
+      } catch (parseError) {
+        console.error('[Signup] Failed to parse response:', responseText);
+        throw new Error('Invalid server response. Please try again.');
+      }
 
       if (!response.ok) {
+        // Backend returned an error (400, 409, etc.) - throw with the detail message
+        console.log('[Signup] Backend error:', data.detail);
         throw new Error(data.detail || 'Signup failed');
       }
 
+      console.log('[Signup] Success! Setting user data');
+      
       // Store tokens
       const newTokens = {
         access_token: data.access_token,
@@ -407,7 +448,7 @@ export const AuthProvider = ({ children }) => {
 
       return { success: true };
     } catch (error) {
-      console.error('Signup error:', error);
+      console.error('[Signup] Error caught:', error.name, error.message);
       
       // Check if this is a network/connection error
       if (isNetworkError(error)) {
@@ -429,7 +470,7 @@ export const AuthProvider = ({ children }) => {
       if (tokens?.access_token) {
         headers['Authorization'] = `Bearer ${tokens.access_token}`;
       }
-      await fetch(`${getAPI()}/api/auth/logout`, {
+      await fetch(`${getApiUrl()}/api/auth/logout`, {
         method: 'POST',
         headers
       });
