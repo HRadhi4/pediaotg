@@ -3,7 +3,7 @@ import json
 
 class TokenDebugger:
     def __init__(self):
-        self.base_url = "https://content-gateway-10.preview.emergentagent.com"
+        self.base_url = "https://cors-security-fix.preview.emergentagent.com"
         self.user_token = None
         
     def test_signup_and_token(self):

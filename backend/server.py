@@ -718,65 +718,107 @@ app.include_router(layouts_router, prefix="/api")
 app.include_router(admin_router, prefix="/api")
 app.include_router(content_router, prefix="/api")
 
-# CORS configuration - for credentials, we need explicit origins
-# SECURITY: Only allow known production and development origins
+# CORS configuration - STRICT allow-list for security
+# SECURITY: Only explicitly allowed origins can make browser API calls
 cors_origins_env = os.environ.get('CORS_ORIGINS', '')
 
 if cors_origins_env:
     # Use environment-specified origins (production)
     ALLOWED_ORIGINS = set(origin.strip() for origin in cors_origins_env.split(',') if origin.strip())
 else:
-    # Development fallback
+    # Environment-aware defaults
     is_production = os.environ.get('ENVIRONMENT', 'development') == 'production'
     if is_production:
+        # Production: ONLY real production frontends
         ALLOWED_ORIGINS = {
             "https://app.pedotg.com",
             "https://pedotg.com",
             "https://www.pedotg.com",
         }
     else:
+        # Development: Include localhost and preview environments
         ALLOWED_ORIGINS = {
             "http://localhost:3000",
             "http://127.0.0.1:3000",
-            "https://content-gateway-10.preview.emergentagent.com",
+            "https://cors-security-fix.preview.emergentagent.com",
             "https://app.pedotg.com",
             "https://pedotg.com",
             "https://www.pedotg.com",
         }
 
-# Log CORS configuration for debugging
-logger.info(f"CORS origins configured: {ALLOWED_ORIGINS}")
+# Primary origin for fallback (used when we need to set a default)
+PRIMARY_ORIGIN = "https://app.pedotg.com"
 
-# Custom CORS middleware to ensure headers aren't overwritten by proxy
+# Log CORS configuration at startup
+logger.info(f"CORS strict allow-list configured with {len(ALLOWED_ORIGINS)} origins: {ALLOWED_ORIGINS}")
+logger.info(f"Environment: {os.environ.get('ENVIRONMENT', 'development')}")
+
+# Allowed headers that the frontend uses
+ALLOWED_HEADERS = "Authorization, Content-Type, Accept, Origin, X-Requested-With, X-Device-ID"
+ALLOWED_METHODS = "GET, POST, PUT, DELETE, OPTIONS"
+
+
+def is_origin_allowed(origin: str) -> bool:
+    """Check if an origin is in the strict allow-list."""
+    return origin in ALLOWED_ORIGINS
+
+
+# Custom CORS middleware with STRICT origin validation
 @app.middleware("http")
 async def cors_middleware(request: Request, call_next):
+    """
+    CORS middleware that enforces a strict allow-list of origins.
+    
+    Security behavior:
+    - Only origins in ALLOWED_ORIGINS get CORS headers
+    - Disallowed origins receive NO CORS headers (browser blocks the request)
+    - credentials=true is only sent with allowed origins
+    - Never uses Access-Control-Allow-Origin: * (incompatible with credentials)
+    """
     origin = request.headers.get("origin", "")
     
-    # Handle preflight OPTIONS requests - allow all origins to prevent CORS issues
-    # The actual security is handled by authentication, not CORS
+    # Check if origin is in our strict allow-list
+    origin_allowed = is_origin_allowed(origin) if origin else False
+    
+    # Handle preflight OPTIONS requests
     if request.method == "OPTIONS":
-        return Response(
-            status_code=200,
-            headers={
-                "Access-Control-Allow-Origin": origin if origin else "*",
-                "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-                "Access-Control-Allow-Headers": "Authorization, Content-Type, Accept, Origin, X-Requested-With, X-Device-ID",
-                "Access-Control-Max-Age": "600",
-            }
-        )
+        if origin_allowed:
+            # Origin is allowed - return full CORS preflight response
+            return Response(
+                status_code=204,  # No Content - standard for preflight
+                headers={
+                    "Access-Control-Allow-Origin": origin,
+                    "Access-Control-Allow-Credentials": "true",
+                    "Access-Control-Allow-Methods": ALLOWED_METHODS,
+                    "Access-Control-Allow-Headers": ALLOWED_HEADERS,
+                    "Access-Control-Max-Age": "600",  # Cache preflight for 10 minutes
+                }
+            )
+        else:
+            # Origin NOT allowed - return response WITHOUT CORS headers
+            # Browser will block the actual request
+            logger.warning(f"CORS preflight rejected for disallowed origin: {origin or '(no origin)'}")
+            return Response(
+                status_code=204,
+                headers={}  # No CORS headers = browser blocks subsequent requests
+            )
     
     # Process the actual request
     response = await call_next(request)
     
-    # Add CORS headers to all responses - allow the requesting origin
-    response.headers["Access-Control-Allow-Origin"] = origin if origin else "*"
-    response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS"
-    response.headers["Access-Control-Allow-Headers"] = "Authorization, Content-Type, Accept, Origin, X-Requested-With, X-Device-ID"
+    # Add CORS headers ONLY for allowed origins
+    if origin_allowed:
+        response.headers["Access-Control-Allow-Origin"] = origin
+        response.headers["Access-Control-Allow-Credentials"] = "true"
+        response.headers["Access-Control-Allow-Methods"] = ALLOWED_METHODS
+        response.headers["Access-Control-Allow-Headers"] = ALLOWED_HEADERS
+    # If origin not allowed, we intentionally DO NOT add any CORS headers
+    # This causes the browser to block the response
     
     return response
 
-# Remove standard CORSMiddleware since we're using custom middleware above
-# app.add_middleware(CORSMiddleware, ...)
+# Note: We use custom middleware instead of FastAPI's CORSMiddleware
+# to have full control over the strict allow-list behavior
 
 # Add security middleware (order matters - added after CORS)
 # AdminRouteProtection first to block unauthorized admin access early

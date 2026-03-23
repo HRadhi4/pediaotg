@@ -186,9 +186,32 @@ python3 -c "import bcrypt; print(bcrypt.hashpw(b'YourStrongPassword123!', bcrypt
 | `FRONTEND_URL` | Yes | Frontend application URL |
 | `CORS_ORIGINS` | No | Comma-separated allowed origins |
 
-**CORS Notes:**
-- In production, if `CORS_ORIGINS` is not set, only production domains are allowed
-- Development mode includes `localhost:3000`
+**CORS Security (Strict Allow-List):**
+
+CORS is now configured with a **strict allow-list** that only permits explicitly configured origins. This is a security improvement over the previous behavior that echoed any origin.
+
+**How ALLOWED_ORIGINS is derived:**
+1. If `CORS_ORIGINS` environment variable is set, it's parsed as a comma-separated list
+2. Otherwise, defaults are used based on `ENVIRONMENT`:
+   - **Production**: Only `https://app.pedotg.com`, `https://pedotg.com`, `https://www.pedotg.com`
+   - **Development**: Includes localhost and preview environments in addition to production domains
+
+**Security behavior:**
+- Only origins in the allow-list receive `Access-Control-Allow-Origin` headers
+- Disallowed origins receive NO CORS headers (browser blocks the request)
+- `Access-Control-Allow-Credentials: true` is only sent for allowed origins
+- Never uses `Access-Control-Allow-Origin: *` (incompatible with credentials)
+
+**Recommended production values:**
+```bash
+CORS_ORIGINS=https://app.pedotg.com,https://pedotg.com,https://www.pedotg.com
+```
+
+**Adding a new domain:**
+If you add a new frontend domain (e.g., staging), add it to `CORS_ORIGINS`:
+```bash
+CORS_ORIGINS=https://app.pedotg.com,https://staging.pedotg.com
+```
 
 ---
 

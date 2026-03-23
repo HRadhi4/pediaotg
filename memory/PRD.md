@@ -82,6 +82,17 @@ Comprehensive security audit and hardening implemented:
 
 ## What's Been Implemented
 
+### March 23, 2026
+- **CORS Security Hardening (P0)**: Completed strict CORS allow-list implementation
+  - Backend now uses **strict allow-list** instead of echoing any origin
+  - Only explicitly allowed origins receive CORS headers (disallowed origins blocked by browser)
+  - Allowed origins configured via `CORS_ORIGINS` environment variable
+  - Default production origins: `app.pedotg.com`, `pedotg.com`, `www.pedotg.com`
+  - Development includes: `localhost:3000`, `127.0.0.1:3000`, preview environments
+  - Created comprehensive test suite: `/app/backend/tests/test_cors.py` (10 tests, all passing)
+  - Updated documentation: `/app/docs/DEPLOYMENT_ENV_VARS.md`, `/app/SECURITY_AUDIT.md`
+  - Files: `/app/backend/server.py`, `/app/backend/.env`
+
 ### March 22, 2026
 - **Content Migration to Server-Side APIs (P0)**:
   - Migrated all drug formulary data from frontend static files to MongoDB

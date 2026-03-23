@@ -213,7 +213,7 @@ object-src 'none';
 ## Remaining Risks (Require Manual Review)
 
 ### ✅ ADDRESSED - Previously Medium Priority
-1. **CORS Configuration**: ✅ FIXED - Now uses explicit allowed methods and headers, removes localhost in production
+1. **CORS Configuration**: ✅ HARDENED (March 2026) - Now uses **strict allow-list** that only permits explicitly configured origins. Disallowed origins receive NO CORS headers, causing browser to block requests. Never uses `*` with credentials.
 2. **Token Refresh**: ✅ FIXED - Non-remembered sessions use 1-day expiry, remembered use 7-day
 3. **Client-side encryption key**: ✅ IMPROVED - Key now includes browser fingerprint for device-specific encryption
 4. **Input Validation**: ✅ ADDED - New middleware detects injection patterns and XSS

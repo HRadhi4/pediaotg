@@ -214,7 +214,7 @@ class GrowthChartTester:
             "failed": 0,
             "test_details": []
         }
-        self.base_url = "https://content-gateway-10.preview.emergentagent.com"
+        self.base_url = "https://cors-security-fix.preview.emergentagent.com"
     
     async def login(self, page):
         """Login to the application"""
